@@ -10,7 +10,7 @@ v109 prepares the first Godot-executable KG-001 slice that does not require the 
 
 ## Headless runner
 
-`scripts/kg001_headless_runner_v109.gd` uses the real project autoloads and v87 Event IR without loading `main.tscn`. It verifies:
+`scripts/kg001_headless_runner_v109.gd` uses the real project autoloads and v87 Event IR without loading `main.tscn`. It defines **13 runtime assertions** and verifies:
 
 - clean-state canonical hash;
 - well-key and R7 switchboard logic;
