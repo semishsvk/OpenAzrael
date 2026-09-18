@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v111-context-v19`
+**Canonical checkpoint:** `v112-context-v20`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v111-context-v19 | PASS target | Source/context validation |
+| Project context | v112-context-v20 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -13,8 +13,8 @@
 | Direct PUZZLES open audit | v103-v105 | HIGH for audited mechanisms | Indirect/custom paths not excluded |
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
-| Source-safe runtime IR | v111-context-v19 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v111-context-v19 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v112-context-v20 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v112-context-v20 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -63,3 +63,16 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Final state hash oracle | WIRED | v108 success hash |
 | Logical audio oracle | WIRED | S152V2 -> S137 -> S121 -> 799SECDR |
 | Consolidated G00-G10 status | PRE_RUNTIME_READY | Final tag forbidden until all gates literal PASS |
+
+
+## v112 KG-001 candidate workflow
+
+| Layer | Status | Evidence boundary |
+|---|---|---|
+| One-command candidate runner | SOURCE_CONTRACT_READY | Runtime execution requires Godot |
+| Godot restored-asset import | REQUIRED FOR G09 | Import output retained in .tmp/kg001 |
+| Git clean before/after | WIRED | Ignored local commercial-derived assets permitted |
+| Forbidden tracked payload scan | WIRED | Blocks G09 on violation |
+| Runtime evidence promotion | OPTIONAL / EXPLICIT | Happens only after clean-checkout observation |
+| G00-G09 evidence-driven status | WIRED | Only recorded PASS promotes a gate |
+| G10 manual sanity | CHECKLIST_READY / PENDING_USER | Never auto-promoted |
