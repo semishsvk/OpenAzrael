@@ -1,7 +1,11 @@
 extends Node
 
+signal logical_audio_event(filename: String)
+
 const GRAPH_PATH := "res://data/gameplay_event_graph_v87.json"
 var graphs: Dictionary = {}
+var capture_only := false
+var captured_audio_events: Array[String] = []
 
 func _ready() -> void:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(GRAPH_PATH))
@@ -9,6 +13,15 @@ func _ready() -> void:
         graphs = parsed.get("graphs", {})
     else:
         push_error("OpenAzrael v87: cannot parse gameplay event graph")
+
+func set_capture_only(enabled: bool) -> void:
+    capture_only = enabled
+
+func clear_capture() -> void:
+    captured_audio_events.clear()
+
+func captured_audio() -> Array[String]:
+    return captured_audio_events.duplicate()
 
 func has_graph(graph_id: String) -> bool:
     return graphs.has(graph_id)
@@ -40,6 +53,10 @@ func run(graph_id: String) -> Array:
 
 func _play_sound(filename: String) -> void:
     if filename.is_empty():
+        return
+    captured_audio_events.append(filename)
+    logical_audio_event.emit(filename)
+    if capture_only:
         return
     var path := "res://assets/audio/" + filename
     if not ResourceLoader.exists(path):
