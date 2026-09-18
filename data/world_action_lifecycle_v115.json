@@ -1,0 +1,64 @@
+{
+  "checks": {
+    "condition_record_scan_single_direct_caller": true,
+    "condition_scan_reads_second_list_count": true,
+    "condition_scan_reads_second_list_pointer": true,
+    "dispatcher_dispatches_original_record_pointer": true,
+    "dispatcher_entry_stride_six": true,
+    "dispatcher_reads_group_count": true,
+    "dispatcher_reads_original_pointer_array": true,
+    "dispatcher_reads_pending_count": true,
+    "exe_hash": true,
+    "insert27_only_direct_caller_is_reader": true,
+    "insert37_only_direct_caller_is_reader": true,
+    "only_immediate_27_alloc_is_reader": true,
+    "pending_group_array_global_load": true,
+    "pending_group_array_global_store": true,
+    "pending_group_count_load": true,
+    "pending_group_count_store": true,
+    "pending_group_entry_size_six": true,
+    "reader27_insert_edge": true,
+    "reader37_insert_edge": true,
+    "sound_handler_has_no_record_store_before_pointer_repurpose": true
+  },
+  "dispatch_path": {
+    "confidence": "VERIFIED for audited control/data flow",
+    "dispatcher_hex": "0x18698",
+    "finding": "The dispatcher iterates the 6-byte pending groups, follows the original pointer array, obtains the original 27-byte record pointer, reads its opcode and dispatches it in place.",
+    "pending_group_stride": 6,
+    "sound_handler_hex": "0x191e9",
+    "sound_handler_mutates_record": false
+  },
+  "lifecycle_conclusion": {
+    "finding": "For the bound runtime path, 27-byte action records are loaded from WORLD, retained by pointer, shallow-scheduled by count+pointer-array reference, and dispatched in place. No copy/normalization step is present between WORLD deserialization and opcode execution in this path.",
+    "producer_boundary": "The complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.",
+    "tail_implication": "The varying +17..+26 bytes observed in v114 are already present in serialized WORLD and survive unchanged into dispatch. Their exact authoring origin remains upstream/HOLD; the audited runtime path does not manufacture them."
+  },
+  "next_target": "Audit static construction/mutation patterns outside the load/schedule/dispatch path: generic copies of 27 bytes, stores to +17..+26 near action-building code, and any indirect reachability into the paired WORLD writer.",
+  "population_path": {
+    "boundary": "Does not exclude indirect calls, generic/variable-size allocators, stack/static construction, or external authoring code.",
+    "direct_call_sites": ["0x296ec"],
+    "direct_call_sites_37": ["0x2968a"],
+    "finding": "In the audited direct-call/immediate-allocation classes, the WORLD reader is the only population path for the nested 27-byte and 37-byte pointer lists and the only direct malloc(27)-style allocation.",
+    "immediate_27_alloc_matches": [{"call_site_hex": "0x29712","mov_site_hex": "0x29703"}],
+    "record27_insert_function_hex": "0x295b0",
+    "record37_insert_function_hex": "0x295f4"
+  },
+  "schema": "openazrael.world_action_record_lifecycle_audit",
+  "shallow_runtime_schedule": {
+    "condition_scan_direct_call_hex": "0x29ddf",
+    "condition_scan_hex": "0x2990c",
+    "confidence": "VERIFIED",
+    "entry_layout": {
+      "count27": {"offset": 0,"size": 2,"source": "nested object +6"},
+      "pointer_array27": {"offset": 2,"size": 4,"source": "nested object +8"}
+    },
+    "entry_size": 6,
+    "finding": "On condition success, runtime scheduling stores only the original 27-byte-list count and pointer-array address in a 6-byte pending group. It does not copy the 27-byte records.",
+    "pending_group_array_global_hex": "0x438b4",
+    "pending_group_count_global_hex": "0x438b0"
+  },
+  "sources": {"r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"},
+  "status": "PASS",
+  "version": 115
+}
