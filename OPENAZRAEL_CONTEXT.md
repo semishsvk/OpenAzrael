@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v115-context-v23`
-**Technical base:** `openazrael_godot_poc_v115`
+**Current canonical checkpoint:** `v116-context-v24`
+**Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -86,6 +86,16 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Temporary evidence is kept in ignored `.tmp/kg001/`; promotion into `data/tests/` is explicit.
 - `tools/kg001_status_v112.py` upgrades gates only from recorded PASS evidence; G10 remains manual.
 - G10 checklist/template are ready. Overall status remains AWAITING_RUNTIME_OR_MANUAL and the tag is not allowed.
+
+## KG-001 Candidate 1 diagnostics — v116
+- v116 is the diagnostic integration layer for the first real Godot Candidate build; the previously discussed uncommitted producer/copy scan moves to v117.
+- `CandidateDiagnostics` is an autoload that records state/event telemetry without changing puzzle semantics.
+- F6 toggles authored trigger-volume visualization; F7 toggles the Candidate HUD; F8 and F9 preserve the existing audio debug/parity tools; F10 writes a canonical DemoState dump.
+- Non-headless builds append structured JSONL events to `user://openazrael_candidate1_events.jsonl`.
+- Room transitions, trigger enter/exit edges, interactions, state changes and logical audio are logged with canonical state hashes.
+- R1/R7/R8 are now runtime-loaded rather than script-preloaded so missing assets can be reported by an explicit fail-fast preflight.
+- Core room/IR resources are always required; the four golden Event-IR WAVs are additionally required for a non-headless Candidate 1 run.
+- v116 source contract: PASS. Actual Godot execution: NOT EXECUTED.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
