@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v109-context-v17`
+**Canonical checkpoint:** `v110-context-v18`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v109-context-v17 | PASS target | Source/context validation |
+| Project context | v110-context-v18 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -13,8 +13,8 @@
 | Direct PUZZLES open audit | v103-v105 | HIGH for audited mechanisms | Indirect/custom paths not excluded |
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
-| Source-safe runtime IR | v109-context-v17 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v109-context-v17 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v110-context-v18 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v110-context-v18 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -42,3 +42,13 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Logical audio capture | IMPLEMENTED / source-contract checked | Does not test WAV playback or Classic spatial parity |
 | Headless autoload/Event IR runner | READY / NOT EXECUTED | Requires Godot executable |
 | G04/G05 physical rooms/triggers | PENDING | Requires locally restored excluded demo assets |
+
+
+## v110 KG-001 room/trigger status
+
+| Gate/layer | Status | Evidence boundary |
+|---|---|---|
+| G04 room transitions | SOURCE_CONTRACT_PASS / runtime pending | Requires restored local R1/R7/R8 GLBs |
+| G05 trigger bounds/gates | SOURCE_CONTRACT_PASS / runtime pending | Uses real RoomManager path when executed |
+| Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
+| G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
