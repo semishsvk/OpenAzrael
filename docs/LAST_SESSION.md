@@ -1,30 +1,29 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v114-context-v22`
+**Checkpoint prepared:** `v115-context-v23`
 **Date:** 2026-09-18
 
 ## What changed
-- Advanced technical base to **v114** and canonical context to **v114-context-v22**.
-- Preserved the v112 KG-001 candidate workflow unchanged: runtime execution is still pending and `demo-known-good-001` remains forbidden.
-- Preserved v113 field-level opcode-0x28 closure: sound stem at +1, section-0 object index u16 at +13, demo room/context id u16 at +15.
-- Closed the reciprocal section-6 serialization paths:
-  - reader: `0x369DC -> 0x29E98 -> 0x29EEA -> 0x29CF4 -> 0x29D2E -> 0x29638`;
-  - writer: `0x3661A -> 0x29E40 -> 0x29E87 -> 0x29D74 -> 0x29DA5 -> 0x2972C`.
-- Verified that 37-byte and 27-byte section-6 records are read/written wholesale as opaque fixed-size blobs.
-- Audited all 44 opcode-0x28 records: +17..+26 has 41 unique tails; 40/44 are non-zero.
-- All 7 duplicated (sound stem, section-0 object, room) groups vary in their tail. The 12 797tap/tapframe2/R8 records have 12 unique tails.
-- The only direct immediate `mov eax,0x1B` -> allocator `0x20C00` pattern in object1 is the WORLD reader allocation at `0x29703 -> 0x29712`.
-- Added source-safe analyzer/result/validator and `WORLD_SOUND_SERIALIZER_V114.md`; analyzer passes 29/29 checks.
-- Tail bytes remain UNKNOWN/HOLD; no padding/pointer/uninitialized-memory label is asserted.
+- Advanced technical base to **v115** and canonical context to **v115-context-v23**.
+- KG-001 v112 candidate workflow remains unchanged and still requires a Godot-capable checkout; `demo-known-good-001` remains forbidden.
+- Preserved v113 verified opcode-0x28 fields and v114 opaque serializer closure.
+- Closed the bound runtime lifecycle of 27-byte action records after WORLD deserialization.
+- 27-byte insert helper `0x295B0` has one direct caller (`0x296EC`); 37-byte helper `0x295F4` has one direct caller (`0x2968A`), both in the WORLD reader.
+- The only audited direct immediate `malloc(27)` pattern remains `0x29703 -> 0x29712`.
+- Condition scheduling at `0x2990C` creates a 6-byte pending group: u16 count from nested object +6 plus pointer-array address from +8.
+- Dispatcher `0x18698` follows the original pointer array and dispatches the original 27-byte record pointer in place.
+- No copy/normalization stage exists in the audited WORLD-load -> scheduling -> dispatch path; the opcode-0x28 handler does not mutate the record before consuming it.
+- Therefore +17..+26 is serialized upstream and survives unchanged to dispatch; its exact authoring origin remains UNKNOWN/HOLD.
+- Added source-safe v115 analyzer/result/validator/documentation; analyzer passes 20/20 invariants and validator PASS.
 
 ## Current blockers / HOLD
-- KG-001 v109/v110/v111 still need execution in a Godot-capable checkout; G09 and G10 remain pending.
-- Exact origin/meaning of bytes +17..+26 remains UNKNOWN/HOLD.
-- The complete PUZZLES/ROOMS -> WORLD producer/compiler mapping remains HOLD.
-- Indirect WORLD-writer entry reachability remains HOLD.
+- KG-001 v109/v110/v111 runtime execution, G09 fresh checkout and G10 manual sanity remain pending.
+- Exact upstream origin/meaning of WORLD action-record +17..+26 remains UNKNOWN/HOLD.
+- Complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
+- Indirect/computed WORLD-writer reachability remains HOLD.
 - Original-runtime Classic audio pan/volume parity remains UNOBSERVED/HOLD.
 
 ## Exact next action
 In parallel:
 1. on a Godot-capable development checkout run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`;
-2. for forensics, search constructors, mutators and copy paths for the 27-byte action-record family, especially writes into +17..+26. The serializer itself is now closed as opaque.
+2. audit static generic 27-byte copies, writes into +17..+26, variable/generic allocation paths, and stronger indirect/computed references around the WORLD producer/writer side.
