@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v114-context-v22`
-**Technical base:** `openazrael_godot_poc_v114`
+**Current canonical checkpoint:** `v115-context-v23`
+**Technical base:** `openazrael_godot_poc_v115`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -45,6 +45,14 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Sound tails +17..+26 have 41 unique values across 44 records. All 7/7 duplicated (stem, section-0 object, room) groups vary in their tail; the 12 `797tap -> tapframe2 -> R8` records have 12 different tails.
 - The only audited direct `mov eax,0x1B` -> allocator `0x20C00` pattern is the WORLD reader at `0x29703 -> 0x29712`; alternate construction mechanisms remain possible.
 - Exact tail origin/meaning remains UNKNOWN/HOLD. The next target is record construction/mutation/copy logic, not the serializer.
+
+## WORLD action-record runtime lifecycle — v115
+- The 27-byte action-list insert helper `0x295B0` and 37-byte sibling-list insert helper `0x295F4` each have exactly one direct caller in object1, both inside the WORLD nested reader `0x29638`, in the audited direct-call class.
+- The only audited direct immediate `malloc(27)`-style pattern remains the WORLD reader allocation `0x29703 -> 0x29712`.
+- On condition success, `0x2990C` schedules only a **6-byte shallow group**: u16 action count copied from nested-object +6 plus the original action-pointer-array address copied from +8.
+- Dispatcher `0x18698` walks those 6-byte entries, follows the original pointer array and dispatches the original 27-byte record pointer in place.
+- No action-record copy/normalization step is present between WORLD deserialization and opcode execution in this audited runtime path; opcode-0x28 also does not mutate the record before consuming its fields.
+- Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
