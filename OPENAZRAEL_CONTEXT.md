@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v111-context-v19`
-**Technical base:** `openazrael_godot_poc_v111`
+**Current canonical checkpoint:** `v112-context-v20`
+**Technical base:** `openazrael_godot_poc_v112`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -56,6 +56,12 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Direct gameplay flag/puzzle-node injection is forbidden by the source validator.
 - `tools/kg001_status_v111.py` consolidates G00-G10 and only literal PASS for every gate permits the known-good tag.
 - Overall status: PRE_RUNTIME_READY. v109/v110/v111 Godot execution remains pending.
+
+## KG-001 v112 candidate workflow
+- `tools/run_kg001_candidate_v112.py` runs source validators plus v109/v110/v111 and can record G09 clean-checkout evidence.
+- Temporary evidence is kept in ignored `.tmp/kg001/`; promotion into `data/tests/` is explicit.
+- `tools/kg001_status_v112.py` upgrades gates only from recorded PASS evidence; G10 remains manual.
+- G10 checklist/template are ready. Overall status remains AWAITING_RUNTIME_OR_MANUAL and the tag is not allowed.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
