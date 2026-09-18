@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v107-context-v14`
+**Canonical checkpoint:** `v107-context-v15`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base remains **v107**. The context/Git/quality layer is merged forward as **v107-context-v14**.
+The newest technical base remains **v107**. The context/Git/quality layer is merged forward as **v107-context-v15**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -49,7 +49,14 @@ The newest technical base remains **v107**. The context/Git/quality layer is mer
 - **38/40** PUZZLES sound records match WORLD records as a multiset and **13/13** PUZZLES sound stems occur in WORLD.
 - Exact byte correspondence is VERIFIED; interpreting this as an authoring/runtime bridge for sound identity is HIGH. The complete compiler is not recovered.
 
-### KG-001 known-good demo gate — context v14
+### Source-safe runtime dependency repair — context v15
+- Restored exact retained-checkpoint copies of `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json`; both are required directly by the Godot runtime.
+- Restored `GAMEPLAY_EVENT_GRAPH_V87.md` and its audit path.
+- Replaced hard-coded `/mnt/data/.../v12` paths in `tools/extract_xaf_triggers.py` with explicit `--input-dir` / `--out` arguments.
+- Added `tools/validate_demo_runtime_ir.py`, covering the five expected event graphs, three-room metadata set, four demo transitions, trigger/portal references and unit portal normals without requiring excluded binary assets.
+- This closes a source-mirror defect that would otherwise make KG-001 G09 fail before asset restoration. Excluded GLB/audio/texture payloads still must be restored/generated locally for an actual Godot build.
+
+### KG-001 known-good demo gate — context v15
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -68,7 +75,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Implement the executable KG-001 automated harness, starting with deterministic state serialization/hash plus puzzle-state exploration.
+1. Implement the executable KG-001 automated harness, starting with deterministic state serialization/hash plus puzzle-state exploration; source-safe runtime IR dependencies are now restored.
 2. Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`).
 3. Identify which numeric/runtime fields replace the second PUZZLES operand/state token.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.

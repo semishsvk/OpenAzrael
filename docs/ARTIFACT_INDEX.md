@@ -1,13 +1,17 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v107-context-v14` — technical base v107 plus current context/Git/quality layer.
+- `v107-context-v15` — technical base v107 plus current context/Git/quality layer.
 
 ## Quality / known-good baseline
 - `docs/KG001_ACCEPTANCE_PLAN.md`
 - `data/kg001_acceptance_contract.json`
 - `tools/validate_kg001_contract.py`
 - `docs/TEST_MATRIX.md`
+
+## Runtime IR / demo logic
+- `data/gameplay_event_graph_v87.json` / `GAMEPLAY_EVENT_GRAPH_V87.md` / `tools/audit_gameplay_event_graph_v87.py`
+- `data/xaf_trigger_evidence.json` / `tools/extract_xaf_triggers.py` / `tools/validate_demo_runtime_ir.py`
 
 ## Current forensic anchors
 - `WORLD_PUZZLE_SOUND_BRIDGE_V107.md` / `tools/analyze_world_puzzle_sound_bridge_v107.py`

@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v107-context-v14`
+**Canonical checkpoint:** `v107-context-v15`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v107-context-v14 | PASS target | Source/context validation |
+| Project context | v107-context-v15 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -13,7 +13,8 @@
 | Direct PUZZLES open audit | v103-v105 | HIGH for audited mechanisms | Indirect/custom paths not excluded |
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
-| KG-001 acceptance contract | v107-context-v14 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v107-context-v15 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v107-context-v15 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates

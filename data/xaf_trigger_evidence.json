@@ -1,0 +1,974 @@
+{
+  "schema": 1,
+  "source": "original demo XAF -> corrected v4 GLB",
+  "rooms": {
+    "R1": {
+      "triggers": [
+        {
+          "name": "zxcoriR2",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            571.423864,
+            -84.6717,
+            -505.715277
+          ],
+          "bounds": [
+            [
+              553.626648,
+              -84.6717,
+              -523.466064
+            ],
+            [
+              589.22168,
+              -84.6717,
+              -487.964325
+            ]
+          ]
+        },
+        {
+          "name": "zxcoriR5",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -262.968325,
+            -84.071495,
+            379.030704
+          ],
+          "bounds": [
+            [
+              -288.41095,
+              -84.078835,
+              354.501709
+            ],
+            [
+              -237.526367,
+              -84.064156,
+              403.559692
+            ]
+          ]
+        },
+        {
+          "name": "zxentry",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -4.772458,
+            -121.419503,
+            -28.285526
+          ],
+          "bounds": [
+            [
+              -114.098152,
+              -125.635292,
+              -128.903458
+            ],
+            [
+              104.553307,
+              -117.204079,
+              72.332565
+            ]
+          ]
+        },
+        {
+          "name": "zyR05",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -245.711783,
+            -84.056999,
+            355.56527
+          ],
+          "bounds": [
+            [
+              -261.917084,
+              -84.061699,
+              339.946411
+            ],
+            [
+              -229.507004,
+              -84.052299,
+              371.184448
+            ]
+          ]
+        },
+        {
+          "name": "zyR02",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            544.378144,
+            -84.6717,
+            -507.580904
+          ],
+          "bounds": [
+            [
+              533.401428,
+              -84.6717,
+              -518.517151
+            ],
+            [
+              555.355835,
+              -84.6717,
+              -496.644775
+            ]
+          ]
+        },
+        {
+          "name": "textwall",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            159.496452,
+            -1.240843,
+            -100.241494
+          ],
+          "bounds": [
+            [
+              131.004776,
+              -13.95959,
+              -141.151367
+            ],
+            [
+              187.797211,
+              11.68641,
+              -59.551464
+            ]
+          ]
+        },
+        {
+          "name": "Object03",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            81.963601,
+            -140.533852,
+            -138.055022
+          ],
+          "bounds": [
+            [
+              -421.227722,
+              -140.534607,
+              -738.415039
+            ],
+            [
+              585.155151,
+              -140.533096,
+              462.30542
+            ]
+          ]
+        }
+      ],
+      "portal_views": [
+        {
+          "name": "entcori",
+          "material": "ORRY2BAP2",
+          "texture": "orr2bap.gif",
+          "centroid": [
+            630.398631,
+            -54.751055,
+            -502.67774
+          ],
+          "normal": [
+            -0.996917,
+            8e-06,
+            -0.078459
+          ],
+          "bounds": [
+            [
+              628.022766,
+              -85.027321,
+              -532.860779
+            ],
+            [
+              632.77417,
+              -24.474722,
+              -472.49469
+            ]
+          ]
+        },
+        {
+          "name": "spaview",
+          "material": "1WELLVIEW",
+          "texture": "r12r7.gif",
+          "centroid": [
+            -292.363724,
+            -52.316051,
+            429.383057
+          ],
+          "normal": [
+            0.544638,
+            0.0,
+            -0.838671
+          ],
+          "bounds": [
+            [
+              -319.518646,
+              -84.694603,
+              411.748474
+            ],
+            [
+              -265.208801,
+              -19.9375,
+              447.017639
+            ]
+          ]
+        }
+      ]
+    },
+    "R7": {
+      "triggers": [
+        {
+          "name": "zxwell2R6",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            95.47566,
+            -44.622302,
+            -115.339006
+          ],
+          "bounds": [
+            [
+              72.799751,
+              -44.622311,
+              -137.145737
+            ],
+            [
+              118.151588,
+              -44.622295,
+              -93.532318
+            ]
+          ]
+        },
+        {
+          "name": "zxactghost",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -6.077775,
+            -40.79586,
+            26.630997
+          ],
+          "bounds": [
+            [
+              -28.701542,
+              -40.795872,
+              -49.2654
+            ],
+            [
+              16.546032,
+              -40.795849,
+              102.527313
+            ]
+          ]
+        },
+        {
+          "name": "zyR06",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            82.884866,
+            -44.622299,
+            -99.639754
+          ],
+          "bounds": [
+            [
+              70.662491,
+              -44.622303,
+              -111.393951
+            ],
+            [
+              95.107201,
+              -44.622295,
+              -87.885719
+            ]
+          ]
+        },
+        {
+          "name": "well_pzpa2",
+          "material": "CLEAR_OBJECT",
+          "texture": null,
+          "centroid": [
+            -19.649155,
+            1.90919,
+            160.163033
+          ],
+          "bounds": [
+            [
+              -21.97517,
+              -0.0,
+              158.296204
+            ],
+            [
+              -17.323139,
+              3.81838,
+              162.029861
+            ]
+          ]
+        },
+        {
+          "name": "well_pzpa1",
+          "material": "CLEAR_OBJECT",
+          "texture": null,
+          "centroid": [
+            6.123998,
+            -13.6569,
+            180.058983
+          ],
+          "bounds": [
+            [
+              3.797987,
+              -15.56609,
+              178.192154
+            ],
+            [
+              8.450008,
+              -11.74771,
+              181.925812
+            ]
+          ]
+        },
+        {
+          "name": "death",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -102.431376,
+            -46.415428,
+            36.667796
+          ],
+          "bounds": [
+            [
+              -132.819778,
+              -46.52631,
+              2.951179
+            ],
+            [
+              -66.237587,
+              -46.252514,
+              73.342987
+            ]
+          ]
+        },
+        {
+          "name": "zydeath",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            362.129053,
+            -2966.65918,
+            259.966173
+          ],
+          "bounds": [
+            [
+              296.688782,
+              -2966.65918,
+              194.526016
+            ],
+            [
+              427.569336,
+              -2966.65918,
+              325.406342
+            ]
+          ]
+        },
+        {
+          "name": "zxdeath",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -102.089892,
+            -46.415664,
+            36.841865
+          ],
+          "bounds": [
+            [
+              -128.90271,
+              -46.52652,
+              7.092375
+            ],
+            [
+              -70.154778,
+              -46.252716,
+              69.201813
+            ]
+          ]
+        }
+      ],
+      "portal_views": [
+        {
+          "name": "view",
+          "material": "1ENTVIEW",
+          "texture": "r72r1.gif",
+          "centroid": [
+            138.864009,
+            -11.220201,
+            -169.836886
+          ],
+          "normal": [
+            -0.622515,
+            -0.0,
+            0.782608
+          ],
+          "bounds": [
+            [
+              109.762337,
+              -48.405796,
+              -192.985443
+            ],
+            [
+              167.965683,
+              25.965397,
+              -146.688339
+            ]
+          ]
+        }
+      ]
+    },
+    "R8": {
+      "triggers": [
+        {
+          "name": "zxminehd",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            32.1639,
+            -63.216501,
+            481.591934
+          ],
+          "bounds": [
+            [
+              10.840304,
+              -63.216503,
+              470.010193
+            ],
+            [
+              53.487495,
+              -63.216496,
+              493.173676
+            ]
+          ]
+        },
+        {
+          "name": "zxsecret",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            35.030448,
+            -63.216501,
+            -202.547161
+          ],
+          "bounds": [
+            [
+              14.837304,
+              -63.216503,
+              -216.813004
+            ],
+            [
+              55.223595,
+              -63.216496,
+              -188.281326
+            ]
+          ]
+        },
+        {
+          "name": "zxorrery",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -335.839982,
+            -83.311192,
+            395.220963
+          ],
+          "bounds": [
+            [
+              -369.867188,
+              -83.311195,
+              371.312592
+            ],
+            [
+              -301.812805,
+              -83.311188,
+              419.129303
+            ]
+          ]
+        },
+        {
+          "name": "zyR06",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            33.2939,
+            -63.2165,
+            465.686996
+          ],
+          "bounds": [
+            [
+              24.156591,
+              -63.216503,
+              461.558044
+            ],
+            [
+              42.43121,
+              -63.216499,
+              469.815948
+            ]
+          ]
+        },
+        {
+          "name": "zyR09",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -295.151,
+            -83.311192,
+            396.041023
+          ],
+          "bounds": [
+            [
+              -297.889801,
+              -83.311195,
+              387.25708
+            ],
+            [
+              -292.412201,
+              -83.311188,
+              404.824982
+            ]
+          ]
+        },
+        {
+          "name": "zxplate",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -66.2156,
+            -63.443897,
+            -20.04545
+          ],
+          "bounds": [
+            [
+              -76.715401,
+              -63.443897,
+              -29.170208
+            ],
+            [
+              -55.715801,
+              -63.443893,
+              -10.920691
+            ]
+          ]
+        },
+        {
+          "name": "zxsound",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            60.511885,
+            34.362801,
+            125.179207
+          ],
+          "bounds": [
+            [
+              51.841297,
+              34.362801,
+              104.500389
+            ],
+            [
+              69.181999,
+              34.362801,
+              145.856888
+            ]
+          ]
+        },
+        {
+          "name": "zxsound1",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -141.306018,
+            35.296532,
+            125.17883
+          ],
+          "bounds": [
+            [
+              -149.975739,
+              35.296532,
+              104.5
+            ],
+            [
+              -132.6362,
+              35.296532,
+              145.856903
+            ]
+          ]
+        },
+        {
+          "name": "zxsound2",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -44.117233,
+            34.966629,
+            99.014751
+          ],
+          "bounds": [
+            [
+              -52.787006,
+              34.966629,
+              78.335999
+            ],
+            [
+              -35.447605,
+              34.966629,
+              119.692894
+            ]
+          ]
+        },
+        {
+          "name": "mirror2",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -1.491486,
+            148.263343,
+            -78.856127
+          ],
+          "bounds": [
+            [
+              -227.262131,
+              100.396042,
+              -139.077454
+            ],
+            [
+              90.528908,
+              196.131073,
+              122.8489
+            ]
+          ]
+        },
+        {
+          "name": "mirror03",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -216.212433,
+            148.26302,
+            -2.545853
+          ],
+          "bounds": [
+            [
+              -216.212967,
+              100.395668,
+              -127.940826
+            ],
+            [
+              -216.211899,
+              196.130371,
+              122.849121
+            ]
+          ]
+        },
+        {
+          "name": "zxwater",
+          "material": "WATER",
+          "texture": "bapwater.gif",
+          "centroid": [
+            62.724444,
+            -57.582538,
+            148.265042
+          ],
+          "bounds": [
+            [
+              44.043598,
+              -57.582817,
+              80.944695
+            ],
+            [
+              81.405296,
+              -57.582306,
+              215.584991
+            ]
+          ]
+        },
+        {
+          "name": "zxshield",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -66.215636,
+            -163.259964,
+            -20.045483
+          ],
+          "bounds": [
+            [
+              -106.524994,
+              -163.259964,
+              -55.075989
+            ],
+            [
+              -25.906281,
+              -163.259964,
+              14.985022
+            ]
+          ]
+        },
+        {
+          "name": "Object01",
+          "material": "TRANSPARANT",
+          "texture": null,
+          "centroid": [
+            -256.55573,
+            -87.124023,
+            392.99153
+          ],
+          "bounds": [
+            [
+              -296.865051,
+              -87.124023,
+              357.961029
+            ],
+            [
+              -216.246368,
+              -87.124023,
+              428.022034
+            ]
+          ]
+        }
+      ],
+      "portal_views": [
+        {
+          "name": "Object14",
+          "material": "1ENTRYVIEW",
+          "texture": "r82r1.gif",
+          "centroid": [
+            -387.441635,
+            -47.858878,
+            394.641861
+          ],
+          "normal": [
+            0.99999,
+            0.0,
+            -0.004364
+          ],
+          "bounds": [
+            [
+              -387.61499,
+              -87.582855,
+              354.918335
+            ],
+            [
+              -387.26828,
+              -8.1349,
+              434.365387
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "demo_transitions": [
+    {
+      "source_room": "R1",
+      "trigger": "zxcoriR5",
+      "destination_room": "R7",
+      "source_view": "spaview",
+      "destination_view": "view",
+      "trigger_to_source_view_distance": 66.392,
+      "evidence": "invisible XAF trigger lies beside the matching portal-view quad; view texture encodes reciprocal room relation",
+      "confidence": "high"
+    },
+    {
+      "source_room": "R1",
+      "trigger": "zxcoriR2",
+      "destination_room": "R8",
+      "source_view": "entcori",
+      "destination_view": "Object14",
+      "trigger_to_source_view_distance": 66.2,
+      "evidence": "invisible XAF trigger lies beside the matching portal-view quad; view texture encodes reciprocal room relation",
+      "confidence": "high"
+    },
+    {
+      "source_room": "R7",
+      "trigger": "zxwell2R6",
+      "destination_room": "R1",
+      "source_view": "view",
+      "destination_view": "spaview",
+      "trigger_to_source_view_distance": 77.255,
+      "evidence": "invisible XAF trigger lies beside the matching portal-view quad; view texture encodes reciprocal room relation",
+      "confidence": "high"
+    },
+    {
+      "source_room": "R8",
+      "trigger": "zxorrery",
+      "destination_room": "R1",
+      "source_view": "Object14",
+      "destination_view": "entcori",
+      "trigger_to_source_view_distance": 62.609,
+      "evidence": "invisible XAF trigger lies beside the matching portal-view quad; view texture encodes reciprocal room relation",
+      "confidence": "high"
+    }
+  ],
+  "r7_deep_shaft_evidence": [
+    {
+      "name": "Object0101",
+      "centroid": [
+        359.058948,
+        -3763.809332,
+        2.420609
+      ],
+      "bounds": [
+        [
+          281.29306,
+          -4529.277832,
+          -75.345085
+        ],
+        [
+          436.824829,
+          -2998.340088,
+          80.18631
+        ]
+      ]
+    },
+    {
+      "name": "Object02",
+      "centroid": [
+        409.114008,
+        -4559.004883,
+        -48.404444
+      ],
+      "bounds": [
+        [
+          370.789398,
+          -4559.004883,
+          -86.729073
+        ],
+        [
+          447.43866,
+          -4559.004883,
+          -10.079751
+        ]
+      ]
+    },
+    {
+      "name": "ZQbubb1",
+      "centroid": [
+        357.608751,
+        -4234.544922,
+        4.991058
+      ],
+      "bounds": [
+        [
+          274.328613,
+          -4234.544922,
+          -78.289185
+        ],
+        [
+          440.889099,
+          -4234.544922,
+          88.27124
+        ]
+      ]
+    },
+    {
+      "name": "ZQbubb01",
+      "centroid": [
+        359.058693,
+        -3863.905029,
+        2.420631
+      ],
+      "bounds": [
+        [
+          274.433685,
+          -3863.905029,
+          -82.203857
+        ],
+        [
+          443.683655,
+          -3863.905029,
+          87.045135
+        ]
+      ]
+    },
+    {
+      "name": "ZQbubb02",
+      "centroid": [
+        362.12886,
+        -3539.274902,
+        2.581604
+      ],
+      "bounds": [
+        [
+          277.689789,
+          -3539.274902,
+          -81.857506
+        ],
+        [
+          446.567932,
+          -3539.274902,
+          87.020714
+        ]
+      ]
+    },
+    {
+      "name": "ZQbubb03",
+      "centroid": [
+        361.262833,
+        -3256.094971,
+        8.012939
+      ],
+      "bounds": [
+        [
+          252.996979,
+          -3256.094971,
+          -100.252815
+        ],
+        [
+          469.528687,
+          -3256.094971,
+          116.27874
+        ]
+      ]
+    },
+    {
+      "name": "Object03",
+      "centroid": [
+        330.182014,
+        -4569.404948,
+        29.373233
+      ],
+      "bounds": [
+        [
+          273.356689,
+          -4569.405762,
+          -27.452017
+        ],
+        [
+          387.007355,
+          -4569.404785,
+          86.198479
+        ]
+      ]
+    },
+    {
+      "name": "zydeath",
+      "centroid": [
+        362.129053,
+        -2966.65918,
+        259.966173
+      ],
+      "bounds": [
+        [
+          296.688782,
+          -2966.65918,
+          194.526016
+        ],
+        [
+          427.569336,
+          -2966.65918,
+          325.406342
+        ]
+      ]
+    }
+  ]
+}

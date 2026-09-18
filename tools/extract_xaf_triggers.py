@@ -1,71 +1,103 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import json, math
+import argparse
+import json
+
 import numpy as np
 import trimesh
 
-ROOT=Path('/mnt/data/azdemo_work')
-ROOMS=['R1','R7','R8']
+ROOMS = ("R1", "R7", "R8")
+PORTAL_TEXTURES = {"R12R7", "R72R1", "R82R1", "ORR2BAP"}
+TRANSITIONS = (
+    ("R1", "zxcoriR5", "R7", "spaview", "view"),
+    ("R1", "zxcoriR2", "R8", "entcori", "Object14"),
+    ("R7", "zxwell2R6", "R1", "view", "spaview"),
+    ("R8", "zxorrery", "R1", "Object14", "entcori"),
+)
 
-def v3(v): return [round(float(x),6) for x in v]
+def v3(value):
+    return [round(float(x), 6) for x in value]
 
-def room_data(r):
-    scene=trimesh.load(ROOT/f'{r}.textured.v4.glb',force='scene')
-    manifest=json.loads((ROOT/f'{r}.textured.v4.manifest.json').read_text())
-    omap={o['object']:o for o in manifest['objects']}
-    triggers=[]; views=[]
-    for name,g in scene.geometry.items():
-        md=omap.get(name,{})
-        mat=(md.get('material') or '').upper()
-        tex=(md.get('texture') or '')
-        low=name.lower()
-        if mat in {'TRANSPARANT','CLEAR_OBJECT'} or low.startswith(('zx','zy')):
+def load_room(input_dir: Path, room_id: str):
+    glb_path = input_dir / f"{room_id}.textured.v4.glb"
+    manifest_path = input_dir / f"{room_id}.textured.v4.manifest.json"
+    if not glb_path.is_file():
+        raise FileNotFoundError(glb_path)
+    if not manifest_path.is_file():
+        raise FileNotFoundError(manifest_path)
+    scene = trimesh.load(glb_path, force="scene")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    object_map = {obj["object"]: obj for obj in manifest["objects"]}
+    triggers, views = [], []
+    for name, geometry in scene.geometry.items():
+        metadata = object_map.get(name, {})
+        material = (metadata.get("material") or "").upper()
+        texture = metadata.get("texture") or ""
+        lower_name = name.lower()
+        if material in {"TRANSPARANT", "CLEAR_OBJECT"} or lower_name.startswith(("zx", "zy")):
             triggers.append({
-                'name':name,'material':mat,'texture':tex or None,
-                'centroid':v3(g.centroid),'bounds':[v3(g.bounds[0]),v3(g.bounds[1])]
+                "name": name, "material": material, "texture": texture or None,
+                "centroid": v3(geometry.centroid),
+                "bounds": [v3(geometry.bounds[0]), v3(geometry.bounds[1])],
             })
-        if Path(tex).stem.upper() in {'R12R7','R72R1','R82R1','ORR2BAP'}:
-            n=np.asarray(g.face_normals,float).mean(axis=0)
-            ln=np.linalg.norm(n)
-            if ln: n/=ln
+        if Path(texture).stem.upper() in PORTAL_TEXTURES:
+            normal = np.asarray(geometry.face_normals, float).mean(axis=0)
+            length = np.linalg.norm(normal)
+            if length:
+                normal /= length
             views.append({
-                'name':name,'material':md.get('material'),'texture':tex,
-                'centroid':v3(g.centroid),'normal':v3(n),
-                'bounds':[v3(g.bounds[0]),v3(g.bounds[1])]
+                "name": name, "material": metadata.get("material"), "texture": texture,
+                "centroid": v3(geometry.centroid), "normal": v3(normal),
+                "bounds": [v3(geometry.bounds[0]), v3(geometry.bounds[1])],
             })
-    return {'triggers':triggers,'portal_views':views}
+    return {"triggers": triggers, "portal_views": views}, scene
 
-out={'schema':1,'source':'original demo XAF -> corrected v4 GLB','rooms':{r:room_data(r) for r in ROOMS}}
+def by_name(items, name):
+    try:
+        return next(item for item in items if item["name"] == name)
+    except StopIteration as exc:
+        raise ValueError(f"required evidence object not found: {name}") from exc
 
-# Demo remapping supported by spatial pairing of original invisible floor trigger and portal-view quad.
-# Distances are measured in original XAF world coordinates.
-map_defs=[
-    ('R1','zxcoriR5','R7','spaview','view'),
-    ('R1','zxcoriR2','R8','entcori','Object14'),
-    ('R7','zxwell2R6','R1','view','spaview'),
-    ('R8','zxorrery','R1','Object14','entcori'),
-]
-out['demo_transitions']=[]
-for sr,tr,dr,sv,dv in map_defs:
-    st=next(x for x in out['rooms'][sr]['triggers'] if x['name']==tr)
-    sview=next(x for x in out['rooms'][sr]['portal_views'] if x['name']==sv)
-    dview=next(x for x in out['rooms'][dr]['portal_views'] if x['name']==dv)
-    dist=float(np.linalg.norm(np.array(st['centroid'])-np.array(sview['centroid'])))
-    out['demo_transitions'].append({
-        'source_room':sr,'trigger':tr,'destination_room':dr,
-        'source_view':sv,'destination_view':dv,
-        'trigger_to_source_view_distance':round(dist,3),
-        'evidence':'invisible XAF trigger lies beside the matching portal-view quad; view texture encodes reciprocal room relation',
-        'confidence':'high'
-    })
+def build(input_dir: Path):
+    rooms, scenes = {}, {}
+    for room_id in ROOMS:
+        rooms[room_id], scenes[room_id] = load_room(input_dir, room_id)
+    out = {"schema": 1, "source": "original demo XAF -> corrected v4 GLB", "rooms": rooms, "demo_transitions": []}
+    for source_room, trigger_name, destination_room, source_view, destination_view in TRANSITIONS:
+        trigger = by_name(rooms[source_room]["triggers"], trigger_name)
+        source_portal = by_name(rooms[source_room]["portal_views"], source_view)
+        by_name(rooms[destination_room]["portal_views"], destination_view)
+        distance = float(np.linalg.norm(np.array(trigger["centroid"]) - np.array(source_portal["centroid"])))
+        out["demo_transitions"].append({
+            "source_room": source_room, "trigger": trigger_name, "destination_room": destination_room,
+            "source_view": source_view, "destination_view": destination_view,
+            "trigger_to_source_view_distance": round(distance, 3),
+            "evidence": "invisible XAF trigger lies beside the matching portal-view quad; view texture encodes reciprocal room relation",
+            "confidence": "high",
+        })
+    deep = []
+    for name, geometry in scenes["R7"].geometry.items():
+        if geometry.bounds[0, 1] < -1000:
+            deep.append({"name": name, "centroid": v3(geometry.centroid), "bounds": [v3(geometry.bounds[0]), v3(geometry.bounds[1])]})
+    out["r7_deep_shaft_evidence"] = deep
+    return out
 
-# R7 deep geometry forensic check: preserve as evidence that the extreme Y bound is deliberate well-shaft content.
-s=trimesh.load(ROOT/'R7.textured.v4.glb',force='scene')
-deep=[]
-for name,g in s.geometry.items():
-    if g.bounds[0,1] < -1000:
-        deep.append({'name':name,'centroid':v3(g.centroid),'bounds':[v3(g.bounds[0]),v3(g.bounds[1])]})
-out['r7_deep_shaft_evidence']=deep
+def main():
+    parser = argparse.ArgumentParser(description="Extract source-safe R1/R7/R8 trigger and portal runtime IR from corrected demo GLBs.")
+    parser.add_argument("--input-dir", required=True, type=Path, help="Directory containing R1/R7/R8.textured.v4.glb and matching manifest JSON files.")
+    parser.add_argument("--out", required=True, type=Path)
+    args = parser.parse_args()
+    output = build(args.input_dir)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(output, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({
+        "status": "PASS",
+        "trigger_counts": {room: len(output["rooms"][room]["triggers"]) for room in ROOMS},
+        "portal_counts": {room: len(output["rooms"][room]["portal_views"]) for room in ROOMS},
+        "transitions": len(output["demo_transitions"]),
+        "r7_deep_objects": len(output["r7_deep_shaft_evidence"]),
+        "out": str(args.out),
+    }, indent=2, sort_keys=True))
 
-Path('/mnt/data/openazrael_godot_poc_v12/data/xaf_trigger_evidence.json').write_text(json.dumps(out,indent=2))
-print(json.dumps({'trigger_counts':{r:len(out['rooms'][r]['triggers']) for r in ROOMS},'portal_counts':{r:len(out['rooms'][r]['portal_views']) for r in ROOMS},'transitions':len(out['demo_transitions']),'r7_deep_objects':len(deep)},indent=2))
+if __name__ == "__main__":
+    main()

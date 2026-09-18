@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v107-context-v14"
+EXPECTED_CHECKPOINT="v107-context-v15"
 errors=[]
 
 def req(p):
@@ -21,6 +21,10 @@ for p in [
     "docs/KG001_ACCEPTANCE_PLAN.md",
     "data/project_context.json",
     "data/kg001_acceptance_contract.json",
+    "data/gameplay_event_graph_v87.json",
+    "data/xaf_trigger_evidence.json",
+    "GAMEPLAY_EVENT_GRAPH_V87.md",
+    "tools/validate_demo_runtime_ir.py",
     "data/evidence/evidence_registry.json",
     "data/backup/source_fingerprints.json",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",

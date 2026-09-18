@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v107-context-v14",
+  "checkpoint": "v107-context-v15",
   "technical_base": "openazrael_godot_poc_v107",
   "date": "2026-09-18",
   "workflow": [
@@ -26,7 +26,8 @@
     "kg001_acceptance_plan": "docs/KG001_ACCEPTANCE_PLAN.md",
     "audio_map": "docs/AUDIO_MAP.md",
     "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
-    "git_baseline": "docs/GIT_BASELINE.md"
+    "git_baseline": "docs/GIT_BASELINE.md",
+    "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md"
   },
   "current_forensics": {
     "world_runtime_loader": "VERIFIED",
@@ -57,7 +58,11 @@
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
     "kg001_build_status": "NOT_YET_RUN",
-    "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS"
+    "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
+    "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
+    "runtime_ir_event_graphs": 5,
+    "runtime_ir_rooms": 3,
+    "runtime_ir_transitions": 4
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -67,5 +72,10 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Implement KG-001 deterministic state/hash and exhaustive puzzle-state harness; continue WORLD section-6 sound-record field reversal in parallel."
+  "next_target": "Implement KG-001 canonical deterministic state/hash and exhaustive puzzle-state harness; continue WORLD section-6 sound-record field reversal in parallel.",
+  "runtime_ir": {
+    "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
+    "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
+    "validator": "tools/validate_demo_runtime_ir.py"
+  }
 }
