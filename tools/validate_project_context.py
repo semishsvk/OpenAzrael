@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v110-context-v18"
+EXPECTED_CHECKPOINT="v111-context-v19"
 errors=[]
 
 def req(p):
@@ -36,6 +36,13 @@ for p in [
     "tools/validate_kg001_room_trigger_v110.py",
     "data/tests/kg001_room_trigger_contract_v110.json",
     "docs/KG001_ROOM_TRIGGER_V110.md",
+    "scripts/kg001_full_demo_runner_v111.gd",
+    "tools/validate_kg001_full_demo_v111.py",
+    "data/tests/kg001_full_demo_contract_v111.json",
+    "tools/kg001_status_v111.py",
+    "data/tests/kg001_status_v111.json",
+    "docs/KG001_FULL_DEMO_V111.md",
+    "docs/KG001_STATUS_V111.md",
     "data/evidence/evidence_registry.json",
     "data/backup/source_fingerprints.json",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",
@@ -65,6 +72,12 @@ try:
         errors.append("KG-001 v110 room/trigger source-contract drift")
     if c.get("quality",{}).get("kg001_room_trigger_runtime")!="NOT_EXECUTED":
         errors.append("KG-001 v110 runtime status drift")
+    if c.get("quality",{}).get("kg001_full_demo_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 v111 full-demo source-contract drift")
+    if c.get("quality",{}).get("kg001_full_demo_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v111 runtime status drift")
+    if c.get("quality",{}).get("kg001_overall_status")!="PRE_RUNTIME_READY":
+        errors.append("KG-001 v111 overall status drift")
 except Exception as e:
     errors.append(f"context json: {e}")
 
