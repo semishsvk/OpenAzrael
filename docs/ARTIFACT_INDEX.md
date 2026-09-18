@@ -1,7 +1,17 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v111-context-v19` — technical base v107 plus current context/Git/quality layer.
+- `v112-context-v20` — technical base v107 plus current context/Git/quality layer.
+
+## KG-001 v112 candidate workflow
+- `docs/KG001_CANDIDATE_RUNNER_V112.md`
+- `tools/run_kg001_candidate_v112.py`
+- `tools/validate_kg001_candidate_v112.py`
+- `data/tests/kg001_candidate_runner_contract_v112.json`
+- `tools/kg001_status_v112.py`
+- `data/tests/kg001_status_v112.json`
+- `docs/KG001_MANUAL_SANITY_CHECKLIST.md`
+- `data/tests/kg001_manual_sanity_template.json`
 
 ## KG-001 v111 full demo/status
 - `docs/KG001_FULL_DEMO_V111.md`
