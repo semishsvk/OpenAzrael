@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v112-context-v20`
-**Technical base:** `openazrael_godot_poc_v112`
+**Current canonical checkpoint:** `v113-context-v21`
+**Technical base:** `openazrael_godot_poc_v113`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -29,6 +29,14 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - v107 HIGH/VERIFIED bridge: 38/40 recovered PUZZLES opcode-`0x28` sound actions have a multiset counterpart in WORLD section-6 27-byte records and all 13/13 PUZZLES sound stems occur there. This is a structural authoring/runtime bridge for sound identity, not recovery of the complete compiler.
 - The full PUZZLES/ROOMS -> WORLD producer/compiler edge remains HOLD.
 - Classic audio reconstruction has an activation-ready Godot adapter, but authoritative original-runtime parity remains HOLD until a genuine bounded R.EXE/Miles capture passes the v80/v84 oracle.
+
+## WORLD sound-record field closure — v113
+- v113 upgrades the v107 opcode-0x28 bridge from multiset identity to **38/40 order-preserving PUZZLES -> WORLD matches**.
+- WORLD section-6 27-byte sound records now have verified runtime-consumed fields: opcode at +0, sound stem at +1, WORLD section-0 object index (u16 LE) at +13, and demo room/context id (u16 LE) at +15.
+- Demo room mapping is 0=R1, 1=R7, 2=R8, supported by 35 direct XAF-manifest matches plus 3 independently supported R7 aliases and zero conflicts.
+- Opcode-0x28 runtime path resolves the section-0 object through global 0x43890, uses the object name at runtime +0x34, formats record+1 as %s.WAV, and calls the dynamic 3D sample-start path at 0xD155.
+- Bytes +17..+26 remain UNKNOWN/HOLD because the opcode-0x28 handler does not consume them.
+- The complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
