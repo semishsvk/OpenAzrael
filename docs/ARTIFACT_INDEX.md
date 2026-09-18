@@ -1,7 +1,13 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v114-context-v22` — technical base v114 plus current context/Git/quality layer.
+- `v115-context-v23` — technical base v115 plus current context/Git/quality layer.
+
+## WORLD action-record lifecycle v115
+- `WORLD_ACTION_RECORD_LIFECYCLE_V115.md`
+- `tools/analyze_world_action_lifecycle_v115.py`
+- `tools/validate_world_action_lifecycle_v115.py`
+- `data/world_action_lifecycle_v115.json`
 
 ## WORLD section-6 serializer v114
 - `WORLD_SOUND_SERIALIZER_V114.md`
@@ -62,6 +68,7 @@
 - `data/xaf_trigger_evidence.json` / `tools/extract_xaf_triggers.py` / `tools/validate_demo_runtime_ir.py`
 
 ## Current forensic anchors
+- `WORLD_ACTION_RECORD_LIFECYCLE_V115.md` / `tools/analyze_world_action_lifecycle_v115.py`
 - `WORLD_SOUND_SERIALIZER_V114.md` / `tools/analyze_world_sound_serializer_v114.py`
 - `WORLD_SOUND_RECORD_FIELDS_V113.md` / `tools/analyze_world_sound_record_fields_v113.py`
 - `WORLD_PUZZLE_SOUND_BRIDGE_V107.md` / `tools/analyze_world_puzzle_sound_bridge_v107.py`
