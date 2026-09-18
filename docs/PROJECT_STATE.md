@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v109-context-v17`
+**Canonical checkpoint:** `v110-context-v18`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v109**. The context/Git/quality layer is merged forward as **v109-context-v17**.
+The newest technical base is now **v110**. The context/Git/quality layer is merged forward as **v110-context-v18**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -70,7 +70,13 @@ The newest technical base is now **v109**. The context/Git/quality layer is merg
 - Source contract is PASS; actual Godot runtime execution is NOT EXECUTED in this environment.
 - The runner is designed to verify the v108 reference hashes and logical audio sequence before later physical room/trigger gates.
 
-### KG-001 known-good demo gate — context v17
+### KG-001 room/trigger runner — v110
+- `scripts/kg001_room_trigger_runner_v110.gd` prepares asset-backed G04/G05 execution using the real `RoomManager`.
+- It verifies all four tracked room edges, negative locked R1->R7/R8 gates, trigger centroid/outside bounds, and inventory persistence across room replacement.
+- Missing R1/R7/R8 local GLBs produce `BLOCKED_MISSING_ASSETS` (exit 2), not a misleading test failure.
+- Source contract is PASS; asset-backed Godot execution remains NOT EXECUTED in this environment.
+
+### KG-001 known-good demo gate — context v18
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -89,7 +95,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Execute the v109 headless runner in a Godot-capable checkout, then implement G04/G05 physical room-transition and trigger-volume tests against locally restored demo assets.
+1. Execute v109 and v110 in a Godot-capable checkout; if both pass, consolidate G02-G07 and implement the G08 synthetic full-demo runner.
 2. Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`).
 3. Identify which numeric/runtime fields replace the second PUZZLES operand/state token.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
