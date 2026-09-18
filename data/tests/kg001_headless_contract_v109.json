@@ -16,7 +16,8 @@
     "runner_complete_hash": true,
     "runner_audio_oracle": true,
     "runner_event_graphs": true,
-    "graph_ids_exist": true
+    "graph_ids_exist": true,
+    "runner_check_count": true
   },
   "failed": []
 }
