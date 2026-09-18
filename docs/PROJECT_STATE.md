@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v111-context-v19`
+**Canonical checkpoint:** `v112-context-v20`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v111**. The context/Git/quality layer is merged forward as **v111-context-v19**.
+The newest technical base is now **v112**. The context/Git/quality layer is merged forward as **v112-context-v20**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -82,7 +82,14 @@ The newest technical base is now **v111**. The context/Git/quality layer is merg
 - Final hash must equal the v108 exhaustive-model success hash and the logical audio stream must equal the four Event IR sound actions.
 - `tools/kg001_status_v111.py` consolidates G00-G10. Current overall state is **PRE_RUNTIME_READY** and the known-good tag remains forbidden until every gate is literal PASS.
 
-### KG-001 known-good demo gate — context v19
+### KG-001 candidate orchestration — v112
+- `tools/run_kg001_candidate_v112.py` provides a one-command candidate workflow.
+- It runs source validators, discovers Godot, imports restored local room assets, executes v109/v110/v111, checks Git cleanliness and forbidden tracked paths, and records G09 evidence.
+- Temporary evidence is written only to ignored `.tmp/kg001/`; promotion into `data/tests/` is explicit and happens after the clean-checkout observation.
+- `tools/kg001_status_v112.py` promotes G00-G09 only from recorded PASS evidence. G10 remains manual with a dedicated checklist/template.
+- Overall state remains **AWAITING_RUNTIME_OR_MANUAL**; the known-good tag remains forbidden.
+
+### KG-001 known-good demo gate — context v20
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -101,7 +108,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Execute v109/v110/v111 in a Godot-capable checkout, capture runtime evidence, then run G00/G01 and G09 before the user's G10 manual sanity.
+1. Run the v112 candidate runner with --fresh-checkout --promote-results, then evaluate v112 gate status and perform G10 only if G00-G09 are PASS.
 2. Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`).
 3. Identify which numeric/runtime fields replace the second PUZZLES operand/state token.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
