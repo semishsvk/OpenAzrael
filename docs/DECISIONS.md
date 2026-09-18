@@ -104,3 +104,9 @@ Original commercial payloads, decoded Classic textures, exported room meshes, or
 **Status:** Accepted — 2026-09-18
 
 After v103-v105 exclude the audited direct-open paths and v106 verifies a structured WORLD.DAT runtime loader, the primary next experiment is WORLD writer/caller provenance. Do not infer that PUZZLES is unused or compiled into WORLD until a producer edge is independently demonstrated.
+
+
+## ADR-023 — Candidate diagnostics must be observational
+**Status:** ACCEPTED — 2026-09-18
+
+The KG-001 Candidate 1 diagnostic layer may observe and record runtime state, visualize existing authored trigger bounds, and fail fast on missing required resources, but it must not directly set gameplay flags, puzzle nodes or inventory. Existing F8 audio debug and F9 parity capture are preserved; v116 reserves F6 for trigger visualization, F7 for the Candidate HUD and F10 for canonical state dumps. Diagnostic source-contract PASS does not promote any KG-001 runtime gate or forensic HOLD.
