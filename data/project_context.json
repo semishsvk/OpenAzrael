@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v107-context-v15",
-  "technical_base": "openazrael_godot_poc_v107",
+  "checkpoint": "v108-context-v16",
+  "technical_base": "openazrael_godot_poc_v108",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -62,7 +62,13 @@
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
     "runtime_ir_rooms": 3,
-    "runtime_ir_transitions": 4
+    "runtime_ir_transitions": 4,
+    "kg001_state_model": "SOURCE_MODEL_PASS",
+    "kg001_reachable_states": 63,
+    "kg001_changed_edges": 123,
+    "kg001_softlock_states": 0,
+    "kg001_shortest_success_actions": 15,
+    "kg001_runtime_gate_status": "PENDING"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -72,10 +78,15 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Implement KG-001 canonical deterministic state/hash and exhaustive puzzle-state harness; continue WORLD section-6 sound-record field reversal in parallel.",
+  "next_target": "Add KG-001 runtime transition/trigger assertions, mock audio trace, save/load round-trip and Godot headless synthetic full-demo runner.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
     "validator": "tools/validate_demo_runtime_ir.py"
+  },
+  "kg001_v108": {
+    "state_space_tool": "tools/kg001_state_space_v108.py",
+    "result": "data/tests/kg001_state_space_v108.json",
+    "note": "docs/KG001_STATE_SPACE_V108.md"
   }
 }
