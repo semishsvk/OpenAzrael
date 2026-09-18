@@ -1,0 +1,72 @@
+name: OpenAzrael v107 one-shot sync
+on:
+  push:
+    branches:
+      - sync-v107-stage
+
+permissions:
+  contents: write
+
+jobs:
+  expand-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify, expand, sanitize, and publish v107
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cat .sync/base_part*.b64 | tr -d '\r\n' | base64 -d > /tmp/openazrael-base.tar.xz
+          echo "c2eb5e0bc8cfdbd338b27b5b1d6c4e56c7672e71527bce523f02b963cf938e81  /tmp/openazrael-base.tar.xz" | sha256sum -c -
+
+          cat .sync/delta_part*.b64 | tr -d '\r\n' | base64 -d > /tmp/openazrael-delta.tar.xz
+          echo "d9a31e852fee1465f2cdd331fba660b5e641aa3cac4b8f6cd6142964b6972cc8  /tmp/openazrael-delta.tar.xz" | sha256sum -c -
+
+          tar -xJf /tmp/openazrael-base.tar.xz -C .
+          tar -xJf /tmp/openazrael-delta.tar.xz -C .
+
+          rm -rf .sync
+          rm -f .openazrael-bootstrap
+          rm -f .github/workflows/openazrael-v107-sync.yml
+
+          test -f OPENAZRAEL_CONTEXT.md
+          test -f project.godot
+          test -f WORLD_RUNTIME_SERIALIZATION_V106.md
+          test -f tools/analyze_world_runtime_serialization_v106.py
+          test -f WORLD_PUZZLE_SOUND_BRIDGE_V107.md
+          test -f tools/analyze_world_puzzle_sound_bridge_v107.py
+          grep -q 'v107-context-v13' OPENAZRAEL_CONTEXT.md
+
+          test ! -e .sync
+          test ! -e .openazrael-bootstrap
+          test ! -e data/world_puzzle_sound_bridge_v107.json
+          test ! -e original
+          test ! -e raw
+          test ! -e source_original
+          test ! -e assets/audio
+          test ! -e assets/rooms
+          test ! -e assets/textures/classic
+          test ! -e data/audio/original_audio
+
+          if find . -type f \( -iname '*.zip' -o -iname '*.dmp' -o -iname '*.core' -o -iname '*.iso' -o -iname '*.cue' -o -iname '*.mdf' -o -iname '*.mds' -o -iname 'R.EXE' \) -print -quit | grep -q .; then
+            echo "Forbidden binary/archive payload found"
+            exit 1
+          fi
+          if find data -maxdepth 1 -type f -iname '*.DAT' -print -quit | grep -q .; then
+            echo "Forbidden DAT payload found"
+            exit 1
+          fi
+          if find . -type f -size +250k -print -quit | grep -q .; then
+            echo "Unexpected large file found"
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && { echo "No expanded changes to commit"; exit 1; }
+          git commit -m "sync: OpenAzrael v107-context-v13"
+          git push origin HEAD:main
