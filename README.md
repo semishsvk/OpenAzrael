@@ -388,3 +388,8 @@ v106 pivots from the now-exhausted direct PUZZLES file-open routes to the runtim
 
 ## v107 — WORLD / PUZZLES sound-action bridge
 v107 adversarially follows the v106 writer-lineage idea and finds that the paired `WORLD.DAT` writer at object1 `0x364A8` has no direct rel32 CALL, direct near-JMP, or canonical LE-fixup reference in the bound demo executable. Its static producer lineage therefore remains HOLD. The live reader remains anchored through `0x1AAED` inside the central initialization path, immediately after the `SGDNAME.DAT` load. The experiment then pivots to WORLD section 6: 40 structurally recovered PUZZLES opcode-`0x28` sound actions are compared against fixed 27-byte WORLD records. **38/40 records** match as a multiset and **all 13/13 PUZZLES sound stems** occur in WORLD records beginning with the same `0x28 + stem + NUL` bytes; all 17 unique WORLD tokens in this record class resolve to shipped WAV assets. Established non-sound opcode families show zero exact opcode+token preservation. This is the first HIGH structural authoring/runtime bridge for a PUZZLES action family while the full compiler remains HOLD. See `WORLD_PUZZLE_SOUND_BRIDGE_V107.md` and `data/world_puzzle_sound_bridge_v107.json`.
+
+
+## v108 — KG-001 deterministic state-space harness
+
+v108 adds canonical DemoState SHA-256 identity and a source-safe exhaustive puzzle-state explorer. The current R1/R7/R8 logical model contains 63 reachable states and 123 changed transitions; every reachable state can still reach demo completion, with zero modeled softlocks and zero non-success dead ends. This is a source-model milestone only; final KG-001 still requires Godot runtime/headless, save/load, fresh-checkout and manual gates. See `docs/KG001_STATE_SPACE_V108.md`.
