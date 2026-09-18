@@ -1,21 +1,24 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v107-context-v13`  
+**Checkpoint prepared:** `v107-context-v14`
 **Date:** 2026-09-18
 
 ## What changed
-- Advanced canonical technical base from v106 to v107.
-- Preserved the v106 WORLD.DAT runtime-serialization closure.
-- Tested the proposed WORLD-writer lineage route and found no direct rel32 CALL, direct near-JMP, or canonical LE-fixup reference to the paired writer entry in the audited classes; indirect reachability remains HOLD.
-- Established the first HIGH structural PUZZLES -> WORLD bridge for sound identity: 38/40 opcode-`0x28` PUZZLES records match WORLD section-6 records as a multiset and all 13/13 PUZZLES sound stems are represented.
-- Added `WORLD_PUZZLE_SOUND_BRIDGE_V107.md` and `tools/analyze_world_puzzle_sound_bridge_v107.py`.
-- Kept `data/world_puzzle_sound_bridge_v107.json` outside Git because it is a reproducible forensic payload containing commercial-derived raw record bytes/hex.
+- Preserved technical base v107 and advanced the canonical context/quality layer to v107-context-v14.
+- Confirmed GitHub `main` was at `bddc573b181cdfbd282486f4ac7b7534f70c868a` before this change.
+- Found and repaired context-validator drift: `tools/validate_project_context.py` still expected v106-context-v12 although the repository was already v107-context-v13.
+- Canonicalized the user-approved KG-001 first known-good demo test plan.
+- Added machine-readable `data/kg001_acceptance_contract.json` and `tools/validate_kg001_contract.py`.
+- Defined G00-G10 covering context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless full-demo/fresh-checkout/manual sanity.
+- Locked KG-001 release conditions to zero known critical bugs, zero reproducible softlocks and zero required-gate failures.
+- Explicitly separated KG-001 build quality from unresolved forensic HOLD claims.
 
 ## Current blockers / HOLD
+- The automated KG-001 runtime harness is not yet implemented/executed.
 - Complete PUZZLES/ROOMS -> WORLD authoring/compiler mapping is not proven.
 - Indirect/computed WORLD-writer reachability is unresolved.
 - Original-runtime Classic audio parity is still unobserved.
-- Godot runtime launch is not available in this analysis environment; validation here is static/data/forensic.
+- Godot runtime launch is not available in this analysis environment; runtime validation remains to be executed in a Godot-capable environment.
 
 ## Exact next action
-Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`), then map its numeric/runtime fields against the second PUZZLES operand/state token.
+Implement the first executable KG-001 harness layer: canonical deterministic demo-state serialization/hash and an exhaustive puzzle-state explorer that can report unreachable states, illegal transitions, cycles and softlocks. Then connect trigger/transition/audio-event mocks and the headless full-demo route.

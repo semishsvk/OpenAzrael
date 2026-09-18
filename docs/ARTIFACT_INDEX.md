@@ -1,7 +1,13 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v107-context-v13` — technical base v107 plus context/Git/backup layer.
+- `v107-context-v14` — technical base v107 plus current context/Git/quality layer.
+
+## Quality / known-good baseline
+- `docs/KG001_ACCEPTANCE_PLAN.md`
+- `data/kg001_acceptance_contract.json`
+- `tools/validate_kg001_contract.py`
+- `docs/TEST_MATRIX.md`
 
 ## Current forensic anchors
 - `WORLD_PUZZLE_SOUND_BRIDGE_V107.md` / `tools/analyze_world_puzzle_sound_bridge_v107.py`

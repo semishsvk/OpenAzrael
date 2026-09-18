@@ -1,8 +1,8 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v107-context-v13`  
-**Date:** 2026-09-18  
-**Runtime target:** Godot 4  
+**Canonical checkpoint:** `v107-context-v14`
+**Date:** 2026-09-18
+**Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
 
 ## 1. Goal and architecture
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is **v107**. The context/Git/backup layer is merged forward as **v107-context-v13**.
+The newest technical base remains **v107**. The context/Git/quality layer is merged forward as **v107-context-v14**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -49,6 +49,14 @@ The newest technical base is **v107**. The context/Git/backup layer is merged fo
 - **38/40** PUZZLES sound records match WORLD records as a multiset and **13/13** PUZZLES sound stems occur in WORLD.
 - Exact byte correspondence is VERIFIED; interpreting this as an authoring/runtime bridge for sound identity is HIGH. The complete compiler is not recovered.
 
+### KG-001 known-good demo gate — context v14
+- The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
+- Machine-readable policy is `data/kg001_acceptance_contract.json`.
+- Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
+- Release condition: zero known critical bugs, zero reproducible softlocks and zero failed required gates.
+- Passing KG-001 does not promote unrelated forensic HOLD findings.
+- The build has **not** yet passed KG-001; this checkpoint formalizes the gate and repairs the context validator drift.
+
 ## 3. Current HOLD boundaries
 Do not promote these as recovered original behavior yet:
 - complete PUZZLES/ROOMS -> WORLD authoring/compiler mapping;
@@ -60,9 +68,9 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`).
-2. Identify which numeric/runtime fields replace the second PUZZLES operand/state token.
-3. Test direct action-by-action compilation without assuming the complete producer pipeline.
+1. Implement the executable KG-001 automated harness, starting with deterministic state serialization/hash plus puzzle-state exploration.
+2. Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`).
+3. Identify which numeric/runtime fields replace the second PUZZLES operand/state token.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
 5. Keep GitHub mirrors source-safe: no original commercial payloads, derived commercial-data assets, milestone archives, raw dumps, or reproducible forensic payloads containing commercial-derived bytes.
 

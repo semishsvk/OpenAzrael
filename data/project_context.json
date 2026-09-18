@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v107-context-v13",
+  "checkpoint": "v107-context-v14",
   "technical_base": "openazrael_godot_poc_v107",
   "date": "2026-09-18",
   "workflow": [
@@ -23,6 +23,7 @@
     "roadmap": "docs/ROADMAP.md",
     "artifact_index": "docs/ARTIFACT_INDEX.md",
     "test_matrix": "docs/TEST_MATRIX.md",
+    "kg001_acceptance_plan": "docs/KG001_ACCEPTANCE_PLAN.md",
     "audio_map": "docs/AUDIO_MAP.md",
     "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
     "git_baseline": "docs/GIT_BASELINE.md"
@@ -51,6 +52,13 @@
     "puzzles_world_sound_multiset_matches": "38/40",
     "puzzles_world_sound_unique_stems_covered": "13/13"
   },
+  "quality": {
+    "kg001_acceptance_plan": "ACCEPTED",
+    "kg001_target_tag": "demo-known-good-001",
+    "kg001_gate_count": 11,
+    "kg001_build_status": "NOT_YET_RUN",
+    "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS"
+  },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
     "INDIRECT_CUSTOM_PUZZLES_RUNTIME_ACCESS",
@@ -59,5 +67,5 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Reverse WORLD section-6 27-byte sound-action records and map runtime fields against PUZZLES opcode-0x28 operands/state tokens."
+  "next_target": "Implement KG-001 deterministic state/hash and exhaustive puzzle-state harness; continue WORLD section-6 sound-record field reversal in parallel."
 }
