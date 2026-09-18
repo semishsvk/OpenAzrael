@@ -428,3 +428,8 @@ v114 closes the matched WORLD section-6 reader/writer behavior. Both the 37-byte
 ## v115 — WORLD action-record runtime lifecycle
 
 v115 follows the 27-byte WORLD action record from deserialization to execution. In the audited path, condition scheduling creates only a six-byte count+pointer-array wrapper, and dispatcher 0x18698 follows the original pointer array and executes the original record in place. No hidden copy/normalization step exists between WORLD loading and opcode execution; opcode-0x28 does not mutate the record before consuming its v113 fields. Therefore the variable +17..+26 residue is already present upstream in serialized WORLD. Its exact authoring origin remains UNKNOWN/HOLD. See `WORLD_ACTION_RECORD_LIFECYCLE_V115.md`.
+
+
+## v116 — KG-001 Candidate 1 diagnostics
+
+v116 prepares the first real Godot integration build without changing intended puzzle semantics. CandidateDiagnostics adds a build/checkpoint watermark, structured event telemetry, trigger-edge logging and canonical state dumps. F6 toggles authored trigger volumes, F7 opens the Candidate HUD, F8/F9 preserve the existing audio debug/parity tools and F10 writes a canonical state snapshot. R1/R7/R8 are runtime-loaded behind explicit fail-fast resource checks so missing local assets produce useful diagnostics instead of parser-time preload failures. The v116 source contract passes; actual Godot runtime execution remains pending. See `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`.
