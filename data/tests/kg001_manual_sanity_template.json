@@ -1,0 +1,12 @@
+{
+  "schema":"openazrael.kg001.manual_sanity",
+  "version":1,
+  "status":"PENDING",
+  "candidate_commit":"",
+  "godot_version":"",
+  "tester":"",
+  "date":"",
+  "critical_bugs":[],
+  "reproducible_softlocks":[],
+  "notes":"Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md after G00-G09 PASS. Change status to PASS only if every required manual check succeeds."
+}
