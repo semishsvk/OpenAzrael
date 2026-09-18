@@ -398,3 +398,8 @@ v108 adds canonical DemoState SHA-256 identity and a source-safe exhaustive puzz
 ## v109 — source-safe Godot headless KG-001 runner
 
 v109 adds schema-validated DemoState restore, logical audio capture-only instrumentation and a Godot headless runner that exercises the real autoload/Event-IR state path without loading `main.tscn` or excluded commercial-derived assets. The source contract is ready; actual Godot runtime execution remains NOT EXECUTED in the current analysis environment. See `docs/KG001_HEADLESS_V109.md`.
+
+
+## v110 — KG-001 room/trigger runner
+
+v110 prepares asset-backed G04/G05 testing with the real RoomManager path: all four tracked room transitions, locked R1 negative gates, physical trigger inside/outside checks and persistence across room replacement. Missing local room assets are reported as BLOCKED_MISSING_ASSETS. Source contract is PASS; Godot asset-backed execution is NOT EXECUTED here. See `docs/KG001_ROOM_TRIGGER_V110.md`.
