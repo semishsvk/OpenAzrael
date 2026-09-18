@@ -1,7 +1,16 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v110-context-v18` — technical base v107 plus current context/Git/quality layer.
+- `v111-context-v19` — technical base v107 plus current context/Git/quality layer.
+
+## KG-001 v111 full demo/status
+- `docs/KG001_FULL_DEMO_V111.md`
+- `scripts/kg001_full_demo_runner_v111.gd`
+- `tools/validate_kg001_full_demo_v111.py`
+- `data/tests/kg001_full_demo_contract_v111.json`
+- `tools/kg001_status_v111.py`
+- `data/tests/kg001_status_v111.json`
+- `docs/KG001_STATUS_V111.md`
 
 ## KG-001 v110 room/trigger
 - `docs/KG001_ROOM_TRIGGER_V110.md`
