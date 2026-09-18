@@ -418,3 +418,8 @@ v112 adds a one-command candidate runner for the full KG-001 pre-release workflo
 ## v113 — WORLD opcode-0x28 record fields
 
 v113 closes the runtime-consumed field layout of the 27-byte WORLD section-6 sound-action record and upgrades the v107 bridge to 38/40 order-preserving PUZZLES -> WORLD matches. The verified demo layout is opcode at +0, sound stem at +1, WORLD section-0 object index (u16 LE) at +13, and room/context id (u16 LE) at +15 with 0=R1, 1=R7, 2=R8. The handler resolves the referenced object, formats the stem through %s.WAV and reaches the dynamic 3D sample-start path. Bytes +17..+26 remain UNKNOWN/HOLD and the complete PUZZLES/ROOMS -> WORLD compiler is still not claimed. See `WORLD_SOUND_RECORD_FIELDS_V113.md`.
+
+
+## v114 — WORLD section-6 opaque serializer
+
+v114 closes the matched WORLD section-6 reader/writer behavior. Both the 37-byte and 27-byte nested record families are serialized wholesale as fixed memory blobs; the serializer does not independently encode or interpret the v113 sound fields or the remaining bytes. Across 44 opcode-0x28 sound records, +17..+26 has 41 unique values and every one of seven duplicated stem/object/room groups varies in its tail; the 12 797tap/tapframe2/R8 bindings have 12 unique tails. The exact tail origin remains UNKNOWN/HOLD. The next forensic target is record construction/mutation/copy logic rather than the serializer. See `WORLD_SOUND_SERIALIZER_V114.md`.
