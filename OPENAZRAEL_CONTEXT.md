@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v107-context-v15`
-**Technical base:** `openazrael_godot_poc_v107`
+**Current canonical checkpoint:** `v108-context-v16`
+**Technical base:** `openazrael_godot_poc_v108`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -33,6 +33,11 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
 - `tools/extract_xaf_triggers.py` is portable and regenerates the trigger IR from a local corrected-GLB corpus via explicit CLI paths.
+
+## KG-001 v108 state-space layer
+- Canonical persistent DemoState serialization/hash is implemented in `scripts/demo_state.gd`.
+- `tools/kg001_state_space_v108.py` exhaustively explores the current source-safe demo logic using the shared Event IR and trigger/transition IR.
+- Current source-model result: 63 reachable states, 123 changed edges, 0 softlocks, 0 non-success dead ends. Godot runtime execution remains required before KG-001 can pass.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
