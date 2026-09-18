@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v112-context-v20",
-  "technical_base": "openazrael_godot_poc_v112",
+  "checkpoint": "v113-context-v21",
+  "technical_base": "openazrael_godot_poc_v113",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -51,7 +51,23 @@
     "puzzles_world_sound_bridge": "HIGH",
     "puzzles_world_sound_exact_correspondence": "VERIFIED",
     "puzzles_world_sound_multiset_matches": "38/40",
-    "puzzles_world_sound_unique_stems_covered": "13/13"
+    "puzzles_world_sound_unique_stems_covered": "13/13",
+    "puzzles_world_sound_ordered_matches": "38/40",
+    "world_sound_record_fields": "VERIFIED",
+    "world_sound_record_layout": {
+      "opcode_offset": 0,
+      "sound_stem_offset": 1,
+      "section0_object_index_u16_offset": 13,
+      "room_id_u16_offset": 15,
+      "tail_17_26": "UNKNOWN_HOLD"
+    },
+    "world_sound_room_mapping": {
+      "0": "R1",
+      "1": "R7",
+      "2": "R8"
+    },
+    "world_sound_room_evidence": "35_DIRECT_XAF_PLUS_3_R7_ALIASES_ZERO_CONFLICTS",
+    "world_sound_runtime_chain": "VERIFIED_CONTROL_DATA_FLOW_D155_ROLE_HIGH"
   },
   "quality": {
     "kg001_acceptance_plan": "ACCEPTED",
@@ -90,7 +106,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results in a Godot-capable checkout with restored ignored room assets; then run tools/kg001_status_v112.py and complete G10 manual sanity if G00-G09 are PASS.",
+  "next_target": "Run the v112 KG-001 candidate workflow on a Godot-capable checkout when available; in parallel audit the v113 +17..+26 tail and the 0x29E40 producer/writer path without assigning semantics unless independently supported.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -131,5 +147,16 @@
     "manual_checklist": "docs/KG001_MANUAL_SANITY_CHECKLIST.md",
     "manual_template": "data/tests/kg001_manual_sanity_template.json",
     "note": "docs/KG001_CANDIDATE_RUNNER_V112.md"
+  },
+  "forensics_v113": {
+    "analyzer": "tools/analyze_world_sound_record_fields_v113.py",
+    "validator": "tools/validate_world_sound_record_fields_v113.py",
+    "result": "data/world_sound_record_fields_v113.json",
+    "note": "WORLD_SOUND_RECORD_FIELDS_V113.md",
+    "status": "PASS",
+    "ordered_puzzles_world_matches": "38/40",
+    "section0_index_offset": 13,
+    "room_id_offset": 15,
+    "tail_status": "UNKNOWN_HOLD"
   }
 }
