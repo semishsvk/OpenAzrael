@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v110-context-v18",
-  "technical_base": "openazrael_godot_poc_v110",
+  "checkpoint": "v111-context-v19",
+  "technical_base": "openazrael_godot_poc_v111",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -73,7 +73,11 @@
     "kg001_headless_runtime": "NOT_EXECUTED",
     "kg001_state_restore": "IMPLEMENTED_NOT_RUNTIME_EXECUTED",
     "kg001_room_trigger_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_room_trigger_runtime": "NOT_EXECUTED"
+    "kg001_room_trigger_runtime": "NOT_EXECUTED",
+    "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_full_demo_runtime": "NOT_EXECUTED",
+    "kg001_overall_status": "PRE_RUNTIME_READY",
+    "kg001_final_tag_allowed": false
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -83,7 +87,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Execute v109 and v110 Godot runners in a Godot-capable checkout with restored local assets; then consolidate G02-G07 into the KG-001 gate report and prepare the full synthetic demo runner.",
+  "next_target": "Execute v109/v110/v111 in a Godot-capable checkout, capture runtime result JSON, then run G00/G01 validators and perform G09 fresh-checkout verification before manual G10.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -105,5 +109,14 @@
     "validator": "tools/validate_kg001_room_trigger_v110.py",
     "result": "data/tests/kg001_room_trigger_contract_v110.json",
     "note": "docs/KG001_ROOM_TRIGGER_V110.md"
+  },
+  "kg001_v111": {
+    "runner": "scripts/kg001_full_demo_runner_v111.gd",
+    "validator": "tools/validate_kg001_full_demo_v111.py",
+    "result": "data/tests/kg001_full_demo_contract_v111.json",
+    "status_tool": "tools/kg001_status_v111.py",
+    "status_snapshot": "data/tests/kg001_status_v111.json",
+    "note": "docs/KG001_FULL_DEMO_V111.md",
+    "status_note": "docs/KG001_STATUS_V111.md"
   }
 }
