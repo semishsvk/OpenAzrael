@@ -1,29 +1,35 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v115-context-v23`
+**Checkpoint prepared:** `v116-context-v24`
 **Date:** 2026-09-18
 
 ## What changed
-- Advanced technical base to **v115** and canonical context to **v115-context-v23**.
-- KG-001 v112 candidate workflow remains unchanged and still requires a Godot-capable checkout; `demo-known-good-001` remains forbidden.
-- Preserved v113 verified opcode-0x28 fields and v114 opaque serializer closure.
-- Closed the bound runtime lifecycle of 27-byte action records after WORLD deserialization.
-- 27-byte insert helper `0x295B0` has one direct caller (`0x296EC`); 37-byte helper `0x295F4` has one direct caller (`0x2968A`), both in the WORLD reader.
-- The only audited direct immediate `malloc(27)` pattern remains `0x29703 -> 0x29712`.
-- Condition scheduling at `0x2990C` creates a 6-byte pending group: u16 count from nested object +6 plus pointer-array address from +8.
-- Dispatcher `0x18698` follows the original pointer array and dispatches the original 27-byte record pointer in place.
-- No copy/normalization stage exists in the audited WORLD-load -> scheduling -> dispatch path; the opcode-0x28 handler does not mutate the record before consuming it.
-- Therefore +17..+26 is serialized upstream and survives unchanged to dispatch; its exact authoring origin remains UNKNOWN/HOLD.
-- Added source-safe v115 analyzer/result/validator/documentation; analyzer passes 20/20 invariants and validator PASS.
+- Advanced technical base to **v116** and canonical context to **v116-context-v24**.
+- v116 is now the diagnostic integration layer for **KG-001 Candidate 1**. The previously discussed but uncommitted producer/copy scan is deferred to v117.
+- Added `CandidateDiagnostics` autoload with structured event telemetry and canonical DemoState SHA-256 on every recorded event.
+- Added persistent non-headless event log: `user://openazrael_candidate1_events.jsonl`.
+- Added F10 canonical state dumps under `user://openazrael_kg001_state_dump_<timestamp>_<sequence>.json`.
+- Added F6 authored trigger-volume visualization and F7 Candidate diagnostics HUD.
+- Preserved existing F8 audio debug and F9 audio parity capture unchanged in purpose.
+- Logged interactions, trigger enter/exit edges, room transitions/loads, debug room jumps, inventory/flag/puzzle changes and logical audio.
+- Changed R1/R7/R8 from script-time GLB preloads to runtime loads behind a deterministic fail-fast resource preflight.
+- Non-headless Candidate 1 additionally requires the four golden Event-IR WAVs: S152V2, S137, S121 and 799SECDR.
+- Added `tools/validate_candidate_diagnostics_v116.py` to the existing v112 candidate source suite and committed the v116 source contract.
+- Hardened evidence parsing and suppressed noisy initial false trigger-edge events.
+- Current v116 diagnostic source contract: **PASS**. Godot runtime execution remains **NOT EXECUTED** here.
+- KG-001 final tag remains forbidden until G00-G10 all pass.
 
 ## Current blockers / HOLD
-- KG-001 v109/v110/v111 runtime execution, G09 fresh checkout and G10 manual sanity remain pending.
-- Exact upstream origin/meaning of WORLD action-record +17..+26 remains UNKNOWN/HOLD.
+- v109/v110/v111 still need real Godot execution with locally restored ignored room assets.
+- Candidate 1 non-headless run also requires the four golden Event-IR audio assets.
+- G09 fresh-checkout and G10 final manual sanity remain pending.
 - Complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
-- Indirect/computed WORLD-writer reachability remains HOLD.
+- The deferred generic copy/mutator producer audit is now the v117 forensic target.
 - Original-runtime Classic audio pan/volume parity remains UNOBSERVED/HOLD.
 
 ## Exact next action
-In parallel:
-1. on a Godot-capable development checkout run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`;
-2. audit static generic 27-byte copies, writes into +17..+26, variable/generic allocation paths, and stronger indirect/computed references around the WORLD producer/writer side.
+On the development machine:
+1. restore the ignored R1/R7/R8 room assets and required Candidate 1 audio assets;
+2. run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`;
+3. if G00-G09 are PASS, launch the normal Godot Candidate 1 build and manually traverse the full demo using F6/F7/F10 diagnostics as needed;
+4. complete G10 only after that manual run is clean.
