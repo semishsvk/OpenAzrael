@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v109-context-v17"
+EXPECTED_CHECKPOINT="v110-context-v18"
 errors=[]
 
 def req(p):
@@ -32,6 +32,10 @@ for p in [
     "tools/validate_kg001_headless_v109.py",
     "data/tests/kg001_headless_contract_v109.json",
     "docs/KG001_HEADLESS_V109.md",
+    "scripts/kg001_room_trigger_runner_v110.gd",
+    "tools/validate_kg001_room_trigger_v110.py",
+    "data/tests/kg001_room_trigger_contract_v110.json",
+    "docs/KG001_ROOM_TRIGGER_V110.md",
     "data/evidence/evidence_registry.json",
     "data/backup/source_fingerprints.json",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",
@@ -57,6 +61,10 @@ try:
         errors.append("KG-001 v109 headless source-contract drift")
     if c.get("quality",{}).get("kg001_headless_runtime")!="NOT_EXECUTED":
         errors.append("KG-001 v109 runtime status drift")
+    if c.get("quality",{}).get("kg001_room_trigger_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 v110 room/trigger source-contract drift")
+    if c.get("quality",{}).get("kg001_room_trigger_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v110 runtime status drift")
 except Exception as e:
     errors.append(f"context json: {e}")
 
