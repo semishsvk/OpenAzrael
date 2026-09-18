@@ -84,8 +84,14 @@ try:
         errors.append("KG-001 v111 full-demo source-contract drift")
     if c.get("quality",{}).get("kg001_full_demo_runtime")!="NOT_EXECUTED":
         errors.append("KG-001 v111 runtime status drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="PRE_RUNTIME_READY":
-        errors.append("KG-001 v111 overall status drift")
+    if c.get("quality",{}).get("kg001_candidate_runner")!="SOURCE_CONTRACT_READY":
+        errors.append("KG-001 v112 candidate runner drift")
+    if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
+        errors.append("KG-001 v112 status-engine drift")
+    if c.get("quality",{}).get("kg001_overall_status")!="AWAITING_RUNTIME_OR_MANUAL":
+        errors.append("KG-001 v112 overall status drift")
+    if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
+        errors.append("KG-001 tag unexpectedly allowed")
 except Exception as e:
     errors.append(f"context json: {e}")
 
