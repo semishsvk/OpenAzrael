@@ -116,10 +116,21 @@ def main():
 
     godot=find_godot(args.godot)
     godot_version=""
+    import_status="NOT_RUN"
     runtimes={}
     if godot:
         ver=run([godot,"--version"])
         godot_version=ver.stdout.strip()
+        if all(asset_present.values()):
+            imported=run([godot,"--headless","--path",str(ROOT),"--import"])
+            import_status="PASS" if imported.returncode==0 else "FAIL"
+            write_json(TMP/"kg001_godot_import_v112.json",{
+                "status":import_status,
+                "returncode":imported.returncode,
+                "output":imported.stdout[-12000:]
+            })
+        else:
+            import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
             if name in ("v110","v111") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
@@ -138,7 +149,7 @@ def main():
     full_runtime_pass=all(runtimes.get(name,{}).get("status")=="PASS" for name,_,_ in RUNTIMES)
     fresh_pass=(
         args.fresh_checkout and clean_before and clean_after and not bad_tracked and source_ok
-        and godot is not None and full_runtime_pass
+        and godot is not None and import_status=="PASS" and full_runtime_pass
         and all(asset_present.values()) and all(asset_ignored.values())
     )
 
@@ -149,6 +160,7 @@ def main():
         "commit_sha":head,
         "godot_executable":godot or "",
         "godot_version":godot_version,
+        "godot_import_status":import_status,
         "clean_before":clean_before,
         "clean_after":clean_after,
         "forbidden_tracked_files":bad_tracked,
@@ -166,6 +178,7 @@ def main():
         "status":"PASS" if source_ok and full_runtime_pass and (not args.fresh_checkout or fresh_pass) else "INCOMPLETE_OR_FAIL",
         "commit_sha":head,
         "godot_version":godot_version,
+        "godot_import_status":import_status,
         "source_validators":"PASS" if source_ok else "FAIL",
         "runtimes":{k:v.get("status","") for k,v in runtimes.items()},
         "fresh_checkout":fresh["status"],
