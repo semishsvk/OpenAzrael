@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v112-context-v20`
+**Canonical checkpoint:** `v113-context-v21`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v112-context-v20 | PASS target | Source/context validation |
+| Project context | v113-context-v21 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -13,8 +13,9 @@
 | Direct PUZZLES open audit | v103-v105 | HIGH for audited mechanisms | Indirect/custom paths not excluded |
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
-| Source-safe runtime IR | v112-context-v20 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v112-context-v20 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
+| Source-safe runtime IR | v113-context-v21 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v113-context-v21 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -76,3 +77,19 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Runtime evidence promotion | OPTIONAL / EXPLICIT | Happens only after clean-checkout observation |
 | G00-G09 evidence-driven status | WIRED | Only recorded PASS promotes a gate |
 | G10 manual sanity | CHECKLIST_READY / PENDING_USER | Never auto-promoted |
+
+
+## v113 WORLD sound-record field closure
+
+| Check | Status | Evidence boundary |
+|---|---|---|
+| Bound R.EXE / WORLD.DAT / PUZZLES.DAT fingerprints | PASS | Exact v106/v107 source hashes |
+| PUZZLES sound records | 40 | Structurally recovered opcode-0x28 population |
+| WORLD sound records | 44 | Fixed 27-byte section-6 records |
+| Ordered sequence mapping | **38/40 PASS** | LCS/order-sensitive, not free multiset pairing |
+| +13 field | **VERIFIED** section-0 object index | Runtime indexes global 0x43890 |
+| +15 field | **VERIFIED** demo room/context id | 35 direct XAF + 3 R7 aliases, 0 conflicts |
+| +1 field | **VERIFIED** sound stem | Preserved as record+1 and formatted with %s.WAV |
+| Dynamic spatial start | VERIFIED control/data flow / HIGH role identity | Handler 0x191E9 -> 0xD155 |
+| +17..+26 | UNKNOWN/HOLD | Not consumed by opcode-0x28 handler |
+| Source-safe result boundary | PASS | No raw/raw_hex/block_hex/payload bytes committed |
