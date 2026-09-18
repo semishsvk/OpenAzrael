@@ -393,3 +393,8 @@ v107 adversarially follows the v106 writer-lineage idea and finds that the paire
 ## v108 — KG-001 deterministic state-space harness
 
 v108 adds canonical DemoState SHA-256 identity and a source-safe exhaustive puzzle-state explorer. The current R1/R7/R8 logical model contains 63 reachable states and 123 changed transitions; every reachable state can still reach demo completion, with zero modeled softlocks and zero non-success dead ends. This is a source-model milestone only; final KG-001 still requires Godot runtime/headless, save/load, fresh-checkout and manual gates. See `docs/KG001_STATE_SPACE_V108.md`.
+
+
+## v109 — source-safe Godot headless KG-001 runner
+
+v109 adds schema-validated DemoState restore, logical audio capture-only instrumentation and a Godot headless runner that exercises the real autoload/Event-IR state path without loading `main.tscn` or excluded commercial-derived assets. The source contract is ready; actual Godot runtime execution remains NOT EXECUTED in the current analysis environment. See `docs/KG001_HEADLESS_V109.md`.
