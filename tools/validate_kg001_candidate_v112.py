@@ -14,7 +14,7 @@ checks={
  "runtime_v111":"kg001_full_demo_runner_v111.gd" in source,
  "git_clean_before_after":"clean_before=git_clean()" in source and "clean_after=git_clean()" in source,
  "forbidden_tracking_check":"repository_safety()" in source and "FORBIDDEN_TRACKED_PREFIXES" in source,
- "asset_ignore_check":"git","check-ignore" in source,
+ "asset_ignore_check":'"check-ignore"' in source,
  "fresh_requires_import":'import_status=="PASS"' in source,
  "fresh_requires_all_runtime":"full_runtime_pass" in source and "all(asset_present.values())" in source,
  "promotion_is_optional":"--promote-results" in source,
