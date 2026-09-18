@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v114-context-v22"
+EXPECTED_CHECKPOINT="v115-context-v23"
 errors=[]
 
 def req(p):
@@ -65,6 +65,10 @@ for p in [
     "tools/analyze_world_sound_serializer_v114.py",
     "tools/validate_world_sound_serializer_v114.py",
     "data/world_sound_serializer_v114.json",
+    "WORLD_ACTION_RECORD_LIFECYCLE_V115.md",
+    "tools/analyze_world_action_lifecycle_v115.py",
+    "tools/validate_world_action_lifecycle_v115.py",
+    "data/world_action_lifecycle_v115.json",
 ]:
     req(p)
 
