@@ -1,0 +1,85 @@
+{
+  "allocation_audit": {
+    "boundary": "This does not exclude constructors that use variable sizes, alternate allocators, stack/static storage, copying, or external authoring code.",
+    "class": "direct mov eax,0x1B followed by direct call to allocator 0x20C00 within 24 bytes",
+    "finding": "The only match in object1 is the WORLD 27-byte reader allocation at 0x29703/0x29712.",
+    "matches": [{"call_site_hex":"0x29712","mov_site_hex":"0x29703"}]
+  },
+  "checks": {
+    "all_duplicate_groups_have_varying_tail": true,
+    "all_duplicate_groups_have_varying_unused_stem_remainder": true,
+    "duplicate_semantic_groups_7": true,
+    "exe_hash": true,
+    "only_immediate_27_alloc_is_reader": true,
+    "opcode28_handler_record_access_prefix": true,
+    "reader_27_alloc": true,
+    "reader_27_alloc_size": true,
+    "reader_27_raw_read": true,
+    "reader_37_alloc": true,
+    "reader_37_alloc_size": true,
+    "reader_37_raw_read": true,
+    "reader_blob_edge": true,
+    "reader_chain_unique_direct_refs": true,
+    "reader_node_edge": true,
+    "reader_top_edge": true,
+    "sound_rows_44": true,
+    "tap_group_12_unique_tails": true,
+    "world_exact_eof": true,
+    "world_hash": true,
+    "writer_27_pointer_array": true,
+    "writer_27_raw_size": true,
+    "writer_27_raw_write": true,
+    "writer_37_raw_size": true,
+    "writer_37_raw_write": true,
+    "writer_blob_edge": true,
+    "writer_chain_unique_direct_refs": true,
+    "writer_node_edge": true,
+    "writer_top_edge": true
+  },
+  "next_target": "Search constructors/mutators/copy paths for writes into 27-byte action records, especially offsets +17..+26. Do not infer semantics from serialized residue alone.",
+  "opaque_serializer_conclusion": {
+    "confidence": "VERIFIED for serialization behavior",
+    "producer_boundary": "This closes serializer behavior, not the upstream authoring constructor. The complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.",
+    "record27": "The matched reader/writer pair treats the complete 27-byte record as an opaque fixed-size memory blob. The serializer does not decode or independently construct fields +13/+15/+17..+26.",
+    "record37": "The sibling 37-byte list is likewise serialized wholesale."
+  },
+  "opcode28_residue_audit": {
+    "all_section6_blob27_records": 400,
+    "all_section6_blob37_records": 387,
+    "confidence": "VERIFIED for variability and non-use by the opcode-0x28 handler; exact origin/meaning remains HOLD.",
+    "duplicate_group_summary": [
+      {"records":12,"room_id":2,"section0_index":1255,"token":"797tap","unique_tail_17_26":12,"unique_unused_stem_storage_remainders":12},
+      {"records":2,"room_id":1,"section0_index":100,"token":"977turn","unique_tail_17_26":2,"unique_unused_stem_storage_remainders":2},
+      {"records":2,"room_id":1,"section0_index":225,"token":"977turn","unique_tail_17_26":2,"unique_unused_stem_storage_remainders":2},
+      {"records":4,"room_id":1,"section0_index":100,"token":"983tunk","unique_tail_17_26":3,"unique_unused_stem_storage_remainders":4},
+      {"records":2,"room_id":1,"section0_index":1277,"token":"995","unique_tail_17_26":2,"unique_unused_stem_storage_remainders":2},
+      {"records":2,"room_id":1,"section0_index":224,"token":"s152v2","unique_tail_17_26":2,"unique_unused_stem_storage_remainders":2},
+      {"records":2,"room_id":2,"section0_index":1259,"token":"s25","unique_tail_17_26":2,"unique_unused_stem_storage_remainders":2}
+    ],
+    "duplicate_groups_with_varying_tail": 7,
+    "duplicate_groups_with_varying_unused_stem_storage_remainder": 7,
+    "duplicate_semantic_binding_groups": 7,
+    "interpretation": "Bytes outside the runtime-consumed opcode-0x28 fields are not stable even across records with the same sound stem, section-0 object index and room id. Together with the opaque serializer and handler non-use, they must remain residue/UNKNOWN for opcode 0x28 rather than being promoted to gameplay parameters.",
+    "nonzero_tail_17_26": 40,
+    "sound_records": 44,
+    "tapframe_797tap_records": 12,
+    "tapframe_797tap_unique_tails": 12,
+    "unique_tail_17_26": 41,
+    "zero_tail_17_26": 4
+  },
+  "reader_chain": {
+    "blob27_behavior":"allocate 0x1B and read exactly 0x1B bytes wholesale",
+    "blob37_behavior":"allocate 0x25 and read exactly 0x25 bytes wholesale",
+    "blob_call_hex":"0x29d2e","blob_reader_hex":"0x29638","confidence":"VERIFIED",
+    "node_call_hex":"0x29eea","node_reader_hex":"0x29cf4","top_call_hex":"0x369dc","top_reader_hex":"0x29e98"
+  },
+  "schema":"openazrael.world_sound_serializer_audit",
+  "sources":{"r_exe_sha256":"381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00","world_dat_sha256":"f055948e302fa2f6ba364f7ebd3b4bc45f20ef4445af4946c63e4e313a084ae9"},
+  "status":"PASS","version":114,
+  "writer_chain": {
+    "blob27_behavior":"load pointer from second list at +0x08 and write exactly 0x1B bytes wholesale",
+    "blob37_behavior":"write exactly 0x25 bytes wholesale",
+    "blob_call_hex":"0x29da5","blob_writer_hex":"0x2972c","confidence":"VERIFIED",
+    "node_call_hex":"0x29e87","node_writer_hex":"0x29d74","top_call_hex":"0x3661a","top_writer_hex":"0x29e40"
+  }
+}
