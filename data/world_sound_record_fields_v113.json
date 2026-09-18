@@ -1,0 +1,468 @@
+{
+  "checks": {
+    "direct_manifest_room_matches_35": true,
+    "dispatcher_preserves_payload_pointer_at_plus1": true,
+    "dispatcher_reads_opcode_and_bounds_28": true,
+    "exe_hash": true,
+    "handler_calls_dynamic_3d_start": true,
+    "handler_current_context_compare_plus15": true,
+    "handler_loads_section0_index_plus13": true,
+    "handler_pushes_record_plus1_for_filename": true,
+    "handler_uses_object_name_plus34": true,
+    "handler_uses_section0_array_global": true,
+    "ordered_lcs_38": true,
+    "puzzles_hash": true,
+    "puzzles_sound_40": true,
+    "remaining_three_are_r7_aliases": true,
+    "section0_loader_stores_same_array_global": true,
+    "section0_reader_name_field_11_bytes": true,
+    "wav_format_string": true,
+    "world_exact_eof": true,
+    "world_hash": true,
+    "world_sound_44": true
+  },
+  "compiler_boundary": "The field-level runtime bridge is recovered for opcode 0x28, but the complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.",
+  "ordered_alignment": [
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 0,
+      "section0_index": 1282,
+      "section0_name": "doorcor01",
+      "token": "995"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 0,
+      "section0_index": 1283,
+      "section0_name": "doorcor2",
+      "token": "995"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "983tunk"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "983tunk"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 225,
+      "section0_name": "well_weel1",
+      "token": "977turn"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 225,
+      "section0_name": "well_weel1",
+      "token": "977turn"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 224,
+      "section0_name": "well_pzpi2",
+      "token": "982push"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 224,
+      "section0_name": "well_pzpi2",
+      "token": "981pull"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "983tunk"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "983tunk"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "977turn"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "977turn"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "982push"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "981pull"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 100,
+      "section0_name": "well_pzpi1",
+      "token": "s16"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 1,
+      "section0_index": 1153,
+      "section0_name": "wel_well",
+      "token": "979tongs"
+    },
+    {
+      "direct_xaf_manifest_match": false,
+      "room_id": 1,
+      "section0_index": 1277,
+      "section0_name": "well_door",
+      "token": "995"
+    },
+    {
+      "direct_xaf_manifest_match": false,
+      "room_id": 1,
+      "section0_index": 1277,
+      "section0_name": "well_door",
+      "token": "995"
+    },
+    {
+      "direct_xaf_manifest_match": false,
+      "room_id": 1,
+      "section0_index": 1150,
+      "section0_name": "r7p1",
+      "token": "spaper"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1259,
+      "section0_name": "tapestry2",
+      "token": "s25"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1259,
+      "section0_name": "tapestry2",
+      "token": "s25"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+        "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1255,
+      "section0_name": "tapframe2",
+      "token": "797tap"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1164,
+      "section0_name": "font3",
+      "token": "s137"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 140,
+      "section0_name": "door",
+      "token": "s121"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1159,
+      "section0_name": "zxsound",
+      "token": "990wdspa"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1160,
+      "section0_name": "zxsound1",
+      "token": "990wdspa"
+    },
+    {
+      "direct_xaf_manifest_match": true,
+      "room_id": 2,
+      "section0_index": 1161,
+      "section0_name": "zxsound2",
+      "token": "990wdspa"
+    }
+  ],
+  "ordered_correspondence": {
+    "confidence": "VERIFIED",
+    "lcs_matches": 38,
+    "puzzles_only_tokens": [
+      "995",
+      "995"
+    ],
+    "puzzles_records": 40,
+    "world_only_tokens": [
+      "sr27keys",
+      "996",
+      "s152v2",
+      "s152v2",
+      "s121",
+      "s188"
+    ],
+    "world_records": 44
+  },
+  "record_layout": {
+    "opcode": {
+      "confidence": "VERIFIED",
+      "meaning": "sound action opcode",
+      "offset": 0,
+      "size": 1,
+      "value": 40
+    },
+    "room_id": {
+      "confidence": "VERIFIED for demo corpus",
+      "direct_xaf_manifest_matches": 35,
+      "endian": "little",
+      "mapping": {
+        "0": "R1",
+        "1": "R7",
+        "2": "R8"
+      },
+      "offset": 15,
+      "remaining_alias_matches": 3,
+      "runtime_use": "compared against current runtime context/room word via global 0x43888",
+      "size": 2
+    },
+    "section0_object_index": {
+      "confidence": "VERIFIED",
+      "endian": "little",
+      "offset": 13,
+      "runtime_use": "indexes WORLD section-0 pointer array at global 0x43890",
+      "size": 2
+    },
+    "size": 27,
+    "sound_stem": {
+      "confidence": "VERIFIED",
+      "encoding": "NUL-terminated ASCII within pre-field area",
+      "offset": 1,
+      "runtime_use": "record+1 is passed to sprintf-style %s.WAV formatting"
+    },
+    "tail_17_26": {
+      "meaning": "UNKNOWN/HOLD",
+      "offset": 17,
+      "runtime_use": "not read by the opcode-0x28 handler path 0x191E9..0x19257",
+      "size": 10
+    }
+  },
+  "referenced_section0_objects": [
+    {
+      "description": "Pipe",
+      "index": 100,
+      "name": "well_pzpi1"
+    },
+    {
+      "description": "Door",
+      "index": 140,
+      "name": "door"
+    },
+    {
+      "description": "Pipe",
+      "index": 224,
+      "name": "well_pzpi2"
+    },
+    {
+      "description": "Wheel",
+      "index": 225,
+      "name": "well_weel1"
+    },
+    {
+      "description": "Scroll",
+      "index": 1150,
+      "name": "r7p1"
+    },
+    {
+      "description": "Well",
+      "index": 1153,
+      "name": "wel_well"
+    },
+    {
+      "description": "",
+      "index": 1159,
+      "name": "zxsound"
+    },
+    {
+      "description": "",
+      "index": 1160,
+      "name": "zxsound1"
+    },
+    {
+      "description": "",
+      "index": 1161,
+      "name": "zxsound2"
+    },
+    {
+      "description": "Font",
+      "index": 1164,
+      "name": "font3"
+    },
+    {
+      "description": "Frame",
+      "index": 1255,
+      "name": "tapframe2"
+    },
+    {
+      "description": "Tapestry Piece",
+      "index": 1259,
+      "name": "tapestry2"
+    },
+    {
+      "description": "Door",
+      "index": 1277,
+      "name": "well_door"
+    },
+    {
+      "description": "Door",
+      "index": 1282,
+      "name": "doorcor01"
+    },
+    {
+      "description": "Door",
+      "index": 1283,
+      "name": "doorcor2"
+    }
+  ],
+  "remaining_field_boundary": "No meaning is assigned to bytes +17..+26. The 0x28 handler does not consume them; they remain UNKNOWN/HOLD.",
+  "schema": "openazrael.world_sound_record_fields",
+  "sources": {
+    "demo_rooms_evidence": {
+      "name": "demo_rooms_evidence.json",
+      "sha256": "4977943b52a3944e25dcee19b39a9529659acb6683d0f482b4a776683e1ea71a"
+    },
+    "note": "Original/commercial payloads and full derived manifests remain outside the source-safe Git boundary; only fingerprints and compact evidence are emitted.",
+    "puzzles_dat_sha256": "b8131cf823edb184f04740d5af0a457f4d684e7b0be654b529ec7cdfde1739d1",
+    "puzzles_v97": {
+      "name": "puzzles_structural_payload_families_v97.json",
+      "sha256": "0b399b33305fc5f195b422e2e0bf478e93e1e8878928e3cd7bf345d6c4ae5980"
+    },
+    "r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "room_manifests": {
+      "R1": {
+        "name": "R1.textured.v44.manifest.json",
+        "sha256": "207160ae66b17e1a6bc87284ab6adfdfa8b0b403bb81f4280bfcfd1631b37800"
+      },
+      "R7": {
+        "name": "R7.textured.v44.manifest.json",
+        "sha256": "8c95c0b814518f5d4842f8e4703796079b2c654c113e43de8754b59576fe6979"
+      },
+      "R8": {
+        "name": "R8.textured.v44.manifest.json",
+        "sha256": "da2aa8faf0aa966994dbabd338f7c42e1977aeda279f710edf86f30cc627139f"
+      }
+    },
+    "world_dat_sha256": "f055948e302fa2f6ba364f7ebd3b4bc45f20ef4445af4946c63e4e313a084ae9"
+  },
+  "spatial_playback_chain": {
+    "confidence": "VERIFIED for control/data flow; existing v42 role identity of 0xD155 is HIGH.",
+    "current_context_global_hex": "0x43888",
+    "dynamic_3d_start_object1_offset_hex": "0xd155",
+    "filename_format": "%s.WAV",
+    "finding": "Opcode 0x28 filters by room id, resolves a section-0 object index, uses that object name to resolve a live scene object/spatial position, formats record+1 as <stem>.WAV, and calls the dynamic 3D sample start routine.",
+    "handler_linear_hex": "0x291e9",
+    "handler_object1_offset_hex": "0x191e9",
+    "section0_array_global_hex": "0x43890",
+    "section0_name_runtime_offset_hex": "0x34",
+    "section0_name_serialized_size": 11
+  },
+  "status": "PASS",
+  "version": 113
+}
