@@ -1,7 +1,15 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v115-context-v23` — technical base v115 plus current context/Git/quality layer.
+- `v116-context-v24` — technical base v116 plus current context/Git/quality layer.
+
+## KG-001 Candidate 1 diagnostics v116
+- `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
+- `scripts/candidate_diagnostics_v116.gd`
+- `scripts/kg001_trigger_debug_v116.gd`
+- `tools/validate_candidate_diagnostics_v116.py`
+- `data/tests/kg001_candidate_diagnostics_contract_v116.json`
+- integrated into `tools/run_kg001_candidate_v112.py`
 
 ## WORLD action-record lifecycle v115
 - `WORLD_ACTION_RECORD_LIFECYCLE_V115.md`
