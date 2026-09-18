@@ -1,0 +1,559 @@
+{
+  "schema": "openazrael.evidence_registry",
+  "schema_version": 4,
+  "updated": "2026-09-18",
+  "entries": [
+    {
+      "id": "OA-EVID-GAMEPLAY-SLICE-V13",
+      "domain": "gameplay",
+      "artifact": "data/gameplay_vertical_slice_v13.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "R1/R7/R8 evidence-backed playable slice; unresolved interaction/player constants remain explicit."
+    },
+    {
+      "id": "OA-EVID-R8-SEQUENCE-V16",
+      "domain": "gameplay",
+      "artifact": "data/r8_sequence_evidence_v16.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "ORIGINAL_RETAIL",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "R8 authored-state/mesh/audio evidence with reconstruction boundaries retained."
+    },
+    {
+      "id": "OA-EVID-PUZZLE-OPCODES-V19",
+      "domain": "puzzles",
+      "artifact": "data/puzzle_action_opcode_evidence_v19.json",
+      "lifecycle": "ANALYZED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "ORIGINAL_RETAIL",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Compiled action-family evidence; confidence remains opcode-specific."
+    },
+    {
+      "id": "OA-EVID-AUDIO-WORLD-IR-V21",
+      "domain": "audio",
+      "artifact": "data/audio/legacy_world_ir.json",
+      "lifecycle": "IMPLEMENTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Engine-neutral demo world/audio IR with original samples, AMB emitters and NPC coordinate evidence."
+    },
+    {
+      "id": "OA-EVID-COORDINATES-V22",
+      "domain": "coordinates",
+      "artifact": "data/audio/coordinate_calibration_v22.json",
+      "lifecycle": "VERIFIED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "scope": "R1/R7/R8 demo",
+      "note": "Identity XYZ transform at scale 1.0 is demo-scoped; retail-global calibration not promoted."
+    },
+    {
+      "id": "OA-EVID-AUDIO-BACKEND-V23",
+      "domain": "audio",
+      "artifact": "data/audio/r_exe_audio_backend_evidence_v23.json",
+      "lifecycle": "ANALYZED",
+      "confidence": "MEDIUM",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Miles/AIL backend evidence; original attenuation/pan remains HOLD."
+    },
+    {
+      "id": "OA-EVID-LE-PAGEMAP-V28",
+      "domain": "executable",
+      "artifact": "data/audio/le_page_mapping_audit_v28.json",
+      "lifecycle": "ANALYZED",
+      "confidence": "HISTORICAL_SUPERSEDED",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": false,
+      "note": "Historical v28 page-mapping result. Its absolute bound-file Data Pages Offset interpretation is superseded by v56 clean-room byte evidence."
+    },
+    {
+      "id": "OA-EVID-LE-FIXUP-RAW-V31",
+      "domain": "executable",
+      "artifact": "data/audio/fixup_raw_record_audit_v31.json",
+      "lifecycle": "VERIFIED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Raw fixup bytes/record boundaries/source coordinates are promoted independently; relocation semantics remain HOLD."
+    },
+    {
+      "id": "OA-EVID-LE-XREFS-V33",
+      "domain": "executable",
+      "artifact": "data/audio/trusted_object_relative_xrefs_v33.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Object-relative OFFSET32 xref representation; source patch semantics remain constrained by later v34/v37 corrections."
+    },
+    {
+      "id": "OA-EVID-LE-SEMANTICS-CORRECTION-V34",
+      "domain": "executable",
+      "artifact": "data/audio/le_fixup_semantics_correction_v34.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Withdraws over-strong interpretation of LE source type 07h; preserves xref graph as metadata without equating it to runtime patch value."
+    },
+    {
+      "id": "OA-EVID-LE-CROSSPAGE-V35",
+      "domain": "executable",
+      "artifact": "data/audio/le_cross_page_fixups_v35.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Cross-page fixup continuation/canonicalization evidence."
+    },
+    {
+      "id": "OA-EVID-LE-CANONICAL-XREFS-V36",
+      "domain": "executable",
+      "artifact": "data/audio/canonical_object_relative_xrefs_v36.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Structural/deduplicated xref corpus retained, but operand-level semantic binding for the 3D core is quarantined by v52-v56."
+    },
+    {
+      "id": "OA-EVID-AUDIO-3D-CORE-V37",
+      "domain": "audio",
+      "artifact": "data/audio/audio_3d_core_candidate_v37.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Coherent 3D-audio update core with XYZ subtraction, distance helper, seven-record loop and direct relative wrapper calls."
+    },
+    {
+      "id": "OA-EVID-MILES-SETTERS-V38",
+      "domain": "audio",
+      "artifact": "data/audio/miles_setter_identity_v38.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Identifies 0x1F5FC as sample-volume path and 0x1F6F1 as sample-pan path using independent diagnostic spacing/order and dispatch evidence."
+    },
+    {
+      "id": "OA-EVID-AUDIO-3D-MATH-V39",
+      "domain": "audio",
+      "artifact": "data/audio/audio_3d_math_v39.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Symbolic distance-to-volume structure and pan routing recovered; exact runtime relocated constants remain HOLD. Raw placeholder-as-data interpretation is explicitly rejected."
+    },
+    {
+      "id": "OA-EVID-AUDIO-CALLERS-V40",
+      "domain": "audio",
+      "artifact": "data/audio/audio_3d_callers_v40.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Four direct callers, six-dword ABI, sample-start/update topology."
+    },
+    {
+      "id": "OA-EVID-LISTENER-ABI-V41",
+      "domain": "audio",
+      "artifact": "data/audio/listener_3d_abi_v41.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Listener position and orientation/forward vectors separated from emitter XYZ table."
+    },
+    {
+      "id": "OA-EVID-AMBIENT-LOADER-V42",
+      "domain": "audio",
+      "artifact": "data/audio/ambient_loader_pipeline_v42.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Three ambient slots, four dynamic slots, seven 24-byte runtime records."
+    },
+    {
+      "id": "OA-EVID-SAMPLE-HANDLE-V43",
+      "domain": "audio",
+      "artifact": "data/audio/sample_filename_to_handle_v43.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "AMB filename to resource/sample resolution and returned runtime handle chain."
+    },
+    {
+      "id": "OA-EVID-GRAPHICS-V44",
+      "domain": "graphics",
+      "artifact": "data/graphics_pipeline_validation_v44.json",
+      "lifecycle": "VERIFIED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "All 86 demo AZF textures decode; R1/R7/R8 GLB geometry/UV/embedded-texture invariants pass. Pixel-perfect framebuffer parity remains HOLD."
+    },
+    {
+      "id": "OA-EVID-SAMPLE-LIFECYCLE-V45",
+      "domain": "audio",
+      "artifact": "data/audio/sample_lifecycle_v45.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Resource/cache and Miles sample lifecycle ordering below filename-to-handle path."
+    },
+    {
+      "id": "OA-EVID-AMBIENT-DEFAULTS-V46",
+      "domain": "audio",
+      "artifact": "data/audio/ambient_playback_defaults_v46.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Pan/volume defaults remain useful; v46 loop-count=0 interpretation is superseded by v50, which traces numeric 1000 to the Miles loop-count setter."
+    },
+    {
+      "id": "OA-EVID-SAMPLE-RATE-V47",
+      "domain": "audio",
+      "artifact": "data/audio/sample_rate_semantics_v47.json",
+      "lifecycle": "ANALYZED",
+      "confidence": "HISTORICAL_SUPERSEDED",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": false,
+      "superseded_by": "OA-EVID-SAMPLE-RATE-POSITION-V48",
+      "note": "Historical v47 wrapper identity retained for provenance; do not use as canonical runtime identity."
+    },
+    {
+      "id": "OA-EVID-SAMPLE-RATE-POSITION-V48",
+      "domain": "audio",
+      "artifact": "data/audio/sample_rate_position_correction_v48.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Corrects v47: record +0x08 is sample position default 0; +0x10 is playback rate default 22050; rate setter path 0x1F4A5 -> 0x38D8C."
+    },
+    {
+      "id": "OA-EVID-PLAYBACK-RATE-CALLSITES-V49",
+      "domain": "audio",
+      "artifact": "data/audio/playback_rate_callsites_v49.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Exactly three direct demo rate-setter calls, each selecting 22050. Its earlier HOLD treatment of AMB literal 1000 is superseded by v50."
+    },
+    {
+      "id": "OA-EVID-AMBIENT-LOOP-ABI-V50",
+      "domain": "audio",
+      "artifact": "data/audio/ambient_loop_abi_correction_v50.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Numeric 1000 reaches AIL_set_sample_loop_count; separate zero is branch/control flag. Exact Miles semantic meaning of 1000 remains HOLD."
+    },
+    {
+      "id": "OA-EVID-AUDIO-XREF-ALIGNMENT-V52",
+      "domain": "executable",
+      "artifact": "data/audio/audio_3d_xref_alignment_audit_v52.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Withdraws v51 target bindings after exact operand alignment and initialized-data contradiction."
+    },
+    {
+      "id": "OA-EVID-FIXUP-QUARANTINE-V53",
+      "domain": "executable",
+      "artifact": "data/audio/fixup_graph_quarantine_v53.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Quarantines operand-level semantic use of legacy xref graph and records eight exact 3D-core disp32 anchors."
+    },
+    {
+      "id": "OA-EVID-FIXUP-SOURCE-MAPPING-V54",
+      "domain": "executable",
+      "artifact": "data/audio/fixup_source_mapping_audit_v54.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Legacy source-coordinate mapping matches none of the eight exact 3D-core operand anchors."
+    },
+    {
+      "id": "OA-EVID-FIXUP-REMAP-V55",
+      "domain": "executable",
+      "artifact": "data/audio/fixup_remap_hypotheses_v55.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Rejects simple constant/instruction/object/page-shift repairs of the quarantined mapping."
+    },
+    {
+      "id": "OA-EVID-CLEANROOM-LE-V56",
+      "domain": "executable",
+      "artifact": "data/audio/cleanroom_le_layout_audit_v56.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Independent 28,547-record fixup parse; correct bound image first data page is LE_header + Data_Pages_Offset; zero exact anchor fixups remain."
+    },
+    {
+      "id": "OA-EVID-INITIALIZED-DATA-V57",
+      "domain": "executable",
+      "artifact": "data/audio/initialized_data_audit_v57.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Confirms raw small disp32 values are relocation placeholders and invalidates static literal interpretation of old candidate targets."
+    },
+    {
+      "id": "OA-EVID-AUDIO-CONSTANT-LATTICE-V58",
+      "domain": "audio",
+      "artifact": "data/audio/audio_3d_constant_lattice_v58.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Independent nine-qword constant lattice; K_DISTANCE=15000 and angular/pan constants HIGH; literal table bytes VERIFIED."
+    },
+    {
+      "id": "OA-EVID-CLASSIC-3D-REFERENCE-V59",
+      "domain": "audio",
+      "artifact": "data/audio/classic_3d_reference_v59.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Side-effect-free angle-domain pan and distance attenuation reference functions with golden vectors; full XYZ/runtime parity remains HOLD."
+    },
+    {
+      "id": "OA-EVID-HEADING-GLOBAL-VOLUME-V60",
+      "domain": "audio",
+      "artifact": "data/audio/heading_global_volume_v60.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "HIGH heading geometry/dataflow structure and HIGH master-volume UI mapping 0..87 -> 0..127. v63 closes helper constant/normal-path identity; startup master-volume default and complete caller-level XYZ endpoint semantics remain unresolved."
+    },
+    {
+      "id": "OA-EVID-HEADING-HELPERS-V61",
+      "domain": "audio",
+      "artifact": "data/audio/heading_helpers_v61.json",
+      "lifecycle": "ANALYZED",
+      "confidence": "HISTORICAL_SUPERSEDED",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": false,
+      "superseded_by": "OA-EVID-HEADING-CORRECTION-V62",
+      "note": "Retains instruction-level helper discoveries; complete caller-level XYZ heading formula/golden semantic labels were superseded by v62."
+    },
+    {
+      "id": "OA-EVID-HEADING-CORRECTION-V62",
+      "domain": "audio",
+      "artifact": "data/audio/heading_semantics_correction_v62.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "Adversarial cardinal test rejects v61 complete XYZ heading closure while retaining X/Z normalization, X-sign branch, helper structure, pan transform, and attenuation."
+    },
+    {
+      "id": "OA-EVID-HEADING-CONSTANT-V63",
+      "domain": "audio",
+      "artifact": "data/audio/heading_constant_resolution_v63.json",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "VERIFIED post-FPATAN x87 constant pi/2; normal 0x30D7A path is asin-equivalent. Complete caller-level raw-endpoint XYZ->heading->pan semantics remain HOLD."
+    },
+    {
+      "id": "OA-EVID-DEMO-COORDINATE-CLOSURE-V67",
+      "artifact": "docs/DEMO_COORDINATE_CLOSURE_V67.md",
+      "lifecycle": "TESTED",
+      "confidence": "HIGH",
+      "provenance": "DERIVED",
+      "summary": "Demo R1/R7/R8 Azrael->Godot transform closes as identity XYZ."
+    },
+    {
+      "id": "OA-EVID-CLASSIC-RENDERER-V86",
+      "artifact": "AUDIO_CLASSIC_RENDERER_ACTIVATION_V86.md",
+      "lifecycle": "IMPLEMENTED",
+      "confidence": "HOLD",
+      "provenance": "RECONSTRUCTED",
+      "summary": "Activation-ready Godot adapter exists but is disabled pending original-runtime parity."
+    },
+    {
+      "id": "OA-EVID-PUZZLES-GRAMMAR-V90",
+      "artifact": "PUZZLES_RECORD_GRAMMAR_V90.md",
+      "lifecycle": "ANALYZED",
+      "confidence": "HIGH",
+      "provenance": "ORIGINAL_DEMO",
+      "summary": "Dominant PUZZLES action field is structurally anchored at FE+128."
+    },
+    {
+      "id": "OA-EVID-PUZZLES-DIRECT-OPEN-V105",
+      "artifact": "PUZZLES_ALTERNATIVE_OPEN_PATHS_V105.md",
+      "lifecycle": "ANALYZED",
+      "confidence": "HIGH",
+      "provenance": "ORIGINAL_DEMO",
+      "summary": "Audited direct fopen/_open/DOS-open mechanisms yield zero PUZZLES read candidates."
+    },
+    {
+      "id": "OA-EVID-WORLD-SERIALIZATION-V106",
+      "artifact": "WORLD_RUNTIME_SERIALIZATION_V106.md",
+      "lifecycle": "VERIFIED",
+      "confidence": "HIGH",
+      "provenance": "ORIGINAL_DEMO",
+      "summary": "WORLD.DAT direct runtime loader and seven-section serialization consume file exactly to EOF."
+    },
+    {
+      "id": "OA-EVID-WORLD-PUZZLE-SOUND-V107",
+      "domain": "gameplay_world_bridge",
+      "artifact": "WORLD_PUZZLE_SOUND_BRIDGE_V107.md",
+      "lifecycle": "ANALYZED",
+      "confidence": "HIGH",
+      "provenance": [
+        "ORIGINAL_DEMO",
+        "DERIVED"
+      ],
+      "canonical": true,
+      "note": "38/40 opcode-0x28 PUZZLES sound records match WORLD section-6 sound records as a multiset; all 13/13 PUZZLES sound stems are represented. Complete compiler remains HOLD; raw derived JSON is excluded from Git."
+    }
+  ]
+}

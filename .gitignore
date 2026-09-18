@@ -1,0 +1,71 @@
+# OpenAzrael repository hygiene
+# Generated/cache files
+.godot/
+.import/
+__pycache__/
+*.py[cod]
+*.pyo
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# Local/editor state
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Build/export output
+build/
+dist/
+exports/
+export/
+.tmp/
+.cache/
+
+# Local backup/snapshot destinations
+OpenAzrael_Backups/
+backups/
+snapshots/
+*.bak
+
+# Raw/original commercial game payloads: keep out of Git.
+# Their fingerprints may be committed under data/backup/.
+original/
+raw/
+source_original/
+data/audio/original_audio/
+data/*.DAT
+assets/audio/
+*.iso
+*.cue
+*.mdf
+*.mds
+
+# Local executable/dump material from reverse engineering
+R.EXE
+r.exe
+*.dmp
+*.core
+
+# Milestone archives are backups/releases, not source history
+openazrael_*.zip
+OpenAzrael_*.zip
+
+# Derived commercial-data render/export artifacts: reproducible from excluded originals.
+assets/rooms/
+assets/textures/classic/
+docs/*.png
+
+# Large reproducible forensic indexes; commit fingerprints, not multi-MB dumps.
+data/audio/trusted_object_relative_xrefs_v33.json
+data/audio/le_fixups_v27.json
+data/audio/canonical_object_relative_xrefs_v36.json
+
+# Oversized reproducible evidence snapshots (>250 KiB at v106 baseline).
+data/puzzles_action_slot_v91.json
+data/puzzle_action_opcode_retail_corpus_v19.json
+data/audio/le_fixups_v27.json
+data/audio/trusted_object_relative_xrefs_v33.json
+data/audio/canonical_object_relative_xrefs_v36.json

@@ -1,0 +1,25 @@
+# Normalize source/document text for reproducible diffs
+* text=auto eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.gd text eol=lf
+*.json text eol=lf
+*.tscn text eol=lf
+*.tres text eol=lf
+*.godot text eol=lf
+*.txt text eol=lf
+
+# Binary artifacts
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.glb binary
+*.wav binary
+*.xmi binary
+*.snd binary
+*.zip binary
+
+# Deliberate Git LFS staging area for selected large, distributable artifacts.
+# Put only files that are safe and intentional to version here.
+reference/large/** filter=lfs diff=lfs merge=lfs -text

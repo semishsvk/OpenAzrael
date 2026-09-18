@@ -1,0 +1,63 @@
+{
+  "checkpoint": "v107-context-v13",
+  "technical_base": "openazrael_godot_poc_v107",
+  "date": "2026-09-18",
+  "workflow": [
+    "DEMO",
+    "FAITHFUL_RECONSTRUCTION",
+    "VALIDATION",
+    "GENERALIZATION",
+    "FULL_GAME"
+  ],
+  "runtime": "Godot 4",
+  "active_slice": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "canonical_docs": {
+    "bootstrap": "OPENAZRAEL_CONTEXT.md",
+    "project_state": "docs/PROJECT_STATE.md",
+    "decisions": "docs/DECISIONS.md",
+    "last_session": "docs/LAST_SESSION.md",
+    "roadmap": "docs/ROADMAP.md",
+    "artifact_index": "docs/ARTIFACT_INDEX.md",
+    "test_matrix": "docs/TEST_MATRIX.md",
+    "audio_map": "docs/AUDIO_MAP.md",
+    "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
+    "git_baseline": "docs/GIT_BASELINE.md"
+  },
+  "current_forensics": {
+    "world_runtime_loader": "VERIFIED",
+    "world_serialization": "HIGH",
+    "world_exact_eof": true,
+    "world_section_counts": [
+      1303,
+      12,
+      37,
+      3,
+      101,
+      8,
+      15
+    ],
+    "direct_puzzles_open_candidates_audited": 0,
+    "puzzles_direct_open_audit": "HIGH_FOR_AUDITED_MECHANISMS",
+    "puzzles_to_world_producer_edge": "PARTIAL_SOUND_IDENTITY_HIGH_FULL_COMPILER_HOLD",
+    "classic_audio_original_runtime_parity": "UNOBSERVED_HOLD",
+    "world_writer_direct_static_refs_audited": 0,
+    "world_writer_indirect_reachability": "HOLD",
+    "puzzles_world_sound_bridge": "HIGH",
+    "puzzles_world_sound_exact_correspondence": "VERIFIED",
+    "puzzles_world_sound_multiset_matches": "38/40",
+    "puzzles_world_sound_unique_stems_covered": "13/13"
+  },
+  "hard_holds": [
+    "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
+    "INDIRECT_CUSTOM_PUZZLES_RUNTIME_ACCESS",
+    "CLASSIC_AUDIO_ORIGINAL_RUNTIME_PARITY",
+    "RETAIL_GLOBAL_COORDINATE_PARITY",
+    "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
+    "WORLD_WRITER_INDIRECT_REACHABILITY"
+  ],
+  "next_target": "Reverse WORLD section-6 27-byte sound-action records and map runtime fields against PUZZLES opcode-0x28 operands/state tokens."
+}

@@ -1,0 +1,979 @@
+{
+  "schema_version": 1,
+  "checkpoint": "v106-context-v12",
+  "generated_utc": "2026-09-18T13:05:40.954737+00:00",
+  "entries": [
+    {
+      "path": "assets/audio/797TAP.WAV",
+      "size": 5124,
+      "sha256": "b307df0a07c48da7968b949e776f3143ba8a4c8a9fe0d9289b34432c5f1456e9",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/799SECDR.WAV",
+      "size": 39632,
+      "sha256": "e2d6b9477680dd008ec52ec71305a5e3965449edc20dd50aeb66e78e292a7416",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/S121.WAV",
+      "size": 74972,
+      "sha256": "7f1a054b31f79514ac46bd5706329311c486af38c2e0ef7be5b963cafbf65a47",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/S137.WAV",
+      "size": 40961,
+      "sha256": "dc4526516cfa13540522abaa8258ac834d0abc3ee3e5a72e27445249d88644c6",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/S152V2.WAV",
+      "size": 134070,
+      "sha256": "60c7ef92b679e3ab061bad31138a601b5a388ff0696904116886d5179fcc3be0",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/S174ELP1.WAV",
+      "size": 60990,
+      "sha256": "95a8fe0f62d90ffe14ba90e5603023e40b584a1be076c59dfa5d74e7010c6233",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/S174ELP2.WAV",
+      "size": 83990,
+      "sha256": "8bd434f501907db9c7e8b5c2c3c1e6ee8e25a2a262f0af22d893d1be8fd7cea7",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/audio/S186.WAV",
+      "size": 88104,
+      "sha256": "afee3ee8f629e8bd31aa9768e01fb27247cfa9abe71a4d7c04fb6058c11ae587",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
+      "path": "assets/rooms/R1.glb",
+      "size": 535916,
+      "sha256": "8a35e60b3f26d1fa656653cc7d3d5875c0927c77882189a6f073bf7ed16a3a6c",
+      "reason": "derived_from_commercial_room_data"
+    },
+    {
+      "path": "assets/rooms/R7.glb",
+      "size": 790640,
+      "sha256": "3c2aa95c4612c550edf8729299f7fe3e992308c2ae9e051b01973f6f48db7971",
+      "reason": "derived_from_commercial_room_data"
+    },
+    {
+      "path": "assets/rooms/R8.glb",
+      "size": 1341944,
+      "sha256": "c36c69baaaff414e12c1c64c0c4e1e9febebf321fb1aa8f888e601326ff5f476",
+      "reason": "derived_from_commercial_room_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPALCVE.png",
+      "size": 11182,
+      "sha256": "aa5fb4d74d49b42dc2b2baed9ceb04ac32e00fdeee65e5aec1bd285c7d5c7a14",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPBACK1.png",
+      "size": 42371,
+      "sha256": "5c537cae441ed158f24461e1f87cfe8e0dcb9849d6ee722f615fef3924199d64",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPBALFL.png",
+      "size": 10110,
+      "sha256": "8d4ad7b7656bf41f3c47609bfcc59aa40832891a0c49b1f277a8f4c0d3e7383c",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPBIBLE.png",
+      "size": 11940,
+      "sha256": "c8c503026fa8d5aabbab80b5fb1847dd0b9894f09a18f4a95697a7dc57f83291",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPBROK#.png",
+      "size": 26739,
+      "sha256": "af289ac2b9897452bc302d5d4cb58ab7c0e4a3ea3868f23f43967d60b9c63bb3",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPFLOR#.png",
+      "size": 57340,
+      "sha256": "ce64e11a9247616bc8d967a5b9f4dc4d3dcefd556f326c21508e8ff709d7ac2f",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPFONT2.png",
+      "size": 164521,
+      "sha256": "0ae0f2e0b1124e3c50258aef90953e439036e6cbdf9f07bf11ffd981717a31ae",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPFRAME.png",
+      "size": 14063,
+      "sha256": "43ceb4d278dbc966e80f1d0cde9b3c82b81132844b07b3ce57c6a51f0830c3d1",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPFRNT1.png",
+      "size": 67584,
+      "sha256": "e24f7722b8262bbcc46d4b9d031a481ec567d6a1beb447521273d1a0330ed22c",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPGLASS.png",
+      "size": 17099,
+      "sha256": "69ccd85abc81a6de1dac0274b4c2bd7dbf75cc0f2db84f1d9eea64e28abd2958",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPGLSNW.png",
+      "size": 64285,
+      "sha256": "2e48505dd5f23dc80770db8d2dc03c28ce74d6b1d9c9005f4ec264c703feed41",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPLEFT1.png",
+      "size": 48879,
+      "sha256": "a09d429a9a6e0d1be2f5f5eb103626642df11d7bea4f09113409c7610886fc39",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPMSG.png",
+      "size": 41666,
+      "sha256": "952c2fa8876c0afa4ea81a55cd3a5c1593226fd0908f9a5befb21ff864485d15",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPPILLR.png",
+      "size": 20407,
+      "sha256": "6fe627723e76e9fdd55574e9fa3a5ac364a703292bb4e239f5deaa59d53783de",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPPLAQ.png",
+      "size": 21225,
+      "sha256": "210da13d282e0b8760b68650c4799786fff17b690850314e79d6d2f654da1a86",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPRAFT.png",
+      "size": 2954,
+      "sha256": "0b80ccad072501f15c6080c4da61bec75883d03cb7e0167331c91105aad14c62",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPRGHT1.png",
+      "size": 52595,
+      "sha256": "641cf60ecc32a967b932ec9b0275bdc5beb48bc3abdc02d1c2e4ed55fe294bd7",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPSTAI1.png",
+      "size": 19148,
+      "sha256": "89ce17c9b6a0013298d2fbc4948eefd096288eb089a415e3b070cc84b0438f10",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPSTAI2.png",
+      "size": 8834,
+      "sha256": "7aaa7e0a358d6aedf508491e951979d8e99bf2b70663d4d586f3166af715c09e",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPTAP.png",
+      "size": 158183,
+      "sha256": "f93b0dc3c18b9a696de755aab074957e57863a9313072dac86662ab4005c189f",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPTAPCE.png",
+      "size": 31189,
+      "sha256": "b5c2609ed205d536fcd634b8c9af422fcfff672332ffcae7d375175bdac2c829",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPWATER.png",
+      "size": 12384,
+      "sha256": "276d23d09b408cc8414b4a25c7a72bca9268807c84c90e657cb769648fd71436",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BAPWHITE.png",
+      "size": 125,
+      "sha256": "5c450eda12857d37d93326aa6cfbccd2edf39844df97ffff0003419079facbec",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BLACK.png",
+      "size": 125,
+      "sha256": "5c450eda12857d37d93326aa6cfbccd2edf39844df97ffff0003419079facbec",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BLOOD2#.png",
+      "size": 1748,
+      "sha256": "3a0b9960c40926850d0bb160fc590361406525fd2d43b14f32cadc15a6880aa7",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BLOOD5#.png",
+      "size": 1524,
+      "sha256": "5e378bd783d5ffa07b10bd222d430597f3d7e67b57576b850aba2f77002b0709",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BLOOD6#.png",
+      "size": 2695,
+      "sha256": "a3700c450a1b6930ac7eca9c0ea422483e80a4aa3c8f6481320f67a8e6ee2e75",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BLOOS3#.png",
+      "size": 1623,
+      "sha256": "b76c95ec8b2949d36d5e5e5a284764b171d5173d1ae8c8e94f4ed31080107a8d",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BLOOS4#.png",
+      "size": 1127,
+      "sha256": "b6c3a48d9c94c2ad5bbf94f67ec37cb6ed419075523b14ba1ddf95599822e2e0",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/BUBBLE#.png",
+      "size": 3184,
+      "sha256": "03635ffbd0378bf9acb83055351e4908cc8071622e87e76db5f323ab2881e936",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/CORIROCK.png",
+      "size": 31681,
+      "sha256": "f212fb9962759c83bfa0a4a432dbc96e3a0b2e23347fe05aac1c78d0b723e1f5",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/DROWN1.png",
+      "size": 5037,
+      "sha256": "dc4c49006031b2dbffcff29a67a23a980e31235822f2962cfa7a202e7d853b97",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRDOR01.png",
+      "size": 14007,
+      "sha256": "f58ec74006b1a6848018bbabb5c4043728683218eec831e97a497947a19f314a",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRDOR02.png",
+      "size": 43117,
+      "sha256": "346b7675fecf0632dcb20bf7a21656ce6b2801449e4c970ebdededab6fdd16ec",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLR01.png",
+      "size": 15738,
+      "sha256": "9692c88eaa6a9fc3d8050106f548d32efe3f4199ca984976dd6746c5a517b85f",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLR02.png",
+      "size": 15459,
+      "sha256": "6e9ba393f56b40ac100fa222141d0f7fff232155f348fad15aa4d74fe7556a3e",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLR03.png",
+      "size": 17240,
+      "sha256": "99d9bd838d3b35b22772f4f899032d92821b64795a888030e4a1b3bab55dafb5",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLR04.png",
+      "size": 9402,
+      "sha256": "8589c8e58b288da29b2f22cb00d789757cceb09ca6c049f9ffe701bf13b14259",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLR05.png",
+      "size": 12270,
+      "sha256": "7b1a7a3e04a14658658755cac648b6b20e23849b1fa309288d08aa6b4e3c2bbe",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLRA1.png",
+      "size": 14690,
+      "sha256": "7a6b0ed75138c0b9e1a809971675aaa014e579a9fc7c15b16a002e77585aab21",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLRA2.png",
+      "size": 14772,
+      "sha256": "b094771fdc34eb77d510b2f5da87b24e7ccd4dbd471cbeaa5bffd76dd6d7a4b0",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLRA3.png",
+      "size": 16653,
+      "sha256": "ea7cd9fe762eb1dd928c6e2a0783010e79a62390eb0fa0e1a73e30912c1f3a77",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRFLRA4.png",
+      "size": 8980,
+      "sha256": "1dc8dd6d658803a82e9fd744cc72c842351325e4b954c9229cf5ed8c27aeb51a",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRHOLE.png",
+      "size": 12827,
+      "sha256": "496bb36b506e464e45af2854d410e2ca6d4148666645c212753fa717adad9cd8",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRLWL01.png",
+      "size": 7180,
+      "sha256": "28270a406c231ed88351e23e2c338b140799f39b2668d7b669d2e1443506503c",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ECRRWL01.png",
+      "size": 7188,
+      "sha256": "aa0eaa5ca0e8996aef934fc6d66421f60012f56ee6788e7df02aefc328ee9b1f",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/EUEYE.png",
+      "size": 45823,
+      "sha256": "c161c30d20078f73acc178b6e48ac9056a03d91a84830cf07d5ed0410e295970",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/EUFRNT.png",
+      "size": 17263,
+      "sha256": "10a4ff9c7d8c1184e6307b0db26b99d459c3d23d54cd55a5c3fdc2037fd8d1cc",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/EUSIDE.png",
+      "size": 33213,
+      "sha256": "83cb5d9c0dcd35de52f087d07a1589c743b69f4f23cc1528e0e99ccce5d1ad87",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/EUTOP.png",
+      "size": 17487,
+      "sha256": "558f7c6a562f78bc2989234bc920f8aad1693e69cc3bfc751d3238b6aefd6e92",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/KEYHOLE#.png",
+      "size": 650,
+      "sha256": "af04728067f41381f807f30aa9e847adc9d55842eac303bd470f388634fce35f",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/MINEFLR2.png",
+      "size": 1324,
+      "sha256": "81e5b5fd822f76547fb2230b1db810b5ae1583a0ca1ca52cda5d4ba8809f8363",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/MINETON#.png",
+      "size": 5810,
+      "sha256": "b6d9ea97398d99f926c0f93cca4b3a933f8e834d91bdcb816253281c57fc0dbc",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/NIABOD.png",
+      "size": 18579,
+      "sha256": "45572de2344da6242c2e220e1ae53a24b25550d0da4a5382c58ec0b14d8ba010",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/NIAHED.png",
+      "size": 9425,
+      "sha256": "65ff20e3b573dbf1b0cebfdb6ef86924f2d443080cf40b29c0e96fd8ab763f4c",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/N_BLACK.png",
+      "size": 125,
+      "sha256": "5c450eda12857d37d93326aa6cfbccd2edf39844df97ffff0003419079facbec",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/ORR2BAP.png",
+      "size": 31805,
+      "sha256": "9fd9edf240361a424b91e1bdff3a0a146ad22cb06bf6f57b9a3c79cf47d38dee",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/OR_TUNNL.png",
+      "size": 36558,
+      "sha256": "c68674f56b424e43825d5b9c6305c25318c7a8a4eefd3bc67f53fb5a15c057ce",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/R12R7.png",
+      "size": 36592,
+      "sha256": "20ef56b7bb2195148f66d9bd92745bb1f48544f251b4c8093a3544b2d29a5b36",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/R72R1.png",
+      "size": 29800,
+      "sha256": "0416e281907723a072a7cda2be057299f05620c1f8ad569663c2ec56dd97571f",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/R82R1.png",
+      "size": 27283,
+      "sha256": "4630bdac6e14bfc3d9da2b6f539a1890fd31766e1b9e0ed30e3ab2152eee41a9",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/SHIELD1.png",
+      "size": 154377,
+      "sha256": "144ac8e4cbda23460a57adc4ce349278cc1623e7c69c59a851d1e25a6061eca5",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/SPADOOR.png",
+      "size": 16195,
+      "sha256": "e7c199ac0c01e54999644183bf19c89821cff682863b3f2197cc064b72da51b7",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/VSTPAP01.png",
+      "size": 4361,
+      "sha256": "e27ae367c4e20b6d31c6222cfa4a9deec7e6338b62977fb922bc380310be996b",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_BDY1.png",
+      "size": 26390,
+      "sha256": "5b57414ffb92a3a06faa8a6fb111898603f22c8bb8a12b14b4433897d177b749",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_BDY2.png",
+      "size": 22214,
+      "sha256": "03f435e1fa3758d0f6caedfb14de9516ffe3f8a7d8df716a703e03b9ed3989c5",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_COLD.png",
+      "size": 7918,
+      "sha256": "cfb463ff4c64881aac62996b3de4c7b57072f3cdfe324372ee61ffae325506c8",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_FLOR.png",
+      "size": 20571,
+      "sha256": "ba97a0d42f2cd3ff3781d77e12dd39c89834bf7b0c6432ce20403c2d20f6e038",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_KEY.png",
+      "size": 7412,
+      "sha256": "4700645e06b7c3c01ce86caef54bab1a80b4d93835aabf4d546f41ab821a5688",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_PI2.png",
+      "size": 8885,
+      "sha256": "485b70bf1d0e2bce5f5edbbbd18298da233f5b732e3048d4142feb6cf4f14a56",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_PIP1.png",
+      "size": 11911,
+      "sha256": "107db1105c8fa0145864f9bb05128da0c640ec3dd5730e2974702d37950977e0",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_PUZ1.png",
+      "size": 20764,
+      "sha256": "7895b59a74374438f2efeca3d7b3eefc9ea8479fbe755c9ded1e078f8470a730",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_PUZ2.png",
+      "size": 12474,
+      "sha256": "d4a7881a16edd18458d8603bfe8c03d23cdeccffe2c9f831ee0aff5993983a22",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_R01.png",
+      "size": 42488,
+      "sha256": "605ce5d1c0ed0546a9070f24c86e31f6460571b90b6aeb4a0a62d1eea43e1bbc",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL1.png",
+      "size": 74594,
+      "sha256": "385b5485405591b647e364a564b23786c2f9448f48b4bbc88d5bd20c9a91b9cd",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL2.png",
+      "size": 70015,
+      "sha256": "95fc2b2e2af94f9b7b853836e6509c834704023712b4bec9f9d1af377a412be0",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL3.png",
+      "size": 58467,
+      "sha256": "31596ab7357e693c8aef22e014f0fd2e290eb1e6c41b9b8dbec9c7d26d79d76a",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL4.png",
+      "size": 40169,
+      "sha256": "0b920ca0d37f1769908264885a1a32a678c69fd36004d3cc838bd2c3af73e3a2",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL5.png",
+      "size": 24047,
+      "sha256": "b98dbb5cb65d715b72ef24705e9a06543c4122853526ab83d934984739455eef",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL6.png",
+      "size": 16848,
+      "sha256": "b9618009206c8e47332833efb206449daa891646196925f99341a420031097dc",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL7.png",
+      "size": 19337,
+      "sha256": "50bb5a08176579e0bb89f046ebe4e51174ac1b44a26bf914331f9629bcb597fc",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL8.png",
+      "size": 16366,
+      "sha256": "767769b531afba4f4a90033091d5d2a84b8bed818dc5219b51445bd0ae3a67cb",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WAL9.png",
+      "size": 15465,
+      "sha256": "a0c9ff8a0600367e793b0fa74acb83fdc5e3d50cab8e404a2dc0286f18def954",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WHOT.png",
+      "size": 10885,
+      "sha256": "0209d5bd8b4f2afa317394bb7d9ceeff83588dbf3e7257296a4209100bd3eda2",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WWA2.png",
+      "size": 24347,
+      "sha256": "651b760a3c1eae3c3267e4021ad5fd5b4d4dfadb3e78847cfcd961421ac59afe",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "assets/textures/classic/WEL_WWAL.png",
+      "size": 32441,
+      "sha256": "96220d4b22caea2bfcde0f55eac775bbe3d6916e799f37de7858cd0f24812098",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
+      "path": "data/MAPS.DAT",
+      "size": 565,
+      "sha256": "a156a2aba128a733e389166d6b57688b2308def957e67d5d005299c7d3810924",
+      "reason": "original_commercial_data"
+    },
+    {
+      "path": "data/ROOMS.DAT",
+      "size": 90968,
+      "sha256": "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b",
+      "reason": "original_commercial_data"
+    },
+    {
+      "path": "data/audio/canonical_object_relative_xrefs_v36.json",
+      "size": 5437543,
+      "sha256": "95a9ce33d3e49d4ebf73caacb0703f48ce3411b0757fb13b55095f7a9d0fd087",
+      "reason": "oversized_reproducible_evidence_snapshot"
+    },
+    {
+      "path": "data/audio/le_fixups_v27.json",
+      "size": 7547865,
+      "sha256": "1e24ee2c6b2ec8a13fa778b1a005ac3f6fd3d0242a0a3c59d7c50517af307fe4",
+      "reason": "oversized_reproducible_evidence_snapshot"
+    },
+    {
+      "path": "data/audio/original_audio/797TAP.WAV",
+      "size": 5124,
+      "sha256": "b307df0a07c48da7968b949e776f3143ba8a4c8a9fe0d9289b34432c5f1456e9",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/799SECDR.WAV",
+      "size": 39632,
+      "sha256": "e2d6b9477680dd008ec52ec71305a5e3965449edc20dd50aeb66e78e292a7416",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/977TURN.WAV",
+      "size": 22164,
+      "sha256": "c00a6a45073a2d5832e341a4615dff7d9bac649132b61a30da9de6c5c16067a2",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/979TONGS.WAV",
+      "size": 20994,
+      "sha256": "46f19b82e3c85ce5c4a198d745fe9ab5789a3d1a32d552748bb5b8585e0c8469",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/981PULL.WAV",
+      "size": 19803,
+      "sha256": "1a326d9aec289a5c8ea2fe22cc08b312e3e4ea0d4fadf95807346208795ef3bd",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/982PUSH.WAV",
+      "size": 20500,
+      "sha256": "663eec89befa92ee67984da4e4e979db1031890f9849931fd52faedcb0537e23",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/983TUNK.WAV",
+      "size": 17276,
+      "sha256": "d0ef95756cd0bd25348ca5bbbd597fadc14560564375f9f0830cc77ceb84748c",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/990WDSPA.WAV",
+      "size": 59956,
+      "sha256": "f2fa50a4c9f359b798b3461d16ca9fd330a34ec023021a0851a69cb5e15384c1",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/995.WAV",
+      "size": 34680,
+      "sha256": "30f0e39db79c2caef754f7ae421af324e11c500cfd13b9b1d82936ee6fce0399",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/996.WAV",
+      "size": 12418,
+      "sha256": "da25ae5da8d6aaa85047fc6285436aba5767b29a0f4bd13b8e8814c07019d650",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/AMB0.SND",
+      "size": 74,
+      "sha256": "6bfd4c5c8d29be10e12849d7c1637f9e87bd7a77c4b0bc15579a680363fde945",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/AMB1.SND",
+      "size": 101,
+      "sha256": "d0f052fb29b77dadd97655f1c2157e945645108d4212931a661a23901cbcc7fc",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/AMB2.SND",
+      "size": 72,
+      "sha256": "0478a2b4e440331059f55689a07380a60389691d902e7861a5a2fd1c173384d5",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/AWEMYST.XMI",
+      "size": 5078,
+      "sha256": "5fc0a74f866240a3034fcab7d89cfdae3eb9726899ffce34dec4801428b18700",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/AWE_FM.XMI",
+      "size": 5084,
+      "sha256": "4b8b8d96cfd8e082d194c906b5c3662a2d164851f986f000577dc91703f11836",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/BLANK.XMI",
+      "size": 102,
+      "sha256": "2f2b429cca283c62065bba2c36077dba502a72955c5cfc74dd938856732d11bc",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/CATHEDRL.XMI",
+      "size": 4320,
+      "sha256": "3ca932f78041e63d3ed7248202917fa9c88a7a14a1150966af9452061d281301",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/CATH_FM.XMI",
+      "size": 5692,
+      "sha256": "6b5d9d152bd2bf226a3d2bec036b69782aa36c76a9b3c5a6b84ca2e1a7b6469e",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/DEATH.XMI",
+      "size": 11354,
+      "sha256": "630753ef713d29f9bf6d5714920b7400b760c66ff1754bf15864c242ccb4ca6f",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/EGYPTIAN.XMI",
+      "size": 4426,
+      "sha256": "5d6c6c2942d41582bae51e0a73682085dfc3c45dd8573525b32a5bf0f3b0d6d9",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/EGYPT_FM.XMI",
+      "size": 4458,
+      "sha256": "65db7fe78654ca96064386f68bc2a510924842e827b41f0764ef2cf37e404605",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/EUGROAR.WAV",
+      "size": 20780,
+      "sha256": "031b0282fba55d9a5446c6ea51e2328e8586ffa3b14042105ef663e56a443cb1",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/FIGHT2.XMI",
+      "size": 4712,
+      "sha256": "00a8943a9171d6d05627f65a907cf8c66321db258a5d473f07614da8e65c546a",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/FITE2_FM.XMI",
+      "size": 3814,
+      "sha256": "9fe4914c3a2f17e72aebf0c45c0214a4d38d1af7477f7162118a0a5a30ad1972",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GAME1_FM.XMI",
+      "size": 23496,
+      "sha256": "cb563865fe0225bc7e116dc244baea8431f9ffd48981f4de7c54812abae71ddf",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GAME2_FM.XMI",
+      "size": 35820,
+      "sha256": "2425ea0abc8547fccea54dfb93a479885cc5e5fac756c4a970040e8a5c3f1613",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GHOSTS.XMI",
+      "size": 17382,
+      "sha256": "2767182b2cdd9613c3bfc8f8e1fb6c309f4ab772efc6c33b3b0da73649c2d617",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GHOST_FM.XMI",
+      "size": 17700,
+      "sha256": "17bd301ad4a10f8bc94862e4fa13a38a1e74e6b776f5d8b9ccaea779f87d8d5c",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GRAIL.XMI",
+      "size": 3998,
+      "sha256": "99add615561d421e79a1c317308e83675c896ab4cf678d7743b0b6f44cce1089",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GRAIL_FM.XMI",
+      "size": 3718,
+      "sha256": "b8c9079de64216860fbab7e6442eac90f8cc94bd44fe0bf870516c30abfc9692",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/HUD3.WAV",
+      "size": 46972,
+      "sha256": "ee560595c5c67d4d6aeb902bb2b681533e314e6d08f2047e5d9f9e173c131dcb",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/HUDLOCKR.WAV",
+      "size": 3842,
+      "sha256": "a24e274bc866899e0dd83cce3f9612aa28544d159fd552ab10bc7a17af77043f",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/INGAME.XMI",
+      "size": 18592,
+      "sha256": "d0a2c725509d8b5bd7a20de096b2f00a6e9f75cfb21a16a27fcb3757261c160b",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/INGAME2.XMI",
+      "size": 31500,
+      "sha256": "6abbabaa7407b162b701d853e970e0035c1863a847425359b98d66aac5d0a761",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/KREEPY2.XMI",
+      "size": 13384,
+      "sha256": "a2b884b081a1aaccddca3698d07254e230948d94ddb1e45588556f78f38419bf",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/KREEPY3.XMI",
+      "size": 7506,
+      "sha256": "f56130c12092911d55eb6a2fe6e0bff1cb10c1b89b3d02d02b93cf31083b8e3a",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/KREP2_FM.XMI",
+      "size": 15756,
+      "sha256": "4f48e42a98176d31231612c439ec0b8fae1a599f38e2312a46c101047d724c11",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/KREP3_FM.XMI",
+      "size": 10578,
+      "sha256": "40d1fb11ff2f71a37cf027401d9f5e5111874632174cfdd79f872c71d10c489e",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/PEACEFUL.XMI",
+      "size": 8082,
+      "sha256": "0301e68ae3d9262849475363aa33e8055dab28e360b116e32a1a4b0d0b16403e",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/PEACE_FM.XMI",
+      "size": 9882,
+      "sha256": "eeb09b3eab287c278c9a513a0bed25b79173170491a25468529d91b042338564",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S121.WAV",
+      "size": 74972,
+      "sha256": "7f1a054b31f79514ac46bd5706329311c486af38c2e0ef7be5b963cafbf65a47",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S134.WAV",
+      "size": 79196,
+      "sha256": "2e08bf53477617afef0124a507c5e244c4e131a6a53090fd52857eb2d4f93d99",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S137.WAV",
+      "size": 40961,
+      "sha256": "dc4526516cfa13540522abaa8258ac834d0abc3ee3e5a72e27445249d88644c6",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S152V2.WAV",
+      "size": 134070,
+      "sha256": "60c7ef92b679e3ab061bad31138a601b5a388ff0696904116886d5179fcc3be0",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S16.WAV",
+      "size": 72620,
+      "sha256": "84abbd4c5b13682e9df49dfc83c50535bdcbb3b380e2176d74116c6deea37a5c",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S174ELP1.WAV",
+      "size": 60990,
+      "sha256": "95a8fe0f62d90ffe14ba90e5603023e40b584a1be076c59dfa5d74e7010c6233",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S174ELP2.WAV",
+      "size": 83990,
+      "sha256": "8bd434f501907db9c7e8b5c2c3c1e6ee8e25a2a262f0af22d893d1be8fd7cea7",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S182.WAV",
+      "size": 6684,
+      "sha256": "9d931d3b3a3af1acf0980be606b0b1df0ccba005c683ae275117786f20649fb2",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S186.WAV",
+      "size": 88104,
+      "sha256": "afee3ee8f629e8bd31aa9768e01fb27247cfa9abe71a4d7c04fb6058c11ae587",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S188.WAV",
+      "size": 127164,
+      "sha256": "7319e2183e28c281d51c8e166beba2c66d1e3dd28a040b322c274435efabee07",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S199A_9.WAV",
+      "size": 7308,
+      "sha256": "cea23272e800f01964aeb3aa6f3d76004da67568805fb8033b50caca51e29649",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/S25.WAV",
+      "size": 49964,
+      "sha256": "5a732e22d9ca4126d077df6388ce2c9fe87c30ad293d87c554efa3f7695a2059",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/SCAN.WAV",
+      "size": 25510,
+      "sha256": "daad59672c9788b06b551cbadf32380ff9d8e85d8be243ad218f5157c2741667",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/SHOT.WAV",
+      "size": 18470,
+      "sha256": "121c3731cc3cdf33d474b3a002c59acef67a727d1413033d92ec39a91c33d523",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/SPAPER.WAV",
+      "size": 9188,
+      "sha256": "028ac28fa3ce9f24fe4a06e412f5cbe2b5d7c294a14772bb954a1fae53a0efbf",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/SPICK.WAV",
+      "size": 11658,
+      "sha256": "5d9e4c915649741dc66760e388d67072c262809b29ae40c9e7ffea221a124381",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/SR27KEYS.WAV",
+      "size": 18800,
+      "sha256": "bb99fc8f6e2614fbf3bebbf4531d2a5c363a43737f0c1e7a6d8456a777430105",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/trusted_object_relative_xrefs_v33.json",
+      "size": 9566493,
+      "sha256": "f76e35a0687d363e2230db4042452a7f84614f03abfa0eda56637f1c62fdd7f4",
+      "reason": "oversized_reproducible_evidence_snapshot"
+    },
+    {
+      "path": "data/puzzle_action_opcode_retail_corpus_v19.json",
+      "size": 738328,
+      "sha256": "9c0acde0a7bf84c8873ca30e116db993ec608984a040df1c5fc3fcc2cb5d033e",
+      "reason": "oversized_reproducible_evidence_snapshot"
+    },
+    {
+      "path": "data/puzzles_action_slot_v91.json",
+      "size": 321411,
+      "sha256": "3ec8c0f58fbfbc70ff9d983c873f4620488671ca9c4c23e1547bbc44b00e1359",
+      "reason": "oversized_reproducible_evidence_snapshot"
+    },
+    {
+      "path": "docs/OpenAzrael_R8_control_screenshot_v18.png",
+      "size": 79913,
+      "sha256": "7bf0ce3da6222b2e38a21e94b93568101dac28b4cd717bedfd01bd72375f13ef",
+      "reason": "derived_binary_reference_image"
+    }
+  ]
+}
