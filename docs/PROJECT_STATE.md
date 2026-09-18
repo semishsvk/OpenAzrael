@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v110-context-v18`
+**Canonical checkpoint:** `v111-context-v19`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v110**. The context/Git/quality layer is merged forward as **v110-context-v18**.
+The newest technical base is now **v111**. The context/Git/quality layer is merged forward as **v111-context-v19**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -76,7 +76,13 @@ The newest technical base is now **v110**. The context/Git/quality layer is merg
 - Missing R1/R7/R8 local GLBs produce `BLOCKED_MISSING_ASSETS` (exit 2), not a misleading test failure.
 - Source contract is PASS; asset-backed Godot execution remains NOT EXECUTED in this environment.
 
-### KG-001 known-good demo gate — context v18
+### KG-001 full synthetic demo — v111
+- `scripts/kg001_full_demo_runner_v111.gd` drives the complete demo through production `interact()` scripts and real RoomManager transitions.
+- It uses evidence-backed trigger centroids / R8 activation center for synthetic positioning, but does not directly inject gameplay flags or puzzle nodes.
+- Final hash must equal the v108 exhaustive-model success hash and the logical audio stream must equal the four Event IR sound actions.
+- `tools/kg001_status_v111.py` consolidates G00-G10. Current overall state is **PRE_RUNTIME_READY** and the known-good tag remains forbidden until every gate is literal PASS.
+
+### KG-001 known-good demo gate — context v19
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -95,7 +101,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Execute v109 and v110 in a Godot-capable checkout; if both pass, consolidate G02-G07 and implement the G08 synthetic full-demo runner.
+1. Execute v109/v110/v111 in a Godot-capable checkout, capture runtime evidence, then run G00/G01 and G09 before the user's G10 manual sanity.
 2. Reverse the 27-byte WORLD sound-action record and the section-6 reader chain (`0x29E98 -> 0x29CF4 -> 0x29638`).
 3. Identify which numeric/runtime fields replace the second PUZZLES operand/state token.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
