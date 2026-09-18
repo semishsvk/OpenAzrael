@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v115-context-v23`
+**Canonical checkpoint:** `v116-context-v24`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v115**. The context/Git/quality layer is merged forward as **v115-context-v23**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v24**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -113,7 +113,18 @@ The newest technical base is now **v115**. The context/Git/quality layer is merg
 - `tools/kg001_status_v112.py` promotes G00-G09 only from recorded PASS evidence. G10 remains manual with a dedicated checklist/template.
 - Overall state remains **AWAITING_RUNTIME_OR_MANUAL**; the known-good tag remains forbidden.
 
-### KG-001 known-good demo gate — context v23
+### KG-001 Candidate 1 diagnostics — v116
+- The first real Godot integration candidate is now source-ready as **KG-001 Candidate 1**.
+- Added `CandidateDiagnostics` autoload with structured JSONL event logging, canonical state hashes and F10 state dumps.
+- Added F6 authored trigger-volume visualization and an F7 diagnostic HUD showing room, player XYZ, flags, puzzle nodes, value keys, last trigger, last event and last logical audio.
+- Existing F8 audio debug and F9 parity capture are deliberately preserved.
+- Room GLBs are runtime-loaded after explicit resource preflight rather than preloaded at script parse time, giving deterministic missing-asset diagnostics.
+- Non-headless preflight also requires the four golden Event-IR WAV assets used by the accepted demo route; headless capture-only tests do not.
+- `tools/validate_candidate_diagnostics_v116.py` is included in the v112 one-command candidate source suite.
+- Source contract: **PASS**. Godot runtime execution: **NOT EXECUTED** in the current environment.
+- The earlier uncommitted static producer/copy experiment is deferred and renumbered to v117.
+
+### KG-001 known-good demo gate — context v24
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -132,7 +143,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Run the v112 candidate runner with --fresh-checkout --promote-results, then evaluate v112 gate status and perform G10 only if G00-G09 are PASS.
+1. Run the v112 candidate runner with --fresh-checkout --promote-results on the v116 Candidate 1 source tree, then perform an interactive Candidate 1 pass with F6/F7/F10 diagnostics and complete G10 only if G00-G09 are PASS.
 2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
