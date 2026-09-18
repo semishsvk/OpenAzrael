@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v108-context-v16`
-**Technical base:** `openazrael_godot_poc_v108`
+**Current canonical checkpoint:** `v109-context-v17`
+**Technical base:** `openazrael_godot_poc_v109`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -38,6 +38,12 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Canonical persistent DemoState serialization/hash is implemented in `scripts/demo_state.gd`.
 - `tools/kg001_state_space_v108.py` exhaustively explores the current source-safe demo logic using the shared Event IR and trigger/transition IR.
 - Current source-model result: 63 reachable states, 123 changed edges, 0 softlocks, 0 non-success dead ends. Godot runtime execution remains required before KG-001 can pass.
+
+## KG-001 v109 headless layer
+- DemoState now supports reset/restore round-trip against the canonical payload/hash.
+- LegacyEvents has a capture-only logical audio mode that avoids loading excluded WAV assets.
+- `scripts/kg001_headless_runner_v109.gd` tests the real autoload/Event-IR state path without loading `main.tscn`.
+- Source contract: PASS. Godot runtime execution: NOT EXECUTED in this environment.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
