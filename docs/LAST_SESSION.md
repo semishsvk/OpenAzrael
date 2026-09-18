@@ -1,26 +1,27 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v112-context-v20`
+**Checkpoint prepared:** `v113-context-v21`
 **Date:** 2026-09-18
 
 ## What changed
-- Advanced technical base to **v112** and canonical context to **v112-context-v20**.
-- v108 exhaustive logical state-space remains source-model PASS with 63 states and 0 modeled softlocks.
-- v109/v110/v111 runtime runners remain prepared but NOT EXECUTED in this environment.
-- Added `tools/run_kg001_candidate_v112.py`: one command for source validators, Godot discovery, v109/v110/v111 runtime capture, Git cleanliness checks, repository-safety checks, ignored-room-asset checks and optional evidence promotion.
-- Candidate evidence is written under ignored `.tmp/kg001/`; G09 clean_before and clean_after are captured before optional promotion dirties the checkout.
-- Added `tools/kg001_status_v112.py`, which can promote G00-G09 to literal PASS only from recorded PASS evidence.
-- Added the G10 human sanity checklist and a result template. G10 cannot be auto-promoted.
-- Current overall status is **AWAITING_RUNTIME_OR_MANUAL**; `demo-known-good-001` remains forbidden.
+- Advanced technical base to **v113** and canonical context to **v113-context-v21**.
+- Preserved the v112 KG-001 candidate workflow unchanged: runtime execution is still pending and `demo-known-good-001` is still forbidden.
+- Recovered the exact field-level runtime layout of the WORLD section-6 opcode-`0x28` 27-byte sound record.
+- Verified `+13` as a u16 WORLD section-0 object index and `+15` as the demo room/context id (0=R1, 1=R7, 2=R8).
+- Closed the loader -> section-0 array global `0x43890` -> opcode handler `0x191E9` -> object-name/spatial lookup -> `%s.WAV` -> dynamic 3D start `0xD155` control/data-flow chain.
+- Upgraded the v107 38/40 multiset bridge to **38/40 order-preserving LCS matches**.
+- Room validation gives 35 direct XAF-manifest matches plus 3 independently supported R7 aliases and zero conflicts.
+- Added source-safe analyzer, result, validator and `WORLD_SOUND_RECORD_FIELDS_V113.md`.
+- The v113 analyzer passes 20/20 invariants; the source-safe result validator passes and rejects raw commercial payload fields.
 
 ## Current blockers / HOLD
-- Need a Godot-capable checkout to execute v109/v110/v111.
-- v110/v111 require locally restored/imported R1/R7/R8 assets, which must remain ignored by Git.
-- G00-G09 need recorded candidate evidence from v112.
-- G10 requires the user's final manual sanity run after G00-G09 PASS.
-- Full PUZZLES/ROOMS -> WORLD compiler mapping, indirect WORLD-writer reachability and original-runtime Classic audio parity remain HOLD.
+- KG-001 v109/v110/v111 still need execution in a Godot-capable checkout; G09 and G10 remain pending.
+- Bytes +17..+26 of the 27-byte opcode-`0x28` WORLD record remain UNKNOWN/HOLD because the runtime handler does not consume them.
+- The complete PUZZLES/ROOMS -> WORLD producer/compiler mapping remains HOLD.
+- Indirect WORLD-writer reachability remains HOLD.
+- Original-runtime Classic audio pan/volume parity remains UNOBSERVED/HOLD.
 
 ## Exact next action
-On the development machine run:
-`python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`
-with Godot available and local ignored room assets restored. Then run `python tools/kg001_status_v112.py`. If G00-G09 are PASS, perform `docs/KG001_MANUAL_SANITY_CHECKLIST.md` and record G10.
+In parallel:
+1. on a Godot-capable development checkout run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`;
+2. for forensics, audit the opcode-`0x28` record tail from the producer/writer side, beginning with the matched section-6 writer path around `0x29E40`, without assigning semantics to +17..+26 unless separately proven.
