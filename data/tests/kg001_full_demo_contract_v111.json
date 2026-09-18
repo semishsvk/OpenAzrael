@@ -1,0 +1,29 @@
+{
+  "schema":"openazrael.kg001.full_demo_contract",
+  "version":111,
+  "status":"SOURCE_CONTRACT_PASS",
+  "godot_runtime_status":"NOT_EXECUTED",
+  "requires_local_room_assets":true,
+  "checks":{
+    "main_scene_loaded":true,
+    "asset_preflight":true,
+    "production_interact_methods":true,
+    "pickup_path":true,
+    "door1_path":true,
+    "r7_transition_path":true,
+    "well_key_path":true,
+    "switchboard_path":true,
+    "return_r1_path":true,
+    "door2_path":true,
+    "r8_transition_path":true,
+    "lens_path":true,
+    "bible_path":true,
+    "shield_path":true,
+    "capture_only_audio":true,
+    "audio_oracle":true,
+    "hash_oracle":true,
+    "no_direct_gameplay_flag_injection":true,
+    "bounded_optical_wait":true
+  },
+  "failed":[]
+}
