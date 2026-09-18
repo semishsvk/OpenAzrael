@@ -413,3 +413,8 @@ v111 adds a complete no-human R1 -> R7 -> R1 -> R8 synthetic playthrough through
 ## v112 — KG-001 candidate workflow
 
 v112 adds a one-command candidate runner for the full KG-001 pre-release workflow: source validators, Godot discovery, restored-room import, v109/v110/v111 runtime capture, Git cleanliness and repository-safety checks, G09 evidence, optional result promotion, evidence-driven G00-G09 status, and a separate G10 human sanity checklist. Current state is AWAITING_RUNTIME_OR_MANUAL; the demo-known-good-001 tag remains disallowed until every G00-G10 gate is literal PASS. See `docs/KG001_CANDIDATE_RUNNER_V112.md`.
+
+
+## v113 — WORLD opcode-0x28 record fields
+
+v113 closes the runtime-consumed field layout of the 27-byte WORLD section-6 sound-action record and upgrades the v107 bridge to 38/40 order-preserving PUZZLES -> WORLD matches. The verified demo layout is opcode at +0, sound stem at +1, WORLD section-0 object index (u16 LE) at +13, and room/context id (u16 LE) at +15 with 0=R1, 1=R7, 2=R8. The handler resolves the referenced object, formats the stem through %s.WAV and reaches the dynamic 3D sample-start path. Bytes +17..+26 remain UNKNOWN/HOLD and the complete PUZZLES/ROOMS -> WORLD compiler is still not claimed. See `WORLD_SOUND_RECORD_FIELDS_V113.md`.
