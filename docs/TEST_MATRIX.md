@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v110-context-v18`
+**Canonical checkpoint:** `v111-context-v19`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v110-context-v18 | PASS target | Source/context validation |
+| Project context | v111-context-v19 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -13,8 +13,8 @@
 | Direct PUZZLES open audit | v103-v105 | HIGH for audited mechanisms | Indirect/custom paths not excluded |
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
-| Source-safe runtime IR | v110-context-v18 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v110-context-v18 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v111-context-v19 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v111-context-v19 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -52,3 +52,14 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | G05 trigger bounds/gates | SOURCE_CONTRACT_PASS / runtime pending | Uses real RoomManager path when executed |
 | Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
 | G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
+
+
+## v111 KG-001 full-demo status
+
+| Gate/layer | Status | Evidence boundary |
+|---|---|---|
+| G08 production-interaction synthetic route | SOURCE_CONTRACT_PASS / runtime pending | Uses real interaction scripts and RoomManager |
+| Direct gameplay state injection | FORBIDDEN / validated absent | Trigger positioning is synthetic, state effects are production code |
+| Final state hash oracle | WIRED | v108 success hash |
+| Logical audio oracle | WIRED | S152V2 -> S137 -> S121 -> 799SECDR |
+| Consolidated G00-G10 status | PRE_RUNTIME_READY | Final tag forbidden until all gates literal PASS |
