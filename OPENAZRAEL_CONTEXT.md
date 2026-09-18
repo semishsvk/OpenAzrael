@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v109-context-v17`
-**Technical base:** `openazrael_godot_poc_v109`
+**Current canonical checkpoint:** `v110-context-v18`
+**Technical base:** `openazrael_godot_poc_v110`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -44,6 +44,12 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - LegacyEvents has a capture-only logical audio mode that avoids loading excluded WAV assets.
 - `scripts/kg001_headless_runner_v109.gd` tests the real autoload/Event-IR state path without loading `main.tscn`.
 - Source contract: PASS. Godot runtime execution: NOT EXECUTED in this environment.
+
+## KG-001 v110 room/trigger layer
+- `scripts/kg001_room_trigger_runner_v110.gd` prepares asset-backed G04/G05 tests using the real RoomManager trigger implementation.
+- It covers all four tracked transitions, both R1 locked negative gates, trigger inside/outside bounds and persistence across room replacement.
+- Missing local room assets are reported as BLOCKED_MISSING_ASSETS rather than FAIL.
+- Source contract: PASS. Godot asset-backed execution: NOT EXECUTED here.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
