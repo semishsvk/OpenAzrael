@@ -119,3 +119,42 @@ func canonical_state_hash() -> String:
     context.start(HashingContext.HASH_SHA256)
     context.update(canonical_state_json().to_utf8_buffer())
     return context.finish().hex_encode()
+
+
+# v109 KG-001 save/load support for persistent DemoState.
+func _dictionary_from_pairs(pairs):
+    if not pairs is Array:
+        return null
+    var out: Dictionary = {}
+    for pair in pairs:
+        if not pair is Array or pair.size() != 2:
+            return null
+        out[String(pair[0])] = pair[1]
+    return out
+
+func reset_all() -> void:
+    inventory.clear()
+    flags.clear()
+    puzzle_nodes.clear()
+    values.clear()
+    inventory_changed.emit()
+
+func restore_canonical_state_payload(payload: Array) -> bool:
+    if payload.size() != 5 or int(payload[0]) != 1:
+        return false
+    var restored_inventory = _dictionary_from_pairs(payload[1])
+    var restored_flags = _dictionary_from_pairs(payload[2])
+    var restored_puzzle_nodes = _dictionary_from_pairs(payload[3])
+    var restored_values = _dictionary_from_pairs(payload[4])
+    if restored_inventory == null or restored_flags == null or restored_puzzle_nodes == null or restored_values == null:
+        return false
+    inventory = restored_inventory
+    flags = restored_flags
+    puzzle_nodes = restored_puzzle_nodes
+    values = restored_values
+    inventory_changed.emit()
+    for key in flags.keys():
+        flag_changed.emit(String(key), bool(flags[key]))
+    for key in puzzle_nodes.keys():
+        puzzle_node_changed.emit(String(key), bool(puzzle_nodes[key]))
+    return true
