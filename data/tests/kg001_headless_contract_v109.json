@@ -1,0 +1,22 @@
+{
+  "schema": "openazrael.kg001.headless_contract",
+  "version": 109,
+  "status": "SOURCE_CONTRACT_PASS",
+  "godot_runtime_status": "NOT_EXECUTED",
+  "checks": {
+    "demo_state_autoload": true,
+    "legacy_events_autoload": true,
+    "state_reset": true,
+    "state_restore": true,
+    "state_hash": true,
+    "capture_only": true,
+    "logical_audio_capture": true,
+    "runner_avoids_main_scene": true,
+    "runner_initial_hash": true,
+    "runner_complete_hash": true,
+    "runner_audio_oracle": true,
+    "runner_event_graphs": true,
+    "graph_ids_exist": true
+  },
+  "failed": []
+}
