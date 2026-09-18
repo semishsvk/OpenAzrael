@@ -58,7 +58,7 @@ func _run() -> void:
         "schema": "openazrael.kg001.headless",
         "version": 109,
         "status": "PASS" if failures.is_empty() else "FAIL",
-        "checks": 12,
+        "checks": 13,
         "failed": failures,
         "persistent_hash": state.canonical_state_hash(),
         "logical_audio_events": events.captured_audio(),
