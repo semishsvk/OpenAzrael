@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v113-context-v21`
-**Technical base:** `openazrael_godot_poc_v113`
+**Current canonical checkpoint:** `v114-context-v22`
+**Technical base:** `openazrael_godot_poc_v114`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -37,6 +37,14 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Opcode-0x28 runtime path resolves the section-0 object through global 0x43890, uses the object name at runtime +0x34, formats record+1 as %s.WAV, and calls the dynamic 3D sample-start path at 0xD155.
 - Bytes +17..+26 remain UNKNOWN/HOLD because the opcode-0x28 handler does not consume them.
 - The complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
+
+## WORLD section-6 opaque serializer closure — v114
+- v114 verifies the reciprocal section-6 chains: reader `0x369DC -> 0x29E98 -> 0x29EEA -> 0x29CF4 -> 0x29D2E -> 0x29638` and writer `0x3661A -> 0x29E40 -> 0x29E87 -> 0x29D74 -> 0x29DA5 -> 0x2972C`.
+- The nested reader allocates and reads 37-byte (`0x25`) and 27-byte (`0x1B`) records wholesale; the matched writer writes the same fixed blobs wholesale. The serializer is therefore field-opaque.
+- The bound WORLD contains 400 27-byte and 387 37-byte section-6 records; 44 are opcode-0x28 sound records.
+- Sound tails +17..+26 have 41 unique values across 44 records. All 7/7 duplicated (stem, section-0 object, room) groups vary in their tail; the 12 `797tap -> tapframe2 -> R8` records have 12 different tails.
+- The only audited direct `mov eax,0x1B` -> allocator `0x20C00` pattern is the WORLD reader at `0x29703 -> 0x29712`; alternate construction mechanisms remain possible.
+- Exact tail origin/meaning remains UNKNOWN/HOLD. The next target is record construction/mutation/copy logic, not the serializer.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
