@@ -17,4 +17,7 @@ func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed("interact"):
         var n := _find_interactive()
         if n != null and n.has_method("interact"):
+            CandidateDiagnostics.record_interaction(String(n.name))
             n.interact()
+        else:
+            CandidateDiagnostics.record_event("interaction_miss", {})

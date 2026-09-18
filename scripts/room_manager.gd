@@ -1,9 +1,11 @@
 extends Node3D
 
-const ROOM_SCENES := {
-    "R1": preload("res://assets/rooms/R1.glb"),
-    "R7": preload("res://assets/rooms/R7.glb"),
-    "R8": preload("res://assets/rooms/R8.glb")
+signal room_changed(room_id: String)
+
+const ROOM_SCENE_PATHS := {
+    "R1": "res://assets/rooms/R1.glb",
+    "R7": "res://assets/rooms/R7.glb",
+    "R8": "res://assets/rooms/R8.glb"
 }
 const ROOM_NAMES := {
     "R1":"Entry Corridor (R1)",
@@ -27,6 +29,7 @@ var current_room: Node3D
 var evidence: Dictionary = {}
 var transition_cooldown := 0.0
 var legacy_audio: Node3D
+var _diagnostic_inside: Dictionary = {}
 @onready var player = get_node("../Player")
 
 func _ready() -> void:
@@ -34,8 +37,25 @@ func _ready() -> void:
     legacy_audio.name = "LegacyAmbientAudio"
     legacy_audio.set_script(preload("res://scripts/legacy_ambient_audio.gd"))
     add_child(legacy_audio)
+
     evidence = JSON.parse_string(FileAccess.get_file_as_string("res://data/xaf_trigger_evidence.json"))
+    if not evidence is Dictionary:
+        evidence = {}
+        push_error("OpenAzrael KG-001 Candidate 1: invalid xaf_trigger_evidence.json")
+        CandidateDiagnostics.record_event("startup_evidence_parse", {"status":"FAIL"})
+        get_tree().quit(2)
+        return
+
+    var require_candidate_audio := DisplayServer.get_name() != "headless"
+    if not CandidateDiagnostics.fail_fast_if_required_resources_missing(require_candidate_audio):
+        set_process(false)
+        get_tree().quit(2)
+        return
+
     load_room("R1", false)
+    if not is_instance_valid(current_room):
+        get_tree().quit(2)
+        return
     _spawn_at_portal("R1", "spaview")
     transition_cooldown = 1.0
 
@@ -64,7 +84,6 @@ func _first_mesh(root: Node) -> MeshInstance3D:
     return null
 
 func _object_name_for_mesh(mi: MeshInstance3D) -> String:
-    # v7 exporter always stores geometry as a child of the original XAF object node.
     var p := mi.get_parent()
     return String(p.name) if p != null else String(mi.name)
 
@@ -114,7 +133,6 @@ func _create_world_collision(room_id: String) -> void:
             continue
         if pickup_names.has(obj_name):
             continue
-        # Visual-only effects and remote portal cards must not become physical walls.
         if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
             continue
         if mi.mesh == null:
@@ -185,8 +203,6 @@ func _setup_r7_switchboard() -> void:
     if current_room_id != "R7":
         return
     var script = preload("res://scripts/r7_switch_control.gd")
-    # README solution maps exactly to XAF spatial layout:
-    # right-most lever = well_lev02; lower-right wheel = well_weel3.
     for object_name in ["well_lev02", "well_weel3"]:
         var obj := _find_node(object_name)
         if obj == null:
@@ -246,8 +262,6 @@ func _setup_r8() -> void:
             lens_area.set_script(preload("res://scripts/r8_lens_interaction.gd"))
             lens_area.set("lens_visual", lens)
 
-    # v17: retail OBJECTS.DAT gives direct logical-object -> XAF model mappings:
-    # R8LensPlace -> lenstop, R8LensLook -> lenstop01, R8LensZone -> zxplate, DoorR8 -> door.
     var bible := _find_node("bible")
     var installed_lens := _find_node("lenstop")
     var look_lens := _find_node("lenstop01")
@@ -258,7 +272,6 @@ func _setup_r8() -> void:
     if installed_lens != null:
         installed_lens.visible = DemoState.puzzle_node("R8LensPlace")
     if look_lens != null:
-        # lenstop01 is used as the exact authored target pose, not as a second visible copy.
         look_lens.visible = false
     if installed_lens != null and look_lens != null and DemoState.puzzle_node("R8LensLook"):
         installed_lens.global_transform = look_lens.global_transform
@@ -283,13 +296,10 @@ func _setup_r8() -> void:
         barea.set("player", player)
         var zbox := _node_global_bounds(activation_zone)
         barea.set("activation_center", zbox.get_center())
-        # Exact X/Z footprint from authored transparent zxplate, generous Y for player body height.
         barea.set("activation_half_extents", Vector3(max(1.0, zbox.size.x * 0.5), 80.0, max(1.0, zbox.size.z * 0.5)))
         barea.set("door_visual", door)
         barea.set("shield_visual", shield)
 
-    # The hanging piece is tapestry2. Its nested child tapestry2a uses BAPMSG and is
-    # the strongest geometric evidence for the hidden message on the reverse side.
     var tapestry := _find_node("tapestry2")
     var message := _find_node("tapestry2a")
     if tapestry != null:
@@ -302,9 +312,6 @@ func _setup_r8() -> void:
         tarea.set("message_visual", message)
         tarea.call("sync_from_state")
 
-    # Recovered staging layout: tapestry1/3/4 are complete hanging-piece meshes
-    # parked ~493.7 X units away from tapframe1/3/4 with matching orientation.
-    # Use those originals instead of generating replacement geometry.
     var frame_script = preload("res://scripts/r8_tapestry_frame.gd")
     var frame_specs := [
         {"frame":"tapframe1", "piece":"tapestry1", "item":"tapestry_piece_1", "flag":"R8Tap1"},
@@ -327,14 +334,21 @@ func _setup_r8() -> void:
         farea.call("sync_from_state")
 
 func load_room(id: String, announce := true) -> void:
-    if not ROOM_SCENES.has(id):
+    if not ROOM_SCENE_PATHS.has(id):
+        push_error("OpenAzrael unknown room id: " + id)
+        return
+    var packed = load(String(ROOM_SCENE_PATHS[id]))
+    if not packed is PackedScene:
+        push_error("OpenAzrael KG-001 Candidate 1 cannot load room: " + String(ROOM_SCENE_PATHS[id]))
+        CandidateDiagnostics.record_event("room_load_failed", {"room": id, "path": ROOM_SCENE_PATHS[id]})
         return
     if is_instance_valid(current_room):
         current_room.queue_free()
-    current_room = ROOM_SCENES[id].instantiate()
+    current_room = packed.instantiate()
     current_room.name = ROOM_NAMES[id]
     add_child(current_room)
     current_room_id = id
+    _diagnostic_inside.clear()
     _create_world_collision(id)
     _setup_pickups(id)
     _setup_well_key()
@@ -343,6 +357,8 @@ func load_room(id: String, announce := true) -> void:
     _setup_r8()
     if is_instance_valid(legacy_audio):
         legacy_audio.call("setup_for_room", id)
+    CandidateDiagnostics.record_room_loaded(id)
+    room_changed.emit(id)
     if announce:
         print("OpenAzrael room: ", ROOM_NAMES[id])
 
@@ -378,9 +394,24 @@ func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
         and p.z >= min(mn.z,mx.z) and p.z <= max(mn.z,mx.z) \
         and p.y >= y0 and p.y <= y1
 
+func _update_diagnostic_trigger_states() -> void:
+    if evidence.is_empty() or not evidence.has("rooms") or not evidence["rooms"].has(current_room_id):
+        return
+    for trigger in evidence["rooms"][current_room_id].get("triggers", []):
+        var trigger_name := String(trigger.get("name", ""))
+        if trigger_name.is_empty():
+            continue
+        var inside := _inside_trigger(player.global_position, trigger)
+        if not _diagnostic_inside.has(trigger_name) or bool(_diagnostic_inside[trigger_name]) != inside:
+            _diagnostic_inside[trigger_name] = inside
+            CandidateDiagnostics.observe_trigger(current_room_id, trigger_name, inside)
+
 func _process(delta: float) -> void:
     transition_cooldown = max(0.0, transition_cooldown - delta)
-    if transition_cooldown > 0.0 or evidence.is_empty():
+    if evidence.is_empty():
+        return
+    _update_diagnostic_trigger_states()
+    if transition_cooldown > 0.0:
         return
     for tr in evidence["demo_transitions"]:
         if tr["source_room"] != current_room_id:
@@ -392,19 +423,27 @@ func _process(delta: float) -> void:
             continue
         var trigger := _trigger_record(current_room_id, trigger_name)
         if not trigger.is_empty() and _inside_trigger(player.global_position, trigger):
+            var source := current_room_id
             var dest := String(tr["destination_room"])
             var dest_view := String(tr["destination_view"])
+            CandidateDiagnostics.record_transition(source, trigger_name, dest)
             load_room(dest)
             _spawn_at_portal(dest, dest_view)
             transition_cooldown = 1.0
             return
 
+func _debug_jump(room_id: String, view_name: String) -> void:
+    CandidateDiagnostics.record_event("debug_room_jump", {"room": room_id, "view": view_name})
+    load_room(room_id)
+    _spawn_at_portal(room_id, view_name)
+    transition_cooldown = 1.0
+
 func _unhandled_key_input(event: InputEvent) -> void:
     if not event.pressed or event.echo:
         return
     if event.keycode == KEY_1:
-        load_room("R1"); _spawn_at_portal("R1", "spaview"); transition_cooldown = 1.0
+        _debug_jump("R1", "spaview")
     elif event.keycode == KEY_2:
-        load_room("R7"); _spawn_at_portal("R7", "view"); transition_cooldown = 1.0
+        _debug_jump("R7", "view")
     elif event.keycode == KEY_3:
-        load_room("R8"); _spawn_at_portal("R8", "Object14"); transition_cooldown = 1.0
+        _debug_jump("R8", "Object14")

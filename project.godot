@@ -1,5 +1,6 @@
 [application]
 config/name="OpenAzrael Demo Reconstruction"
+config/version="KG001-Candidate-1-v116"
 run/main_scene="res://main.tscn"
 
 [display]
@@ -19,6 +20,7 @@ GraphicsMode="*res://scripts/graphics_mode.gd"
 DemoState="*res://scripts/demo_state.gd"
 
 LegacyEvents="*res://scripts/legacy_event_runner_v87.gd"
+CandidateDiagnostics="*res://scripts/candidate_diagnostics_v116.gd"
 
 [input]
 move_forward={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":87)]}

@@ -2,25 +2,43 @@ extends CanvasLayer
 
 @onready var label: Label = $Panel/Label
 @onready var room_manager = get_node("../RoomManager")
+@onready var player = get_node("../Player")
 var audio_debug_visible := false
 var audio_debug_panel: PanelContainer
 var audio_debug_label: Label
+var candidate_debug_visible := false
+var candidate_debug_panel: PanelContainer
+var candidate_debug_label: Label
 const AudioDebugView := preload("res://scripts/audio_debug_view_v69.gd")
 const AudioParityCapture := preload("res://scripts/audio_parity_capture_v71.gd")
 const AUDIO_CAPTURE_PATH := "user://openazrael_audio_capture_v71.jsonl"
 var capture_notice := ""
+var state_dump_notice := ""
 
 func _ready() -> void:
+    _build_candidate_debug_panel()
     _build_audio_debug_panel()
 
 func _unhandled_key_input(event: InputEvent) -> void:
-    if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F8:
+    if not event is InputEventKey or not event.pressed or event.echo:
+        return
+    if event.keycode == KEY_F7:
+        candidate_debug_visible = not candidate_debug_visible
+        if is_instance_valid(candidate_debug_panel):
+            candidate_debug_panel.visible = candidate_debug_visible
+        CandidateDiagnostics.record_event("candidate_hud_visibility", {"visible": candidate_debug_visible})
+        get_viewport().set_input_as_handled()
+    elif event.keycode == KEY_F8:
         audio_debug_visible = not audio_debug_visible
         if is_instance_valid(audio_debug_panel):
             audio_debug_panel.visible = audio_debug_visible
         get_viewport().set_input_as_handled()
-    elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F9:
+    elif event.keycode == KEY_F9:
         _capture_audio_parity()
+        get_viewport().set_input_as_handled()
+    elif event.keycode == KEY_F10:
+        var path := CandidateDiagnostics.dump_state(room_manager.current_room_id, player.global_position)
+        state_dump_notice = "F10 state dump: " + (path if not path.is_empty() else "FAILED")
         get_viewport().set_input_as_handled()
 
 func _capture_audio_parity() -> void:
@@ -36,19 +54,37 @@ func _capture_audio_parity() -> void:
     var err := AudioParityCapture.append_jsonl(AUDIO_CAPTURE_PATH, record)
     capture_notice = "F9 capture saved: %s" % AUDIO_CAPTURE_PATH if err == OK else "F9 capture failed: %s" % error_string(err)
 
-func _build_audio_debug_panel() -> void:
-    audio_debug_panel = PanelContainer.new()
-    audio_debug_panel.name = "AudioDebugPanelV69"
-    audio_debug_panel.position = Vector2(14, 112)
-    audio_debug_panel.custom_minimum_size = Vector2(910, 0)
-    audio_debug_panel.visible = false
+func _panel_box(alpha: float) -> StyleBoxFlat:
     var box := StyleBoxFlat.new()
-    box.bg_color = Color(0, 0, 0, 0.82)
+    box.bg_color = Color(0, 0, 0, alpha)
     box.corner_radius_top_left = 5
     box.corner_radius_top_right = 5
     box.corner_radius_bottom_left = 5
     box.corner_radius_bottom_right = 5
-    audio_debug_panel.add_theme_stylebox_override("panel", box)
+    return box
+
+func _build_candidate_debug_panel() -> void:
+    candidate_debug_panel = PanelContainer.new()
+    candidate_debug_panel.name = "CandidateDebugPanelV116"
+    candidate_debug_panel.position = Vector2(14, 112)
+    candidate_debug_panel.custom_minimum_size = Vector2(910, 0)
+    candidate_debug_panel.visible = false
+    candidate_debug_panel.add_theme_stylebox_override("panel", _panel_box(0.82))
+    candidate_debug_label = Label.new()
+    candidate_debug_label.name = "CandidateDebugLabel"
+    candidate_debug_label.add_theme_font_size_override("font_size", 14)
+    candidate_debug_label.add_theme_color_override("font_color", Color(0.92, 0.92, 0.92, 1))
+    candidate_debug_label.text = "Candidate diagnostics initializing..."
+    candidate_debug_panel.add_child(candidate_debug_label)
+    add_child(candidate_debug_panel)
+
+func _build_audio_debug_panel() -> void:
+    audio_debug_panel = PanelContainer.new()
+    audio_debug_panel.name = "AudioDebugPanelV69"
+    audio_debug_panel.position = Vector2(14, 410)
+    audio_debug_panel.custom_minimum_size = Vector2(910, 0)
+    audio_debug_panel.visible = false
+    audio_debug_panel.add_theme_stylebox_override("panel", _panel_box(0.82))
     audio_debug_label = Label.new()
     audio_debug_label.name = "AudioDebugLabel"
     audio_debug_label.add_theme_font_size_override("font_size", 14)
@@ -56,6 +92,21 @@ func _build_audio_debug_panel() -> void:
     audio_debug_label.text = "Audio debug initializing..."
     audio_debug_panel.add_child(audio_debug_label)
     add_child(audio_debug_panel)
+
+func _sorted_keys(source: Dictionary) -> String:
+    var out: Array[String] = []
+    for key in source.keys():
+        out.append(String(key))
+    out.sort()
+    return ", ".join(out) if not out.is_empty() else "(none)"
+
+func _true_keys(source: Dictionary) -> String:
+    var out: Array[String] = []
+    for key in source.keys():
+        if bool(source[key]):
+            out.append(String(key))
+    out.sort()
+    return ", ".join(out) if not out.is_empty() else "(none)"
 
 func _process(_delta: float) -> void:
     var inv: Array[String] = []
@@ -67,7 +118,31 @@ func _process(_delta: float) -> void:
         status = "\nDEMO COMPLETE — Shield acquired"
     elif DemoState.flag("R8BathDrain"):
         status = "\nBaptistery bath: DRAINED"
-    label.text = "OpenAzrael reconstruction v71\nRoom: %s\nInventory: %s%s\nWASD move | Shift sprint | Mouse look | E interact | F8 audio debug | F9 parity capture | 1/2/3 debug room" % [room_manager.current_room_id, ", ".join(inv) if not inv.is_empty() else "(empty)", status]
+    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\nWASD move | Shift sprint | Mouse look | E interact | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | 1/2/3 debug room" % [
+        CandidateDiagnostics.BUILD_ID,
+        CandidateDiagnostics.BUILD_CHECKPOINT,
+        room_manager.current_room_id,
+        ", ".join(inv) if not inv.is_empty() else "(empty)",
+        status
+    ]
+
+    if candidate_debug_visible and is_instance_valid(candidate_debug_label):
+        var p: Vector3 = player.global_position
+        candidate_debug_label.text = "KG-001 Candidate diagnostics\nCheckpoint: %s\nRoom: %s | Player: (%.3f, %.3f, %.3f)\nState SHA-256: %s\nFlags(true): %s\nPuzzle nodes(true): %s\nValues: %s\nLast trigger: %s\nLast event: %s\nLast logical audio: %s\nEvent log: %s%s" % [
+            CandidateDiagnostics.BUILD_CHECKPOINT,
+            room_manager.current_room_id,
+            p.x, p.y, p.z,
+            DemoState.canonical_state_hash(),
+            _true_keys(DemoState.flags),
+            _true_keys(DemoState.puzzle_nodes),
+            _sorted_keys(DemoState.values),
+            CandidateDiagnostics.last_trigger,
+            CandidateDiagnostics.last_event_text(),
+            CandidateDiagnostics.last_audio,
+            CandidateDiagnostics.EVENT_LOG_PATH,
+            "\n" + state_dump_notice if not state_dump_notice.is_empty() else ""
+        ]
+
     if audio_debug_visible and is_instance_valid(audio_debug_label):
         var la = room_manager.legacy_audio
         var snaps: Array[Dictionary] = []

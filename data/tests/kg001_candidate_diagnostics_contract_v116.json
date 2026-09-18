@@ -1,0 +1,23 @@
+{
+  "schema": "openazrael.kg001.candidate_diagnostics_contract",
+  "version": 116,
+  "status": "SOURCE_CONTRACT_PASS",
+  "build_id": "KG-001 Candidate 1",
+  "checkpoint": "v116-context-v24",
+  "features": {
+    "build_watermark": true,
+    "fail_fast_core_assets": true,
+    "fail_fast_golden_audio_non_headless": true,
+    "event_jsonl_log": "user://openazrael_candidate1_events.jsonl",
+    "state_dump_key": "F10",
+    "trigger_visualization_key": "F6",
+    "candidate_hud_key": "F7",
+    "existing_audio_debug_key": "F8",
+    "existing_audio_parity_key": "F9",
+    "trigger_edge_logging": true,
+    "interaction_logging": true,
+    "room_transition_logging": true,
+    "canonical_state_hash_dump": true
+  },
+  "runtime_boundary": "Source contract only until executed in a Godot-capable checkout. Gameplay semantics are not changed by this diagnostic layer."
+}

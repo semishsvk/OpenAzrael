@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/room_manager.gd" id="1_rooms"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="2_player"]
 [ext_resource type="Script" path="res://scripts/interaction_probe.gd" id="3_interact"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="4_hud"]
+[ext_resource type="Script" path="res://scripts/kg001_trigger_debug_v116.gd" id="5_trigger_debug"]
 
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 1
@@ -31,6 +32,9 @@ environment = SubResource("Environment_main")
 [node name="RoomManager" type="Node3D" parent="."]
 script = ExtResource("1_rooms")
 
+[node name="TriggerDebugV116" type="Node3D" parent="."]
+script = ExtResource("5_trigger_debug")
+
 [node name="Player" type="CharacterBody3D" parent="."]
 collision_layer = 4
 collision_mask = 1
@@ -53,11 +57,11 @@ script = ExtResource("4_hud")
 [node name="Panel" type="PanelContainer" parent="HUD"]
 offset_left = 14.0
 offset_top = 14.0
-offset_right = 650.0
+offset_right = 980.0
 offset_bottom = 96.0
 theme_override_styles/panel = SubResource("HudPanel")
 
 [node name="Label" type="Label" parent="HUD/Panel"]
 theme_override_colors/font_color = Color(0.92, 0.92, 0.92, 1)
 theme_override_font_sizes/font_size = 15
-text = "OpenAzrael reconstruction v44 — Classic graphics + forensic audio"
+text = "OpenAzrael KG-001 Candidate 1 — diagnostic build"
