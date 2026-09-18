@@ -8,7 +8,7 @@ Run:
 
     python tools/run_kg001_candidate_v112.py
 
-The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, and executes v110/v111 when the local R1/R7/R8 room assets are present.
+The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111.
 
 All temporary evidence goes under .tmp/kg001/, which is ignored by Git.
 
@@ -24,6 +24,7 @@ Fresh-checkout PASS requires all of the following simultaneously:
 - no forbidden commercial/raw paths tracked by Git;
 - source validators PASS;
 - Godot found;
+- Godot room-asset import PASS;
 - v109, v110 and v111 runtime status all PASS;
 - R1/R7/R8 room assets present locally;
 - those local room assets are ignored by Git.
