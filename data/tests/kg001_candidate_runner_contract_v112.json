@@ -1,0 +1,18 @@
+{
+  "schema":"openazrael.kg001.candidate_runner_contract",
+  "version":112,
+  "status":"SOURCE_CONTRACT_READY",
+  "execution_status":"NOT_EXECUTED",
+  "features":{
+    "source_validators":true,
+    "godot_discovery":true,
+    "v109_runtime_capture":true,
+    "v110_runtime_capture":true,
+    "v111_runtime_capture":true,
+    "git_clean_before_after":true,
+    "forbidden_tracking_check":true,
+    "local_asset_ignore_check":true,
+    "fresh_checkout_gate":true,
+    "optional_result_promotion":true
+  }
+}
