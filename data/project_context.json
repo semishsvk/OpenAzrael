@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v109-context-v17",
-  "technical_base": "openazrael_godot_poc_v109",
+  "checkpoint": "v110-context-v18",
+  "technical_base": "openazrael_godot_poc_v110",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -71,7 +71,9 @@
     "kg001_runtime_gate_status": "PENDING",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_headless_runtime": "NOT_EXECUTED",
-    "kg001_state_restore": "IMPLEMENTED_NOT_RUNTIME_EXECUTED"
+    "kg001_state_restore": "IMPLEMENTED_NOT_RUNTIME_EXECUTED",
+    "kg001_room_trigger_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_room_trigger_runtime": "NOT_EXECUTED"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -81,7 +83,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Execute v109 headless runner in a Godot-capable checkout, then add G04/G05 room-transition and physical trigger tests with restored local demo assets.",
+  "next_target": "Execute v109 and v110 Godot runners in a Godot-capable checkout with restored local assets; then consolidate G02-G07 into the KG-001 gate report and prepare the full synthetic demo runner.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -97,5 +99,11 @@
     "validator": "tools/validate_kg001_headless_v109.py",
     "result": "data/tests/kg001_headless_contract_v109.json",
     "note": "docs/KG001_HEADLESS_V109.md"
+  },
+  "kg001_v110": {
+    "runner": "scripts/kg001_room_trigger_runner_v110.gd",
+    "validator": "tools/validate_kg001_room_trigger_v110.py",
+    "result": "data/tests/kg001_room_trigger_contract_v110.json",
+    "note": "docs/KG001_ROOM_TRIGGER_V110.md"
   }
 }
