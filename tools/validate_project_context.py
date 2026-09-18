@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v107-context-v15"
+EXPECTED_CHECKPOINT="v108-context-v16"
 errors=[]
 
 def req(p):
@@ -25,6 +25,9 @@ for p in [
     "data/xaf_trigger_evidence.json",
     "GAMEPLAY_EVENT_GRAPH_V87.md",
     "tools/validate_demo_runtime_ir.py",
+    "tools/kg001_state_space_v108.py",
+    "data/tests/kg001_state_space_v108.json",
+    "docs/KG001_STATE_SPACE_V108.md",
     "data/evidence/evidence_registry.json",
     "data/backup/source_fingerprints.json",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",
@@ -44,6 +47,8 @@ try:
         errors.append("v107 sound bridge status drift")
     if c.get("quality",{}).get("kg001_acceptance_plan")!="ACCEPTED":
         errors.append("KG-001 acceptance status drift")
+    if c.get("quality",{}).get("kg001_state_model")!="SOURCE_MODEL_PASS":
+        errors.append("KG-001 v108 state-model status drift")
 except Exception as e:
     errors.append(f"context json: {e}")
 
