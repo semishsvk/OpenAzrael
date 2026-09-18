@@ -403,3 +403,8 @@ v109 adds schema-validated DemoState restore, logical audio capture-only instrum
 ## v110 — KG-001 room/trigger runner
 
 v110 prepares asset-backed G04/G05 testing with the real RoomManager path: all four tracked room transitions, locked R1 negative gates, physical trigger inside/outside checks and persistence across room replacement. Missing local room assets are reported as BLOCKED_MISSING_ASSETS. Source contract is PASS; Godot asset-backed execution is NOT EXECUTED here. See `docs/KG001_ROOM_TRIGGER_V110.md`.
+
+
+## v111 — KG-001 full synthetic demo
+
+v111 adds a complete no-human R1 -> R7 -> R1 -> R8 synthetic playthrough through production interaction scripts and real RoomManager transitions. Direct gameplay flag/puzzle-node injection is rejected by the validator. The runner checks the v108 final-state hash and logical four-sound Event IR stream. Consolidated status is PRE_RUNTIME_READY; actual Godot execution, fresh-checkout verification and manual sanity remain pending. See `docs/KG001_FULL_DEMO_V111.md` and `docs/KG001_STATUS_V111.md`.
