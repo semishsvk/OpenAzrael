@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v114-context-v22",
-  "technical_base": "openazrael_godot_poc_v114",
+  "checkpoint": "v115-context-v23",
+  "technical_base": "openazrael_godot_poc_v115",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -74,7 +74,13 @@
     "world_sound_tail_unique": "41/44",
     "world_sound_tail_duplicate_group_variability": "7/7",
     "world_sound_tail_semantics": "UNKNOWN_HOLD",
-    "world_27_immediate_alloc_audit": "ONLY_READER_MATCH_IN_AUDITED_PATTERN"
+    "world_27_immediate_alloc_audit": "ONLY_READER_MATCH_IN_AUDITED_PATTERN",
+    "world_action_record_lifecycle": "VERIFIED_LOAD_SHALLOW_DISPATCH",
+    "world_action_record_direct_insert27_callers": 1,
+    "world_action_record_direct_insert37_callers": 1,
+    "world_action_pending_group_entry_size": 6,
+    "world_action_runtime_copy_normalization": "NONE_IN_AUDITED_PATH",
+    "world_sound_tail_origin": "UPSTREAM_UNKNOWN_HOLD"
   },
   "quality": {
     "kg001_acceptance_plan": "ACCEPTED",
@@ -113,7 +119,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run the v112 KG-001 candidate workflow on a Godot-capable checkout when available; in parallel search 27-byte action-record constructors/mutators/copy paths for writes into +17..+26. The serializer is now closed as opaque and cannot identify those bytes.",
+  "next_target": "Run the v112 KG-001 candidate workflow on a Godot-capable checkout when available; in parallel audit generic 27-byte copies, stores into action-record +17..+26, variable/generic allocation paths, and stronger indirect/computed reachability evidence for the paired WORLD writer.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -178,5 +184,18 @@
     "tail_unique": "41/44",
     "duplicate_binding_groups_with_varying_tail": "7/7",
     "tail_status": "UNKNOWN_HOLD"
+  },
+  "forensics_v115": {
+    "analyzer": "tools/analyze_world_action_lifecycle_v115.py",
+    "validator": "tools/validate_world_action_lifecycle_v115.py",
+    "result": "data/world_action_lifecycle_v115.json",
+    "note": "WORLD_ACTION_RECORD_LIFECYCLE_V115.md",
+    "status": "PASS",
+    "machine_checks": 20,
+    "pending_group_entry_size": 6,
+    "pending_group_layout": "u16 count27 + pointer to original pointer array",
+    "dispatch": "ORIGINAL_RECORD_POINTER_IN_PLACE",
+    "runtime_copy_normalization": "NONE_IN_AUDITED_PATH",
+    "tail_origin": "UPSTREAM_UNKNOWN_HOLD"
   }
 }
