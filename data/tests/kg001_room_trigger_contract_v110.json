@@ -1,0 +1,21 @@
+{
+  "schema":"openazrael.kg001.room_trigger_contract",
+  "version":110,
+  "status":"SOURCE_CONTRACT_PASS",
+  "godot_runtime_status":"NOT_EXECUTED",
+  "requires_local_room_assets":true,
+  "checks":{
+    "runner_main_scene":true,
+    "asset_preflight":true,
+    "transition_set":true,
+    "manager_inside_trigger":true,
+    "manager_door1_gate":true,
+    "manager_door2_gate":true,
+    "runner_negative_R7":true,
+    "runner_negative_R8":true,
+    "runner_all_live_edges":true,
+    "runner_bounds_checks":true,
+    "persistence_check":true
+  },
+  "failed":[]
+}
