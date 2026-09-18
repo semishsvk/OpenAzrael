@@ -1,7 +1,12 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v107-context-v15` — technical base v107 plus current context/Git/quality layer.
+- `v108-context-v16` — technical base v107 plus current context/Git/quality layer.
+
+## KG-001 v108 state-space
+- `docs/KG001_STATE_SPACE_V108.md`
+- `tools/kg001_state_space_v108.py`
+- `data/tests/kg001_state_space_v108.json`
 
 ## Quality / known-good baseline
 - `docs/KG001_ACCEPTANCE_PLAN.md`
