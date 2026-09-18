@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v115-context-v23`
+**Canonical checkpoint:** `v116-context-v24`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v115-context-v23 | PASS target | Source/context validation |
+| Project context | v116-context-v24 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -14,8 +14,8 @@
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
-| Source-safe runtime IR | v115-context-v23 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v115-context-v23 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v116-context-v24 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v116-context-v24 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -125,3 +125,21 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Runtime normalization/copy stage | NONE IN AUDITED PATH | WORLD load -> schedule -> dispatch |
 | +17..+26 origin | UPSTREAM UNKNOWN/HOLD | Already serialized; runtime does not manufacture |
 | Source-safe result boundary | PASS | No raw record bytes committed |
+
+
+## v116 KG-001 Candidate 1 diagnostics
+
+| Layer | Status | Evidence boundary |
+|---|---|---|
+| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 1 / v116-context-v24 |
+| Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime execution pending |
+| Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 1 |
+| JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |
+| Trigger enter/exit telemetry | SOURCE_CONTRACT_PASS | Initial false states seeded without EXIT spam |
+| F6 trigger volumes | SOURCE_CONTRACT_PASS | Visualization only; does not alter transition logic |
+| F7 Candidate HUD | SOURCE_CONTRACT_PASS | Reads runtime state only |
+| F8 audio debug | PRESERVED | Existing v69 path |
+| F9 audio parity capture | PRESERVED | Existing v71 path |
+| F10 canonical state dump | SOURCE_CONTRACT_PASS | Includes payload/hash, room, player XYZ and last-event context |
+| v112 candidate source suite integration | PASS | v116 validator appended to SOURCE_COMMANDS |
+| Actual Godot Candidate 1 execution | NOT_EXECUTED | Requires Godot + restored ignored assets |
