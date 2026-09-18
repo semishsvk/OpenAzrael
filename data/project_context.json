@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v113-context-v21",
-  "technical_base": "openazrael_godot_poc_v113",
+  "checkpoint": "v114-context-v22",
+  "technical_base": "openazrael_godot_poc_v114",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -67,7 +67,14 @@
       "2": "R8"
     },
     "world_sound_room_evidence": "35_DIRECT_XAF_PLUS_3_R7_ALIASES_ZERO_CONFLICTS",
-    "world_sound_runtime_chain": "VERIFIED_CONTROL_DATA_FLOW_D155_ROLE_HIGH"
+    "world_sound_runtime_chain": "VERIFIED_CONTROL_DATA_FLOW_D155_ROLE_HIGH",
+    "world_section6_serializer": "VERIFIED_OPAQUE_FIXED_BLOBS",
+    "world_section6_blob27_count": 400,
+    "world_section6_blob37_count": 387,
+    "world_sound_tail_unique": "41/44",
+    "world_sound_tail_duplicate_group_variability": "7/7",
+    "world_sound_tail_semantics": "UNKNOWN_HOLD",
+    "world_27_immediate_alloc_audit": "ONLY_READER_MATCH_IN_AUDITED_PATTERN"
   },
   "quality": {
     "kg001_acceptance_plan": "ACCEPTED",
@@ -106,7 +113,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run the v112 KG-001 candidate workflow on a Godot-capable checkout when available; in parallel audit the v113 +17..+26 tail and the 0x29E40 producer/writer path without assigning semantics unless independently supported.",
+  "next_target": "Run the v112 KG-001 candidate workflow on a Godot-capable checkout when available; in parallel search 27-byte action-record constructors/mutators/copy paths for writes into +17..+26. The serializer is now closed as opaque and cannot identify those bytes.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -157,6 +164,19 @@
     "ordered_puzzles_world_matches": "38/40",
     "section0_index_offset": 13,
     "room_id_offset": 15,
+    "tail_status": "UNKNOWN_HOLD"
+  },
+  "forensics_v114": {
+    "analyzer": "tools/analyze_world_sound_serializer_v114.py",
+    "validator": "tools/validate_world_sound_serializer_v114.py",
+    "result": "data/world_sound_serializer_v114.json",
+    "note": "WORLD_SOUND_SERIALIZER_V114.md",
+    "status": "PASS",
+    "machine_data_checks": 29,
+    "blob27_serialization": "OPAQUE_WHOLESALE_VERIFIED",
+    "blob37_serialization": "OPAQUE_WHOLESALE_VERIFIED",
+    "tail_unique": "41/44",
+    "duplicate_binding_groups_with_varying_tail": "7/7",
     "tail_status": "UNKNOWN_HOLD"
   }
 }
