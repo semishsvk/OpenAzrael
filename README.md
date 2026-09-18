@@ -408,3 +408,8 @@ v110 prepares asset-backed G04/G05 testing with the real RoomManager path: all f
 ## v111 — KG-001 full synthetic demo
 
 v111 adds a complete no-human R1 -> R7 -> R1 -> R8 synthetic playthrough through production interaction scripts and real RoomManager transitions. Direct gameplay flag/puzzle-node injection is rejected by the validator. The runner checks the v108 final-state hash and logical four-sound Event IR stream. Consolidated status is PRE_RUNTIME_READY; actual Godot execution, fresh-checkout verification and manual sanity remain pending. See `docs/KG001_FULL_DEMO_V111.md` and `docs/KG001_STATUS_V111.md`.
+
+
+## v112 — KG-001 candidate workflow
+
+v112 adds a one-command candidate runner for the full KG-001 pre-release workflow: source validators, Godot discovery, restored-room import, v109/v110/v111 runtime capture, Git cleanliness and repository-safety checks, G09 evidence, optional result promotion, evidence-driven G00-G09 status, and a separate G10 human sanity checklist. Current state is AWAITING_RUNTIME_OR_MANUAL; the demo-known-good-001 tag remains disallowed until every G00-G10 gate is literal PASS. See `docs/KG001_CANDIDATE_RUNNER_V112.md`.
