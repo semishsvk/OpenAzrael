@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v114-context-v22`
+**Canonical checkpoint:** `v115-context-v23`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v114-context-v22 | PASS target | Source/context validation |
+| Project context | v115-context-v23 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -14,8 +14,8 @@
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
-| Source-safe runtime IR | v114-context-v22 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v114-context-v22 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v115-context-v23 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v115-context-v23 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -109,3 +109,19 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | 797tap/tapframe2/R8 | 12 records / 12 unique tails | Strong variability control |
 | +17..+26 semantics | UNKNOWN/HOLD | Handler non-use + serializer opacity; exact origin not proven |
 | Source-safe result boundary | PASS | No raw record/tail payloads committed |
+
+
+## v115 WORLD action-record lifecycle
+
+| Check | Status | Evidence boundary |
+|---|---|---|
+| 27-byte insert helper direct callers | 1 / WORLD reader only | Audited direct rel32 CALL class |
+| 37-byte insert helper direct callers | 1 / WORLD reader only | Audited direct rel32 CALL class |
+| Immediate malloc(27)-style pattern | 1 / reader only | Does not exclude generic/variable/alternate allocation |
+| Pending action-group entry | VERIFIED 6 bytes | u16 count + original pointer-array address |
+| Pending queue copy of action payload | ABSENT in audited path | Shallow reference only |
+| Dispatcher source | VERIFIED original record pointer | Walks original pointer array |
+| Opcode-0x28 mutation before consume | NONE in audited prefix | Read-only relative to record |
+| Runtime normalization/copy stage | NONE IN AUDITED PATH | WORLD load -> schedule -> dispatch |
+| +17..+26 origin | UPSTREAM UNKNOWN/HOLD | Already serialized; runtime does not manufacture |
+| Source-safe result boundary | PASS | No raw record bytes committed |
