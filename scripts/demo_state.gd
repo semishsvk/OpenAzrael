@@ -90,3 +90,32 @@ func switchboard_step(control_id: String) -> String:
 func complete_demo() -> void:
     set_puzzle_node("R8TakeShield")
     set_flag("demo_complete")
+
+
+# v108 KG-001 canonical persistent state identity.
+# Use sorted key/value pairs rather than Dictionary insertion order.
+func _canonical_pairs(source: Dictionary) -> Array:
+    var keys: Array = source.keys()
+    keys.sort()
+    var out: Array = []
+    for key in keys:
+        out.append([String(key), source[key]])
+    return out
+
+func canonical_state_payload() -> Array:
+    return [
+        1,
+        _canonical_pairs(inventory),
+        _canonical_pairs(flags),
+        _canonical_pairs(puzzle_nodes),
+        _canonical_pairs(values)
+    ]
+
+func canonical_state_json() -> String:
+    return JSON.stringify(canonical_state_payload())
+
+func canonical_state_hash() -> String:
+    var context := HashingContext.new()
+    context.start(HashingContext.HASH_SHA256)
+    context.update(canonical_state_json().to_utf8_buffer())
+    return context.finish().hex_encode()
