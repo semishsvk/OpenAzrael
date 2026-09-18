@@ -38,13 +38,14 @@ func _ready() -> void:
     legacy_audio.set_script(preload("res://scripts/legacy_ambient_audio.gd"))
     add_child(legacy_audio)
 
-    evidence = JSON.parse_string(FileAccess.get_file_as_string("res://data/xaf_trigger_evidence.json"))
-    if not evidence is Dictionary:
+    var parsed_evidence = JSON.parse_string(FileAccess.get_file_as_string("res://data/xaf_trigger_evidence.json"))
+    if not parsed_evidence is Dictionary:
         evidence = {}
         push_error("OpenAzrael KG-001 Candidate 1: invalid xaf_trigger_evidence.json")
         CandidateDiagnostics.record_event("startup_evidence_parse", {"status":"FAIL"})
         get_tree().quit(2)
         return
+    evidence = parsed_evidence
 
     var require_candidate_audio := DisplayServer.get_name() != "headless"
     if not CandidateDiagnostics.fail_fast_if_required_resources_missing(require_candidate_audio):
