@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v111-context-v19",
-  "technical_base": "openazrael_godot_poc_v111",
+  "checkpoint": "v112-context-v20",
+  "technical_base": "openazrael_godot_poc_v112",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -76,8 +76,11 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "PRE_RUNTIME_READY",
-    "kg001_final_tag_allowed": false
+    "kg001_overall_status": "AWAITING_RUNTIME_OR_MANUAL",
+    "kg001_final_tag_allowed": false,
+    "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
+    "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
+    "kg001_manual_sanity": "CHECKLIST_READY_PENDING_USER"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -87,7 +90,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Execute v109/v110/v111 in a Godot-capable checkout, capture runtime result JSON, then run G00/G01 validators and perform G09 fresh-checkout verification before manual G10.",
+  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results in a Godot-capable checkout with restored ignored room assets; then run tools/kg001_status_v112.py and complete G10 manual sanity if G00-G09 are PASS.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -118,5 +121,15 @@
     "status_snapshot": "data/tests/kg001_status_v111.json",
     "note": "docs/KG001_FULL_DEMO_V111.md",
     "status_note": "docs/KG001_STATUS_V111.md"
+  },
+  "kg001_v112": {
+    "candidate_runner": "tools/run_kg001_candidate_v112.py",
+    "candidate_validator": "tools/validate_kg001_candidate_v112.py",
+    "contract": "data/tests/kg001_candidate_runner_contract_v112.json",
+    "status_tool": "tools/kg001_status_v112.py",
+    "status_snapshot": "data/tests/kg001_status_v112.json",
+    "manual_checklist": "docs/KG001_MANUAL_SANITY_CHECKLIST.md",
+    "manual_template": "data/tests/kg001_manual_sanity_template.json",
+    "note": "docs/KG001_CANDIDATE_RUNNER_V112.md"
   }
 }
