@@ -1,7 +1,7 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v110-context-v18`
-**Technical base:** `openazrael_godot_poc_v110`
+**Current canonical checkpoint:** `v111-context-v19`
+**Technical base:** `openazrael_godot_poc_v111`
 
 This file is the mandatory entry point for every OpenAzrael work session.
 
@@ -50,6 +50,12 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - It covers all four tracked transitions, both R1 locked negative gates, trigger inside/outside bounds and persistence across room replacement.
 - Missing local room assets are reported as BLOCKED_MISSING_ASSETS rather than FAIL.
 - Source contract: PASS. Godot asset-backed execution: NOT EXECUTED here.
+
+## KG-001 v111 full-demo layer
+- `scripts/kg001_full_demo_runner_v111.gd` executes the complete synthetic demo path through production interaction scripts and real RoomManager transitions.
+- Direct gameplay flag/puzzle-node injection is forbidden by the source validator.
+- `tools/kg001_status_v111.py` consolidates G00-G10 and only literal PASS for every gate permits the known-good tag.
+- Overall status: PRE_RUNTIME_READY. v109/v110/v111 Godot execution remains pending.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
