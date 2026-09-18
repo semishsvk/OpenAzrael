@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v113-context-v21`
+**Canonical checkpoint:** `v114-context-v22`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v113**. The context/Git/quality layer is merged forward as **v113-context-v21**.
+The newest technical base is now **v114**. The context/Git/quality layer is merged forward as **v114-context-v22**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -57,6 +57,14 @@ The newest technical base is now **v113**. The context/Git/quality layer is merg
 - Bytes +17..+26 are not consumed by the opcode-`0x28` handler and remain **UNKNOWN/HOLD**.
 - This closes the sound-family field-level runtime bridge but does not recover the complete PUZZLES/ROOMS -> WORLD producer/compiler.
 
+### WORLD section-6 opaque serializer closure — v114
+- The reciprocal section-6 serializer path is now closed: reader `0x29E98 -> 0x29CF4 -> 0x29638`, writer `0x29E40 -> 0x29D74 -> 0x2972C`.
+- The nested 37-byte and 27-byte record families are both read and written wholesale as fixed memory blobs. The serializer itself does not decode the v113 sound fields or the remaining bytes.
+- Section 6 contains 400 x 27-byte records and 387 x 37-byte records; 44 of the 27-byte records are opcode-0x28 sound actions.
+- Across those 44 sound records, +17..+26 has 41 unique values; all 7 duplicated runtime-equivalent (stem/object/room) groups vary in their tail. The 12 797tap/tapframe2/R8 records have 12 unique tails.
+- A conservative immediate-allocation audit finds one direct malloc(27)-style pattern and it is the WORLD reader itself. Variable/generic/alternate construction remains possible.
+- Tail origin/meaning remains **UNKNOWN/HOLD**. Serializer analysis cannot promote it; the next target is record construction/mutation/copy behavior.
+
 ### Source-safe runtime dependency repair — context v15
 - Restored exact retained-checkpoint copies of `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json`; both are required directly by the Godot runtime.
 - Restored `GAMEPLAY_EVENT_GRAPH_V87.md` and its audit path.
@@ -97,7 +105,7 @@ The newest technical base is now **v113**. The context/Git/quality layer is merg
 - `tools/kg001_status_v112.py` promotes G00-G09 only from recorded PASS evidence. G10 remains manual with a dedicated checklist/template.
 - Overall state remains **AWAITING_RUNTIME_OR_MANUAL**; the known-good tag remains forbidden.
 
-### KG-001 known-good demo gate — context v21
+### KG-001 known-good demo gate — context v22
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -117,8 +125,8 @@ Do not promote these as recovered original behavior yet:
 
 ## 4. Current technical target
 1. Run the v112 candidate runner with --fresh-checkout --promote-results, then evaluate v112 gate status and perform G10 only if G00-G09 are PASS.
-2. Audit bytes +17..+26 of the WORLD opcode-0x28 record from the producer/writer side, especially `0x29E40`, while keeping their semantics UNKNOWN unless independently supported.
-3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113 closes only the sound-family runtime representation.
+2. Search constructor/mutator/copy paths for the 27-byte action record, especially writes into +17..+26. v114 proves the serializer is opaque and therefore cannot explain those bytes.
+3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
 5. Keep GitHub mirrors source-safe: no original commercial payloads, derived commercial-data assets, milestone archives, raw dumps, or reproducible forensic payloads containing commercial-derived bytes.
 
