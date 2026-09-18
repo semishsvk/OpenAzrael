@@ -161,7 +161,7 @@ func _run() -> void:
     _check("lens_placed", state.puzzle_node("R8LensPlace") and not state.has("r8_lens"))
 
     if bible != null:
-        player.global_position = bible.activation_center
+        player.global_position = bible.get("activation_center")
         Engine.time_scale = 100.0
         bible.call("interact")
         await _settle(2)
