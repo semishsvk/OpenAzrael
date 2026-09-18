@@ -1,6 +1,6 @@
 {
-  "checkpoint": "v115-context-v23",
-  "technical_base": "openazrael_godot_poc_v115",
+  "checkpoint": "v116-context-v24",
+  "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-18",
   "workflow": [
     "DEMO",
@@ -109,7 +109,20 @@
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "CHECKLIST_READY_PENDING_USER"
+    "kg001_manual_sanity": "CHECKLIST_READY_PENDING_USER",
+    "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
+    "kg001_candidate_build_id": "KG-001 Candidate 1",
+    "kg001_candidate_build_source_ready": true,
+    "kg001_candidate_build_runtime": "NOT_EXECUTED",
+    "kg001_candidate_debug_keys": {
+      "F6": "trigger_volumes",
+      "F7": "candidate_hud",
+      "F8": "audio_debug",
+      "F9": "audio_parity_capture",
+      "F10": "canonical_state_dump"
+    },
+    "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
+    "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -119,7 +132,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run the v112 KG-001 candidate workflow on a Godot-capable checkout when available; in parallel audit generic 27-byte copies, stores into action-record +17..+26, variable/generic allocation paths, and stronger indirect/computed reachability evidence for the paired WORLD writer.",
+  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results in a Godot-capable checkout with restored ignored room/audio assets. If G00-G09 pass, launch KG-001 Candidate 1 interactively, use v116 diagnostics during the manual route, then complete G10. Resume the deferred generic copy/mutator forensic audit as v117.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -197,5 +210,24 @@
     "dispatch": "ORIGINAL_RECORD_POINTER_IN_PLACE",
     "runtime_copy_normalization": "NONE_IN_AUDITED_PATH",
     "tail_origin": "UPSTREAM_UNKNOWN_HOLD"
+  },
+  "kg001_v116": {
+    "build_id": "KG-001 Candidate 1",
+    "diagnostics_script": "scripts/candidate_diagnostics_v116.gd",
+    "trigger_debug": "scripts/kg001_trigger_debug_v116.gd",
+    "validator": "tools/validate_candidate_diagnostics_v116.py",
+    "contract": "data/tests/kg001_candidate_diagnostics_contract_v116.json",
+    "note": "docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md",
+    "source_status": "SOURCE_CONTRACT_PASS",
+    "runtime_status": "NOT_EXECUTED",
+    "controls": {
+      "F6": "trigger volumes",
+      "F7": "candidate HUD",
+      "F8": "audio debug",
+      "F9": "audio parity capture",
+      "F10": "state dump"
+    },
+    "event_log": "user://openazrael_candidate1_events.jsonl",
+    "state_dump_prefix": "user://openazrael_kg001_state_dump_"
   }
 }
