@@ -1,7 +1,13 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v112-context-v20` — technical base v107 plus current context/Git/quality layer.
+- `v113-context-v21` — technical base v113 plus current context/Git/quality layer.
+
+## WORLD sound-record fields v113
+- `WORLD_SOUND_RECORD_FIELDS_V113.md`
+- `tools/analyze_world_sound_record_fields_v113.py`
+- `tools/validate_world_sound_record_fields_v113.py`
+- `data/world_sound_record_fields_v113.json`
 
 ## KG-001 v112 candidate workflow
 - `docs/KG001_CANDIDATE_RUNNER_V112.md`
@@ -50,6 +56,7 @@
 - `data/xaf_trigger_evidence.json` / `tools/extract_xaf_triggers.py` / `tools/validate_demo_runtime_ir.py`
 
 ## Current forensic anchors
+- `WORLD_SOUND_RECORD_FIELDS_V113.md` / `tools/analyze_world_sound_record_fields_v113.py`
 - `WORLD_PUZZLE_SOUND_BRIDGE_V107.md` / `tools/analyze_world_puzzle_sound_bridge_v107.py`
 - `WORLD_RUNTIME_SERIALIZATION_V106.md` / `tools/analyze_world_runtime_serialization_v106.py`
 - `PUZZLES_ALTERNATIVE_OPEN_PATHS_V105.md`
