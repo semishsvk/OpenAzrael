@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v114-context-v22`
+**Canonical checkpoint:** `v115-context-v23`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v114**. The context/Git/quality layer is merged forward as **v114-context-v22**.
+The newest technical base is now **v115**. The context/Git/quality layer is merged forward as **v115-context-v23**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -65,6 +65,14 @@ The newest technical base is now **v114**. The context/Git/quality layer is merg
 - A conservative immediate-allocation audit finds one direct malloc(27)-style pattern and it is the WORLD reader itself. Variable/generic/alternate construction remains possible.
 - Tail origin/meaning remains **UNKNOWN/HOLD**. Serializer analysis cannot promote it; the next target is record construction/mutation/copy behavior.
 
+### WORLD action-record lifecycle — v115
+- The runtime lifecycle of section-6 27-byte action records is now closed for the audited load/schedule/dispatch path.
+- Direct insert helpers `0x295B0` (27-byte list) and `0x295F4` (37-byte list) each have one direct caller, both in WORLD reader `0x29638`; the only audited direct immediate 27-byte allocation is also the reader.
+- Condition scheduling at `0x2990C` creates a 6-byte pending group containing only the original action count and pointer-array address.
+- Dispatcher `0x18698` follows that original pointer array and dispatches the original record pointer in place. No hidden record copy/normalization occurs in this path.
+- This proves the v114 residue +17..+26 is already in serialized WORLD and is not manufactured by the audited runtime path; exact upstream authoring meaning remains UNKNOWN/HOLD.
+- The complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
+
 ### Source-safe runtime dependency repair — context v15
 - Restored exact retained-checkpoint copies of `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json`; both are required directly by the Godot runtime.
 - Restored `GAMEPLAY_EVENT_GRAPH_V87.md` and its audit path.
@@ -105,7 +113,7 @@ The newest technical base is now **v114**. The context/Git/quality layer is merg
 - `tools/kg001_status_v112.py` promotes G00-G09 only from recorded PASS evidence. G10 remains manual with a dedicated checklist/template.
 - Overall state remains **AWAITING_RUNTIME_OR_MANUAL**; the known-good tag remains forbidden.
 
-### KG-001 known-good demo gate — context v22
+### KG-001 known-good demo gate — context v23
 - The acceptance plan is now canonical at `docs/KG001_ACCEPTANCE_PLAN.md`.
 - Machine-readable policy is `data/kg001_acceptance_contract.json`.
 - Required gates are G00-G10: context/data/unit/puzzle/room-transition/trigger/audio-event/save-load/headless-full-demo/fresh-checkout/manual-sanity.
@@ -125,7 +133,7 @@ Do not promote these as recovered original behavior yet:
 
 ## 4. Current technical target
 1. Run the v112 candidate runner with --fresh-checkout --promote-results, then evaluate v112 gate status and perform G10 only if G00-G09 are PASS.
-2. Search constructor/mutator/copy paths for the 27-byte action record, especially writes into +17..+26. v114 proves the serializer is opaque and therefore cannot explain those bytes.
+2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
 5. Keep GitHub mirrors source-safe: no original commercial payloads, derived commercial-data assets, milestone archives, raw dumps, or reproducible forensic payloads containing commercial-derived bytes.
