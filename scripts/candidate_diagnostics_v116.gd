@@ -54,7 +54,7 @@ func _sorted_keys(source: Dictionary) -> Array[String]:
 func _append_event_log(entry: Dictionary) -> void:
     if not file_logging_enabled:
         return
-    var f: FileAccess
+    var f: FileAccess = null
     if FileAccess.file_exists(EVENT_LOG_PATH):
         f = FileAccess.open(EVENT_LOG_PATH, FileAccess.READ_WRITE)
         if f != null:
@@ -110,9 +110,14 @@ func record_transition(source_room: String, trigger_name: String, destination_ro
 
 func observe_trigger(room_id: String, trigger_name: String, inside: bool) -> void:
     var key := room_id + ":" + trigger_name
-    if _trigger_states.has(key) and bool(_trigger_states[key]) == inside:
+    if not _trigger_states.has(key):
+        _trigger_states[key] = inside
+        if not inside:
+            return
+    elif bool(_trigger_states[key]) == inside:
         return
-    _trigger_states[key] = inside
+    else:
+        _trigger_states[key] = inside
     var edge := "ENTER" if inside else "EXIT"
     last_trigger = "%s %s/%s" % [edge, room_id, trigger_name]
     record_event("trigger_" + ("enter" if inside else "exit"), {
