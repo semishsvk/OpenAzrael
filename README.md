@@ -423,3 +423,8 @@ v113 closes the runtime-consumed field layout of the 27-byte WORLD section-6 sou
 ## v114 — WORLD section-6 opaque serializer
 
 v114 closes the matched WORLD section-6 reader/writer behavior. Both the 37-byte and 27-byte nested record families are serialized wholesale as fixed memory blobs; the serializer does not independently encode or interpret the v113 sound fields or the remaining bytes. Across 44 opcode-0x28 sound records, +17..+26 has 41 unique values and every one of seven duplicated stem/object/room groups varies in its tail; the 12 797tap/tapframe2/R8 bindings have 12 unique tails. The exact tail origin remains UNKNOWN/HOLD. The next forensic target is record construction/mutation/copy logic rather than the serializer. See `WORLD_SOUND_SERIALIZER_V114.md`.
+
+
+## v115 — WORLD action-record runtime lifecycle
+
+v115 follows the 27-byte WORLD action record from deserialization to execution. In the audited path, condition scheduling creates only a six-byte count+pointer-array wrapper, and dispatcher 0x18698 follows the original pointer array and executes the original record in place. No hidden copy/normalization step exists between WORLD loading and opcode execution; opcode-0x28 does not mutate the record before consuming its v113 fields. Therefore the variable +17..+26 residue is already present upstream in serialized WORLD. Its exact authoring origin remains UNKNOWN/HOLD. See `WORLD_ACTION_RECORD_LIFECYCLE_V115.md`.
