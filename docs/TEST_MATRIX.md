@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v113-context-v21`
+**Canonical checkpoint:** `v114-context-v22`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v113-context-v21 | PASS target | Source/context validation |
+| Project context | v114-context-v22 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -14,8 +14,8 @@
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
-| Source-safe runtime IR | v113-context-v21 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v113-context-v21 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v114-context-v22 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v114-context-v22 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## KG-001 required release gates
@@ -93,3 +93,19 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Dynamic spatial start | VERIFIED control/data flow / HIGH role identity | Handler 0x191E9 -> 0xD155 |
 | +17..+26 | UNKNOWN/HOLD | Not consumed by opcode-0x28 handler |
 | Source-safe result boundary | PASS | No raw/raw_hex/block_hex/payload bytes committed |
+
+
+## v114 WORLD section-6 opaque serializer
+
+| Check | Status | Evidence boundary |
+|---|---|---|
+| Reader chain 0x29E98 -> 0x29CF4 -> 0x29638 | PASS / VERIFIED | Unique direct call chain |
+| Writer chain 0x29E40 -> 0x29D74 -> 0x2972C | PASS / VERIFIED | Unique direct call chain |
+| 37-byte records | OPAQUE WHOLESALE I/O VERIFIED | 0x25 read/write |
+| 27-byte records | OPAQUE WHOLESALE I/O VERIFIED | 0x1B read/write |
+| Immediate malloc(27)-style audit | 1 match: reader only | Does not exclude variable/alternate allocation |
+| Sound-record tail population | 41 unique / 44; 40 non-zero | Metadata summary only |
+| Duplicate semantic groups | 7/7 have varying +17..+26 | Runtime-equivalent stem/object/room grouping |
+| 797tap/tapframe2/R8 | 12 records / 12 unique tails | Strong variability control |
+| +17..+26 semantics | UNKNOWN/HOLD | Handler non-use + serializer opacity; exact origin not proven |
+| Source-safe result boundary | PASS | No raw record/tail payloads committed |
