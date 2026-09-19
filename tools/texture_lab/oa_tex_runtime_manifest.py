@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Callable
 
-from common import ROOT, write_json
+from common import ROOT, sha256_file, write_json
 from oa_tex_production_selection import DEFAULT_REGISTRY, load_registry, validate_record
 from oa_tex_stage_gate import DEFAULT_APPROVAL_ROOT, DEFAULT_RUN_ROOT
 
@@ -43,10 +43,30 @@ def enhanced_path(texture_id: str, method: str) -> str:
     return f"res://assets/textures/enhanced/{texture_id}/{method}_x4.png"
 
 
-def path_exists(path: str, root: Path = ROOT) -> bool:
+def resolved_file_fields(path: str, root: Path = ROOT) -> dict:
     if not path.startswith("res://"):
-        return False
-    return (root / path[len("res://"):]).is_file()
+        return {
+            "file_present": False,
+            "sha256": None,
+            "size_bytes": None,
+        }
+    resolved = root / path[len("res://"):]
+    present = resolved.is_file()
+    return {
+        "file_present": present,
+        "sha256": sha256_file(resolved) if present else None,
+        "size_bytes": resolved.stat().st_size if present else None,
+    }
+
+
+def input_file_record(path: Path) -> dict:
+    present = path.is_file()
+    return {
+        "path": str(path),
+        "present": present,
+        "sha256": sha256_file(path) if present else None,
+        "size_bytes": path.stat().st_size if present else None,
+    }
 
 
 def resolve_entry(
@@ -74,9 +94,8 @@ def resolve_entry(
             **base,
             "resolved_tier": "classic",
             "path": path,
-            "sha256": None,
             "resolution_reason": "classic_profile",
-            "file_present": path_exists(path, root),
+            **resolved_file_fields(path, root),
         }
 
     if profile == "enhanced":
@@ -86,13 +105,12 @@ def resolve_entry(
             **base,
             "resolved_tier": f"enhanced_{method}",
             "path": path,
-            "sha256": None,
             "resolution_reason": (
                 "policy_forced_nearest"
                 if method != enhanced_method
                 else "requested_deterministic_enhanced"
             ),
-            "file_present": path_exists(path, root),
+            **resolved_file_fields(path, root),
         }
 
     if profile != "remastered":
@@ -106,11 +124,11 @@ def resolve_entry(
                 **base,
                 "resolved_tier": str(production_record["selected_tier"]),
                 "path": path,
-                "sha256": production_record.get("candidate_sha256"),
                 "resolution_reason": "explicit_current_production_selection",
                 "production_preset": production_record.get("selected_from_preset"),
                 "production_selection_status": "PASS",
-                "file_present": path_exists(path, root),
+                "expected_selection_sha256": production_record.get("candidate_sha256"),
+                **resolved_file_fields(path, root),
             }
 
         path = classic_path(texture_id)
@@ -118,11 +136,10 @@ def resolve_entry(
             **base,
             "resolved_tier": "classic",
             "path": path,
-            "sha256": None,
             "resolution_reason": "stale_production_selection_fallback_to_classic",
             "production_selection_status": production_status.get("status"),
             "production_selection_checks": production_status.get("checks"),
-            "file_present": path_exists(path, root),
+            **resolved_file_fields(path, root),
         }
 
     path = classic_path(texture_id)
@@ -130,10 +147,9 @@ def resolve_entry(
         **base,
         "resolved_tier": "classic",
         "path": path,
-        "sha256": None,
         "resolution_reason": "no_production_selection_fallback_to_classic",
         "production_selection_status": "NONE",
-        "file_present": path_exists(path, root),
+        **resolved_file_fields(path, root),
     }
 
 
@@ -258,6 +274,11 @@ def main() -> int:
         args.enhanced_method,
         args.root,
     )
+    manifest["inputs"] = {
+        "selection": input_file_record(args.selection),
+        "policy": input_file_record(args.policy),
+        "production_registry": input_file_record(args.registry),
+    }
 
     out = args.out or DEFAULT_OUTPUT_ROOT / f"{args.profile}.json"
     write_json(out, manifest)
