@@ -14,6 +14,8 @@ sys.path.insert(0, str(ROOT / "tools/texture_lab"))
 from common import (
     alpha_is_binary,
     image_mae,
+    prepare_backend_colorkey_input,
+    reapply_source_colorkey_mask,
     seam_mae,
     sha256_file,
     visible_legacy_magenta_pixels,
@@ -98,6 +100,32 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 report = validate_pair(src, candidate, 4)
                 self.assertEqual(report["technical_status"], "PASS")
                 self.assertTrue(report["colorkey_ok"])
+
+    def test_ai_backend_colorkey_input_and_mask_reapply(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            src = root / "SPRITE#.png"
+            prepared = root / "prepared.png"
+            output = root / "fake_ai.png"
+            self._legacy_key_fixture(src)
+
+            prepared_path, changed = prepare_backend_colorkey_input(src, prepared)
+            self.assertTrue(changed)
+            self.assertEqual(prepared_path, prepared)
+            with Image.open(prepared) as im:
+                self.assertEqual(im.mode, "RGBA")
+                self.assertTrue(alpha_is_binary(im))
+                self.assertEqual(visible_legacy_magenta_pixels(im), 0)
+
+            Image.new("RGB", (32, 32), (80, 120, 160)).save(output)
+            reapplied = reapply_source_colorkey_mask(src, output)
+            self.assertTrue(reapplied)
+            with Image.open(output) as im:
+                self.assertEqual(im.mode, "RGBA")
+                self.assertTrue(alpha_is_binary(im))
+                alpha = im.getchannel("A")
+                self.assertEqual(alpha.getpixel((0, 0)), 0)
+                self.assertEqual(alpha.getpixel((16, 16)), 255)
 
     def test_metrics_are_stable(self):
         with tempfile.TemporaryDirectory() as td:
