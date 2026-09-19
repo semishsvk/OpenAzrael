@@ -103,6 +103,17 @@ def _quoted_command(argv: list[str]) -> str:
 
 def build_restore_plan(args, entries: list[dict]) -> list[dict]:
     ids = [str(entry["id"]) for entry in entries]
+    doctor = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_realesrgan_doctor.py"),
+        "--model", args.restore_model,
+        "--report", str(args.run_dir / "realesrgan_doctor.json"),
+    ]
+    if args.realesrgan_root:
+        doctor.extend(["--realesrgan-root", str(args.realesrgan_root)])
+    if args.model_path:
+        doctor.extend(["--model-path", str(args.model_path)])
+
     report = args.run_dir / "ai_restore_run.json"
     argv = [
         sys.executable,
@@ -146,6 +157,7 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
         "--out-md", str(args.run_dir / "ai_restored_review_queue.md"),
     ]
     return [
+        {"stage": "realesrgan_doctor", "argv": doctor, "command": _quoted_command(doctor)},
         {"stage": "generate", "argv": argv, "command": _quoted_command(argv)},
         {"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)},
         {"stage": "review_queue", "argv": review, "command": _quoted_command(review)},
