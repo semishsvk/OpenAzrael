@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 import uuid
 
+from oa_tex_prompt import build_prompt_pair
+
 from common import (
     ROOT,
     named_candidate_root,
@@ -21,6 +23,7 @@ AI_POLICY = ROOT / "tools/texture_lab/config/ai_review_policy.json"
 AI_BACKENDS = ROOT / "tools/texture_lab/config/ai_backends.json"
 QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+RECREATE_PROFILES = ROOT / "tools/texture_lab/profiles/recreate_profiles.json"
 DEFAULT_RUN_ROOT = ROOT / ".local/texture_lab/runs/rt_poc_01"
 DEFAULT_APPROVAL_ROOT = ROOT / ".local/texture_lab/approvals/rt_poc_01"
 DEFAULT_MANUAL_REVIEW_ROOT = ROOT / ".local/texture_lab/manual_reviews/rt_poc_01"
@@ -352,7 +355,31 @@ def _qwen_job_checks(
     output_sha: str,
     contract: dict,
     workflow_sha: str,
+    expected_positive: str | None = None,
+    expected_negative: str | None = None,
 ) -> dict:
+    bindings = contract.get("canonical_openazrael_workflow", {}).get(
+        "bindings", {}
+    )
+    submitted = job.get("submitted_workflow")
+    submitted_ok = isinstance(submitted, dict)
+    prompt_node = str(bindings.get("prompt_node", ""))
+    negative_node = str(bindings.get("negative_prompt_node", ""))
+    seed_node = str(bindings.get("seed_node", ""))
+    load_node = str(bindings.get("load_image_node", ""))
+
+    def submitted_input(node_id: str, key: str):
+        if not submitted_ok:
+            return None
+        node = submitted.get(node_id)
+        if not isinstance(node, dict):
+            return None
+        inputs = node.get("inputs")
+        if not isinstance(inputs, dict):
+            return None
+        return inputs.get(key)
+
+    expected_seed = contract.get("poc_sampling", {}).get("seed")
     return {
         "schema_ok": job.get("schema")
         == "openazrael.texture_lab.ai_recreated_job.v4",
@@ -369,6 +396,32 @@ def _qwen_job_checks(
         ),
         "model_files_ok": _job_model_set(job)
         == _expected_qwen_model_set(contract),
+        "positive_prompt_ok": (
+            expected_positive is None
+            or job.get("positive_prompt") == expected_positive
+        ),
+        "negative_prompt_ok": (
+            expected_negative is None
+            or job.get("negative_prompt") == expected_negative
+        ),
+        "submitted_positive_prompt_ok": (
+            expected_positive is None
+            or submitted_input(prompt_node, "prompt") == expected_positive
+        ),
+        "submitted_negative_prompt_ok": (
+            expected_negative is None
+            or submitted_input(negative_node, "prompt") == expected_negative
+        ),
+        "submitted_seed_ok": _int_equal(
+            submitted_input(seed_node, "seed"),
+            expected_seed,
+        ),
+        "submitted_image_binding_ok": (
+            isinstance(job.get("uploaded_name"), str)
+            and bool(job.get("uploaded_name"))
+            and submitted_input(load_node, "image")
+            == job.get("uploaded_name")
+        ),
     }
 
 
@@ -382,6 +435,7 @@ def recreated_generation_provenance(
     workflow_sha = sha256_file(QWEN_WORKFLOW)
     selection = load_json(SELECTION)
     policy = load_json(AI_POLICY)
+    profiles = load_json(RECREATE_PROFILES)
     by_selection = {
         str(row["id"]): row
         for row in selection.get("textures", [])
@@ -475,6 +529,10 @@ def recreated_generation_provenance(
                     / f"{texture_id}_part_{index:02d}.job.json"
                 )
                 job = load_json(job_path)
+                prompts = build_prompt_pair(
+                    profiles,
+                    str(entry.get("content_class", "")),
+                )
                 part_checks = _qwen_job_checks(
                     job,
                     _safe_sha(classic_part),
@@ -482,6 +540,8 @@ def recreated_generation_provenance(
                     _safe_sha(generated_part),
                     contract,
                     workflow_sha,
+                    prompts["positive"],
+                    prompts["negative"],
                 )
                 part_results.append(
                     {
@@ -521,6 +581,10 @@ def recreated_generation_provenance(
         enhanced = (
             ROOT / "assets/textures/enhanced" / texture_id / "lanczos_x4.png"
         )
+        prompts = build_prompt_pair(
+            profiles,
+            str(entry.get("content_class", "")),
+        )
         job_checks = _qwen_job_checks(
             job,
             str(source.get("sha256", "")) if isinstance(source, dict) else "",
@@ -530,6 +594,8 @@ def recreated_generation_provenance(
             else "",
             contract,
             workflow_sha,
+            prompts["positive"],
+            prompts["negative"],
         )
         checks["job_ok"] = all(job_checks.values())
         row_results.append(
