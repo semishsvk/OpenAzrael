@@ -14,16 +14,14 @@
 - `tools/texture_lab/oa_tex_structural_drift.py`
 - `tools/texture_lab/oa_tex_calibrate_drift.py`
 - `tools/texture_lab/oa_tex_run_poc.py`
-- `tools/texture_lab/oa_tex_restore.py`
-- `tools/texture_lab/oa_tex_recreate.py`
+- `tools/texture_lab/oa_tex_restore.py`\n- `tools/texture_lab/oa_tex_realesrgan_bootstrap.py`\n- `tools/texture_lab/oa_tex_realesrgan_doctor.py`\n- `tools/texture_lab/oa_tex_recreate.py`
 - `tools/texture_lab/oa_tex_ai_bakeoff.py`
 - `tools/texture_lab/config/enhance.json`
 - `tools/texture_lab/config/rt_poc_01_selection.json`
 - `data/texture_lab/rt_poc_01_sampling_review.json`
 - `data/texture_lab/rt_poc_01_drift_baseline.json`
 - `data/texture_lab/rt_poc_01_ai_policy_summary.json`
-- `tools/texture_lab/config/ai_backends.json`
-- `tools/texture_lab/config/ai_review_policy.json`
+- `tools/texture_lab/config/ai_backends.json`\n- `tools/texture_lab/config/model_registry.json`\n- `tools/texture_lab/config/ai_review_policy.json`
 - `tools/texture_lab/profiles/base_preserve.json`
 - `tools/texture_lab/profiles/recreate_profiles.json`
 - `tools/texture_lab/oa_tex_prompt.py`
