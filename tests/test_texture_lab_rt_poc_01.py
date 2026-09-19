@@ -667,10 +667,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(pack["texture_count"], 1)
             row = pack["rows"][0]
             comparison = Path(row["comparison"]["path"])
+            detail = Path(row["detail_comparison"]["path"])
             tile = Path(row["tile_preview"]["path"])
             self.assertTrue(comparison.is_file())
+            self.assertTrue(detail.is_file())
             self.assertTrue(tile.is_file())
             self.assertEqual(row["comparison"]["sha256"], sha256_file(comparison))
+            self.assertEqual(row["detail_comparison"]["sha256"], sha256_file(detail))
             self.assertEqual(row["tile_preview"]["sha256"], sha256_file(tile))
             self.assertEqual(row["repeat_axes"], ["u", "v"])
 
@@ -685,9 +688,11 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             source = root / "classic.png"
             candidate = root / "candidate.png"
             comparison = root / "comparison.png"
+            detail = root / "detail.png"
             source.write_bytes(b"classic")
             candidate.write_bytes(b"candidate-v1")
             comparison.write_bytes(b"comparison-v1")
+            detail.write_bytes(b"detail-v1")
 
             def record(path: Path) -> dict:
                 return {
@@ -761,7 +766,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 review_manifest.write_text(
                     json.dumps(
                         {
-                            "schema": "openazrael.texture_lab.visual_review_pack.v1",
+                            "schema": "openazrael.texture_lab.visual_review_pack.v2",
                             "status": "READY_FOR_MANUAL_REVIEW",
                             "automatic_promotion": False,
                             "rows": [
@@ -770,6 +775,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                                     "source": record(source),
                                     "candidate": record(candidate),
                                     "comparison": record(comparison),
+                                    "detail_comparison": record(detail),
                                     "tile_preview": None,
                                 }
                             ],
