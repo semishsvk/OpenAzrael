@@ -8,7 +8,14 @@ import subprocess
 
 from PIL import Image, __version__ as PILLOW_VERSION
 
-from common import ROOT, RESAMPLE, sha256_file, write_json
+from common import (
+    ROOT,
+    RESAMPLE,
+    resize_with_legacy_colorkey,
+    sha256_file,
+    should_apply_legacy_colorkey,
+    write_json,
+)
 
 
 def upscale_one(src: Path, out_dir: Path, factor: int, methods: list[str]) -> list[dict]:
@@ -17,10 +24,16 @@ def upscale_one(src: Path, out_dir: Path, factor: int, methods: list[str]) -> li
     with Image.open(src) as original:
         original.load()
         target_size = (original.width * factor, original.height * factor)
+        legacy_colorkey = should_apply_legacy_colorkey(src, original)
         for method in methods:
             if method not in RESAMPLE:
                 raise ValueError(f"unsupported built-in method: {method}")
-            result = original.resize(target_size, RESAMPLE[method])
+            if legacy_colorkey:
+                result = resize_with_legacy_colorkey(original, target_size, RESAMPLE[method])
+                alpha_policy = "legacy_magenta_to_binary_alpha_nearest"
+            else:
+                result = original.resize(target_size, RESAMPLE[method])
+                alpha_policy = "source_native"
             dest = out_dir / f"{method}_x{factor}.png"
             result.save(dest, format="PNG", optimize=False)
             records.append(
@@ -31,6 +44,8 @@ def upscale_one(src: Path, out_dir: Path, factor: int, methods: list[str]) -> li
                     "width": result.width,
                     "height": result.height,
                     "sha256": sha256_file(dest),
+                    "legacy_colorkey_applied": legacy_colorkey,
+                    "alpha_policy": alpha_policy,
                 }
             )
     return records
@@ -49,6 +64,8 @@ def run_external_xbrz(template: str, src: Path, dest: Path, factor: int) -> dict
         "file": dest.name,
         "sha256": sha256_file(dest),
         "command_template": template,
+        "legacy_colorkey_applied": False,
+        "alpha_policy": "EXTERNAL_BACKEND_UNVERIFIED",
     }
 
 
@@ -83,11 +100,12 @@ def main() -> int:
         raise SystemExit("no input PNGs selected")
 
     run = {
-        "schema": "openazrael.texture_lab.enhance_run.v1",
+        "schema": "openazrael.texture_lab.enhance_run.v2",
         "mode": "deterministic_mathematical",
         "pillow_version": PILLOW_VERSION,
         "factor": args.factor,
         "methods": list(args.methods),
+        "legacy_colorkey_policy": "conservative_#_plus_quantized_magenta_to_binary_alpha",
         "textures": [],
     }
 
