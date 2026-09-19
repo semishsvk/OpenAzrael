@@ -355,12 +355,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seed=734234,
                 model_label="Qwen-Image-Edit-2511",
                 selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+                factor=4,
             )
             jobs = build_recreate_plan(args, [entry], profiles, contract)
 
         self.assertEqual(
             [job["stage"] for job in jobs],
-            ["comfy_doctor", "qwen_preflight", "generate", "structural_qa", "review_queue"],
+            ["comfy_doctor", "qwen_preflight", "generate", "technical_qa", "structural_qa", "review_queue"],
         )
         generate = jobs[2]
         self.assertTrue(generate["conditioning_image"].endswith("CORIROCK/lanczos_x4.png"))
@@ -402,6 +403,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 model_path=temp / "RealESRGAN_x4plus.pth",
                 realesrgan_python=str(temp / "venv" / "bin" / "python"),
                 selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+                factor=4,
             )
             jobs = build_restore_plan(
                 args,
@@ -410,7 +412,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
 
         self.assertEqual(
             [job["stage"] for job in jobs],
-            ["realesrgan_doctor", "generate", "structural_qa", "review_queue"],
+            ["realesrgan_doctor", "generate", "technical_qa", "structural_qa", "review_queue"],
         )
         self.assertEqual(jobs[0]["argv"][0], str(temp / "venv" / "bin" / "python"))
         self.assertIn("--realesrgan-root", jobs[0]["argv"])
@@ -516,6 +518,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seed=734234,
                 model_label="Qwen-Image-Edit-2511",
                 selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+                factor=4,
             )
             jobs = build_recreate_plan(args, [entry], profiles, contract)
 
@@ -525,7 +528,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertEqual(stages.count("atlas_split_enhanced"), 1)
         self.assertEqual(stages.count("generate"), 4)
         self.assertEqual(stages.count("atlas_stitch"), 1)
-        self.assertEqual(stages[-2:], ["structural_qa", "review_queue"])
+        self.assertEqual(stages[-3:], ["technical_qa", "structural_qa", "review_queue"])
         generated_parts = [job for job in jobs if job["stage"] == "generate"]
         self.assertEqual(
             [job["part"] for job in generated_parts],
