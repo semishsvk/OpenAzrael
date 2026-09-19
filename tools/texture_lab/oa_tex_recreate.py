@@ -6,12 +6,18 @@ import copy
 import json
 import mimetypes
 from pathlib import Path
+import tempfile
 import time
 import urllib.parse
 import urllib.request
 import uuid
 
-from common import sha256_file, write_json
+from common import (
+    prepare_backend_colorkey_input,
+    reapply_source_colorkey_mask,
+    sha256_file,
+    write_json,
+)
 
 
 def _json_request(url: str, payload: dict | None = None) -> dict:
@@ -80,7 +86,7 @@ def model_fingerprints(paths: list[Path]) -> list[dict]:
 def run_job(
     server: str,
     workflow_template: dict,
-    source: Path,
+    upload_source: Path,
     output: Path,
     load_image_node: str,
     prompt_node: str | None,
@@ -91,7 +97,7 @@ def run_job(
     seed: int | None,
     timeout: int,
 ) -> dict:
-    uploaded_name = _upload_image(server, source)
+    uploaded_name = _upload_image(server, upload_source)
     workflow = copy.deepcopy(workflow_template)
     _set_input(workflow, load_image_node, "image", uploaded_name)
     if prompt is not None:
@@ -128,7 +134,6 @@ def run_job(
     return {
         "prompt_id": prompt_id,
         "uploaded_name": uploaded_name,
-        "output_sha256": sha256_file(output),
         "submitted_workflow": workflow,
     }
 
@@ -155,25 +160,33 @@ def main() -> int:
     args = parser.parse_args()
 
     workflow = json.loads(args.workflow.read_text(encoding="utf-8"))
-    result = run_job(
-        args.server,
-        workflow,
-        args.source,
-        args.output,
-        args.load_image_node,
-        args.prompt_node,
-        args.prompt_key,
-        args.prompt,
-        args.seed_node,
-        args.seed_key,
-        args.seed,
-        args.timeout,
-    )
+    with tempfile.TemporaryDirectory(prefix="openazrael_tex_") as td:
+        upload_source, colorkey_prepared = prepare_backend_colorkey_input(
+            args.source, Path(td) / args.source.name
+        )
+        result = run_job(
+            args.server,
+            workflow,
+            upload_source,
+            args.output,
+            args.load_image_node,
+            args.prompt_node,
+            args.prompt_key,
+            args.prompt,
+            args.seed_node,
+            args.seed_key,
+            args.seed,
+            args.timeout,
+        )
+
+    colorkey_reapplied = reapply_source_colorkey_mask(args.source, args.output)
+    result["output_sha256"] = sha256_file(args.output)
+
     record_path = args.job_record or args.output.with_suffix(".job.json")
     write_json(
         record_path,
         {
-            "schema": "openazrael.texture_lab.ai_recreated_job.v2",
+            "schema": "openazrael.texture_lab.ai_recreated_job.v3",
             "source_file": args.source.name,
             "source_sha256": sha256_file(args.source),
             "output_file": args.output.name,
@@ -183,6 +196,8 @@ def main() -> int:
             "model_files": model_fingerprints(args.model_file),
             "seed": args.seed,
             "prompt": args.prompt,
+            "legacy_colorkey_input_prepared": colorkey_prepared,
+            "legacy_colorkey_mask_reapplied": colorkey_reapplied,
             **result,
         },
     )
