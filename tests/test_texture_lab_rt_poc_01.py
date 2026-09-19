@@ -37,6 +37,7 @@ from oa_tex_ai_bakeoff import (
     eligible_entries,
     prepare_run_storage,
     resolve_named_candidate_namespace,
+    run_instance_id,
     validate_named_preset_contract,
 )
 from oa_tex_atlas import split_equal, stitch_equal
@@ -67,7 +68,13 @@ from oa_tex_qwen_preflight import (
 )
 from oa_tex_realesrgan_bootstrap import dependency_install_commands, verify_checkpoint
 from oa_tex_realesrgan_runtime import evaluate_probe, load_contract as load_realesrgan_runtime_contract
-from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, validate_receipt
+from oa_tex_stage_gate import (
+    approve,
+    check_prerequisites,
+    evidence_snapshot,
+    valid_run_instance_id,
+    validate_receipt,
+)
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_review_profile import build_review_profile
@@ -423,6 +430,16 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual([entry["id"] for entry in deferred], ["BAPTAP"])
         self.assertEqual(preset["name"], "recreated_smoke_4")
+
+    def test_real_named_runs_get_unique_approval_identity(self):
+        self.assertIsNone(run_instance_id(None, False))
+        self.assertIsNone(run_instance_id("restored_smoke_1", True))
+
+        first = run_instance_id("restored_smoke_1", False)
+        second = run_instance_id("restored_smoke_1", False)
+        self.assertTrue(valid_run_instance_id(first))
+        self.assertTrue(valid_run_instance_id(second))
+        self.assertNotEqual(first, second)
 
     def test_named_run_storage_refuses_stale_mix_and_replaces_explicitly(self):
         with tempfile.TemporaryDirectory() as td:
@@ -929,6 +946,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     {
                         "preset": {"name": "restored_smoke_1"},
                         "dry_run": False,
+                        "run_instance_id": run_instance_id(
+                            "restored_smoke_1",
+                            False,
+                        ),
                         "selected": ["CORIROCK"],
                     }
                 ),
