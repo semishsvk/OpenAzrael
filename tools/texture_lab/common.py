@@ -117,8 +117,20 @@ def reapply_source_colorkey_mask(source: Path, output: Path) -> bool:
         rgba = output_image.convert("RGBA")
         alpha = source_alpha.resize(rgba.size, RESAMPLE["nearest"])
         rgba.putalpha(alpha)
+        rgba = zero_fully_transparent_rgb(rgba)
     rgba.save(output, format="PNG", optimize=False)
     return True
+
+
+def zero_fully_transparent_rgb(image: Image.Image) -> Image.Image:
+    rgba = image.convert("RGBA")
+    px = rgba.load()
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                px[x, y] = (0, 0, 0, 0)
+    return rgba
 
 
 def visible_legacy_magenta_pixels(image: Image.Image) -> int:
