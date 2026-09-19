@@ -74,6 +74,7 @@ from oa_tex_qwen_preflight import (
 )
 from oa_tex_realesrgan_bootstrap import dependency_install_commands, verify_checkpoint
 from oa_tex_realesrgan_runtime import evaluate_probe, load_contract as load_realesrgan_runtime_contract
+from oa_tex_realesrgan_lock import build_lock_candidate, requirements_text
 from oa_tex_stage_gate import (
     approve,
     check_prerequisites,
@@ -1745,6 +1746,86 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual(bad["status"], "FAIL")
         self.assertFalse(bad["checks"]["torch_ok"])
+
+    def test_realesrgan_runtime_lock_candidate_requires_complete_doctor_evidence(self):
+        contract = load_realesrgan_runtime_contract()
+        packages = [
+            "basicsr==1.4.2",
+            "torch==2.1.2",
+            "torchvision==0.16.2",
+        ]
+        freeze_text = "\n".join(sorted(packages)) + "\n"
+        freeze_sha = hashlib.sha256(freeze_text.encode("utf-8")).hexdigest()
+        doctor = {
+            "schema": "openazrael.texture_lab.realesrgan_doctor.v3",
+            "ready": True,
+            "python": "3.11.x",
+            "platform": "test-platform",
+            "source_version": "0.3.0",
+            "source_version_ok": True,
+            "source_git_head": "fa4c8a03ae3dbc9ea6ed471a6ab5da94ac15c2ea",
+            "source_git_head_ok": True,
+            "checkpoint": {
+                "status": "PASS",
+                "sha256": "a" * 64,
+                "size_bytes": 10,
+            },
+            "torch_runtime": {
+                "status": "PASS",
+                "version": "2.1.2",
+                "cuda_available": True,
+                "cuda_version": "12.1",
+                "devices": [{"name": "Test GPU"}],
+            },
+            "runtime_contract": {
+                "schema": contract["schema"],
+                "probe": {
+                    "status": "PASS",
+                    "observed": {
+                        "python_major_minor": "3.11",
+                        "torch": "2.1.2",
+                        "torchvision": "0.16.2",
+                        "basicsr": "1.4.2",
+                        "realesrgan": "0.3.0",
+                    },
+                },
+                "pip_freeze": {
+                    "status": "PASS",
+                    "packages": sorted(packages),
+                    "package_count": len(packages),
+                    "sha256": freeze_sha,
+                },
+            },
+        }
+
+        candidate = build_lock_candidate(
+            "restored_smoke_1",
+            doctor,
+            contract,
+        )
+        self.assertEqual(candidate["status"], "PASS")
+        self.assertFalse(candidate["automatic_promotion"])
+        self.assertFalse(candidate["canonical_config_mutated"])
+        self.assertEqual(
+            candidate["observed"]["pip_freeze"]["sha256"],
+            freeze_sha,
+        )
+        self.assertEqual(
+            requirements_text(candidate),
+            freeze_text,
+        )
+
+        broken = json.loads(json.dumps(doctor))
+        broken["runtime_contract"]["pip_freeze"]["status"] = "FAIL"
+        hold = build_lock_candidate(
+            "restored_smoke_1",
+            broken,
+            contract,
+        )
+        self.assertEqual(hold["status"], "HOLD")
+        self.assertFalse(hold["checks"]["pip_freeze_pass"])
+        with self.assertRaises(SystemExit):
+            requirements_text(hold)
 
     def test_realesrgan_texture_dependency_plan_excludes_face_stack(self):
         contract = load_realesrgan_runtime_contract()
