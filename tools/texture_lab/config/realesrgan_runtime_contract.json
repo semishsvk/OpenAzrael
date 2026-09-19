@@ -38,6 +38,7 @@
     "install_basicsr_exact": true,
     "install_realesrgan_editable_no_deps": true,
     "capture_pip_freeze": true,
-    "freeze_becomes_final_lock_only_after_successful_real_smoke": false
+    "current_environment_lock_status": "PROVISIONAL_UNTIL_REAL_SMOKE",
+    "final_lock_promotion_condition": "successful reviewed restored_smoke_1 with captured pip-freeze fingerprint"
   }
 }
