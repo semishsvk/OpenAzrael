@@ -279,12 +279,6 @@ func _event_log_tail(max_lines: int = BUG_REPORT_EVENT_TAIL_LINES) -> String:
         out += String(lines[i]) + "\n"
     return out
 
-func _read_file_bytes(path: String) -> PackedByteArray:
-    var f := FileAccess.open(path, FileAccess.READ)
-    if f == null:
-        return PackedByteArray()
-    return f.get_buffer(f.get_length())
-
 func _zip_add_bytes(packer, path: String, bytes: PackedByteArray) -> bool:
     if packer.start_file(path) != OK:
         return false
@@ -295,20 +289,16 @@ func _zip_add_bytes(packer, path: String, bytes: PackedByteArray) -> bool:
 func _zip_add_text(packer, path: String, content: String) -> bool:
     return _zip_add_bytes(packer, path, content.to_utf8_buffer())
 
-func _capture_screenshot(path: String) -> bool:
+func _capture_screenshot_png() -> PackedByteArray:
     if DisplayServer.get_name() == "headless":
-        return false
+        return PackedByteArray()
     var viewport := get_viewport()
     if viewport == null:
-        return false
+        return PackedByteArray()
     var image := viewport.get_texture().get_image()
     if image == null or image.is_empty():
-        return false
-    return image.save_png(path) == OK
-
-func _remove_user_file(path: String) -> void:
-    if FileAccess.file_exists(path):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+        return PackedByteArray()
+    return image.save_png_to_buffer()
 
 func _state_snapshot(context: Dictionary, last_game_event: Dictionary) -> Dictionary:
     return {
@@ -378,8 +368,8 @@ func capture_bug_report() -> String:
     var suffix := event_sequence % 10000
     var base := "%s%d_%04d" % [BUG_REPORT_PREFIX, stamp, suffix]
     var zip_path := base + ".zip"
-    var screenshot_path := base + "_screenshot.png"
-    var screenshot_ok := _capture_screenshot(screenshot_path)
+    var screenshot_bytes := _capture_screenshot_png()
+    var screenshot_ok := not screenshot_bytes.is_empty()
     var system_info := _system_info()
     var state := _state_snapshot(context, last_game_event)
     var report := {
@@ -411,7 +401,6 @@ func capture_bug_report() -> String:
     var packer := ZIPPacker.new()
     var open_error := packer.open(zip_path)
     if open_error != OK:
-        _remove_user_file(screenshot_path)
         _bug_report_capture_in_progress = false
         push_error("OpenAzrael bug report ZIP open failed: " + zip_path)
         return ""
@@ -432,8 +421,7 @@ func capture_bug_report() -> String:
             entry_errors.append(String(entry[0]))
 
     if screenshot_ok:
-        var screenshot_bytes := _read_file_bytes(screenshot_path)
-        if not screenshot_bytes.is_empty() and _zip_add_bytes(packer, "screenshot.png", screenshot_bytes):
+        if _zip_add_bytes(packer, "screenshot.png", screenshot_bytes):
             included.append("screenshot.png")
         else:
             entry_errors.append("screenshot.png")
@@ -453,7 +441,6 @@ func capture_bug_report() -> String:
     else:
         entry_errors.append("manifest.json")
     packer.close()
-    _remove_user_file(screenshot_path)
 
     last_bug_report = zip_path
     _bug_report_capture_in_progress = false
