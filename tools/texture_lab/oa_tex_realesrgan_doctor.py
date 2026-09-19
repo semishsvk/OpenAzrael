@@ -41,6 +41,39 @@ def module_status(name: str) -> dict:
         }
 
 
+def torch_runtime_status() -> dict:
+    try:
+        import torch
+        devices = []
+        if torch.cuda.is_available():
+            for index in range(torch.cuda.device_count()):
+                props = torch.cuda.get_device_properties(index)
+                devices.append(
+                    {
+                        "index": index,
+                        "name": props.name,
+                        "total_memory_bytes": int(props.total_memory),
+                        "major": int(props.major),
+                        "minor": int(props.minor),
+                    }
+                )
+        return {
+            "status": "PASS",
+            "version": getattr(torch, "__version__", "unknown"),
+            "cuda_available": bool(torch.cuda.is_available()),
+            "cuda_version": getattr(torch.version, "cuda", None),
+            "device_count": int(torch.cuda.device_count()) if torch.cuda.is_available() else 0,
+            "devices": devices,
+        }
+    except Exception as exc:
+        return {
+            "status": "FAIL",
+            "error": f"{type(exc).__name__}: {exc}",
+            "cuda_available": False,
+            "devices": [],
+        }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Diagnose the pinned OpenAzrael Real-ESRGAN runtime.")
     parser.add_argument(
@@ -90,8 +123,10 @@ def main() -> int:
         except Exception:
             source_head = None
 
+    torch_runtime = torch_runtime_status()
+
     report = {
-        "schema": "openazrael.texture_lab.realesrgan_doctor.v1",
+        "schema": "openazrael.texture_lab.realesrgan_doctor.v2",
         "python": sys.version,
         "platform": platform.platform(),
         "source_dir": str(source_dir),
@@ -103,6 +138,7 @@ def main() -> int:
         "source_git_head_ok": source_head == spec["upstream_commit"],
         "checkpoint": checkpoint_status,
         "modules": modules,
+        "torch_runtime": torch_runtime,
         "ready": (
             source_dir.is_dir()
             and source_version == spec["upstream_version"]
@@ -110,6 +146,8 @@ def main() -> int:
             and checkpoint_status.get("status") == "PASS"
             and modules["torch"]["status"] == "PASS"
             and modules["torchvision"]["status"] == "PASS"
+            and modules["cv2"]["status"] == "PASS"
+            and modules["PIL"]["status"] == "PASS"
             and modules["basicsr"]["status"] == "PASS"
             and modules["realesrgan"]["status"] == "PASS"
         ),
