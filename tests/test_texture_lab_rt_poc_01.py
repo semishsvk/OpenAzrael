@@ -22,22 +22,27 @@ from common import (
 )
 from oa_tex_enhance import upscale_one
 from oa_tex_scan import scan
+from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
 from oa_tex_validate import validate_pair
 
 
 class TextureLabRTPOC01Tests(unittest.TestCase):
     def _fixture(self, path: Path) -> None:
-        im = Image.new("RGBA", (8, 8), (20, 40, 60, 255))
+        im = Image.new("RGBA", (16, 16), (20, 40, 60, 255))
         px = im.load()
-        for y in range(8):
-            for x in range(8):
+        for y in range(16):
+            for x in range(16):
                 px[x, y] = (
                     (x * 31 + y * 7) % 256,
                     (y * 29 + x * 3) % 256,
                     (x * 11 + y * 17) % 256,
                     255 if (x + y) % 3 else 128,
                 )
+        # Add a stable high-contrast landmark so displacement is measurable.
+        for y in range(4, 9):
+            for x in range(3, 7):
+                px[x, y] = (245, 232, 40, 255)
         im.save(path)
 
     def _legacy_key_fixture(self, path: Path) -> None:
@@ -73,7 +78,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             nearest = out_a / "nearest_x4.png"
             result = validate_pair(src, nearest, 4)
             self.assertEqual(result["technical_status"], "PASS")
-            self.assertEqual(result["actual_size"], [32, 32])
+            self.assertEqual(result["actual_size"], [64, 64])
 
     def test_legacy_magenta_colorkey_is_alpha_safe(self):
         with tempfile.TemporaryDirectory() as td:
@@ -127,6 +132,32 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 self.assertEqual(alpha.getpixel((0, 0)), 0)
                 self.assertEqual(alpha.getpixel((16, 16)), 255)
 
+    def test_structural_drift_detects_displacement(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            src = root / "source.png"
+            good = root / "good.png"
+            shifted = root / "shifted.png"
+            self._fixture(src)
+
+            with Image.open(src) as im:
+                im.resize((64, 64), Image.Resampling.NEAREST).save(good)
+                moved = Image.new("RGBA", im.size, (0, 0, 0, 255))
+                moved.alpha_composite(im, (3, 0))
+                moved.resize((64, 64), Image.Resampling.NEAREST).save(shifted)
+
+            good_metrics = analyze_pair(src, good)
+            bad_metrics = analyze_pair(src, shifted)
+
+            self.assertLess(
+                good_metrics["low_frequency_luma_mae_0_255"],
+                bad_metrics["low_frequency_luma_mae_0_255"],
+            )
+            self.assertLess(
+                good_metrics["edge_map_mae_0_255"],
+                bad_metrics["edge_map_mae_0_255"],
+            )
+
     def test_metrics_are_stable(self):
         with tempfile.TemporaryDirectory() as td:
             src = Path(td) / "a.png"
@@ -146,7 +177,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self._fixture(src)
             tile_preview(src, dest, 3, 4)
             with Image.open(dest) as im:
-                self.assertEqual(im.size, (24, 32))
+                self.assertEqual(im.size, (48, 64))
 
 
 if __name__ == "__main__":
