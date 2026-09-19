@@ -86,6 +86,7 @@ from oa_tex_stage_gate import (
     _qwen_job_checks,
     evidence_snapshot,
     expected_recreated_job_records,
+    preset_record,
     restored_generation_provenance,
     valid_run_instance_id,
     validate_receipt,
