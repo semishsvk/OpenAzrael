@@ -41,6 +41,7 @@ from oa_tex_qwen_preflight import (
 from oa_tex_realesrgan_bootstrap import verify_checkpoint
 from oa_tex_stage_gate import check_prerequisites
 from oa_tex_review_report import build_review_rows
+from oa_tex_review_pack import build_review_pack
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
@@ -364,7 +365,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
 
         self.assertEqual(
             [job["stage"] for job in jobs],
-            ["comfy_doctor", "qwen_preflight", "generate", "technical_qa", "structural_qa", "review_queue"],
+            ["comfy_doctor", "qwen_preflight", "generate", "technical_qa", "structural_qa", "review_queue", "review_pack"],
         )
         generate = jobs[2]
         self.assertTrue(generate["conditioning_image"].endswith("CORIROCK/lanczos_x4.png"))
@@ -414,7 +415,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
 
         self.assertEqual(
             [job["stage"] for job in jobs],
-            ["realesrgan_doctor", "generate", "technical_qa", "structural_qa", "review_queue"],
+            ["realesrgan_doctor", "generate", "technical_qa", "structural_qa", "review_queue", "review_pack"],
         )
         self.assertEqual(jobs[0]["argv"][0], str(temp / "venv" / "bin" / "python"))
         self.assertIn("--realesrgan-root", jobs[0]["argv"])
@@ -530,7 +531,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertEqual(stages.count("atlas_split_enhanced"), 1)
         self.assertEqual(stages.count("generate"), 4)
         self.assertEqual(stages.count("atlas_stitch"), 1)
-        self.assertEqual(stages[-3:], ["technical_qa", "structural_qa", "review_queue"])
+        self.assertEqual(
+            stages[-4:],
+            ["technical_qa", "structural_qa", "review_queue", "review_pack"],
+        )
         generated_parts = [job for job in jobs if job["stage"] == "generate"]
         self.assertEqual(
             [job["part"] for job in generated_parts],
@@ -596,6 +600,78 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertIn("drift_above_deterministic_max", row["attention"])
         self.assertIn("exact_alpha_lock", row["attention"])
         self.assertIn("repeat_sampling:u,v", row["attention"])
+
+    def test_visual_review_pack_fingerprints_comparison_and_repeat_tile(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source_dir = root / "classic"
+            enhanced_dir = root / "enhanced"
+            restored_dir = root / "restored"
+            recreated_dir = root / "recreated"
+            out_dir = root / "review_pack"
+            source_dir.mkdir()
+
+            texture_id = "TEX_REPEAT"
+            source = source_dir / f"{texture_id}.png"
+            self._fixture(source)
+
+            with Image.open(source) as im:
+                enlarged = im.convert("RGBA").resize(
+                    (im.width * 4, im.height * 4),
+                    getattr(Image, "Resampling", Image).NEAREST,
+                )
+
+            variant_dir = enhanced_dir / texture_id
+            variant_dir.mkdir(parents=True)
+            for name in ["nearest_x4.png", "bicubic_x4.png", "lanczos_x4.png"]:
+                enlarged.save(variant_dir / name)
+
+            candidate_dir = recreated_dir / texture_id
+            candidate_dir.mkdir(parents=True)
+            candidate = candidate_dir / "selected.png"
+            enlarged.save(candidate)
+
+            review_queue = {
+                "rows": [
+                    {
+                        "id": texture_id,
+                        "review_state": "MANUAL_REVIEW_REQUIRED",
+                        "attention": ["repeat_sampling:u,v"],
+                    }
+                ]
+            }
+            sampling = {
+                "textures": [
+                    {
+                        "id": texture_id,
+                        "repeat_sampling_observed": True,
+                        "repeat_axes": ["u", "v"],
+                    }
+                ]
+            }
+
+            pack = build_review_pack(
+                "recreated",
+                review_queue,
+                sampling,
+                source_dir,
+                enhanced_dir,
+                restored_dir,
+                recreated_dir,
+                out_dir,
+                96,
+            )
+
+            self.assertEqual(pack["status"], "READY_FOR_MANUAL_REVIEW")
+            self.assertEqual(pack["texture_count"], 1)
+            row = pack["rows"][0]
+            comparison = Path(row["comparison"]["path"])
+            tile = Path(row["tile_preview"]["path"])
+            self.assertTrue(comparison.is_file())
+            self.assertTrue(tile.is_file())
+            self.assertEqual(row["comparison"]["sha256"], sha256_file(comparison))
+            self.assertEqual(row["tile_preview"]["sha256"], sha256_file(tile))
+            self.assertEqual(row["repeat_axes"], ["u", "v"])
 
     def test_qwen_bootstrap_verifies_exact_file_identity(self):
         with tempfile.TemporaryDirectory() as td:
