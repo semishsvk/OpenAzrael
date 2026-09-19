@@ -6,7 +6,7 @@ import hashlib
 import json
 from typing import Any
 
-from PIL import Image, ImageChops, ImageStat
+from PIL import Image, ImageChops, ImageStat, __version__ as PILLOW_VERSION
 
 ROOT = Path(__file__).resolve().parents[2]
 PINNED_PILLOW_VERSION = "12.3.0"
@@ -19,6 +19,15 @@ RESAMPLE = {
 
 LEGACY_MAGENTA_RB_MIN = 248
 LEGACY_MAGENTA_G_MAX = 12
+
+
+def require_pinned_pillow() -> None:
+    if PILLOW_VERSION != PINNED_PILLOW_VERSION:
+        raise SystemExit(
+            "Texture Lab source-safe Pillow mismatch: "
+            f"expected {PINNED_PILLOW_VERSION}, got {PILLOW_VERSION}. "
+            "Install tools/texture_lab/requirements-source-safe.txt."
+        )
 
 
 def sha256_file(path: Path) -> str:
