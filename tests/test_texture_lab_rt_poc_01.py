@@ -55,6 +55,9 @@ from oa_tex_first_run import (
 from oa_tex_manual_review import init_review, record_texture, validate_manual_review
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_production_selection import (
+    CURRENT_REGISTRY_SCHEMA,
+    LEGACY_REGISTRY_SCHEMA,
+    load_registry,
     registry_status,
     select_candidate,
     store_selection_record,
@@ -1782,6 +1785,39 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(bad["status"], "HOLD")
             by_id = {row["id"]: row for row in bad["rows"]}
             self.assertFalse(by_id["B"]["size_ok"])
+
+    def test_production_registry_v1_migrates_in_memory_to_v2(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "production_selection.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema": LEGACY_REGISTRY_SCHEMA,
+                        "status": "NO_PRODUCTION_SELECTIONS",
+                        "automatic_selection": False,
+                        "profiles": {"remastered": {}},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            migrated = load_registry(path)
+            self.assertEqual(
+                migrated["schema"],
+                CURRENT_REGISTRY_SCHEMA,
+            )
+            self.assertEqual(
+                migrated["migrated_from_schema"],
+                LEGACY_REGISTRY_SCHEMA,
+            )
+            self.assertEqual(migrated["superseded_selections"], [])
+            self.assertEqual(migrated["revocations"], [])
+
+            path.write_text(
+                json.dumps({"schema": "unsupported.v99"}),
+                encoding="utf-8",
+            )
+            with self.assertRaises(SystemExit):
+                load_registry(path)
 
     def test_production_selection_preserves_superseded_history(self):
         registry = {
