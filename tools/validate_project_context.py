@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v26"
+EXPECTED_CHECKPOINT="v116-context-v27"
 errors=[]
 
 def req(p):
@@ -75,6 +75,8 @@ for p in [
     "scripts/kg001_trigger_debug_v116.gd",
     "tools/validate_candidate_diagnostics_v116.py",
     "data/tests/kg001_candidate_diagnostics_contract_v116.json",
+    "docs/BUG_REPORTING.md",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
 ]:
     req(p)
 
@@ -110,10 +112,16 @@ try:
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V26":
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V27":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
+    if c.get("quality",{}).get("kg001_bug_reporting")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 bug-reporting source-contract drift")
+    if c.get("quality",{}).get("kg001_candidate_debug_keys",{}).get("F11")!="bug_report_capture":
+        errors.append("KG-001 F11 bug-report key drift")
+    if c.get("quality",{}).get("kg001_bug_report_source_safe") is not True:
+        errors.append("KG-001 bug-report source-safety drift")
     loc=c.get("localization",{})
     if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
         errors.append("localization architecture status drift")

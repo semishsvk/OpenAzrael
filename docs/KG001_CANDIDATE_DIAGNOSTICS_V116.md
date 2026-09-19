@@ -9,6 +9,7 @@ v116 adds a diagnostic-only layer for the first real Godot integration build. It
 - **F8** — existing Classic/Enhanced audio debug.
 - **F9** — existing audio parity capture.
 - **F10** — write a canonical runtime state dump.
+- **F11** — capture a source-safe bug-report ZIP (screenshot + state + telemetry tail + system info).
 - **1 / 2 / 3** — existing debug room jumps; now logged.
 
 ## Candidate HUD
@@ -57,3 +58,11 @@ F6 renders translucent boxes from the authored XAF trigger bounds already used b
 ## Evidence boundary
 
 `tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. Actual Godot execution remains **NOT_EXECUTED** until the candidate workflow is run in a Godot-capable checkout with locally restored ignored assets.
+
+## F11 bug-report capture
+
+F11 creates `user://openazrael_bugreport_<unix>_<sequence>.zip` without changing gameplay state. The package contains a screenshot when available, canonical DemoState snapshot/hash, the last 500 JSONL telemetry events, system metadata, a human-readable worksheet and a manifest declaring that excluded commercial assets are not included.
+
+Stable diagnostic identifiers are source-preserving: `ROOM:<room>`, `TRG:<room>:<trigger>`, `PUZ:<node>`, `FLAG:<flag>`, and `ITEM:<item>`.
+
+The canonical reporting workflow and severity definitions are in `docs/BUG_REPORTING.md`. GitHub issue intake is provided by `.github/ISSUE_TEMPLATE/bug_report.yml`.
