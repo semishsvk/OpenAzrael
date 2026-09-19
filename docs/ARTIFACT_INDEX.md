@@ -162,3 +162,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 ## Texture Lab runtime presentation bridge
 - `tools/texture_lab/oa_tex_runtime_manifest.py` — builds Classic/Enhanced/Remastered local presentation manifests; Remastered uses only current explicit production selections and otherwise falls back to Classic.
 - `tools/texture_lab/godot/texture_profile_resolver.gd` — isolated manifest-only Godot resolver used by Texture Lab profile preview; rejects unsafe paths and never reads stage/selection evidence directly.
+
+
+## Texture Lab manual review evidence
+- `tools/texture_lab/oa_tex_manual_review.py` — init/record/status workflow for per-texture human QA; stage approval requires a current PASS structured review.
+- local records live under `.local/texture_lab/manual_reviews/rt_poc_01/` and remain outside Git because they are bound to local generated commercial-derived candidates.
