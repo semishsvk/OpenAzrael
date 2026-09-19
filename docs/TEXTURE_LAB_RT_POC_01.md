@@ -243,7 +243,7 @@ Every reviewed texture always requires checks for:
 
 Policy/evidence adds required checks when relevant for repeated seams, exact text/layout, artwork figures/objects, puzzle/special geometry, atlas boundaries and alpha-policy constraints.
 
-A texture may be `ACCEPTED_FOR_STAGE` only when every required check is explicitly `true`. `HOLD` and `REJECTED` require a note. A stage receives manual-review PASS only when every expected texture is accepted, every required check passes, candidate hashes remain current and the underlying review queue/pack fingerprints still match.
+A texture may be `ACCEPTED_FOR_STAGE` only when every required check is explicitly `true`. `HOLD` and `REJECTED` require a note. The manual-review record also stores a SHA-256 digest of the complete current stage evidence snapshot, so later changes to the plan, technical QA, structural report, runtime doctor/preflight, generation records, output evidence, review queue or review pack invalidate the review. A stage receives manual-review PASS only when every expected texture is accepted, every required check passes, candidate hashes remain current and the complete stage-evidence fingerprint still matches.
 
 `oa_tex_stage_gate.py approve` now requires that PASS record and writes stage-approval schema v4, fingerprinting the manual review alongside the existing technical/runtime/review evidence. Any later evidence or manual-review change makes the approval stale.
 
