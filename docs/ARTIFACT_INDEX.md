@@ -10,6 +10,7 @@
 - `tools/texture_lab/oa_tex_validate.py`
 - `tools/texture_lab/oa_tex_compare.py`
 - `tools/texture_lab/oa_tex_tile.py`
+- `tools/texture_lab/oa_tex_atlas.py`
 - `tools/texture_lab/oa_tex_sampling_audit.py`
 - `tools/texture_lab/oa_tex_structural_drift.py`
 - `tools/texture_lab/oa_tex_calibrate_drift.py`
@@ -19,6 +20,7 @@
 - `tools/texture_lab/oa_tex_realesrgan_doctor.py`
 - `tools/texture_lab/oa_tex_recreate.py`
 - `tools/texture_lab/oa_tex_ai_bakeoff.py`
+- `tools/texture_lab/oa_tex_review_report.py`
 - `tools/texture_lab/oa_tex_comfy_doctor.py`
 - `tools/texture_lab/oa_tex_qwen_preflight.py`
 - `tools/texture_lab/config/enhance.json`
@@ -29,6 +31,7 @@
 - `tools/texture_lab/config/ai_backends.json`
 - `tools/texture_lab/config/model_registry.json`
 - `tools/texture_lab/config/ai_review_policy.json`
+- `tools/texture_lab/config/ai_smoke_sets.json`
 - `tools/texture_lab/config/qwen_2511_contract.json`
 - `tools/texture_lab/workflows/qwen_2511_openazrael_api.json`
 - `tools/texture_lab/profiles/base_preserve.json`
