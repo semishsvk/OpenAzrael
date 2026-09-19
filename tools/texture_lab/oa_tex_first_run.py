@@ -658,8 +658,9 @@ def classify_recreated_smoke_1_state(
         return {
             "state": "STAGE_APPROVED",
             "next_action": (
-                "recreated_smoke_4 is now eligible to begin; production "
-                "selection remains a separate manual decision"
+                "capture the non-promoting Qwen runtime lock candidate with "
+                "oa_tex_qwen_lock.py, then recreated_smoke_4 is eligible to "
+                "begin; production selection remains a separate manual decision"
             ),
         }
     if receipt_status == "STALE":
