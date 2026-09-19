@@ -100,7 +100,12 @@ def run_job(
     seed: int | None,
     timeout: int,
 ) -> dict:
+    job_started = time.perf_counter()
+
+    upload_started = time.perf_counter()
     uploaded_name = _upload_image(server, upload_source)
+    upload_wall_seconds = time.perf_counter() - upload_started
+
     workflow = copy.deepcopy(workflow_template)
     _set_input(workflow, load_image_node, "image", uploaded_name)
     if prompt is not None:
@@ -110,8 +115,12 @@ def run_job(
     if seed is not None:
         _set_input(workflow, seed_node, seed_key, seed)
 
+    submit_started = time.perf_counter()
     submitted = _json_request(server.rstrip("/") + "/prompt", {"prompt": workflow})
+    submit_wall_seconds = time.perf_counter() - submit_started
     prompt_id = submitted["prompt_id"]
+
+    generation_started = time.perf_counter()
     deadline = time.monotonic() + timeout
     image_info = None
     while time.monotonic() < deadline:
@@ -124,6 +133,10 @@ def run_job(
     if image_info is None:
         raise TimeoutError(f"ComfyUI job timed out after {timeout}s: {prompt_id}")
 
+    submit_to_completion_wall_seconds = (
+        time.perf_counter() - generation_started
+    )
+
     query = urllib.parse.urlencode(
         {
             "filename": image_info["filename"],
@@ -131,15 +144,31 @@ def run_job(
             "type": image_info.get("type", "output"),
         }
     )
+    download_started = time.perf_counter()
     with urllib.request.urlopen(server.rstrip("/") + "/view?" + query) as response:
         payload = response.read()
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(payload)
+    download_wall_seconds = time.perf_counter() - download_started
+    job_wall_seconds = time.perf_counter() - job_started
 
     return {
         "prompt_id": prompt_id,
         "uploaded_name": uploaded_name,
         "submitted_workflow": workflow,
+        "performance": {
+            "job_wall_seconds": job_wall_seconds,
+            "upload_wall_seconds": upload_wall_seconds,
+            "submit_wall_seconds": submit_wall_seconds,
+            "submit_to_completion_wall_seconds":
+                submit_to_completion_wall_seconds,
+            "download_wall_seconds": download_wall_seconds,
+            "poll_interval_seconds": 1.0,
+            "timing_scope": (
+                "client-observed wall-clock timing around ComfyUI HTTP "
+                "upload/submit/poll/download; not a GPU kernel benchmark"
+            ),
+        },
     }
 
 
@@ -209,7 +238,7 @@ def main() -> int:
     write_json(
         record_path,
         {
-            "schema": "openazrael.texture_lab.ai_recreated_job.v4",
+            "schema": "openazrael.texture_lab.ai_recreated_job.v5",
             "source_file": args.source.name,
             "source_sha256": sha256_file(args.source),
             "conditioning_image_file": conditioning_image.name,
