@@ -1215,7 +1215,12 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 encoding="utf-8",
             )
             (run_dir / "realesrgan_doctor.json").write_text(
-                json.dumps({"ready": True}),
+                json.dumps(
+                    {
+                        "schema": "openazrael.texture_lab.realesrgan_doctor.v3",
+                        "ready": True,
+                    }
+                ),
                 encoding="utf-8",
             )
             (run_dir / "ai_restore_run.json").write_text(
