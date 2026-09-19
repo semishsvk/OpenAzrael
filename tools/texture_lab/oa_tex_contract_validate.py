@@ -13,6 +13,7 @@ DEFAULT_SMOKE = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 DEFAULT_BACKENDS = ROOT / "tools/texture_lab/config/ai_backends.json"
 DEFAULT_MODELS = ROOT / "tools/texture_lab/config/model_registry.json"
 DEFAULT_QWEN = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
+DEFAULT_REALESRGAN_RUNTIME = ROOT / "tools/texture_lab/config/realesrgan_runtime_contract.json"
 DEFAULT_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 DEFAULT_POLICY_SUMMARY = ROOT / "data/texture_lab/rt_poc_01_ai_policy_summary.json"
 
@@ -69,9 +70,12 @@ def validate_contracts(
     qwen: dict,
     workflow: dict,
     policy_summary: dict,
+    realesrgan_runtime: dict | None = None,
 ) -> dict:
     checks: dict[str, bool] = {}
     details: dict[str, object] = {}
+    if realesrgan_runtime is None:
+        realesrgan_runtime = load_json(DEFAULT_REALESRGAN_RUNTIME)
 
     textures = [
         row for row in selection.get("textures", [])
@@ -215,6 +219,48 @@ def validate_contracts(
         checks["restored_fp32_matches_registry"] = False
         checks["restored_registry_has_checkpoint_identity"] = False
 
+    runtime_packages = realesrgan_runtime.get("packages", {})
+    excluded_runtime_packages = set(
+        str(v)
+        for v in realesrgan_runtime.get(
+            "excluded_texture_runtime_packages", []
+        )
+    )
+    checks["realesrgan_runtime_schema"] = (
+        realesrgan_runtime.get("schema")
+        == "openazrael.texture_lab.realesrgan_runtime_contract.v1"
+    )
+    checks["realesrgan_runtime_python_311"] = (
+        str(realesrgan_runtime.get("python", {}).get("major_minor")) == "3.11"
+    )
+    checks["realesrgan_runtime_torch_212"] = (
+        str(runtime_packages.get("torch", {}).get("version")) == "2.1.2"
+    )
+    checks["realesrgan_runtime_torchvision_0162"] = (
+        str(runtime_packages.get("torchvision", {}).get("version")) == "0.16.2"
+    )
+    checks["realesrgan_runtime_basicsr_142"] = (
+        str(runtime_packages.get("basicsr", {}).get("version")) == "1.4.2"
+    )
+    checks["realesrgan_runtime_functional_tensor_probe"] = (
+        runtime_packages.get("torchvision", {}).get("compatibility_probe")
+        == "torchvision.transforms.functional_tensor"
+    )
+    checks["realesrgan_runtime_no_face_stack"] = (
+        realesrgan_runtime.get("face_enhancement") is False
+        and {"gfpgan", "facexlib"}.issubset(excluded_runtime_packages)
+    )
+    checks["realesrgan_runtime_official_indexes"] = (
+        {"cu118", "cu121", "cpu"}.issubset(
+            set(
+                str(v)
+                for v in realesrgan_runtime.get(
+                    "supported_torch_indexes", []
+                )
+            )
+        )
+    )
+
     qwen_backend = backends.get("ai_recreated", {}).get("primary", {})
     sampling = qwen.get("poc_sampling", {})
     checks["qwen_label_matches_backend"] = (
@@ -308,6 +354,11 @@ def main() -> int:
     parser.add_argument("--backends", type=Path, default=DEFAULT_BACKENDS)
     parser.add_argument("--models", type=Path, default=DEFAULT_MODELS)
     parser.add_argument("--qwen", type=Path, default=DEFAULT_QWEN)
+    parser.add_argument(
+        "--realesrgan-runtime",
+        type=Path,
+        default=DEFAULT_REALESRGAN_RUNTIME,
+    )
     parser.add_argument("--workflow", type=Path, default=DEFAULT_WORKFLOW)
     parser.add_argument("--policy-summary", type=Path, default=DEFAULT_POLICY_SUMMARY)
     parser.add_argument("--out", type=Path, default=None)
@@ -322,6 +373,7 @@ def main() -> int:
         load_json(args.qwen),
         load_json(args.workflow),
         load_json(args.policy_summary),
+        load_json(args.realesrgan_runtime),
     )
     if args.out:
         write_json(args.out, result)
