@@ -181,6 +181,7 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
         "--selection", str(args.selection),
         "--out", str(drift_out),
         "--allow-missing",
+        "--only", *ids,
     ]
     review_json = args.run_dir / "ai_restored_review_queue.json"
     review = [
@@ -435,6 +436,7 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
         "--selection", str(args.selection),
         "--out", str(drift_out),
         "--allow-missing",
+        "--only", *review_ids,
     ]
     jobs.append({"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)})
 
