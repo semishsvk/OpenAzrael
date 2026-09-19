@@ -124,6 +124,9 @@ Legacy color-key candidates follow the same alpha-lock policy as AI Restored: al
 
 The scene does not access DemoState, CandidateDiagnostics or RoomManager and does not mutate gameplay state. A/B mode uses two isolated QuadMesh surfaces with the same tile and lighting state, so the comparison changes presentation only. `validate_godot_lab.py` enforces this source contract. Actual Godot execution remains pending on a machine with Godot and the ignored local texture corpus.
 
+### `oa_tex_first_run.py`
+Cross-platform launchpad for the first real AI Restored execution. It separates source status, deterministic-baseline preparation, pinned Real-ESRGAN bootstrap and the canonical `restored_smoke_1` run. The launchpad never auto-selects a PyTorch/CUDA build; backend readiness remains the responsibility of the Real-ESRGAN doctor. A dry-run mode is covered by CI.
+
 ## Real mathematical POC observation
 
 A real 12-texture bake-off was executed against the restored v44 Classic corpus on 2026-09-19. All 36 nearest/bicubic/Lanczos outputs were produced at 4x dimensions.
