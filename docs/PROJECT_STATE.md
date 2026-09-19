@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v116-context-v26`
+**Canonical checkpoint:** `v116-context-v27`
 **Date:** 2026-09-19
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,10 +13,10 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v26**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v27**.
 
 ## 3. Immediate execution priority
-The current priority is the first real **KG-001 Candidate 1** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build.
+The current priority is the first real **KG-001 Candidate 1** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
 
 Localization runtime work and the deferred v117 forensic copy/mutator audit follow this runtime/manual cycle; neither is a blocker for Candidate 1.
 

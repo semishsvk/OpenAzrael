@@ -1,10 +1,11 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v116-context-v26`  
+**Checkpoint prepared:** `v116-context-v27`  
 **Date:** 2026-09-19  
 **Technical base:** `openazrael_godot_poc_v116`
 
 ## Current canonical state
+- Added source-contract bug reporting: F11 creates a source-safe ZIP with screenshot, state snapshot/hash, telemetry tail and system metadata; GitHub issue intake and regression workflow are tracked in-repo.
 - KG-001 Candidate 1 remains the active integration target.
 - Candidate diagnostics source contract is PASS and the candidate is source-ready.
 - Canonical Godot runtime evidence is still **NOT_EXECUTED**.
@@ -15,7 +16,7 @@
 ## Documentation consistency update
 - Refreshed README to lead with the actual v116 Candidate 1 status instead of old historical checkpoints.
 - Replaced stale roadmap items that still targeted already completed v113-v115 work.
-- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v26`.
+- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v27`.
 - Preserved historical milestone notes rather than rewriting project history.
 - Kept runtime/forensic boundaries explicit: documentation cleanup does not count as Godot execution and does not promote any evidence status.
 

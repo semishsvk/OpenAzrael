@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v26`
+**Current canonical checkpoint:** `v116-context-v27`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
