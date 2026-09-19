@@ -412,6 +412,33 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
     jobs.append({"stage": "review_queue", "argv": review, "command": _quoted_command(review)})
     return jobs
 
+def build_local_preflight_job(args) -> dict | None:
+    if not args.preset:
+        return None
+    argv = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_local_preflight.py"),
+        "--preset", args.preset,
+        "--out", str(args.run_dir / "local_preflight.json"),
+    ]
+    if args.mode == "restored":
+        if args.realesrgan_root:
+            argv.extend(["--realesrgan-root", str(args.realesrgan_root)])
+        if args.model_path:
+            argv.extend(["--model-path", str(args.model_path)])
+        if args.realesrgan_python:
+            argv.extend(["--realesrgan-python", str(args.realesrgan_python)])
+    else:
+        if args.comfy_root:
+            argv.extend(["--comfy-root", str(args.comfy_root)])
+        argv.extend(["--enhanced-variant", args.recreate_input_variant])
+    return {
+        "stage": "local_preflight",
+        "argv": argv,
+        "command": _quoted_command(argv),
+    }
+
+
 def build_stage_gate_job(args) -> dict | None:
     if not args.preset:
         return None
@@ -530,21 +557,37 @@ def main() -> int:
     if not selected:
         raise SystemExit("execution subset contains no eligible textures")
 
-    args.run_root = args.run_dir
-    if args.preset and args.run_dir.name != args.preset:
-        args.run_dir = args.run_dir / args.preset
+    if args.preset:
+        if args.run_dir.name == args.preset:
+            args.run_root = args.run_dir.parent
+        else:
+            args.run_root = args.run_dir
+            args.run_dir = args.run_root / args.preset
+    else:
+        args.run_root = args.run_dir
+
+    if args.preset and args.plan_out is not None and not args.dry_run:
+        raise SystemExit(
+            "--plan-out is not allowed for a real named preset; "
+            "the canonical plan path is part of the approval evidence."
+        )
 
     if args.mode == "restored":
         jobs = build_restore_plan(args, selected)
     else:
         jobs = build_recreate_plan(args, selected, profiles, qwen_contract)
 
+    prefix_jobs = []
     gate_job = build_stage_gate_job(args)
     if gate_job is not None:
-        jobs.insert(0, gate_job)
+        prefix_jobs.append(gate_job)
+    local_preflight_job = build_local_preflight_job(args)
+    if local_preflight_job is not None:
+        prefix_jobs.append(local_preflight_job)
+    jobs = prefix_jobs + jobs
 
     plan = {
-        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v2",
+        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v3",
         "mode": args.mode,
         "dry_run": bool(args.dry_run),
         "selection_count": len(selection["textures"]),
@@ -586,7 +629,16 @@ def main() -> int:
         ],
     }
 
-    plan_out = args.plan_out or args.run_dir / f"{args.mode}_plan.json"
+    if args.plan_out is not None:
+        plan_out = args.plan_out
+    elif args.dry_run and args.preset:
+        plan_out = (
+            args.run_root
+            / "_dry_run_plans"
+            / f"{args.preset}_{args.mode}_plan.json"
+        )
+    else:
+        plan_out = args.run_dir / f"{args.mode}_plan.json"
     write_json(plan_out, plan)
     print(
         f"PLAN mode={args.mode} eligible={len(allowed)} selected={len(selected)} "
