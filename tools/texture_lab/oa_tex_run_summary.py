@@ -50,6 +50,7 @@ def build_summary(preset: str, run_root: Path) -> dict:
     run_dir = run_root / preset
     evidence = evidence_snapshot(preset, run_root)
     godot_review_profile = run_dir / "godot_review_profile.json"
+    review_handoff = run_dir / "review_handoff.html"
 
     rows = []
     pack = _pack_rows(run_dir, mode)
@@ -111,6 +112,11 @@ def build_summary(preset: str, run_root: Path) -> dict:
             if godot_review_profile.is_file()
             else None
         ),
+        "review_handoff": (
+            str(review_handoff)
+            if review_handoff.is_file()
+            else None
+        ),
         "textures": rows,
         "manual_next_steps": (
             [
@@ -146,6 +152,13 @@ def markdown(summary: dict) -> str:
         lines.extend(
             [
                 f"Godot stage review profile: {summary['godot_review_profile']}",
+                "",
+            ]
+        )
+    if summary.get("review_handoff"):
+        lines.extend(
+            [
+                f"Local HTML review handoff: {summary['review_handoff']}",
                 "",
             ]
         )
