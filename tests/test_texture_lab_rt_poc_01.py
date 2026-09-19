@@ -55,6 +55,7 @@ from oa_tex_first_run import (
 from oa_tex_manual_review import init_review, record_texture, validate_manual_review
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_production_selection import (
+    CURRENT_RECORD_SCHEMA,
     CURRENT_REGISTRY_SCHEMA,
     LEGACY_REGISTRY_SCHEMA,
     load_registry,
@@ -1877,7 +1878,14 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                         "schema": LEGACY_REGISTRY_SCHEMA,
                         "status": "NO_PRODUCTION_SELECTIONS",
                         "automatic_selection": False,
-                        "profiles": {"remastered": {}},
+                        "profiles": {
+                            "remastered": {
+                                "CORIROCK": {
+                                    "texture_id": "CORIROCK",
+                                    "selected_from_preset": "restored_smoke_1",
+                                }
+                            }
+                        },
                     }
                 ),
                 encoding="utf-8",
@@ -1893,6 +1901,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             )
             self.assertEqual(migrated["superseded_selections"], [])
             self.assertEqual(migrated["revocations"], [])
+            self.assertEqual(
+                migrated["profiles"]["remastered"]["CORIROCK"]["schema"],
+                CURRENT_RECORD_SCHEMA,
+            )
 
             path.write_text(
                 json.dumps({"schema": "unsupported.v99"}),
@@ -1900,6 +1912,72 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             )
             with self.assertRaises(SystemExit):
                 load_registry(path)
+
+    def test_production_registry_status_marks_malformed_records_stale(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            registry = root / "production_selection.json"
+            registry.write_text(
+                json.dumps(
+                    {
+                        "schema": CURRENT_REGISTRY_SCHEMA,
+                        "status": "HAS_EXPLICIT_PRODUCTION_SELECTIONS",
+                        "automatic_selection": False,
+                        "profiles": {
+                            "remastered": {
+                                "BROKEN": "not-an-object",
+                            }
+                        },
+                        "superseded_selections": [],
+                        "revocations": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            status = registry_status(
+                registry,
+                root / "runs",
+                root / "approvals",
+                root / "manual_reviews",
+            )
+            self.assertEqual(status["status"], "STALE")
+            self.assertEqual(status["selection_count"], 1)
+            self.assertFalse(
+                status["rows"][0]["checks"]["record_is_object"]
+            )
+
+            registry.write_text(
+                json.dumps(
+                    {
+                        "schema": CURRENT_REGISTRY_SCHEMA,
+                        "status": "HAS_EXPLICIT_PRODUCTION_SELECTIONS",
+                        "automatic_selection": False,
+                        "profiles": {
+                            "remastered": {
+                                "BROKEN": {
+                                    "schema": CURRENT_RECORD_SCHEMA,
+                                    "texture_id": "BROKEN",
+                                    "presentation_profile": "remastered",
+                                    "automatic_selection": False,
+                                    "selected_tier": "ai_restored",
+                                    "selected_from_preset": "no_such_preset",
+                                }
+                            }
+                        },
+                        "superseded_selections": [],
+                        "revocations": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            status = registry_status(
+                registry,
+                root / "runs",
+                root / "approvals",
+                root / "manual_reviews",
+            )
+            self.assertEqual(status["status"], "STALE")
+            self.assertFalse(status["rows"][0]["checks"]["preset_valid"])
 
     def test_production_selection_preserves_superseded_history(self):
         registry = {
