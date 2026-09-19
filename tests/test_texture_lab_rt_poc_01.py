@@ -59,6 +59,7 @@ from oa_tex_first_run import (
 )
 from oa_tex_manual_review import init_review, record_texture, validate_manual_review
 from oa_tex_prompt import build_prompt_pair
+from oa_tex_production_review import build_bundle, render_html
 from oa_tex_production_selection import (
     CURRENT_RECORD_SCHEMA,
     CURRENT_REGISTRY_SCHEMA,
@@ -2548,6 +2549,80 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(bad["status"], "HOLD")
             by_id = {row["id"]: row for row in bad["rows"]}
             self.assertFalse(by_id["B"]["size_ok"])
+
+    def test_four_tier_production_review_bundle_is_observational(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            classic = root / "classic.png"
+            enhanced = root / "enhanced.png"
+            restored = root / "restored.png"
+            recreated = root / "recreated.png"
+            out_dir = root / "review"
+
+            Image.new("RGBA", (16, 8), (10, 20, 30, 255)).save(classic)
+            Image.new("RGBA", (64, 32), (20, 30, 40, 255)).save(enhanced)
+            Image.new("RGBA", (64, 32), (30, 40, 50, 255)).save(restored)
+            Image.new("RGBA", (64, 32), (40, 50, 60, 255)).save(recreated)
+
+            bundle = build_bundle(
+                "CORIROCK",
+                classic,
+                enhanced,
+                restored,
+                recreated,
+                out_dir,
+                "restored_smoke_1",
+                "recreated_smoke_1",
+                True,
+                cell=96,
+            )
+            self.assertEqual(
+                bundle["schema"],
+                "openazrael.texture_lab.production_review_bundle.v1",
+            )
+            self.assertEqual(
+                bundle["status"],
+                "READY_FOR_MANUAL_PRODUCTION_REVIEW",
+            )
+            self.assertFalse(bundle["automatic_selection"])
+            self.assertFalse(bundle["automatic_quality_verdict"])
+            self.assertEqual(
+                set(bundle["inputs"]),
+                {
+                    "classic",
+                    "enhanced_lanczos",
+                    "ai_restored",
+                    "ai_recreated",
+                },
+            )
+            for record in bundle["inputs"].values():
+                self.assertTrue(Path(record["path"]).is_file())
+                self.assertEqual(
+                    sha256_file(Path(record["path"])),
+                    record["sha256"],
+                )
+            for key in [
+                "comparison_4way",
+                "detail_4way",
+                "restored_tile_3x3",
+                "recreated_tile_3x3",
+            ]:
+                record = bundle["visuals"][key]
+                self.assertIsInstance(record, dict)
+                self.assertTrue(Path(record["path"]).is_file())
+                self.assertEqual(
+                    sha256_file(Path(record["path"])),
+                    record["sha256"],
+                )
+
+            html_path = out_dir / "production_review.html"
+            rendered = render_html(bundle, html_path)
+            self.assertIn("MANUAL DECISION ONLY", rendered)
+            self.assertIn("never selects, ranks or promotes", rendered)
+            self.assertIn("Classic", rendered)
+            self.assertIn("AI Restored", rendered)
+            self.assertIn("AI Recreated", rendered)
+            self.assertIn("keep Classic fallback", rendered)
 
     def test_production_registry_v1_migrates_in_memory_to_v2(self):
         with tempfile.TemporaryDirectory() as td:
