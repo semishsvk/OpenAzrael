@@ -59,6 +59,16 @@ def sampling_reasons(record: dict | None) -> list[str]:
     return reasons
 
 
+def report_index(report: dict | None) -> dict[str, dict]:
+    if not isinstance(report, dict):
+        return {}
+    return {
+        str(row["id"]): row
+        for row in report.get("results", [])
+        if isinstance(row, dict) and row.get("id")
+    }
+
+
 def drift_index(report: dict) -> dict[str, dict]:
     return {
         str(row["id"]): row
@@ -75,9 +85,11 @@ def build_review_rows(
     baseline: dict,
     drift_report: dict,
     only_ids: set[str] | None = None,
+    technical_report: dict | None = None,
 ) -> list[dict]:
     key = "ai_restored" if mode == "restored" else "ai_recreated"
     drift = drift_index(drift_report)
+    technical = report_index(technical_report)
     sampling_by_id = {
         str(row["id"]): row
         for row in sampling.get("textures", [])
@@ -98,6 +110,7 @@ def build_review_rows(
         if only_ids is not None and texture_id not in only_ids:
             continue
         result = drift.get(texture_id)
+        technical_result = technical.get(texture_id)
         reasons = policy_reasons(rules) + sampling_reasons(sampling_by_id.get(texture_id))
 
         row = {
@@ -110,6 +123,10 @@ def build_review_rows(
             "ratio_to_deterministic_p95": None,
             "ratio_to_deterministic_max": None,
             "alpha_silhouette_mismatch_fraction": None,
+            "source_edge_seam_mae_rgba_0_255": None,
+            "candidate_edge_seam_mae_rgba_0_255": None,
+            "candidate_minus_source_seam_mae_rgba_0_255": None,
+            "candidate_to_source_seam_ratio": None,
             "attention": reasons,
         }
 
@@ -135,6 +152,20 @@ def build_review_rows(
                 row["attention"].append("drift_above_deterministic_p95")
             if alpha is not None and float(alpha) > 0.0:
                 row["attention"].append("alpha_silhouette_mismatch")
+
+        if technical_result is not None:
+            row["source_edge_seam_mae_rgba_0_255"] = technical_result.get(
+                "source_edge_seam_mae_rgba_0_255"
+            )
+            row["candidate_edge_seam_mae_rgba_0_255"] = technical_result.get(
+                "candidate_edge_seam_mae_rgba_0_255"
+            )
+            row["candidate_minus_source_seam_mae_rgba_0_255"] = technical_result.get(
+                "candidate_minus_source_seam_mae_rgba_0_255"
+            )
+            row["candidate_to_source_seam_ratio"] = technical_result.get(
+                "candidate_to_source_seam_ratio"
+            )
 
         # Stable de-duplication while preserving reason order.
         row["attention"] = list(dict.fromkeys(row["attention"]))
@@ -162,18 +193,23 @@ def markdown_report(mode: str, rows: list[dict], baseline: dict) -> str:
             f"p95={low['p95']} / 255, max={low['max']} / 255."
         ),
         "",
-        "| Texture | State | Low-freq MAE | vs p95 | Review attention |",
-        "|---|---|---:|---:|---|",
+        "| Texture | State | Low-freq MAE | vs p95 | Seam ΔU | Seam ΔV | Review attention |",
+        "|---|---|---:|---:|---:|---:|---|",
     ]
     for row in rows:
         value = row["low_frequency_luma_mae_0_255"]
         ratio = row["ratio_to_deterministic_p95"]
         value_text = "—" if value is None else f"{value:.4f}"
         ratio_text = "—" if ratio is None else f"{ratio:.2f}×"
+        seam_delta = row.get("candidate_minus_source_seam_mae_rgba_0_255") or {}
+        seam_u = seam_delta.get("x")
+        seam_v = seam_delta.get("y")
+        seam_u_text = "—" if seam_u is None else f"{float(seam_u):+.3f}"
+        seam_v_text = "—" if seam_v is None else f"{float(seam_v):+.3f}"
         attention = "; ".join(row["attention"]) or "visual fidelity review"
         lines.append(
             f"| {row['id']} | {row['review_state']} | {value_text} | "
-            f"{ratio_text} | {attention} |"
+            f"{ratio_text} | {seam_u_text} | {seam_v_text} | {attention} |"
         )
     lines.append("")
     return "\n".join(lines)
@@ -205,6 +241,7 @@ def main() -> int:
         type=Path,
         default=ROOT / "data/texture_lab/rt_poc_01_drift_baseline.json",
     )
+    parser.add_argument("--technical", type=Path, default=None)
     parser.add_argument("--out-json", type=Path, required=True)
     parser.add_argument("--out-md", type=Path, required=True)
     parser.add_argument("--only", nargs="*", default=None)
@@ -215,10 +252,18 @@ def main() -> int:
     sampling = load_json(args.sampling)
     baseline = load_json(args.baseline)
     drift_report = load_json(args.drift)
+    technical_report = load_json(args.technical) if args.technical else None
 
     only_ids = set(args.only) if args.only else None
     rows = build_review_rows(
-        args.mode, selection, policy, sampling, baseline, drift_report, only_ids
+        args.mode,
+        selection,
+        policy,
+        sampling,
+        baseline,
+        drift_report,
+        only_ids,
+        technical_report,
     )
     payload = {
         "schema": "openazrael.texture_lab.ai_review_queue.v1",
