@@ -9,7 +9,7 @@ from common import ROOT, sha256_file, write_json
 from oa_tex_stage_gate import DEFAULT_RUN_ROOT, evidence_snapshot, preset_record
 
 DEFAULT_SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
-DEFAULT_OUT = ROOT / ".local/texture_lab/runtime_manifests/review_current.json"
+DEFAULT_CURRENT_OUT = ROOT / ".local/texture_lab/runtime_manifests/review_current.json"
 
 
 def load_json(path: Path) -> dict:
@@ -131,7 +131,8 @@ def main() -> int:
     parser.add_argument("preset")
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--selection", type=Path, default=DEFAULT_SELECTION)
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--stage-out", type=Path, default=None)
+    parser.add_argument("--current-out", type=Path, default=DEFAULT_CURRENT_OUT)
     args = parser.parse_args()
 
     manifest = build_review_profile(
@@ -139,10 +140,17 @@ def main() -> int:
         args.run_root,
         load_json(args.selection),
     )
-    write_json(args.out, manifest)
+    stage_out = (
+        args.stage_out
+        if args.stage_out is not None
+        else args.run_root / args.preset / "godot_review_profile.json"
+    )
+    write_json(stage_out, manifest)
+    if args.current_out.resolve() != stage_out.resolve():
+        write_json(args.current_out, manifest)
     print(
         f"{'PASS' if manifest['runtime_ready'] else 'HOLD'} review_profile "
-        f"preset={args.preset} out={args.out}"
+        f"preset={args.preset} stage={stage_out} current={args.current_out}"
     )
     return 0 if manifest["runtime_ready"] else 1
 
