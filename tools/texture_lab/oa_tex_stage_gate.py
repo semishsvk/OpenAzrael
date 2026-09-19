@@ -5,6 +5,7 @@ import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+import uuid
 
 from common import (
     ROOT,
@@ -30,6 +31,16 @@ def preset_record(name: str) -> dict:
     if not isinstance(preset, dict):
         raise SystemExit(f"unknown AI smoke preset: {name}")
     return preset
+
+
+def valid_run_instance_id(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    try:
+        parsed = uuid.UUID(hex=value)
+    except (ValueError, AttributeError):
+        return False
+    return parsed.hex == value.lower()
 
 
 def run_dir_for(preset: str, run_root: Path) -> Path:
@@ -220,6 +231,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
             isinstance(plan_data.get("preset"), dict)
             and plan_data["preset"].get("name") == preset
             and plan_data.get("dry_run") is False
+            and valid_run_instance_id(plan_data.get("run_instance_id"))
         ),
         "selected_ids_ok": selected == expected,
         "review_ids_ok": (
