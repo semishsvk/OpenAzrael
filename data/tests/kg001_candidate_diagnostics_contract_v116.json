@@ -3,7 +3,7 @@
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
   "build_id": "KG-001 Candidate 1",
-  "checkpoint": "v116-context-v24",
+  "checkpoint": "v116-context-v27",
   "features": {
     "build_watermark": true,
     "fail_fast_core_assets": true,
@@ -17,7 +17,22 @@
     "trigger_edge_logging": true,
     "interaction_logging": true,
     "room_transition_logging": true,
-    "canonical_state_hash_dump": true
+    "canonical_state_hash_dump": true,
+    "bug_report_capture_key": "F11",
+    "bug_report_zip_prefix": "user://openazrael_bugreport_",
+    "bug_report_screenshot": true,
+    "bug_report_event_tail_lines": 500,
+    "bug_report_state_snapshot": true,
+    "bug_report_system_info": true,
+    "stable_diagnostic_ids": [
+      "ROOM:<room>",
+      "TRG:<room>:<trigger>",
+      "PUZ:<node>",
+      "FLAG:<flag>",
+      "ITEM:<item>"
+    ],
+    "github_issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml",
+    "bug_report_source_safe": true
   },
-  "runtime_boundary": "Source contract only until executed in a Godot-capable checkout. Gameplay semantics are not changed by this diagnostic layer."
+  "runtime_boundary": "Source contract only until executed in a Godot-capable checkout. F11 bug capture is observational and must not mutate gameplay state or include excluded commercial assets."
 }

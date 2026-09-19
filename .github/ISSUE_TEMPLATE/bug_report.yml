@@ -1,0 +1,77 @@
+name: OpenAzrael bug report
+description: Report a reproducible OpenAzrael defect and attach an F11 diagnostic package.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Press **F11** before quitting when possible and attach the generated `openazrael_bugreport_*.zip`.
+        Do not attach original/commercial game assets.
+  - type: input
+    id: build
+    attributes:
+      label: Build / checkpoint
+      placeholder: KG-001 Candidate 1 / v116-context-v27
+    validations:
+      required: true
+  - type: input
+    id: entity
+    attributes:
+      label: Stable entity ID
+      description: Example ROOM:R8, TRG:R1:zxcoriR5, PUZ:R8BathDrain.
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options: [Gameplay / puzzle, Softlock / progression, Room transition / trigger, Audio, Save / load, Graphics / texture, UI / localization, Performance, Crash, Other]
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [Critical, Major, Minor, Cosmetic]
+    validations:
+      required: true
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      options: [Always, Often, Sometimes, Once]
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: package
+    attributes:
+      label: Diagnostic package
+      description: Drag the F11 ZIP here. Screenshot/video may also be attached separately.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
