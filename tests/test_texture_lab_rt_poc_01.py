@@ -38,6 +38,7 @@ from oa_tex_first_run import (
     restored_smoke_plan,
     runtime_paths,
 )
+from oa_tex_manual_review import init_review, record_texture, validate_manual_review
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_production_selection import registry_status, select_candidate
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
@@ -694,6 +695,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             root = Path(td)
             run_root = root / "runs"
             approval_root = root / "approvals"
+            manual_review_root = root / "manual_reviews"
             run_dir = run_root / "restored_smoke_1"
             run_dir.mkdir(parents=True)
 
@@ -819,16 +821,53 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 str(detail),
             )
 
+            with self.assertRaises(SystemExit):
+                approve(
+                    "restored_smoke_1",
+                    run_root,
+                    approval_root,
+                    "must fail before structured manual review",
+                    manual_review_root,
+                )
+
+            manual = init_review(
+                "restored_smoke_1",
+                run_root,
+                manual_review_root,
+            )
+            required_checks = manual["rows"][0]["required_checks"]
+            record_texture(
+                "restored_smoke_1",
+                "CORIROCK",
+                "ACCEPTED_FOR_STAGE",
+                [(name, True) for name in required_checks],
+                "synthetic manual visual review",
+                manual_review_root,
+            )
+            manual_status = validate_manual_review(
+                "restored_smoke_1",
+                run_root,
+                manual_review_root,
+            )
+            self.assertEqual(manual_status["status"], "PASS")
+
             approved = approve(
                 "restored_smoke_1",
                 run_root,
                 approval_root,
                 "synthetic stage approval",
+                manual_review_root,
             )
-            self.assertEqual(approved["receipt"]["schema"], "openazrael.texture_lab.stage_approval.v3")
+            self.assertEqual(
+                approved["receipt"]["schema"],
+                "openazrael.texture_lab.stage_approval.v4",
+            )
             self.assertEqual(
                 validate_receipt(
-                    "restored_smoke_1", run_root, approval_root
+                    "restored_smoke_1",
+                    run_root,
+                    approval_root,
+                    manual_review_root,
                 )["status"],
                 "PASS",
             )
@@ -841,6 +880,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 run_root,
                 approval_root,
                 "synthetic production selection",
+                manual_review_root,
             )
             self.assertEqual(selected["selected_tier"], "ai_restored")
             self.assertFalse(selected["automatic_selection"])
@@ -848,6 +888,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 registry,
                 run_root,
                 approval_root,
+                manual_review_root,
             )
             self.assertEqual(production_ok["status"], "PASS")
             self.assertEqual(production_ok["selection_count"], 1)
@@ -855,17 +896,27 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             candidate.write_bytes(b"candidate-v2")
             write_review_manifest()
 
+            stale_manual = validate_manual_review(
+                "restored_smoke_1",
+                run_root,
+                manual_review_root,
+            )
+            self.assertEqual(stale_manual["status"], "STALE")
+
             stale = validate_receipt(
-                "restored_smoke_1", run_root, approval_root
+                "restored_smoke_1",
+                run_root,
+                approval_root,
+                manual_review_root,
             )
             self.assertEqual(stale["status"], "STALE")
-            self.assertFalse(stale["checks"]["outputs_ok"])
-            self.assertFalse(stale["checks"]["review_pack_ok"])
+            self.assertIn("manual review", stale.get("reason", ""))
 
             production_stale = registry_status(
                 registry,
                 run_root,
                 approval_root,
+                manual_review_root,
             )
             self.assertEqual(production_stale["status"], "STALE")
             self.assertEqual(
