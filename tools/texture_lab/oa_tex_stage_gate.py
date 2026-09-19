@@ -209,6 +209,17 @@ def recreated_job_records(run_dir: Path) -> list[Path]:
     return jobs + atlases
 
 
+def _safe_sha(path: Path) -> str:
+    return sha256_file(path) if path.is_file() else ""
+
+
+def _int_equal(value: object, expected: object) -> bool:
+    try:
+        return int(value) == int(expected)
+    except (TypeError, ValueError):
+        return False
+
+
 def _pack_rows_by_id(pack_manifest: dict) -> dict[str, dict]:
     return {
         str(row["id"]): row
@@ -256,8 +267,10 @@ def restored_generation_provenance(
             ),
             "factor_ok": bool(
                 isinstance(generation, dict)
-                and int(generation.get("factor", -1))
-                == int(primary.get("factor", -2))
+                and _int_equal(
+                    generation.get("factor"),
+                    primary.get("factor"),
+                )
             ),
             "backend_ok": bool(
                 isinstance(generation, dict)
@@ -314,15 +327,22 @@ def _expected_qwen_model_set(contract: dict) -> set[tuple[str, str, int]]:
 
 def _job_model_set(job: dict) -> set[tuple[str, str, int]]:
     rows = job.get("model_files", [])
-    return {
-        (
-            str(row.get("file", "")),
-            str(row.get("sha256", "")),
-            int(row.get("size", -1)),
+    result: set[tuple[str, str, int]] = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        try:
+            size = int(row.get("size", -1))
+        except (TypeError, ValueError):
+            size = -1
+        result.add(
+            (
+                str(row.get("file", "")),
+                str(row.get("sha256", "")),
+                size,
+            )
         )
-        for row in rows
-        if isinstance(row, dict)
-    }
+    return result
 
 
 def _qwen_job_checks(
@@ -343,8 +363,10 @@ def _qwen_job_checks(
         "output_hash_ok": job.get("output_sha256") == output_sha,
         "workflow_hash_ok": job.get("workflow_template_sha256") == workflow_sha,
         "model_label_ok": job.get("model_label") == contract.get("model_label"),
-        "seed_ok": int(job.get("seed", -1))
-        == int(contract.get("poc_sampling", {}).get("seed", -2)),
+        "seed_ok": _int_equal(
+            job.get("seed"),
+            contract.get("poc_sampling", {}).get("seed"),
+        ),
         "model_files_ok": _job_model_set(job)
         == _expected_qwen_model_set(contract),
     }
@@ -425,9 +447,9 @@ def recreated_generation_provenance(
                         and stitch.get("axis") == axis
                     ),
                     "atlas_segments_ok": (
-                        int(classic_split.get("segments", -1)) == segments
-                        and int(enhanced_split.get("segments", -1)) == segments
-                        and int(stitch.get("segments", -1)) == segments
+                        _int_equal(classic_split.get("segments"), segments)
+                        and _int_equal(enhanced_split.get("segments"), segments)
+                        and _int_equal(stitch.get("segments"), segments)
                     ),
                     "stitch_hash_matches_review": bool(
                         isinstance(candidate, dict)
@@ -455,9 +477,9 @@ def recreated_generation_provenance(
                 job = load_json(job_path)
                 part_checks = _qwen_job_checks(
                     job,
-                    sha256_file(classic_part),
-                    sha256_file(enhanced_part),
-                    sha256_file(generated_part),
+                    _safe_sha(classic_part),
+                    _safe_sha(enhanced_part),
+                    _safe_sha(generated_part),
                     contract,
                     workflow_sha,
                 )
@@ -470,13 +492,13 @@ def recreated_generation_provenance(
                         "checks": part_checks,
                     }
                 )
-                intermediate_files.extend(
-                    [
-                        file_evidence(classic_part),
-                        file_evidence(enhanced_part),
-                        file_evidence(generated_part),
-                    ]
-                )
+                for intermediate in [
+                    classic_part,
+                    enhanced_part,
+                    generated_part,
+                ]:
+                    if intermediate.is_file():
+                        intermediate_files.append(file_evidence(intermediate))
             checks["part_jobs_ok"] = all(
                 row["status"] == "PASS" for row in part_results
             )
@@ -502,7 +524,7 @@ def recreated_generation_provenance(
         job_checks = _qwen_job_checks(
             job,
             str(source.get("sha256", "")) if isinstance(source, dict) else "",
-            sha256_file(enhanced) if enhanced.is_file() else "",
+            _safe_sha(enhanced),
             str(candidate.get("sha256", ""))
             if isinstance(candidate, dict)
             else "",
@@ -773,6 +795,10 @@ def validate_receipt(
         ),
         "outputs_ok": old.get("outputs") == current["outputs"],
         "manual_review_ok": old.get("manual_review") == manual_review,
+        "schema_ok": (
+            receipt.get("schema")
+            == "openazrael.texture_lab.stage_approval.v5"
+        ),
         "approved_ok": receipt.get("decision") == "APPROVED_FOR_NEXT_STAGE",
     }
     return {
