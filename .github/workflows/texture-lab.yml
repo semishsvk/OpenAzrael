@@ -29,5 +29,15 @@ jobs:
         run: python -m compileall -q tools/texture_lab tests/test_texture_lab_rt_poc_01.py
       - name: Run Texture Lab unit tests
         run: python -m unittest -v tests/test_texture_lab_rt_poc_01.py
+      - name: Dry-run every staged AI preset
+        shell: bash
+        run: |
+          python tools/texture_lab/oa_tex_ai_bakeoff.py restored --dry-run --preset restored_smoke_1
+          python tools/texture_lab/oa_tex_ai_bakeoff.py restored --dry-run --preset restored_smoke_4
+          python tools/texture_lab/oa_tex_ai_bakeoff.py restored --dry-run --preset restored_full
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_smoke_1
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_smoke_4
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_atlas
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_full
       - name: Validate Godot Texture Lab source contract
         run: python tools/texture_lab/validate_godot_lab.py
