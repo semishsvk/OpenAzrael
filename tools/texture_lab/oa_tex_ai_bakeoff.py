@@ -111,7 +111,10 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict) -> list[dict]
             "--load-image-node", str(args.load_image_node or "<LOAD_IMAGE_NODE>"),
             "--prompt-node", str(args.prompt_node or "<PROMPT_NODE>"),
             "--prompt-key", args.prompt_key,
-            "--prompt", prompt,
+            "--prompt", prompts["positive"],
+            "--negative-prompt-node", str(args.negative_prompt_node or "<NEGATIVE_PROMPT_NODE>"),
+            "--negative-prompt-key", args.negative_prompt_key,
+            "--negative-prompt", prompts["negative"],
             "--seed-node", str(args.seed_node or "<SEED_NODE>"),
             "--seed-key", args.seed_key,
             "--seed", str(args.seed),
@@ -154,6 +157,7 @@ def validate_execution_args(args) -> None:
             "--workflow": args.workflow,
             "--load-image-node": args.load_image_node,
             "--prompt-node": args.prompt_node,
+            "--negative-prompt-node": args.negative_prompt_node,
             "--seed-node": args.seed_node,
         }
         missing = [name for name, value in required.items() if not value]
@@ -198,7 +202,9 @@ def main() -> int:
     parser.add_argument("--server", default="http://127.0.0.1:8188")
     parser.add_argument("--load-image-node", default=None)
     parser.add_argument("--prompt-node", default=None)
-    parser.add_argument("--prompt-key", default="text")
+    parser.add_argument("--prompt-key", default="prompt")
+    parser.add_argument("--negative-prompt-node", default=None)
+    parser.add_argument("--negative-prompt-key", default="prompt")
     parser.add_argument("--seed-node", default=None)
     parser.add_argument("--seed-key", default="seed")
     parser.add_argument("--seed", type=int, default=734234)
