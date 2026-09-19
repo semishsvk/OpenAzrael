@@ -86,6 +86,7 @@ from oa_tex_stage_gate import (
 )
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
+from oa_tex_review_handoff import build_handoff
 from oa_tex_review_profile import build_review_profile
 from oa_tex_run_summary import build_summary
 from oa_tex_runtime_export import compile_export
@@ -1354,6 +1355,24 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 "HOLD",
             )
 
+            handoff_path = run_dir / "review_handoff.html"
+            handoff = build_handoff(
+                "restored_smoke_1",
+                run_root,
+                handoff_path,
+            )
+            self.assertEqual(
+                handoff["status"],
+                "READY_FOR_HUMAN_REVIEW",
+            )
+            self.assertFalse(handoff["automatic_approval"])
+            self.assertTrue(handoff_path.is_file())
+            handoff_html = handoff_path.read_text(encoding="utf-8")
+            self.assertIn("CORIROCK", handoff_html)
+            self.assertIn("OBSERVATIONAL REVIEW HANDOFF", handoff_html)
+            self.assertIn("Required manual checks", handoff_html)
+            self.assertIn("gameplay_scale_acceptable", handoff_html)
+
             summary = build_summary("restored_smoke_1", run_root)
             self.assertEqual(summary["evidence_status"], "PASS")
             self.assertEqual(
@@ -1362,6 +1381,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             )
             self.assertFalse(summary["automatic_quality_verdict"])
             self.assertFalse(summary["automatic_stage_approval"])
+            self.assertEqual(
+                summary["review_handoff"],
+                str(handoff_path),
+            )
             self.assertEqual(
                 summary["textures"][0]["visual_evidence"]["candidate"],
                 str(candidate),
