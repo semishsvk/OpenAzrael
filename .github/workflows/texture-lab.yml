@@ -39,5 +39,6 @@ jobs:
           python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_smoke_4
           python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_atlas
           python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_full
+          python tools/texture_lab/oa_tex_first_run.py restored-smoke-1 --dry-run
       - name: Validate Godot Texture Lab source contract
         run: python tools/texture_lab/validate_godot_lab.py
