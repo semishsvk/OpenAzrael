@@ -152,3 +152,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 
 ## Texture Lab RT-POC-01 source checkpoint
 - `data/texture_lab/rt_poc_01_source_status.json` — machine-readable boundary between source-safe/CI readiness and still-unexecuted real Real-ESRGAN, Qwen and Godot Texture Lab runtime evidence.
+
+
+## Texture Lab production selection
+- `data/texture_lab/production_selection.json` — empty-by-default Remastered production-selection registry; explicit selections are hash-bound to current reviewed/approved stage evidence.
+- `tools/texture_lab/oa_tex_production_selection.py` — select/status/revoke tooling; never copies pixels or auto-selects a winner.
