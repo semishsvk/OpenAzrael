@@ -11,7 +11,7 @@ import urllib.parse
 import urllib.request
 import uuid
 
-from common import ROOT, sha256_file, write_json
+from common import sha256_file, write_json
 
 
 def _json_request(url: str, payload: dict | None = None) -> dict:
@@ -31,9 +31,7 @@ def _upload_image(server: str, path: Path) -> str:
     mime = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
     body = bytearray()
     body.extend(f"--{boundary}\r\n".encode())
-    body.extend(
-        f'Content-Disposition: form-data; name="image"; filename="{path.name}"\r\n'.encode()
-    )
+    body.extend(f'Content-Disposition: form-data; name="image"; filename="{path.name}"\r\n'.encode())
     body.extend(f"Content-Type: {mime}\r\n\r\n".encode())
     body.extend(path.read_bytes())
     body.extend(f"\r\n--{boundary}--\r\n".encode())
@@ -68,6 +66,15 @@ def _first_output_image(history: dict, prompt_id: str) -> dict:
         if images:
             return images[0]
     raise RuntimeError("ComfyUI completed without an image output")
+
+
+def model_fingerprints(paths: list[Path]) -> list[dict]:
+    rows = []
+    for path in paths:
+        if not path.is_file():
+            raise FileNotFoundError(path)
+        rows.append({"file": path.name, "sha256": sha256_file(path), "size": path.stat().st_size})
+    return rows
 
 
 def run_job(
@@ -122,7 +129,7 @@ def run_job(
         "prompt_id": prompt_id,
         "uploaded_name": uploaded_name,
         "output_sha256": sha256_file(output),
-        "workflow": workflow,
+        "submitted_workflow": workflow,
     }
 
 
@@ -142,6 +149,8 @@ def main() -> int:
     parser.add_argument("--seed-node", default=None)
     parser.add_argument("--seed-key", default="seed")
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--model-file", type=Path, action="append", default=[])
+    parser.add_argument("--model-label", default="unspecified")
     parser.add_argument("--timeout", type=int, default=600)
     args = parser.parse_args()
 
@@ -164,10 +173,16 @@ def main() -> int:
     write_json(
         record_path,
         {
-            "schema": "openazrael.texture_lab.ai_recreated_job.v1",
+            "schema": "openazrael.texture_lab.ai_recreated_job.v2",
             "source_file": args.source.name,
             "source_sha256": sha256_file(args.source),
             "output_file": args.output.name,
+            "workflow_template_file": args.workflow.name,
+            "workflow_template_sha256": sha256_file(args.workflow),
+            "model_label": args.model_label,
+            "model_files": model_fingerprints(args.model_file),
+            "seed": args.seed,
+            "prompt": args.prompt,
             **result,
         },
     )
