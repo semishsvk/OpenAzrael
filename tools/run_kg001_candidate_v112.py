@@ -20,6 +20,7 @@ FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
 SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_project_context.py"],
+    [sys.executable,"tools/validate_classic_colorkey_v1.py"],
     [sys.executable,"tools/validate_demo_runtime_ir.py"],
     [sys.executable,"tools/audit_gameplay_event_graph_v87.py","--source-only"],
     [sys.executable,"tools/kg001_state_space_v108.py"],
