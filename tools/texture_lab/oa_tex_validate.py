@@ -49,8 +49,12 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=ROOT / "data/texture_lab/validation.json")
     args = parser.parse_args()
 
+    sources = sorted(args.source_dir.glob("*.png"))
+    if not sources:
+        raise SystemExit(f"no Classic source PNGs found in {args.source_dir}")
+
     rows = []
-    for src in sorted(args.source_dir.glob("*.png")):
+    for src in sources:
         cand = args.candidate_dir / src.stem / args.variant
         if not cand.is_file():
             rows.append({"id": src.stem, "technical_status": "MISSING", "candidate": str(cand)})
@@ -59,7 +63,7 @@ def main() -> int:
         row.update(validate_pair(src, cand, args.factor))
         rows.append(row)
 
-    failures = [r for r in rows if r["technical_status"] == "FAIL"]
+    failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
         "schema": "openazrael.texture_lab.validation.v1",
         "variant": args.variant,
