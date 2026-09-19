@@ -222,5 +222,19 @@
     "automatic_promotion": false,
     "canonical_config_mutated": false,
     "purpose": "capture the exact approved working Real-ESRGAN environment before any explicit canonical lock promotion"
+  },
+  "realesrgan_runtime_lock_promotion": {
+    "status": "AWAITING_RUNTIME_LOCK_CANDIDATE",
+    "tool": "tools/texture_lab/oa_tex_realesrgan_lock_plan.py",
+    "schema": "openazrael.texture_lab.realesrgan_lock_promotion_plan.v1",
+    "input": ".local/texture_lab/runtime_locks/realesrgan_rt_poc_01_candidate.json",
+    "output_dir": ".local/texture_lab/runtime_locks/promotion_plan/",
+    "proposed_targets": [
+      "tools/texture_lab/config/realesrgan_environment_lock.json",
+      "tools/texture_lab/requirements-realesrgan-lock.txt"
+    ],
+    "automatic_promotion": false,
+    "canonical_files_mutated": false,
+    "promotion_requires": "explicit human-reviewed repository change after a current approved real restored_smoke_1"
   }
 }
