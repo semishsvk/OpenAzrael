@@ -132,7 +132,7 @@ def select_candidate(
     expected_root = named_candidate_root(mode, preset)
     if not path_is_within(candidate_path, expected_root):
         raise SystemExit(
-            "reviewed candidate is outside the immutable named-stage namespace; "
+            "reviewed candidate is outside the preset-scoped named-stage namespace; "
             f"candidate={candidate_path} expected_root={expected_root}"
         )
     if not candidate_path.is_file() or not source_path.is_file():
