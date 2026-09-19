@@ -14,6 +14,30 @@ The local ignored corpus must exist:
 
 Generated assets and model runtimes live outside normal Git history.
 
+### Local readiness preflight
+
+Before a real AI stage, run the stage-aware local preflight. It checks the 86-texture Classic corpus, required Enhanced conditioning inputs, available disk space, model-file presence/size planning, RAM/GPU visibility and the backend paths supplied on the command line. RAM/VRAM are reported, not used as arbitrary hard acceptance thresholds; the backend doctors remain authoritative.
+
+For the first Restored smoke:
+
+```bash
+python tools/texture_lab/oa_tex_local_preflight.py \
+  --preset restored_smoke_1 \
+  --realesrgan-root .local/texture_lab/realesrgan/Real-ESRGAN \
+  --model-path .local/texture_lab/realesrgan/weights/RealESRGAN_x4plus.pth \
+  --realesrgan-python <REAL_ESRGAN_VENV_PYTHON>
+```
+
+For the first Recreated smoke:
+
+```bash
+python tools/texture_lab/oa_tex_local_preflight.py \
+  --preset recreated_smoke_1 \
+  --comfy-root <COMFYUI_ROOT>
+```
+
+For Qwen, missing model files are translated into an exact required-byte total plus a 5 GiB disk safety margin. Exact SHA-256 verification still happens in `oa_tex_qwen_preflight.py`.
+
 ## 1. Rebuild deterministic Enhanced baseline
 
 ```bash
@@ -69,16 +93,20 @@ python tools/texture_lab/oa_tex_ai_bakeoff.py restored \
   --model-path .local/texture_lab/realesrgan/weights/RealESRGAN_x4plus.pth
 ```
 
-Review the generated queue under:
+Review the generated queue under the preset-specific evidence directory:
 
-` .local/texture_lab/runs/rt_poc_01/ai_restored_review_queue.md `
+`.local/texture_lab/runs/rt_poc_01/restored_smoke_1/ai_restored_review_queue.md`
 
-Then run, in order:
+After manual PNG/Godot review, explicitly approve the stage:
 
-- `restored_smoke_4`
-- `restored_full`
+```bash
+python tools/texture_lab/oa_tex_stage_gate.py approve restored_smoke_1 \
+  --note "manual visual/QA review completed"
+```
 
-Do not advance only because the scripts completed. Inspect the PNGs and review queue first.
+Only then run `restored_smoke_4`. Review it and approve it the same way before `restored_full`.
+
+The next preset begins with a stage-gate check. An approval receipt is bound to the exact plan, review queue and output SHA-256 values. Re-running a previously approved stage with changed evidence makes its receipt stale and requires a new manual approval.
 
 ## 4. Prepare Qwen / ComfyUI
 
@@ -123,11 +151,20 @@ python tools/texture_lab/oa_tex_ai_bakeoff.py recreated \
   --comfy-root <COMFYUI_ROOT>
 ```
 
-Then, only after visual/QA review:
+After reviewing `recreated_smoke_1`, approve it explicitly:
 
-- `recreated_smoke_4`
-- `recreated_atlas`
-- `recreated_full`
+```bash
+python tools/texture_lab/oa_tex_stage_gate.py approve recreated_smoke_1 \
+  --note "manual visual/QA review completed"
+```
+
+Then proceed through the gated sequence:
+
+- `recreated_smoke_4` — requires approved `recreated_smoke_1`;
+- `recreated_atlas` — requires approved `recreated_smoke_4`;
+- `recreated_full` — requires current approvals for both `recreated_smoke_4` and `recreated_atlas`.
+
+Each named preset has an isolated evidence directory under `.local/texture_lab/runs/rt_poc_01/<preset>/`. Review queues therefore cannot accidentally inherit stale results from another stage.
 
 The canonical graph uses:
 
@@ -194,6 +231,9 @@ A candidate can become a production default only after:
 2. structural-drift review;
 3. alpha/seam/atlas/text/puzzle checks required by its policy;
 4. visual inspection in the Godot Texture Lab;
-5. explicit production selection.
+5. explicit stage approval receipt for staged execution;
+6. explicit production selection.
+
+Stage approval is intentionally separate from production promotion: an approved smoke stage only permits the next experiment stage. It does not make its generated textures production defaults.
 
 Until then, Classic remains the evidence source and generated variants remain observational.
