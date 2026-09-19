@@ -61,7 +61,8 @@ def bootstrap_plan(
     runtime_dir: Path,
     install_python_deps: bool,
 ) -> list[dict]:
-    argv = [
+    paths = runtime_paths(runtime_dir)
+    bootstrap = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_realesrgan_bootstrap.py"),
         "--runtime-dir",
@@ -70,9 +71,35 @@ def bootstrap_plan(
         "--download-model",
         "--create-venv",
     ]
+    commands = [command_record("bootstrap_realesrgan", bootstrap)]
     if install_python_deps:
-        argv.append("--install-python-deps")
-    return [command_record("bootstrap_realesrgan", argv)]
+        torch_check = [
+            str(paths["python"]),
+            "-c",
+            (
+                "import json, torch, torchvision; "
+                "print(json.dumps({'torch': torch.__version__, "
+                "'torchvision': torchvision.__version__, "
+                "'cuda_available': bool(torch.cuda.is_available()), "
+                "'cuda_version': torch.version.cuda}))"
+            ),
+        ]
+        install = [
+            sys.executable,
+            str(ROOT / "tools/texture_lab/oa_tex_realesrgan_bootstrap.py"),
+            "--runtime-dir",
+            str(runtime_dir),
+            "--install-python-deps",
+            "--python-exe",
+            str(paths["python"]),
+        ]
+        commands.extend(
+            [
+                command_record("verify_user_installed_torch", torch_check),
+                command_record("install_realesrgan_python_deps", install),
+            ]
+        )
+    return commands
 
 
 def restored_smoke_plan(runtime_dir: Path) -> list[dict]:
@@ -201,6 +228,7 @@ def build_status(runtime_dir: Path) -> dict:
             "A source-ready launchpad status does not prove Python/Torch/backend runtime readiness.",
             "restored-smoke-1 still requires the Real-ESRGAN doctor to PASS.",
             "PyTorch/CUDA installation is intentionally explicit because the correct build depends on the development machine.",
+            "The launchpad refuses dependency installation until torch and torchvision already import successfully inside the isolated venv.",
         ],
     }
 
