@@ -11,6 +11,7 @@ from common import ROOT, sha256_file, write_json
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 DEFAULT_RUN_ROOT = ROOT / ".local/texture_lab/runs/rt_poc_01"
 DEFAULT_APPROVAL_ROOT = ROOT / ".local/texture_lab/approvals/rt_poc_01"
+DEFAULT_MANUAL_REVIEW_ROOT = ROOT / ".local/texture_lab/manual_reviews/rt_poc_01"
 
 
 def load_json(path: Path) -> dict:
@@ -277,11 +278,26 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     }
 
 
+def manual_review_snapshot(
+    preset: str,
+    run_root: Path,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
+) -> dict:
+    from oa_tex_manual_review import validate_manual_review
+
+    return validate_manual_review(preset, run_root, manual_review_root)
+
+
 def receipt_path(preset: str, approval_root: Path) -> Path:
     return approval_root / f"{preset}.json"
 
 
-def validate_receipt(preset: str, run_root: Path, approval_root: Path) -> dict:
+def validate_receipt(
+    preset: str,
+    run_root: Path,
+    approval_root: Path,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
+) -> dict:
     path = receipt_path(preset, approval_root)
     if not path.is_file():
         return {"status": "MISSING", "preset": preset, "path": str(path)}
@@ -297,6 +313,20 @@ def validate_receipt(preset: str, run_root: Path, approval_root: Path) -> dict:
             "current": current,
         }
 
+    manual_review = manual_review_snapshot(
+        preset,
+        run_root,
+        manual_review_root,
+    )
+    if manual_review.get("status") != "PASS":
+        return {
+            "status": "STALE",
+            "preset": preset,
+            "path": str(path),
+            "reason": "manual review is missing, incomplete, or stale",
+            "manual_review": manual_review,
+        }
+
     old = receipt.get("evidence", {})
     checks = {
         "plan_hash_ok": old.get("plan") == current["plan"],
@@ -309,6 +339,7 @@ def validate_receipt(preset: str, run_root: Path, approval_root: Path) -> dict:
             old.get("generation_records") == current["generation_records"]
         ),
         "outputs_ok": old.get("outputs") == current["outputs"],
+        "manual_review_ok": old.get("manual_review") == manual_review,
         "approved_ok": receipt.get("decision") == "APPROVED_FOR_NEXT_STAGE",
     }
     return {
@@ -319,11 +350,16 @@ def validate_receipt(preset: str, run_root: Path, approval_root: Path) -> dict:
     }
 
 
-def check_prerequisites(preset: str, run_root: Path, approval_root: Path) -> dict:
+def check_prerequisites(
+    preset: str,
+    run_root: Path,
+    approval_root: Path,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
+) -> dict:
     spec = preset_record(preset)
     required = [str(v) for v in spec.get("requires_approval", [])]
     rows = [
-        validate_receipt(previous, run_root, approval_root)
+        validate_receipt(previous, run_root, approval_root, manual_review_root)
         for previous in required
     ]
     return {
@@ -339,6 +375,7 @@ def approve(
     run_root: Path,
     approval_root: Path,
     note: str | None,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
 ) -> dict:
     evidence = evidence_snapshot(preset, run_root)
     if evidence.get("status") != "PASS":
@@ -347,9 +384,20 @@ def approve(
             f"status={evidence.get('status')}"
         )
 
+    manual_review = manual_review_snapshot(
+        preset,
+        run_root,
+        manual_review_root,
+    )
+    if manual_review.get("status") != "PASS":
+        raise SystemExit(
+            "cannot approve stage: structured manual review is missing, "
+            f"incomplete, or stale; status={manual_review.get('status')}"
+        )
+
     approval_root.mkdir(parents=True, exist_ok=True)
     receipt = {
-        "schema": "openazrael.texture_lab.stage_approval.v3",
+        "schema": "openazrael.texture_lab.stage_approval.v4",
         "preset": preset,
         "mode": evidence["mode"],
         "decision": "APPROVED_FOR_NEXT_STAGE",
@@ -364,6 +412,7 @@ def approve(
             "runtime": evidence["runtime"],
             "generation_records": evidence["generation_records"],
             "outputs": evidence["outputs"],
+            "manual_review": manual_review,
         },
     }
     path = receipt_path(preset, approval_root)
@@ -379,16 +428,37 @@ def main() -> int:
     parser.add_argument("preset")
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--approval-root", type=Path, default=DEFAULT_APPROVAL_ROOT)
+    parser.add_argument(
+        "--manual-review-root",
+        type=Path,
+        default=DEFAULT_MANUAL_REVIEW_ROOT,
+    )
     parser.add_argument("--note", default=None)
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
     if args.command == "check":
-        result = check_prerequisites(args.preset, args.run_root, args.approval_root)
+        result = check_prerequisites(
+            args.preset,
+            args.run_root,
+            args.approval_root,
+            args.manual_review_root,
+        )
     elif args.command == "status":
-        result = validate_receipt(args.preset, args.run_root, args.approval_root)
+        result = validate_receipt(
+            args.preset,
+            args.run_root,
+            args.approval_root,
+            args.manual_review_root,
+        )
     else:
-        result = approve(args.preset, args.run_root, args.approval_root, args.note)
+        result = approve(
+            args.preset,
+            args.run_root,
+            args.approval_root,
+            args.note,
+            args.manual_review_root,
+        )
 
     if args.out:
         write_json(args.out, result)
