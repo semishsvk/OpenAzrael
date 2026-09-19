@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v28"
+EXPECTED_CHECKPOINT="v116-context-v29"
 errors=[]
 
 def req(p):
@@ -77,6 +77,8 @@ for p in [
     "data/tests/kg001_candidate_diagnostics_contract_v116.json",
     "docs/BUG_REPORTING.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
+    "data/classic_colorkey_audit_v1.json",
+    "tools/validate_classic_colorkey_v1.py",
 ]:
     req(p)
 
@@ -116,9 +118,17 @@ try:
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
         errors.append("KG-001 Issue #6 release blocker drift")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V28_NOT_EXECUTED":
-        errors.append("KG-001 v28 candidate runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V28":
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V29_NOT_EXECUTED":
+        errors.append("KG-001 v29 candidate runtime boundary drift")
+    if c.get("quality",{}).get("classic_colorkey_audit")!="10_OF_86_CONFIRMED":
+        errors.append("Classic color-key audit drift")
+    if c.get("quality",{}).get("classic_colorkey_issue_8")!="SOURCE_FIX_READY_ASSET_REGEN_RUNTIME_RETEST_REQUIRED":
+        errors.append("Classic color-key Issue #8 status drift")
+    if c.get("quality",{}).get("classic_colorkey_keyed_texture_count")!=10:
+        errors.append("Classic color-key texture count drift")
+    if c.get("quality",{}).get("classic_colorkey_nonhash_magenta_count")!=0:
+        errors.append("Classic color-key non-# magenta drift")
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V29":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
