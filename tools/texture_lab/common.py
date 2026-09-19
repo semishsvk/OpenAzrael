@@ -9,6 +9,7 @@ from typing import Any
 from PIL import Image, ImageChops, ImageStat
 
 ROOT = Path(__file__).resolve().parents[2]
+PINNED_PILLOW_VERSION = "12.3.0"
 RESAMPLING = getattr(Image, "Resampling", Image)
 RESAMPLE = {
     "nearest": RESAMPLING.NEAREST,
