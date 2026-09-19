@@ -64,7 +64,7 @@ from oa_tex_qwen_preflight import (
     node_binding_check,
     sampling_check,
 )
-from oa_tex_realesrgan_bootstrap import verify_checkpoint
+from oa_tex_realesrgan_bootstrap import dependency_install_commands, verify_checkpoint
 from oa_tex_realesrgan_runtime import evaluate_probe, load_contract as load_realesrgan_runtime_contract
 from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, validate_receipt
 from oa_tex_review_report import build_review_rows
@@ -1333,6 +1333,21 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual(bad["status"], "FAIL")
         self.assertFalse(bad["checks"]["torch_ok"])
+
+    def test_realesrgan_texture_dependency_plan_excludes_face_stack(self):
+        contract = load_realesrgan_runtime_contract()
+        commands = dependency_install_commands(
+            "python",
+            ROOT / ".local/texture_lab/realesrgan/Real-ESRGAN",
+            contract,
+        )
+        self.assertEqual(len(commands), 2)
+        rendered = " ".join(" ".join(command) for command in commands)
+        self.assertIn("basicsr==1.4.2", rendered)
+        self.assertIn("--no-deps", commands[1])
+        self.assertNotIn("gfpgan", rendered.lower())
+        self.assertNotIn("facexlib", rendered.lower())
+        self.assertEqual(commands[1][-2], "-e")
 
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
