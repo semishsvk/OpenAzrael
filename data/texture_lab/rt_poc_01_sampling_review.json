@@ -7,8 +7,14 @@
       "id": "CORIROCK",
       "room": "R1",
       "primitive_uses": 1,
-      "uv_min": [0.3393, 0.2658],
-      "uv_max": [0.7302, 0.7012],
+      "uv_min": [
+        0.3393,
+        0.2658
+      ],
+      "uv_max": [
+        0.7302,
+        0.7012
+      ],
       "sampling_class": "unique_subrect",
       "repeat_sampling_observed": false,
       "seam_review": "none"
@@ -17,8 +23,14 @@
       "id": "ECRDOR01",
       "room": "R1",
       "primitive_uses": 6,
-      "uv_min": [0.2952, 0.1555],
-      "uv_max": [0.68, 0.8592],
+      "uv_min": [
+        0.2952,
+        0.1555
+      ],
+      "uv_max": [
+        0.68,
+        0.8592
+      ],
       "sampling_class": "shared_architectural_subrect",
       "repeat_sampling_observed": false,
       "seam_review": "none"
@@ -27,8 +39,14 @@
       "id": "VSTPAP01",
       "room": "R1",
       "primitive_uses": 1,
-      "uv_min": [0.0695, 0.3798],
-      "uv_max": [0.9334, 0.6232],
+      "uv_min": [
+        0.0695,
+        0.3798
+      ],
+      "uv_max": [
+        0.9334,
+        0.6232
+      ],
       "sampling_class": "unique_object_subrect",
       "repeat_sampling_observed": false,
       "seam_review": "none"
@@ -37,8 +55,14 @@
       "id": "KEYHOLE#",
       "room": "R1",
       "primitive_uses": 1,
-      "uv_min": [0.0761, 0.0937],
-      "uv_max": [0.9022, 0.9062],
+      "uv_min": [
+        0.0761,
+        0.0937
+      ],
+      "uv_max": [
+        0.9022,
+        0.9062
+      ],
       "sampling_class": "legacy_colorkey_mask",
       "repeat_sampling_observed": false,
       "seam_review": "none",
@@ -48,8 +72,14 @@
       "id": "WEL_WWAL",
       "room": "R7",
       "primitive_uses": 1,
-      "uv_min": [0.0005, -0.0027],
-      "uv_max": [1.0001, 0.6049],
+      "uv_min": [
+        0.0005,
+        -0.0027
+      ],
+      "uv_max": [
+        1.0001,
+        0.6049
+      ],
       "sampling_class": "near_full_u_surface",
       "repeat_sampling_observed": false,
       "seam_review": "u_edge_required_before_production",
@@ -59,8 +89,14 @@
       "id": "WEL_BDY1",
       "room": "R7",
       "primitive_uses": 1,
-      "uv_min": [0.0803, 0.1423],
-      "uv_max": [0.9219, 0.8599],
+      "uv_min": [
+        0.0803,
+        0.1423
+      ],
+      "uv_max": [
+        0.9219,
+        0.8599
+      ],
       "sampling_class": "unique_object_subrect",
       "repeat_sampling_observed": false,
       "seam_review": "none"
@@ -69,8 +105,14 @@
       "id": "WEL_PUZ1",
       "room": "R7",
       "primitive_uses": 5,
-      "uv_min": [0.0701, 0.245],
-      "uv_max": [0.6225, 0.9259],
+      "uv_min": [
+        0.0701,
+        0.245
+      ],
+      "uv_max": [
+        0.6225,
+        0.9259
+      ],
       "sampling_class": "multi_object_atlas_subrect",
       "repeat_sampling_observed": false,
       "seam_review": "none"
@@ -79,8 +121,14 @@
       "id": "WEL_FLOR",
       "room": "R7",
       "primitive_uses": 1,
-      "uv_min": [0.0128, 0.1163],
-      "uv_max": [0.9844, 0.869],
+      "uv_min": [
+        0.0128,
+        0.1163
+      ],
+      "uv_max": [
+        0.9844,
+        0.869
+      ],
       "sampling_class": "single_surface_near_full_u",
       "repeat_sampling_observed": false,
       "seam_review": "visual_only"
@@ -89,11 +137,20 @@
       "id": "BAPFLOR#",
       "room": "R8",
       "primitive_uses": 7,
-      "uv_min": [0.0055, -0.4424],
-      "uv_max": [1.0087, 1.1922],
+      "uv_min": [
+        0.0055,
+        -0.4424
+      ],
+      "uv_max": [
+        1.0087,
+        1.1922
+      ],
       "sampling_class": "repeat_sampling_observed",
       "repeat_sampling_observed": true,
-      "repeat_axes": ["u", "v"],
+      "repeat_axes": [
+        "u",
+        "v"
+      ],
       "seam_review": "u_and_v_required_before_production",
       "alpha_policy": "exact_source_mask",
       "production_tileable": null
@@ -102,8 +159,14 @@
       "id": "BAPGLASS",
       "room": "R8",
       "primitive_uses": 2,
-      "uv_min": [0.0092, 0.0016],
-      "uv_max": [0.9908, 0.9984],
+      "uv_min": [
+        0.0092,
+        0.0016
+      ],
+      "uv_max": [
+        0.9908,
+        0.9984
+      ],
       "sampling_class": "full_uv_object_mapping",
       "repeat_sampling_observed": false,
       "seam_review": "none"
@@ -112,18 +175,85 @@
       "id": "BAPTAP",
       "room": "R8",
       "primitive_uses": 4,
-      "uv_min": [0.0009, 0.0547],
-      "uv_max": [1.0001, 0.9395],
+      "uv_min": [
+        0.0009,
+        0.0547
+      ],
+      "uv_max": [
+        1.0001,
+        0.9395
+      ],
       "sampling_class": "horizontal_atlas_four_slices",
       "repeat_sampling_observed": false,
-      "seam_review": "atlas_boundaries_must_not_be_reinterpreted"
+      "seam_review": "atlas_boundaries_must_not_be_reinterpreted",
+      "atlas_regions": [
+        {
+          "object": "tapestry1",
+          "u_min": 0.000934,
+          "u_max": 0.244969,
+          "v_min": 0.054692,
+          "v_max": 0.939495,
+          "canonical_quarter": 0
+        },
+        {
+          "object": "tapestry2",
+          "u_min": 0.246777,
+          "u_max": 0.497069,
+          "v_min": 0.054692,
+          "v_max": 0.939495,
+          "canonical_quarter": 1
+        },
+        {
+          "object": "tapestry3",
+          "u_min": 0.498948,
+          "u_max": 0.745026,
+          "v_min": 0.054692,
+          "v_max": 0.939495,
+          "canonical_quarter": 2
+        },
+        {
+          "object": "tapestry4",
+          "u_min": 0.746137,
+          "u_max": 1.00015,
+          "v_min": 0.054692,
+          "v_max": 0.939495,
+          "canonical_quarter": 3
+        }
+      ],
+      "recreated_policy": {
+        "strategy": "split_equal_x4_then_stitch",
+        "classic_source_pixels": [
+          512,
+          256
+        ],
+        "classic_part_pixels": [
+          128,
+          256
+        ],
+        "enhanced_x4_pixels": [
+          2048,
+          1024
+        ],
+        "enhanced_part_pixels": [
+          512,
+          1024
+        ],
+        "boundary_lock": "x=0/0.25/0.5/0.75/1.0",
+        "rationale": "Measured R8 UV regions are four ordered non-overlapping U quarters; isolate generation to prevent cross-panel hallucination."
+      }
     },
     {
       "id": "SHIELD1",
       "room": "R8",
       "primitive_uses": 1,
-      "uv_min": [0.1677, 0.1423],
-      "uv_max": [0.8279, 0.8599],
+      "uv_min": [
+        0.1677,
+        0.1423
+      ],
+      "uv_max": [
+        0.8279,
+        0.8599
+      ],
       "sampling_class": "unique_text_object_subrect",
       "repeat_sampling_observed": false,
       "seam_review": "none"
