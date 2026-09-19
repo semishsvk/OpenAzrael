@@ -53,7 +53,20 @@ def load_registry(path: Path) -> dict:
         data["schema"] = CURRENT_REGISTRY_SCHEMA
         data["migrated_from_schema"] = LEGACY_REGISTRY_SCHEMA
 
-    profile = data.setdefault("profiles", {}).setdefault("remastered", {})
+    if data.get("automatic_selection") is not False:
+        raise SystemExit(
+            f"production registry must keep automatic_selection=false: {path}"
+        )
+
+    profiles = data.setdefault("profiles", {})
+    if not isinstance(profiles, dict):
+        raise SystemExit(f"production registry profiles must be an object: {path}")
+    profile = profiles.setdefault("remastered", {})
+    if not isinstance(profile, dict):
+        raise SystemExit(
+            f"production registry remastered profile must be an object: {path}"
+        )
+
     if schema == LEGACY_REGISTRY_SCHEMA:
         for record in profile.values():
             if isinstance(record, dict):
@@ -62,8 +75,13 @@ def load_registry(path: Path) -> dict:
                     "migrated_from_record_schema",
                     "legacy_unversioned",
                 )
-    data.setdefault("superseded_selections", [])
-    data.setdefault("revocations", [])
+
+    for field in ["superseded_selections", "revocations"]:
+        value = data.setdefault(field, [])
+        if not isinstance(value, list):
+            raise SystemExit(
+                f"production registry {field} must be a list: {path}"
+            )
     return data
 
 
@@ -304,16 +322,25 @@ def registry_status(
 ) -> dict:
     registry = load_registry(registry_path)
     profile = registry["profiles"]["remastered"]
-    rows = [
-        validate_record(
-            record,
-            run_root,
-            approval_root,
-            manual_review_root,
-        )
-        for _, record in sorted(profile.items())
-        if isinstance(record, dict)
-    ]
+    rows = []
+    for texture_id, record in sorted(profile.items()):
+        if isinstance(record, dict):
+            rows.append(
+                validate_record(
+                    record,
+                    run_root,
+                    approval_root,
+                    manual_review_root,
+                )
+            )
+        else:
+            rows.append(
+                {
+                    "texture_id": str(texture_id),
+                    "status": "STALE",
+                    "checks": {"record_is_object": False},
+                }
+            )
     return {
         "schema": "openazrael.texture_lab.production_selection_status.v1",
         "registry": str(registry_path),
