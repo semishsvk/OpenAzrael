@@ -1,6 +1,6 @@
 # OpenAzrael Texture Lab — RT-POC-01
 
-**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / STRUCTURAL BASELINE CALIBRATED / GODOT LAB SOURCE-READY / AI BAKE-OFF PENDING  
+**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / STRUCTURAL BASELINE CALIBRATED / AI RUNTIME CONTRACTS READY / GODOT LAB SOURCE-READY / REAL AI OUTPUTS PENDING  
 **Scope:** presentation tooling only; no gameplay/runtime-semantic changes.
 
 ## Purpose
@@ -90,7 +90,7 @@ Legacy color-key candidates are converted to alpha-safe input before the backend
 AI Recreated is conditioned on the 4x Enhanced canvas (Lanczos in RT-POC-01), while Classic remains the source of truth for structural QA and legacy alpha masks. This reduces the amount of geometry the model has to infer from low-resolution source pixels.
 
 ### `oa_tex_recreate.py`
-Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. Each job record fingerprints the workflow template, submitted workflow, source, output and explicitly supplied model files.
+Generic ComfyUI API runner. It consumes an API-format workflow and patches explicit Load Image / positive prompt / negative prompt / seed nodes. The canonical OpenAzrael graph is single-image and receives the deterministic 4× Enhanced canvas (Lanczos for RT-POC-01) as its conditioning image; Classic remains the structural/alpha source of truth. Each job record fingerprints the workflow template, submitted workflow, source, output and explicitly supplied model files.
 
 Legacy color-key candidates follow the same alpha-lock policy as AI Restored: alpha-safe source goes into the model and the exact source silhouette is reapplied to the generated output.
 
@@ -129,6 +129,47 @@ The canonical 12-texture set is not sent blindly through every AI backend.
 - `WEL_PUZ1` requires puzzle-geometry review.
 
 `oa_tex_ai_bakeoff.py` enforces this policy and supports `--dry-run`, so the exact generation/QA command plan can be inspected before any model is executed. No generated asset is automatically promoted to production.
+
+## Staged AI execution
+
+`config/ai_smoke_sets.json` defines the required execution order so a broken backend does not waste a full batch:
+
+1. `restored_smoke_1` — CORIROCK only;
+2. `restored_smoke_4` — organic surface, puzzle, keyed/repeated floor, text;
+3. `restored_full` — all 11 Restored-eligible assets;
+4. `recreated_smoke_1` — CORIROCK only;
+5. `recreated_smoke_4` — organic, architecture, puzzle and exact-alpha/repeat cases;
+6. `recreated_atlas` — BAPTAP quarter-isolation test;
+7. `recreated_full` — all 10 Recreated-eligible assets.
+
+Examples after the corresponding runtime doctor passes:
+
+```bash
+python tools/texture_lab/oa_tex_ai_bakeoff.py restored \
+  --preset restored_smoke_1 \
+  --realesrgan-root .local/texture_lab/realesrgan/Real-ESRGAN \
+  --model-path .local/texture_lab/realesrgan/weights/RealESRGAN_x4plus.pth
+```
+
+With ComfyUI already running on the default local API port:
+
+```bash
+python tools/texture_lab/oa_tex_ai_bakeoff.py recreated \
+  --preset recreated_smoke_1 \
+  --comfy-root /path/to/ComfyUI
+```
+
+The Recreated bake-off runs, in order: ComfyUI doctor → Qwen workflow/model preflight → generation → structural drift QA → observational review queue.
+
+### BAPTAP atlas isolation
+
+R8 geometry provides four non-overlapping U regions for BAPTAP: tapestry1 ≈ 0.001–0.245, tapestry2 ≈ 0.247–0.497, tapestry3 ≈ 0.499–0.745 and tapestry4 ≈ 0.746–1.000. RT-POC-01 therefore treats the 512×256 Classic atlas as four exact 128×256 quarters (and the 2048×1024 Enhanced atlas as four 512×1024 quarters).
+
+`oa_tex_atlas.py` performs exact equal-quarter split/stitch. During AI Recreated, each BAPTAP quarter is conditioned and generated independently; only then are the four outputs stitched back at the exact 25% boundaries. Unit tests require split→stitch pixel identity before any AI model is involved.
+
+### Manual review queue
+
+`oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a ranked manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. It deliberately never promotes a generated asset automatically.
 
 ## Structural-drift baseline
 
