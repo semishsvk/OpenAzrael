@@ -15,6 +15,7 @@
 - `tools/texture_lab/oa_tex_recreate.py`
 - `tools/texture_lab/config/enhance.json`
 - `tools/texture_lab/config/rt_poc_01_selection.json`
+- `data/texture_lab/rt_poc_01_sampling_review.json`
 - `tools/texture_lab/config/ai_backends.json`
 - `tools/texture_lab/profiles/base_preserve.json`
 - `tools/texture_lab/profiles/recreate_profiles.json`
