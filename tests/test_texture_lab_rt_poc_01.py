@@ -36,6 +36,7 @@ from oa_tex_qwen_preflight import (
     sampling_check,
 )
 from oa_tex_realesrgan_bootstrap import verify_checkpoint
+from oa_tex_review_report import build_review_rows
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
@@ -358,7 +359,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
 
         self.assertEqual(
             [job["stage"] for job in jobs],
-            ["comfy_doctor", "qwen_preflight", "generate", "structural_qa"],
+            ["comfy_doctor", "qwen_preflight", "generate", "structural_qa", "review_queue"],
         )
         generate = jobs[2]
         self.assertTrue(generate["conditioning_image"].endswith("CORIROCK/lanczos_x4.png"))
@@ -461,12 +462,72 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertEqual(stages.count("atlas_split_enhanced"), 1)
         self.assertEqual(stages.count("generate"), 4)
         self.assertEqual(stages.count("atlas_stitch"), 1)
-        self.assertEqual(stages[-1], "structural_qa")
+        self.assertEqual(stages[-2:], ["structural_qa", "review_queue"])
         generated_parts = [job for job in jobs if job["stage"] == "generate"]
         self.assertEqual(
             [job["part"] for job in generated_parts],
             ["00", "01", "02", "03"],
         )
+
+    def test_review_queue_flags_drift_without_auto_rejection(self):
+        selection = {
+            "textures": [
+                {
+                    "id": "BAPFLOR#",
+                    "room": "R8",
+                    "content_class": "stone_floor",
+                }
+            ]
+        }
+        policy = {
+            "defaults": {"ai_recreated": True},
+            "classes": {
+                "stone_floor": {
+                    "ai_recreated": True,
+                    "exact_alpha_lock": True,
+                    "seam_review": "u_and_v_required",
+                }
+            },
+        }
+        sampling = {
+            "textures": [
+                {
+                    "id": "BAPFLOR#",
+                    "sampling_class": "repeat_sampling_observed",
+                    "repeat_sampling_observed": True,
+                    "repeat_axes": ["u", "v"],
+                    "seam_review": "u_and_v_required_before_production",
+                }
+            ]
+        }
+        baseline = {
+            "global_envelope": {
+                "low_frequency_luma_mae_0_255": {
+                    "p95": 0.25,
+                    "max": 0.40,
+                }
+            }
+        }
+        drift = {
+            "results": [
+                {
+                    "id": "BAPFLOR#",
+                    "low_frequency_luma_mae_0_255": 0.80,
+                    "alpha_silhouette_mismatch_fraction": 0.0,
+                }
+            ]
+        }
+
+        rows = build_review_rows(
+            "recreated", selection, policy, sampling, baseline, drift
+        )
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row["review_state"], "MANUAL_REVIEW_REQUIRED")
+        self.assertEqual(row["ratio_to_deterministic_p95"], 3.2)
+        self.assertIn("drift_above_deterministic_max", row["attention"])
+        self.assertIn("exact_alpha_lock", row["attention"])
+        self.assertIn("repeat_sampling:u,v", row["attention"])
 
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
