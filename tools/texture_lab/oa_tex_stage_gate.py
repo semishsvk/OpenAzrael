@@ -79,12 +79,6 @@ def review_pack_markdown_filename(mode: str) -> str:
     return f"ai_{mode}_review_pack.md"
 
 
-def output_path(mode: str, texture_id: str) -> Path:
-    if mode == "restored":
-        return ROOT / "assets/textures/ai_restored" / texture_id / "realesrgan_x4.png"
-    return ROOT / "assets/textures/ai_recreated" / texture_id / "selected.png"
-
-
 def file_evidence(path: Path) -> dict:
     return {
         "path": str(path),
@@ -109,7 +103,11 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
     artifact_records = []
     artifacts_ok = True
 
+    expected_candidate_root = named_candidate_root(mode, run_dir.name)
+    expected_review_root = run_dir / "review_pack"
+
     for row in rows:
+        texture_id = str(row.get("id", ""))
         for key in ["source", "candidate", "comparison", "detail_comparison", "tile_preview"]:
             record = row.get(key)
             if not isinstance(record, dict):
@@ -118,6 +116,20 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
             if not path.is_file():
                 artifacts_ok = False
                 continue
+
+            if key == "source":
+                expected_source = (
+                    ROOT / "assets/textures/classic" / f"{texture_id}.png"
+                )
+                if path.resolve() != expected_source.resolve():
+                    artifacts_ok = False
+            elif key == "candidate":
+                if not path_is_within(path, expected_candidate_root):
+                    artifacts_ok = False
+            else:
+                if not path_is_within(path, expected_review_root):
+                    artifacts_ok = False
+
             current = file_evidence(path)
             artifact_records.append(current)
             if current != record:
@@ -126,6 +138,8 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
     checks = {
         "schema_ok": manifest.get("schema") == "openazrael.texture_lab.visual_review_pack.v2",
         "status_ok": manifest.get("status") == "READY_FOR_MANUAL_REVIEW",
+        "mode_ok": manifest.get("mode") == mode,
+        "texture_count_ok": manifest.get("texture_count") == len(expected),
         "automatic_promotion_off": manifest.get("automatic_promotion") is False,
         "ids_ok": len(ids) == len(expected) and set(ids) == set(expected),
         "artifacts_ok": artifacts_ok,
