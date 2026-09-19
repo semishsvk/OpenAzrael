@@ -20,6 +20,9 @@ from oa_tex_tile import tile_preview
 
 SAMPLING = ROOT / "data/texture_lab/rt_poc_01_sampling_review.json"
 DEFAULT_OUT_ROOT = ROOT / ".local/texture_lab/production_review"
+DEFAULT_GODOT_PROFILE = (
+    ROOT / ".local/texture_lab/runtime_manifests/production_review_current.json"
+)
 
 
 def load_json(path: Path) -> dict:
@@ -162,6 +165,55 @@ def build_bundle(
     }
 
 
+def res_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        rel = resolved.relative_to(ROOT.resolve())
+    except ValueError as exc:
+        raise SystemExit(
+            f"production-review asset must remain inside project tree: {path}"
+        ) from exc
+    return "res://" + str(rel).replace("\\", "/")
+
+
+def build_godot_review_manifest(bundle: dict) -> dict:
+    inputs = bundle.get("inputs", {})
+    texture_id = str(bundle.get("texture_id", ""))
+    restored = inputs.get("ai_restored")
+    recreated = inputs.get("ai_recreated")
+    if (
+        not texture_id
+        or not isinstance(restored, dict)
+        or not isinstance(recreated, dict)
+    ):
+        raise SystemExit("production-review bundle lacks Restored/Recreated inputs")
+
+    def row(record: dict) -> dict:
+        path = Path(str(record.get("path", "")))
+        if not path.is_file():
+            raise SystemExit(f"production-review candidate missing: {path}")
+        return {
+            "path": res_path(path),
+            "sha256": str(record.get("sha256", "")),
+            "size_bytes": int(record.get("size_bytes", -1)),
+        }
+
+    return {
+        "schema": "openazrael.texture_lab.production_review_manifest.v1",
+        "status": "READY_FOR_MANUAL_PRODUCTION_REVIEW",
+        "automatic_selection": False,
+        "export_allowed": False,
+        "texture_count": 1,
+        "textures": [
+            {
+                "id": texture_id,
+                "restored": row(restored),
+                "recreated": row(recreated),
+            }
+        ],
+    }
+
+
 def relative_href(path: Path, html_path: Path) -> str:
     return Path(
         os.path.relpath(path.resolve(), html_path.parent.resolve())
@@ -237,6 +289,7 @@ def build_from_approved_presets(
     manual_review_root: Path,
     out_dir: Path,
     cell: int,
+    current_profile: Path = DEFAULT_GODOT_PROFILE,
 ) -> dict:
     for preset in [restored_preset, recreated_preset]:
         receipt = validate_receipt(
@@ -296,6 +349,15 @@ def build_from_approved_presets(
         "recreated": recreated_record,
     }
 
+    godot_profile = build_godot_review_manifest(bundle)
+    current_profile.parent.mkdir(parents=True, exist_ok=True)
+    write_json(current_profile, godot_profile)
+    bundle["godot_review_profile"] = {
+        "path": str(current_profile),
+        "replaceable_convenience_pointer": True,
+        "schema": godot_profile["schema"],
+    }
+
     manifest = out_dir / "production_review.json"
     html_path = out_dir / "production_review.html"
     write_json(manifest, bundle)
@@ -338,6 +400,15 @@ def main() -> int:
         default=DEFAULT_MANUAL_REVIEW_ROOT,
     )
     parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument(
+        "--current-profile",
+        type=Path,
+        default=DEFAULT_GODOT_PROFILE,
+        help=(
+            "Replaceable editor-only Godot pointer for direct Restored vs "
+            "Recreated A/B review."
+        ),
+    )
     parser.add_argument("--cell", type=int, default=360)
     args = parser.parse_args()
 
@@ -356,6 +427,7 @@ def main() -> int:
         args.manual_review_root,
         out_dir,
         args.cell,
+        args.current_profile,
     )
     print(
         "PASS production_review "
