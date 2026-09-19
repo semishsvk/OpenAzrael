@@ -45,6 +45,14 @@ def structural_filename(mode: str) -> str:
     return f"ai_{mode}_structural_drift.json"
 
 
+def review_pack_filename(mode: str) -> str:
+    return f"ai_{mode}_review_pack.json"
+
+
+def review_pack_markdown_filename(mode: str) -> str:
+    return f"ai_{mode}_review_pack.md"
+
+
 def output_path(mode: str, texture_id: str) -> Path:
     if mode == "restored":
         return ROOT / "assets/textures/ai_restored" / texture_id / "realesrgan_x4.png"
@@ -56,6 +64,52 @@ def file_evidence(path: Path) -> dict:
         "path": str(path),
         "sha256": sha256_file(path),
         "size_bytes": path.stat().st_size,
+    }
+
+
+def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
+    manifest_path = run_dir / review_pack_filename(mode)
+    markdown_path = run_dir / review_pack_markdown_filename(mode)
+    if not manifest_path.is_file() or not markdown_path.is_file():
+        return {
+            "status": "MISSING",
+            "manifest": str(manifest_path),
+            "markdown": str(markdown_path),
+        }
+
+    manifest = load_json(manifest_path)
+    rows = [row for row in manifest.get("rows", []) if isinstance(row, dict)]
+    ids = [str(row.get("id")) for row in rows]
+    artifact_records = []
+    artifacts_ok = True
+
+    for row in rows:
+        for key in ["source", "candidate", "comparison", "tile_preview"]:
+            record = row.get(key)
+            if not isinstance(record, dict):
+                continue
+            path = Path(str(record.get("path", "")))
+            if not path.is_file():
+                artifacts_ok = False
+                continue
+            current = file_evidence(path)
+            artifact_records.append(current)
+            if current != record:
+                artifacts_ok = False
+
+    checks = {
+        "schema_ok": manifest.get("schema") == "openazrael.texture_lab.visual_review_pack.v1",
+        "status_ok": manifest.get("status") == "READY_FOR_MANUAL_REVIEW",
+        "automatic_promotion_off": manifest.get("automatic_promotion") is False,
+        "ids_ok": len(ids) == len(expected) and set(ids) == set(expected),
+        "artifacts_ok": artifacts_ok,
+    }
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "manifest": file_evidence(manifest_path),
+        "markdown": file_evidence(markdown_path),
+        "artifacts": artifact_records,
+        "checks": checks,
     }
 
 
@@ -90,9 +144,19 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     review = run_dir / review_filename(mode)
     technical = run_dir / technical_filename(mode)
     structural = run_dir / structural_filename(mode)
+    review_pack_manifest = run_dir / review_pack_filename(mode)
+    review_pack_markdown = run_dir / review_pack_markdown_filename(mode)
     runtime_paths = runtime_evidence_paths(mode, run_dir)
 
-    required = [plan, review, technical, structural, *runtime_paths]
+    required = [
+        plan,
+        review,
+        technical,
+        structural,
+        review_pack_manifest,
+        review_pack_markdown,
+        *runtime_paths,
+    ]
     missing = [str(path) for path in required if not path.is_file()]
 
     job_paths: list[Path] = []
@@ -138,6 +202,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         row for row in technical_data.get("results", []) if isinstance(row, dict)
     ]
     technical_ids = [str(row.get("id")) for row in technical_rows]
+    pack = review_pack_snapshot(mode, run_dir, expected)
 
     checks = {
         "plan_preset_ok": (
@@ -170,6 +235,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         ),
         "local_preflight_ok": local_preflight.get("ready_for_runtime_doctors") is True,
         "stage_prerequisites_ok": stage_gate.get("status") == "PASS",
+        "review_pack_ok": pack.get("status") == "PASS",
     }
 
     if mode == "restored":
@@ -200,6 +266,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         "review": file_evidence(review),
         "technical": file_evidence(technical),
         "structural": file_evidence(structural),
+        "review_pack": pack,
         "runtime": [file_evidence(path) for path in runtime_paths],
         "generation_records": [file_evidence(path) for path in job_paths],
         "outputs": output_rows,
@@ -233,6 +300,7 @@ def validate_receipt(preset: str, run_root: Path, approval_root: Path) -> dict:
         "review_hash_ok": old.get("review") == current["review"],
         "technical_hash_ok": old.get("technical") == current["technical"],
         "structural_hash_ok": old.get("structural") == current["structural"],
+        "review_pack_ok": old.get("review_pack") == current["review_pack"],
         "runtime_ok": old.get("runtime") == current["runtime"],
         "generation_records_ok": (
             old.get("generation_records") == current["generation_records"]
@@ -278,7 +346,7 @@ def approve(
 
     approval_root.mkdir(parents=True, exist_ok=True)
     receipt = {
-        "schema": "openazrael.texture_lab.stage_approval.v2",
+        "schema": "openazrael.texture_lab.stage_approval.v3",
         "preset": preset,
         "mode": evidence["mode"],
         "decision": "APPROVED_FOR_NEXT_STAGE",
@@ -289,6 +357,7 @@ def approve(
             "review": evidence["review"],
             "technical": evidence["technical"],
             "structural": evidence["structural"],
+            "review_pack": evidence["review_pack"],
             "runtime": evidence["runtime"],
             "generation_records": evidence["generation_records"],
             "outputs": evidence["outputs"],
