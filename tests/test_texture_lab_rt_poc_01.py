@@ -52,6 +52,7 @@ from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, v
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_run_summary import build_summary
+from oa_tex_runtime_manifest import build_manifest
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
@@ -1165,6 +1166,154 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(bad["status"], "HOLD")
             by_id = {row["id"]: row for row in bad["rows"]}
             self.assertFalse(by_id["B"]["size_ok"])
+
+    def test_runtime_manifest_profiles_are_fail_safe(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            for relative, size in [
+                ("assets/textures/classic/A.png", (16, 8)),
+                ("assets/textures/classic/MASK#.png", (8, 8)),
+                ("assets/textures/enhanced/A/lanczos_x4.png", (64, 32)),
+                ("assets/textures/enhanced/MASK#/nearest_x4.png", (32, 32)),
+                ("assets/textures/ai_restored/A/realesrgan_x4.png", (64, 32)),
+            ]:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                Image.new("RGBA", size, (10, 20, 30, 255)).save(path)
+
+            selection = {
+                "textures": [
+                    {
+                        "id": "A",
+                        "room": "R1",
+                        "content_class": "rock_organic_surface",
+                        "expected_size": [16, 8],
+                    },
+                    {
+                        "id": "MASK#",
+                        "room": "R1",
+                        "content_class": "binary_mask_hard_edge",
+                        "expected_size": [8, 8],
+                    },
+                ]
+            }
+            policy = {
+                "classes": {
+                    "binary_mask_hard_edge": {
+                        "preferred_tier": "enhanced_nearest",
+                    }
+                }
+            }
+            empty_registry = {
+                "profiles": {"remastered": {}},
+            }
+
+            classic = build_manifest(
+                "classic",
+                selection,
+                policy,
+                empty_registry,
+                root / "runs",
+                root / "approvals",
+                root=root,
+            )
+            self.assertTrue(classic["runtime_ready"])
+            self.assertTrue(
+                all(row["resolved_tier"] == "classic" for row in classic["textures"])
+            )
+
+            enhanced = build_manifest(
+                "enhanced",
+                selection,
+                policy,
+                empty_registry,
+                root / "runs",
+                root / "approvals",
+                enhanced_method="lanczos",
+                root=root,
+            )
+            by_id = {row["id"]: row for row in enhanced["textures"]}
+            self.assertEqual(by_id["A"]["resolved_tier"], "enhanced_lanczos")
+            self.assertEqual(by_id["MASK#"]["resolved_tier"], "enhanced_nearest")
+            self.assertEqual(
+                by_id["MASK#"]["resolution_reason"],
+                "policy_forced_nearest",
+            )
+
+            remastered_empty = build_manifest(
+                "remastered",
+                selection,
+                policy,
+                empty_registry,
+                root / "runs",
+                root / "approvals",
+                root=root,
+            )
+            self.assertEqual(remastered_empty["classic_fallback_count"], 2)
+            self.assertEqual(
+                remastered_empty["status"],
+                "SAFE_CLASSIC_FALLBACKS",
+            )
+
+            record = {
+                "texture_id": "A",
+                "selected_tier": "ai_restored",
+                "selected_from_preset": "restored_smoke_1",
+                "candidate_path": "assets/textures/ai_restored/A/realesrgan_x4.png",
+                "candidate_sha256": "synthetic",
+            }
+            registry = {
+                "profiles": {
+                    "remastered": {
+                        "A": record,
+                    }
+                }
+            }
+
+            def pass_status(_record, _run_root, _approval_root):
+                return {"status": "PASS", "checks": {"synthetic": True}}
+
+            remastered_pass = build_manifest(
+                "remastered",
+                selection,
+                policy,
+                registry,
+                root / "runs",
+                root / "approvals",
+                root=root,
+                status_resolver=pass_status,
+            )
+            by_id = {row["id"]: row for row in remastered_pass["textures"]}
+            self.assertEqual(by_id["A"]["resolved_tier"], "ai_restored")
+            self.assertEqual(
+                by_id["A"]["resolution_reason"],
+                "explicit_current_production_selection",
+            )
+            self.assertEqual(by_id["MASK#"]["resolved_tier"], "classic")
+
+            def stale_status(_record, _run_root, _approval_root):
+                return {"status": "STALE", "checks": {"synthetic": False}}
+
+            remastered_stale = build_manifest(
+                "remastered",
+                selection,
+                policy,
+                registry,
+                root / "runs",
+                root / "approvals",
+                root=root,
+                status_resolver=stale_status,
+            )
+            by_id = {row["id"]: row for row in remastered_stale["textures"]}
+            self.assertEqual(by_id["A"]["resolved_tier"], "classic")
+            self.assertEqual(
+                by_id["A"]["resolution_reason"],
+                "stale_production_selection_fallback_to_classic",
+            )
+            self.assertEqual(
+                remastered_stale["status"],
+                "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS",
+            )
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
