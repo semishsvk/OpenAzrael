@@ -10,7 +10,7 @@ For the first real Real-ESRGAN experiment, prefer the cross-platform launchpad:
 python tools/texture_lab/oa_tex_first_run.py status
 ```
 
-It reports exactly which source-side prerequisites are missing without generating pixels.
+It reports exactly which source-side prerequisites are missing without generating pixels. Source readiness requires not only 86 Classic PNGs, but also all 12 canonical RT-POC-01 texture IDs at their expected original dimensions.
 
 If the deterministic baseline needs rebuilding:
 
