@@ -261,7 +261,20 @@ python tools/texture_lab/oa_tex_stage_gate.py approve restored_smoke_1 \
   --note "structured manual review PASS"
 ```
 
-Only then run `restored_smoke_4`. Review it and approve it the same way before `restored_full`.
+After `restored_smoke_1` is fully reviewed and its stage approval is current, capture the exact working Real-ESRGAN environment as a **local lock candidate**:
+
+```bash
+python tools/texture_lab/oa_tex_realesrgan_lock.py restored_smoke_1
+```
+
+This requires the current approval v5 receipt, rereads the approved `realesrgan_doctor.json`, and writes only local candidate artifacts under `.local/texture_lab/runtime_locks/`:
+
+- `realesrgan_rt_poc_01_candidate.json` — Python/platform/Torch/CUDA/GPU, pinned source/checkpoint identity, runtime probe and full pip-freeze fingerprint;
+- `realesrgan_rt_poc_01_requirements.txt` — exact normalized pip-freeze package set.
+
+The tool has `automatic_promotion=false` and does **not** mutate `realesrgan_runtime_contract.json` or any canonical repository lock. Treat the result as the evidence-backed candidate for a later explicit repository promotion after human inspection.
+
+Only then proceed to `restored_smoke_4`. Review it and approve it the same way before `restored_full`.
 
 The next preset begins with a stage-gate check. An approval v5 receipt is bound to the exact plan, unique `run_instance_id`, local preflight, backend doctor/preflight, technical validation, structural-drift report, generation provenance, review queue, review pack, output SHA-256 values and structured manual review.
 
