@@ -9,9 +9,12 @@
 - `tools/texture_lab/oa_tex_enhance.py`
 - `tools/texture_lab/oa_tex_validate.py`
 - `tools/texture_lab/oa_tex_compare.py`
+- `tools/texture_lab/oa_tex_tile.py`
+- `tools/texture_lab/oa_tex_run_poc.py`
 - `tools/texture_lab/oa_tex_restore.py`
 - `tools/texture_lab/oa_tex_recreate.py`
 - `tools/texture_lab/config/enhance.json`
+- `tools/texture_lab/config/rt_poc_01_selection.json`
 - `tools/texture_lab/profiles/base_preserve.json`
 - `tests/test_texture_lab_rt_poc_01.py`
 - generated Classic/Enhanced/AI pixels remain excluded from Git by ADR-024
