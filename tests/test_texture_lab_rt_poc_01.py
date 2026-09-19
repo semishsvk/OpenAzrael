@@ -399,6 +399,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 denoise_strength=None,
                 realesrgan_root=temp / "Real-ESRGAN",
                 model_path=temp / "RealESRGAN_x4plus.pth",
+                realesrgan_python=str(temp / "venv" / "bin" / "python"),
                 selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
             )
             jobs = build_restore_plan(
@@ -410,8 +411,11 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             [job["stage"] for job in jobs],
             ["realesrgan_doctor", "generate", "structural_qa", "review_queue"],
         )
+        self.assertEqual(jobs[0]["argv"][0], str(temp / "venv" / "bin" / "python"))
         self.assertIn("--realesrgan-root", jobs[0]["argv"])
         self.assertIn("--model-path", jobs[0]["argv"])
+        self.assertIn("--python-exe", jobs[1]["argv"])
+        self.assertIn(str(temp / "venv" / "bin" / "python"), jobs[1]["argv"])
 
     def test_atlas_split_stitch_is_pixel_exact(self):
         with tempfile.TemporaryDirectory() as td:
