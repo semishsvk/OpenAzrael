@@ -13,6 +13,7 @@ source=load_optional(ROOT/"data/tests/kg001_source_validation_v112.json")
 r109=load_optional(ROOT/"data/tests/kg001_headless_runtime_v109.json")
 r110=load_optional(ROOT/"data/tests/kg001_room_trigger_runtime_v110.json")
 r111=load_optional(ROOT/"data/tests/kg001_full_demo_runtime_v111.json")
+audio=load_optional(ROOT/"data/tests/kg001_audio_runtime_v116.json")
 fresh=load_optional(ROOT/"data/tests/kg001_fresh_checkout.json")
 manual=load_optional(ROOT/"data/tests/kg001_manual_sanity.json")
 
@@ -23,6 +24,7 @@ source_pass=is_pass(source)
 v109_pass=is_pass(r109)
 v110_pass=is_pass(r110)
 v111_pass=is_pass(r111)
+audio_pass=is_pass(audio)
 fresh_pass=is_pass(fresh)
 manual_pass=is_pass(manual)
 
@@ -33,7 +35,7 @@ gates={
  "G03":{"name":"puzzle_state_space","status":"PASS" if source_pass and v108.get("status")=="PASS" else "PENDING"},
  "G04":{"name":"room_transition_state","status":"PASS" if v110_pass else "RUNTIME_PENDING"},
  "G05":{"name":"trigger_semantics","status":"PASS" if v110_pass else "RUNTIME_PENDING"},
- "G06":{"name":"audio_event_stream","status":"PASS" if v109_pass and v111_pass else "RUNTIME_PENDING"},
+ "G06":{"name":"audio_event_stream","status":"PASS" if v109_pass and v111_pass and audio_pass else "RUNTIME_PENDING"},
  "G07":{"name":"save_load_state_hash","status":"PASS" if v109_pass else "RUNTIME_PENDING"},
  "G08":{"name":"synthetic_full_demo_playthrough","status":"PASS" if v111_pass else "RUNTIME_PENDING"},
  "G09":{"name":"fresh_checkout_build","status":"PASS" if fresh_pass else "PENDING"},
@@ -41,7 +43,7 @@ gates={
 }
 all_pass=all(x["status"]=="PASS" for x in gates.values())
 failed=[]
-for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("fresh",fresh),("manual",manual)):
+for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("audio_v116",audio),("fresh",fresh),("manual",manual)):
     if isinstance(obj,dict) and obj.get("status")=="FAIL":
         failed.append(gid)
 out={

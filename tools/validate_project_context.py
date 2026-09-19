@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v28"
+EXPECTED_CHECKPOINT="v116-context-v29"
 errors=[]
 
 def req(p):
@@ -75,6 +75,12 @@ for p in [
     "scripts/kg001_trigger_debug_v116.gd",
     "tools/validate_candidate_diagnostics_v116.py",
     "data/tests/kg001_candidate_diagnostics_contract_v116.json",
+    "scripts/kg001_audio_runtime_runner_v116.gd",
+    "tools/validate_kg001_audio_runtime_v116.py",
+    "data/tests/kg001_audio_runtime_contract_v116.json",
+    "data/audio/legacy_world_ir.json",
+    "tools/restore_candidate_assets.py",
+    "tools/prepare_candidate_audio.py",
     "docs/BUG_REPORTING.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
 ]:
@@ -108,7 +114,7 @@ try:
         errors.append("KG-001 v112 candidate runner drift")
     if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
         errors.append("KG-001 v112 status-engine drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_CRITICAL_BUG_ISSUE_6_RETEST":
+    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_ISSUES_6_9_RETEST":
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
@@ -116,9 +122,15 @@ try:
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
         errors.append("KG-001 Issue #6 release blocker drift")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V28_NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_audio_issue_9")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 Issue #9 audio status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_issue_9") is not True:
+        errors.append("KG-001 Issue #9 release blocker drift")
+    if c.get("quality",{}).get("kg001_physical_audio_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 physical audio source-contract drift")
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V29_NOT_EXECUTED":
         errors.append("KG-001 v28 candidate runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V28":
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V29":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")

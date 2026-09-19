@@ -12,6 +12,8 @@ checks={
  "runtime_v109":"kg001_headless_runner_v109.gd" in source,
  "runtime_v110":"kg001_room_trigger_runner_v110.gd" in source,
  "runtime_v111":"kg001_full_demo_runner_v111.gd" in source,
+ "runtime_audio_v116":"kg001_audio_runtime_runner_v116.gd" in source and "OPENAZRAEL_KG001_AUDIO_V116" in source,
+ "source_audio_validator":"validate_kg001_audio_runtime_v116.py" in source,
  "git_clean_before_after":"clean_before=git_clean()" in source and "clean_after=git_clean()" in source,
  "forbidden_tracking_check":"repository_safety()" in source and "FORBIDDEN_TRACKED_PREFIXES" in source,
  "asset_ignore_check":'"check-ignore"' in source,
