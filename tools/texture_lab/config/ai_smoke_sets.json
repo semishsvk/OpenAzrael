@@ -3,57 +3,100 @@
   "status": "POC_EXECUTION_ORDER",
   "approval_receipts": {
     "root": ".local/texture_lab/approvals/rt_poc_01",
-    "policy": "A later named preset may execute only after every listed prerequisite has a current manual approval receipt bound to the current plan/review/output hashes."
+    "policy": "A later named preset may execute only after every listed prerequisite has a current v4 manual approval receipt bound to current plan/review/output hashes and a PASS structured per-texture manual review record.",
+    "manual_review_root": ".local/texture_lab/manual_reviews/rt_poc_01"
   },
   "presets": {
     "restored_smoke_1": {
       "mode": "restored",
-      "textures": ["CORIROCK"],
+      "textures": [
+        "CORIROCK"
+      ],
       "requires_approval": [],
       "purpose": "Backend/checkpoint/output/QA smoke test."
     },
     "restored_smoke_4": {
       "mode": "restored",
-      "textures": ["CORIROCK", "WEL_PUZ1", "BAPFLOR#", "SHIELD1"],
-      "requires_approval": ["restored_smoke_1"],
+      "textures": [
+        "CORIROCK",
+        "WEL_PUZ1",
+        "BAPFLOR#",
+        "SHIELD1"
+      ],
+      "requires_approval": [
+        "restored_smoke_1"
+      ],
       "purpose": "Cover organic surface, puzzle geometry, keyed/repeated floor, and text asset."
     },
     "restored_full": {
       "mode": "restored",
       "textures": [
-        "CORIROCK", "ECRDOR01", "VSTPAP01",
-        "WEL_WWAL", "WEL_BDY1", "WEL_PUZ1", "WEL_FLOR",
-        "BAPFLOR#", "BAPGLASS", "BAPTAP", "SHIELD1"
+        "CORIROCK",
+        "ECRDOR01",
+        "VSTPAP01",
+        "WEL_WWAL",
+        "WEL_BDY1",
+        "WEL_PUZ1",
+        "WEL_FLOR",
+        "BAPFLOR#",
+        "BAPGLASS",
+        "BAPTAP",
+        "SHIELD1"
       ],
-      "requires_approval": ["restored_smoke_4"],
+      "requires_approval": [
+        "restored_smoke_4"
+      ],
       "purpose": "All AI-Restored-eligible canonical POC assets."
     },
     "recreated_smoke_1": {
       "mode": "recreated",
-      "textures": ["CORIROCK"],
+      "textures": [
+        "CORIROCK"
+      ],
       "requires_approval": [],
       "purpose": "ComfyUI/Qwen graph/model/output/QA smoke test."
     },
     "recreated_smoke_4": {
       "mode": "recreated",
-      "textures": ["CORIROCK", "ECRDOR01", "WEL_PUZ1", "BAPFLOR#"],
-      "requires_approval": ["recreated_smoke_1"],
+      "textures": [
+        "CORIROCK",
+        "ECRDOR01",
+        "WEL_PUZ1",
+        "BAPFLOR#"
+      ],
+      "requires_approval": [
+        "recreated_smoke_1"
+      ],
       "purpose": "Cover organic, architecture, puzzle geometry, exact-alpha and repeat-sampling constraints."
     },
     "recreated_atlas": {
       "mode": "recreated",
-      "textures": ["BAPTAP"],
-      "requires_approval": ["recreated_smoke_4"],
+      "textures": [
+        "BAPTAP"
+      ],
+      "requires_approval": [
+        "recreated_smoke_4"
+      ],
       "purpose": "Dedicated four-quarter atlas split/generate/stitch validation."
     },
     "recreated_full": {
       "mode": "recreated",
       "textures": [
-        "CORIROCK", "ECRDOR01", "VSTPAP01",
-        "WEL_WWAL", "WEL_BDY1", "WEL_PUZ1", "WEL_FLOR",
-        "BAPFLOR#", "BAPGLASS", "BAPTAP"
+        "CORIROCK",
+        "ECRDOR01",
+        "VSTPAP01",
+        "WEL_WWAL",
+        "WEL_BDY1",
+        "WEL_PUZ1",
+        "WEL_FLOR",
+        "BAPFLOR#",
+        "BAPGLASS",
+        "BAPTAP"
       ],
-      "requires_approval": ["recreated_smoke_4", "recreated_atlas"],
+      "requires_approval": [
+        "recreated_smoke_4",
+        "recreated_atlas"
+      ],
       "purpose": "All AI-Recreated-eligible canonical POC assets."
     }
   },
