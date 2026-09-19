@@ -48,6 +48,21 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
             or (candidate_has_alpha and bool(binary_alpha) and visible_magenta == 0)
         )
 
+        source_seam = seam_mae(source_compare)
+        candidate_seam = seam_mae(cand)
+        seam_delta = {
+            axis: float(candidate_seam[axis]) - float(source_seam[axis])
+            for axis in ("x", "y")
+        }
+        seam_ratio = {
+            axis: (
+                float(candidate_seam[axis]) / float(source_seam[axis])
+                if float(source_seam[axis]) > 1e-9
+                else None
+            )
+            for axis in ("x", "y")
+        }
+
         technical_ok = size_ok and colorkey_ok
 
         return {
@@ -65,7 +80,11 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
             "roundtrip_mae_rgba_0_255": image_mae(source_compare, rt_rgba),
             "roundtrip_ssim_rgb": optional_ssim(source_compare, roundtrip),
             "roundtrip_mean_rgba_abs_drift": color_drift,
-            "candidate_edge_seam_mae_rgba_0_255": seam_mae(cand),
+            "source_edge_seam_mae_rgba_0_255": source_seam,
+            "candidate_edge_seam_mae_rgba_0_255": candidate_seam,
+            "candidate_minus_source_seam_mae_rgba_0_255": seam_delta,
+            "candidate_to_source_seam_ratio": seam_ratio,
+            "seam_interpretation": "OBSERVATIONAL_UNCALIBRATED",
             "fidelity_thresholds": "UNCALIBRATED_HOLD",
             "technical_status": "PASS" if technical_ok else "FAIL",
         }
@@ -115,11 +134,11 @@ def main() -> int:
 
     failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
-        "schema": "openazrael.texture_lab.validation.v3",
+        "schema": "openazrael.texture_lab.validation.v4",
         "variant": args.variant,
         "factor": args.factor,
         "only": sorted(wanted) if wanted else None,
-        "note": "Fidelity metrics are observational until thresholds are calibrated on RT-POC-01.",
+        "note": "Fidelity and source-relative seam metrics are observational until thresholds are calibrated on RT-POC-01.",
         "results": rows,
         "technical_failures": len(failures),
     }
