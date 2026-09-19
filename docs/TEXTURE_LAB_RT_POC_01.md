@@ -31,7 +31,7 @@ Checks target dimensions and records observational fidelity metrics: Lanczos rou
 Creates a local visual comparison sheet across Classic, mathematical Enhanced, AI Restored and AI Recreated variants. Review rendering preserves each texture's aspect ratio instead of stretching it to a square; transparent content is composited over a neutral checkerboard so mask/alpha defects remain visible.
 
 ### `oa_tex_review_pack.py`
-Builds the stage-scoped manual visual-review evidence after AI generation and QA. For every generated candidate it creates a comparison sheet against Classic and deterministic Enhanced variants; textures with observed repeat sampling additionally receive a 3x3 seam/tile preview. The manifest fingerprints the Classic source, AI candidate and rendered review artifacts. These files remain local/ignored, but stage approval is bound to their hashes so changed pixels or changed review imagery invalidate an old receipt.
+Builds the stage-scoped manual visual-review evidence after AI generation and QA. For every generated candidate it creates an aspect-ratio-safe full comparison sheet plus a deterministic three-region detail sheet against Classic and deterministic Enhanced variants; textures with observed repeat sampling additionally receive a 3x3 seam/tile preview. The manifest fingerprints the Classic source, AI candidate and every rendered review artifact. These files remain local/ignored, but stage approval is bound to their hashes so changed pixels or changed review imagery invalidate an old receipt.
 
 ### `oa_tex_tile.py`
 Creates a 3x3 (or configurable) repeated texture preview for direct seam/tiling inspection. The image remains repository-ignored.
@@ -114,13 +114,15 @@ Legacy color-key candidates follow the same alpha-lock policy as AI Restored: al
 `tools/texture_lab/godot/texture_lab.tscn` is an isolated comparison scene, not the normal OpenAzrael main scene. It loads local texture pixels at runtime and supports:
 
 - Left/Right: previous/next canonical POC texture;
-- 1/2/3/4: Classic / Enhanced / AI Restored / AI Recreated;
+- 1/2/3/4: select the active/candidate tier: Classic / Enhanced / AI Restored / AI Recreated;
+- B: toggle isolated side-by-side A/B comparison;
+- R: cycle the A/reference tier while B is active;
 - Q/W/E: nearest / bicubic / Lanczos Enhanced variants;
 - T: 1x1 / 2x2 / 4x4 repeated display;
 - L: unshaded vs directional-light inspection;
-- S: local screenshot.
+- S: local screenshot, including reference-vs-candidate tier names in A/B mode.
 
-The scene does not access DemoState, CandidateDiagnostics or RoomManager and does not mutate gameplay state. `validate_godot_lab.py` enforces this source contract. Actual Godot execution remains pending on a machine with Godot and the ignored local texture corpus.
+The scene does not access DemoState, CandidateDiagnostics or RoomManager and does not mutate gameplay state. A/B mode uses two isolated QuadMesh surfaces with the same tile and lighting state, so the comparison changes presentation only. `validate_godot_lab.py` enforces this source contract. Actual Godot execution remains pending on a machine with Godot and the ignored local texture corpus.
 
 ## Real mathematical POC observation
 
