@@ -1,8 +1,10 @@
 extends RefCounted
 
-const EXPECTED_SCHEMA := "openazrael.texture_lab.runtime_texture_manifest.v1"
+const RUNTIME_SCHEMA := "openazrael.texture_lab.runtime_texture_manifest.v1"
+const REVIEW_SCHEMA := "openazrael.texture_lab.review_texture_manifest.v1"
 const ALLOWED_PREFIX := "res://assets/textures/"
 
+var schema := ""
 var profile := ""
 var status := ""
 var runtime_ready := false
@@ -10,6 +12,7 @@ var _rows: Dictionary = {}
 
 func load_manifest(path: String) -> bool:
     _rows.clear()
+    schema = ""
     profile = ""
     status = ""
     runtime_ready = false
@@ -21,7 +24,10 @@ func load_manifest(path: String) -> bool:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
     if not parsed is Dictionary:
         return false
-    if String(parsed.get("schema", "")) != EXPECTED_SCHEMA:
+    var parsed_schema := String(parsed.get("schema", ""))
+    if parsed_schema not in [RUNTIME_SCHEMA, REVIEW_SCHEMA]:
+        return false
+    if parsed_schema == REVIEW_SCHEMA and bool(parsed.get("export_allowed", true)):
         return false
     if bool(parsed.get("automatic_promotion", true)):
         return false
@@ -45,6 +51,7 @@ func load_manifest(path: String) -> bool:
             return false
         _rows[texture_id] = raw.duplicate(true)
 
+    schema = parsed_schema
     profile = String(parsed.get("profile", ""))
     status = String(parsed.get("status", ""))
     runtime_ready = bool(parsed.get("runtime_ready", false))
