@@ -1136,12 +1136,17 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             (run_dir / "ai_restored_review_queue.json").write_text(
                 json.dumps(
                     {
+                        "schema": "openazrael.texture_lab.ai_review_queue.v1",
+                        "status": "OBSERVATIONAL_MANUAL_REVIEW",
+                        "mode": "restored",
+                        "automatic_promotion": False,
+                        "only": ["CORIROCK"],
                         "rows": [
                             {
                                 "id": "CORIROCK",
                                 "review_state": "MANUAL_REVIEW_REQUIRED",
                             }
-                        ]
+                        ],
                     }
                 ),
                 encoding="utf-8",
@@ -1149,10 +1154,16 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             (run_dir / "ai_restored_validation.json").write_text(
                 json.dumps(
                     {
+                        "schema": "openazrael.texture_lab.validation.v5",
+                        "variant": "realesrgan_x4.png",
+                        "factor": 4,
+                        "only": ["CORIROCK"],
                         "technical_failures": 0,
                         "results": [
                             {
                                 "id": "CORIROCK",
+                                "source_sha256": sha256_file(source),
+                                "candidate_sha256": sha256_file(candidate),
                                 "technical_status": "PASS",
                             }
                         ],
@@ -1161,7 +1172,22 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 encoding="utf-8",
             )
             (run_dir / "ai_restored_structural_drift.json").write_text(
-                json.dumps({"results": [{"id": "CORIROCK"}]}),
+                json.dumps(
+                    {
+                        "schema": "openazrael.texture_lab.structural_drift.v2",
+                        "status": "OBSERVATIONAL_UNCALIBRATED",
+                        "variant": "realesrgan_x4.png",
+                        "only": ["CORIROCK"],
+                        "missing": [],
+                        "results": [
+                            {
+                                "id": "CORIROCK",
+                                "source_sha256": sha256_file(source),
+                                "candidate_sha256": sha256_file(candidate),
+                            }
+                        ],
+                    }
+                ),
                 encoding="utf-8",
             )
             (run_dir / "local_preflight.json").write_text(
