@@ -36,6 +36,34 @@ def load_model_spec(name: str) -> dict:
         raise SystemExit(f"model is not registered: {name}") from exc
 
 
+def dependency_install_commands(
+    python_exe: str | Path,
+    source_dir: Path,
+    runtime_contract: dict,
+) -> list[list[str]]:
+    basicsr_version = str(
+        runtime_contract["packages"]["basicsr"]["version"]
+    )
+    return [
+        [
+            str(python_exe),
+            "-m",
+            "pip",
+            "install",
+            f"basicsr=={basicsr_version}",
+        ],
+        [
+            str(python_exe),
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            "-e",
+            str(source_dir),
+        ],
+    ]
+
+
 def verify_checkpoint(path: Path, spec: dict) -> dict:
     if not path.is_file():
         return {"status": "MISSING", "path": str(path)}
@@ -153,31 +181,12 @@ def main() -> int:
                 "oa_tex_realesrgan_runtime.py check for details."
             )
 
-        basicsr_version = str(
-            runtime_contract["packages"]["basicsr"]["version"]
-        )
-        subprocess.run(
-            [
-                str(effective_python),
-                "-m",
-                "pip",
-                "install",
-                f"basicsr=={basicsr_version}",
-            ],
-            check=True,
-        )
-        subprocess.run(
-            [
-                str(effective_python),
-                "-m",
-                "pip",
-                "install",
-                "--no-deps",
-                "-e",
-                str(source_dir),
-            ],
-            check=True,
-        )
+        for install_argv in dependency_install_commands(
+            effective_python,
+            source_dir,
+            runtime_contract,
+        ):
+            subprocess.run(install_argv, check=True)
 
         dependency_postflight = probe_python(
             effective_python,
