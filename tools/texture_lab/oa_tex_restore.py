@@ -7,8 +7,15 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 
-from common import ROOT, sha256_file, write_json
+from common import (
+    ROOT,
+    prepare_backend_colorkey_input,
+    reapply_source_colorkey_mask,
+    sha256_file,
+    write_json,
+)
 
 
 def build_realesrgan_python_command(
@@ -135,10 +142,16 @@ def main() -> int:
     for src in sources:
         out_dir = args.output / src.stem
         dest = out_dir / f"realesrgan_x{args.factor}.png"
-        if args.backend == "realesrgan-python":
-            backend = run_official_python(args, src, dest)
-        else:
-            backend = run_command_template(args, src, dest)
+        with tempfile.TemporaryDirectory(prefix="openazrael_tex_") as td:
+            prepared_src, colorkey_prepared = prepare_backend_colorkey_input(
+                src, Path(td) / src.name
+            )
+            if args.backend == "realesrgan-python":
+                backend = run_official_python(args, prepared_src, dest)
+            else:
+                backend = run_command_template(args, prepared_src, dest)
+
+        colorkey_reapplied = reapply_source_colorkey_mask(src, dest)
         backend_records.append(backend)
         rows.append(
             {
@@ -148,6 +161,8 @@ def main() -> int:
                 "model": args.model,
                 "factor": args.factor,
                 "backend": backend["backend"],
+                "legacy_colorkey_input_prepared": colorkey_prepared,
+                "legacy_colorkey_mask_reapplied": colorkey_reapplied,
             }
         )
 
@@ -155,9 +170,10 @@ def main() -> int:
     write_json(
         args.report,
         {
-            "schema": "openazrael.texture_lab.ai_restore_run.v2",
+            "schema": "openazrael.texture_lab.ai_restore_run.v3",
             "mode": "ai_restored",
             "reproducibility": reproducibility,
+            "legacy_colorkey_policy": "prepare_alpha_safe_input_then_reapply_exact_source_mask",
             "textures": rows,
         },
     )
