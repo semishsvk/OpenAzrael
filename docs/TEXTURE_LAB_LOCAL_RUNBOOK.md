@@ -148,7 +148,11 @@ python tools/texture_lab/oa_tex_ai_bakeoff.py restored \
   --model-path .local/texture_lab/realesrgan/weights/RealESRGAN_x4plus.pth
 ```
 
-Review the generated queue under the preset-specific evidence directory:
+Review the generated stage handoff first:
+
+`.local/texture_lab/runs/rt_poc_01/restored_smoke_1/run_summary.md`
+
+It points to the stage's full comparison, deterministic detail comparison and any repeat-sampling tile preview. The lower-level queue remains available at:
 
 `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/ai_restored_review_queue.md`
 
