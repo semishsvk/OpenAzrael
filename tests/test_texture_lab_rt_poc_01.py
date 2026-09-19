@@ -1090,7 +1090,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
 
         job = {
-            "schema": "openazrael.texture_lab.ai_recreated_job.v4",
+            "schema": "openazrael.texture_lab.ai_recreated_job.v5",
             "source_sha256": "a" * 64,
             "conditioning_image_sha256": "b" * 64,
             "output_sha256": "c" * 64,
@@ -1101,6 +1101,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "negative_prompt": "NEGATIVE",
             "uploaded_name": "uploaded.png",
             "submitted_workflow": submitted,
+            "performance": {
+                "job_wall_seconds": 10.0,
+                "upload_wall_seconds": 0.2,
+                "submit_wall_seconds": 0.1,
+                "submit_to_completion_wall_seconds": 9.5,
+                "download_wall_seconds": 0.2,
+            },
             "model_files": model_files,
         }
         checks = _qwen_job_checks(
@@ -1119,6 +1126,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         bad["seed"] = 1
         bad["output_sha256"] = "d" * 64
         bad["positive_prompt"] = "WRONG"
+        bad["performance"]["job_wall_seconds"] = -1.0
         checks = _qwen_job_checks(
             bad,
             "a" * 64,
@@ -1132,6 +1140,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertFalse(checks["seed_ok"])
         self.assertFalse(checks["output_hash_ok"])
         self.assertFalse(checks["positive_prompt_ok"])
+        self.assertFalse(checks["performance_ok"])
 
     def test_restored_runtime_summary_projects_stage_cost_observationally(self):
         with tempfile.TemporaryDirectory() as td:
