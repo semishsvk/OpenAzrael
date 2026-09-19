@@ -45,7 +45,6 @@ def decode_azf(path: Path):
         out[i]=node
 
     if raw_size != w*h:
-        # Keep decoding generic, but current demo textures are 8-bit indexed w*h.
         shape=(raw_size,)
     else:
         shape=(h,w)
@@ -56,22 +55,66 @@ def decode_azf(path: Path):
     }
 
 
+def quantized_rgb_palette(decoded, quantize_like_engine=True):
+    rgb=decoded['palette'][:,:3].copy()
+    if quantize_like_engine:
+        rgb=(rgb//4)*4
+    return rgb
+
+
+def detect_colorkey_index(azf_path: Path, decoded, rgb):
+    """Return the exact legacy palette index used as binary transparency.
+
+    Demo evidence: every # suffixed texture has one used quantized-magenta
+    palette index, while no non-# Classic texture uses that convention.
+    Selection is made in indexed space before RGB expansion so only the actual
+    palette index becomes transparent; nearby colours remain untouched.
+    """
+    if '#' not in Path(azf_path).stem:
+        return None
+    idx=decoded['indices']
+    counts=np.bincount(idx.reshape(-1),minlength=len(rgb))
+    candidates=[]
+    for palette_index,colour in enumerate(rgb):
+        r,g,b=(int(colour[0]),int(colour[1]),int(colour[2]))
+        if counts[palette_index] and r>=240 and g<=16 and b>=240:
+            candidates.append((int(counts[palette_index]),palette_index))
+    if not candidates:
+        return None
+    candidates.sort(reverse=True)
+    return int(candidates[0][1])
+
+
 def save_png(azf_path: Path, png_path: Path, quantize_like_engine=True):
     a=decode_azf(azf_path)
     if a['raw_size'] != a['width']*a['height']:
         raise ValueError('not a w*h indexed texture')
-    rgb=a['palette'][:,:3].copy()
-    # R.EXE LoadAZF quantizes palette components to multiples of 4 before
-    # nearest-colour mapping into the renderer palette. For preservation PNGs,
-    # retaining that quantization best matches the original path while avoiding
-    # the runtime global-palette remap.
-    if quantize_like_engine:
-        rgb=(rgb//4)*4
+    rgb=quantized_rgb_palette(a,quantize_like_engine)
     idx=a['indices']
     if idx.max() >= len(rgb):
         raise ValueError(f'pixel index {idx.max()} exceeds palette size {len(rgb)}')
-    Image.fromarray(rgb[idx],'RGB').save(png_path)
+
+    key_index=detect_colorkey_index(azf_path,a,rgb)
+    if '#' in Path(azf_path).stem and key_index is None:
+        raise ValueError(f'legacy # texture has no used magenta colour-key palette index: {Path(azf_path).name}')
+
+    if key_index is None:
+        Image.fromarray(rgb[idx],'RGB').save(png_path)
+        a['colorkey_index']=None
+        a['colorkey_rgb']=None
+        a['colorkey_pixels']=0
+        a['output_mode']='RGB'
+    else:
+        alpha=np.full(len(rgb),255,dtype=np.uint8)
+        alpha[key_index]=0
+        rgba=np.concatenate([rgb,alpha[:,None]],axis=1)
+        Image.fromarray(rgba[idx],'RGBA').save(png_path)
+        a['colorkey_index']=key_index
+        a['colorkey_rgb']=[int(x) for x in rgb[key_index]]
+        a['colorkey_pixels']=int(np.count_nonzero(idx==key_index))
+        a['output_mode']='RGBA'
     return a
+
 
 if __name__=='__main__':
     import argparse
@@ -80,4 +123,5 @@ if __name__=='__main__':
     ap.add_argument('output',type=Path)
     ns=ap.parse_args()
     a=save_png(ns.input,ns.output)
-    print(f"{ns.input.name}: {a['width']}x{a['height']} palette={a['palette_count']} root={a['root']} stream={a['consumed_stream_bytes']}/{a['stream_bytes']} -> {ns.output}")
+    key=f" key={a['colorkey_index']} rgb={a['colorkey_rgb']} pixels={a['colorkey_pixels']}" if a['colorkey_index'] is not None else ''
+    print(f"{ns.input.name}: {a['width']}x{a['height']} palette={a['palette_count']} mode={a['output_mode']}{key} root={a['root']} stream={a['consumed_stream_bytes']}/{a['stream_bytes']} -> {ns.output}")
