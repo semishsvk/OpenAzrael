@@ -98,6 +98,53 @@ def required_qwen_model_files(comfy_root: Path | None, contract: dict) -> list[P
     ]
 
 
+def _recreate_generate_job(
+    args,
+    entry: dict,
+    source: Path,
+    conditioning: Path,
+    output: Path,
+    job_record: Path,
+    profiles: dict,
+    model_args: list[str],
+    suffix: str | None = None,
+) -> dict:
+    texture_id = str(entry["id"])
+    prompts = build_prompt_pair(profiles, str(entry["content_class"]))
+    argv = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_recreate.py"),
+        str(source),
+        "--conditioning-image", str(conditioning),
+        "--workflow", str(args.workflow),
+        "--server", args.server,
+        "--output", str(output),
+        "--job-record", str(job_record),
+        "--load-image-node", str(args.load_image_node),
+        "--prompt-node", str(args.prompt_node),
+        "--prompt-key", args.prompt_key,
+        "--prompt", prompts["positive"],
+        "--negative-prompt-node", str(args.negative_prompt_node),
+        "--negative-prompt-key", args.negative_prompt_key,
+        "--negative-prompt", prompts["negative"],
+        "--seed-node", str(args.seed_node),
+        "--seed-key", args.seed_key,
+        "--seed", str(args.seed),
+        "--model-label", args.model_label,
+        *model_args,
+    ]
+    return {
+        "stage": "generate",
+        "id": texture_id,
+        "part": suffix,
+        "content_class": entry.get("content_class"),
+        "conditioning_image": str(conditioning),
+        "policy": entry["policy"],
+        "argv": argv,
+        "command": _quoted_command(argv),
+    }
+
+
 def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dict) -> list[dict]:
     jobs = []
 
@@ -130,43 +177,107 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
 
     for entry in entries:
         texture_id = str(entry["id"])
-        prompts = build_prompt_pair(profiles, str(entry["content_class"]))
-        output = args.recreated_dir / texture_id / "selected.png"
-        conditioning = args.recreate_input_dir / texture_id / args.recreate_input_variant
-        job_record = args.run_dir / "recreated_jobs" / f"{texture_id.replace('#', '_')}.job.json"
+        atlas = entry["policy"].get("atlas_split")
+        final_output = args.recreated_dir / texture_id / "selected.png"
 
-        argv = [
-            sys.executable,
-            str(ROOT / "tools/texture_lab/oa_tex_recreate.py"),
-            str(args.source_dir / f"{texture_id}.png"),
-            "--conditioning-image", str(conditioning),
-            "--workflow", str(args.workflow),
-            "--server", args.server,
-            "--output", str(output),
-            "--job-record", str(job_record),
-            "--load-image-node", str(args.load_image_node),
-            "--prompt-node", str(args.prompt_node),
-            "--prompt-key", args.prompt_key,
-            "--prompt", prompts["positive"],
-            "--negative-prompt-node", str(args.negative_prompt_node),
-            "--negative-prompt-key", args.negative_prompt_key,
-            "--negative-prompt", prompts["negative"],
-            "--seed-node", str(args.seed_node),
-            "--seed-key", args.seed_key,
-            "--seed", str(args.seed),
-            "--model-label", args.model_label,
-            *model_args,
-        ]
+        if isinstance(atlas, dict):
+            axis = str(atlas["axis"])
+            segments = int(atlas["segments"])
+            atlas_root = args.run_dir / "atlas_parts" / texture_id
+            classic_parts = atlas_root / "classic"
+            enhanced_parts = atlas_root / "enhanced"
+            generated_parts = atlas_root / "generated"
+            classic_source = args.source_dir / f"{texture_id}.png"
+            enhanced_source = (
+                args.recreate_input_dir / texture_id / args.recreate_input_variant
+            )
+
+            split_classic = [
+                sys.executable,
+                str(ROOT / "tools/texture_lab/oa_tex_atlas.py"),
+                "split",
+                str(classic_source),
+                "--output-dir", str(classic_parts),
+                "--axis", axis,
+                "--segments", str(segments),
+                "--manifest", str(atlas_root / "classic_split.json"),
+            ]
+            jobs.append(
+                {
+                    "stage": "atlas_split_classic",
+                    "id": texture_id,
+                    "argv": split_classic,
+                    "command": _quoted_command(split_classic),
+                }
+            )
+
+            split_enhanced = [
+                sys.executable,
+                str(ROOT / "tools/texture_lab/oa_tex_atlas.py"),
+                "split",
+                str(enhanced_source),
+                "--output-dir", str(enhanced_parts),
+                "--axis", axis,
+                "--segments", str(segments),
+                "--manifest", str(atlas_root / "enhanced_split.json"),
+            ]
+            jobs.append(
+                {
+                    "stage": "atlas_split_enhanced",
+                    "id": texture_id,
+                    "argv": split_enhanced,
+                    "command": _quoted_command(split_enhanced),
+                }
+            )
+
+            for index in range(segments):
+                part_name = f"part_{index:02d}.png"
+                jobs.append(
+                    _recreate_generate_job(
+                        args,
+                        entry,
+                        classic_parts / part_name,
+                        enhanced_parts / part_name,
+                        generated_parts / part_name,
+                        args.run_dir / "recreated_jobs" / f"{texture_id}_part_{index:02d}.job.json",
+                        profiles,
+                        model_args,
+                        suffix=f"{index:02d}",
+                    )
+                )
+
+            stitch = [
+                sys.executable,
+                str(ROOT / "tools/texture_lab/oa_tex_atlas.py"),
+                "stitch",
+                "--input-dir", str(generated_parts),
+                "--output", str(final_output),
+                "--axis", axis,
+                "--segments", str(segments),
+                "--manifest", str(atlas_root / "stitch.json"),
+            ]
+            jobs.append(
+                {
+                    "stage": "atlas_stitch",
+                    "id": texture_id,
+                    "argv": stitch,
+                    "command": _quoted_command(stitch),
+                }
+            )
+            continue
+
+        conditioning = args.recreate_input_dir / texture_id / args.recreate_input_variant
         jobs.append(
-            {
-                "stage": "generate",
-                "id": texture_id,
-                "content_class": entry.get("content_class"),
-                "conditioning_image": str(conditioning),
-                "policy": entry["policy"],
-                "argv": argv,
-                "command": _quoted_command(argv),
-            }
+            _recreate_generate_job(
+                args,
+                entry,
+                args.source_dir / f"{texture_id}.png",
+                conditioning,
+                final_output,
+                args.run_dir / "recreated_jobs" / f"{texture_id.replace('#', '_')}.job.json",
+                profiles,
+                model_args,
+            )
         )
 
     qa = [
@@ -181,7 +292,6 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
     ]
     jobs.append({"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)})
     return jobs
-
 
 def resolve_qwen_defaults(args, contract: dict) -> None:
     bindings = contract["canonical_openazrael_workflow"]["bindings"]
@@ -240,7 +350,7 @@ def main() -> int:
     parser.add_argument("--recreated-dir", type=Path, default=ROOT / "assets/textures/ai_recreated")
     parser.add_argument("--recreate-input-dir", type=Path, default=ROOT / "assets/textures/enhanced")
     parser.add_argument("--recreate-input-variant", default="lanczos_x4.png")
-    parser.add_argument("--run-dir", type=Path, default=ROOT / "data/texture_lab/runs/rt_poc_01")
+    parser.add_argument("--run-dir", type=Path, default=ROOT / ".local/texture_lab/runs/rt_poc_01")
     parser.add_argument("--plan-out", type=Path, default=None)
     parser.add_argument("--factor", type=int, default=4)
 
