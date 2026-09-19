@@ -71,6 +71,30 @@ def _review_pack_row(preset: str, texture_id: str, run_root: Path) -> tuple[dict
     )
 
 
+def store_selection_record(
+    registry: dict,
+    texture_id: str,
+    record: dict,
+) -> None:
+    profile = registry.setdefault("profiles", {}).setdefault("remastered", {})
+    previous = profile.get(texture_id)
+    if isinstance(previous, dict):
+        registry.setdefault("superseded_selections", []).append(
+            {
+                "texture_id": texture_id,
+                "superseded_at_utc": record.get("selected_at_utc"),
+                "replaced_by": {
+                    "selected_tier": record.get("selected_tier"),
+                    "selected_from_preset": record.get("selected_from_preset"),
+                    "candidate_sha256": record.get("candidate_sha256"),
+                },
+                "previous_selection": previous,
+            }
+        )
+    profile[texture_id] = record
+    registry["status"] = "HAS_EXPLICIT_PRODUCTION_SELECTIONS"
+
+
 def select_candidate(
     preset: str,
     texture_id: str,
@@ -123,7 +147,6 @@ def select_candidate(
 
     receipt_file = receipt_path(preset, approval_root)
     registry = load_registry(registry_path)
-    profile = registry["profiles"]["remastered"]
     selected_at = datetime.now(timezone.utc).isoformat()
 
     record = {
@@ -142,8 +165,7 @@ def select_candidate(
         "stage_approval_receipt": file_evidence(receipt_file),
         "automatic_selection": False,
     }
-    profile[texture_id] = record
-    registry["status"] = "HAS_EXPLICIT_PRODUCTION_SELECTIONS"
+    store_selection_record(registry, texture_id, record)
     write_json(registry_path, registry)
     return record
 
