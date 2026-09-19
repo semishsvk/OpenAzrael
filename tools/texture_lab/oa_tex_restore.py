@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 from common import (
     ROOT,
@@ -137,7 +138,9 @@ def run_official_python(args, src: Path, dest: Path) -> dict:
         args.fp32,
         args.denoise_strength,
     )
+    started = time.perf_counter()
     subprocess.run(argv, check=True)
+    elapsed_seconds = time.perf_counter() - started
     if not expected.is_file():
         raise RuntimeError(f"Real-ESRGAN completed but expected output is missing: {expected}")
     if expected != dest:
@@ -153,6 +156,7 @@ def run_official_python(args, src: Path, dest: Path) -> dict:
         "tile": args.tile,
         "fp32": bool(args.fp32),
         "denoise_strength": args.denoise_strength,
+        "elapsed_seconds": elapsed_seconds,
     }
 
 
@@ -167,7 +171,9 @@ def run_command_template(args, src: Path, dest: Path) -> dict:
         model=args.model,
     )
     argv = shlex.split(rendered)
+    started = time.perf_counter()
     subprocess.run(argv, check=True)
+    elapsed_seconds = time.perf_counter() - started
     if not dest.is_file():
         raise RuntimeError(f"restore command did not create: {dest}")
     return {
@@ -178,6 +184,7 @@ def run_command_template(args, src: Path, dest: Path) -> dict:
             "registered": False,
             "status": "EXTERNAL_BACKEND_UNVERIFIED",
         },
+        "elapsed_seconds": elapsed_seconds,
     }
 
 
@@ -212,6 +219,7 @@ def main() -> int:
 
     rows = []
     backend_records = []
+    run_started = time.perf_counter()
     for src in sources:
         out_dir = args.output / src.stem
         dest = out_dir / f"realesrgan_x{args.factor}.png"
@@ -234,19 +242,46 @@ def main() -> int:
                 "model": args.model,
                 "factor": args.factor,
                 "backend": backend["backend"],
+                "inference_wall_seconds": float(
+                    backend.get("elapsed_seconds", 0.0)
+                ),
                 "legacy_colorkey_input_prepared": colorkey_prepared,
                 "legacy_colorkey_mask_reapplied": colorkey_reapplied,
             }
         )
 
+    run_wall_seconds = time.perf_counter() - run_started
+    measured_inference_seconds = sum(
+        float(row.get("inference_wall_seconds", 0.0))
+        for row in rows
+    )
     reproducibility = backend_records[0] if backend_records else {}
     write_json(
         args.report,
         {
-            "schema": "openazrael.texture_lab.ai_restore_run.v4",
+            "schema": "openazrael.texture_lab.ai_restore_run.v5",
             "mode": "ai_restored",
             "reproducibility": reproducibility,
             "legacy_colorkey_policy": "prepare_alpha_safe_input_then_reapply_exact_source_mask",
+            "performance": {
+                "texture_count": len(rows),
+                "run_wall_seconds": run_wall_seconds,
+                "measured_inference_wall_seconds": measured_inference_seconds,
+                "mean_inference_wall_seconds_per_texture": (
+                    measured_inference_seconds / len(rows)
+                    if rows
+                    else None
+                ),
+                "textures_per_minute_inference_only": (
+                    (60.0 * len(rows) / measured_inference_seconds)
+                    if measured_inference_seconds > 0
+                    else None
+                ),
+                "timing_scope": (
+                    "wall-clock subprocess timing; observational, "
+                    "not a GPU kernel benchmark"
+                ),
+            },
             "textures": rows,
         },
     )
