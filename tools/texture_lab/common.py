@@ -9,6 +9,8 @@ from typing import Any
 from PIL import Image, ImageChops, ImageStat, __version__ as PILLOW_VERSION
 
 ROOT = Path(__file__).resolve().parents[2]
+AI_RESTORED_ROOT = ROOT / "assets/textures/ai_restored"
+AI_RECREATED_ROOT = ROOT / "assets/textures/ai_recreated"
 PINNED_PILLOW_VERSION = "12.3.0"
 RESAMPLING = getattr(Image, "Resampling", Image)
 RESAMPLE = {
@@ -19,6 +21,24 @@ RESAMPLE = {
 
 LEGACY_MAGENTA_RB_MIN = 248
 LEGACY_MAGENTA_G_MAX = 12
+
+
+def named_candidate_root(mode: str, preset: str) -> Path:
+    if not preset:
+        raise ValueError("preset must be non-empty")
+    if mode == "restored":
+        return AI_RESTORED_ROOT / "_runs" / preset
+    if mode == "recreated":
+        return AI_RECREATED_ROOT / "_runs" / preset
+    raise ValueError(f"unsupported AI mode: {mode}")
+
+
+def path_is_within(path: Path, parent: Path) -> bool:
+    try:
+        path.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False
 
 
 def require_pinned_pillow() -> None:
