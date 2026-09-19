@@ -11,6 +11,11 @@ import sys
 import urllib.request
 
 from common import ROOT, write_json
+from oa_tex_realesrgan_runtime import (
+    load_contract as load_runtime_contract,
+    pip_freeze_snapshot,
+    probe_python,
+)
 
 REGISTRY = ROOT / "tools/texture_lab/config/model_registry.json"
 
@@ -126,23 +131,68 @@ def main() -> int:
     if args.clone_upstream and not source_dir.exists():
         clone_upstream(spec, source_dir)
 
+    runtime_contract = load_runtime_contract()
+    dependency_preflight = None
+    dependency_postflight = None
+    freeze_snapshot = None
+
     if args.install_python_deps:
         if not source_dir.is_dir():
             raise SystemExit("--install-python-deps requires the pinned upstream source directory")
+
+        dependency_preflight = probe_python(
+            effective_python,
+            runtime_contract,
+            require_basicsr=False,
+            require_realesrgan=False,
+        )
+        if dependency_preflight.get("status") != "PASS":
+            raise SystemExit(
+                "Real-ESRGAN dependency install requires the exact pinned "
+                "Python/Torch/torchvision runtime first. Run "
+                "oa_tex_realesrgan_runtime.py check for details."
+            )
+
+        basicsr_version = str(
+            runtime_contract["packages"]["basicsr"]["version"]
+        )
         subprocess.run(
             [
                 str(effective_python),
                 "-m",
                 "pip",
                 "install",
-                "basicsr==1.4.2",
-                "facexlib>=0.2.5",
-                "gfpgan>=1.3.5",
+                f"basicsr=={basicsr_version}",
+            ],
+            check=True,
+        )
+        subprocess.run(
+            [
+                str(effective_python),
+                "-m",
+                "pip",
+                "install",
+                "--no-deps",
                 "-e",
                 str(source_dir),
             ],
             check=True,
         )
+
+        dependency_postflight = probe_python(
+            effective_python,
+            runtime_contract,
+            require_basicsr=True,
+            require_realesrgan=True,
+        )
+        if dependency_postflight.get("status") != "PASS":
+            raise SystemExit(
+                "installed Real-ESRGAN texture runtime does not satisfy the "
+                "pinned compatibility contract"
+            )
+        freeze_snapshot = pip_freeze_snapshot(effective_python)
+        if freeze_snapshot.get("status") != "PASS":
+            raise SystemExit("could not fingerprint the installed Python runtime")
 
     before = verify_checkpoint(checkpoint, spec)
     if args.download_model and before["status"] != "PASS":
@@ -177,7 +227,7 @@ def main() -> int:
             upstream_status["git_head_ok"] = False
 
     report = {
-        "schema": "openazrael.texture_lab.realesrgan_bootstrap.v1",
+        "schema": "openazrael.texture_lab.realesrgan_bootstrap.v2",
         "model": args.model,
         "runtime_dir": str(runtime),
         "source": upstream_status,
@@ -194,7 +244,21 @@ def main() -> int:
             and upstream_status["version_ok"] is True
             and upstream_status["git_head_ok"] is True
         ),
+        "runtime_contract": {
+            "schema": runtime_contract.get("schema"),
+            "python_major_minor": runtime_contract["python"]["major_minor"],
+            "torch": runtime_contract["packages"]["torch"]["version"],
+            "torchvision": runtime_contract["packages"]["torchvision"]["version"],
+            "basicsr": runtime_contract["packages"]["basicsr"]["version"],
+            "face_enhancement": runtime_contract.get("face_enhancement"),
+        },
         "dependency_install_requested": bool(args.install_python_deps),
+        "dependency_preflight": dependency_preflight,
+        "dependency_postflight": dependency_postflight,
+        "pip_freeze": freeze_snapshot,
+        "texture_runtime_excludes": runtime_contract.get(
+            "excluded_texture_runtime_packages", []
+        ),
         "doctor_required_for_inference": True,
     }
     report_path = args.report or runtime / "bootstrap_report.json"
