@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v116-context-v28`
+**Canonical checkpoint:** `v116-context-v29`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v116-context-v28 | PASS target | Source/context validation |
+| Project context | v116-context-v29 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -14,8 +14,8 @@
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
-| Source-safe runtime IR | v116-context-v28 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v116-context-v28 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v116-context-v29 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v116-context-v29 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## Current execution summary
@@ -23,21 +23,23 @@
 | Item | Current state |
 |---|---|
 | Technical base | v116 |
-| Candidate | KG-001 Candidate 1 |
+| Candidate | KG-001 Candidate 2 |
 | Candidate diagnostic source contract | PASS |
+| Physical audio source contract | **PASS — Issue #9 regression wired** |
 | v109 headless runtime | NOT_EXECUTED |
 | v110 room/trigger runtime | NOT_EXECUTED |
 | v111 full-demo runtime | NOT_EXECUTED |
+| audio-v116 physical runtime | NOT_EXECUTED |
 | G09 fresh-checkout build | PENDING |
-| v27 graphical Candidate observation | **FAIL — Critical Issue #6** |
-| v28 collision source fix | SOURCE_FIX_READY / runtime retest pending |
-| G10 manual sanity | **BLOCKED — Issue #6 retest required** |
+| Candidate 1 manual observation | **FAIL — Issue #6 floor collision; Issue #9 no audible audio** |
+| Candidate 2 v29 blocker fixes | SOURCE_READY / runtime retest pending |
+| G10 manual sanity | **BLOCKED — Issues #6/#9 retest required** |
 | Known-good tag | NOT ALLOWED |
 | Localization architecture | APPROVED / IMPLEMENTATION DEFERRED |
 
 ## KG-001 required release gates
 
-`G00` context/evidence integrity; `G01` data validation; `G02` unit/gameplay logic; `G03` exhaustive puzzle state-space; `G04` room/transition state; `G05` trigger semantics; `G06` mock audio event-stream golden tests; `G07` save/load state hashes; `G08` headless synthetic full-demo playthrough; `G09` fresh-checkout build; `G10` final manual sanity check.
+`G00` context/evidence integrity; `G01` data validation; `G02` unit/gameplay logic; `G03` exhaustive puzzle state-space; `G04` room/transition state; `G05` trigger semantics; `G06` logical golden audio events plus physical playback-readiness regression; `G07` save/load state hashes; `G08` headless synthetic full-demo playthrough; `G09` fresh-checkout build; `G10` final manual sanity check.
 
 The build is eligible for tag `demo-known-good-001` only with all required gates PASS, zero known critical bugs and zero reproducible softlocks. See `docs/KG001_ACCEPTANCE_PLAN.md`.
 
@@ -73,6 +75,17 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
 | G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
 
+
+## v116 KG-001 physical audio readiness — Issue #9
+
+| Layer | Status | Evidence boundary |
+|---|---|---|
+| Source contract | SOURCE_CONTRACT_PASS | Tracks ambient IR, physical WAV preflight and Event-IR physical-player wiring |
+| Ambient IR | R1=2 / R7=3 / R8=2 | Source-safe recovered metadata; audio payloads remain Git-ignored |
+| Master bus / stream / playing checks | WIRED / runtime pending | Headless Godot readiness, not human audibility |
+| Event physical player | WIRED / runtime pending | R8_LENS_PLACE -> S152V2.WAV probe |
+| Human audibility | G10 PENDING | Automated `playing=true` cannot prove speaker/headphone output |
+| Original Miles pan/volume parity | HOLD | Separate forensic oracle |
 
 ## v111 KG-001 full-demo status
 
@@ -146,11 +159,11 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Source-safe result boundary | PASS | No raw record bytes committed |
 
 
-## v116 KG-001 Candidate 1 diagnostics
+## v116 KG-001 Candidate 2 diagnostics
 
 | Layer | Status | Evidence boundary |
 |---|---|---|
-| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 1 / v116-context-v28 |
+| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 2 / v116-context-v29 |
 | Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime execution pending |
 | Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 1 |
 | JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |

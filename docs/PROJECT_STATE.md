@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v116-context-v28`
+**Canonical checkpoint:** `v116-context-v29`
 **Date:** 2026-09-19
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,12 +13,12 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v28**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v29**.
 
 ## 3. Immediate execution priority
-Critical Issue #6 is the active release blocker: the first graphical Candidate run showed the player falling through the R1 floor. v28 changes legacy concave room collision to two-sided and adds a physical player-floor regression to v110. The fix is source-ready but requires Godot runtime and manual confirmation before the issue can close.
+Issues #6 and #9 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor and produced no audible audio. Candidate 2 / v29 retains the two-sided concave collision fix, restores the source-safe ambient IR/runtime asset path, fixes the ambient null-position fallback, and adds a dedicated physical audio-readiness regression. Both fixes are source-ready but require Godot runtime and human confirmation.
 
-The current priority is the first real **KG-001 Candidate 1** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
+The current priority is the corrected **KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
 
 Localization runtime work and the deferred v117 forensic copy/mutator audit follow this runtime/manual cycle; neither is a blocker for Candidate 1.
 
@@ -129,11 +129,11 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - The future `LocalizationManager` owns discovery/validation/locale switching only; it does not own gameplay state.
 - The format is extensible to locale fonts, subtitles and optional localized voice assets.
 - Pseudolocalization, missing-ID checks, Unicode coverage and deterministic pack-building are required implementation tests.
-- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 1 runtime/manual cycle**, so this approval does not perturb the current test candidate.
+- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 2 runtime/manual cycle**, so this approval does not perturb the current test candidate.
 - Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
-### KG-001 Candidate 1 diagnostics — v116
-- The first real Godot integration candidate is now source-ready as **KG-001 Candidate 1**.
+### KG-001 Candidate 2 diagnostics — v116
+- The first real Godot integration candidate is now source-ready as **KG-001 Candidate 2**.
 - Added `CandidateDiagnostics` autoload with structured JSONL event logging, canonical state hashes and F10 state dumps.
 - Added F6 authored trigger-volume visualization and an F7 diagnostic HUD showing room, player XYZ, flags, puzzle nodes, value keys, last trigger, last event and last logical audio.
 - Existing F8 audio debug and F9 parity capture are deliberately preserved.

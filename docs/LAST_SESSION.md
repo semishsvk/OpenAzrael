@@ -1,15 +1,16 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v116-context-v28`  
+**Checkpoint prepared:** `v116-context-v29`  
 **Date:** 2026-09-19  
 **Technical base:** `openazrael_godot_poc_v116`
 
 ## Current canonical state
-- First graphical Candidate test found **Critical Issue #6**: the player falls through the floor.
-- v28 source fix enables two-sided `ConcavePolygonShape3D` room collision and adds an asset-backed physical R1 floor-support regression to v110.
-- The v27 manual observation is FAIL; the corrected v28 build is NOT_EXECUTED and must be retested before Issue #6 can close.
+- Candidate 1 manual testing found **Critical Issue #6**: the player falls through the floor, and **Major Issue #9**: no audible audio.
+- Candidate 2 / v29 keeps the two-sided legacy floor-collision fix and adds a physical audio-readiness gate.
+- Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null `godot_position` fallback, tracks Event-IR physical players, requires all 7 Candidate event/ambient WAVs in graphical runs, and adds an audio-v116 runtime regression.
+- Candidate 1 manual evidence remains FAIL. Candidate 2 is source-ready but NOT_EXECUTED; both blockers require automated and manual retest.
 - Added source-contract bug reporting: F11 creates a source-safe ZIP with screenshot, state snapshot/hash, telemetry tail and system metadata; GitHub issue intake and regression workflow are tracked in-repo.
-- KG-001 Candidate 1 remains the active integration target.
+- KG-001 Candidate 2 remains the active integration target.
 - Candidate diagnostics source contract is PASS and the candidate is source-ready.
 - Canonical Godot runtime evidence is still **NOT_EXECUTED**.
 - `demo-known-good-001` remains forbidden until G00-G10 are all literal PASS.
@@ -19,7 +20,7 @@
 ## Documentation consistency update
 - Refreshed README to lead with the actual v116 Candidate 1 status instead of old historical checkpoints.
 - Replaced stale roadmap items that still targeted already completed v113-v115 work.
-- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v28`.
+- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v29`.
 - Preserved historical milestone notes rather than rewriting project history.
 - Kept runtime/forensic boundaries explicit: documentation cleanup does not count as Godot execution and does not promote any evidence status.
 
@@ -34,8 +35,8 @@
 - Deferred generic copy/mutator producer investigation is designated v117.
 
 ## Exact next action
-1. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results` on v28 with restored assets.
-2. Require the new v110 Issue #6 floor regression to PASS.
-3. Relaunch the graphical demo and verify the player remains on the R1 floor.
-4. Keep Issue #6 open and G10 blocked until that retest passes.
-5. Then continue the full manual route and the remaining KG-001 gates.
+1. Restore Candidate room/audio assets and run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results` on Candidate 2 / v29.
+2. Require v109, v110, v111 and audio-v116 all to PASS; specifically require the Issue #6 floor regression and Issue #9 physical-audio regression.
+3. Export/relaunch Candidate 2 and first verify stable R1 floor support plus actually audible R1 ambient audio.
+4. Keep Issues #6/#9 and G10 blocked until those manual retests pass.
+5. Only then continue the complete demo route and remaining KG-001 acceptance.

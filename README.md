@@ -1,21 +1,22 @@
 # OpenAzrael
 
-## Current status — v116-context-v28
+## Current status — v116-context-v29
 
 **Technical base:** `openazrael_godot_poc_v116`  
 **Runtime:** Godot 4  
 **Active slice:** R1 -> R7 -> R8  
-**Current candidate:** KG-001 Candidate 1  
-**Candidate source status:** SOURCE_FIX_READY / runtime retest required  
-**Observed runtime status:** v27 manual FAIL — Critical Issue #6 (player falls through floor)  
-**v28 runtime status:** NOT_EXECUTED  
+**Current candidate:** KG-001 Candidate 2  
+**Candidate source status:** SOURCE_CONTRACT_PASS / blocker fixes wired / runtime retest required  
+**Observed Candidate 1 status:** manual FAIL — Issue #6 floor collision and Issue #9 no audible audio  
+**Candidate 2 v29 runtime status:** NOT_EXECUTED  
 **Known-good tag:** `demo-known-good-001` — NOT ALLOWED until G00-G10 all pass
 
 ### Immediate priority
-1. Retest Critical Issue #6 on the v28 source: legacy room trimeshes now use two-sided concave collision.
-2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`; v110 now includes a physical R1 floor-support regression using the real player capsule.
-3. Launch the graphical Candidate and verify that the player no longer falls through the floor. Keep Issue #6 open until this manual retest passes.
-4. Only after Issue #6 is cleared continue the full G10 sanity route; `demo-known-good-001` remains blocked.
+1. Restore the ignored Candidate room/audio assets with the documented source-safe workflow and run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
+2. Require both blocker regressions to PASS: v110 physical floor support for Issue #6 and audio-v116 physical resource/player readiness for Issue #9.
+3. Export/launch Candidate 2 and manually verify stable R1 floor collision plus audible R1 ambient audio before continuing.
+4. Continue the full R1 -> R7 -> R1 -> R8 -> Shield route only after both blocker retests pass. Audible event/ambient audio remains a G10 human check.
+5. `demo-known-good-001` stays blocked while either release blocker remains recorded.
 
 ### Current architectural decisions
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
