@@ -1,0 +1,40 @@
+{
+  "schema": "openazrael.texture_lab.rt_poc_01_ai_policy_summary.v1",
+  "status": "REVIEWED_POC_METADATA",
+  "selection_count": 12,
+  "ai_restored": {
+    "eligible_count": 11,
+    "skipped": [
+      {
+        "id": "KEYHOLE#",
+        "content_class": "binary_mask_hard_edge",
+        "preferred_tier": "enhanced_nearest",
+        "reason": "Exact binary silhouette is the asset; learned restoration adds risk without useful information."
+      }
+    ]
+  },
+  "ai_recreated": {
+    "eligible_count": 10,
+    "skipped": [
+      {
+        "id": "KEYHOLE#",
+        "content_class": "binary_mask_hard_edge",
+        "preferred_tier": "enhanced_nearest",
+        "reason": "Exact binary silhouette is the asset; generative reconstruction is inappropriate."
+      },
+      {
+        "id": "SHIELD1",
+        "content_class": "text_decorative_shield",
+        "preferred_tier": "ai_restored_or_enhanced",
+        "reason": "Free generative image editing can rewrite or invent the original lettering."
+      }
+    ]
+  },
+  "mandatory_review_examples": {
+    "BAPFLOR#": ["exact_alpha_lock", "u_v_seam_review", "structural_drift_review"],
+    "BAPTAP": ["atlas_boundary_lock", "figure_object_review", "structural_drift_review"],
+    "WEL_PUZ1": ["puzzle_geometry_review", "structural_drift_review"],
+    "WEL_WWAL": ["u_edge_seam_review", "structural_drift_review"]
+  },
+  "automatic_production_promotion": false
+}
