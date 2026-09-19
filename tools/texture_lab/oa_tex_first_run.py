@@ -16,6 +16,8 @@ from oa_tex_realesrgan_runtime import load_contract as load_runtime_contract, pr
 DEFAULT_RUNTIME = ROOT / ".local/texture_lab/realesrgan"
 DEFAULT_LAUNCHPAD_DIR = ROOT / ".local/texture_lab/launchpad"
 SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+DEFAULT_COMFY_SERVER = "http://127.0.0.1:8188"
 
 
 def venv_python(runtime_dir: Path) -> Path:
@@ -219,6 +221,114 @@ def restored_smoke_plan(
     return [
         command_record("local_preflight", preflight),
         command_record("runtime_doctor", doctor),
+        command_record("canonical_bakeoff", bakeoff),
+    ]
+
+
+def recreated_smoke_check_plan(
+    comfy_root: Path,
+    server: str = DEFAULT_COMFY_SERVER,
+) -> list[dict]:
+    launch_dir = DEFAULT_LAUNCHPAD_DIR
+    preflight = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_local_preflight.py"),
+        "--preset",
+        "recreated_smoke_1",
+        "--comfy-root",
+        str(comfy_root),
+        "--out",
+        str(launch_dir / "recreated_smoke_1_preflight.json"),
+    ]
+    doctor = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_comfy_doctor.py"),
+        "--server",
+        server,
+        "--out",
+        str(launch_dir / "recreated_smoke_1_comfy_doctor.json"),
+    ]
+    qwen_preflight = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_qwen_preflight.py"),
+        str(QWEN_WORKFLOW),
+        "--comfy-root",
+        str(comfy_root),
+        "--require-model-files",
+        "--out",
+        str(launch_dir / "recreated_smoke_1_qwen_preflight.json"),
+    ]
+    dry_run = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_ai_bakeoff.py"),
+        "recreated",
+        "--preset",
+        "recreated_smoke_1",
+        "--comfy-root",
+        str(comfy_root),
+        "--server",
+        server,
+        "--dry-run",
+    ]
+    return [
+        command_record("local_preflight", preflight),
+        command_record("comfy_doctor", doctor),
+        command_record("qwen_preflight", qwen_preflight),
+        command_record("canonical_bakeoff_dry_run", dry_run),
+    ]
+
+
+def recreated_smoke_plan(
+    comfy_root: Path,
+    server: str = DEFAULT_COMFY_SERVER,
+    replace_existing_run: bool = False,
+) -> list[dict]:
+    launch_dir = DEFAULT_LAUNCHPAD_DIR
+    preflight = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_local_preflight.py"),
+        "--preset",
+        "recreated_smoke_1",
+        "--comfy-root",
+        str(comfy_root),
+        "--out",
+        str(launch_dir / "recreated_smoke_1_preflight.json"),
+    ]
+    doctor = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_comfy_doctor.py"),
+        "--server",
+        server,
+        "--out",
+        str(launch_dir / "recreated_smoke_1_comfy_doctor.json"),
+    ]
+    qwen_preflight = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_qwen_preflight.py"),
+        str(QWEN_WORKFLOW),
+        "--comfy-root",
+        str(comfy_root),
+        "--require-model-files",
+        "--out",
+        str(launch_dir / "recreated_smoke_1_qwen_preflight.json"),
+    ]
+    bakeoff = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_ai_bakeoff.py"),
+        "recreated",
+        "--preset",
+        "recreated_smoke_1",
+        "--comfy-root",
+        str(comfy_root),
+        "--server",
+        server,
+    ]
+    if replace_existing_run:
+        bakeoff.append("--replace-existing-run")
+    return [
+        command_record("local_preflight", preflight),
+        command_record("comfy_doctor", doctor),
+        command_record("qwen_preflight", qwen_preflight),
         command_record("canonical_bakeoff", bakeoff),
     ]
 
@@ -498,6 +608,136 @@ def build_restored_smoke_1_state() -> dict:
     }
 
 
+def classify_recreated_smoke_1_state(
+    plan_present: bool,
+    evidence_status: str | None,
+    manual_status: str | None,
+    receipt_status: str | None,
+) -> dict:
+    if not plan_present:
+        return {
+            "state": "NOT_EXECUTED",
+            "next_action": (
+                "python tools/texture_lab/oa_tex_first_run.py "
+                "check-recreated-smoke-1 --comfy-root <COMFYUI_ROOT>"
+            ),
+        }
+    if evidence_status != "PASS":
+        return {
+            "state": "EVIDENCE_HOLD",
+            "next_action": (
+                "inspect .local/texture_lab/runs/rt_poc_01/"
+                "recreated_smoke_1/run_summary.md and repair/re-run the stage"
+            ),
+        }
+    if manual_status == "MISSING":
+        return {
+            "state": "READY_FOR_MANUAL_REVIEW",
+            "next_action": (
+                "python tools/texture_lab/oa_tex_manual_review.py "
+                "init recreated_smoke_1"
+            ),
+        }
+    if manual_status == "STALE":
+        return {
+            "state": "MANUAL_REVIEW_STALE",
+            "next_action": (
+                "restart the structured review only after inspecting the "
+                "new current Recreated review evidence"
+            ),
+        }
+    if manual_status != "PASS":
+        return {
+            "state": "MANUAL_REVIEW_IN_PROGRESS",
+            "next_action": (
+                "complete all required Recreated checks, then run "
+                "oa_tex_manual_review.py status recreated_smoke_1"
+            ),
+        }
+    if receipt_status == "PASS":
+        return {
+            "state": "STAGE_APPROVED",
+            "next_action": (
+                "recreated_smoke_4 is now eligible to begin; production "
+                "selection remains a separate manual decision"
+            ),
+        }
+    if receipt_status == "STALE":
+        return {
+            "state": "APPROVAL_STALE",
+            "next_action": (
+                "re-approve recreated_smoke_1 only after confirming the "
+                "current PASS manual review"
+            ),
+        }
+    return {
+        "state": "READY_FOR_STAGE_APPROVAL",
+        "next_action": (
+            "python tools/texture_lab/oa_tex_stage_gate.py approve "
+            "recreated_smoke_1 --note \"structured manual review PASS\""
+        ),
+    }
+
+
+def build_recreated_smoke_1_state() -> dict:
+    from oa_tex_manual_review import validate_manual_review
+    from oa_tex_stage_gate import (
+        DEFAULT_APPROVAL_ROOT,
+        DEFAULT_MANUAL_REVIEW_ROOT,
+        DEFAULT_RUN_ROOT,
+        evidence_snapshot,
+        validate_receipt,
+    )
+
+    preset = "recreated_smoke_1"
+    run_dir = DEFAULT_RUN_ROOT / preset
+    plan_path = run_dir / "recreated_plan.json"
+    plan_present = plan_path.is_file()
+
+    evidence = (
+        evidence_snapshot(preset, DEFAULT_RUN_ROOT)
+        if plan_present
+        else {"status": "MISSING"}
+    )
+    manual = (
+        validate_manual_review(
+            preset,
+            DEFAULT_RUN_ROOT,
+            DEFAULT_MANUAL_REVIEW_ROOT,
+        )
+        if evidence.get("status") == "PASS"
+        else {"status": "NOT_CHECKED"}
+    )
+    receipt = (
+        validate_receipt(
+            preset,
+            DEFAULT_RUN_ROOT,
+            DEFAULT_APPROVAL_ROOT,
+            DEFAULT_MANUAL_REVIEW_ROOT,
+        )
+        if manual.get("status") == "PASS"
+        else {"status": "NOT_CHECKED"}
+    )
+    classified = classify_recreated_smoke_1_state(
+        plan_present,
+        str(evidence.get("status")),
+        str(manual.get("status")),
+        str(receipt.get("status")),
+    )
+    return {
+        "schema": "openazrael.texture_lab.first_recreated_smoke_state.v1",
+        "preset": preset,
+        **classified,
+        "plan_path": str(plan_path),
+        "plan_present": plan_present,
+        "evidence": evidence,
+        "manual_review": manual,
+        "stage_approval": receipt,
+        "automatic_action": False,
+        "production_selection_implied": False,
+    }
+
+
 def run_commands(
     commands: list[dict],
     dry_run: bool,
@@ -545,7 +785,21 @@ def main() -> int:
             "check-restored-smoke-1",
             "restored-smoke-1-status",
             "restored-smoke-1",
+            "check-recreated-smoke-1",
+            "recreated-smoke-1-status",
+            "recreated-smoke-1",
         ],
+    )
+    parser.add_argument(
+        "--comfy-root",
+        type=Path,
+        default=None,
+        help="ComfyUI root containing the pinned Qwen model files.",
+    )
+    parser.add_argument(
+        "--server",
+        default=DEFAULT_COMFY_SERVER,
+        help="ComfyUI HTTP API base URL.",
     )
     parser.add_argument(
         "--runtime-dir",
@@ -557,8 +811,9 @@ def main() -> int:
         "--replace-existing-run",
         action="store_true",
         help=(
-            "For restored-smoke-1 only: explicitly clear that preset's local "
-            "run evidence and preset-scoped candidates before a clean rerun."
+            "For a real first-smoke command only: explicitly clear that "
+            "preset's local run evidence and preset-scoped candidates before "
+            "a clean rerun."
         ),
     )
     parser.add_argument(
@@ -611,6 +866,19 @@ def main() -> int:
         )
         return 0
 
+    if args.command == "recreated-smoke-1-status":
+        target = (
+            args.out
+            or DEFAULT_LAUNCHPAD_DIR / "recreated-smoke-1-status.json"
+        )
+        payload = build_recreated_smoke_1_state()
+        write_json(target, payload)
+        print(
+            f"{payload['state']} recreated_smoke_1_status "
+            f"next={payload['next_action']} report={target}"
+        )
+        return 0
+
     if args.command == "prepare-baseline":
         if PILLOW_VERSION != PINNED_PILLOW_VERSION:
             print(
@@ -641,6 +909,31 @@ def main() -> int:
             runtime_dir,
             args.install_python_deps,
             runtime_python,
+        )
+    elif args.command == "check-recreated-smoke-1":
+        if args.replace_existing_run:
+            print(
+                "HOLD check-recreated-smoke-1: --replace-existing-run is "
+                "not valid for the non-generating readiness gate"
+            )
+            return 1
+        if args.comfy_root is None:
+            print(
+                "HOLD check-recreated-smoke-1: --comfy-root is required"
+            )
+            return 1
+        commands = recreated_smoke_check_plan(
+            args.comfy_root.resolve(),
+            args.server,
+        )
+    elif args.command == "recreated-smoke-1":
+        if args.comfy_root is None:
+            print("HOLD recreated-smoke-1: --comfy-root is required")
+            return 1
+        commands = recreated_smoke_plan(
+            args.comfy_root.resolve(),
+            args.server,
+            replace_existing_run=args.replace_existing_run,
         )
     elif args.command == "check-restored-smoke-1":
         if args.replace_existing_run:
