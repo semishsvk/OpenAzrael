@@ -3,7 +3,7 @@
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
   "build_id": "KG-001 Candidate 1",
-  "checkpoint": "v116-context-v27",
+  "checkpoint": "v116-context-v28",
   "features": {
     "build_watermark": true,
     "fail_fast_core_assets": true,
