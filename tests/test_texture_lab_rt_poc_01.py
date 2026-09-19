@@ -98,7 +98,12 @@ from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_review_handoff import build_handoff
 from oa_tex_review_profile import build_review_profile
-from oa_tex_run_summary import build_summary, restored_performance_summary
+from oa_tex_run_summary import (
+    build_summary,
+    recreated_generation_unit_count,
+    recreated_performance_summary,
+    restored_performance_summary,
+)
 from oa_tex_runtime_export import compile_export
 from oa_tex_runtime_manifest import build_manifest, input_file_record
 from oa_tex_runtime_verify import verify_manifest
@@ -1141,6 +1146,58 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertFalse(checks["output_hash_ok"])
         self.assertFalse(checks["positive_prompt_ok"])
         self.assertFalse(checks["performance_ok"])
+
+    def test_recreated_runtime_summary_uses_generation_units_for_projection(self):
+        self.assertEqual(
+            recreated_generation_unit_count("recreated_atlas"),
+            4,
+        )
+        self.assertGreaterEqual(
+            recreated_generation_unit_count("recreated_full"),
+            4,
+        )
+
+        with tempfile.TemporaryDirectory() as td:
+            run_dir = Path(td)
+            jobs = run_dir / "recreated_jobs"
+            jobs.mkdir()
+            for index, wall in enumerate([10.0, 14.0]):
+                (jobs / f"job_{index}.job.json").write_text(
+                    json.dumps(
+                        {
+                            "schema": "openazrael.texture_lab.ai_recreated_job.v5",
+                            "performance": {
+                                "job_wall_seconds": wall,
+                                "submit_to_completion_wall_seconds": wall - 1.0,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+
+            summary = recreated_performance_summary(run_dir)
+            self.assertEqual(
+                summary["status"],
+                "OBSERVED_WITH_LINEAR_ESTIMATE",
+            )
+            self.assertEqual(summary["job_count"], 2)
+            self.assertAlmostEqual(summary["mean_job_wall_seconds"], 12.0)
+            self.assertEqual(
+                summary["estimates"]["recreated_atlas"][
+                    "generation_units"
+                ],
+                4,
+            )
+            self.assertAlmostEqual(
+                summary["estimates"]["recreated_atlas"][
+                    "linear_job_only_seconds"
+                ],
+                48.0,
+            )
+            self.assertIn(
+                "naive linear client-observed ComfyUI job projection",
+                summary["estimate_scope"],
+            )
 
     def test_restored_runtime_summary_projects_stage_cost_observationally(self):
         with tempfile.TemporaryDirectory() as td:
