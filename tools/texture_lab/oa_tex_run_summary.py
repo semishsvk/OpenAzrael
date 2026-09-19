@@ -49,6 +49,7 @@ def build_summary(preset: str, run_root: Path) -> dict:
     mode = str(spec["mode"])
     run_dir = run_root / preset
     evidence = evidence_snapshot(preset, run_root)
+    godot_review_profile = run_dir / "godot_review_profile.json"
 
     rows = []
     pack = _pack_rows(run_dir, mode)
@@ -105,13 +106,18 @@ def build_summary(preset: str, run_root: Path) -> dict:
         "automatic_quality_verdict": False,
         "automatic_stage_approval": False,
         "evidence_checks": evidence.get("checks"),
+        "godot_review_profile": (
+            str(godot_review_profile)
+            if godot_review_profile.is_file()
+            else None
+        ),
         "textures": rows,
         "manual_next_steps": (
             [
                 "Inspect each full comparison sheet for composition and authored-structure preservation.",
                 "Inspect each detail comparison sheet for invented microdetail, ringing, plastic texture, false edges or lost original features.",
                 "Inspect 3x3 tile previews wherever present and interpret seam deltas relative to Classic.",
-                "Run the isolated Godot Texture Lab A/B scene at gameplay-like viewing scale.",
+                "Run the isolated Godot Texture Lab A/B scene at gameplay-like viewing scale; use O to select REVIEW and P to toggle the stage review profile.",
                 f"Initialize the structured review with oa_tex_manual_review.py init {preset}.",
                 "Record every texture decision and all required checks; ACCEPTED_FOR_STAGE requires every required check=true.",
                 f"Confirm oa_tex_manual_review.py status {preset} returns PASS.",
@@ -136,6 +142,13 @@ def markdown(summary: dict) -> str:
         "This summary is observational. It does not select a visual winner and does not approve or promote any texture automatically.",
         "",
     ]
+    if summary.get("godot_review_profile"):
+        lines.extend(
+            [
+                f"Godot stage review profile: {summary['godot_review_profile']}",
+                "",
+            ]
+        )
 
     for row in summary.get("textures", []):
         seam = row.get("candidate_minus_source_seam_mae_rgba_0_255") or {}
