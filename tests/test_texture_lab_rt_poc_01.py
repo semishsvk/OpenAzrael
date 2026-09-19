@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -16,6 +17,7 @@ from common import (
     alpha_is_binary,
     image_mae,
     prepare_backend_colorkey_input,
+    prepare_conditioning_image,
     reapply_source_colorkey_mask,
     seam_mae,
     sha256_file,
@@ -23,6 +25,13 @@ from common import (
 )
 from oa_tex_ai_bakeoff import eligible_entries
 from oa_tex_enhance import upscale_one
+from oa_tex_prompt import build_prompt_pair
+from oa_tex_qwen_preflight import (
+    exact_loader_check,
+    inspect_workflow,
+    node_binding_check,
+    sampling_check,
+)
 from oa_tex_realesrgan_bootstrap import verify_checkpoint
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
@@ -135,6 +144,30 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 self.assertEqual(im.getpixel((0, 0)), (0, 0, 0, 0))
                 self.assertEqual(alpha.getpixel((16, 16)), 255)
 
+    def test_enhanced_conditioning_canvas_locks_classic_silhouette(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            classic = root / "SPRITE#.png"
+            enhanced = root / "enhanced.png"
+            prepared = root / "prepared.png"
+            self._legacy_key_fixture(classic)
+
+            # Deliberately opaque/high-resolution conditioning image: the helper
+            # must impose the Classic silhouette without changing target size.
+            Image.new("RGB", (32, 32), (110, 90, 70)).save(enhanced)
+            prepared_path, changed = prepare_conditioning_image(classic, enhanced, prepared)
+            self.assertTrue(changed)
+            self.assertEqual(prepared_path, prepared)
+
+            with Image.open(prepared) as im:
+                self.assertEqual(im.size, (32, 32))
+                self.assertEqual(im.mode, "RGBA")
+                self.assertTrue(alpha_is_binary(im))
+                alpha = im.getchannel("A")
+                self.assertEqual(alpha.getpixel((0, 0)), 0)
+                self.assertEqual(alpha.getpixel((16, 16)), 255)
+                self.assertEqual(im.getpixel((0, 0)), (0, 0, 0, 0))
+
     def test_structural_drift_detects_displacement(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -192,6 +225,54 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             [row["id"] for row in recreated_skipped],
             ["KEYHOLE#", "SHIELD1"],
         )
+
+    def test_prompt_pair_keeps_negative_constraints_separate(self):
+        profiles = {
+            "base": "Preserve composition.",
+            "classes": {"stone_floor": "Restore stone microdetail."},
+            "negative": "No new objects. No moved edges.",
+        }
+        pair = build_prompt_pair(profiles, "stone_floor")
+        self.assertIn("Preserve composition.", pair["positive"])
+        self.assertIn("Restore stone microdetail.", pair["positive"])
+        self.assertNotIn("No new objects", pair["positive"])
+        self.assertEqual(pair["negative"], "No new objects. No moved edges.")
+
+    def test_canonical_qwen_api_workflow_contract(self):
+        workflow_path = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+        contract_path = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
+        workflow = json.loads(workflow_path.read_text(encoding="utf-8"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+
+        inspection = inspect_workflow(workflow, contract)
+        loaders = exact_loader_check(inspection, contract)
+        sampler = sampling_check(inspection, contract)
+        bindings = contract["canonical_openazrael_workflow"]["bindings"]
+        binding_checks = node_binding_check(
+            workflow,
+            str(bindings["load_image_node"]),
+            str(bindings["prompt_node"]),
+            str(bindings["negative_prompt_node"]),
+            str(bindings["seed_node"]),
+        )
+
+        self.assertEqual(inspection["missing_required_classes"], [])
+        self.assertEqual(len(inspection["load_image_nodes"]), 1)
+        self.assertEqual(len(inspection["prompt_nodes"]), 2)
+        self.assertEqual(len(inspection["samplers"]), 1)
+        self.assertEqual(len(inspection["lora_nodes"]), 0)
+        self.assertTrue(all(loaders.values()))
+        self.assertEqual(sampler["status"], "PASS")
+        self.assertTrue(
+            all(row["status"] == "PASS" for row in binding_checks.values())
+        )
+
+        positive = workflow[str(bindings["prompt_node"])]["inputs"]
+        negative = workflow[str(bindings["negative_prompt_node"])]["inputs"]
+        for inputs in [positive, negative]:
+            self.assertIn("image1", inputs)
+            self.assertNotIn("image2", inputs)
+            self.assertNotIn("image3", inputs)
 
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
