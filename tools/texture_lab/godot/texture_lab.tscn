@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://tools/texture_lab/godot/texture_lab.gd" id="1_lab"]
 
@@ -10,6 +10,9 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.65
 
 [sub_resource type="QuadMesh" id="Quad_surface"]
+size = Vector2(3.4, 3.4)
+
+[sub_resource type="QuadMesh" id="Quad_surface_b"]
 size = Vector2(3.4, 3.4)
 
 [sub_resource type="StyleBoxFlat" id="Panel_style"]
@@ -28,13 +31,17 @@ environment = SubResource("Environment_lab")
 [node name="Surface" type="MeshInstance3D" parent="."]
 mesh = SubResource("Quad_surface")
 
+[node name="SurfaceB" type="MeshInstance3D" parent="."]
+mesh = SubResource("Quad_surface_b")
+visible = false
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-22, -28, 0)
 light_energy = 1.35
 visible = false
 
 [node name="Camera3D" type="Camera3D" parent="."]
-position = Vector3(0, 0, 4.2)
+position = Vector3(0, 0, 5.2)
 current = true
 
 [node name="HUD" type="CanvasLayer" parent="."]
