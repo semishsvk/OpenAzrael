@@ -1718,6 +1718,29 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             good = verify_manifest(manifest_path, root)
             self.assertEqual(good["status"], "PASS")
 
+            stale_declared = json.loads(json.dumps(manifest))
+            stale_declared["profile"] = "remastered"
+            stale_declared["status"] = "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS"
+            stale_declared["stale_production_selection_count"] = 1
+            stale_declared_path = root / "stale_declared_manifest.json"
+            stale_declared_path.write_text(
+                json.dumps(stale_declared),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                verify_manifest(stale_declared_path, root)["status"],
+                "STALE",
+            )
+
+            not_ready = json.loads(json.dumps(manifest))
+            not_ready["runtime_ready"] = False
+            not_ready_path = root / "not_ready_manifest.json"
+            not_ready_path.write_text(json.dumps(not_ready), encoding="utf-8")
+            self.assertEqual(
+                verify_manifest(not_ready_path, root)["status"],
+                "HOLD",
+            )
+
             Image.new("RGBA", (16, 8), (9, 9, 9, 255)).save(classic)
             stale = verify_manifest(manifest_path, root)
             self.assertEqual(stale["status"], "STALE")
@@ -1790,6 +1813,23 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 script,
             )
             self.assertIn(sha256_file(manifest_path), script)
+
+            stale_declared = json.loads(json.dumps(manifest))
+            stale_declared["profile"] = "remastered"
+            stale_declared["status"] = "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS"
+            stale_declared["stale_production_selection_count"] = 1
+            stale_declared_path = root / "stale_export_manifest.json"
+            stale_declared_path.write_text(
+                json.dumps(stale_declared),
+                encoding="utf-8",
+            )
+            with self.assertRaises(RuntimeError):
+                compile_export(
+                    stale_declared_path,
+                    root,
+                    root / "export/stale_declared_map.gd",
+                    root / "export/stale_declared_snapshot.json",
+                )
 
             Image.new("RGBA", (16, 8), (9, 9, 9, 255)).save(classic)
             with self.assertRaises(RuntimeError):
