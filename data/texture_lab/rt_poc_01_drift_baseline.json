@@ -1,0 +1,33 @@
+{
+  "schema": "openazrael.texture_lab.rt_poc_01_drift_baseline.v1",
+  "status": "OBSERVATIONAL_MATHEMATICAL_BASELINE",
+  "source": "12 canonical RT-POC-01 Classic textures; alpha-safe deterministic x4 variants",
+  "interpretation": "This is a reference envelope for layout-preserving mathematical reconstruction, not an AI acceptance threshold.",
+  "metrics": {
+    "nearest": {
+      "roundtrip_rgba_mae_0_255": {"count": 12, "min": 0.199234, "mean": 0.686356, "median": 0.493591, "p95": 2.214209, "max": 2.214209},
+      "low_frequency_luma_mae_0_255": {"count": 12, "min": 0.0, "mean": 0.071752, "median": 0.057098, "p95": 0.166016, "max": 0.166016},
+      "edge_map_mae_0_255": {"count": 12, "min": 0.0, "mean": 1.812614, "median": 1.418098, "p95": 5.181313, "max": 5.181313}
+    },
+    "bicubic": {
+      "roundtrip_rgba_mae_0_255": {"count": 12, "min": 0.199234, "mean": 0.850006, "median": 0.634674, "p95": 2.777781, "max": 2.777781},
+      "low_frequency_luma_mae_0_255": {"count": 12, "min": 0.0, "mean": 0.111733, "median": 0.107849, "p95": 0.228836, "max": 0.228836},
+      "edge_map_mae_0_255": {"count": 12, "min": 0.0, "mean": 2.241513, "median": 1.756767, "p95": 6.469116, "max": 6.469116}
+    },
+    "lanczos": {
+      "roundtrip_rgba_mae_0_255": {"count": 12, "min": 0.199234, "mean": 0.738324, "median": 0.578768, "p95": 2.421165, "max": 2.421165},
+      "low_frequency_luma_mae_0_255": {"count": 12, "min": 0.0, "mean": 0.146501, "median": 0.140625, "p95": 0.365784, "max": 0.365784},
+      "edge_map_mae_0_255": {"count": 12, "min": 0.0, "mean": 1.999866, "median": 1.592102, "p95": 5.62928, "max": 5.62928}
+    }
+  },
+  "global_envelope": {
+    "roundtrip_rgba_mae_0_255": {"count": 36, "min": 0.199234, "mean": 0.758229, "median": 0.548414, "p95": 2.421165, "max": 2.777781},
+    "low_frequency_luma_mae_0_255": {"count": 36, "min": 0.0, "mean": 0.109995, "median": 0.110336, "p95": 0.228836, "max": 0.365784},
+    "edge_map_mae_0_255": {"count": 36, "min": 0.0, "mean": 2.017998, "median": 1.56089, "p95": 5.62928, "max": 6.469116}
+  },
+  "notes": [
+    "Low-frequency drift is the primary composition-preservation indicator for AI review.",
+    "Edge-map drift is intentionally observational because valid AI microdetail can increase edge energy.",
+    "Alpha silhouette mismatch must remain zero for conservative legacy color-key candidates."
+  ]
+}
