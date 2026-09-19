@@ -49,7 +49,10 @@ from oa_tex_first_run import (
     baseline_plan,
     bootstrap_plan,
     classify_restored_smoke_1_state,
+    classify_recreated_smoke_1_state,
     poc_source_status,
+    recreated_smoke_check_plan,
+    recreated_smoke_plan,
     restored_smoke_check_plan,
     restored_smoke_plan,
     runtime_paths,
@@ -2113,6 +2116,86 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "production selection remains a separate manual decision",
             approved["next_action"],
         )
+
+    def test_first_recreated_smoke_state_machine_is_passive_and_explicit(self):
+        cases = [
+            ((False, None, None, None), "NOT_EXECUTED"),
+            ((True, "FAIL", None, None), "EVIDENCE_HOLD"),
+            ((True, "PASS", "MISSING", None), "READY_FOR_MANUAL_REVIEW"),
+            ((True, "PASS", "HOLD", None), "MANUAL_REVIEW_IN_PROGRESS"),
+            ((True, "PASS", "STALE", None), "MANUAL_REVIEW_STALE"),
+            ((True, "PASS", "PASS", "MISSING"), "READY_FOR_STAGE_APPROVAL"),
+            ((True, "PASS", "PASS", "STALE"), "APPROVAL_STALE"),
+            ((True, "PASS", "PASS", "PASS"), "STAGE_APPROVED"),
+        ]
+        for args, expected in cases:
+            with self.subTest(expected=expected):
+                result = classify_recreated_smoke_1_state(*args)
+                self.assertEqual(result["state"], expected)
+                self.assertTrue(result["next_action"])
+
+        approved = classify_recreated_smoke_1_state(
+            True,
+            "PASS",
+            "PASS",
+            "PASS",
+        )
+        self.assertIn(
+            "production selection remains a separate manual decision",
+            approved["next_action"],
+        )
+
+    def test_first_run_launchpad_builds_non_generating_recreated_readiness_plan(self):
+        with tempfile.TemporaryDirectory() as td:
+            comfy_root = Path(td) / "ComfyUI"
+            plan = recreated_smoke_check_plan(
+                comfy_root,
+                "http://127.0.0.1:8188",
+            )
+
+        self.assertEqual(
+            [row["name"] for row in plan],
+            [
+                "local_preflight",
+                "comfy_doctor",
+                "qwen_preflight",
+                "canonical_bakeoff_dry_run",
+            ],
+        )
+        self.assertIn("recreated_smoke_1", plan[0]["argv"])
+        self.assertIn(str(comfy_root), plan[0]["argv"])
+
+        self.assertIn("oa_tex_comfy_doctor.py", plan[1]["command"])
+        self.assertIn("http://127.0.0.1:8188", plan[1]["argv"])
+
+        self.assertIn("oa_tex_qwen_preflight.py", plan[2]["command"])
+        self.assertIn("--require-model-files", plan[2]["argv"])
+        self.assertIn(str(comfy_root), plan[2]["argv"])
+
+        dry_run = plan[3]["argv"]
+        self.assertIn("oa_tex_ai_bakeoff.py", plan[3]["command"])
+        self.assertIn("recreated", dry_run)
+        self.assertIn("recreated_smoke_1", dry_run)
+        self.assertIn("--dry-run", dry_run)
+        self.assertNotIn("--replace-existing-run", dry_run)
+
+    def test_first_run_launchpad_recreated_clean_rerun_is_explicit(self):
+        with tempfile.TemporaryDirectory() as td:
+            comfy_root = Path(td) / "ComfyUI"
+            normal = recreated_smoke_plan(comfy_root)
+            replacement = recreated_smoke_plan(
+                comfy_root,
+                replace_existing_run=True,
+            )
+
+        normal_bakeoff = normal[-1]["argv"]
+        replacement_bakeoff = replacement[-1]["argv"]
+        self.assertNotIn("--replace-existing-run", normal_bakeoff)
+        self.assertEqual(
+            replacement_bakeoff.count("--replace-existing-run"),
+            1,
+        )
+        self.assertIn(str(comfy_root), replacement_bakeoff)
 
     def test_first_run_launchpad_builds_non_generating_smoke_readiness_plan(self):
         with tempfile.TemporaryDirectory() as td:
