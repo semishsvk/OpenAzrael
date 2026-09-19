@@ -8,7 +8,7 @@ Run:
 
     python tools/run_kg001_candidate_v112.py
 
-The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111.
+The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111 plus the audio-v116 physical playback-readiness regression.
 
 All temporary evidence goes under .tmp/kg001/, which is ignored by Git.
 
@@ -25,7 +25,7 @@ Fresh-checkout PASS requires all of the following simultaneously:
 - source validators PASS;
 - Godot found;
 - Godot room-asset import PASS;
-- v109, v110 and v111 runtime status all PASS;
+- v109, v110, v111 and audio-v116 runtime status all PASS;
 - R1/R7/R8 room assets present locally;
 - those local room assets are ignored by Git.
 
@@ -37,6 +37,11 @@ After a successful candidate run, optionally use:
 
     python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results
 
-The tool records the clean-state G09 result first, then copies summarized runtime/source/fresh-checkout JSON into data/tests for review and commit. The promotion intentionally makes the source checkout dirty after the G09 observation; that does not rewrite the already-recorded clean_before/clean_after evidence.
+The tool records the clean-state G09 result first, then copies summarized v109/v110/v111/audio-v116 runtime/source/fresh-checkout JSON into data/tests for review and commit. The promotion intentionally makes the source checkout dirty after the G09 observation; that does not rewrite the already-recorded clean_before/clean_after evidence.
 
 G10 manual sanity remains separate and cannot be auto-promoted by this tool.
+
+
+## Physical audio boundary
+
+The audio-v116 runner checks that the Candidate can physically load and start its required audio resources: Master-bus routing, recovered ambient emitters and a real Event-IR AudioStreamPlayer. It does not prove speaker/headphone audibility and does not prove original Miles pan/volume parity. G10 must still confirm that the user actually hears expected ambient and event audio.

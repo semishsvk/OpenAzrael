@@ -1,8 +1,8 @@
 # OpenAzrael Localization Architecture
 
 **Status:** APPROVED  
-**Context:** `v116-context-v25`  
-**Runtime implementation:** DEFERRED until after the first KG-001 Candidate 1 runtime/manual cycle.
+**Context:** `v116-context-v29`  
+**Runtime implementation:** DEFERRED until after the first clean KG-001 Candidate 2 runtime/manual cycle.
 
 ## 1. Goal
 
@@ -189,11 +189,11 @@ Removed/renamed IDs require an explicit migration/deprecation window rather than
 
 ## 12. KG-001 boundary
 
-This decision does **not** change KG-001 Candidate 1.
+This decision remains outside the current KG-001 Candidate 2 stabilization scope.
 
-No localization runtime code, translated gameplay text or external pack loading is added before the first Candidate 1 runtime/manual cycle unless needed to fix a blocker.
+No localization runtime code, translated gameplay text or external pack loading is added before the first clean Candidate 2 runtime/manual cycle unless needed to fix a blocker.
 
-The approved implementation order after Candidate 1 is:
+The approved implementation order after Candidate 2 is:
 
 1. String IR + semantic ID conventions;
 2. English fallback catalog;

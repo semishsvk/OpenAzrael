@@ -115,16 +115,23 @@ The KG-001 Candidate 1 diagnostic layer may observe and record runtime state, vi
 ## ADR-024 — External localization packs and stable semantic IDs
 **Status:** ACCEPTED — 2026-09-19
 
-OpenAzrael localization is an external presentation-data layer over stable semantic string IDs. Runtime/gameplay code must not use editable English sentences as localization keys. Translator-facing canonical sources use POT/PO, English ships as the mandatory fallback, and distributable community/local language packs use versioned external PCK packages. External packs are mounted with core-resource replacement disabled and are restricted to a validated localization namespace. The architecture is defined in `docs/LOCALIZATION_ARCHITECTURE.md`. Runtime implementation is deliberately deferred until after the first KG-001 Candidate 1 runtime/manual cycle.
+OpenAzrael localization is an external presentation-data layer over stable semantic string IDs. Runtime/gameplay code must not use editable English sentences as localization keys. Translator-facing canonical sources use POT/PO, English ships as the mandatory fallback, and distributable community/local language packs use versioned external PCK packages. External packs are mounted with core-resource replacement disabled and are restricted to a validated localization namespace. The architecture is defined in `docs/LOCALIZATION_ARCHITECTURE.md`. Runtime implementation is deliberately deferred until after the first clean KG-001 Candidate 2 runtime/manual cycle.
 
 ## ADR-025 — Candidate bug reporting is source-safe and observational
 
 **Status:** accepted — 2026-09-19
 
 - GitHub Issues is the canonical human bug tracker for OpenAzrael.
-- F11 captures a diagnostic ZIP from KG-001 Candidate 1 without invoking gameplay mutators.
+- F11 captures a diagnostic ZIP from KG-001 Candidate 2 without invoking gameplay mutators.
 - Existing F6/F7/F8/F9/F10 meanings remain unchanged.
 - Stable diagnostic IDs preserve authored/source names: ROOM, TRG, PUZ, FLAG and ITEM namespaces.
 - Captures may contain screenshot, canonical state, bounded telemetry tail and system metadata, but never excluded commercial room/audio/texture payloads.
 - Every reproducible fixed bug should gain regression evidence at the lowest useful automated layer.
 - Critical bugs and reproducible softlocks continue to block `demo-known-good-001`.
+
+
+## ADR-026 — KG-001 audio acceptance includes physical readiness
+
+**Status:** ACCEPTED — 2026-09-19
+
+G06 is no longer satisfied by the logical golden event stream alone. KG-001 requires an additional asset-backed Godot readiness regression proving that required Event/ambient WAV resources load, the Master bus is routable, recovered ambient emitters instantiate and report active playback, and a real Event-IR sound action creates a physical AudioStreamPlayer. Human audibility is accepted only in G10, while original Miles pan/volume parity remains a separate forensic HOLD.

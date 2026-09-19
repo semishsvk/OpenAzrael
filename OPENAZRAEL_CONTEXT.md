@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v28`
+**Current canonical checkpoint:** `v116-context-v29`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -55,11 +55,11 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
 
 ## Immediate execution priority
-- Critical Issue #6 was observed in the first graphical Candidate run: the player fell through the R1 floor.
-- v28 enables two-sided collision on legacy concave room trimeshes and adds a physical R1 floor-support regression to the v110 Godot runner.
-- The v27 manual run is recorded as FAIL; automated v109/v110/v111 evidence remains pending and the corrected v28 build is NOT_EXECUTED.
-- Run the v112 candidate workflow, require the new Issue #6 regression to PASS, then manually relaunch the demo and verify stable floor support.
-- Keep Issue #6 and `demo-known-good-001` blocked until the v28 runtime/manual retest passes.
+- Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, and Major Issue #9 produced no audible audio.
+- Candidate 2 / v29 keeps the two-sided legacy concave collision fix and adds a dedicated physical-audio readiness regression.
+- Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null ambient-position fallback, validates the seven required Event/ambient WAV resources, checks recovered R1/R7/R8 ambient counts (2/3/2), checks an unmuted Master bus, and verifies a real Event-IR `play_sound` creates a playing `AudioStreamPlayer`.
+- Run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 all to PASS. Then manually verify stable floor collision and actually audible ambient/event audio before continuing the full demo route.
+- Keep Issues #6/#9 and `demo-known-good-001` blocked until both automated and human retests pass.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
@@ -90,20 +90,27 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Overall status: PRE_RUNTIME_READY. v109/v110/v111 Godot execution remains pending.
 
 ## KG-001 v112 candidate workflow
-- `tools/run_kg001_candidate_v112.py` runs source validators plus v109/v110/v111 and can record G09 clean-checkout evidence.
+- `tools/run_kg001_candidate_v112.py` runs source validators plus v109/v110/v111 and the audio-v116 physical-readiness regression, then can record G09 clean-checkout evidence.
 - Temporary evidence is kept in ignored `.tmp/kg001/`; promotion into `data/tests/` is explicit.
-- `tools/kg001_status_v112.py` upgrades gates only from recorded PASS evidence; G10 remains manual.
-- G10 checklist/template are ready. Overall status remains AWAITING_RUNTIME_OR_MANUAL and the tag is not allowed.
+- `tools/kg001_status_v112.py` requires both the logical audio golden stream and audio-v116 physical readiness for G06, and independently blocks the known-good tag while a recorded `kg001_release_blocked_by_*` defect remains.
+- G10 remains manual and must confirm actual audibility; an automated Godot player reporting `playing=true` is not human-listening evidence.
 
-## KG-001 Candidate 1 diagnostics — v116
-- v116 is the diagnostic integration layer for the first real Godot Candidate build; the previously discussed uncommitted producer/copy scan moves to v117.
-- `CandidateDiagnostics` is an autoload that records state/event telemetry without changing puzzle semantics.
-- F6 toggles authored trigger-volume visualization; F7 toggles the Candidate HUD; F8 and F9 preserve the existing audio debug/parity tools; F10 writes a canonical DemoState dump.
-- Non-headless builds append structured JSONL events to `user://openazrael_candidate1_events.jsonl`.
-- Room transitions, trigger enter/exit edges, interactions, state changes and logical audio are logged with canonical state hashes.
-- R1/R7/R8 are now runtime-loaded rather than script-preloaded so missing assets can be reported by an explicit fail-fast preflight.
-- Core room/IR resources are always required; the four golden Event-IR WAVs are additionally required for a non-headless Candidate 1 run.
-- v116 source contract: PASS. Actual Godot execution: NOT EXECUTED.
+## KG-001 physical audio readiness — v116 / Issue #9
+- Source-safe ambient metadata is tracked as `data/audio/legacy_world_ir.json`; original WAV payloads remain Git-ignored and are restored locally through `tools/restore_candidate_assets.py`.
+- The recovered demo ambient topology is R1=2 emitters, R7=3, R8=2, using `S174ELP1.WAV`, `S174ELP2.WAV` and `S186.WAV`.
+- `scripts/legacy_ambient_audio.gd` falls back from a null `godot_position` to the preserved legacy position.
+- `LegacyEvents` tracks real physical Event-IR `AudioStreamPlayer` instances in addition to the logical golden stream.
+- `scripts/kg001_audio_runtime_runner_v116.gd` and `tools/validate_kg001_audio_runtime_v116.py` form the G06 physical-readiness layer.
+- Automated readiness does not prove speaker/headphone audibility and does not promote original Miles pan/volume parity. Human audibility is G10; Miles parity remains HOLD.
+
+## KG-001 Candidate 2 diagnostics — v116
+- Candidate 2 is the corrected diagnostic integration build after the first manual Candidate failure; unrelated forensic v117 work remains deferred.
+- `CandidateDiagnostics` remains observational and records state/event telemetry without changing puzzle semantics.
+- F6 toggles trigger volumes; F7 toggles the Candidate HUD; F8 shows ambient emitters plus Master-bus and physical Event-IR player state; F9 preserves parity capture; F10 writes canonical state; F11 captures a source-safe bug package.
+- Non-headless builds append JSONL events to `user://openazrael_candidate2_events.jsonl`.
+- Core room/IR resources include source-safe `data/audio/legacy_world_ir.json`. A graphical Candidate additionally requires four Event-IR WAVs plus three recovered ambient WAVs.
+- `scripts/kg001_audio_runtime_runner_v116.gd` checks resource loading, Master-bus state, ambient counts R1=2/R7=3/R8=2, ambient `playing` state and an Event-IR physical player.
+- Source contracts are PASS. Candidate 2 Godot runtime evidence remains NOT_EXECUTED until the corrected build is run.
 
 ## Approved localization architecture
 - Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.
@@ -112,11 +119,11 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Distributable language packs are external versioned PCKs with manifests and dedicated namespaces.
 - External PCKs must not replace core resources.
 - Optional future payloads include fonts, subtitle metadata and localized voice.
-- Runtime implementation is deferred until after the first KG-001 Candidate 1 runtime/manual cycle.
+- Runtime implementation is deferred until after the first clean KG-001 Candidate 2 runtime/manual cycle.
 - See `docs/LOCALIZATION_ARCHITECTURE.md` and ADR-024.
 
 ## KG-001 quality gate
-The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
+The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including logical and physical audio readiness plus a clean human audibility check. The tag is additionally blocked while any recorded KG-001 release blocker remains.
 
 ## Session close rule
 A substantial session is complete only after canonical context is updated, validation passes, repository-safe changes are committed/pushed when possible, and significant milestones have an integrity-checked full snapshot.
