@@ -117,6 +117,7 @@ Legacy color-key candidates follow the same alpha-lock policy as AI Restored: al
 - 1/2/3/4: select the active/candidate tier: Classic / Enhanced / AI Restored / AI Recreated;
 - B: toggle isolated side-by-side A/B comparison;
 - R: cycle the A/reference tier while B is active;
+- P: reload/toggle the local resolved Remastered runtime profile;
 - Q/W/E: nearest / bicubic / Lanczos Enhanced variants;
 - T: 1x1 / 2x2 / 4x4 repeated display;
 - L: unshaded vs directional-light inspection;
@@ -192,6 +193,26 @@ R8 geometry provides four non-overlapping U regions for BAPTAP: tapestry1 ≈ 0.
 ### Manual review queue
 
 `oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a stage-scoped manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. `oa_tex_review_pack.py` then renders the concrete visual evidence to inspect: Classic/Enhanced/AI comparison sheets for every selected texture and 3x3 repeated previews where repeat sampling was observed. `oa_tex_stage_gate.py` records an explicit manual approval receipt only after the stage has complete local-preflight, runtime, technical, structural, generation, review-queue and visual-review-pack evidence; the receipt fingerprints those artifacts and the generated output hashes. It deliberately never promotes a generated asset automatically.
+
+## Runtime presentation manifest
+
+`oa_tex_runtime_manifest.py` is the data-only bridge between reviewed Texture Lab selections and a future presentation runtime. It emits local ignored manifests using the schema `openazrael.texture_lab.runtime_texture_manifest.v1`.
+
+Supported profiles:
+
+- **Classic** — resolves every texture to its immutable Classic PNG;
+- **Enhanced** — resolves to the explicitly requested deterministic method; classes marked `enhanced_nearest` are forced to nearest for hard-edge safety;
+- **Remastered** — resolves only current PASS production selections to AI Restored/Recreated candidates. Missing selections or stale selections resolve to Classic, never to an unreviewed generated file.
+
+The manifest records each resolution reason, selected tier, file-presence state and aggregate fallback/stale/missing counts. `--strict` turns missing files and stale Remastered selections into a HOLD exit status.
+
+The isolated Godot Texture Lab can preview the local Remastered runtime manifest with **P**. The Godot resolver accepts only schema-v1 manifests with `automatic_promotion=false`, only `res://assets/textures/*.png` paths, and rejects path traversal. It never reads the production-selection registry or stage-approval data directly.
+
+This keeps the boundary explicit:
+
+**audit/selection evidence → validated runtime manifest → presentation resolver**
+
+rather than allowing gameplay/presentation code to inspect experiment directories.
 
 ## Explicit production selection contract
 
