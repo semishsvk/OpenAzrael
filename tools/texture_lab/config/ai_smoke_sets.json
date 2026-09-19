@@ -1,0 +1,58 @@
+{
+  "schema": "openazrael.texture_lab.ai_smoke_sets.v1",
+  "status": "POC_EXECUTION_ORDER",
+  "presets": {
+    "restored_smoke_1": {
+      "mode": "restored",
+      "textures": ["CORIROCK"],
+      "purpose": "Backend/checkpoint/output/QA smoke test."
+    },
+    "restored_smoke_4": {
+      "mode": "restored",
+      "textures": ["CORIROCK", "WEL_PUZ1", "BAPFLOR#", "SHIELD1"],
+      "purpose": "Cover organic surface, puzzle geometry, keyed/repeated floor, and text asset."
+    },
+    "restored_full": {
+      "mode": "restored",
+      "textures": [
+        "CORIROCK", "ECRDOR01", "VSTPAP01",
+        "WEL_WWAL", "WEL_BDY1", "WEL_PUZ1", "WEL_FLOR",
+        "BAPFLOR#", "BAPGLASS", "BAPTAP", "SHIELD1"
+      ],
+      "purpose": "All AI-Restored-eligible canonical POC assets."
+    },
+    "recreated_smoke_1": {
+      "mode": "recreated",
+      "textures": ["CORIROCK"],
+      "purpose": "ComfyUI/Qwen graph/model/output/QA smoke test."
+    },
+    "recreated_smoke_4": {
+      "mode": "recreated",
+      "textures": ["CORIROCK", "ECRDOR01", "WEL_PUZ1", "BAPFLOR#"],
+      "purpose": "Cover organic, architecture, puzzle geometry, exact-alpha and repeat-sampling constraints."
+    },
+    "recreated_atlas": {
+      "mode": "recreated",
+      "textures": ["BAPTAP"],
+      "purpose": "Dedicated four-quarter atlas split/generate/stitch validation."
+    },
+    "recreated_full": {
+      "mode": "recreated",
+      "textures": [
+        "CORIROCK", "ECRDOR01", "VSTPAP01",
+        "WEL_WWAL", "WEL_BDY1", "WEL_PUZ1", "WEL_FLOR",
+        "BAPFLOR#", "BAPGLASS", "BAPTAP"
+      ],
+      "purpose": "All AI-Recreated-eligible canonical POC assets."
+    }
+  },
+  "recommended_order": [
+    "restored_smoke_1",
+    "restored_smoke_4",
+    "restored_full",
+    "recreated_smoke_1",
+    "recreated_smoke_4",
+    "recreated_atlas",
+    "recreated_full"
+  ]
+}
