@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib
+import importlib.util
 import json
 from pathlib import Path
 import platform
@@ -11,6 +12,14 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools/texture_lab"))
+
+from oa_tex_realesrgan_runtime import (
+    load_contract as load_runtime_contract,
+    pip_freeze_snapshot,
+    probe_python,
+)
+
 REGISTRY = ROOT / "tools/texture_lab/config/model_registry.json"
 
 
@@ -39,6 +48,24 @@ def module_status(name: str) -> dict:
             "status": "FAIL",
             "error": f"{type(exc).__name__}: {exc}",
         }
+
+
+def excluded_package_status(names: list[str]) -> dict:
+    rows = {}
+    for name in names:
+        present = importlib.util.find_spec(name) is not None
+        rows[name] = {
+            "present": present,
+            "status": "FAIL" if present else "PASS",
+        }
+    return {
+        "status": (
+            "PASS"
+            if all(row["status"] == "PASS" for row in rows.values())
+            else "FAIL"
+        ),
+        "packages": rows,
+    }
 
 
 def torch_runtime_status() -> dict:
@@ -124,9 +151,25 @@ def main() -> int:
             source_head = None
 
     torch_runtime = torch_runtime_status()
+    runtime_contract = load_runtime_contract()
+    runtime_probe = probe_python(
+        sys.executable,
+        runtime_contract,
+        require_basicsr=True,
+        require_realesrgan=True,
+    )
+    excluded_packages = excluded_package_status(
+        [
+            str(name)
+            for name in runtime_contract.get(
+                "excluded_texture_runtime_packages", []
+            )
+        ]
+    )
+    freeze_snapshot = pip_freeze_snapshot(sys.executable)
 
     report = {
-        "schema": "openazrael.texture_lab.realesrgan_doctor.v2",
+        "schema": "openazrael.texture_lab.realesrgan_doctor.v3",
         "python": sys.version,
         "platform": platform.platform(),
         "source_dir": str(source_dir),
@@ -139,6 +182,12 @@ def main() -> int:
         "checkpoint": checkpoint_status,
         "modules": modules,
         "torch_runtime": torch_runtime,
+        "runtime_contract": {
+            "schema": runtime_contract.get("schema"),
+            "probe": runtime_probe,
+            "excluded_packages": excluded_packages,
+            "pip_freeze": freeze_snapshot,
+        },
         "ready": (
             source_dir.is_dir()
             and source_version == spec["upstream_version"]
@@ -150,6 +199,9 @@ def main() -> int:
             and modules["PIL"]["status"] == "PASS"
             and modules["basicsr"]["status"] == "PASS"
             and modules["realesrgan"]["status"] == "PASS"
+            and runtime_probe.get("status") == "PASS"
+            and excluded_packages.get("status") == "PASS"
+            and freeze_snapshot.get("status") == "PASS"
         ),
     }
     report_path = args.report or args.runtime_dir / "doctor_report.json"
