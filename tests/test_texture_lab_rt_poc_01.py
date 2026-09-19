@@ -61,6 +61,7 @@ from oa_tex_realesrgan_bootstrap import verify_checkpoint
 from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, validate_receipt
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
+from oa_tex_review_profile import build_review_profile
 from oa_tex_run_summary import build_summary
 from oa_tex_runtime_export import compile_export
 from oa_tex_runtime_manifest import build_manifest, input_file_record
@@ -855,6 +856,45 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             snapshot = evidence_snapshot("restored_smoke_1", run_root)
             self.assertEqual(snapshot["status"], "PASS")
             self.assertEqual(snapshot["outputs"][0]["path"], str(candidate))
+
+            review_profile = build_review_profile(
+                "restored_smoke_1",
+                run_root,
+                {
+                    "textures": [
+                        {
+                            "id": "CORIROCK",
+                            "room": "R1",
+                            "content_class": "rock_organic_surface",
+                            "expected_size": [16, 16],
+                        }
+                    ]
+                },
+            )
+            self.assertEqual(
+                review_profile["schema"],
+                "openazrael.texture_lab.review_texture_manifest.v1",
+            )
+            self.assertTrue(review_profile["runtime_ready"])
+            self.assertFalse(review_profile["export_allowed"])
+            self.assertEqual(
+                review_profile["textures"][0]["path"],
+                "res://" + str(candidate.relative_to(ROOT)).replace("\\", "/"),
+            )
+            self.assertEqual(
+                review_profile["textures"][0]["sha256"],
+                sha256_file(candidate),
+            )
+
+            review_profile_path = root / "review_current.json"
+            review_profile_path.write_text(
+                json.dumps(review_profile),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                verify_manifest(review_profile_path, ROOT)["status"],
+                "HOLD",
+            )
 
             summary = build_summary("restored_smoke_1", run_root)
             self.assertEqual(summary["evidence_status"], "PASS")
