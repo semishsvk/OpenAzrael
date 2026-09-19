@@ -214,6 +214,20 @@ This keeps the boundary explicit:
 
 rather than allowing gameplay/presentation code to inspect experiment directories.
 
+## Runtime export integrity bridge
+
+The runtime presentation manifest now fingerprints every resolved texture file (SHA-256 + byte size) and its selection/policy/production-registry inputs. Explicit production selections additionally record whether the selected candidate hash matches the resolved file hash.
+
+`oa_tex_runtime_verify.py` is the pre-export integrity gate:
+
+- **PASS** — manifest schema/policy is valid, all inputs still match, every resolved path is safe/present and all hashes/sizes match;
+- **STALE** — files or source inputs changed after manifest generation;
+- **HOLD** — manifest is missing/invalid, a path is unsafe, or a resolved texture is missing.
+
+`oa_tex_runtime_export.py` refuses to compile unless verification is PASS. On success it creates a local static Godot-friendly texture map plus `runtime_export_snapshot.json`, fingerprinting both the source manifest and generated map. It copies no commercial/generated pixels.
+
+The future exported runtime loader contract lives in `godot/runtime_texture_resource_loader.gd`. It validates the safe `res://assets/textures/` namespace and uses `ResourceLoader` to obtain `Texture2D` resources. Raw FileAccess/SHA hashing is intentionally limited to development/pre-export verification because Godot's import/export pipeline may replace source image files with imported resources.
+
 ## Explicit production selection contract
 
 `data/texture_lab/production_selection.json` starts empty and contains no automatic defaults. `oa_tex_production_selection.py` can record a `remastered` selection only after the source stage has a current manual approval receipt.
