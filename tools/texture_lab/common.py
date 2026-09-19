@@ -94,6 +94,42 @@ def resize_with_legacy_colorkey(
     return premultiplied
 
 
+def prepare_conditioning_image(
+    source_classic: Path,
+    conditioning_image: Path,
+    prepared: Path,
+) -> tuple[Path, bool]:
+    """Prepare a high-resolution AI conditioning canvas.
+
+    Classic remains the evidence source for legacy color-key semantics. The
+    conditioning image may be a 4x Enhanced candidate. For keyed assets, the
+    exact Classic-derived binary silhouette is resized with nearest-neighbour
+    and locked onto the conditioning canvas before it reaches the AI backend.
+    """
+    with Image.open(source_classic) as source_image:
+        source_image.load()
+        legacy_colorkey = should_apply_legacy_colorkey(source_classic, source_image)
+        source_alpha = (
+            apply_legacy_colorkey(source_image).getchannel("A")
+            if legacy_colorkey
+            else None
+        )
+
+    if not legacy_colorkey:
+        return conditioning_image, False
+
+    with Image.open(conditioning_image) as cond_image:
+        cond_image.load()
+        rgba = cond_image.convert("RGBA")
+        alpha = source_alpha.resize(rgba.size, RESAMPLE["nearest"])
+        rgba.putalpha(alpha)
+        rgba = zero_fully_transparent_rgb(rgba)
+
+    prepared.parent.mkdir(parents=True, exist_ok=True)
+    rgba.save(prepared, format="PNG", optimize=False)
+    return prepared, True
+
+
 def prepare_backend_colorkey_input(source: Path, prepared: Path) -> tuple[Path, bool]:
     with Image.open(source) as image:
         image.load()
