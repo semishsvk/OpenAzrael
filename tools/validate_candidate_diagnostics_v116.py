@@ -20,6 +20,7 @@ room=read("scripts/room_manager.gd")
 hud=read("scripts/hud.gd")
 probe=read("scripts/interaction_probe.gd")
 runner=read("tools/run_kg001_candidate_v112.py")
+bug_capture=diag.split("# v116-context-v27: observational one-key bug-report capture.",1)[-1]
 bugdoc=read("docs/BUG_REPORTING.md")
 issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
 
@@ -47,7 +48,7 @@ checks={
     "f10_dump": 'KEY_F10' in hud and 'CandidateDiagnostics.dump_state' in hud,
     "f11_bug_report": 'KEY_F11' in diag and 'capture_bug_report' in diag,
     "bug_zip": 'ZIPPacker.new()' in diag and 'openazrael_bugreport_' in diag,
-    "bug_screenshot": 'screenshot.png' in diag and '_capture_screenshot' in diag,
+    "bug_screenshot": 'screenshot.png' in diag and '_capture_screenshot_png' in diag and 'save_png_to_buffer()' in diag,
     "bug_event_tail": 'events_tail.jsonl' in diag and 'BUG_REPORT_EVENT_TAIL_LINES' in diag,
     "bug_state_snapshot": 'state.json' in diag and 'canonical_state_payload' in diag,
     "stable_ids": all(x in diag for x in ['ROOM:','TRG:','PUZ:','FLAG:','ITEM:']),
