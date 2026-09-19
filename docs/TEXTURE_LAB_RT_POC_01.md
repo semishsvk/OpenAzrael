@@ -1,6 +1,6 @@
 # OpenAzrael Texture Lab — RT-POC-01
 
-**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / GODOT LAB SOURCE-READY / AI BAKE-OFF PENDING  
+**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / STRUCTURAL BASELINE CALIBRATED / GODOT LAB SOURCE-READY / AI BAKE-OFF PENDING  
 **Scope:** presentation tooling only; no gameplay/runtime-semantic changes.
 
 ## Purpose
@@ -25,13 +25,22 @@ Scans local Classic PNGs and writes a metadata-only manifest. Default expected d
 Creates deterministic 4x candidates using Pillow nearest, bicubic and Lanczos resampling. An external xBRZ executable can be integrated only by an explicitly pinned command template.
 
 ### `oa_tex_validate.py`
-Checks target dimensions and records observational fidelity metrics: Lanczos round-trip MAE, optional SSIM when scikit-image is available, mean-channel drift and raw edge-seam MAE. Missing candidates are technical failures.
+Checks target dimensions and records observational fidelity metrics: Lanczos round-trip MAE, optional SSIM when scikit-image is available, mean-channel drift, alpha/color-key safety and raw edge-seam MAE. Missing candidates are technical failures.
 
 ### `oa_tex_compare.py`
 Creates a local visual comparison sheet across Classic, mathematical Enhanced, AI Restored and AI Recreated variants.
 
 ### `oa_tex_tile.py`
 Creates a 3x3 (or configurable) repeated texture preview for direct seam/tiling inspection. The image remains repository-ignored.
+
+### `oa_tex_sampling_audit.py`
+Audits the canonical POC selection against the real v44 R1/R7/R8 manifests and GLBs. It records primitive usage plus aggregate UV bounds. UVs significantly outside 0..1 are evidence of repeat sampling under the v44 GLB default sampler; merely spanning almost 0..1 is recorded for seam review but is not automatically called tileable.
+
+### `oa_tex_structural_drift.py`
+Measures composition/layout drift after a generated candidate is downscaled back to Classic resolution. The primary signal is low-frequency luminance MAE, which intentionally ignores much of the newly generated microdetail and reacts strongly to moved doors, openings, large tonal masses and other composition changes. Edge-map drift, round-trip RGBA MAE and alpha-silhouette mismatch are recorded alongside it.
+
+### `oa_tex_calibrate_drift.py`
+Builds the reference structural-drift envelope from deterministic Enhanced variants. The committed POC baseline is `data/texture_lab/rt_poc_01_drift_baseline.json`. It is a calibration reference, not an automatic AI acceptance threshold.
 
 ### `oa_tex_run_poc.py`
 Runs the canonical 12-texture mathematical RT-POC-01 selection in one command and produces nearest/bicubic/Lanczos variants plus observational metrics.
@@ -45,8 +54,12 @@ The canonical selection is stored in `config/rt_poc_01_selection.json`. It conta
 ### `oa_tex_restore.py`
 Supports a pinned official Real-ESRGAN Python backend plus a fallback command-template backend. The preferred POC path records the exact checkpoint SHA-256, tile setting, precision mode and denoise strength. `tile=0` is the default fidelity path; tiling is a resource fallback, not the baseline.
 
+Legacy color-key candidates are converted to alpha-safe input before the backend and the exact source-derived binary mask is reapplied afterward.
+
 ### `oa_tex_recreate.py`
 Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. Each job record fingerprints the workflow template, submitted workflow, source, output and explicitly supplied model files.
+
+Legacy color-key candidates follow the same alpha-lock policy as AI Restored: alpha-safe source goes into the model and the exact source silhouette is reapplied to the generated output.
 
 `config/ai_backends.json` defines the POC backend matrix. `profiles/recreate_profiles.json` plus `oa_tex_prompt.py` produce consistent preservation-first prompts from each selected texture's content class; prompts remain input evidence for the experiment, not proof of visual fidelity.
 
@@ -66,7 +79,25 @@ The scene does not access DemoState, CandidateDiagnostics or RoomManager and doe
 
 A real 12-texture bake-off was executed against the restored v44 Classic corpus on 2026-09-19. All 36 nearest/bicubic/Lanczos outputs were produced at 4x dimensions.
 
-Round-trip similarity predictably favors nearest-neighbour because it preserves the original pixel lattice most directly. This is **not** treated as a visual-quality winner.\n\nA follow-up visual QA pass identified legacy `#` textures containing quantized magenta (`R/B >= 248`, `G <= 12`). RT-POC-01 now treats only `#` assets with observed magenta as conservative color-key candidates: magenta becomes alpha=0, filtered RGB uses premultiplied alpha, and the deterministic Enhanced tier restores the alpha mask with nearest-neighbour. The validator rejects visible magenta bleed and non-binary alpha for these candidates. This is a presentation-safety rule, not a claim that complete original-renderer transparency semantics are recovered. Visual inspection shows why the selection must remain content-aware: hard-edge/mask content benefits from exact edge preservation, while photographic/organic/architectural surfaces can benefit from smoother high-quality reconstruction. No global method is promoted by RT-POC-01.
+Round-trip similarity predictably favors nearest-neighbour because it preserves the original pixel lattice most directly. This is **not** treated as a visual-quality winner.
+
+A follow-up visual QA pass identified legacy `#` textures containing quantized magenta (`R/B >= 248`, `G <= 12`). RT-POC-01 now treats only `#` assets with observed magenta as conservative color-key candidates: magenta becomes alpha=0, filtered RGB uses premultiplied alpha, and the deterministic Enhanced tier restores the alpha mask with nearest-neighbour. The validator rejects visible magenta bleed and non-binary alpha for these candidates. This is a presentation-safety rule, not a claim that complete original-renderer transparency semantics are recovered.
+
+Visual inspection also confirms why the selection must remain content-aware: hard-edge/mask content benefits from exact edge preservation, while photographic/organic/architectural surfaces can benefit from smoother high-quality reconstruction. No global mathematical method is promoted by RT-POC-01.
+
+## Structural-drift baseline
+
+The 36 alpha-safe deterministic candidates establish the first reference envelope for a layout-preserving transformation:
+
+- low-frequency luminance MAE, mean: **0.109995 / 255**;
+- low-frequency luminance MAE, p95: **0.228836 / 255**;
+- low-frequency luminance MAE, maximum: **0.365784 / 255**;
+- edge-map MAE, mean: **2.017998 / 255**;
+- edge-map MAE, maximum: **6.469116 / 255**.
+
+Low-frequency drift is the primary future AI composition signal. Edge drift is deliberately observational because legitimate AI-created microdetail can increase edge energy. For conservative legacy color-key assets, alpha-silhouette mismatch remains expected at zero.
+
+These values are **not** hard AI pass/fail limits. They define what ordinary deterministic reconstruction does to the same assets and give the AI review a concrete reference scale.
 
 ## Repository safety
 
@@ -74,14 +105,15 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 
 ## Test policy
 
-`tests/test_texture_lab_rt_poc_01.py` uses a synthetic RGBA fixture and checks scan/alpha behavior, deterministic byte-identical upscale output, expected dimensions, stable metrics and tile-preview dimensions. GitHub Actions executes the source-safe suite on Python 3.11 and 3.12 and runs the Godot Texture Lab source-contract validator.
+`tests/test_texture_lab_rt_poc_01.py` uses synthetic fixtures and checks scan/alpha behavior, deterministic byte-identical upscale output, expected dimensions, legacy color-key safety, AI alpha-mask reapplication, structural-drift displacement sensitivity, stable metrics and tile-preview dimensions. GitHub Actions executes the source-safe suite on Python 3.11 and 3.12 and runs the Godot Texture Lab source-contract validator.
 
 ## Next execution step
 
-1. calibrate tileability/material metadata for the 12-texture set;
-2. pin a local Real-ESRGAN implementation/checkpoint and run AI Restored;
-3. export API-format ComfyUI workflows for the selected image-edit models and run AI Recreated with fixed seeds;
-4. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
-5. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
+1. run a pinned Real-ESRGAN checkpoint on the canonical 12-texture set;
+2. run `oa_tex_structural_drift.py` and compare AI Restored results with the mathematical baseline;
+3. export a fixed-seed API-format ComfyUI workflow for the selected image-edit model and run AI Recreated;
+4. apply the same structural, color-key, seam and text/mask review;
+5. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
+6. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
 
 RT-POC-01 remains observational: it does not replace Classic evidence or automatically select a production winner.
