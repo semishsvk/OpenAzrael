@@ -62,6 +62,7 @@
 - `docs/KG001_STATUS_V111.md`
 
 ## KG-001 v110 room/trigger
+- `docs/KG001_ROOM_TRIGGER_V110.md`
 - `scripts/kg001_room_trigger_runner_v110.gd`
 - `tools/validate_kg001_room_trigger_v110.py`
 - `data/tests/kg001_room_trigger_contract_v110.json`
