@@ -255,11 +255,23 @@ python tools/texture_lab/oa_tex_ai_bakeoff.py recreated \
   --comfy-root <COMFYUI_ROOT>
 ```
 
-After reviewing `recreated_smoke_1`, approve it explicitly:
+After reviewing `recreated_smoke_1`, run the same structured review contract used by Restored:
+
+```bash
+python tools/texture_lab/oa_tex_manual_review.py init recreated_smoke_1
+```
+
+Record every texture with all policy-derived required checks, then require:
+
+```bash
+python tools/texture_lab/oa_tex_manual_review.py status recreated_smoke_1
+```
+
+Only after that returns PASS:
 
 ```bash
 python tools/texture_lab/oa_tex_stage_gate.py approve recreated_smoke_1 \
-  --note "manual visual/QA review completed"
+  --note "structured manual review PASS"
 ```
 
 Then proceed through the gated sequence:
@@ -268,7 +280,7 @@ Then proceed through the gated sequence:
 - `recreated_atlas` — requires approved `recreated_smoke_4`;
 - `recreated_full` — requires current approvals for both `recreated_smoke_4` and `recreated_atlas`.
 
-Each named preset has an isolated evidence directory under `.local/texture_lab/runs/rt_poc_01/<preset>/`. Review queues therefore cannot accidentally inherit stale results from another stage. A `--dry-run` plan is written under `.local/texture_lab/runs/rt_poc_01/_dry_run_plans/` so it cannot overwrite an approved real-run plan.
+Each named preset has an isolated evidence directory under `.local/texture_lab/runs/rt_poc_01/<preset>/` and a preset-scoped candidate namespace under `assets/textures/ai_restored/_runs/<preset>/` or `assets/textures/ai_recreated/_runs/<preset>/`. A different preset therefore cannot overwrite an earlier stage's reviewed candidates. Re-running the same preset intentionally replaces that preset's candidate/evidence and makes any older review/approval stale. A `--dry-run` plan is written under `.local/texture_lab/runs/rt_poc_01/_dry_run_plans/` so it cannot overwrite an approved real-run plan.
 
 The canonical graph uses:
 
@@ -321,7 +333,8 @@ Controls:
 - Q / W / E — nearest / bicubic / Lanczos;
 - T — 1x1 / 2x2 / 4x4 repeat;
 - L — unshaded / directional light;
-- P — reload/toggle resolved Remastered runtime profile;
+- O — switch profile source between current stage REVIEW and REMASTERED production profile;
+- P — reload/toggle the selected profile source;
 - S — local screenshot.
 
 The Texture Lab scene does not mutate gameplay state.
@@ -377,7 +390,7 @@ python tools/texture_lab/oa_tex_runtime_manifest.py remastered --strict
 
 Remastered never consumes an unapproved AI file. A current explicit production selection resolves to that exact candidate; no selection falls back to Classic; a stale selection also falls back to Classic and is reported as stale. Missing resolved files remain a HOLD.
 
-After generating `remastered.json`, launch the isolated Godot Texture Lab and press **P** to reload/toggle the resolved profile. In A/B mode this lets the reference side remain Classic/Enhanced/etc. while the candidate side shows exactly the path chosen by the runtime manifest.
+After generating `remastered.json`, launch the isolated Godot Texture Lab, press **O** to select REMASTERED and **P** to reload/toggle it. Named AI stages automatically also write `<run_dir>/godot_review_profile.json` plus the convenience pointer `.local/texture_lab/runtime_manifests/review_current.json`; select REVIEW with **O** and toggle it with **P** during stage QA. The stage-specific copy is audit evidence, while `review_current.json` is only a replaceable convenience pointer.
 
 The Godot profile resolver reads only the resolved manifest. It does not read stage evidence or `production_selection.json` directly.
 
