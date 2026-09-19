@@ -3,6 +3,19 @@
 ## Current canonical checkpoint
 - `v116-context-v24` — technical base v116 plus current context/Git/quality layer.
 
+## Texture Lab RT-POC-01
+- `docs/TEXTURE_LAB_RT_POC_01.md`
+- `tools/texture_lab/oa_tex_scan.py`
+- `tools/texture_lab/oa_tex_enhance.py`
+- `tools/texture_lab/oa_tex_validate.py`
+- `tools/texture_lab/oa_tex_compare.py`
+- `tools/texture_lab/oa_tex_restore.py`
+- `tools/texture_lab/oa_tex_recreate.py`
+- `tools/texture_lab/config/enhance.json`
+- `tools/texture_lab/profiles/base_preserve.json`
+- `tests/test_texture_lab_rt_poc_01.py`
+- generated Classic/Enhanced/AI pixels remain excluded from Git by ADR-024
+
 ## KG-001 Candidate 1 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
 - `scripts/candidate_diagnostics_v116.gd`
@@ -49,7 +62,6 @@
 - `docs/KG001_STATUS_V111.md`
 
 ## KG-001 v110 room/trigger
-- `docs/KG001_ROOM_TRIGGER_V110.md`
 - `scripts/kg001_room_trigger_runner_v110.gd`
 - `tools/validate_kg001_room_trigger_v110.py`
 - `data/tests/kg001_room_trigger_contract_v110.json`
