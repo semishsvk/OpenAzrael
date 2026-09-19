@@ -104,7 +104,7 @@ def _quoted_command(argv: list[str]) -> str:
 def build_restore_plan(args, entries: list[dict]) -> list[dict]:
     ids = [str(entry["id"]) for entry in entries]
     doctor = [
-        sys.executable,
+        args.realesrgan_python,
         str(ROOT / "tools/texture_lab/oa_tex_realesrgan_doctor.py"),
         "--model", args.restore_model,
         "--report", str(args.run_dir / "realesrgan_doctor.json"),
@@ -124,6 +124,7 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
         "--factor", str(args.factor),
         "--model", args.restore_model,
         "--backend", "realesrgan-python",
+        "--python-exe", args.realesrgan_python,
         "--tile", str(args.tile),
         "--only",
         *ids,
@@ -445,6 +446,7 @@ def main() -> int:
 
     parser.add_argument("--realesrgan-root", type=Path, default=None)
     parser.add_argument("--model-path", type=Path, default=None)
+    parser.add_argument("--realesrgan-python", default=sys.executable)
     parser.add_argument("--restore-model", default="RealESRGAN_x4plus")
     parser.add_argument("--tile", type=int, default=0)
     parser.add_argument("--fp32", action=argparse.BooleanOptionalAction, default=True)
