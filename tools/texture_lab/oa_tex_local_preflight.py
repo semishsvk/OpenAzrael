@@ -10,12 +10,13 @@ import shutil
 import subprocess
 import sys
 
-from common import ROOT, write_json
+from common import PILLOW_VERSION, PINNED_PILLOW_VERSION, ROOT, write_json
 
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 CLASSIC_DIR = ROOT / "assets/textures/classic"
 ENHANCED_DIR = ROOT / "assets/textures/enhanced"
+BASELINE = ROOT / "data/texture_lab/rt_poc_01_drift_baseline.json"
 
 GIB = 1024 ** 3
 DISK_SAFETY_BYTES = 5 * GIB
@@ -99,6 +100,35 @@ def preset_info(name: str) -> dict:
     if not isinstance(preset, dict):
         raise SystemExit(f"unknown AI smoke preset: {name}")
     return preset
+
+
+def toolchain_check() -> dict:
+    baseline_pillow = None
+    baseline_schema = None
+    if BASELINE.is_file():
+        try:
+            baseline = load_json(BASELINE)
+            baseline_pillow = baseline.get("pillow_version")
+            baseline_schema = baseline.get("schema")
+        except (OSError, json.JSONDecodeError):
+            baseline_pillow = None
+
+    current_ok = PILLOW_VERSION == PINNED_PILLOW_VERSION
+    baseline_ok = baseline_pillow == PINNED_PILLOW_VERSION
+    return {
+        "current_pillow_version": PILLOW_VERSION,
+        "expected_pillow_version": PINNED_PILLOW_VERSION,
+        "current_pillow_ok": current_ok,
+        "baseline_path": str(BASELINE),
+        "baseline_schema": baseline_schema,
+        "baseline_pillow_version": baseline_pillow,
+        "baseline_pillow_ok": baseline_ok,
+        "status": "PASS" if current_ok and baseline_ok else "HOLD",
+        "repair": (
+            "Install tools/texture_lab/requirements-source-safe.txt, then rerun "
+            "oa_tex_run_poc.py and oa_tex_calibrate_drift.py."
+        ),
+    }
 
 
 def classic_check() -> dict:
@@ -238,6 +268,7 @@ def main() -> int:
     }
 
     checks = {
+        "toolchain": toolchain_check(),
         "classic": classic_check(),
     }
     if mode == "recreated":
@@ -263,7 +294,7 @@ def main() -> int:
     ]
     ready = not blocking
     report = {
-        "schema": "openazrael.texture_lab.local_preflight.v1",
+        "schema": "openazrael.texture_lab.local_preflight.v2",
         "preset": args.preset,
         "mode": mode,
         "textures": texture_ids,
