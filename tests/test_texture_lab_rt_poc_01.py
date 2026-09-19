@@ -421,7 +421,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertEqual([entry["id"] for entry in deferred], ["BAPTAP"])
         self.assertEqual(preset["name"], "recreated_smoke_4")
 
-    def test_named_presets_use_immutable_candidate_namespaces(self):
+    def test_named_presets_use_preset_scoped_candidate_namespaces(self):
         restored = SimpleNamespace(
             preset="restored_smoke_1",
             mode="restored",
