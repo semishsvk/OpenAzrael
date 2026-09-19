@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v26",
+  "checkpoint": "v116-context-v27",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-19",
   "workflow": [
@@ -28,7 +28,8 @@
     "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
     "git_baseline": "docs/GIT_BASELINE.md",
     "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md",
-    "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md"
+    "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md",
+    "bug_reporting": "docs/BUG_REPORTING.md"
   },
   "current_forensics": {
     "world_runtime_loader": "VERIFIED",
@@ -120,12 +121,16 @@
       "F7": "candidate_hud",
       "F8": "audio_debug",
       "F9": "audio_parity_capture",
-      "F10": "canonical_state_dump"
+      "F10": "canonical_state_dump",
+      "F11": "bug_report_capture"
     },
     "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS",
-    "documentation_consistency": "PASS_V26",
-    "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION"
+    "documentation_consistency": "PASS_V27",
+    "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
+    "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
+    "kg001_bug_report_prefix": "user://openazrael_bugreport_",
+    "kg001_bug_report_source_safe": true
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -228,10 +233,14 @@
       "F7": "candidate HUD",
       "F8": "audio debug",
       "F9": "audio parity capture",
-      "F10": "state dump"
+      "F10": "state dump",
+      "F11": "bug report ZIP"
     },
     "event_log": "user://openazrael_candidate1_events.jsonl",
-    "state_dump_prefix": "user://openazrael_kg001_state_dump_"
+    "state_dump_prefix": "user://openazrael_kg001_state_dump_",
+    "bug_report_prefix": "user://openazrael_bugreport_",
+    "bug_report_doc": "docs/BUG_REPORTING.md",
+    "issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml"
   },
   "localization": {
     "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",

@@ -1,11 +1,16 @@
 extends Node
 
 signal event_recorded(entry: Dictionary)
+signal bug_report_created(path: String)
 
 const BUILD_ID := "KG-001 Candidate 1"
-const BUILD_CHECKPOINT := "v116-context-v24"
+const BUILD_CHECKPOINT := "v116-context-v27"
 const EVENT_LOG_PATH := "user://openazrael_candidate1_events.jsonl"
 const STATE_DUMP_PREFIX := "user://openazrael_kg001_state_dump_"
+const BUG_REPORT_PREFIX := "user://openazrael_bugreport_"
+const BUG_REPORT_SCHEMA := "openazrael.bug_report"
+const BUG_REPORT_SCHEMA_VERSION := 1
+const BUG_REPORT_EVENT_TAIL_LINES := 500
 
 const REQUIRED_CORE_RESOURCES := [
     "res://assets/rooms/R1.glb",
@@ -31,6 +36,11 @@ var startup_errors: Array[String] = []
 var event_sequence := 0
 var file_logging_enabled := false
 var _trigger_states: Dictionary = {}
+var last_trigger_room := ""
+var last_trigger_name := ""
+var last_trigger_edge := ""
+var last_bug_report := ""
+var _bug_report_capture_in_progress := false
 
 func _ready() -> void:
     file_logging_enabled = DisplayServer.get_name() != "headless"
@@ -120,6 +130,9 @@ func observe_trigger(room_id: String, trigger_name: String, inside: bool) -> voi
         _trigger_states[key] = inside
     var edge := "ENTER" if inside else "EXIT"
     last_trigger = "%s %s/%s" % [edge, room_id, trigger_name]
+    last_trigger_room = room_id
+    last_trigger_name = trigger_name
+    last_trigger_edge = edge
     record_event("trigger_" + ("enter" if inside else "exit"), {
         "room": room_id,
         "trigger": trigger_name
@@ -189,3 +202,262 @@ func dump_state(room_id: String, player_position: Vector3) -> String:
     record_event("state_dump", {"path": path, "dump_hash": payload["canonical_state_hash"]})
     print("OpenAzrael KG-001 state dump: ", path)
     return path
+
+
+# v116-context-v27: observational one-key bug-report capture.
+# Reads diagnostics/runtime state only; no gameplay mutator is called.
+func stable_room_id(room_id: String) -> String:
+    return "ROOM:" + (room_id if not room_id.is_empty() else "UNKNOWN")
+
+func stable_trigger_id(room_id: String, trigger_name: String) -> String:
+    if trigger_name.is_empty():
+        return ""
+    return "TRG:%s:%s" % [room_id if not room_id.is_empty() else "UNKNOWN", trigger_name]
+
+func stable_puzzle_id(node_name: String) -> String:
+    return "PUZ:" + node_name
+
+func stable_flag_id(flag_name: String) -> String:
+    return "FLAG:" + flag_name
+
+func stable_item_id(item_name: String) -> String:
+    return "ITEM:" + item_name
+
+func _active_entity_ids() -> Dictionary:
+    var items: Array[String] = []
+    var flags: Array[String] = []
+    var puzzles: Array[String] = []
+    for key in _sorted_keys(DemoState.inventory):
+        if bool(DemoState.inventory.get(key, false)):
+            items.append(stable_item_id(key))
+    for key in _sorted_keys(DemoState.flags):
+        if bool(DemoState.flags.get(key, false)):
+            flags.append(stable_flag_id(key))
+    for key in _sorted_keys(DemoState.puzzle_nodes):
+        if bool(DemoState.puzzle_nodes.get(key, false)):
+            puzzles.append(stable_puzzle_id(key))
+    return {"items": items, "flags": flags, "puzzles": puzzles}
+
+func _runtime_context() -> Dictionary:
+    var room_id := "UNKNOWN"
+    var player_position := Vector3.ZERO
+    var scene := get_tree().current_scene
+    if scene != null:
+        var room_manager := scene.get_node_or_null("RoomManager")
+        if room_manager != null:
+            var value = room_manager.get("current_room_id")
+            if value != null:
+                room_id = String(value)
+        var player := scene.get_node_or_null("Player")
+        if player is Node3D:
+            player_position = (player as Node3D).global_position
+    return {
+        "room_id": room_id,
+        "room_entity_id": stable_room_id(room_id),
+        "player_position": [player_position.x, player_position.y, player_position.z]
+    }
+
+func _system_info() -> Dictionary:
+    var screen_size := DisplayServer.screen_get_size()
+    return {
+        "os_name": OS.get_name(),
+        "os_version": OS.get_version(),
+        "locale": OS.get_locale(),
+        "godot": Engine.get_version_info(),
+        "display_server": DisplayServer.get_name(),
+        "screen_size": [screen_size.x, screen_size.y]
+    }
+
+func _event_log_tail(max_lines: int = BUG_REPORT_EVENT_TAIL_LINES) -> String:
+    if not FileAccess.file_exists(EVENT_LOG_PATH):
+        return ""
+    var content := FileAccess.get_file_as_string(EVENT_LOG_PATH)
+    var lines := content.split("\n", false)
+    var start := max(0, lines.size() - max_lines)
+    var out := ""
+    for i in range(start, lines.size()):
+        out += String(lines[i]) + "\n"
+    return out
+
+func _zip_add_bytes(packer, path: String, bytes: PackedByteArray) -> bool:
+    if packer.start_file(path) != OK:
+        return false
+    var write_error = packer.write_file(bytes)
+    var close_error = packer.close_file()
+    return write_error == OK and close_error == OK
+
+func _zip_add_text(packer, path: String, content: String) -> bool:
+    return _zip_add_bytes(packer, path, content.to_utf8_buffer())
+
+func _capture_screenshot_png() -> PackedByteArray:
+    if DisplayServer.get_name() == "headless":
+        return PackedByteArray()
+    var viewport := get_viewport()
+    if viewport == null:
+        return PackedByteArray()
+    var image := viewport.get_texture().get_image()
+    if image == null or image.is_empty():
+        return PackedByteArray()
+    return image.save_png_to_buffer()
+
+func _state_snapshot(context: Dictionary, last_game_event: Dictionary) -> Dictionary:
+    return {
+        "schema": "openazrael.kg001.runtime_state_snapshot",
+        "version": 1,
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "room": context.get("room_id", "UNKNOWN"),
+        "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
+        "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
+        "canonical_state_payload": DemoState.canonical_state_payload(),
+        "canonical_state_hash": DemoState.canonical_state_hash(),
+        "active_entity_ids": _active_entity_ids(),
+        "last_game_event": last_game_event,
+        "last_trigger": {
+            "text": last_trigger,
+            "room": last_trigger_room,
+            "name": last_trigger_name,
+            "edge": last_trigger_edge,
+            "entity_id": stable_trigger_id(last_trigger_room, last_trigger_name)
+        },
+        "last_audio": last_audio
+    }
+
+func _bug_report_text(report: Dictionary) -> String:
+    var lines := [
+        "OpenAzrael Bug Report",
+        "",
+        "Build: " + String(report.get("build_id", "")),
+        "Checkpoint: " + String(report.get("checkpoint", "")),
+        "Room: " + String(report.get("room", "")),
+        "Room ID: " + String(report.get("room_entity_id", "")),
+        "Trigger ID: " + String(report.get("trigger_entity_id", "")),
+        "State SHA-256: " + String(report.get("canonical_state_hash", "")),
+        "",
+        "Fill these fields in the GitHub issue:",
+        "Summary:",
+        "Steps to reproduce:",
+        "Expected behaviour:",
+        "Actual behaviour:",
+        "Reproducibility: Always / Often / Sometimes / Once",
+        "Severity: Critical / Major / Minor / Cosmetic",
+        "",
+        "Attach this ZIP to the issue. Do not attach excluded commercial game assets."
+    ]
+    var out := ""
+    for line in lines:
+        out += String(line) + "\n"
+    return out
+
+func capture_bug_report() -> String:
+    if _bug_report_capture_in_progress:
+        return ""
+    if DisplayServer.get_name() == "headless":
+        push_warning("OpenAzrael bug report capture is disabled in headless mode.")
+        return ""
+
+    _bug_report_capture_in_progress = true
+    var last_game_event := last_event.duplicate(true)
+    var context := _runtime_context()
+    record_event("bug_report_capture_requested", {
+        "room": context.get("room_id", "UNKNOWN"),
+        "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN")
+    })
+
+    var stamp := int(Time.get_unix_time_from_system())
+    var suffix := event_sequence % 10000
+    var base := "%s%d_%04d" % [BUG_REPORT_PREFIX, stamp, suffix]
+    var zip_path := base + ".zip"
+    var screenshot_bytes := _capture_screenshot_png()
+    var screenshot_ok := not screenshot_bytes.is_empty()
+    var system_info := _system_info()
+    var state := _state_snapshot(context, last_game_event)
+    var report := {
+        "schema": BUG_REPORT_SCHEMA,
+        "schema_version": BUG_REPORT_SCHEMA_VERSION,
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "created_unix": stamp,
+        "repository": "semishsvk/OpenAzrael",
+        "room": context.get("room_id", "UNKNOWN"),
+        "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
+        "trigger_entity_id": stable_trigger_id(last_trigger_room, last_trigger_name),
+        "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
+        "canonical_state_hash": DemoState.canonical_state_hash(),
+        "last_game_event": last_game_event,
+        "last_trigger": last_trigger,
+        "last_audio": last_audio,
+        "event_log_source": EVENT_LOG_PATH,
+        "event_log_tail_limit": BUG_REPORT_EVENT_TAIL_LINES,
+        "screenshot_included": screenshot_ok,
+        "severity": "UNCLASSIFIED",
+        "reproducibility": "UNCLASSIFIED",
+        "summary": "",
+        "steps_to_reproduce": [],
+        "expected_behaviour": "",
+        "actual_behaviour": ""
+    }
+
+    var packer := ZIPPacker.new()
+    var open_error := packer.open(zip_path)
+    if open_error != OK:
+        _bug_report_capture_in_progress = false
+        push_error("OpenAzrael bug report ZIP open failed: " + zip_path)
+        return ""
+
+    var included: Array[String] = []
+    var entry_errors: Array[String] = []
+    var entries := [
+        ["report.json", JSON.stringify(report, "  ") + "\n"],
+        ["report.txt", _bug_report_text(report)],
+        ["state.json", JSON.stringify(state, "  ") + "\n"],
+        ["system_info.json", JSON.stringify(system_info, "  ") + "\n"],
+        ["events_tail.jsonl", _event_log_tail()]
+    ]
+    for entry in entries:
+        if _zip_add_text(packer, String(entry[0]), String(entry[1])):
+            included.append(String(entry[0]))
+        else:
+            entry_errors.append(String(entry[0]))
+
+    if screenshot_ok:
+        if _zip_add_bytes(packer, "screenshot.png", screenshot_bytes):
+            included.append("screenshot.png")
+        else:
+            entry_errors.append("screenshot.png")
+
+    var manifest := {
+        "schema": "openazrael.bug_report_manifest",
+        "version": 1,
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "files": included,
+        "entry_errors": entry_errors,
+        "source_safe": true,
+        "commercial_assets_included": false
+    }
+    if _zip_add_text(packer, "manifest.json", JSON.stringify(manifest, "  ") + "\n"):
+        included.append("manifest.json")
+    else:
+        entry_errors.append("manifest.json")
+    packer.close()
+
+    last_bug_report = zip_path
+    _bug_report_capture_in_progress = false
+    record_event("bug_report_created", {
+        "path": zip_path,
+        "room": context.get("room_id", "UNKNOWN"),
+        "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
+        "state_hash": report["canonical_state_hash"],
+        "entry_errors": entry_errors
+    })
+    bug_report_created.emit(zip_path)
+    print("OpenAzrael bug report package: ", zip_path)
+    return zip_path
+
+func _unhandled_key_input(event: InputEvent) -> void:
+    if not event.pressed or event.echo:
+        return
+    if event.keycode == KEY_F11:
+        capture_bug_report()
+        get_viewport().set_input_as_handled()

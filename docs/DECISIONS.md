@@ -116,3 +116,15 @@ The KG-001 Candidate 1 diagnostic layer may observe and record runtime state, vi
 **Status:** ACCEPTED — 2026-09-19
 
 OpenAzrael localization is an external presentation-data layer over stable semantic string IDs. Runtime/gameplay code must not use editable English sentences as localization keys. Translator-facing canonical sources use POT/PO, English ships as the mandatory fallback, and distributable community/local language packs use versioned external PCK packages. External packs are mounted with core-resource replacement disabled and are restricted to a validated localization namespace. The architecture is defined in `docs/LOCALIZATION_ARCHITECTURE.md`. Runtime implementation is deliberately deferred until after the first KG-001 Candidate 1 runtime/manual cycle.
+
+## ADR-025 — Candidate bug reporting is source-safe and observational
+
+**Status:** accepted — 2026-09-19
+
+- GitHub Issues is the canonical human bug tracker for OpenAzrael.
+- F11 captures a diagnostic ZIP from KG-001 Candidate 1 without invoking gameplay mutators.
+- Existing F6/F7/F8/F9/F10 meanings remain unchanged.
+- Stable diagnostic IDs preserve authored/source names: ROOM, TRG, PUZ, FLAG and ITEM namespaces.
+- Captures may contain screenshot, canonical state, bounded telemetry tail and system metadata, but never excluded commercial room/audio/texture payloads.
+- Every reproducible fixed bug should gain regression evidence at the lowest useful automated layer.
+- Critical bugs and reproducible softlocks continue to block `demo-known-good-001`.

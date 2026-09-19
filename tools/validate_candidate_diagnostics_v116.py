@@ -20,6 +20,9 @@ room=read("scripts/room_manager.gd")
 hud=read("scripts/hud.gd")
 probe=read("scripts/interaction_probe.gd")
 runner=read("tools/run_kg001_candidate_v112.py")
+bug_capture=diag.split("# v116-context-v27: observational one-key bug-report capture.",1)[-1]
+bugdoc=read("docs/BUG_REPORTING.md")
+issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
 
 checks={
     "autoload": 'CandidateDiagnostics="*res://scripts/candidate_diagnostics_v116.gd"' in project,
@@ -43,6 +46,18 @@ checks={
     "f8_audio_kept": 'KEY_F8' in hud,
     "f9_parity_kept": 'KEY_F9' in hud and '_capture_audio_parity()' in hud,
     "f10_dump": 'KEY_F10' in hud and 'CandidateDiagnostics.dump_state' in hud,
+    "f11_bug_report": 'KEY_F11' in diag and 'capture_bug_report' in diag,
+    "bug_zip": 'ZIPPacker.new()' in diag and 'openazrael_bugreport_' in diag,
+    "bug_screenshot": 'screenshot.png' in diag and '_capture_screenshot_png' in diag and 'save_png_to_buffer()' in diag,
+    "bug_event_tail": 'events_tail.jsonl' in diag and 'BUG_REPORT_EVENT_TAIL_LINES' in diag,
+    "bug_state_snapshot": 'state.json' in diag and 'canonical_state_payload' in diag,
+    "stable_ids": all(x in diag for x in ['ROOM:','TRG:','PUZ:','FLAG:','ITEM:']),
+    "bug_report_source_safe": '"commercial_assets_included": false' in diag and '"source_safe": true' in diag,
+    "bug_report_observational": all(x not in bug_capture for x in ["DemoState.acquire(","DemoState.set_flag(","DemoState.set_puzzle_node(","DemoState.restore_canonical_state_payload(","LegacyEvents.run(","load_room("]),
+    "bug_report_no_commercial_asset_reads": all(x not in bug_capture for x in ["res://assets/rooms/","res://assets/audio/","res://assets/textures/classic/"]),
+    "bug_hud_surface": "F11 bug report" in hud and "CandidateDiagnostics.last_bug_report" in hud,
+    "issue_template": 'name: OpenAzrael bug report' in issuetpl and 'Diagnostic package' in issuetpl,
+    "bug_reporting_doc": 'F11' in bugdoc and 'Critical' in bugdoc and 'regression' in bugdoc.lower(),
     "watermark": 'CandidateDiagnostics.BUILD_ID' in hud and 'CandidateDiagnostics.BUILD_CHECKPOINT' in hud,
     "runner_includes_validator": 'tools/validate_candidate_diagnostics_v116.py' in runner,
 }
@@ -53,7 +68,7 @@ try:
     contract=json.loads(read("data/tests/kg001_candidate_diagnostics_contract_v116.json"))
     if contract.get("version")!=116 or contract.get("status")!="SOURCE_CONTRACT_PASS":
         errors.append("contract drift")
-    if contract.get("checkpoint")!="v116-context-v24":
+    if contract.get("checkpoint")!="v116-context-v27":
         errors.append("contract checkpoint drift")
 except Exception as e:
     errors.append("contract parse: "+str(e))
@@ -67,5 +82,5 @@ print("OpenAzrael KG-001 Candidate diagnostics v116: PASS")
 print(" build watermark: PASS")
 print(" fail-fast resources: PASS")
 print(" event/state diagnostics: PASS")
-print(" F6/F7/F8/F9/F10 debug surfaces: PASS")
+print(" F6/F7/F8/F9/F10/F11 debug surfaces: PASS")
 print(" runtime execution: NOT_EXECUTED")
