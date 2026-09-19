@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools/texture_lab"))
 from common import image_mae, seam_mae, sha256_file
 from oa_tex_enhance import upscale_one
 from oa_tex_scan import scan
+from oa_tex_tile import tile_preview
 from oa_tex_validate import validate_pair
 
 
@@ -68,6 +69,16 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seams = seam_mae(im)
                 self.assertIn("x", seams)
                 self.assertIn("y", seams)
+
+    def test_tile_preview_dimensions(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            src = root / "tile.png"
+            dest = root / "tile_preview.png"
+            self._fixture(src)
+            tile_preview(src, dest, 3, 4)
+            with Image.open(dest) as im:
+                self.assertEqual(im.size, (24, 32))
 
 
 if __name__ == "__main__":
