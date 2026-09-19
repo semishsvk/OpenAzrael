@@ -40,5 +40,10 @@
     "capture_pip_freeze": true,
     "current_environment_lock_status": "PROVISIONAL_UNTIL_REAL_SMOKE",
     "final_lock_promotion_condition": "successful reviewed restored_smoke_1 with captured pip-freeze fingerprint"
+  },
+  "compatibility_references": {
+    "pytorch_previous_versions": "https://pytorch.org/get-started/previous-versions/",
+    "torchvision_0162": "https://pypi.org/project/torchvision/0.16.2/",
+    "basicsr_142": "https://github.com/XPixelGroup/BasicSR/tree/v1.4.2"
   }
 }
