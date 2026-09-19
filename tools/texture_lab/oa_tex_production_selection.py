@@ -6,7 +6,13 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 
-from common import ROOT, sha256_file, write_json
+from common import (
+    ROOT,
+    named_candidate_root,
+    path_is_within,
+    sha256_file,
+    write_json,
+)
 from oa_tex_stage_gate import (
     DEFAULT_APPROVAL_ROOT,
     DEFAULT_MANUAL_REVIEW_ROOT,
@@ -99,6 +105,12 @@ def select_candidate(
 
     candidate_path = Path(str(candidate.get("path", "")))
     source_path = Path(str(source.get("path", "")))
+    expected_root = named_candidate_root(mode, preset)
+    if not path_is_within(candidate_path, expected_root):
+        raise SystemExit(
+            "reviewed candidate is outside the immutable named-stage namespace; "
+            f"candidate={candidate_path} expected_root={expected_root}"
+        )
     if not candidate_path.is_file() or not source_path.is_file():
         raise SystemExit("reviewed source/candidate files are no longer present")
 
@@ -156,6 +168,12 @@ def validate_record(
 
     candidate_path = ROOT / str(record.get("candidate_path", ""))
     source_path = ROOT / str(record.get("classic_source_path", ""))
+    mode = str(preset_record(preset).get("mode", ""))
+    expected_root = named_candidate_root(mode, preset)
+    checks["candidate_namespace_current"] = path_is_within(
+        candidate_path,
+        expected_root,
+    )
     checks["candidate_present"] = candidate_path.is_file()
     checks["source_present"] = source_path.is_file()
     checks["candidate_hash_current"] = (
