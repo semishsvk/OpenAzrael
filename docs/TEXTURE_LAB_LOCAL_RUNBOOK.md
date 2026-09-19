@@ -76,6 +76,15 @@ python tools/texture_lab/oa_tex_first_run.py restored-smoke-1
 
 That command runs the local preflight, the pinned Real-ESRGAN doctor, and then the real canonical `restored_smoke_1` bake-off. It stops on the first failing gate and writes launch evidence under `.local/texture_lab/launchpad/`. The staged bake-off writes canonical run evidence under `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/` and the generated CORIROCK candidate under the preset-scoped ignored asset namespace.
 
+If that exact preset already has local run/candidate artifacts and you intentionally want to start it again from a clean slate, stay on the high-level launchpad and make the destructive intent explicit:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py restored-smoke-1 \
+  --replace-existing-run
+```
+
+The non-generating `check-restored-smoke-1` command refuses `--replace-existing-run`; readiness checks therefore never clear stage data.
+
 Use the lower-level commands in the rest of this runbook for diagnosis or controlled reruns.
 
 ## 0. Preconditions
