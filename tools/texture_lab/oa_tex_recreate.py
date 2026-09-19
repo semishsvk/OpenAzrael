@@ -13,7 +13,7 @@ import urllib.request
 import uuid
 
 from common import (
-    prepare_backend_colorkey_input,
+    prepare_conditioning_image,
     reapply_source_colorkey_mask,
     sha256_file,
     write_json,
@@ -149,6 +149,12 @@ def main() -> int:
     )
     parser.add_argument("source", type=Path)
     parser.add_argument("--workflow", type=Path, required=True)
+    parser.add_argument(
+        "--conditioning-image",
+        type=Path,
+        default=None,
+        help="Optional high-resolution conditioning canvas. Classic source remains QA/mask truth.",
+    )
     parser.add_argument("--server", default="http://127.0.0.1:8188")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--job-record", type=Path, default=None)
@@ -168,9 +174,15 @@ def main() -> int:
     args = parser.parse_args()
 
     workflow = json.loads(args.workflow.read_text(encoding="utf-8"))
+    conditioning_image = args.conditioning_image or args.source
+    if not conditioning_image.is_file():
+        raise SystemExit(f"conditioning image not found: {conditioning_image}")
+
     with tempfile.TemporaryDirectory(prefix="openazrael_tex_") as td:
-        upload_source, colorkey_prepared = prepare_backend_colorkey_input(
-            args.source, Path(td) / args.source.name
+        upload_source, colorkey_prepared = prepare_conditioning_image(
+            args.source,
+            conditioning_image,
+            Path(td) / conditioning_image.name,
         )
         result = run_job(
             args.server,
@@ -200,6 +212,8 @@ def main() -> int:
             "schema": "openazrael.texture_lab.ai_recreated_job.v4",
             "source_file": args.source.name,
             "source_sha256": sha256_file(args.source),
+            "conditioning_image_file": conditioning_image.name,
+            "conditioning_image_sha256": sha256_file(conditioning_image),
             "output_file": args.output.name,
             "workflow_template_file": args.workflow.name,
             "workflow_template_sha256": sha256_file(args.workflow),
