@@ -279,12 +279,19 @@ def validate_manual_review(
         )
 
     ids_ok = len(ids) == len(expected) and set(ids) == set(expected)
+    candidates_current = (
+        len(row_results) == len(expected)
+        and all(row["candidate_current"] for row in row_results)
+    )
     rows_pass = len(row_results) == len(expected) and all(
         row["status"] == "PASS" for row in row_results
     )
-    status = "PASS" if ids_ok and evidence_current and rows_pass else (
-        "STALE" if not evidence_current else "HOLD"
-    )
+    if not evidence_current or not candidates_current:
+        status = "STALE"
+    elif ids_ok and rows_pass:
+        status = "PASS"
+    else:
+        status = "HOLD"
 
     return {
         "status": status,
@@ -293,6 +300,7 @@ def validate_manual_review(
         "record": file_evidence(path),
         "ids_ok": ids_ok,
         "evidence_current": evidence_current,
+        "candidates_current": candidates_current,
         "rows": row_results,
     }
 
