@@ -29,6 +29,7 @@ from common import (
 from oa_tex_ai_bakeoff import apply_execution_subset, build_recreate_plan, build_restore_plan, eligible_entries
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
+from oa_tex_compare import _fit_preview
 from oa_tex_enhance import upscale_one
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
@@ -1011,6 +1012,14 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seams = seam_mae(im)
                 self.assertIn("x", seams)
                 self.assertIn("y", seams)
+
+    def test_comparison_preview_preserves_aspect_ratio(self):
+        wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
+        classic_preview = _fit_preview(wide, 320, True)
+        ai_preview = _fit_preview(wide.resize((256, 128)), 320, False)
+
+        self.assertEqual(classic_preview.size, (320, 160))
+        self.assertEqual(ai_preview.size, (320, 160))
 
     def test_tile_preview_dimensions(self):
         with tempfile.TemporaryDirectory() as td:
