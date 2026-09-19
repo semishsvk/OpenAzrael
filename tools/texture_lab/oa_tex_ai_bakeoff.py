@@ -137,6 +137,18 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
     if args.denoise_strength is not None:
         argv.extend(["--denoise-strength", str(args.denoise_strength)])
 
+    technical_out = args.run_dir / "ai_restored_validation.json"
+    technical = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_validate.py"),
+        "--source-dir", str(args.source_dir),
+        "--candidate-dir", str(args.restored_dir),
+        "--variant", f"realesrgan_x{args.factor}.png",
+        "--factor", str(args.factor),
+        "--out", str(technical_out),
+        "--only", *ids,
+    ]
+
     drift_out = args.run_dir / "ai_restored_structural_drift.json"
     qa = [
         sys.executable,
@@ -161,6 +173,7 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
     return [
         {"stage": "realesrgan_doctor", "argv": doctor, "command": _quoted_command(doctor)},
         {"stage": "generate", "argv": argv, "command": _quoted_command(argv)},
+        {"stage": "technical_qa", "argv": technical, "command": _quoted_command(technical)},
         {"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)},
         {"stage": "review_queue", "argv": review, "command": _quoted_command(review)},
     ]
@@ -357,6 +370,22 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
             )
         )
 
+    review_ids = [str(entry["id"]) for entry in entries]
+    technical_out = args.run_dir / "ai_recreated_validation.json"
+    technical = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_validate.py"),
+        "--source-dir", str(args.source_dir),
+        "--candidate-dir", str(args.recreated_dir),
+        "--variant", "selected.png",
+        "--factor", str(args.factor),
+        "--out", str(technical_out),
+        "--only", *review_ids,
+    ]
+    jobs.append(
+        {"stage": "technical_qa", "argv": technical, "command": _quoted_command(technical)}
+    )
+
     drift_out = args.run_dir / "ai_recreated_structural_drift.json"
     qa = [
         sys.executable,
@@ -370,7 +399,6 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
     ]
     jobs.append({"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)})
 
-    review_ids = [str(entry["id"]) for entry in entries]
     review = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_review_report.py"),
