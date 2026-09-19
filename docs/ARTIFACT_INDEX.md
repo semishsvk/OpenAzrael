@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v27` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v28` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
@@ -58,6 +58,12 @@
 - `tools/kg001_status_v111.py`
 - `data/tests/kg001_status_v111.json`
 - `docs/KG001_STATUS_V111.md`
+
+## Critical collision regression — Issue #6
+- source fix in `scripts/room_manager.gd`: two-sided legacy `ConcavePolygonShape3D` collision
+- physical regression in `scripts/kg001_room_trigger_runner_v110.gd`
+- source validator coverage in `tools/validate_kg001_room_trigger_v110.py`
+- GitHub Issue #6 remains open pending corrected-build runtime/manual retest
 
 ## KG-001 v110 room/trigger
 - `docs/KG001_ROOM_TRIGGER_V110.md`
