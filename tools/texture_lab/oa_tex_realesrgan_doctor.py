@@ -36,13 +36,15 @@ def main() -> int:
         default=ROOT / ".local/texture_lab/realesrgan",
     )
     parser.add_argument("--model", default="RealESRGAN_x4plus")
+    parser.add_argument("--realesrgan-root", type=Path, default=None)
+    parser.add_argument("--model-path", type=Path, default=None)
     parser.add_argument("--report", type=Path, default=None)
     args = parser.parse_args()
 
     registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
     spec = registry["models"][args.model]
-    source_dir = args.runtime_dir / "Real-ESRGAN"
-    checkpoint = args.runtime_dir / "weights" / spec["checkpoint_filename"]
+    source_dir = args.realesrgan_root or (args.runtime_dir / "Real-ESRGAN")
+    checkpoint = args.model_path or (args.runtime_dir / "weights" / spec["checkpoint_filename"])
 
     checkpoint_status = {"status": "MISSING"}
     if checkpoint.is_file():
@@ -80,6 +82,7 @@ def main() -> int:
         "python": sys.version,
         "platform": platform.platform(),
         "source_dir": str(source_dir),
+        "checkpoint_path": str(checkpoint),
         "source_exists": source_dir.is_dir(),
         "source_version": source_version,
         "source_version_ok": source_version == spec["upstream_version"],
