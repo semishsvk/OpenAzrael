@@ -118,7 +118,7 @@ func _process(_delta: float) -> void:
         status = "\nDEMO COMPLETE — Shield acquired"
     elif DemoState.flag("R8BathDrain"):
         status = "\nBaptistery bath: DRAINED"
-    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\nWASD move | Shift sprint | Mouse look | E interact | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | 1/2/3 debug room" % [
+    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\nWASD move | Shift sprint | Mouse look | E interact | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room" % [
         CandidateDiagnostics.BUILD_ID,
         CandidateDiagnostics.BUILD_CHECKPOINT,
         room_manager.current_room_id,
@@ -128,7 +128,7 @@ func _process(_delta: float) -> void:
 
     if candidate_debug_visible and is_instance_valid(candidate_debug_label):
         var p: Vector3 = player.global_position
-        candidate_debug_label.text = "KG-001 Candidate diagnostics\nCheckpoint: %s\nRoom: %s | Player: (%.3f, %.3f, %.3f)\nState SHA-256: %s\nFlags(true): %s\nPuzzle nodes(true): %s\nValues: %s\nLast trigger: %s\nLast event: %s\nLast logical audio: %s\nEvent log: %s%s" % [
+        candidate_debug_label.text = "KG-001 Candidate diagnostics\nCheckpoint: %s\nRoom: %s | Player: (%.3f, %.3f, %.3f)\nState SHA-256: %s\nFlags(true): %s\nPuzzle nodes(true): %s\nValues: %s\nLast trigger: %s\nLast event: %s\nLast logical audio: %s\nEvent log: %s\nLast bug report: %s%s" % [
             CandidateDiagnostics.BUILD_CHECKPOINT,
             room_manager.current_room_id,
             p.x, p.y, p.z,
@@ -140,6 +140,7 @@ func _process(_delta: float) -> void:
             CandidateDiagnostics.last_event_text(),
             CandidateDiagnostics.last_audio,
             CandidateDiagnostics.EVENT_LOG_PATH,
+            CandidateDiagnostics.last_bug_report if not CandidateDiagnostics.last_bug_report.is_empty() else "(none)",
             "\n" + state_dump_notice if not state_dump_notice.is_empty() else ""
         ]
 
