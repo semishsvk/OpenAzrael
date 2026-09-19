@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib
 import json
 from pathlib import Path
@@ -9,9 +10,21 @@ import platform
 import subprocess
 import sys
 
-from common import ROOT, sha256_file, write_json
-
+ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "tools/texture_lab/config/model_registry.json"
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def module_status(name: str) -> dict:
