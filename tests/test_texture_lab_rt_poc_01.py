@@ -1191,11 +1191,27 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 encoding="utf-8",
             )
             (run_dir / "local_preflight.json").write_text(
-                json.dumps({"ready_for_runtime_doctors": True}),
+                json.dumps(
+                    {
+                        "schema": "openazrael.texture_lab.local_preflight.v2",
+                        "preset": "restored_smoke_1",
+                        "mode": "restored",
+                        "textures": ["CORIROCK"],
+                        "blocking_checks": [],
+                        "ready_for_runtime_doctors": True,
+                    }
+                ),
                 encoding="utf-8",
             )
             (run_dir / "stage_gate.json").write_text(
-                json.dumps({"status": "PASS"}),
+                json.dumps(
+                    {
+                        "preset": "restored_smoke_1",
+                        "requires_approval": [],
+                        "receipts": [],
+                        "status": "PASS",
+                    }
+                ),
                 encoding="utf-8",
             )
             (run_dir / "realesrgan_doctor.json").write_text(
