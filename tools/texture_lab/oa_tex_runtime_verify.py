@@ -74,9 +74,28 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
     rows_ok = isinstance(rows, list)
     fatal = not (schema_ok and promotion_ok and rows_ok)
 
+    declared_status = str(manifest.get("status", ""))
+    declared_runtime_ready = manifest.get("runtime_ready") is True
+    stale_selection_count = int(
+        manifest.get("stale_production_selection_count", 0) or 0
+    )
+    allowed_ready_statuses = {"READY", "SAFE_CLASSIC_FALLBACKS"}
+
     input_checks = {}
     stale = False
     hold = fatal
+
+    if not declared_runtime_ready:
+        hold = True
+    if declared_status in {"MISSING_FILES", "INTEGRITY_FAILURE"}:
+        hold = True
+    elif (
+        declared_status == "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS"
+        or stale_selection_count > 0
+    ):
+        stale = True
+    elif declared_status not in allowed_ready_statuses:
+        hold = True
     inputs = manifest.get("inputs", {})
     if not isinstance(inputs, dict):
         inputs = {}
@@ -159,8 +178,9 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
             "automatic_promotion_off": promotion_ok,
             "rows_ok": rows_ok,
             "profile": manifest.get("profile"),
-            "declared_status": manifest.get("status"),
-            "declared_runtime_ready": manifest.get("runtime_ready"),
+            "declared_status": declared_status,
+            "declared_runtime_ready": declared_runtime_ready,
+            "stale_production_selection_count": stale_selection_count,
         },
         "inputs": input_checks,
         "textures": texture_checks,
