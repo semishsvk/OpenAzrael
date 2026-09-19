@@ -26,7 +26,13 @@
       "ai_restored": true,
       "ai_recreated": true,
       "manual_artwork_review": "all_figures_objects_and_atlas_boundaries",
-      "atlas_boundary_lock": true
+      "atlas_boundary_lock": true,
+      "atlas_split": {
+        "axis": "x",
+        "segments": 4,
+        "evidence": "R8 BAPTAP uses four non-overlapping U quarters: tapestry1..4",
+        "boundary_policy": "exact_equal_quarters"
+      }
     },
     "mechanical_puzzle": {
       "ai_restored": true,
