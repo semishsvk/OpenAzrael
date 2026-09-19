@@ -1053,14 +1053,32 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as td:
             runtime = Path(td) / "runtime"
-            no_deps = bootstrap_plan(runtime, False)[0]["argv"]
-            with_deps = bootstrap_plan(runtime, True)[0]["argv"]
+            no_deps_plan = bootstrap_plan(runtime, False)
+            with_deps_plan = bootstrap_plan(runtime, True)
 
+        self.assertEqual(
+            [row["name"] for row in no_deps_plan],
+            ["bootstrap_realesrgan"],
+        )
+        no_deps = no_deps_plan[0]["argv"]
         self.assertIn("--clone-upstream", no_deps)
         self.assertIn("--download-model", no_deps)
         self.assertIn("--create-venv", no_deps)
         self.assertNotIn("--install-python-deps", no_deps)
-        self.assertIn("--install-python-deps", with_deps)
+
+        self.assertEqual(
+            [row["name"] for row in with_deps_plan],
+            [
+                "bootstrap_realesrgan",
+                "verify_user_installed_torch",
+                "install_realesrgan_python_deps",
+            ],
+        )
+        self.assertIn("import json, torch, torchvision", with_deps_plan[1]["argv"][-1])
+        self.assertIn(
+            "--install-python-deps",
+            with_deps_plan[2]["argv"],
+        )
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
