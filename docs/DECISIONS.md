@@ -110,3 +110,8 @@ After v103-v105 exclude the audited direct-open paths and v106 verifies a struct
 **Status:** ACCEPTED — 2026-09-18
 
 The KG-001 Candidate 1 diagnostic layer may observe and record runtime state, visualize existing authored trigger bounds, and fail fast on missing required resources, but it must not directly set gameplay flags, puzzle nodes or inventory. Existing F8 audio debug and F9 parity capture are preserved; v116 reserves F6 for trigger visualization, F7 for the Candidate HUD and F10 for canonical state dumps. Diagnostic source-contract PASS does not promote any KG-001 runtime gate or forensic HOLD.
+
+## ADR-024 — Texture remaster layers are non-destructive generated presentation assets
+**Status:** ACCEPTED — 2026-09-19
+
+Classic decoded texture evidence remains immutable and separate from generated presentation layers. Texture Lab uses four explicit tiers: Classic, deterministic mathematical Enhanced, AI Restored and AI Recreated. Generated pixels never replace Classic source evidence and do not alter geometry, UVs, collision, gameplay or recovered identifiers. Commercial-derived Classic pixels and generated derivative pixels remain outside normal Git history; Git stores repository-safe tools, configuration, workflow metadata, tests and reviewed compact fingerprints/reports. AI fidelity metrics and visual candidates remain observational until explicit calibration/review promotes a production choice.
