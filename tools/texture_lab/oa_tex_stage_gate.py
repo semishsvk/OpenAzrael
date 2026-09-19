@@ -727,8 +727,27 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
                 for row in technical_rows
             )
         ),
-        "local_preflight_ok": local_preflight.get("ready_for_runtime_doctors") is True,
-        "stage_prerequisites_ok": stage_gate.get("status") == "PASS",
+        "local_preflight_ok": (
+            local_preflight.get("schema")
+            == "openazrael.texture_lab.local_preflight.v2"
+            and local_preflight.get("preset") == preset
+            and local_preflight.get("mode") == mode
+            and local_preflight.get("textures") == expected
+            and local_preflight.get("ready_for_runtime_doctors") is True
+            and local_preflight.get("blocking_checks") == []
+        ),
+        "stage_prerequisites_ok": (
+            stage_gate.get("preset") == preset
+            and stage_gate.get("requires_approval")
+            == [str(v) for v in spec.get("requires_approval", [])]
+            and stage_gate.get("status") == "PASS"
+            and len(stage_gate.get("receipts", []))
+            == len(spec.get("requires_approval", []))
+            and all(
+                isinstance(row, dict) and row.get("status") == "PASS"
+                for row in stage_gate.get("receipts", [])
+            )
+        ),
         "review_pack_ok": pack.get("status") == "PASS",
         "reviewed_outputs_ok": (
             len(output_ids) == len(expected)
