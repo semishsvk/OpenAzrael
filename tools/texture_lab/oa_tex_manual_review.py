@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 from pathlib import Path
 
@@ -28,6 +29,16 @@ BASE_CHECKS = [
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def stage_evidence_digest(evidence: dict) -> str:
+    payload = json.dumps(
+        evidence,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def mode_for(preset: str) -> str:
@@ -130,6 +141,7 @@ def build_template(preset: str, run_root: Path) -> dict:
         "automatic_approval": False,
         "review_pack": file_evidence(pack_path),
         "review_queue": file_evidence(queue_path),
+        "stage_evidence_sha256": stage_evidence_digest(evidence),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "updated_at_utc": datetime.now(timezone.utc).isoformat(),
         "rows": rows,
@@ -255,9 +267,16 @@ def validate_manual_review(
     ]
     ids = [str(row["id"]) for row in rows]
 
+    current_stage_evidence = evidence_snapshot(preset, run_root)
+    stage_evidence_current = (
+        current_stage_evidence.get("status") == "PASS"
+        and payload.get("stage_evidence_sha256")
+        == stage_evidence_digest(current_stage_evidence)
+    )
     evidence_current = (
         payload.get("review_pack") == file_evidence(pack_path)
         and payload.get("review_queue") == file_evidence(queue_path)
+        and stage_evidence_current
     )
     row_results = []
     for row in rows:
@@ -312,6 +331,7 @@ def validate_manual_review(
         "record": file_evidence(path),
         "ids_ok": ids_ok,
         "evidence_current": evidence_current,
+        "stage_evidence_current": stage_evidence_current,
         "candidates_current": candidates_current,
         "rows": row_results,
     }
