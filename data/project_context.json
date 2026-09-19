@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v28",
+  "checkpoint": "v116-context-v29",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-19",
   "workflow": [
@@ -115,7 +115,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 1",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V28_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V29_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -126,7 +126,7 @@
     },
     "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS",
-    "documentation_consistency": "PASS_V28",
+    "documentation_consistency": "PASS_V29",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_bugreport_",
@@ -136,7 +136,17 @@
       "#6 PLAYER_FALLS_THROUGH_FLOOR"
     ],
     "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
-    "kg001_release_blocked_by_issue_6": true
+    "kg001_release_blocked_by_issue_6": true,
+    "classic_colorkey_audit": "10_OF_86_CONFIRMED",
+    "classic_colorkey_issue_8": "SOURCE_FIX_READY_ASSET_REGEN_RUNTIME_RETEST_REQUIRED",
+    "classic_colorkey_policy": "HASH_SUFFIX_EXACT_PALETTE_INDEX_BINARY_ALPHA",
+    "classic_colorkey_keyed_texture_count": 10,
+    "classic_colorkey_nonhash_magenta_count": 0,
+    "classic_colorkey_validator": "tools/validate_classic_colorkey_v1.py",
+    "classic_colorkey_audit_file": "data/classic_colorkey_audit_v1.json",
+    "kg001_known_cosmetic_bugs": [
+      "#8 MAGENTA_COLOR_KEY_RENDERED_OPAQUE"
+    ]
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -146,7 +156,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run the v116-context-v28 candidate suite on a Godot-capable checkout, require the new Issue #6 R1 physical floor-support regression to PASS, then manually relaunch the demo and verify that the player no longer falls through the floor. Keep Issue #6 and demo-known-good-001 blocked until that retest passes.",
+  "next_target": "Regenerate the Classic demo textures with indexed color-key alpha, re-export R1/R7/R8 GLBs so keyed materials use alphaMode=MASK, run the v29 candidate source/runtime suite, then manually retest Critical Issue #6 floor collision and Cosmetic Issue #8 keyhole/tongs transparency.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
