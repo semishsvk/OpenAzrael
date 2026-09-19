@@ -55,7 +55,7 @@ The canonical selection is stored in `config/rt_poc_01_selection.json`. It conta
 
 `config/model_registry.json` pins the primary AI Restored runtime identity:
 
-- upstream source: `xinntao/Real-ESRGAN` tag `v0.3.0`;
+- upstream source: `xinntao/Real-ESRGAN` tag `v0.3.0`, exact commit `fa4c8a03ae3dbc9ea6ed471a6ab5da94ac15c2ea`;
 - model: `RealESRGAN_x4plus`;
 - official checkpoint release: `v0.1.0`;
 - exact checkpoint size: `67040989` bytes;
@@ -80,6 +80,14 @@ Dependency installation is deliberately explicit (`--install-python-deps`) so th
 Supports a pinned official Real-ESRGAN Python backend plus a fallback command-template backend. For a registered model, the adapter itself re-verifies the pinned upstream version, checkpoint byte size and SHA-256 immediately before inference; a mismatch aborts the run. The preferred POC path records the exact checkpoint SHA-256, tile setting, precision mode and denoise strength. `tile=0` is the default fidelity path; tiling is a resource fallback, not the baseline.
 
 Legacy color-key candidates are converted to alpha-safe input before the backend and the exact source-derived binary mask is reapplied afterward.
+
+### Pinned Qwen / ComfyUI runtime
+
+`config/qwen_2511_contract.json` pins the canonical single-image Qwen-Image-Edit-2511 experiment: fixed seed 734234, 40 steps, CFG 4.0, Euler/simple sampling, no Lightning LoRA, exact model filenames and model-file SHA-256 identities. `workflows/qwen_2511_openazrael_api.json` is the repository-owned API-format graph derived from the current official ComfyUI workflow contract.
+
+`oa_tex_comfy_doctor.py` first checks a running ComfyUI server through `/system_stats` and `/object_info` and requires all node classes/input schemas used by the graph. `oa_tex_qwen_preflight.py` then validates the exact workflow topology, node bindings, sampler settings, model filenames and—when a ComfyUI root is supplied—the exact model sizes/hashes.
+
+AI Recreated is conditioned on the 4x Enhanced canvas (Lanczos in RT-POC-01), while Classic remains the source of truth for structural QA and legacy alpha masks. This reduces the amount of geometry the model has to infer from low-resolution source pixels.
 
 ### `oa_tex_recreate.py`
 Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. Each job record fingerprints the workflow template, submitted workflow, source, output and explicitly supplied model files.
@@ -146,9 +154,12 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 
 ## Next execution step
 
-1. bootstrap/doctor the pinned Real-ESRGAN v0.3.0 + x4plus runtime on the development machine;\n2. run the pinned checkpoint on the 11 AI-Restored-eligible textures;
-3. run `oa_tex_structural_drift.py` and compare AI Restored results with the mathematical baseline;\n4. export a fixed-seed API-format ComfyUI workflow for the selected image-edit model and run AI Recreated;
-5. apply the same structural, color-key, seam and text/mask review;\n6. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
+1. bootstrap/doctor the pinned Real-ESRGAN v0.3.0 + x4plus runtime on the development machine;
+2. run the pinned checkpoint on the 11 AI-Restored-eligible textures;
+3. run `oa_tex_structural_drift.py` and compare AI Restored results with the mathematical baseline;
+4. export a fixed-seed API-format ComfyUI workflow for the selected image-edit model and run AI Recreated;
+5. apply the same structural, color-key, seam and text/mask review;
+6. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
 7. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
 
 RT-POC-01 remains observational: it does not replace Classic evidence or automatically select a production winner.
