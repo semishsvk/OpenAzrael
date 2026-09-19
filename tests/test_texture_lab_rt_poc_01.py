@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -19,6 +20,7 @@ from common import (
     PINNED_PILLOW_VERSION,
     alpha_is_binary,
     image_mae,
+    named_candidate_root,
     prepare_backend_colorkey_input,
     prepare_conditioning_image,
     reapply_source_colorkey_mask,
@@ -753,7 +755,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             run_dir.mkdir(parents=True)
 
             source = root / "classic.png"
-            candidate = root / "candidate.png"
+            candidate_test_root = (
+                named_candidate_root("restored", "restored_smoke_1")
+                / "_unit_test_candidate"
+            )
+            candidate = candidate_test_root / "CORIROCK" / "realesrgan_x4.png"
+            candidate.parent.mkdir(parents=True, exist_ok=True)
+            self.addCleanup(shutil.rmtree, candidate_test_root, True)
             comparison = root / "comparison.png"
             detail = root / "detail.png"
             source.write_bytes(b"classic")
