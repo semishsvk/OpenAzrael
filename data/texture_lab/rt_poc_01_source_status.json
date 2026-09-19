@@ -52,7 +52,10 @@
         "REJECTED"
       ],
       "accepted_requires_all_required_checks_true": true,
-      "evidence_change_status": "STALE"
+      "evidence_change_status": "STALE",
+      "init_requires_complete_stage_evidence": true,
+      "changed_candidate_status": "STALE",
+      "stage_approval_requires_nonempty_note": true
     }
   },
   "godot_lab": {
@@ -102,5 +105,15 @@
     "godot_preview_key": "P",
     "resolver_reads_production_registry": false,
     "allowed_runtime_path_prefix": "res://assets/textures/"
+  },
+  "runtime_export": {
+    "manifest_verifier": "tools/texture_lab/oa_tex_runtime_verify.py",
+    "export_compiler": "tools/texture_lab/oa_tex_runtime_export.py",
+    "export_snapshot_schema": "openazrael.texture_lab.runtime_export_snapshot.v1",
+    "requires_manifest_verification": "PASS",
+    "copies_pixels": false,
+    "exported_runtime_loader": "tools/texture_lab/godot/runtime_texture_resource_loader.gd",
+    "runtime_loader_uses": "ResourceLoader",
+    "raw_hashing_scope": "DEVELOPMENT_AND_PRE_EXPORT_ONLY"
   }
 }
