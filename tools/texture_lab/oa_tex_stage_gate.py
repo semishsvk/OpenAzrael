@@ -759,7 +759,11 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     if mode == "restored":
         doctor = load_json(run_dir / "realesrgan_doctor.json")
         restore_run = load_json(run_dir / "ai_restore_run.json")
-        checks["runtime_doctor_ok"] = doctor.get("ready") is True
+        checks["runtime_doctor_ok"] = (
+            doctor.get("schema")
+            == "openazrael.texture_lab.realesrgan_doctor.v3"
+            and doctor.get("ready") is True
+        )
         generation_provenance = restored_generation_provenance(
             restore_run,
             pack_manifest,
@@ -771,8 +775,16 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     else:
         comfy = load_json(run_dir / "comfy_doctor.json")
         qwen = load_json(run_dir / "qwen_preflight.json")
-        checks["runtime_doctor_ok"] = comfy.get("ready") is True
-        checks["qwen_preflight_ok"] = qwen.get("ready_for_execution") is True
+        checks["runtime_doctor_ok"] = (
+            comfy.get("schema")
+            == "openazrael.texture_lab.comfy_doctor.v1"
+            and comfy.get("ready") is True
+        )
+        checks["qwen_preflight_ok"] = (
+            qwen.get("schema")
+            == "openazrael.texture_lab.qwen_2511_preflight.v2"
+            and qwen.get("ready_for_execution") is True
+        )
         checks["generation_records_exact"] = (
             {path.resolve() for path in job_paths}
             == {path.resolve() for path in expected_job_paths}
