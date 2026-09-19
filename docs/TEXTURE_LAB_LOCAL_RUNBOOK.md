@@ -214,7 +214,20 @@ python tools/texture_lab/oa_tex_stage_gate.py approve restored_smoke_1 \
 
 Only then run `restored_smoke_4`. Review it and approve it the same way before `restored_full`.
 
-The next preset begins with a stage-gate check. An approval receipt is bound to the exact plan, local preflight, backend doctor/preflight, technical validation, structural-drift report, generation/job records, review queue and output SHA-256 values. Re-running a previously approved stage with changed evidence makes its receipt stale and requires a new manual approval.
+The next preset begins with a stage-gate check. An approval v5 receipt is bound to the exact plan, unique `run_instance_id`, local preflight, backend doctor/preflight, technical validation, structural-drift report, generation provenance, review queue, review pack, output SHA-256 values and structured manual review.
+
+A named preset is a clean-run namespace. If its run evidence or preset-scoped candidate directory already contains artifacts, a real rerun is refused by default. After reviewing/backing up the old local evidence, an intentional clean rerun must use:
+
+```bash
+python tools/texture_lab/oa_tex_ai_bakeoff.py restored \
+  --preset restored_smoke_1 \
+  --replace-existing-run \
+  --realesrgan-python <REAL_ESRGAN_VENV_PYTHON> \
+  --realesrgan-root .local/texture_lab/realesrgan/Real-ESRGAN \
+  --model-path .local/texture_lab/realesrgan/weights/RealESRGAN_x4plus.pth
+```
+
+That flag deletes only the selected preset's local run evidence and preset-scoped generated candidates before starting clean. Every real named rerun receives a fresh `run_instance_id`, so an older manual review/approval cannot become current again merely because regenerated pixels happen to be byte-identical.
 
 ## 4. Prepare Qwen / ComfyUI
 
@@ -387,7 +400,7 @@ python tools/texture_lab/oa_tex_production_selection.py revoke CORIROCK \
   --note "selection withdrawn after later comparison"
 ```
 
-The registry records metadata only; it does not copy pixels or alter the game.
+The registry records metadata only; it does not copy pixels or alter the game. Registry schema v2 preserves `superseded_selections` and `revocations` as append-only audit history. A legacy v1 registry is migrated in memory to v2 when loaded; the next explicit mutation writes the v2 contract.
 
 ## Runtime profile manifests
 
