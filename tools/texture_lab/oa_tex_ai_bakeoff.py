@@ -156,6 +156,7 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
         "--selection", str(args.selection),
         "--out-json", str(args.run_dir / "ai_restored_review_queue.json"),
         "--out-md", str(args.run_dir / "ai_restored_review_queue.md"),
+        "--only", *ids,
     ]
     return [
         {"stage": "realesrgan_doctor", "argv": doctor, "command": _quoted_command(doctor)},
@@ -369,6 +370,7 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
     ]
     jobs.append({"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)})
 
+    review_ids = [str(entry["id"]) for entry in entries]
     review = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_review_report.py"),
@@ -377,9 +379,28 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
         "--selection", str(args.selection),
         "--out-json", str(args.run_dir / "ai_recreated_review_queue.json"),
         "--out-md", str(args.run_dir / "ai_recreated_review_queue.md"),
+        "--only", *review_ids,
     ]
     jobs.append({"stage": "review_queue", "argv": review, "command": _quoted_command(review)})
     return jobs
+
+def build_stage_gate_job(args) -> dict | None:
+    if not args.preset:
+        return None
+    argv = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_stage_gate.py"),
+        "check",
+        args.preset,
+        "--run-root", str(args.run_root),
+        "--out", str(args.run_dir / "stage_gate.json"),
+    ]
+    return {
+        "stage": "stage_gate",
+        "argv": argv,
+        "command": _quoted_command(argv),
+    }
+
 
 def resolve_qwen_defaults(args, contract: dict) -> None:
     bindings = contract["canonical_openazrael_workflow"]["bindings"]
@@ -481,10 +502,18 @@ def main() -> int:
     if not selected:
         raise SystemExit("execution subset contains no eligible textures")
 
+    args.run_root = args.run_dir
+    if args.preset and args.run_dir.name != args.preset:
+        args.run_dir = args.run_dir / args.preset
+
     if args.mode == "restored":
         jobs = build_restore_plan(args, selected)
     else:
         jobs = build_recreate_plan(args, selected, profiles, qwen_contract)
+
+    gate_job = build_stage_gate_job(args)
+    if gate_job is not None:
+        jobs.insert(0, gate_job)
 
     plan = {
         "schema": "openazrael.texture_lab.ai_bakeoff_plan.v2",
@@ -496,6 +525,7 @@ def main() -> int:
         "skipped_count": len(skipped),
         "deferred_count": len(deferred),
         "preset": preset_meta,
+        "run_dir": str(args.run_dir),
         "eligible": [
             {
                 "id": entry["id"],
