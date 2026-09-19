@@ -7,7 +7,12 @@ import json
 from pathlib import Path
 
 from common import ROOT, sha256_file, write_json
-from oa_tex_stage_gate import DEFAULT_RUN_ROOT, file_evidence, preset_record
+from oa_tex_stage_gate import (
+    DEFAULT_RUN_ROOT,
+    evidence_snapshot,
+    file_evidence,
+    preset_record,
+)
 
 DEFAULT_MANUAL_REVIEW_ROOT = ROOT / ".local/texture_lab/manual_reviews/rt_poc_01"
 
@@ -63,6 +68,13 @@ def required_checks_for(review_row: dict, pack_row: dict) -> list[str]:
 
 
 def build_template(preset: str, run_root: Path) -> dict:
+    evidence = evidence_snapshot(preset, run_root)
+    if evidence.get("status") != "PASS":
+        raise SystemExit(
+            "manual review init requires complete current stage evidence; "
+            f"status={evidence.get('status')}"
+        )
+
     pack_path = review_pack_path(preset, run_root)
     queue_path = review_queue_path(preset, run_root)
     if not pack_path.is_file() or not queue_path.is_file():
