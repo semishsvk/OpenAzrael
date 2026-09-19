@@ -555,7 +555,7 @@ def resolve_named_candidate_namespace(args) -> None:
         canonical = named_candidate_root("restored", args.preset)
         if args.restored_dir not in {DEFAULT_RESTORED_DIR, canonical}:
             raise SystemExit(
-                "named restored presets use a fixed immutable candidate namespace: "
+                "named restored presets use a fixed preset-scoped candidate namespace: "
                 f"{canonical}"
             )
         args.restored_dir = canonical
@@ -708,7 +708,7 @@ def main() -> int:
             else str(args.recreated_dir)
         ),
         "candidate_namespace_policy": (
-            "named_preset_immutable_v1"
+            "named_preset_scoped_v1"
             if args.preset
             else "ad_hoc_explicit"
         ),
