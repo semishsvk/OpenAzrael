@@ -66,7 +66,7 @@ The scene does not access DemoState, CandidateDiagnostics or RoomManager and doe
 
 A real 12-texture bake-off was executed against the restored v44 Classic corpus on 2026-09-19. All 36 nearest/bicubic/Lanczos outputs were produced at 4x dimensions.
 
-Round-trip similarity predictably favors nearest-neighbour because it preserves the original pixel lattice most directly. This is **not** treated as a visual-quality winner. Visual inspection shows why the selection must remain content-aware: hard-edge/mask content benefits from exact edge preservation, while photographic/organic/architectural surfaces can benefit from smoother high-quality reconstruction. No global method is promoted by RT-POC-01.
+Round-trip similarity predictably favors nearest-neighbour because it preserves the original pixel lattice most directly. This is **not** treated as a visual-quality winner.\n\nA follow-up visual QA pass identified legacy `#` textures containing quantized magenta (`R/B >= 248`, `G <= 12`). RT-POC-01 now treats only `#` assets with observed magenta as conservative color-key candidates: magenta becomes alpha=0, filtered RGB uses premultiplied alpha, and the deterministic Enhanced tier restores the alpha mask with nearest-neighbour. The validator rejects visible magenta bleed and non-binary alpha for these candidates. This is a presentation-safety rule, not a claim that complete original-renderer transparency semantics are recovered. Visual inspection shows why the selection must remain content-aware: hard-edge/mask content benefits from exact edge preservation, while photographic/organic/architectural surfaces can benefit from smoother high-quality reconstruction. No global method is promoted by RT-POC-01.
 
 ## Repository safety
 
