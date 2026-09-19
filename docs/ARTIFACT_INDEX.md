@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v25` — technical base v116 plus current context/Git/quality/architecture layer.
+- `v116-context-v26` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Localization architecture
 - `docs/LOCALIZATION_ARCHITECTURE.md`

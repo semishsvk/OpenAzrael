@@ -1,7 +1,7 @@
 {
-  "checkpoint": "v116-context-v25",
+  "checkpoint": "v116-context-v26",
   "technical_base": "openazrael_godot_poc_v116",
-  "date": "2026-09-18",
+  "date": "2026-09-19",
   "workflow": [
     "DEMO",
     "FAITHFUL_RECONSTRUCTION",
@@ -123,7 +123,9 @@
       "F10": "canonical_state_dump"
     },
     "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
-    "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS"
+    "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS",
+    "documentation_consistency": "PASS_V26",
+    "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -133,7 +135,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results in a Godot-capable checkout with restored ignored room/audio assets. If G00-G09 pass, launch KG-001 Candidate 1 interactively, use v116 diagnostics during the manual route, then complete G10. Resume the deferred generic copy/mutator forensic audit as v117.",
+  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results on a Godot-capable checkout with restored ignored room/audio assets. If G00-G09 pass, run KG-001 Candidate 1 interactively and complete G10. After the first clean runtime/manual cycle, begin the approved localization runtime implementation and resume deferred v117 forensic copy/mutator work.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",

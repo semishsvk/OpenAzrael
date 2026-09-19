@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v25"
+EXPECTED_CHECKPOINT="v116-context-v26"
 errors=[]
 
 def req(p):
@@ -110,6 +110,10 @@ try:
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V26":
+        errors.append("documentation consistency drift")
+    if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
+        errors.append("documentation/runtime boundary drift")
     loc=c.get("localization",{})
     if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
         errors.append("localization architecture status drift")

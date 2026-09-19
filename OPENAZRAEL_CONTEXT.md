@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v25`
+**Current canonical checkpoint:** `v116-context-v26`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -53,6 +53,13 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Dispatcher `0x18698` walks those 6-byte entries, follows the original pointer array and dispatches the original 27-byte record pointer in place.
 - No action-record copy/normalization step is present between WORLD deserialization and opcode execution in this audited runtime path; opcode-0x28 also does not mutate the record before consuming its fields.
 - Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
+
+## Immediate execution priority
+- Run the existing v112 candidate workflow on a Godot-capable fresh checkout with locally restored ignored assets.
+- Candidate 1 source status is PASS; canonical runtime evidence is still NOT_EXECUTED.
+- If G00-G09 pass, perform the normal graphical full-demo G10 sanity route.
+- Do not add localization runtime code or new gameplay scope before that first Candidate 1 runtime/manual cycle unless fixing a blocker.
+- Resume the deferred static copy/mutator producer audit as v117 afterwards.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
