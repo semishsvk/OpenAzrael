@@ -112,7 +112,10 @@ def build_summary(preset: str, run_root: Path) -> dict:
                 "Inspect each detail comparison sheet for invented microdetail, ringing, plastic texture, false edges or lost original features.",
                 "Inspect 3x3 tile previews wherever present and interpret seam deltas relative to Classic.",
                 "Run the isolated Godot Texture Lab A/B scene at gameplay-like viewing scale.",
-                f"If the stage is manually accepted, record approval with oa_tex_stage_gate.py approve {preset}.",
+                f"Initialize the structured review with oa_tex_manual_review.py init {preset}.",
+                "Record every texture decision and all required checks; ACCEPTED_FOR_STAGE requires every required check=true.",
+                f"Confirm oa_tex_manual_review.py status {preset} returns PASS.",
+                f"Only then record stage approval with oa_tex_stage_gate.py approve {preset}.",
             ]
             if ready
             else [
