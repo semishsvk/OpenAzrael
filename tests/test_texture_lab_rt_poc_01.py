@@ -1073,7 +1073,25 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 encoding="utf-8",
             )
             (run_dir / "ai_restore_run.json").write_text(
-                json.dumps({"textures": [{"id": "CORIROCK"}]}),
+                json.dumps(
+                    {
+                        "schema": "openazrael.texture_lab.ai_restore_run.v4",
+                        "mode": "ai_restored",
+                        "reproducibility": {
+                            "runtime_identity": {"status": "PASS"}
+                        },
+                        "textures": [
+                            {
+                                "id": "CORIROCK",
+                                "source_sha256": sha256_file(source),
+                                "output_sha256": sha256_file(candidate),
+                                "model": "RealESRGAN_x4plus",
+                                "factor": 4,
+                                "backend": "realesrgan-python",
+                            }
+                        ],
+                    }
+                ),
                 encoding="utf-8",
             )
             review_manifest = run_dir / "ai_restored_review_pack.json"
@@ -1203,7 +1221,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             )
             self.assertEqual(
                 approved["receipt"]["schema"],
-                "openazrael.texture_lab.stage_approval.v4",
+                "openazrael.texture_lab.stage_approval.v5",
             )
             self.assertEqual(
                 validate_receipt(
