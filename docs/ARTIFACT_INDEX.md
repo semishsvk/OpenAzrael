@@ -167,3 +167,9 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 ## Texture Lab manual review evidence
 - `tools/texture_lab/oa_tex_manual_review.py` — init/record/status workflow for per-texture human QA; stage approval requires a current PASS structured review.
 - local records live under `.local/texture_lab/manual_reviews/rt_poc_01/` and remain outside Git because they are bound to local generated commercial-derived candidates.
+
+
+## Texture Lab staged review/runtime contracts
+- `tools/texture_lab/oa_tex_contract_validate.py` — cross-file CI validator for selection/policy/stages/model/backend/Qwen consistency.
+- `tools/texture_lab/oa_tex_review_profile.py` — creates non-exportable stage-specific Godot review manifests and the local `review_current.json` convenience pointer.
+- named AI candidates are isolated under ignored `assets/textures/ai_restored/_runs/<preset>/` / `ai_recreated/_runs/<preset>/` namespaces.
