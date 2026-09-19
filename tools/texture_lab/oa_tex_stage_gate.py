@@ -419,7 +419,7 @@ def _qwen_job_checks(
     expected_seed = contract.get("poc_sampling", {}).get("seed")
     return {
         "schema_ok": job.get("schema")
-        == "openazrael.texture_lab.ai_recreated_job.v4",
+        == "openazrael.texture_lab.ai_recreated_job.v5",
         "source_hash_ok": job.get("source_sha256") == source_sha,
         "conditioning_hash_ok": (
             job.get("conditioning_image_sha256") == conditioning_sha
@@ -458,6 +458,20 @@ def _qwen_job_checks(
             and bool(job.get("uploaded_name"))
             and submitted_input(load_node, "image")
             == job.get("uploaded_name")
+        ),
+        "performance_ok": (
+            isinstance(job.get("performance"), dict)
+            and all(
+                isinstance(job["performance"].get(key), (int, float))
+                and float(job["performance"].get(key)) >= 0.0
+                for key in [
+                    "job_wall_seconds",
+                    "upload_wall_seconds",
+                    "submit_wall_seconds",
+                    "submit_to_completion_wall_seconds",
+                    "download_wall_seconds",
+                ]
+            )
         ),
     }
 
