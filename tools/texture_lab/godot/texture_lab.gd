@@ -4,7 +4,11 @@ const SELECTION_PATH := "res://tools/texture_lab/config/rt_poc_01_selection.json
 const TIER_NAMES := ["CLASSIC", "ENHANCED", "AI RESTORED", "AI RECREATED"]
 const ENHANCED_METHODS := ["nearest", "bicubic", "lanczos"]
 const TILE_REPEATS := [1, 2, 4]
-const PROFILE_MANIFEST_PATH := "res://.local/texture_lab/runtime_manifests/remastered.json"
+const PROFILE_MANIFEST_PATHS := [
+    "res://.local/texture_lab/runtime_manifests/review_current.json",
+    "res://.local/texture_lab/runtime_manifests/remastered.json",
+]
+const PROFILE_MANIFEST_LABELS := ["REVIEW", "REMASTERED"]
 const PROFILE_RESOLVER_SCRIPT := preload("res://tools/texture_lab/godot/texture_profile_resolver.gd")
 
 @onready var surface_a: MeshInstance3D = $Surface
@@ -22,6 +26,7 @@ var lit := false
 var compare_mode := false
 var profile_mode := false
 var profile_loaded := false
+var profile_source_index := 0
 var profile_message := "PROFILE NOT LOADED"
 var profile_resolver = PROFILE_RESOLVER_SCRIPT.new()
 
@@ -53,16 +58,21 @@ func _load_selection() -> void:
         return
     entries = parsed["textures"]
 
+func _active_profile_manifest_path() -> String:
+    return PROFILE_MANIFEST_PATHS[profile_source_index]
+
 func _load_profile_manifest() -> void:
-    profile_loaded = profile_resolver.load_manifest(PROFILE_MANIFEST_PATH)
+    var manifest_path := _active_profile_manifest_path()
+    profile_loaded = profile_resolver.load_manifest(manifest_path)
     if profile_loaded:
-        profile_message = "PROFILE %s / %s" % [
+        profile_message = "%s PROFILE %s / %s" % [
+            PROFILE_MANIFEST_LABELS[profile_source_index],
             String(profile_resolver.profile).to_upper(),
             String(profile_resolver.status)
         ]
     else:
         profile_mode = false
-        profile_message = "PROFILE MANIFEST MISSING/INVALID"
+        profile_message = "%s PROFILE MISSING/INVALID" % PROFILE_MANIFEST_LABELS[profile_source_index]
 
 func _candidate_path(entry: Dictionary) -> String:
     if profile_mode and profile_loaded:
@@ -235,7 +245,7 @@ func _update_label() -> void:
             + "Enhanced: %s  |  Tile: %s  |  Lighting: %s\n"
             + "A: %s\n"
             + "B: %s\n"
-            + "←/→ texture   1/2/3/4 manual candidate   P runtime profile   R reference   B A/B\n"
+            + "←/→ texture   1/2/3/4 manual candidate   P profile   O review/remastered   R reference   B A/B\n"
             + "Q/W/E nearest/bicubic/lanczos   T tile 1/2/4   L lighting   S screenshot\n"
             + "%s"
         ) % [
@@ -260,7 +270,7 @@ func _update_label() -> void:
             + "Tier: %s  |  Enhanced: %s  |  Tile: %s  |  Lighting: %s  |  %s\n"
             + "Path: %s\n"
             + "←/→ texture   1 Classic   2 Enhanced   3 AI Restored   4 AI Recreated\n"
-            + "P runtime profile   B A/B compare   R reference   Q/W/E nearest/bicubic/lanczos\n"
+            + "P profile   O review/remastered   B A/B compare   R reference   Q/W/E nearest/bicubic/lanczos\n"
             + "T tile 1/2/4   L lighting   S screenshot\n"
             + "%s"
         ) % [
@@ -280,7 +290,12 @@ func _save_screenshot() -> void:
     var image := get_viewport().get_texture().get_image()
     var id := String(entries[texture_index]["id"]).replace("#", "_")
     var tier := (
-        ("profile_" + String(profile_resolver.profile).to_lower())
+        (
+            "profile_"
+            + String(profile_resolver.profile).to_lower()
+                .replace(":", "_")
+                .replace("/", "_")
+        )
         if profile_mode and profile_loaded
         else TIER_NAMES[tier_index].to_lower().replace(" ", "_")
     )
@@ -340,6 +355,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
             _load_profile_manifest()
             if profile_loaded:
                 profile_mode = not profile_mode
+        KEY_O:
+            profile_source_index = (profile_source_index + 1) % PROFILE_MANIFEST_PATHS.size()
+            var was_profile_mode := profile_mode
+            _load_profile_manifest()
+            profile_mode = was_profile_mode and profile_loaded
         KEY_S:
             _save_screenshot()
         _:
