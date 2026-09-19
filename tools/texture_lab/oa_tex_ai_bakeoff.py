@@ -22,6 +22,11 @@ QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 AI_BACKENDS = ROOT / "tools/texture_lab/config/ai_backends.json"
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+CANONICAL_SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+CANONICAL_POLICY = ROOT / "tools/texture_lab/config/ai_review_policy.json"
+CANONICAL_PROFILES = ROOT / "tools/texture_lab/profiles/recreate_profiles.json"
+CANONICAL_SOURCE_DIR = ROOT / "assets/textures/classic"
+CANONICAL_ENHANCED_DIR = ROOT / "assets/textures/enhanced"
 DEFAULT_RESTORED_DIR = AI_RESTORED_ROOT
 DEFAULT_RECREATED_DIR = AI_RECREATED_ROOT
 
@@ -656,6 +661,30 @@ def validate_named_preset_contract(
     if not args.preset:
         return
 
+    common_paths = {
+        "selection": (args.selection, CANONICAL_SELECTION),
+        "policy": (args.policy, CANONICAL_POLICY),
+        "profiles": (args.profiles, CANONICAL_PROFILES),
+        "source_dir": (args.source_dir, CANONICAL_SOURCE_DIR),
+    }
+    common_path_failures = [
+        name
+        for name, (actual, expected_path) in common_paths.items()
+        if Path(actual).resolve() != expected_path.resolve()
+    ]
+    if common_path_failures:
+        raise SystemExit(
+            "named preset repository inputs are canonical and cannot be "
+            "overridden; mismatches=" + ",".join(common_path_failures)
+        )
+
+    if args.only:
+        raise SystemExit("--only cannot be combined with a named preset")
+    if args.model_file:
+        raise SystemExit(
+            "--model-file cannot extend the canonical model set of a named preset"
+        )
+
     if args.mode == "restored":
         primary = backends["ai_restored"]["primary"]
         expected = {
@@ -691,6 +720,10 @@ def validate_named_preset_contract(
         "seed": int(args.seed) == int(sampling["seed"]),
         "factor": int(args.factor) == 4,
         "conditioning_variant": args.recreate_input_variant == "lanczos_x4.png",
+        "conditioning_dir": (
+            args.recreate_input_dir.resolve()
+            == CANONICAL_ENHANCED_DIR.resolve()
+        ),
         "load_image_node": str(args.load_image_node) == str(bindings["load_image_node"]),
         "prompt_node": str(args.prompt_node) == str(bindings["prompt_node"]),
         "negative_prompt_node": (
@@ -745,22 +778,22 @@ def main() -> int:
     parser.add_argument(
         "--selection",
         type=Path,
-        default=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+        default=CANONICAL_SELECTION,
     )
     parser.add_argument(
         "--policy",
         type=Path,
-        default=ROOT / "tools/texture_lab/config/ai_review_policy.json",
+        default=CANONICAL_POLICY,
     )
     parser.add_argument(
         "--profiles",
         type=Path,
-        default=ROOT / "tools/texture_lab/profiles/recreate_profiles.json",
+        default=CANONICAL_PROFILES,
     )
-    parser.add_argument("--source-dir", type=Path, default=ROOT / "assets/textures/classic")
+    parser.add_argument("--source-dir", type=Path, default=CANONICAL_SOURCE_DIR)
     parser.add_argument("--restored-dir", type=Path, default=DEFAULT_RESTORED_DIR)
     parser.add_argument("--recreated-dir", type=Path, default=DEFAULT_RECREATED_DIR)
-    parser.add_argument("--recreate-input-dir", type=Path, default=ROOT / "assets/textures/enhanced")
+    parser.add_argument("--recreate-input-dir", type=Path, default=CANONICAL_ENHANCED_DIR)
     parser.add_argument("--recreate-input-variant", default="lanczos_x4.png")
     parser.add_argument("--run-dir", type=Path, default=ROOT / ".local/texture_lab/runs/rt_poc_01")
     parser.add_argument("--plan-out", type=Path, default=None)
