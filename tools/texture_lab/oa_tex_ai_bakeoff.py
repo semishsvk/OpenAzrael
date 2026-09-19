@@ -125,6 +125,7 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
     if args.denoise_strength is not None:
         argv.extend(["--denoise-strength", str(args.denoise_strength)])
 
+    drift_out = args.run_dir / "ai_restored_structural_drift.json"
     qa = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_structural_drift.py"),
@@ -132,12 +133,22 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
         "--candidate-dir", str(args.restored_dir),
         "--variant", f"realesrgan_x{args.factor}.png",
         "--selection", str(args.selection),
-        "--out", str(args.run_dir / "ai_restored_structural_drift.json"),
+        "--out", str(drift_out),
         "--allow-missing",
+    ]
+    review = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_review_report.py"),
+        "restored",
+        "--drift", str(drift_out),
+        "--selection", str(args.selection),
+        "--out-json", str(args.run_dir / "ai_restored_review_queue.json"),
+        "--out-md", str(args.run_dir / "ai_restored_review_queue.md"),
     ]
     return [
         {"stage": "generate", "argv": argv, "command": _quoted_command(argv)},
         {"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)},
+        {"stage": "review_queue", "argv": review, "command": _quoted_command(review)},
     ]
 
 
@@ -332,6 +343,7 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
             )
         )
 
+    drift_out = args.run_dir / "ai_recreated_structural_drift.json"
     qa = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_structural_drift.py"),
@@ -339,10 +351,21 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
         "--candidate-dir", str(args.recreated_dir),
         "--variant", "selected.png",
         "--selection", str(args.selection),
-        "--out", str(args.run_dir / "ai_recreated_structural_drift.json"),
+        "--out", str(drift_out),
         "--allow-missing",
     ]
     jobs.append({"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)})
+
+    review = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_review_report.py"),
+        "recreated",
+        "--drift", str(drift_out),
+        "--selection", str(args.selection),
+        "--out-json", str(args.run_dir / "ai_recreated_review_queue.json"),
+        "--out-md", str(args.run_dir / "ai_recreated_review_queue.md"),
+    ]
+    jobs.append({"stage": "review_queue", "argv": review, "command": _quoted_command(review)})
     return jobs
 
 def resolve_qwen_defaults(args, contract: dict) -> None:
