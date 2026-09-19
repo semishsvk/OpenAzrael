@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 import shlex
 import shutil
@@ -16,6 +17,50 @@ from common import (
     sha256_file,
     write_json,
 )
+
+MODEL_REGISTRY = ROOT / "tools/texture_lab/config/model_registry.json"
+
+
+def load_registered_model(name: str) -> dict | None:
+    if not MODEL_REGISTRY.is_file():
+        return None
+    registry = json.loads(MODEL_REGISTRY.read_text(encoding="utf-8"))
+    return registry.get("models", {}).get(name)
+
+
+def verify_registered_runtime(model_name: str, realesrgan_root: Path, model_path: Path) -> dict:
+    spec = load_registered_model(model_name)
+    if spec is None:
+        return {
+            "registered": False,
+            "status": "UNREGISTERED",
+            "model": model_name,
+        }
+
+    version_path = realesrgan_root / "VERSION"
+    version = version_path.read_text(encoding="utf-8").strip() if version_path.is_file() else None
+    digest = sha256_file(model_path) if model_path.is_file() else None
+    size = model_path.stat().st_size if model_path.is_file() else None
+
+    checks = {
+        "source_version_ok": version == str(spec["upstream_version"]),
+        "checkpoint_size_ok": size == int(spec["checkpoint_size_bytes"]),
+        "checkpoint_sha256_ok": digest == str(spec["checkpoint_sha256"]),
+        "factor_ok": int(spec["scale"]) == 4,
+    }
+    status = "PASS" if all(checks.values()) else "FAIL"
+    return {
+        "registered": True,
+        "status": status,
+        "model": model_name,
+        "source_version": version,
+        "expected_source_version": spec["upstream_version"],
+        "checkpoint_size_bytes": size,
+        "expected_checkpoint_size_bytes": spec["checkpoint_size_bytes"],
+        "checkpoint_sha256": digest,
+        "expected_checkpoint_sha256": spec["checkpoint_sha256"],
+        "checks": checks,
+    }
 
 
 def build_realesrgan_python_command(
@@ -59,6 +104,13 @@ def run_official_python(args, src: Path, dest: Path) -> dict:
     if not args.model_path.is_file():
         raise SystemExit(f"Real-ESRGAN model not found: {args.model_path}")
 
+    identity = verify_registered_runtime(args.model, args.realesrgan_root, args.model_path)
+    if identity.get("registered") and identity.get("status") != "PASS":
+        raise SystemExit(
+            "registered Real-ESRGAN runtime identity mismatch; "
+            "refusing inference. Run oa_tex_realesrgan_doctor.py for details."
+        )
+
     dest.parent.mkdir(parents=True, exist_ok=True)
     expected = dest.parent / f"{src.stem}.png"
     argv = build_realesrgan_python_command(
@@ -85,6 +137,7 @@ def run_official_python(args, src: Path, dest: Path) -> dict:
         "argv": argv,
         "model_path": str(args.model_path),
         "model_sha256": sha256_file(args.model_path),
+        "runtime_identity": identity,
         "tile": args.tile,
         "fp32": bool(args.fp32),
         "denoise_strength": args.denoise_strength,
@@ -105,7 +158,15 @@ def run_command_template(args, src: Path, dest: Path) -> dict:
     subprocess.run(argv, check=True)
     if not dest.is_file():
         raise RuntimeError(f"restore command did not create: {dest}")
-    return {"backend": "command", "argv": argv, "command_template": args.command}
+    return {
+        "backend": "command",
+        "argv": argv,
+        "command_template": args.command,
+        "runtime_identity": {
+            "registered": False,
+            "status": "EXTERNAL_BACKEND_UNVERIFIED",
+        },
+    }
 
 
 def main() -> int:
@@ -170,7 +231,7 @@ def main() -> int:
     write_json(
         args.report,
         {
-            "schema": "openazrael.texture_lab.ai_restore_run.v3",
+            "schema": "openazrael.texture_lab.ai_restore_run.v4",
             "mode": "ai_restored",
             "reproducibility": reproducibility,
             "legacy_colorkey_policy": "prepare_alpha_safe_input_then_reapply_exact_source_mask",
