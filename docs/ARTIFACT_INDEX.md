@@ -157,3 +157,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 ## Texture Lab production selection
 - `data/texture_lab/production_selection.json` — empty-by-default Remastered production-selection registry; explicit selections are hash-bound to current reviewed/approved stage evidence.
 - `tools/texture_lab/oa_tex_production_selection.py` — select/status/revoke tooling; never copies pixels or auto-selects a winner.
+
+
+## Texture Lab runtime presentation bridge
+- `tools/texture_lab/oa_tex_runtime_manifest.py` — builds Classic/Enhanced/Remastered local presentation manifests; Remastered uses only current explicit production selections and otherwise falls back to Classic.
+- `tools/texture_lab/godot/texture_profile_resolver.gd` — isolated manifest-only Godot resolver used by Texture Lab profile preview; rejects unsafe paths and never reads stage/selection evidence directly.
