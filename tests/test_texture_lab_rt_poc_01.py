@@ -1121,7 +1121,12 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             run_dir = run_root / "restored_smoke_1"
             run_dir.mkdir(parents=True)
 
-            source = root / "classic.png"
+            source_test_root = (
+                ROOT / "assets/textures/classic/_unit_test_review"
+            )
+            source = source_test_root / "CORIROCK.png"
+            source.parent.mkdir(parents=True, exist_ok=True)
+            self.addCleanup(shutil.rmtree, source_test_root, True)
             candidate_test_root = (
                 named_candidate_root("restored", "restored_smoke_1")
                 / "_unit_test_candidate"
@@ -1129,8 +1134,11 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             candidate = candidate_test_root / "CORIROCK" / "realesrgan_x4.png"
             candidate.parent.mkdir(parents=True, exist_ok=True)
             self.addCleanup(shutil.rmtree, candidate_test_root, True)
-            comparison = root / "comparison.png"
-            detail = root / "detail.png"
+            review_pack_root = run_dir / "review_pack"
+            comparison = review_pack_root / "comparisons/CORIROCK.png"
+            detail = review_pack_root / "details/CORIROCK.png"
+            comparison.parent.mkdir(parents=True, exist_ok=True)
+            detail.parent.mkdir(parents=True, exist_ok=True)
             source.write_bytes(b"classic")
             candidate.write_bytes(b"candidate-v1")
             comparison.write_bytes(b"comparison-v1")
@@ -1280,6 +1288,8 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                         {
                             "schema": "openazrael.texture_lab.visual_review_pack.v2",
                             "status": "READY_FOR_MANUAL_REVIEW",
+                            "mode": "restored",
+                            "texture_count": 1,
                             "automatic_promotion": False,
                             "rows": [
                                 {
