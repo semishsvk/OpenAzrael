@@ -270,7 +270,7 @@ Policy/evidence adds required checks when relevant for repeated seams, exact tex
 
 A texture may be `ACCEPTED_FOR_STAGE` only when every required check is explicitly `true`. `HOLD` and `REJECTED` require a note. The manual-review record also stores a SHA-256 digest of the complete current stage evidence snapshot, so later changes to the plan, technical QA, structural report, runtime doctor/preflight, generation records, output evidence, review queue or review pack invalidate the review. A stage receives manual-review PASS only when every expected texture is accepted, every required check passes, candidate hashes remain current and the complete stage-evidence fingerprint still matches.
 
-`oa_tex_stage_gate.py approve` now requires that PASS record and writes stage-approval schema v4, fingerprinting the manual review alongside the existing technical/runtime/review evidence. Any later evidence or manual-review change makes the approval stale.
+`oa_tex_stage_gate.py approve` now requires that PASS record and writes stage-approval schema v5. In addition to the manual review and technical/runtime/review evidence, v5 binds end-to-end generation provenance: Restored source/output hashes must match the reviewed source/candidate, while Recreated jobs must match the pinned Qwen workflow, seed, model files and source/conditioning/output hashes. Atlas part files and the final stitch are also fingerprinted. Any later evidence, candidate, intermediate atlas file or manual-review change makes the approval stale.
 
 ## Explicit production selection contract
 
