@@ -7,7 +7,7 @@ from pathlib import Path
 
 from PIL import Image, __version__ as PILLOW_VERSION
 
-from common import ROOT, write_json
+from common import ROOT, PINNED_PILLOW_VERSION, require_pinned_pillow, write_json
 from oa_tex_enhance import upscale_one
 from oa_tex_validate import validate_pair
 
@@ -32,6 +32,7 @@ def main() -> int:
     parser.add_argument("--report", type=Path, default=ROOT / "data/texture_lab/rt_poc_01_run.json")
     parser.add_argument("--factor", type=int, default=4)
     args = parser.parse_args()
+    require_pinned_pillow()
 
     selected = load_selection(args.selection)
     methods = ["nearest", "bicubic", "lanczos"]
@@ -39,6 +40,7 @@ def main() -> int:
         "schema": "openazrael.texture_lab.rt_poc_01_run.v1",
         "status": "OBSERVATIONAL",
         "pillow_version": PILLOW_VERSION,
+        "pillow_version_expected": PINNED_PILLOW_VERSION,
         "factor": args.factor,
         "methods": methods,
         "automatic_winner": False,
