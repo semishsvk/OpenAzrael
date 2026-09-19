@@ -162,6 +162,12 @@ Existing local run/candidate artifacts cause a real named rerun to fail closed. 
 
 This prevents partial reruns from mixing new outputs with stale QA files and prevents an older approval from becoming current again after a byte-identical rerun.
 
+### Recreated runtime timing evidence
+
+`oa_tex_recreate.py` job-record schema v5 records client-observed wall-clock time for upload, prompt submission, submit-to-completion polling, result download and total job duration. These are operational wall-clock measurements, not GPU kernel benchmarks.
+
+`oa_tex_run_summary.py` aggregates every Qwen job record in the stage. Atlas assets count by generation units rather than by texture count; for example, `recreated_atlas` represents four independent Qwen jobs for BAPTAP. The summary may provide naive linear job-only projections for later Recreated stages, explicitly excluding QA/review, split/stitch overhead, I/O variability, warm-up, queueing changes and GPU contention.
+
 ### `oa_tex_review_profile.py`
 Builds an editor-only `openazrael.texture_lab.review_texture_manifest.v1` from a completed named stage. It resolves the stage's reviewed candidate hashes and Classic fallbacks, writes a stage-specific `godot_review_profile.json` into the run evidence directory, and refreshes the convenience pointer `.local/texture_lab/runtime_manifests/review_current.json`. The schema carries `export_allowed=false`; the production export verifier deliberately rejects it.
 
