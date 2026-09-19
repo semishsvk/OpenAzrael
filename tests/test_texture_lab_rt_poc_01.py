@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 
 from PIL import Image
@@ -23,7 +24,8 @@ from common import (
     sha256_file,
     visible_legacy_magenta_pixels,
 )
-from oa_tex_ai_bakeoff import eligible_entries
+from oa_tex_ai_bakeoff import build_recreate_plan, eligible_entries
+from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_enhance import upscale_one
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_qwen_preflight import (
@@ -273,6 +275,95 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertIn("image1", inputs)
             self.assertNotIn("image2", inputs)
             self.assertNotIn("image3", inputs)
+
+    def test_comfy_doctor_requires_qwen_runtime_nodes_and_inputs(self):
+        required = [
+            "LoadImage",
+            "UNETLoader",
+            "CLIPLoader",
+            "VAELoader",
+            "ModelSamplingAuraFlow",
+            "CFGNorm",
+            "TextEncodeQwenImageEditPlus",
+            "VAEEncode",
+            "KSampler",
+            "VAEDecode",
+            "SaveImage",
+        ]
+        object_info = {
+            cls: {
+                "input": {
+                    "required": {
+                        name: ["TEST"]
+                        for name in EXPECTED_INPUTS.get(cls, set())
+                    }
+                }
+            }
+            for cls in required
+        }
+
+        good = evaluate_object_info(object_info, required)
+        self.assertTrue(good["all_required_classes_present"])
+        self.assertTrue(good["all_expected_inputs_present"])
+
+        del object_info["CFGNorm"]
+        missing_class = evaluate_object_info(object_info, required)
+        self.assertFalse(missing_class["all_required_classes_present"])
+        self.assertEqual(missing_class["classes"]["CFGNorm"]["status"], "MISSING")
+
+        object_info["CFGNorm"] = {
+            "input": {"required": {"model": ["MODEL"]}}
+        }
+        missing_input = evaluate_object_info(object_info, required)
+        self.assertFalse(missing_input["all_expected_inputs_present"])
+        self.assertIn("strength", missing_input["classes"]["CFGNorm"]["missing_inputs"])
+
+    def test_recreated_plan_gates_runtime_and_uses_enhanced_conditioning(self):
+        contract = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(encoding="utf-8")
+        )
+        profiles = json.loads(
+            (ROOT / "tools/texture_lab/profiles/recreate_profiles.json").read_text(encoding="utf-8")
+        )
+        entry = {
+            "id": "CORIROCK",
+            "content_class": "rock_organic_surface",
+            "policy": {"ai_recreated": True},
+        }
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            args = SimpleNamespace(
+                workflow=ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json",
+                server="http://127.0.0.1:8188",
+                run_dir=temp / "run",
+                comfy_root=None,
+                model_file=[],
+                source_dir=temp / "classic",
+                recreated_dir=temp / "recreated",
+                recreate_input_dir=temp / "enhanced",
+                recreate_input_variant="lanczos_x4.png",
+                load_image_node="1",
+                prompt_node="7",
+                prompt_key="prompt",
+                negative_prompt_node="8",
+                negative_prompt_key="prompt",
+                seed_node="10",
+                seed_key="seed",
+                seed=734234,
+                model_label="Qwen-Image-Edit-2511",
+                selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+            )
+            jobs = build_recreate_plan(args, [entry], profiles, contract)
+
+        self.assertEqual(
+            [job["stage"] for job in jobs],
+            ["comfy_doctor", "qwen_preflight", "generate", "structural_qa"],
+        )
+        generate = jobs[2]
+        self.assertTrue(generate["conditioning_image"].endswith("CORIROCK/lanczos_x4.png"))
+        self.assertIn("--negative-prompt-node", generate["argv"])
+        self.assertIn("8", generate["argv"])
+        self.assertIn("--conditioning-image", generate["argv"])
 
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
