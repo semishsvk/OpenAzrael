@@ -65,6 +65,7 @@ from oa_tex_qwen_preflight import (
     sampling_check,
 )
 from oa_tex_realesrgan_bootstrap import verify_checkpoint
+from oa_tex_realesrgan_runtime import evaluate_probe, load_contract as load_realesrgan_runtime_contract
 from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, validate_receipt
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
@@ -1279,6 +1280,60 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertEqual(by_role["diffusion"]["verification"]["status"], "PASS")
         self.assertEqual(by_role["vae"]["verification"]["status"], "MISSING")
 
+    def test_realesrgan_runtime_contract_accepts_only_pinned_compatibility_pair(self):
+        contract = load_realesrgan_runtime_contract()
+        good_payload = {
+            "python_major_minor": "3.11",
+            "torch": "2.1.2",
+            "torchvision": "0.16.2",
+            "functional_tensor_import": True,
+            "basicsr": "1.4.2",
+            "realesrgan": "0.3.0",
+        }
+        good = evaluate_probe(
+            good_payload,
+            contract,
+            require_basicsr=True,
+            require_realesrgan=True,
+        )
+        self.assertEqual(good["status"], "PASS")
+        self.assertTrue(all(good["checks"].values()))
+
+        bad_vision = dict(good_payload)
+        bad_vision["torchvision"] = "0.17.0"
+        bad_vision["functional_tensor_import"] = False
+        bad = evaluate_probe(
+            bad_vision,
+            contract,
+            require_basicsr=True,
+            require_realesrgan=True,
+        )
+        self.assertEqual(bad["status"], "FAIL")
+        self.assertFalse(bad["checks"]["torchvision_ok"])
+        self.assertFalse(bad["checks"]["functional_tensor_ok"])
+
+        bad_python = dict(good_payload)
+        bad_python["python_major_minor"] = "3.12"
+        bad = evaluate_probe(
+            bad_python,
+            contract,
+            require_basicsr=True,
+            require_realesrgan=True,
+        )
+        self.assertEqual(bad["status"], "FAIL")
+        self.assertFalse(bad["checks"]["python_ok"])
+
+        bad_torch = dict(good_payload)
+        bad_torch["torch"] = "2.2.0"
+        bad = evaluate_probe(
+            bad_torch,
+            contract,
+            require_basicsr=True,
+            require_realesrgan=True,
+        )
+        self.assertEqual(bad["status"], "FAIL")
+        self.assertFalse(bad["checks"]["torch_ok"])
+
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
             checkpoint = Path(td) / "model.pth"
@@ -1351,8 +1406,8 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as td:
             runtime = Path(td) / "runtime"
-            no_deps_plan = bootstrap_plan(runtime, False)
-            with_deps_plan = bootstrap_plan(runtime, True)
+            no_deps_plan = bootstrap_plan(runtime, False, "python3.11")
+            with_deps_plan = bootstrap_plan(runtime, True, "python3.11")
 
         self.assertEqual(
             [row["name"] for row in no_deps_plan],
@@ -1372,7 +1427,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 "install_realesrgan_python_deps",
             ],
         )
-        self.assertIn("import json, torch, torchvision", with_deps_plan[1]["argv"][-1])
+        self.assertIn("oa_tex_realesrgan_runtime.py", with_deps_plan[1]["command"])
+        self.assertIn("check", with_deps_plan[1]["argv"])
+        self.assertIn("--python-exe", no_deps_plan[0]["argv"])
+        self.assertIn("python3.11", no_deps_plan[0]["argv"])
         self.assertIn(
             "--install-python-deps",
             with_deps_plan[2]["argv"],
