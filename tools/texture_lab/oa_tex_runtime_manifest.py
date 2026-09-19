@@ -229,12 +229,16 @@ def build_manifest(
             integrity_failure_ids.append(texture_id)
 
     runtime_ready = not missing_ids and not integrity_failure_ids
-    if profile == "remastered" and stale_ids:
+    if missing_ids:
+        status = "MISSING_FILES"
+    elif integrity_failure_ids:
+        status = "INTEGRITY_FAILURE"
+    elif profile == "remastered" and stale_ids:
         status = "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS"
     elif profile == "remastered" and fallback_ids:
         status = "SAFE_CLASSIC_FALLBACKS"
     else:
-        status = "READY" if runtime_ready else "MISSING_FILES"
+        status = "READY"
 
     return {
         "schema": "openazrael.texture_lab.runtime_texture_manifest.v1",
