@@ -39,7 +39,7 @@ from oa_tex_qwen_preflight import (
     sampling_check,
 )
 from oa_tex_realesrgan_bootstrap import verify_checkpoint
-from oa_tex_stage_gate import check_prerequisites
+from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, validate_receipt
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_scan import scan
@@ -672,6 +672,140 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(row["comparison"]["sha256"], sha256_file(comparison))
             self.assertEqual(row["tile_preview"]["sha256"], sha256_file(tile))
             self.assertEqual(row["repeat_axes"], ["u", "v"])
+
+    def test_restored_stage_approval_is_bound_to_reviewed_candidate(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            run_root = root / "runs"
+            approval_root = root / "approvals"
+            run_dir = run_root / "restored_smoke_1"
+            run_dir.mkdir(parents=True)
+
+            source = root / "classic.png"
+            candidate = root / "candidate.png"
+            comparison = root / "comparison.png"
+            source.write_bytes(b"classic")
+            candidate.write_bytes(b"candidate-v1")
+            comparison.write_bytes(b"comparison-v1")
+
+            def record(path: Path) -> dict:
+                return {
+                    "path": str(path),
+                    "sha256": sha256_file(path),
+                    "size_bytes": path.stat().st_size,
+                }
+
+            (run_dir / "restored_plan.json").write_text(
+                json.dumps(
+                    {
+                        "preset": {"name": "restored_smoke_1"},
+                        "dry_run": False,
+                        "selected": ["CORIROCK"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (run_dir / "ai_restored_review_queue.json").write_text(
+                json.dumps(
+                    {
+                        "rows": [
+                            {
+                                "id": "CORIROCK",
+                                "review_state": "MANUAL_REVIEW_REQUIRED",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (run_dir / "ai_restored_validation.json").write_text(
+                json.dumps(
+                    {
+                        "technical_failures": 0,
+                        "results": [
+                            {
+                                "id": "CORIROCK",
+                                "technical_status": "PASS",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (run_dir / "ai_restored_structural_drift.json").write_text(
+                json.dumps({"results": [{"id": "CORIROCK"}]}),
+                encoding="utf-8",
+            )
+            (run_dir / "local_preflight.json").write_text(
+                json.dumps({"ready_for_runtime_doctors": True}),
+                encoding="utf-8",
+            )
+            (run_dir / "stage_gate.json").write_text(
+                json.dumps({"status": "PASS"}),
+                encoding="utf-8",
+            )
+            (run_dir / "realesrgan_doctor.json").write_text(
+                json.dumps({"ready": True}),
+                encoding="utf-8",
+            )
+            (run_dir / "ai_restore_run.json").write_text(
+                json.dumps({"textures": [{"id": "CORIROCK"}]}),
+                encoding="utf-8",
+            )
+            review_manifest = run_dir / "ai_restored_review_pack.json"
+            review_md = run_dir / "ai_restored_review_pack.md"
+            review_md.write_text("# review", encoding="utf-8")
+
+            def write_review_manifest() -> None:
+                review_manifest.write_text(
+                    json.dumps(
+                        {
+                            "schema": "openazrael.texture_lab.visual_review_pack.v1",
+                            "status": "READY_FOR_MANUAL_REVIEW",
+                            "automatic_promotion": False,
+                            "rows": [
+                                {
+                                    "id": "CORIROCK",
+                                    "source": record(source),
+                                    "candidate": record(candidate),
+                                    "comparison": record(comparison),
+                                    "tile_preview": None,
+                                }
+                            ],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+
+            write_review_manifest()
+
+            snapshot = evidence_snapshot("restored_smoke_1", run_root)
+            self.assertEqual(snapshot["status"], "PASS")
+            self.assertEqual(snapshot["outputs"][0]["path"], str(candidate))
+
+            approved = approve(
+                "restored_smoke_1",
+                run_root,
+                approval_root,
+                "synthetic stage approval",
+            )
+            self.assertEqual(approved["receipt"]["schema"], "openazrael.texture_lab.stage_approval.v3")
+            self.assertEqual(
+                validate_receipt(
+                    "restored_smoke_1", run_root, approval_root
+                )["status"],
+                "PASS",
+            )
+
+            candidate.write_bytes(b"candidate-v2")
+            write_review_manifest()
+
+            stale = validate_receipt(
+                "restored_smoke_1", run_root, approval_root
+            )
+            self.assertEqual(stale["status"], "STALE")
+            self.assertFalse(stale["checks"]["outputs_ok"])
+            self.assertFalse(stale["checks"]["review_pack_ok"])
 
     def test_qwen_bootstrap_verifies_exact_file_identity(self):
         with tempfile.TemporaryDirectory() as td:
