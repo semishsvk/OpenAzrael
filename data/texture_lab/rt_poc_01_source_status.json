@@ -174,5 +174,21 @@
     ],
     "doctor_captures_pip_freeze": true,
     "final_lock_condition": "successful reviewed restored_smoke_1"
+  },
+  "named_run_identity": {
+    "plan_schema": "openazrael.texture_lab.ai_bakeoff_plan.v5",
+    "unique_run_instance_id": true,
+    "canonical_repository_inputs_locked": true,
+    "canonical_named_parameters_locked": true,
+    "clean_run_default": true,
+    "explicit_replace_flag": "--replace-existing-run",
+    "dry_run_mutates_stage_artifacts": false
+  },
+  "production_selection_registry": {
+    "schema": "openazrael.texture_lab.production_selection.v2",
+    "automatic_selection": false,
+    "preserves_superseded_history": true,
+    "preserves_revocation_history": true,
+    "legacy_v1_in_memory_migration": true
   }
 }
