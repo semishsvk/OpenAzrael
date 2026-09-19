@@ -30,6 +30,7 @@ from oa_tex_ai_bakeoff import apply_execution_subset, build_recreate_plan, build
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_compare import _fit_preview
+from oa_tex_contract_validate import validate_contracts
 from oa_tex_enhance import upscale_one
 from oa_tex_first_run import (
     baseline_plan,
@@ -1497,6 +1498,220 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     root / "export/stale_map.gd",
                     root / "export/stale_snapshot.json",
                 )
+
+    def test_texture_lab_cross_contracts_current_repo_pass(self):
+        selection = json.loads(
+            (ROOT / "tools/texture_lab/config/rt_poc_01_selection.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        policy = json.loads(
+            (ROOT / "tools/texture_lab/config/ai_review_policy.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        smoke = json.loads(
+            (ROOT / "tools/texture_lab/config/ai_smoke_sets.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        backends = json.loads(
+            (ROOT / "tools/texture_lab/config/ai_backends.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        models = json.loads(
+            (ROOT / "tools/texture_lab/config/model_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        qwen = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        workflow = json.loads(
+            (
+                ROOT
+                / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+            ).read_text(encoding="utf-8")
+        )
+        policy_summary = json.loads(
+            (
+                ROOT / "data/texture_lab/rt_poc_01_ai_policy_summary.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        result = validate_contracts(
+            selection,
+            policy,
+            smoke,
+            backends,
+            models,
+            qwen,
+            workflow,
+            policy_summary,
+        )
+        self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["failed"], [])
+
+    def test_texture_lab_cross_contracts_detect_drift(self):
+        selection = {
+            "schema": "openazrael.texture_lab.rt_poc_01_selection.v1",
+            "automatic_winner": False,
+            "textures": [
+                {
+                    "id": f"TEX{i}",
+                    "room": "R1",
+                    "content_class": "rock",
+                    "expected_size": [16, 16],
+                }
+                for i in range(12)
+            ],
+        }
+        policy = {
+            "schema": "openazrael.texture_lab.ai_review_policy.v1",
+            "defaults": {
+                "ai_restored": True,
+                "ai_recreated": True,
+                "manual_visual_review": True,
+                "automatic_production_promotion": False,
+            },
+            "classes": {"rock": {}},
+        }
+        all_ids = [f"TEX{i}" for i in range(12)]
+        smoke = {
+            "schema": "openazrael.texture_lab.ai_smoke_sets.v2",
+            "presets": {
+                "restored_full": {
+                    "mode": "restored",
+                    "textures": all_ids[:-1],
+                    "requires_approval": ["restored_full"],
+                },
+                "recreated_full": {
+                    "mode": "recreated",
+                    "textures": all_ids,
+                    "requires_approval": [],
+                },
+            },
+            "recommended_order": ["restored_full", "recreated_full"],
+        }
+        backends = {
+            "ai_restored": {
+                "primary": {
+                    "model": "RealESRGAN_x4plus",
+                    "factor": 2,
+                    "tile": 0,
+                    "fp32": True,
+                }
+            },
+            "ai_recreated": {
+                "primary": {
+                    "model_label": "Qwen-Image-Edit-2511",
+                    "fixed_seed": 1,
+                }
+            },
+            "automatic_production_promotion": False,
+        }
+        models = {
+            "models": {
+                "RealESRGAN_x4plus": {
+                    "scale": 4,
+                    "default_tile": 0,
+                    "default_fp32": True,
+                    "checkpoint_size_bytes": 10,
+                    "checkpoint_sha256": "a" * 64,
+                }
+            }
+        }
+        qwen = {
+            "model_label": "Qwen-Image-Edit-2511",
+            "poc_sampling": {
+                "seed": 734234,
+                "steps": 40,
+                "cfg": 4,
+                "sampler": "euler",
+                "scheduler": "simple",
+                "lightning_lora_enabled": False,
+            },
+            "api_workflow_policy": {
+                "automatic_production_promotion": False,
+                "no_lightning_lora": True,
+                "single_primary_load_image": True,
+            },
+            "canonical_openazrael_workflow": {
+                "bindings": {
+                    "load_image_node": "1",
+                    "prompt_node": "7",
+                    "negative_prompt_node": "8",
+                    "seed_node": "10",
+                }
+            },
+            "required_models": {
+                role: {
+                    "filename": filename,
+                    "size_bytes": 10,
+                    "sha256": "b" * 64,
+                }
+                for role, filename in {
+                    "diffusion": "diff.safetensors",
+                    "text_encoder": "clip.safetensors",
+                    "vae": "vae.safetensors",
+                }.items()
+            },
+        }
+        workflow = {
+            "1": {"class_type": "LoadImage", "inputs": {"image": "x.png"}},
+            "2": {
+                "class_type": "UNETLoader",
+                "inputs": {"unet_name": "diff.safetensors"},
+            },
+            "3": {
+                "class_type": "CLIPLoader",
+                "inputs": {"clip_name": "clip.safetensors"},
+            },
+            "4": {
+                "class_type": "VAELoader",
+                "inputs": {"vae_name": "vae.safetensors"},
+            },
+            "7": {"class_type": "TextEncodeQwenImageEditPlus", "inputs": {}},
+            "8": {"class_type": "TextEncodeQwenImageEditPlus", "inputs": {}},
+            "10": {
+                "class_type": "KSampler",
+                "inputs": {
+                    "seed": 734234,
+                    "steps": 40,
+                    "cfg": 4,
+                    "sampler_name": "euler",
+                    "scheduler": "simple",
+                },
+            },
+        }
+        policy_summary = {
+            "selection_count": 12,
+            "ai_restored": {"eligible_count": 12, "skipped": []},
+            "ai_recreated": {"eligible_count": 12, "skipped": []},
+            "automatic_production_promotion": False,
+        }
+
+        result = validate_contracts(
+            selection,
+            policy,
+            smoke,
+            backends,
+            models,
+            qwen,
+            workflow,
+            policy_summary,
+        )
+        self.assertEqual(result["status"], "FAIL")
+        self.assertIn(
+            "restored_full_matches_policy_eligibility",
+            result["failed"],
+        )
+        self.assertIn("approval_graph_acyclic", result["failed"])
+        self.assertIn("restored_scale_matches_registry", result["failed"])
+        self.assertIn("qwen_seed_matches_backend", result["failed"])
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
