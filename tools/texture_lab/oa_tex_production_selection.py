@@ -24,6 +24,8 @@ from oa_tex_stage_gate import (
 )
 
 DEFAULT_REGISTRY = ROOT / "data/texture_lab/production_selection.json"
+CURRENT_REGISTRY_SCHEMA = "openazrael.texture_lab.production_selection.v2"
+LEGACY_REGISTRY_SCHEMA = "openazrael.texture_lab.production_selection.v1"
 
 
 def load_json(path: Path) -> dict:
@@ -33,15 +35,26 @@ def load_json(path: Path) -> dict:
 def load_registry(path: Path) -> dict:
     if not path.is_file():
         return {
-            "schema": "openazrael.texture_lab.production_selection.v1",
+            "schema": CURRENT_REGISTRY_SCHEMA,
             "status": "NO_PRODUCTION_SELECTIONS",
             "automatic_selection": False,
             "profiles": {"remastered": {}},
+            "superseded_selections": [],
+            "revocations": [],
         }
+
     data = load_json(path)
-    if data.get("schema") != "openazrael.texture_lab.production_selection.v1":
+    schema = data.get("schema")
+    if schema not in {CURRENT_REGISTRY_SCHEMA, LEGACY_REGISTRY_SCHEMA}:
         raise SystemExit(f"unsupported production selection registry: {path}")
+
+    if schema == LEGACY_REGISTRY_SCHEMA:
+        data["schema"] = CURRENT_REGISTRY_SCHEMA
+        data["migrated_from_schema"] = LEGACY_REGISTRY_SCHEMA
+
     data.setdefault("profiles", {}).setdefault("remastered", {})
+    data.setdefault("superseded_selections", [])
+    data.setdefault("revocations", [])
     return data
 
 
