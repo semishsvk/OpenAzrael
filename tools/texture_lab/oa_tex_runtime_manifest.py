@@ -59,10 +59,19 @@ def resolved_file_fields(path: str, root: Path = ROOT) -> dict:
     }
 
 
-def input_file_record(path: Path) -> dict:
+def portable_input_path(path: Path, root: Path = ROOT) -> str:
+    resolved = path.resolve()
+    try:
+        relative = resolved.relative_to(root.resolve())
+        return "res://" + str(relative).replace("\\", "/")
+    except ValueError:
+        return str(path)
+
+
+def input_file_record(path: Path, root: Path = ROOT) -> dict:
     present = path.is_file()
     return {
-        "path": str(path),
+        "path": portable_input_path(path, root),
         "present": present,
         "sha256": sha256_file(path) if present else None,
         "size_bytes": path.stat().st_size if present else None,
@@ -173,6 +182,7 @@ def build_manifest(
     explicit_ids = []
     fallback_ids = []
     missing_ids = []
+    integrity_failure_ids = []
 
     for entry in selection.get("textures", []):
         texture_id = str(entry["id"])
@@ -190,6 +200,21 @@ def build_manifest(
             enhanced_method,
             root,
         )
+        row["integrity_ok"] = bool(row.get("file_present"))
+        if row["resolution_reason"] == "explicit_current_production_selection":
+            expected = row.get("expected_selection_sha256")
+            row["selection_hash_matches_resolved"] = (
+                bool(expected)
+                and bool(row.get("sha256"))
+                and expected == row.get("sha256")
+            )
+            row["integrity_ok"] = (
+                row["integrity_ok"]
+                and row["selection_hash_matches_resolved"]
+            )
+        else:
+            row["selection_hash_matches_resolved"] = None
+
         rows.append(row)
 
         if row["resolution_reason"] == "explicit_current_production_selection":
@@ -200,8 +225,10 @@ def build_manifest(
             stale_ids.append(texture_id)
         if not row["file_present"]:
             missing_ids.append(texture_id)
+        if not row["integrity_ok"]:
+            integrity_failure_ids.append(texture_id)
 
-    runtime_ready = not missing_ids
+    runtime_ready = not missing_ids and not integrity_failure_ids
     if profile == "remastered" and stale_ids:
         status = "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS"
     elif profile == "remastered" and fallback_ids:
@@ -221,10 +248,12 @@ def build_manifest(
         "classic_fallback_count": len(fallback_ids),
         "stale_production_selection_count": len(stale_ids),
         "missing_resolved_file_count": len(missing_ids),
+        "integrity_failure_count": len(integrity_failure_ids),
         "explicit_ids": explicit_ids,
         "fallback_ids": fallback_ids,
         "stale_ids": stale_ids,
         "missing_ids": missing_ids,
+        "integrity_failure_ids": integrity_failure_ids,
         "textures": rows,
     }
 
@@ -275,15 +304,15 @@ def main() -> int:
         args.root,
     )
     manifest["inputs"] = {
-        "selection": input_file_record(args.selection),
-        "policy": input_file_record(args.policy),
-        "production_registry": input_file_record(args.registry),
+        "selection": input_file_record(args.selection, args.root),
+        "policy": input_file_record(args.policy, args.root),
+        "production_registry": input_file_record(args.registry, args.root),
     }
 
     out = args.out or DEFAULT_OUTPUT_ROOT / f"{args.profile}.json"
     write_json(out, manifest)
 
-    hold = bool(manifest["missing_ids"])
+    hold = bool(manifest["missing_ids"] or manifest["integrity_failure_ids"])
     if args.profile == "remastered" and args.strict and manifest["stale_ids"]:
         hold = True
 
@@ -292,7 +321,8 @@ def main() -> int:
         f"profile={args.profile} explicit={manifest['explicit_production_selection_count']} "
         f"fallbacks={manifest['classic_fallback_count']} "
         f"stale={manifest['stale_production_selection_count']} "
-        f"missing={manifest['missing_resolved_file_count']} out={out}"
+        f"missing={manifest['missing_resolved_file_count']} "
+        f"integrity_failures={manifest['integrity_failure_count']} out={out}"
     )
     return 1 if hold else 0
 
