@@ -31,7 +31,13 @@ from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_compare import _fit_preview
 from oa_tex_enhance import upscale_one
-from oa_tex_first_run import baseline_plan, bootstrap_plan, restored_smoke_plan, runtime_paths
+from oa_tex_first_run import (
+    baseline_plan,
+    bootstrap_plan,
+    poc_source_status,
+    restored_smoke_plan,
+    runtime_paths,
+)
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
 from oa_tex_qwen_preflight import (
@@ -1079,6 +1085,37 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "--install-python-deps",
             with_deps_plan[2]["argv"],
         )
+
+    def test_first_run_launchpad_validates_poc_source_ids_and_dimensions(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source_dir = root / "classic"
+            source_dir.mkdir()
+            selection = root / "selection.json"
+            selection.write_text(
+                json.dumps(
+                    {
+                        "textures": [
+                            {"id": "A", "expected_size": [16, 8]},
+                            {"id": "B", "expected_size": [8, 8]},
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            Image.new("RGBA", (16, 8), (1, 2, 3, 255)).save(source_dir / "A.png")
+            Image.new("RGBA", (8, 8), (4, 5, 6, 255)).save(source_dir / "B.png")
+
+            good = poc_source_status(source_dir, selection)
+            self.assertEqual(good["status"], "PASS")
+            self.assertTrue(all(row["size_ok"] for row in good["rows"]))
+
+            Image.new("RGBA", (9, 8), (4, 5, 6, 255)).save(source_dir / "B.png")
+            bad = poc_source_status(source_dir, selection)
+            self.assertEqual(bad["status"], "HOLD")
+            by_id = {row["id"]: row for row in bad["rows"]}
+            self.assertFalse(by_id["B"]["size_ok"])
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
