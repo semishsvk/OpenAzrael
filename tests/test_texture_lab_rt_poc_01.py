@@ -48,6 +48,7 @@ from oa_tex_enhance import upscale_one
 from oa_tex_first_run import (
     baseline_plan,
     bootstrap_plan,
+    classify_restored_smoke_1_state,
     poc_source_status,
     restored_smoke_check_plan,
     restored_smoke_plan,
@@ -1775,6 +1776,34 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seams = seam_mae(im)
                 self.assertIn("x", seams)
                 self.assertIn("y", seams)
+
+    def test_first_restored_smoke_state_machine_is_passive_and_explicit(self):
+        cases = [
+            ((False, None, None, None), "NOT_EXECUTED"),
+            ((True, "FAIL", None, None), "EVIDENCE_HOLD"),
+            ((True, "PASS", "MISSING", None), "READY_FOR_MANUAL_REVIEW"),
+            ((True, "PASS", "HOLD", None), "MANUAL_REVIEW_IN_PROGRESS"),
+            ((True, "PASS", "STALE", None), "MANUAL_REVIEW_STALE"),
+            ((True, "PASS", "PASS", "MISSING"), "READY_FOR_STAGE_APPROVAL"),
+            ((True, "PASS", "PASS", "STALE"), "APPROVAL_STALE"),
+            ((True, "PASS", "PASS", "PASS"), "STAGE_APPROVED"),
+        ]
+        for args, expected in cases:
+            with self.subTest(expected=expected):
+                result = classify_restored_smoke_1_state(*args)
+                self.assertEqual(result["state"], expected)
+                self.assertTrue(result["next_action"])
+
+        approved = classify_restored_smoke_1_state(
+            True,
+            "PASS",
+            "PASS",
+            "PASS",
+        )
+        self.assertIn(
+            "production selection remains a separate manual decision",
+            approved["next_action"],
+        )
 
     def test_first_run_launchpad_builds_non_generating_smoke_readiness_plan(self):
         with tempfile.TemporaryDirectory() as td:
