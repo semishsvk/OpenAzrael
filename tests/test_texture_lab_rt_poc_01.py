@@ -26,7 +26,15 @@ from common import (
     sha256_file,
     visible_legacy_magenta_pixels,
 )
-from oa_tex_ai_bakeoff import apply_execution_subset, build_recreate_plan, build_restore_plan, eligible_entries
+from oa_tex_ai_bakeoff import (
+    DEFAULT_RECREATED_DIR,
+    DEFAULT_RESTORED_DIR,
+    apply_execution_subset,
+    build_recreate_plan,
+    build_restore_plan,
+    eligible_entries,
+    resolve_named_candidate_namespace,
+)
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_compare import _fit_preview
@@ -405,6 +413,49 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual([entry["id"] for entry in deferred], ["BAPTAP"])
         self.assertEqual(preset["name"], "recreated_smoke_4")
+
+    def test_named_presets_use_immutable_candidate_namespaces(self):
+        restored = SimpleNamespace(
+            preset="restored_smoke_1",
+            mode="restored",
+            restored_dir=DEFAULT_RESTORED_DIR,
+            recreated_dir=DEFAULT_RECREATED_DIR,
+        )
+        resolve_named_candidate_namespace(restored)
+        self.assertEqual(
+            restored.restored_dir,
+            DEFAULT_RESTORED_DIR / "_runs" / "restored_smoke_1",
+        )
+
+        recreated = SimpleNamespace(
+            preset="recreated_smoke_4",
+            mode="recreated",
+            restored_dir=DEFAULT_RESTORED_DIR,
+            recreated_dir=DEFAULT_RECREATED_DIR,
+        )
+        resolve_named_candidate_namespace(recreated)
+        self.assertEqual(
+            recreated.recreated_dir,
+            DEFAULT_RECREATED_DIR / "_runs" / "recreated_smoke_4",
+        )
+
+        custom = SimpleNamespace(
+            preset="restored_smoke_1",
+            mode="restored",
+            restored_dir=ROOT / "elsewhere",
+            recreated_dir=DEFAULT_RECREATED_DIR,
+        )
+        with self.assertRaises(SystemExit):
+            resolve_named_candidate_namespace(custom)
+
+        adhoc = SimpleNamespace(
+            preset=None,
+            mode="restored",
+            restored_dir=DEFAULT_RESTORED_DIR,
+            recreated_dir=DEFAULT_RECREATED_DIR,
+        )
+        resolve_named_candidate_namespace(adhoc)
+        self.assertEqual(adhoc.restored_dir, DEFAULT_RESTORED_DIR)
 
     def test_restored_plan_starts_with_runtime_doctor(self):
         with tempfile.TemporaryDirectory() as td:
