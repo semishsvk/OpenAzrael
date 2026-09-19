@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from common import ROOT, sha256_file, write_json
-from oa_tex_compare import make_sheet
+from oa_tex_compare import make_detail_sheet, make_sheet
 from oa_tex_tile import tile_preview
 
 
@@ -56,6 +56,7 @@ def markdown_report(mode: str, rows: list[dict]) -> str:
                 f"## {row['id']}",
                 "",
                 f"- [Comparison sheet]({row['comparison']['path']})",
+                f"- [Detail comparison sheet]({row['detail_comparison']['path']})",
             ]
         )
         if row.get("tile_preview"):
@@ -121,6 +122,14 @@ def build_review_pack(
             ),
         ]
         make_sheet(texture_id, source, variants, comparison, cell)
+        detail_comparison = out_dir / "details" / f"{texture_id}.png"
+        make_detail_sheet(
+            texture_id,
+            source,
+            variants,
+            detail_comparison,
+            cell,
+        )
 
         sampling_row = sampling_by_id.get(texture_id, {})
         repeated = bool(sampling_row.get("repeat_sampling_observed"))
@@ -138,6 +147,7 @@ def build_review_pack(
                 "source": file_record(source),
                 "candidate": file_record(candidate),
                 "comparison": file_record(comparison),
+                "detail_comparison": file_record(detail_comparison),
                 "tile_preview": file_record(tile) if tile else None,
                 "repeat_axes": list(sampling_row.get("repeat_axes", [])),
             }
@@ -150,7 +160,7 @@ def build_review_pack(
 
     rows.sort(key=lambda row: row["id"])
     return {
-        "schema": "openazrael.texture_lab.visual_review_pack.v1",
+        "schema": "openazrael.texture_lab.visual_review_pack.v2",
         "status": "READY_FOR_MANUAL_REVIEW",
         "mode": mode,
         "automatic_promotion": False,
