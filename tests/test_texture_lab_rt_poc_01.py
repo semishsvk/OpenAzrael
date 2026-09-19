@@ -51,7 +51,11 @@ from oa_tex_first_run import (
 )
 from oa_tex_manual_review import init_review, record_texture, validate_manual_review
 from oa_tex_prompt import build_prompt_pair
-from oa_tex_production_selection import registry_status, select_candidate
+from oa_tex_production_selection import (
+    registry_status,
+    select_candidate,
+    store_selection_record,
+)
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
 from oa_tex_qwen_preflight import (
     exact_loader_check,
@@ -1319,6 +1323,46 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(bad["status"], "HOLD")
             by_id = {row["id"]: row for row in bad["rows"]}
             self.assertFalse(by_id["B"]["size_ok"])
+
+    def test_production_selection_preserves_superseded_history(self):
+        registry = {
+            "profiles": {"remastered": {}},
+            "automatic_selection": False,
+        }
+        first = {
+            "texture_id": "CORIROCK",
+            "selected_tier": "ai_restored",
+            "selected_from_preset": "restored_smoke_1",
+            "selected_at_utc": "2026-09-19T10:00:00+00:00",
+            "candidate_sha256": "a" * 64,
+        }
+        second = {
+            "texture_id": "CORIROCK",
+            "selected_tier": "ai_recreated",
+            "selected_from_preset": "recreated_full",
+            "selected_at_utc": "2026-09-19T11:00:00+00:00",
+            "candidate_sha256": "b" * 64,
+        }
+
+        store_selection_record(registry, "CORIROCK", first)
+        self.assertNotIn("superseded_selections", registry)
+        self.assertEqual(
+            registry["profiles"]["remastered"]["CORIROCK"],
+            first,
+        )
+
+        store_selection_record(registry, "CORIROCK", second)
+        self.assertEqual(
+            registry["profiles"]["remastered"]["CORIROCK"],
+            second,
+        )
+        self.assertEqual(len(registry["superseded_selections"]), 1)
+        history = registry["superseded_selections"][0]
+        self.assertEqual(history["previous_selection"], first)
+        self.assertEqual(
+            history["replaced_by"]["candidate_sha256"],
+            "b" * 64,
+        )
 
     def test_runtime_manifest_profiles_are_fail_safe(self):
         with tempfile.TemporaryDirectory() as td:
