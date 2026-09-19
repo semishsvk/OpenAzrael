@@ -49,7 +49,7 @@ func load_manifest(path: String) -> bool:
 func _safe_texture_path(path: String) -> bool:
     if not path.begins_with(ALLOWED_PREFIX):
         return false
-    if ".." in path:
+    if path.contains(".."):
         return false
     return path.ends_with(".png")
 
