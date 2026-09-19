@@ -92,6 +92,9 @@ def run_job(
     prompt_node: str | None,
     prompt_key: str,
     prompt: str | None,
+    negative_prompt_node: str | None,
+    negative_prompt_key: str,
+    negative_prompt: str | None,
     seed_node: str | None,
     seed_key: str,
     seed: int | None,
@@ -102,6 +105,8 @@ def run_job(
     _set_input(workflow, load_image_node, "image", uploaded_name)
     if prompt is not None:
         _set_input(workflow, prompt_node, prompt_key, prompt)
+    if negative_prompt is not None:
+        _set_input(workflow, negative_prompt_node, negative_prompt_key, negative_prompt)
     if seed is not None:
         _set_input(workflow, seed_node, seed_key, seed)
 
@@ -149,8 +154,11 @@ def main() -> int:
     parser.add_argument("--job-record", type=Path, default=None)
     parser.add_argument("--load-image-node", required=True)
     parser.add_argument("--prompt-node", default=None)
-    parser.add_argument("--prompt-key", default="text")
+    parser.add_argument("--prompt-key", default="prompt")
     parser.add_argument("--prompt", default=None)
+    parser.add_argument("--negative-prompt-node", default=None)
+    parser.add_argument("--negative-prompt-key", default="prompt")
+    parser.add_argument("--negative-prompt", default=None)
     parser.add_argument("--seed-node", default=None)
     parser.add_argument("--seed-key", default="seed")
     parser.add_argument("--seed", type=int, default=None)
@@ -173,6 +181,9 @@ def main() -> int:
             args.prompt_node,
             args.prompt_key,
             args.prompt,
+            args.negative_prompt_node,
+            args.negative_prompt_key,
+            args.negative_prompt,
             args.seed_node,
             args.seed_key,
             args.seed,
@@ -186,7 +197,7 @@ def main() -> int:
     write_json(
         record_path,
         {
-            "schema": "openazrael.texture_lab.ai_recreated_job.v3",
+            "schema": "openazrael.texture_lab.ai_recreated_job.v4",
             "source_file": args.source.name,
             "source_sha256": sha256_file(args.source),
             "output_file": args.output.name,
@@ -195,7 +206,8 @@ def main() -> int:
             "model_label": args.model_label,
             "model_files": model_fingerprints(args.model_file),
             "seed": args.seed,
-            "prompt": args.prompt,
+            "positive_prompt": args.prompt,
+            "negative_prompt": args.negative_prompt,
             "legacy_colorkey_input_prepared": colorkey_prepared,
             "legacy_colorkey_mask_reapplied": colorkey_reapplied,
             **result,
