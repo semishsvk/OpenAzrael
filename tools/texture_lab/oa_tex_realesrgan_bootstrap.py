@@ -188,12 +188,14 @@ def main() -> int:
             "created_or_selected_venv": bool(args.create_venv),
             "system_site_packages": bool(args.venv_system_site_packages),
         },
-        "ready_for_inference": (
+        "identity_ready": (
             verification.get("status") == "PASS"
             and upstream_status["exists"]
             and upstream_status["version_ok"] is True
             and upstream_status["git_head_ok"] is True
         ),
+        "dependency_install_requested": bool(args.install_python_deps),
+        "doctor_required_for_inference": True,
     }
     report_path = args.report or runtime / "bootstrap_report.json"
     write_json(report_path, report)
@@ -201,8 +203,8 @@ def main() -> int:
     if verification.get("status") == "FAIL":
         print("FAIL checkpoint identity mismatch")
         return 2
-    if not report["ready_for_inference"]:
-        print(f"HOLD runtime incomplete report={report_path}")
+    if not report["identity_ready"]:
+        print(f"HOLD runtime identity incomplete report={report_path}")
         return 1
 
     print(
