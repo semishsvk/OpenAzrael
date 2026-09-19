@@ -11,6 +11,7 @@ import sys
 from PIL import Image
 
 from common import PINNED_PILLOW_VERSION, PILLOW_VERSION, ROOT, write_json
+from oa_tex_realesrgan_runtime import load_contract as load_runtime_contract, probe_python
 
 DEFAULT_RUNTIME = ROOT / ".local/texture_lab/realesrgan"
 DEFAULT_LAUNCHPAD_DIR = ROOT / ".local/texture_lab/launchpad"
@@ -63,8 +64,10 @@ def baseline_plan() -> list[dict]:
 def bootstrap_plan(
     runtime_dir: Path,
     install_python_deps: bool,
+    runtime_python: str | None = None,
 ) -> list[dict]:
     paths = runtime_paths(runtime_dir)
+    base_python = runtime_python or sys.executable
     bootstrap = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_realesrgan_bootstrap.py"),
@@ -73,19 +76,17 @@ def bootstrap_plan(
         "--clone-upstream",
         "--download-model",
         "--create-venv",
+        "--python-exe",
+        str(base_python),
     ]
     commands = [command_record("bootstrap_realesrgan", bootstrap)]
     if install_python_deps:
         torch_check = [
+            sys.executable,
+            str(ROOT / "tools/texture_lab/oa_tex_realesrgan_runtime.py"),
+            "check",
+            "--python-exe",
             str(paths["python"]),
-            "-c",
-            (
-                "import json, torch, torchvision; "
-                "print(json.dumps({'torch': torch.__version__, "
-                "'torchvision': torchvision.__version__, "
-                "'cuda_available': bool(torch.cuda.is_available()), "
-                "'cuda_version': torch.version.cuda}))"
-            ),
         ]
         install = [
             sys.executable,
@@ -235,6 +236,17 @@ def realesrgan_status(runtime_dir: Path) -> dict:
     source = paths["source"]
     model = paths["model"]
     python = paths["python"]
+    python_present = python.is_file()
+    contract_probe = (
+        probe_python(
+            python,
+            load_runtime_contract(),
+            require_basicsr=False,
+            require_realesrgan=False,
+        )
+        if python_present
+        else {"status": "MISSING"}
+    )
     return {
         "runtime_dir": str(runtime_dir),
         "source_path": str(source),
@@ -242,7 +254,9 @@ def realesrgan_status(runtime_dir: Path) -> dict:
         "model_path": str(model),
         "model_present": model.is_file(),
         "python_path": str(python),
-        "python_present": python.is_file(),
+        "python_present": python_present,
+        "runtime_contract_probe": contract_probe,
+        "runtime_contract_ok": contract_probe.get("status") == "PASS",
     }
 
 
@@ -264,6 +278,8 @@ def build_status(runtime_dir: Path) -> dict:
         blockers.append("realesrgan_model")
     if not realesrgan["python_present"]:
         blockers.append("realesrgan_venv")
+    elif not realesrgan["runtime_contract_ok"]:
+        blockers.append("realesrgan_runtime_contract")
 
     return {
         "schema": "openazrael.texture_lab.first_run_launchpad.v1",
@@ -335,6 +351,14 @@ def main() -> int:
     )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
+        "--runtime-python",
+        default=None,
+        help=(
+            "Base Python used to create the Real-ESRGAN venv. RT-POC-01 "
+            "currently requires Python 3.11."
+        ),
+    )
+    parser.add_argument(
         "--install-python-deps",
         action="store_true",
         help=(
@@ -371,7 +395,22 @@ def main() -> int:
             return 1
         commands = baseline_plan()
     elif args.command == "bootstrap-realesrgan":
-        commands = bootstrap_plan(runtime_dir, args.install_python_deps)
+        runtime_python = args.runtime_python
+        if runtime_python is None:
+            required = str(load_runtime_contract()["python"]["major_minor"])
+            current = f"{sys.version_info.major}.{sys.version_info.minor}"
+            if current != required:
+                print(
+                    "HOLD bootstrap-realesrgan: provide --runtime-python pointing "
+                    f"to Python {required}; current launcher is Python {current}"
+                )
+                return 1
+            runtime_python = sys.executable
+        commands = bootstrap_plan(
+            runtime_dir,
+            args.install_python_deps,
+            runtime_python,
+        )
     else:
         status = build_status(runtime_dir)
         if not args.dry_run and not status["source_ready_for_smoke_preflight"]:
