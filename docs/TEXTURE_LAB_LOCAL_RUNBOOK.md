@@ -361,7 +361,48 @@ Both commands must PASS before a real Recreated run.
 
 ## 5. AI Recreated staged execution
 
-First smoke:
+The high-level launchpad mirrors the Restored CHECK → RUN → STATUS flow.
+
+Final **non-generating** readiness gate:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py check-recreated-smoke-1 \
+  --comfy-root <COMFYUI_ROOT>
+```
+
+This executes, in order:
+
+1. canonical local preflight for `recreated_smoke_1`;
+2. live ComfyUI node/input contract doctor;
+3. exact Qwen workflow/model-file preflight with pinned SHA-256 identities;
+4. canonical Recreated bake-off dry-run.
+
+It does not submit a Qwen job and refuses `--replace-existing-run`.
+
+Only after PASS, run the real first Recreated smoke:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1 \
+  --comfy-root <COMFYUI_ROOT>
+```
+
+For an intentional clean rerun of that same stage:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1 \
+  --comfy-root <COMFYUI_ROOT> \
+  --replace-existing-run
+```
+
+After any real attempt, inspect the passive state machine:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1-status
+```
+
+It reports the same review/approval lifecycle used by Restored and never initializes, records or approves anything. `STAGE_APPROVED` only unlocks `recreated_smoke_4`; production selection remains separate.
+
+The lower-level equivalent remains available for diagnosis:
 
 ```bash
 python tools/texture_lab/oa_tex_ai_bakeoff.py recreated \
