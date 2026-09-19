@@ -1,0 +1,28 @@
+{
+  "schema": "openazrael.kg001.fresh_checkout",
+  "version": 112,
+  "status": "FAIL",
+  "commit_sha": "6ea39c0ddb3d73e9e09f49259b3b42d281fb0f59",
+  "godot_executable": "C:\\Users\\msemj\\Documents\\Codex\\2026-09-13\\referenced-chatgpt-conversation-this-is-an\\work\\godot\\Godot_v4.7.2-stable_win64_console.exe",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "godot_import_status": "BLOCKED_MISSING_ASSETS",
+  "clean_before": true,
+  "clean_after": true,
+  "forbidden_tracked_files": [],
+  "source_validators_pass": true,
+  "room_assets_present": {
+    "assets\\rooms\\R1.glb": false,
+    "assets\\rooms\\R7.glb": false,
+    "assets\\rooms\\R8.glb": false
+  },
+  "room_assets_git_ignored": {
+    "assets\\rooms\\R1.glb": true,
+    "assets\\rooms\\R7.glb": true,
+    "assets\\rooms\\R8.glb": true
+  },
+  "runtime_status": {
+    "v109": "PASS",
+    "v110": "BLOCKED_MISSING_ASSETS",
+    "v111": "BLOCKED_MISSING_ASSETS"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "status": "BLOCKED_MISSING_ASSETS",
+  "missing": [
+    "assets\\rooms\\R1.glb",
+    "assets\\rooms\\R7.glb",
+    "assets\\rooms\\R8.glb"
+  ]
+}

@@ -16,7 +16,7 @@ static func miles_pan_to_godot_pan(pan: int) -> float:
     return clamp((float(pan) - float(MILES_PAN_CENTER)) / 63.0, -1.0, 1.0)
 
 static func miles_volume_to_db(volume: int) -> float:
-    var v := clamp(volume, 0, MILES_VOLUME_MAX)
+    var v: int = clamp(volume, 0, MILES_VOLUME_MAX)
     if v <= 0:
         return -80.0
     return linear_to_db(float(v) / float(MILES_VOLUME_MAX))

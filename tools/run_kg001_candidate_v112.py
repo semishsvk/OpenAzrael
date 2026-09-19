@@ -36,7 +36,13 @@ RUNTIMES=[
 ]
 
 def run(cmd, check=False):
-    proc=subprocess.run(cmd,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    try:
+        proc=subprocess.run(cmd,cwd=ROOT,text=True,encoding="utf-8",errors="replace",stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
+    except subprocess.TimeoutExpired as exc:
+        output=exc.stdout or ""
+        if isinstance(output,bytes):
+            output=output.decode("utf-8",errors="replace")
+        proc=subprocess.CompletedProcess(cmd,124,output+"\nERROR: Candidate command timed out after 180 seconds\n")
     if check and proc.returncode!=0:
         raise RuntimeError(f"command failed ({proc.returncode}): {' '.join(cmd)}\n{proc.stdout}")
     return proc
@@ -83,6 +89,9 @@ def parse_marker(output, marker):
                 return {"status":"FAIL","parse_error":payload}
     return {"status":"FAIL","error":"result marker missing"}
 
+def engine_errors(output):
+    return [line for line in output.splitlines() if line.startswith(("ERROR:", "SCRIPT ERROR:"))]
+
 def ignored(path):
     rel=str(path.relative_to(ROOT))
     proc=run(["git","check-ignore","-q",rel])
@@ -124,7 +133,7 @@ def main():
         godot_version=ver.stdout.strip()
         if all(asset_present.values()):
             imported=run([godot,"--headless","--path",str(ROOT),"--import"])
-            import_status="PASS" if imported.returncode==0 else "FAIL"
+            import_status="PASS" if imported.returncode==0 and not engine_errors(imported.stdout) else "FAIL"
             write_json(TMP/"kg001_godot_import_v112.json",{
                 "status":import_status,
                 "returncode":imported.returncode,
@@ -138,6 +147,10 @@ def main():
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
             parsed=parse_marker(proc.stdout,marker)
+            errors=engine_errors(proc.stdout)
+            if proc.returncode!=0 or errors:
+                parsed["status"]="FAIL"
+                parsed["engine_errors"]=errors
             parsed["_process_returncode"]=proc.returncode
             parsed["_output_tail"]=proc.stdout[-12000:]
             runtimes[name]=parsed
@@ -145,6 +158,11 @@ def main():
     else:
         for name,_,_ in RUNTIMES:
             runtimes[name]={"status":"BLOCKED_GODOT_NOT_FOUND"}
+
+    # Always replace every runtime record, including skipped/blocked tests.
+    # Otherwise promotion could accidentally reuse an earlier PASS JSON.
+    for name,result in runtimes.items():
+        write_json(TMP/f"kg001_{name}_runtime.json",result)
 
     clean_after=git_clean()
     full_runtime_pass=all(runtimes.get(name,{}).get("status")=="PASS" for name,_,_ in RUNTIMES)

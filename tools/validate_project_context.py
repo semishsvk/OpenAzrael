@@ -55,8 +55,6 @@ for p in [
     "data/backup/source_fingerprints.json",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",
     "WORLD_PUZZLE_SOUND_BRIDGE_V107.md",
-    "PUZZLES_ALTERNATIVE_OPEN_PATHS_V105.md",
-    "data/world_runtime_serialization_v106.json",
     "WORLD_SOUND_RECORD_FIELDS_V113.md",
     "tools/analyze_world_sound_record_fields_v113.py",
     "tools/validate_world_sound_record_fields_v113.py",
@@ -91,15 +89,15 @@ try:
         errors.append("KG-001 v108 state-model status drift")
     if c.get("quality",{}).get("kg001_headless_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v109 headless source-contract drift")
-    if c.get("quality",{}).get("kg001_headless_runtime")!="NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_headless_runtime") not in ("NOT_EXECUTED", "PASS"):
         errors.append("KG-001 v109 runtime status drift")
     if c.get("quality",{}).get("kg001_room_trigger_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v110 room/trigger source-contract drift")
-    if c.get("quality",{}).get("kg001_room_trigger_runtime")!="NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_room_trigger_runtime") not in ("NOT_EXECUTED", "BLOCKED_MISSING_ASSETS"):
         errors.append("KG-001 v110 runtime status drift")
     if c.get("quality",{}).get("kg001_full_demo_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v111 full-demo source-contract drift")
-    if c.get("quality",{}).get("kg001_full_demo_runtime")!="NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_full_demo_runtime") not in ("NOT_EXECUTED", "BLOCKED_MISSING_ASSETS"):
         errors.append("KG-001 v111 runtime status drift")
     if c.get("quality",{}).get("kg001_candidate_runner")!="SOURCE_CONTRACT_READY":
         errors.append("KG-001 v112 candidate runner drift")
@@ -109,13 +107,25 @@ try:
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
+    if c.get("quality",{}).get("kg001_headless_runtime") == "PASS":
+        runtime=json.loads((ROOT/"data/tests/kg001_headless_runtime_v109.json").read_text(encoding="utf-8"))
+        if runtime.get("status") != "PASS" or runtime.get("_process_returncode") != 0 or runtime.get("failed"):
+            errors.append("v109 PASS requires successful recorded runtime evidence")
 except Exception as e:
     errors.append(f"context json: {e}")
 
 try:
-    d=json.loads((ROOT/"data/world_runtime_serialization_v106.json").read_text(encoding="utf-8"))
-    if "96425" not in json.dumps(d):
-        errors.append("v106 EOF-size evidence missing")
+    # The source mirror retains the canonical summary, not the excluded full
+    # forensic payload. Validate the tracked summary and its machine metadata;
+    # this is context integrity, not a rerun of the original-binary analysis.
+    summary=(ROOT/"WORLD_RUNTIME_SERIALIZATION_V106.md").read_text(encoding="utf-8")
+    forensic=c.get("current_forensics", {})
+    if "96,425 / 96,425" not in summary or "[1303, 12, 37, 3, 101, 8, 15]" not in summary:
+        errors.append("v106 tracked EOF/section-count summary missing")
+    if forensic.get("world_exact_eof") is not True or forensic.get("world_section_counts") != [1303,12,37,3,101,8,15]:
+        errors.append("v106 machine-readable EOF/section-count evidence drift")
+    if "## v105" not in (ROOT/"README.md").read_text(encoding="utf-8"):
+        errors.append("v105 tracked summary missing")
 except Exception as e:
     errors.append(f"v106 evidence json: {e}")
 

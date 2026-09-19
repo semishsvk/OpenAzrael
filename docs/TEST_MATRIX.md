@@ -143,3 +143,6 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | F10 canonical state dump | SOURCE_CONTRACT_PASS | Includes payload/hash, room, player XYZ and last-event context |
 | v112 candidate source suite integration | PASS | v116 validator appended to SOURCE_COMMANDS |
 | Actual Godot Candidate 1 execution | NOT_EXECUTED | Requires Godot + restored ignored assets |
+
+## Candidate 1 Windows integration attempt
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`: v109 runtime PASS; v110/v111 blocked by canonical demo assets; G10 manual pending.

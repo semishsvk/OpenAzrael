@@ -47,7 +47,7 @@ func _run() -> void:
     _check("logical_audio_stream", events.captured_audio() == EXPECTED_AUDIO)
 
     var saved_payload: Array = state.canonical_state_payload().duplicate(true)
-    var saved_hash := state.canonical_state_hash()
+    var saved_hash: String = state.canonical_state_hash()
     state.reset_all()
     _check("reset_hash", state.canonical_state_hash() == INITIAL_HASH)
     _check("restore_payload", state.restore_canonical_state_payload(saved_payload))

@@ -1,5 +1,16 @@
 # OpenAzrael Last Session
 
+## Windows integration attempt — 2026-09-19
+
+Latest execution supersedes the earlier NOT_EXECUTED preparation notes below:
+Godot 4.7.2 v109 PASS (13 checks); v110/v111 BLOCKED_MISSING_ASSETS.
+Canonical demo GLBs and legacy ambient IR are still required. The available
+retail prototype GLBs are not equivalent. Source-safe compile/runner fixes,
+a Windows export preset and matching templates are prepared.
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md` for the exact boundary and resume steps.
+G10 remains PENDING_MANUAL_USER; no known-good tag was created.
+
+
 **Checkpoint prepared:** `v116-context-v24`
 **Date:** 2026-09-18
 

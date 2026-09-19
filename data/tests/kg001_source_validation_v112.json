@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/validate_project_context.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "OpenAzrael context validation: PASS\n checkpoint: v116-context-v24\n KG-001 contract: ACCEPTED\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/validate_demo_runtime_ir.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "OpenAzrael demo runtime IR validation: PASS\n event graphs: 5\n rooms: 3\n transitions: 4\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/audit_gameplay_event_graph_v87.py",
+        "--source-only"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "{\n  \"version\": 87,\n  \"mode\": \"source-only\",\n  \"checks\": 50,\n  \"passed\": 50,\n  \"failed\": [],\n  \"status\": \"PASS\"\n}\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/kg001_state_space_v108.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "{\n  \"schema\": \"openazrael.kg001.state_space\",\n  \"version\": 108,\n  \"scope\": \"source-safe logical model for KG-001 G02/G03 preparation; Godot runtime execution remains separate\",\n  \"status\": \"PASS\",\n  \"reachable_states\": 63,\n  \"changed_transition_edges\": 123,\n  \"action_attempts\": 945,\n  \"invalid_or_idempotent_noops\": 822,\n  \"success_states\": 3,\n  \"softlock_states\": 0,\n  \"non_success_dead_end_states\": 0,\n  \"shortest_success_action_count\": 15,\n  \"shortest_success_path\": [\n    \"pickup_rusty_tongs\",\n    \"open_r1_door1\",\n    \"transition_R1_R7\",\n    \"retrieve_well_key\",\n    \"switch_well_lev02\",\n    \"switch_well_weel3\",\n    \"switch_well_lev02\",\n    \"transition_R7_R1\",\n    \"open_r1_door2\",\n    \"transition_R1_R8\",\n    \"retrieve_r8_lens\",\n    \"place_r8_lens\",\n    \"start_optical_sequence\",\n    \"finish_optical_sequence\",\n    \"take_shield\"\n  ],\n  \"shortest_success_audio_events\": [\n    \"S152V2.WAV\",\n    \"S137.WAV\",\n    \"S121.WAV\",\n    \"799SECDR.WAV\"\n  ],\n  \"initial_persistent_state_sha256\": \"90fdebf6dff29bf2b4b78980615205c2e6c067b65a28c2aff0b7f10b513f6abf\",\n  \"shortest_success_persistent_state_sha256\": \"69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8\",\n  \"source_contract_checks\": {\n    \"godot_codec_payload\": true,\n    \"godot_codec_hash\": true,\n    \"switch_solution_parity\": true,\n    \"well_key_parity\": true,\n    \"door2_parity\": true,\n    \"tongs_pickup_parity\": true,\n    \"room_transition_gate_parity\": true,\n    \"lens_precondition_parity\": true,\n    \"optical_event_parity\": true,\n    \"shield_event_parity\": true\n  },\n  \"exploration_checks\": {\n    \"all_reachable_states_can_reach_success\": true,\n    \"no_non_success_dead_ends\": true,\n    \"success_reachable\": true,\n    \"shortest_path_ends_in_demo_complete\": true,\n    \"canonical_hash_is_order_invariant\": true\n  },\n  \"forensic_boundary\": {\n    \"does_not_prove_original_timing_or_motion\": true,\n    \"does_not_promote_event_actions_above_existing_confidence\": true,\n    \"godot_runtime_execution_required_for_final_kg001\": true\n  }\n}\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/validate_kg001_headless_v109.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "{\n  \"schema\": \"openazrael.kg001.headless_contract\",\n  \"version\": 109,\n  \"status\": \"SOURCE_CONTRACT_PASS\",\n  \"godot_runtime_status\": \"NOT_EXECUTED\",\n  \"checks\": {\n    \"demo_state_autoload\": true,\n    \"legacy_events_autoload\": true,\n    \"state_reset\": true,\n    \"state_restore\": true,\n    \"state_hash\": true,\n    \"capture_only\": true,\n    \"logical_audio_capture\": true,\n    \"runner_avoids_main_scene\": true,\n    \"runner_initial_hash\": true,\n    \"runner_complete_hash\": true,\n    \"runner_check_count\": true,\n    \"runner_audio_oracle\": true,\n    \"runner_event_graphs\": true,\n    \"graph_ids_exist\": true\n  },\n  \"failed\": []\n}\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/validate_kg001_room_trigger_v110.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "{\n  \"schema\": \"openazrael.kg001.room_trigger_contract\",\n  \"version\": 110,\n  \"status\": \"SOURCE_CONTRACT_PASS\",\n  \"godot_runtime_status\": \"NOT_EXECUTED\",\n  \"requires_local_room_assets\": true,\n  \"checks\": {\n    \"runner_main_scene\": true,\n    \"asset_preflight\": true,\n    \"transition_set\": true,\n    \"manager_inside_trigger\": true,\n    \"manager_door1_gate\": true,\n    \"manager_door2_gate\": true,\n    \"runner_negative_R7\": true,\n    \"runner_negative_R8\": true,\n    \"runner_all_live_edges\": true,\n    \"runner_bounds_checks\": true,\n    \"persistence_check\": true\n  },\n  \"failed\": []\n}\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/validate_kg001_full_demo_v111.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "{\n  \"schema\": \"openazrael.kg001.full_demo_contract\",\n  \"version\": 111,\n  \"status\": \"SOURCE_CONTRACT_PASS\",\n  \"godot_runtime_status\": \"NOT_EXECUTED\",\n  \"requires_local_room_assets\": true,\n  \"checks\": {\n    \"main_scene_loaded\": true,\n    \"asset_preflight\": true,\n    \"production_interact_methods\": true,\n    \"pickup_path\": true,\n    \"door1_path\": true,\n    \"r7_transition_path\": true,\n    \"well_key_path\": true,\n    \"switchboard_path\": true,\n    \"return_r1_path\": true,\n    \"door2_path\": true,\n    \"r8_transition_path\": true,\n    \"lens_path\": true,\n    \"bible_path\": true,\n    \"shield_path\": true,\n    \"capture_only_audio\": true,\n    \"audio_oracle\": true,\n    \"hash_oracle\": true,\n    \"no_direct_gameplay_flag_injection\": true,\n    \"bounded_optical_wait\": true\n  },\n  \"failed\": []\n}\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "tools/validate_candidate_diagnostics_v116.py"
+      ],
+      "returncode": 0,
+      "status": "PASS",
+      "output": "OpenAzrael KG-001 Candidate diagnostics v116: PASS\n build watermark: PASS\n fail-fast resources: PASS\n event/state diagnostics: PASS\n F6/F7/F8/F9/F10 debug surfaces: PASS\n runtime execution: NOT_EXECUTED\n"
+    }
+  ]
+}

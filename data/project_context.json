@@ -86,7 +86,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "NOT_YET_RUN",
+    "kg001_build_status": "BLOCKED_MISSING_ASSETS",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -97,14 +97,14 @@
     "kg001_changed_edges": 123,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "PENDING",
+    "kg001_runtime_gate_status": "PARTIAL_V109_PASS_ASSET_BACKED_BLOCKED",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_headless_runtime": "NOT_EXECUTED",
-    "kg001_state_restore": "IMPLEMENTED_NOT_RUNTIME_EXECUTED",
+    "kg001_headless_runtime": "PASS",
+    "kg001_state_restore": "RUNTIME_PASS_V109",
     "kg001_room_trigger_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_room_trigger_runtime": "NOT_EXECUTED",
+    "kg001_room_trigger_runtime": "BLOCKED_MISSING_ASSETS",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_full_demo_runtime": "NOT_EXECUTED",
+    "kg001_full_demo_runtime": "BLOCKED_MISSING_ASSETS",
     "kg001_overall_status": "AWAITING_RUNTIME_OR_MANUAL",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
@@ -113,7 +113,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 1",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "PARTIAL_V109_PASS_ASSET_BACKED_BLOCKED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -132,7 +132,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results in a Godot-capable checkout with restored ignored room/audio assets. If G00-G09 pass, launch KG-001 Candidate 1 interactively, use v116 diagnostics during the manual route, then complete G10. Resume the deferred generic copy/mutator forensic audit as v117.",
+  "next_target": "Restore canonical demo R1/R7/R8 assets and legacy ambient IR from the retained demo snapshot; retail prototype GLBs are not equivalent. Rerun the clean-checkout Candidate suite, export Windows Candidate 1 and leave G10 manual pending.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -219,7 +219,7 @@
     "contract": "data/tests/kg001_candidate_diagnostics_contract_v116.json",
     "note": "docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md",
     "source_status": "SOURCE_CONTRACT_PASS",
-    "runtime_status": "NOT_EXECUTED",
+    "runtime_status": "PARTIAL_V109_PASS_ASSET_BACKED_BLOCKED",
     "controls": {
       "F6": "trigger volumes",
       "F7": "candidate HUD",
@@ -229,5 +229,13 @@
     },
     "event_log": "user://openazrael_candidate1_events.jsonl",
     "state_dump_prefix": "user://openazrael_kg001_state_dump_"
+  },
+  "candidate_integration_attempt": {
+    "date": "2026-09-19",
+    "source_main": "fb5a68a4f57c387cfc340997e3a9cf0191a481b6",
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "note": "docs/CANDIDATE1_WINDOWS_ATTEMPT.md",
+    "g10": "PENDING_MANUAL_USER",
+    "known_good_tag_created": false
   }
 }

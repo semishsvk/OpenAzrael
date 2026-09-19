@@ -29,5 +29,5 @@ static func pan_from_verified_headings(listener_deg: float, source_deg: float) -
 
 static func attenuation(distance: float, master_volume: int, mode_divisor: int = 1) -> int:
     var raw := GAIN_CEILING if distance == 0.0 else int(DISTANCE_NUMERATOR / distance)
-    var gain := min(int(raw / mode_divisor), GAIN_CEILING)
+    var gain: int = min(int(raw / mode_divisor), GAIN_CEILING)
     return int(master_volume * gain / GAIN_CEILING)

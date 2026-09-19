@@ -1,0 +1,17 @@
+{
+  "checks": 13,
+  "failed": [],
+  "logical_audio_events": [
+    "S152V2.WAV",
+    "S137.WAV",
+    "S121.WAV",
+    "799SECDR.WAV"
+  ],
+  "persistent_hash": "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8",
+  "schema": "openazrael.kg001.headless",
+  "scope": "autoload/Event-IR/state round-trip; main scene and commercial-derived assets are not loaded",
+  "status": "PASS",
+  "version": 109,
+  "_process_returncode": 0,
+  "_output_tail": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nOpenAzrael acquired: rusty_tongs\nOpenAzrael flag: R1Door1Open = true\nOpenAzrael acquired: well_key\nOpenAzrael puzzle node: R7KeyTake = true\nOpenAzrael flag: R7key = true\nOpenAzrael flag: R7waterswitchboard = true\nOpenAzrael flag: R8BathDrain = true\nOpenAzrael puzzle node: R8Water = false\nOpenAzrael flag: FR1DoorUnlocked = true\nOpenAzrael flag: R1Door2Open = true\nOpenAzrael acquired: r8_lens\nOpenAzrael flag: R8Lens = true\nOpenAzrael puzzle node: R8LensPlace = true\nOpenAzrael puzzle node: R8LensLook = true\nOpenAzrael puzzle node: R8RaiseTimer = true\nOpenAzrael puzzle node: R8Counter = true\nOpenAzrael puzzle node: DoorR8 = true\nOpenAzrael acquired: shield\nOpenAzrael puzzle node: R8TakeShield = true\nOpenAzrael flag: demo_complete = true\nOPENAZRAEL_KG001_V109 {\"checks\":13,\"failed\":[],\"logical_audio_events\":[\"S152V2.WAV\",\"S137.WAV\",\"S121.WAV\",\"799SECDR.WAV\"],\"persistent_hash\":\"69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8\",\"schema\":\"openazrael.kg001.headless\",\"scope\":\"autoload/Event-IR/state round-trip; main scene and commercial-derived assets are not loaded\",\"status\":\"PASS\",\"version\":109}\n"
+}

@@ -98,3 +98,6 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 - `docs/GITHUB_SYNC_SCOPE.md`
 - `docs/GIT_BASELINE.md`
 - `data/backup/source_fingerprints.json`
+
+## Candidate 1 Windows integration attempt
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`: v109 runtime PASS; v110/v111 blocked by canonical demo assets; G10 manual pending.
