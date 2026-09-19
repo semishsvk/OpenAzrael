@@ -51,6 +51,12 @@ python tools/texture_lab/oa_tex_run_poc.py
 
 The canonical selection is stored in `config/rt_poc_01_selection.json`. It contains four R1, four R7 and four R8 textures covering rock/organic surface, architecture, parchment, hard-edge mask, carved wall, character detail, mechanism, floor, glass, high-detail mural and text/decorative content.
 
+### Source-safe mathematical toolchain
+
+The deterministic Enhanced reference is now pinned to `Pillow==12.3.0` through `tools/texture_lab/requirements-source-safe.txt`. `oa_tex_run_poc.py` and `oa_tex_calibrate_drift.py` refuse to run under another Pillow version. The recalibrated drift baseline schema records Pillow and Python versions.
+
+The earlier committed numerical envelope remains useful as historical observational evidence, but a real AI stage is intentionally blocked by `oa_tex_local_preflight.py` until the Enhanced set and drift baseline have been regenerated under the pinned toolchain.
+
 ### Pinned Real-ESRGAN runtime
 
 `config/model_registry.json` pins the primary AI Restored runtime identity:
@@ -159,7 +165,7 @@ python tools/texture_lab/oa_tex_ai_bakeoff.py recreated \
   --comfy-root /path/to/ComfyUI
 ```
 
-The Recreated bake-off runs, in order: ComfyUI doctor → Qwen workflow/model preflight → generation → structural drift QA → observational review queue.
+Named staged runs are isolated under `.local/texture_lab/runs/rt_poc_01/<preset>/` and run, in order: prerequisite stage gate → pinned-toolchain/local input preflight → backend doctor/preflight → generation → hard technical QA → structural-drift QA → observational review queue. A later preset requires a current manual approval receipt for the prerequisite stage(s).
 
 ### BAPTAP atlas isolation
 
@@ -169,11 +175,11 @@ R8 geometry provides four non-overlapping U regions for BAPTAP: tapestry1 ≈ 0.
 
 ### Manual review queue
 
-`oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a ranked manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. It deliberately never promotes a generated asset automatically.
+`oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a stage-scoped manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. `oa_tex_stage_gate.py` records an explicit manual approval receipt only after the stage has complete local-preflight, runtime, technical, structural, generation and review evidence; the receipt fingerprints those artifacts and the generated output hashes. It deliberately never promotes a generated asset automatically.
 
 ## Structural-drift baseline
 
-The 36 alpha-safe deterministic candidates establish the first reference envelope for a layout-preserving transformation:
+The 36 alpha-safe deterministic candidates established the first reference envelope for a layout-preserving transformation. These values are retained as historical calibration evidence; before any real AI run, RT-POC-01 now requires a fresh schema-v2 recalibration under the pinned Pillow 12.3.0 toolchain:
 
 - low-frequency luminance MAE, mean: **0.109995 / 255**;
 - low-frequency luminance MAE, p95: **0.228836 / 255**;
@@ -191,7 +197,7 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 
 ## Test policy
 
-`tests/test_texture_lab_rt_poc_01.py` uses synthetic fixtures and checks scan/alpha behavior, deterministic byte-identical upscale output, expected dimensions, legacy color-key safety, AI alpha-mask reapplication, structural-drift displacement sensitivity, stable metrics and tile-preview dimensions. GitHub Actions executes the source-safe suite on Python 3.11 and 3.12 and runs the Godot Texture Lab source-contract validator.
+`tests/test_texture_lab_rt_poc_01.py` uses synthetic fixtures and checks scan/alpha behavior, deterministic byte-identical upscale output, pinned Pillow consistency, expected dimensions, legacy color-key safety, AI alpha-mask reapplication, staged preset selection, approval-gate prerequisites, atlas split/stitch identity, technical/structural QA planning, Qwen workflow contracts and tile-preview dimensions. GitHub Actions executes the pinned source-safe suite on Python 3.11 and 3.12 and runs the Godot Texture Lab source-contract validator.
 
 ## Next execution step
 
