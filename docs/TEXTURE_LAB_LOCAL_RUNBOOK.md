@@ -18,21 +18,40 @@ If the deterministic baseline needs rebuilding:
 python tools/texture_lab/oa_tex_first_run.py prepare-baseline
 ```
 
-To create/download the pinned Real-ESRGAN source, checkpoint and isolated venv:
+To create/download the pinned Real-ESRGAN source, checkpoint and isolated **Python 3.11** venv, point the launchpad at a Python 3.11 interpreter:
 
 ```bash
-python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan
+python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan \
+  --runtime-python <PYTHON_3_11>
 ```
 
-PyTorch/CUDA remains a machine-specific explicit prerequisite; the launchpad does not guess which build should be installed. After the venv exists, install the appropriate PyTorch + torchvision build into that venv using the official PyTorch instructions for the development machine.
+The source-safe tooling may still run under the CI-supported Python 3.11/3.12 matrix; the AI runtime is a separate environment.
 
-Only then request the remaining pinned Real-ESRGAN Python dependencies:
+RT-POC-01 pins the compatibility pair **torch 2.1.2 + torchvision 0.16.2**. Choose only the official PyTorch wheel index appropriate for the development machine. For example:
 
 ```bash
-python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan --install-python-deps
+<REAL_ESRGAN_VENV_PYTHON> -m pip install \
+  torch==2.1.2 torchvision==0.16.2 \
+  --index-url https://download.pytorch.org/whl/cu121
 ```
 
-That launchpad path first executes an import/version check for `torch` and `torchvision`. If either is absent, it stops before running pip for BasicSR/GFPGAN/Real-ESRGAN, preventing an accidental dependency resolver from silently choosing a different Torch build.
+Use `cu118` or `cpu` instead of `cu121` when that is the correct official backend for the machine. The CUDA/CPU index remains machine-specific; the torch/torchvision versions do not.
+
+Verify the exact compatibility contract:
+
+```bash
+python tools/texture_lab/oa_tex_realesrgan_runtime.py check \
+  --python-exe <REAL_ESRGAN_VENV_PYTHON>
+```
+
+Only then request the remaining texture-only Real-ESRGAN Python dependencies:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan \
+  --install-python-deps
+```
+
+The bootstrap installs exact `basicsr==1.4.2` and the pinned Real-ESRGAN source as editable `--no-deps`. GFPGAN/facexlib are deliberately excluded because RT-POC-01 never enables face enhancement. The runtime doctor rechecks Python/Torch/torchvision/BasicSR compatibility and fingerprints the installed pip environment before inference.
 
 Once `status` is source-ready and the runtime doctor can pass, execute the first canonical experiment with:
 
@@ -118,15 +137,17 @@ Venv Python:
 - Windows: `.local\texture_lab\realesrgan\venv\Scripts\python.exe`
 - Linux/macOS: `.local/texture_lab/realesrgan/venv/bin/python`
 
-Install the PyTorch build appropriate for the machine/GPU into that venv first. Do not hard-code a CUDA wheel in the repository.
+Install **torch 2.1.2 + torchvision 0.16.2** into that venv from the appropriate official PyTorch `cu118`, `cu121` or `cpu` index. Do not substitute torchvision 0.17+: BasicSR 1.4.2 relies on the older `torchvision.transforms.functional_tensor` compatibility surface.
 
-Then install the pinned Real-ESRGAN Python dependencies into the same venv:
+Then install the minimal pinned texture runtime into the same venv:
 
 ```bash
 python tools/texture_lab/oa_tex_realesrgan_bootstrap.py \
   --install-python-deps \
   --python-exe <REAL_ESRGAN_VENV_PYTHON>
 ```
+
+This installs `basicsr==1.4.2` and the pinned Real-ESRGAN source with `--no-deps`; the face-enhancement-only GFPGAN/facexlib stack is intentionally absent.
 
 The doctor must pass before generation:
 
