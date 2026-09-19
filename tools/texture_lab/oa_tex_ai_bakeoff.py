@@ -12,6 +12,7 @@ from oa_tex_prompt import build_prompt_pair
 
 QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 
 
 def load_json(path: Path) -> dict:
@@ -42,6 +43,57 @@ def eligible_entries(selection: dict, policy: dict, mode: str) -> tuple[list[dic
                 }
             )
     return allowed, skipped
+
+
+def apply_execution_subset(
+    mode: str,
+    allowed: list[dict],
+    preset_name: str | None,
+    only: list[str] | None,
+) -> tuple[list[dict], list[dict], dict | None]:
+    if preset_name and only:
+        raise SystemExit("--preset and --only are mutually exclusive")
+
+    selected_ids: set[str] | None = None
+    preset_meta = None
+    if preset_name:
+        smoke_sets = load_json(SMOKE_SETS)
+        preset = smoke_sets.get("presets", {}).get(preset_name)
+        if not isinstance(preset, dict):
+            raise SystemExit(f"unknown AI smoke preset: {preset_name}")
+        if str(preset.get("mode")) != mode:
+            raise SystemExit(
+                f"preset {preset_name!r} is for mode={preset.get('mode')}, not {mode}"
+            )
+        selected_ids = {str(value) for value in preset.get("textures", [])}
+        preset_meta = {
+            "name": preset_name,
+            "purpose": preset.get("purpose"),
+            "textures": list(preset.get("textures", [])),
+        }
+    elif only:
+        selected_ids = {str(value) for value in only}
+
+    if selected_ids is None:
+        return allowed, [], preset_meta
+
+    selected = [entry for entry in allowed if str(entry["id"]) in selected_ids]
+    deferred = [
+        {
+            "id": entry["id"],
+            "content_class": entry.get("content_class"),
+            "reason": "not_selected_for_this_execution_stage",
+        }
+        for entry in allowed
+        if str(entry["id"]) not in selected_ids
+    ]
+    missing_requested = selected_ids - {str(entry["id"]) for entry in allowed}
+    if missing_requested:
+        raise SystemExit(
+            "requested textures are not eligible for this mode: "
+            + ", ".join(sorted(missing_requested))
+        )
+    return selected, deferred, preset_meta
 
 
 def _quoted_command(argv: list[str]) -> str:
@@ -330,6 +382,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run or dry-run the canonical OpenAzrael AI texture bake-off.")
     parser.add_argument("mode", choices=["restored", "recreated"])
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--preset", default=None, help="Named staged execution set from ai_smoke_sets.json.")
+    parser.add_argument("--only", nargs="*", default=None, help="Explicit eligible texture IDs for this run.")
     parser.add_argument(
         "--selection",
         type=Path,
@@ -384,10 +438,16 @@ def main() -> int:
     validate_execution_args(args)
 
     allowed, skipped = eligible_entries(selection, policy, args.mode)
+    selected, deferred, preset_meta = apply_execution_subset(
+        args.mode, allowed, args.preset, args.only
+    )
+    if not selected:
+        raise SystemExit("execution subset contains no eligible textures")
+
     if args.mode == "restored":
-        jobs = build_restore_plan(args, allowed)
+        jobs = build_restore_plan(args, selected)
     else:
-        jobs = build_recreate_plan(args, allowed, profiles, qwen_contract)
+        jobs = build_recreate_plan(args, selected, profiles, qwen_contract)
 
     plan = {
         "schema": "openazrael.texture_lab.ai_bakeoff_plan.v2",
@@ -395,7 +455,10 @@ def main() -> int:
         "dry_run": bool(args.dry_run),
         "selection_count": len(selection["textures"]),
         "eligible_count": len(allowed),
+        "selected_count": len(selected),
         "skipped_count": len(skipped),
+        "deferred_count": len(deferred),
+        "preset": preset_meta,
         "eligible": [
             {
                 "id": entry["id"],
@@ -404,7 +467,9 @@ def main() -> int:
             }
             for entry in allowed
         ],
+        "selected": [entry["id"] for entry in selected],
         "skipped": skipped,
+        "deferred": deferred,
         "recreated_contract": (
             {
                 "workflow": str(args.workflow),
@@ -429,7 +494,8 @@ def main() -> int:
     plan_out = args.plan_out or args.run_dir / f"{args.mode}_plan.json"
     write_json(plan_out, plan)
     print(
-        f"PLAN mode={args.mode} eligible={len(allowed)} skipped={len(skipped)} "
+        f"PLAN mode={args.mode} eligible={len(allowed)} selected={len(selected)} "
+        f"deferred={len(deferred)} skipped={len(skipped)} "
         f"jobs={len(jobs)} out={plan_out}"
     )
 
