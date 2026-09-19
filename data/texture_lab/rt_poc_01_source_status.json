@@ -57,6 +57,13 @@
       "changed_candidate_status": "STALE",
       "stage_approval_requires_nonempty_note": true,
       "binds_complete_stage_evidence_sha256": true
+    },
+    "godot_stage_profile": {
+      "schema": "openazrael.texture_lab.review_texture_manifest.v1",
+      "stage_copy": "<run_dir>/godot_review_profile.json",
+      "convenience_pointer": ".local/texture_lab/runtime_manifests/review_current.json",
+      "export_allowed": false,
+      "bound_into_structured_manual_review": true
     }
   },
   "godot_lab": {
@@ -116,5 +123,29 @@
     "exported_runtime_loader": "tools/texture_lab/godot/runtime_texture_resource_loader.gd",
     "runtime_loader_uses": "ResourceLoader",
     "raw_hashing_scope": "DEVELOPMENT_AND_PRE_EXPORT_ONLY"
+  },
+  "contract_validation": {
+    "tool": "tools/texture_lab/oa_tex_contract_validate.py",
+    "ci_required": true,
+    "validates": [
+      "selection_policy_coverage",
+      "mode_eligibility_and_full_presets",
+      "approval_dag_and_recommended_order",
+      "policy_summary_counts",
+      "realesrgan_backend_registry",
+      "qwen_backend_contract_workflow"
+    ]
+  },
+  "candidate_namespaces": {
+    "policy": "PRESET_SCOPED_V1",
+    "restored": "assets/textures/ai_restored/_runs/<preset>/",
+    "recreated": "assets/textures/ai_recreated/_runs/<preset>/",
+    "cross_preset_overwrite": false,
+    "same_preset_rerun_invalidates_prior_evidence": true,
+    "enforced_by": [
+      "oa_tex_ai_bakeoff.py",
+      "oa_tex_stage_gate.py",
+      "oa_tex_production_selection.py"
+    ]
   }
 }
