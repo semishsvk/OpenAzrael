@@ -5,26 +5,39 @@ const TIER_NAMES := ["CLASSIC", "ENHANCED", "AI RESTORED", "AI RECREATED"]
 const ENHANCED_METHODS := ["nearest", "bicubic", "lanczos"]
 const TILE_REPEATS := [1, 2, 4]
 
-@onready var surface: MeshInstance3D = $Surface
+@onready var surface_a: MeshInstance3D = $Surface
+@onready var surface_b: MeshInstance3D = $SurfaceB
 @onready var light: DirectionalLight3D = $DirectionalLight3D
 @onready var label: Label = $HUD/Panel/Margin/Label
 
 var entries: Array = []
 var texture_index := 0
 var tier_index := 0
+var reference_tier_index := 0
 var enhanced_method_index := 2
 var tile_index := 0
 var lit := false
-var material := StandardMaterial3D.new()
+var compare_mode := false
+
+var material_a := StandardMaterial3D.new()
+var material_b := StandardMaterial3D.new()
+
 var current_path := ""
 var current_status := ""
+var reference_path := ""
+var reference_status := ""
 
 func _ready() -> void:
-    material.roughness = 0.85
-    material.metallic = 0.0
-    surface.material_override = material
+    _configure_material(material_a)
+    _configure_material(material_b)
+    surface_a.material_override = material_a
+    surface_b.material_override = material_b
     _load_selection()
     _refresh()
+
+func _configure_material(target: StandardMaterial3D) -> void:
+    target.roughness = 0.85
+    target.metallic = 0.0
 
 func _load_selection() -> void:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(SELECTION_PATH))
@@ -33,9 +46,9 @@ func _load_selection() -> void:
         return
     entries = parsed["textures"]
 
-func _path_for_entry(entry: Dictionary) -> String:
+func _path_for_entry(entry: Dictionary, tier: int) -> String:
     var id := String(entry["id"])
-    match tier_index:
+    match tier:
         0:
             return "res://assets/textures/classic/%s.png" % id
         1:
@@ -75,78 +88,164 @@ func _tiled_image(source: Image, repeat: int) -> Image:
             )
     return result
 
-func _fit_surface(image: Image) -> void:
-    var quad := surface.mesh as QuadMesh
+func _fit_surface(target: MeshInstance3D, image: Image, extent: float) -> void:
+    var quad := target.mesh as QuadMesh
     if quad == null:
         return
     var aspect := float(image.get_width()) / max(1.0, float(image.get_height()))
-    var extent := 3.4
     if aspect >= 1.0:
         quad.size = Vector2(extent, extent / aspect)
     else:
         quad.size = Vector2(extent * aspect, extent)
 
-func _refresh() -> void:
-    if entries.is_empty():
-        current_status = "NO SELECTION"
-        _update_label()
-        return
-
-    texture_index = wrapi(texture_index, 0, entries.size())
-    var entry: Dictionary = entries[texture_index]
-    current_path = _path_for_entry(entry)
-    var image := _load_image(current_path)
-
+func _apply_surface(
+    target: MeshInstance3D,
+    target_material: StandardMaterial3D,
+    path: String,
+    repeat: int,
+    extent: float
+) -> String:
+    var image := _load_image(path)
     if image == null:
-        current_status = "MISSING"
-        material.albedo_texture = null
-        material.albedo_color = Color(0.12, 0.02, 0.12, 1.0)
-    else:
-        current_status = "OK"
-        var repeat: int = TILE_REPEATS[tile_index]
-        var display_image := _tiled_image(image, repeat)
-        material.albedo_color = Color.WHITE
-        material.albedo_texture = ImageTexture.create_from_image(display_image)
-        _fit_surface(display_image)
+        target_material.albedo_texture = null
+        target_material.albedo_color = Color(0.12, 0.02, 0.12, 1.0)
+        var quad := target.mesh as QuadMesh
+        if quad != null:
+            quad.size = Vector2(extent, extent)
+        return "MISSING"
 
-    material.shading_mode = (
+    var display_image := _tiled_image(image, repeat)
+    target_material.albedo_color = Color.WHITE
+    target_material.albedo_texture = ImageTexture.create_from_image(display_image)
+    _fit_surface(target, display_image, extent)
+    return "OK"
+
+func _apply_lighting() -> void:
+    var mode := (
         BaseMaterial3D.SHADING_MODE_PER_PIXEL
         if lit
         else BaseMaterial3D.SHADING_MODE_UNSHADED
     )
+    material_a.shading_mode = mode
+    material_b.shading_mode = mode
     light.visible = lit
+
+func _refresh() -> void:
+    if entries.is_empty():
+        current_status = "NO SELECTION"
+        reference_status = "NO SELECTION"
+        _update_label()
+        return
+
+    texture_index = wrapi(texture_index, 0, entries.size())
+    tier_index = wrapi(tier_index, 0, TIER_NAMES.size())
+    reference_tier_index = wrapi(reference_tier_index, 0, TIER_NAMES.size())
+
+    var entry: Dictionary = entries[texture_index]
+    var repeat: int = TILE_REPEATS[tile_index]
+    current_path = _path_for_entry(entry, tier_index)
+
+    if compare_mode:
+        reference_path = _path_for_entry(entry, reference_tier_index)
+        surface_a.visible = true
+        surface_b.visible = true
+        surface_a.position = Vector3(-1.7, 0.0, 0.0)
+        surface_b.position = Vector3(1.7, 0.0, 0.0)
+        reference_status = _apply_surface(
+            surface_a,
+            material_a,
+            reference_path,
+            repeat,
+            2.65
+        )
+        current_status = _apply_surface(
+            surface_b,
+            material_b,
+            current_path,
+            repeat,
+            2.65
+        )
+    else:
+        reference_path = ""
+        reference_status = ""
+        surface_a.visible = true
+        surface_b.visible = false
+        surface_a.position = Vector3.ZERO
+        current_status = _apply_surface(
+            surface_a,
+            material_a,
+            current_path,
+            repeat,
+            3.4
+        )
+
+    _apply_lighting()
     _update_label()
 
 func _update_label() -> void:
     if entries.is_empty():
         label.text = "OpenAzrael Texture Lab — no selection loaded"
         return
+
     var entry: Dictionary = entries[texture_index]
-    var method := ENHANCED_METHODS[enhanced_method_index] if tier_index == 1 else "-"
-    label.text = (
-        "OpenAzrael Texture Lab  |  %d/%d  %s\n"
-        + "Tier: %s  |  Enhanced: %s  |  Tile: %dx%d  |  Lighting: %s  |  %s\n"
-        + "Path: %s\n"
-        + "←/→ texture   1 Classic   2 Enhanced   3 AI Restored   4 AI Recreated\n"
-        + "Q/W/E nearest/bicubic/lanczos   T tile 1/2/4   L lighting   S screenshot"
-    ) % [
-        texture_index + 1,
-        entries.size(),
-        String(entry["id"]),
-        TIER_NAMES[tier_index],
-        method,
-        TILE_REPEATS[tile_index],
-        TILE_REPEATS[tile_index],
-        "LIT" if lit else "UNSHADED",
-        current_status,
-        current_path
-    ]
+    var method := ENHANCED_METHODS[enhanced_method_index]
+    var tile_text := "%dx%d" % [TILE_REPEATS[tile_index], TILE_REPEATS[tile_index]]
+    var lighting_text := "LIT" if lit else "UNSHADED"
+
+    if compare_mode:
+        label.text = (
+            "OpenAzrael Texture Lab  |  %d/%d  %s\n"
+            + "A/B: ON  |  Reference: %s [%s]  |  Candidate: %s [%s]\n"
+            + "Enhanced: %s  |  Tile: %s  |  Lighting: %s\n"
+            + "A: %s\n"
+            + "B: %s\n"
+            + "←/→ texture   1/2/3/4 candidate tier   R reference tier   B A/B toggle\n"
+            + "Q/W/E nearest/bicubic/lanczos   T tile 1/2/4   L lighting   S screenshot"
+        ) % [
+            texture_index + 1,
+            entries.size(),
+            String(entry["id"]),
+            TIER_NAMES[reference_tier_index],
+            reference_status,
+            TIER_NAMES[tier_index],
+            current_status,
+            method,
+            tile_text,
+            lighting_text,
+            reference_path,
+            current_path
+        ]
+    else:
+        var active_method := method if tier_index == 1 else "-"
+        label.text = (
+            "OpenAzrael Texture Lab  |  %d/%d  %s\n"
+            + "Tier: %s  |  Enhanced: %s  |  Tile: %s  |  Lighting: %s  |  %s\n"
+            + "Path: %s\n"
+            + "←/→ texture   1 Classic   2 Enhanced   3 AI Restored   4 AI Recreated\n"
+            + "B A/B compare   R cycle reference   Q/W/E nearest/bicubic/lanczos\n"
+            + "T tile 1/2/4   L lighting   S screenshot"
+        ) % [
+            texture_index + 1,
+            entries.size(),
+            String(entry["id"]),
+            TIER_NAMES[tier_index],
+            active_method,
+            tile_text,
+            lighting_text,
+            current_status,
+            current_path
+        ]
 
 func _save_screenshot() -> void:
     var image := get_viewport().get_texture().get_image()
     var id := String(entries[texture_index]["id"]).replace("#", "_")
     var tier := TIER_NAMES[tier_index].to_lower().replace(" ", "_")
-    var path := "user://texture_lab_%s_%s.png" % [id, tier]
+    var path := ""
+    if compare_mode:
+        var reference := TIER_NAMES[reference_tier_index].to_lower().replace(" ", "_")
+        path = "user://texture_lab_%s_ab_%s_vs_%s.png" % [id, reference, tier]
+    else:
+        path = "user://texture_lab_%s_%s.png" % [id, tier]
     var err := image.save_png(path)
     if err == OK:
         print("Texture Lab screenshot: ", path)
@@ -182,6 +281,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
             tile_index = (tile_index + 1) % TILE_REPEATS.size()
         KEY_L:
             lit = not lit
+        KEY_B:
+            compare_mode = not compare_mode
+        KEY_R:
+            reference_tier_index = (reference_tier_index + 1) % TIER_NAMES.size()
         KEY_S:
             _save_screenshot()
         _:
