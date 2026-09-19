@@ -85,7 +85,7 @@
 - `docs/KG001_HEADLESS_V109.md`
 - `scripts/kg001_headless_runner_v109.gd`
 - `tools/validate_kg001_headless_v109.py`
-- `data/tests/kg001_headless_runner_contract_v109.json`
+- `data/tests/kg001_headless_contract_v109.json`
 
 ## KG-001 v108 state-space
 - `docs/KG001_STATE_SPACE_V108.md`
