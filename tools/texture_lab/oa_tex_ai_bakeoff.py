@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import uuid
 
 from common import (
     AI_RECREATED_ROOT,
@@ -23,6 +24,12 @@ AI_BACKENDS = ROOT / "tools/texture_lab/config/ai_backends.json"
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 DEFAULT_RESTORED_DIR = AI_RESTORED_ROOT
 DEFAULT_RECREATED_DIR = AI_RECREATED_ROOT
+
+
+def run_instance_id(preset: str | None, dry_run: bool) -> str | None:
+    if not preset or dry_run:
+        return None
+    return uuid.uuid4().hex
 
 
 def load_json(path: Path) -> dict:
@@ -836,10 +843,12 @@ def main() -> int:
     if summary_job is not None:
         jobs.append(summary_job)
 
+    instance_id = run_instance_id(args.preset, args.dry_run)
     plan = {
-        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v4",
+        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v5",
         "mode": args.mode,
         "dry_run": bool(args.dry_run),
+        "run_instance_id": instance_id,
         "selection_count": len(selection["textures"]),
         "eligible_count": len(allowed),
         "selected_count": len(selected),
