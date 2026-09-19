@@ -365,6 +365,137 @@ def build_status(runtime_dir: Path) -> dict:
     }
 
 
+def classify_restored_smoke_1_state(
+    plan_present: bool,
+    evidence_status: str | None,
+    manual_status: str | None,
+    receipt_status: str | None,
+) -> dict:
+    if not plan_present:
+        return {
+            "state": "NOT_EXECUTED",
+            "next_action": (
+                "python tools/texture_lab/oa_tex_first_run.py "
+                "check-restored-smoke-1"
+            ),
+        }
+    if evidence_status != "PASS":
+        return {
+            "state": "EVIDENCE_HOLD",
+            "next_action": (
+                "inspect .local/texture_lab/runs/rt_poc_01/"
+                "restored_smoke_1/run_summary.md and repair/re-run the stage"
+            ),
+        }
+    if manual_status == "MISSING":
+        return {
+            "state": "READY_FOR_MANUAL_REVIEW",
+            "next_action": (
+                "python tools/texture_lab/oa_tex_manual_review.py "
+                "init restored_smoke_1"
+            ),
+        }
+    if manual_status == "STALE":
+        return {
+            "state": "MANUAL_REVIEW_STALE",
+            "next_action": (
+                "restart the structured review only after inspecting the "
+                "new current review evidence"
+            ),
+        }
+    if manual_status != "PASS":
+        return {
+            "state": "MANUAL_REVIEW_IN_PROGRESS",
+            "next_action": (
+                "complete all required CORIROCK checks, then run "
+                "oa_tex_manual_review.py status restored_smoke_1"
+            ),
+        }
+    if receipt_status == "PASS":
+        return {
+            "state": "STAGE_APPROVED",
+            "next_action": (
+                "restored_smoke_4 is now eligible to begin; production "
+                "selection remains a separate manual decision"
+            ),
+        }
+    if receipt_status == "STALE":
+        return {
+            "state": "APPROVAL_STALE",
+            "next_action": (
+                "re-approve restored_smoke_1 only after confirming the "
+                "current PASS manual review"
+            ),
+        }
+    return {
+        "state": "READY_FOR_STAGE_APPROVAL",
+        "next_action": (
+            "python tools/texture_lab/oa_tex_stage_gate.py approve "
+            "restored_smoke_1 --note \"structured manual review PASS\""
+        ),
+    }
+
+
+def build_restored_smoke_1_state() -> dict:
+    from oa_tex_manual_review import validate_manual_review
+    from oa_tex_stage_gate import (
+        DEFAULT_APPROVAL_ROOT,
+        DEFAULT_MANUAL_REVIEW_ROOT,
+        DEFAULT_RUN_ROOT,
+        evidence_snapshot,
+        validate_receipt,
+    )
+
+    preset = "restored_smoke_1"
+    run_dir = DEFAULT_RUN_ROOT / preset
+    plan_path = run_dir / "restored_plan.json"
+    plan_present = plan_path.is_file()
+
+    evidence = (
+        evidence_snapshot(preset, DEFAULT_RUN_ROOT)
+        if plan_present
+        else {"status": "MISSING"}
+    )
+    manual = (
+        validate_manual_review(
+            preset,
+            DEFAULT_RUN_ROOT,
+            DEFAULT_MANUAL_REVIEW_ROOT,
+        )
+        if evidence.get("status") == "PASS"
+        else {"status": "NOT_CHECKED"}
+    )
+    receipt = (
+        validate_receipt(
+            preset,
+            DEFAULT_RUN_ROOT,
+            DEFAULT_APPROVAL_ROOT,
+            DEFAULT_MANUAL_REVIEW_ROOT,
+        )
+        if manual.get("status") == "PASS"
+        else {"status": "NOT_CHECKED"}
+    )
+
+    classified = classify_restored_smoke_1_state(
+        plan_present,
+        str(evidence.get("status")),
+        str(manual.get("status")),
+        str(receipt.get("status")),
+    )
+    return {
+        "schema": "openazrael.texture_lab.first_restored_smoke_state.v1",
+        "preset": preset,
+        **classified,
+        "plan_path": str(plan_path),
+        "plan_present": plan_present,
+        "evidence": evidence,
+        "manual_review": manual,
+        "stage_approval": receipt,
+        "automatic_action": False,
+        "production_selection_implied": False,
+    }
+
+
 def run_commands(
     commands: list[dict],
     dry_run: bool,
@@ -410,6 +541,7 @@ def main() -> int:
             "prepare-baseline",
             "bootstrap-realesrgan",
             "check-restored-smoke-1",
+            "restored-smoke-1-status",
             "restored-smoke-1",
         ],
     )
@@ -462,6 +594,15 @@ def main() -> int:
             + f" report={args.out}"
         )
         return 0 if state == "PASS" else 1
+
+    if args.command == "restored-smoke-1-status":
+        payload = build_restored_smoke_1_state()
+        write_json(args.out, payload)
+        print(
+            f"{payload['state']} restored_smoke_1_status "
+            f"next={payload['next_action']} report={args.out}"
+        )
+        return 0
 
     if args.command == "prepare-baseline":
         if PILLOW_VERSION != PINNED_PILLOW_VERSION:
