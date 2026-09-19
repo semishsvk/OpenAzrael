@@ -532,6 +532,23 @@ def build_review_profile_job(args) -> dict | None:
     }
 
 
+def build_review_handoff_job(args) -> dict | None:
+    if not args.preset:
+        return None
+    argv = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_review_handoff.py"),
+        args.preset,
+        "--run-root", str(args.run_root),
+        "--out", str(args.run_dir / "review_handoff.html"),
+    ]
+    return {
+        "stage": "review_handoff",
+        "argv": argv,
+        "command": _quoted_command(argv),
+    }
+
+
 def build_run_summary_job(args) -> dict | None:
     if not args.preset:
         return None
@@ -874,6 +891,9 @@ def main() -> int:
     review_profile_job = build_review_profile_job(args)
     if review_profile_job is not None:
         jobs.append(review_profile_job)
+    review_handoff_job = build_review_handoff_job(args)
+    if review_handoff_job is not None:
+        jobs.append(review_handoff_job)
     summary_job = build_run_summary_job(args)
     if summary_job is not None:
         jobs.append(summary_job)
