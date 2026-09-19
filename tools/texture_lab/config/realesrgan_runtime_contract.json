@@ -1,0 +1,43 @@
+{
+  "schema": "openazrael.texture_lab.realesrgan_runtime_contract.v1",
+  "status": "PINNED_POC_COMPATIBILITY",
+  "purpose": "Texture-only Real-ESRGAN RT-POC-01 runtime. Face enhancement is deliberately excluded.",
+  "python": {
+    "major_minor": "3.11",
+    "reason": "PyTorch 2.1 / torchvision 0.16 officially support Python through 3.11; keep AI runtime separate from source-safe CI Python matrix."
+  },
+  "packages": {
+    "torch": {
+      "version": "2.1.2",
+      "install_policy": "USER_SELECTS_OFFICIAL_PYTORCH_INDEX_FOR_GPU_OR_CPU"
+    },
+    "torchvision": {
+      "version": "0.16.2",
+      "compatibility_probe": "torchvision.transforms.functional_tensor"
+    },
+    "basicsr": {
+      "version": "1.4.2"
+    },
+    "realesrgan": {
+      "source": "PINNED_EDITABLE_SOURCE_NO_DEPS"
+    }
+  },
+  "supported_torch_indexes": [
+    "cu118",
+    "cu121",
+    "cpu"
+  ],
+  "excluded_texture_runtime_packages": [
+    "gfpgan",
+    "facexlib"
+  ],
+  "face_enhancement": false,
+  "dependency_policy": {
+    "torch_and_torchvision_installed_first": true,
+    "bootstrap_checks_exact_versions_before_other_dependencies": true,
+    "install_basicsr_exact": true,
+    "install_realesrgan_editable_no_deps": true,
+    "capture_pip_freeze": true,
+    "freeze_becomes_final_lock_only_after_successful_real_smoke": false
+  }
+}
