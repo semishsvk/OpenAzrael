@@ -7,14 +7,20 @@ from pathlib import Path
 import subprocess
 import sys
 
-from common import ROOT, write_json
+from common import (
+    AI_RECREATED_ROOT,
+    AI_RESTORED_ROOT,
+    ROOT,
+    named_candidate_root,
+    write_json,
+)
 from oa_tex_prompt import build_prompt_pair
 
 QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
-DEFAULT_RESTORED_DIR = ROOT / "assets/textures/ai_restored"
-DEFAULT_RECREATED_DIR = ROOT / "assets/textures/ai_recreated"
+DEFAULT_RESTORED_DIR = AI_RESTORED_ROOT
+DEFAULT_RECREATED_DIR = AI_RECREATED_ROOT
 
 
 def load_json(path: Path) -> dict:
@@ -546,7 +552,7 @@ def resolve_named_candidate_namespace(args) -> None:
         return
 
     if args.mode == "restored":
-        canonical = DEFAULT_RESTORED_DIR / "_runs" / args.preset
+        canonical = named_candidate_root("restored", args.preset)
         if args.restored_dir not in {DEFAULT_RESTORED_DIR, canonical}:
             raise SystemExit(
                 "named restored presets use a fixed immutable candidate namespace: "
@@ -554,7 +560,7 @@ def resolve_named_candidate_namespace(args) -> None:
             )
         args.restored_dir = canonical
     else:
-        canonical = DEFAULT_RECREATED_DIR / "_runs" / args.preset
+        canonical = named_candidate_root("recreated", args.preset)
         if args.recreated_dir not in {DEFAULT_RECREATED_DIR, canonical}:
             raise SystemExit(
                 "named recreated presets use a fixed immutable candidate namespace: "
