@@ -2085,6 +2085,18 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             stale_declared["profile"] = "remastered"
             stale_declared["status"] = "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS"
             stale_declared["stale_production_selection_count"] = 1
+            stale_declared["classic_fallback_count"] = 1
+            stale_declared["textures"][0]["profile"] = "remastered"
+            stale_declared["textures"][0]["resolution_reason"] = (
+                "stale_production_selection_fallback_to_classic"
+            )
+            stale_declared["textures"][0]["production_selection_status"] = "STALE"
+            stale_declared["classic_fallback_count"] = 1
+            stale_declared["textures"][0]["profile"] = "remastered"
+            stale_declared["textures"][0]["resolution_reason"] = (
+                "stale_production_selection_fallback_to_classic"
+            )
+            stale_declared["textures"][0]["production_selection_status"] = "STALE"
             stale_declared_path = root / "stale_declared_manifest.json"
             stale_declared_path.write_text(
                 json.dumps(stale_declared),
@@ -2108,6 +2120,47 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             stale = verify_manifest(manifest_path, root)
             self.assertEqual(stale["status"], "STALE")
             self.assertEqual(stale["stale_texture_ids"], ["A"])
+
+            missing_row = json.loads(json.dumps(manifest))
+            missing_row["textures"] = []
+            missing_row["texture_count"] = 0
+            missing_row_path = root / "missing_row_manifest.json"
+            missing_row_path.write_text(
+                json.dumps(missing_row),
+                encoding="utf-8",
+            )
+            missing_row_status = verify_manifest(missing_row_path, root)
+            self.assertEqual(missing_row_status["status"], "HOLD")
+            self.assertFalse(
+                missing_row_status["coverage"]["selection_coverage_ok"]
+            )
+
+            duplicate = json.loads(json.dumps(manifest))
+            duplicate["textures"].append(
+                json.loads(json.dumps(duplicate["textures"][0]))
+            )
+            duplicate["texture_count"] = 2
+            duplicate_path = root / "duplicate_manifest.json"
+            duplicate_path.write_text(
+                json.dumps(duplicate),
+                encoding="utf-8",
+            )
+            duplicate_status = verify_manifest(duplicate_path, root)
+            self.assertEqual(duplicate_status["status"], "HOLD")
+            self.assertFalse(duplicate_status["coverage"]["ids_unique"])
+
+            unknown_profile = json.loads(json.dumps(manifest))
+            unknown_profile["profile"] = "experimental"
+            unknown_profile["textures"][0]["profile"] = "experimental"
+            unknown_profile_path = root / "unknown_profile_manifest.json"
+            unknown_profile_path.write_text(
+                json.dumps(unknown_profile),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                verify_manifest(unknown_profile_path, root)["status"],
+                "HOLD",
+            )
 
             manifest["textures"][0]["path"] = "res://assets/textures/../escape.png"
             manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
