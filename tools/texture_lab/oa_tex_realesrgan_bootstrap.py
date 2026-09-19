@@ -134,14 +134,28 @@ def main() -> int:
         "path": str(source_dir),
         "exists": source_dir.is_dir(),
         "expected_tag": spec["upstream_tag"],
+        "expected_commit": spec["upstream_commit"],
         "version_file": None,
         "version_ok": None,
+        "git_head": None,
+        "git_head_ok": None,
     }
     version_path = source_dir / "VERSION"
     if version_path.is_file():
         version = version_path.read_text(encoding="utf-8").strip()
         upstream_status["version_file"] = version
         upstream_status["version_ok"] = version == str(spec["upstream_version"])
+
+    if (source_dir / ".git").exists():
+        try:
+            head = subprocess.check_output(
+                ["git", "-C", str(source_dir), "rev-parse", "HEAD"],
+                text=True,
+            ).strip()
+            upstream_status["git_head"] = head
+            upstream_status["git_head_ok"] = head == str(spec["upstream_commit"])
+        except Exception:
+            upstream_status["git_head_ok"] = False
 
     report = {
         "schema": "openazrael.texture_lab.realesrgan_bootstrap.v1",
@@ -153,6 +167,7 @@ def main() -> int:
             verification.get("status") == "PASS"
             and upstream_status["exists"]
             and upstream_status["version_ok"] is True
+            and upstream_status["git_head_ok"] is True
         ),
     }
     report_path = args.report or runtime / "bootstrap_report.json"
