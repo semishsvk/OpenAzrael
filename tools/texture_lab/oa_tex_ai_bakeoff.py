@@ -101,6 +101,14 @@ def required_qwen_model_files(comfy_root: Path | None, contract: dict) -> list[P
 def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dict) -> list[dict]:
     jobs = []
 
+    doctor = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_comfy_doctor.py"),
+        "--server", args.server,
+        "--out", str(args.run_dir / "comfy_doctor.json"),
+    ]
+    jobs.append({"stage": "comfy_doctor", "argv": doctor, "command": _quoted_command(doctor)})
+
     preflight = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_qwen_preflight.py"),
