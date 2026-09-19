@@ -147,5 +147,26 @@
       "oa_tex_stage_gate.py",
       "oa_tex_production_selection.py"
     ]
+  },
+  "realesrgan_runtime_contract": {
+    "schema": "openazrael.texture_lab.realesrgan_runtime_contract.v1",
+    "status": "PROVISIONAL_UNTIL_REAL_SMOKE",
+    "python": "3.11",
+    "torch": "2.1.2",
+    "torchvision": "0.16.2",
+    "basicsr": "1.4.2",
+    "supported_indexes": [
+      "cu118",
+      "cu121",
+      "cpu"
+    ],
+    "exact_functional_tensor_probe": true,
+    "face_enhancement": false,
+    "excluded_packages": [
+      "gfpgan",
+      "facexlib"
+    ],
+    "doctor_captures_pip_freeze": true,
+    "final_lock_condition": "successful reviewed restored_smoke_1"
   }
 }
