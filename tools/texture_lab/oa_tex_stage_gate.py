@@ -6,7 +6,13 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 
-from common import ROOT, sha256_file, write_json
+from common import (
+    ROOT,
+    named_candidate_root,
+    path_is_within,
+    sha256_file,
+    write_json,
+)
 
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 DEFAULT_RUN_ROOT = ROOT / ".local/texture_lab/runs/rt_poc_01"
@@ -203,6 +209,11 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         output_rows.append({"id": str(row["id"]), **candidate})
 
     output_ids = [row["id"] for row in output_rows]
+    expected_output_root = named_candidate_root(mode, preset)
+    output_namespace_ok = all(
+        path_is_within(Path(str(row.get("path", ""))), expected_output_root)
+        for row in output_rows
+    )
 
     checks = {
         "plan_preset_ok": (
@@ -240,6 +251,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
             len(output_ids) == len(expected)
             and set(output_ids) == set(expected)
         ),
+        "candidate_namespace_ok": output_namespace_ok,
     }
 
     if mode == "restored":
@@ -274,6 +286,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         "runtime": [file_evidence(path) for path in runtime_paths],
         "generation_records": [file_evidence(path) for path in job_paths],
         "outputs": output_rows,
+        "candidate_namespace": str(expected_output_root),
         "checks": checks,
     }
 
