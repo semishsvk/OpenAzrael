@@ -894,7 +894,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 sha256_file(candidate),
             )
 
-            review_profile_path = root / "review_current.json"
+            review_profile_path = run_dir / "godot_review_profile.json"
             review_profile_path.write_text(
                 json.dumps(review_profile),
                 encoding="utf-8",
