@@ -25,6 +25,7 @@ from common import (
     visible_legacy_magenta_pixels,
 )
 from oa_tex_ai_bakeoff import build_recreate_plan, eligible_entries
+from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_enhance import upscale_one
 from oa_tex_prompt import build_prompt_pair
@@ -364,6 +365,90 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertIn("--negative-prompt-node", generate["argv"])
         self.assertIn("8", generate["argv"])
         self.assertIn("--conditioning-image", generate["argv"])
+
+    def test_atlas_split_stitch_is_pixel_exact(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "atlas.png"
+            parts = root / "parts"
+            stitched = root / "stitched.png"
+
+            im = Image.new("RGBA", (16, 8), (0, 0, 0, 255))
+            px = im.load()
+            for y in range(im.height):
+                for x in range(im.width):
+                    px[x, y] = (
+                        (x * 17) % 256,
+                        (y * 31) % 256,
+                        (x * 9 + y * 5) % 256,
+                        255,
+                    )
+            im.save(source)
+
+            rows = split_equal(source, parts, "x", 4)
+            self.assertEqual(len(rows), 4)
+            self.assertEqual([row["size"] for row in rows], [[4, 8]] * 4)
+
+            result = stitch_equal(parts, stitched, "x", 4)
+            self.assertEqual(result["size"], [16, 8])
+            with Image.open(source) as original, Image.open(stitched) as rebuilt:
+                self.assertEqual(
+                    list(original.convert("RGBA").getdata()),
+                    list(rebuilt.convert("RGBA").getdata()),
+                )
+
+    def test_baptap_plan_generates_four_isolated_qwen_parts(self):
+        contract = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(encoding="utf-8")
+        )
+        profiles = json.loads(
+            (ROOT / "tools/texture_lab/profiles/recreate_profiles.json").read_text(encoding="utf-8")
+        )
+        entry = {
+            "id": "BAPTAP",
+            "content_class": "high_detail_mural",
+            "policy": {
+                "ai_recreated": True,
+                "atlas_split": {"axis": "x", "segments": 4},
+            },
+        }
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            args = SimpleNamespace(
+                workflow=ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json",
+                server="http://127.0.0.1:8188",
+                run_dir=temp / "run",
+                comfy_root=None,
+                model_file=[],
+                source_dir=temp / "classic",
+                recreated_dir=temp / "recreated",
+                recreate_input_dir=temp / "enhanced",
+                recreate_input_variant="lanczos_x4.png",
+                load_image_node="1",
+                prompt_node="7",
+                prompt_key="prompt",
+                negative_prompt_node="8",
+                negative_prompt_key="prompt",
+                seed_node="10",
+                seed_key="seed",
+                seed=734234,
+                model_label="Qwen-Image-Edit-2511",
+                selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+            )
+            jobs = build_recreate_plan(args, [entry], profiles, contract)
+
+        stages = [job["stage"] for job in jobs]
+        self.assertEqual(stages[0:2], ["comfy_doctor", "qwen_preflight"])
+        self.assertEqual(stages.count("atlas_split_classic"), 1)
+        self.assertEqual(stages.count("atlas_split_enhanced"), 1)
+        self.assertEqual(stages.count("generate"), 4)
+        self.assertEqual(stages.count("atlas_stitch"), 1)
+        self.assertEqual(stages[-1], "structural_qa")
+        generated_parts = [job for job in jobs if job["stage"] == "generate"]
+        self.assertEqual(
+            [job["part"] for job in generated_parts],
+            ["00", "01", "02", "03"],
+        )
 
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
