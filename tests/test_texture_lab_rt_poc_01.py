@@ -24,7 +24,7 @@ from common import (
     sha256_file,
     visible_legacy_magenta_pixels,
 )
-from oa_tex_ai_bakeoff import build_recreate_plan, eligible_entries
+from oa_tex_ai_bakeoff import apply_execution_subset, build_recreate_plan, eligible_entries
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_enhance import upscale_one
@@ -365,6 +365,24 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertIn("--negative-prompt-node", generate["argv"])
         self.assertIn("8", generate["argv"])
         self.assertIn("--conditioning-image", generate["argv"])
+
+    def test_smoke_presets_select_staged_subset(self):
+        allowed = [
+            {"id": "CORIROCK", "content_class": "rock_organic_surface"},
+            {"id": "ECRDOR01", "content_class": "architectural_doorway"},
+            {"id": "WEL_PUZ1", "content_class": "mechanical_puzzle"},
+            {"id": "BAPFLOR#", "content_class": "stone_floor"},
+            {"id": "BAPTAP", "content_class": "high_detail_mural"},
+        ]
+        selected, deferred, preset = apply_execution_subset(
+            "recreated", allowed, "recreated_smoke_4", None
+        )
+        self.assertEqual(
+            [entry["id"] for entry in selected],
+            ["CORIROCK", "ECRDOR01", "WEL_PUZ1", "BAPFLOR#"],
+        )
+        self.assertEqual([entry["id"] for entry in deferred], ["BAPTAP"])
+        self.assertEqual(preset["name"], "recreated_smoke_4")
 
     def test_atlas_split_stitch_is_pixel_exact(self):
         with tempfile.TemporaryDirectory() as td:
