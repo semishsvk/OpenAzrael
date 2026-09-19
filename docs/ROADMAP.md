@@ -14,7 +14,7 @@
 
 ## Then — resume Candidate 2 runtime cycle
 
-1. Restore the locally ignored R1/R7/R8 GLBs and required Candidate 1 audio assets on a Godot-capable checkout.
+1. Restore the locally ignored R1/R7/R8 GLBs and required Candidate 2 audio assets on a Godot-capable checkout.
 2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
 3. Review G00-G09 evidence using the v112 status tooling.
 4. If G00-G09 are literal PASS, launch the normal graphical **KG-001 Candidate 2** build.
@@ -22,10 +22,10 @@
 6. Complete G10 only after the interactive route is clean.
 7. Keep `demo-known-good-001` forbidden until all G00-G10 are PASS, with zero known critical bugs and zero reproducible softlocks.
 
-## Next — after Candidate 1 validation
+## Next — after Candidate 2 validation
 
 ### Localization implementation
-Architecture is approved in `docs/LOCALIZATION_ARCHITECTURE.md`, but runtime implementation waits until after the first clean Candidate 1 runtime/manual cycle.
+Architecture is approved in `docs/LOCALIZATION_ARCHITECTURE.md`, but runtime implementation waits until after the first clean Candidate 2 runtime/manual cycle.
 
 1. Define String IR and immutable semantic-ID conventions.
 2. Generate the built-in English fallback catalog and `openazrael.pot`.

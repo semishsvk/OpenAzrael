@@ -22,7 +22,7 @@
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
 - Candidate diagnostics are observational only; they do not directly mutate gameplay state.
 - F11 captures a source-safe diagnostic ZIP for GitHub Issues; see `docs/BUG_REPORTING.md`.
-- Localization architecture is approved: stable semantic IDs, POT/PO authoring, built-in English fallback, external versioned PCK language packs, no core-resource replacement. Runtime implementation is deliberately deferred until after Candidate 1 validation.
+- Localization architecture is approved: stable semantic IDs, POT/PO authoring, built-in English fallback, external versioned PCK language packs, no core-resource replacement. Runtime implementation is deliberately deferred until after the first clean Candidate 2 runtime/manual validation.
 - Existing forensic HOLDs remain HOLD; documentation cleanup does not promote any unresolved claim.
 
 For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md`, `docs/LAST_SESSION.md`, and `data/project_context.json`.

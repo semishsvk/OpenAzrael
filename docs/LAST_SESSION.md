@@ -14,11 +14,11 @@
 - Candidate diagnostics source contract is PASS and the candidate is source-ready.
 - Canonical Godot runtime evidence is still **NOT_EXECUTED**.
 - `demo-known-good-001` remains forbidden until G00-G10 are all literal PASS.
-- Localization architecture is approved but runtime implementation is intentionally deferred until after the first clean Candidate 1 runtime/manual cycle.
+- Localization architecture is approved but runtime implementation is intentionally deferred until after the first clean Candidate 2 runtime/manual cycle.
 - Existing forensic HOLDs remain unchanged.
 
 ## Documentation consistency update
-- Refreshed README to lead with the actual v116 Candidate 1 status instead of old historical checkpoints.
+- Refreshed README to lead with the current Candidate 2 / v29 stabilization status while preserving Candidate 1 failure evidence.
 - Replaced stale roadmap items that still targeted already completed v113-v115 work.
 - Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v29`.
 - Preserved historical milestone notes rather than rewriting project history.
@@ -28,7 +28,7 @@
 - **Issue #6 — Critical:** player floor collision; source fix ready, Godot runtime/manual retest required.
 - Real Godot execution of v109/v110/v111 remains pending in the canonical evidence set.
 - R1/R7/R8 ignored room assets must be restored locally.
-- Non-headless Candidate 1 requires S152V2.WAV, S137.WAV, S121.WAV and 799SECDR.WAV.
+- Non-headless Candidate 2 requires the four Event-IR WAVs S152V2/S137/S121/799SECDR plus ambient S174ELP1/S174ELP2/S186 and source-safe legacy_world_ir metadata.
 - G09 fresh-checkout build evidence and G10 final manual sanity remain pending.
 - Complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
 - Original-runtime Classic audio pan/volume parity remains UNOBSERVED/HOLD.

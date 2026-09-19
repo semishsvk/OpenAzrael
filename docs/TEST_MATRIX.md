@@ -165,7 +165,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 |---|---|---|
 | Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 2 / v116-context-v29 |
 | Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime execution pending |
-| Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 1 |
+| Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 2 |
 | JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |
 | Trigger enter/exit telemetry | SOURCE_CONTRACT_PASS | Initial false states seeded without EXIT spam |
 | F6 trigger volumes | SOURCE_CONTRACT_PASS | Visualization only; does not alter transition logic |

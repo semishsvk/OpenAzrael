@@ -20,7 +20,7 @@ Issues #6 and #9 are the active KG-001 release blockers. Candidate 1 showed the 
 
 The current priority is the corrected **KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
 
-Localization runtime work and the deferred v117 forensic copy/mutator audit follow this runtime/manual cycle; neither is a blocker for Candidate 1.
+Localization runtime work and the deferred v117 forensic copy/mutator audit follow the first clean Candidate 2 runtime/manual cycle; neither is part of the current blocker-fix scope.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -162,7 +162,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Run the v112 candidate runner with --fresh-checkout --promote-results on the v116 Candidate 1 source tree, then perform an interactive Candidate 1 pass with F6/F7/F10 diagnostics and complete G10 only if G00-G09 are PASS.
+1. Run the v112 candidate runner with --fresh-checkout --promote-results on Candidate 2 / v29, requiring v109/v110/v111/audio-v116 PASS; then perform the blocker retest and complete G10 only after floor collision and audible audio are clean.
 2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
