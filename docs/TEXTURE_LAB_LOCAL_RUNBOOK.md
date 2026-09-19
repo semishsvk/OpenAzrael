@@ -53,13 +53,28 @@ python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan \
 
 The bootstrap installs exact `basicsr==1.4.2` and the pinned Real-ESRGAN source as editable `--no-deps`. GFPGAN/facexlib are deliberately excluded because RT-POC-01 never enables face enhancement. The runtime doctor rechecks Python/Torch/torchvision/BasicSR compatibility and fingerprints the installed pip environment before inference.
 
-Once `status` is source-ready and the runtime doctor can pass, execute the first canonical experiment with:
+Once `status` is source-ready, run the final **non-generating readiness gate**:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py check-restored-smoke-1
+```
+
+This performs, in order:
+
+1. the exact Python 3.11 / torch / torchvision / BasicSR / Real-ESRGAN runtime-contract probe;
+2. the canonical `restored_smoke_1` local preflight;
+3. the pinned Real-ESRGAN doctor;
+4. a canonical `restored_smoke_1` bake-off **dry-run**.
+
+It writes readiness evidence under `.local/texture_lab/launchpad/`, but does not run inference, approve anything or clear a named-stage run/candidate namespace. Treat **PASS** here as `RUNTIME_READY_FOR_REAL_SMOKE`, not as evidence that any AI pixel has been generated.
+
+Only after that passes, execute the first canonical experiment:
 
 ```bash
 python tools/texture_lab/oa_tex_first_run.py restored-smoke-1
 ```
 
-That command runs the local preflight, the pinned Real-ESRGAN doctor, and then the canonical `restored_smoke_1` bake-off. It stops on the first failing gate and writes launch evidence under `.local/texture_lab/launchpad/`. The underlying staged bake-off still writes its canonical evidence under `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/`.
+That command runs the local preflight, the pinned Real-ESRGAN doctor, and then the real canonical `restored_smoke_1` bake-off. It stops on the first failing gate and writes launch evidence under `.local/texture_lab/launchpad/`. The staged bake-off writes canonical run evidence under `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/` and the generated CORIROCK candidate under the preset-scoped ignored asset namespace.
 
 Use the lower-level commands in the rest of this runbook for diagnosis or controlled reruns.
 
