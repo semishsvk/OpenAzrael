@@ -293,6 +293,7 @@ Controls:
 - Q / W / E — nearest / bicubic / Lanczos;
 - T — 1x1 / 2x2 / 4x4 repeat;
 - L — unshaded / directional light;
+- P — reload/toggle resolved Remastered runtime profile;
 - S — local screenshot.
 
 The Texture Lab scene does not mutate gameplay state.
@@ -325,6 +326,32 @@ python tools/texture_lab/oa_tex_production_selection.py revoke CORIROCK \
 ```
 
 The registry records metadata only; it does not copy pixels or alter the game.
+
+## Runtime profile manifests
+
+Generate local presentation manifests after or independently of production selection:
+
+```bash
+python tools/texture_lab/oa_tex_runtime_manifest.py classic
+python tools/texture_lab/oa_tex_runtime_manifest.py enhanced --enhanced-method lanczos
+python tools/texture_lab/oa_tex_runtime_manifest.py remastered
+```
+
+They are written under:
+
+`.local/texture_lab/runtime_manifests/`
+
+For an export/readiness check, use strict Remastered validation:
+
+```bash
+python tools/texture_lab/oa_tex_runtime_manifest.py remastered --strict
+```
+
+Remastered never consumes an unapproved AI file. A current explicit production selection resolves to that exact candidate; no selection falls back to Classic; a stale selection also falls back to Classic and is reported as stale. Missing resolved files remain a HOLD.
+
+After generating `remastered.json`, launch the isolated Godot Texture Lab and press **P** to reload/toggle the resolved profile. In A/B mode this lets the reference side remain Classic/Enhanced/etc. while the candidate side shows exactly the path chosen by the runtime manifest.
+
+The Godot profile resolver reads only the resolved manifest. It does not read stage evidence or `production_selection.json` directly.
 
 ## 8. Promotion rule
 
