@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v27`
+**Current canonical checkpoint:** `v116-context-v28`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -55,11 +55,11 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
 
 ## Immediate execution priority
-- Run the existing v112 candidate workflow on a Godot-capable fresh checkout with locally restored ignored assets.
-- Candidate 1 source status is PASS; canonical runtime evidence is still NOT_EXECUTED.
-- If G00-G09 pass, perform the normal graphical full-demo G10 sanity route.
-- Do not add localization runtime code or new gameplay scope before that first Candidate 1 runtime/manual cycle unless fixing a blocker.
-- Resume the deferred static copy/mutator producer audit as v117 afterwards.
+- Critical Issue #6 was observed in the first graphical Candidate run: the player fell through the R1 floor.
+- v28 enables two-sided collision on legacy concave room trimeshes and adds a physical R1 floor-support regression to the v110 Godot runner.
+- The v27 manual run is recorded as FAIL; automated v109/v110/v111 evidence remains pending and the corrected v28 build is NOT_EXECUTED.
+- Run the v112 candidate workflow, require the new Issue #6 regression to PASS, then manually relaunch the demo and verify stable floor support.
+- Keep Issue #6 and `demo-known-good-001` blocked until the v28 runtime/manual retest passes.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
@@ -79,6 +79,7 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 ## KG-001 v110 room/trigger layer
 - `scripts/kg001_room_trigger_runner_v110.gd` prepares asset-backed G04/G05 tests using the real RoomManager trigger implementation.
 - It covers all four tracked transitions, both R1 locked negative gates, trigger inside/outside bounds and persistence across room replacement.
+- v28 adds the Issue #6 regression: all generated legacy concave collision shapes must be two-sided, a real downward physics probe must find the R1 floor, and the real player capsule must settle with `is_on_floor()` instead of falling through.
 - Missing local room assets are reported as BLOCKED_MISSING_ASSETS rather than FAIL.
 - Source contract: PASS. Godot asset-backed execution: NOT EXECUTED here.
 

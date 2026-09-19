@@ -141,6 +141,11 @@ func _create_world_collision(room_id: String) -> void:
         var shape := mi.mesh.create_trimesh_shape()
         if shape == null:
             continue
+        # Legacy XAF/GLB triangle winding is not guaranteed to face the playable
+        # side consistently. Concave room collision must therefore accept both
+        # faces or floors can become non-colliding from above.
+        if shape is ConcavePolygonShape3D:
+            (shape as ConcavePolygonShape3D).backface_collision = true
         var body := StaticBody3D.new()
         body.name = "Collision_" + obj_name
         body.collision_layer = 1
