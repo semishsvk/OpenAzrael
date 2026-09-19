@@ -429,6 +429,26 @@ python tools/texture_lab/oa_tex_stage_gate.py approve recreated_smoke_1 \
   --note "structured manual review PASS"
 ```
 
+After the approval is current, capture the exact working ComfyUI/Qwen runtime provenance:
+
+```bash
+python tools/texture_lab/oa_tex_qwen_lock.py recreated_smoke_1
+```
+
+This writes only the local candidate:
+
+`.local/texture_lab/runtime_locks/qwen_2511_rt_poc_01_candidate.json`
+
+It captures the ComfyUI/Python/PyTorch/device system identity, node contract, canonical workflow SHA/bindings, pinned model-file identities, fixed sampling evidence and approved Qwen job records. It carries `automatic_promotion=false` and does not change repository config.
+
+To render the proposed repository environment lock without mutating tracked files:
+
+```bash
+python tools/texture_lab/oa_tex_qwen_lock_plan.py
+```
+
+The local proposal under `.local/texture_lab/runtime_locks/qwen_promotion_plan/` is `READY_FOR_HUMAN_PROMOTION_REVIEW` only when the candidate still matches the canonical workflow, model hashes/sizes, seed and model label. The final `qwen_environment_lock.json` remains a separate explicit repository promotion.
+
 Then proceed through the gated sequence:
 
 - `recreated_smoke_4` — requires approved `recreated_smoke_1`;
