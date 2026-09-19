@@ -2,6 +2,46 @@
 
 This runbook executes the already-defined experiment. It does not change Classic evidence or promote any generated asset automatically.
 
+## Recommended first-run launchpad
+
+For the first real Real-ESRGAN experiment, prefer the cross-platform launchpad:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py status
+```
+
+It reports exactly which source-side prerequisites are missing without generating pixels.
+
+If the deterministic baseline needs rebuilding:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py prepare-baseline
+```
+
+To create/download the pinned Real-ESRGAN source, checkpoint and isolated venv:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan
+```
+
+Optional pinned Real-ESRGAN Python package installation is explicit:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan --install-python-deps
+```
+
+PyTorch/CUDA remains a machine-specific explicit prerequisite; the launchpad does not guess which build should be installed.
+
+Once `status` is source-ready and the runtime doctor can pass, execute the first canonical experiment with:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py restored-smoke-1
+```
+
+That command runs the local preflight, the pinned Real-ESRGAN doctor, and then the canonical `restored_smoke_1` bake-off. It stops on the first failing gate and writes launch evidence under `.local/texture_lab/launchpad/`. The underlying staged bake-off still writes its canonical evidence under `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/`.
+
+Use the lower-level commands in the rest of this runbook for diagnosis or controlled reruns.
+
 ## 0. Preconditions
 
 Use the `texture-lab-rt-poc-01` branch.
