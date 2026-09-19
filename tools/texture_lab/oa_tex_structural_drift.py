@@ -14,6 +14,7 @@ from common import (
     image_mae,
     optional_ssim,
     should_apply_legacy_colorkey,
+    sha256_file,
     write_json,
 )
 
@@ -81,7 +82,9 @@ def analyze_pair(source: Path, candidate: Path) -> dict:
 
         return {
             "source": source.name,
+            "source_sha256": sha256_file(source),
             "candidate": candidate.name,
+            "candidate_sha256": sha256_file(candidate),
             "source_size": list(src.size),
             "candidate_size": list(cand.size),
             "legacy_colorkey_expected": legacy_key,
@@ -152,7 +155,7 @@ def main() -> int:
     write_json(
         args.out,
         {
-            "schema": "openazrael.texture_lab.structural_drift.v1",
+            "schema": "openazrael.texture_lab.structural_drift.v2",
             "status": "OBSERVATIONAL_UNCALIBRATED",
             "purpose": (
                 "Measure structural/layout drift while intentionally tolerating new "
