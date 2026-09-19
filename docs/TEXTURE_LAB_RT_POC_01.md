@@ -85,6 +85,18 @@ A follow-up visual QA pass identified legacy `#` textures containing quantized m
 
 Visual inspection also confirms why the selection must remain content-aware: hard-edge/mask content benefits from exact edge preservation, while photographic/organic/architectural surfaces can benefit from smoother high-quality reconstruction. No global mathematical method is promoted by RT-POC-01.
 
+## AI asset eligibility policy
+
+The canonical 12-texture set is not sent blindly through every AI backend.
+
+- **AI Restored:** 11/12 eligible. `KEYHOLE#` is skipped and remains a deterministic Enhanced/nearest asset.
+- **AI Recreated:** 10/12 eligible. `KEYHOLE#` is skipped for exact-mask fidelity and `SHIELD1` is skipped because unconstrained generative editing can rewrite the original lettering.
+- `BAPFLOR#` requires exact alpha lock plus U/V seam review.
+- `BAPTAP` requires atlas-boundary and depicted-content review.
+- `WEL_PUZ1` requires puzzle-geometry review.
+
+`oa_tex_ai_bakeoff.py` enforces this policy and supports `--dry-run`, so the exact generation/QA command plan can be inspected before any model is executed. No generated asset is automatically promoted to production.
+
 ## Structural-drift baseline
 
 The 36 alpha-safe deterministic candidates establish the first reference envelope for a layout-preserving transformation:
