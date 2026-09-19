@@ -94,7 +94,7 @@ from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_review_handoff import build_handoff
 from oa_tex_review_profile import build_review_profile
-from oa_tex_run_summary import build_summary
+from oa_tex_run_summary import build_summary, restored_performance_summary
 from oa_tex_runtime_export import compile_export
 from oa_tex_runtime_manifest import build_manifest, input_file_record
 from oa_tex_runtime_verify import verify_manifest
@@ -1129,6 +1129,59 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertFalse(checks["output_hash_ok"])
         self.assertFalse(checks["positive_prompt_ok"])
 
+    def test_restored_runtime_summary_projects_stage_cost_observationally(self):
+        with tempfile.TemporaryDirectory() as td:
+            run_dir = Path(td)
+            report = {
+                "schema": "openazrael.texture_lab.ai_restore_run.v5",
+                "performance": {
+                    "texture_count": 1,
+                    "run_wall_seconds": 2.0,
+                    "measured_inference_wall_seconds": 1.5,
+                    "mean_inference_wall_seconds_per_texture": 1.5,
+                    "textures_per_minute_inference_only": 40.0,
+                },
+            }
+            (run_dir / "ai_restore_run.json").write_text(
+                json.dumps(report),
+                encoding="utf-8",
+            )
+            summary = restored_performance_summary(run_dir)
+            self.assertEqual(
+                summary["status"],
+                "OBSERVED_WITH_LINEAR_ESTIMATE",
+            )
+            self.assertIn(
+                "naive linear inference-only projection",
+                summary["estimate_scope"],
+            )
+            smoke4_count = len(
+                preset_record("restored_smoke_4")["textures"]
+            )
+            full_count = len(
+                preset_record("restored_full")["textures"]
+            )
+            self.assertEqual(
+                summary["estimates"]["restored_smoke_4"]["texture_count"],
+                smoke4_count,
+            )
+            self.assertAlmostEqual(
+                summary["estimates"]["restored_smoke_4"][
+                    "linear_inference_only_seconds"
+                ],
+                1.5 * smoke4_count,
+            )
+            self.assertEqual(
+                summary["estimates"]["restored_full"]["texture_count"],
+                full_count,
+            )
+            self.assertAlmostEqual(
+                summary["estimates"]["restored_full"][
+                    "linear_inference_only_seconds"
+                ],
+                1.5 * full_count,
+            )
+
     def test_restored_stage_approval_is_bound_to_reviewed_candidate(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as td:
             root = Path(td)
@@ -1404,6 +1457,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(
                 summary["review_handoff"],
                 str(handoff_path),
+            )
+            self.assertEqual(
+                summary["performance"]["status"],
+                "OBSERVED_WITH_LINEAR_ESTIMATE",
             )
             self.assertEqual(
                 summary["textures"][0]["visual_evidence"]["candidate"],
