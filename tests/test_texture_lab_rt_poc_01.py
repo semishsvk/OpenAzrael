@@ -49,6 +49,7 @@ from oa_tex_first_run import (
     baseline_plan,
     bootstrap_plan,
     poc_source_status,
+    restored_smoke_check_plan,
     restored_smoke_plan,
     runtime_paths,
 )
@@ -1774,6 +1775,35 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seams = seam_mae(im)
                 self.assertIn("x", seams)
                 self.assertIn("y", seams)
+
+    def test_first_run_launchpad_builds_non_generating_smoke_readiness_plan(self):
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            paths = runtime_paths(runtime)
+            plan = restored_smoke_check_plan(runtime)
+
+            self.assertEqual(
+                [row["name"] for row in plan],
+                [
+                    "runtime_contract",
+                    "local_preflight",
+                    "runtime_doctor",
+                    "canonical_bakeoff_dry_run",
+                ],
+            )
+            runtime_probe = plan[0]["argv"]
+            self.assertIn("--require-basicsr", runtime_probe)
+            self.assertIn("--require-realesrgan", runtime_probe)
+            self.assertIn(str(paths["python"]), runtime_probe)
+
+            self.assertIn("restored_smoke_1", plan[1]["argv"])
+            self.assertEqual(plan[2]["argv"][0], str(paths["python"]))
+
+            dry_run = plan[3]["argv"]
+            self.assertIn("oa_tex_ai_bakeoff.py", plan[3]["command"])
+            self.assertIn("--dry-run", dry_run)
+            self.assertNotIn("--replace-existing-run", dry_run)
+            self.assertIn("restored_smoke_1", dry_run)
 
     def test_first_run_launchpad_builds_canonical_smoke_plan(self):
         with tempfile.TemporaryDirectory() as td:
