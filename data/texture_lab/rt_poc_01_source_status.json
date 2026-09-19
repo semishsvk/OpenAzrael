@@ -209,5 +209,18 @@
     "execution_semantics": "only a successful real restored-smoke-1 run may move real Restored pixels from NOT_EXECUTED",
     "state_command": "python tools/texture_lab/oa_tex_first_run.py restored-smoke-1-status",
     "state_schema": "openazrael.texture_lab.first_restored_smoke_state.v1"
+  },
+  "realesrgan_runtime_lock_candidate": {
+    "status": "AWAITING_APPROVED_REAL_SMOKE",
+    "tool": "tools/texture_lab/oa_tex_realesrgan_lock.py",
+    "schema": "openazrael.texture_lab.realesrgan_runtime_lock_candidate.v1",
+    "prerequisite": "current PASS approval v5 for restored_smoke_1",
+    "outputs": [
+      ".local/texture_lab/runtime_locks/realesrgan_rt_poc_01_candidate.json",
+      ".local/texture_lab/runtime_locks/realesrgan_rt_poc_01_requirements.txt"
+    ],
+    "automatic_promotion": false,
+    "canonical_config_mutated": false,
+    "purpose": "capture the exact approved working Real-ESRGAN environment before any explicit canonical lock promotion"
   }
 }
