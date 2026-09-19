@@ -1,0 +1,31 @@
+name: Texture Lab source-safe tests
+
+on:
+  push:
+    paths:
+      - "tools/texture_lab/**"
+      - "tests/test_texture_lab_rt_poc_01.py"
+      - ".github/workflows/texture-lab.yml"
+  pull_request:
+    paths:
+      - "tools/texture_lab/**"
+      - "tests/test_texture_lab_rt_poc_01.py"
+      - ".github/workflows/texture-lab.yml"
+
+jobs:
+  texture-lab:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install source-safe test dependencies
+        run: python -m pip install --disable-pip-version-check Pillow
+      - name: Compile Texture Lab
+        run: python -m compileall -q tools/texture_lab tests/test_texture_lab_rt_poc_01.py
+      - name: Run Texture Lab unit tests
+        run: python -m unittest -v tests/test_texture_lab_rt_poc_01.py
