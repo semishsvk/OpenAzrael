@@ -40,6 +40,82 @@ def _fit_preview(image: Image.Image, cell: int, classic: bool) -> Image.Image:
     return image.resize(target, filter_mode)
 
 
+DETAIL_REGIONS = [
+    ("Upper-left", 0.25, 0.25),
+    ("Center", 0.50, 0.50),
+    ("Lower-right", 0.75, 0.75),
+]
+
+
+def _normalized_crop(
+    image: Image.Image,
+    center_x: float,
+    center_y: float,
+    fraction: float = 0.35,
+) -> Image.Image:
+    if not 0.0 < fraction <= 1.0:
+        raise ValueError("fraction must be in (0, 1]")
+    crop_w = max(1, int(round(image.width * fraction)))
+    crop_h = max(1, int(round(image.height * fraction)))
+    cx = int(round(image.width * center_x))
+    cy = int(round(image.height * center_y))
+    left = max(0, min(image.width - crop_w, cx - crop_w // 2))
+    top = max(0, min(image.height - crop_h, cy - crop_h // 2))
+    return image.crop((left, top, left + crop_w, top + crop_h))
+
+
+def make_detail_sheet(
+    texture_id: str,
+    source: Path,
+    variants: list[tuple[str, Path]],
+    out: Path,
+    cell: int,
+    fraction: float = 0.35,
+) -> None:
+    items: list[tuple[str, Image.Image, bool]] = []
+    with Image.open(source) as im:
+        items.append(("Classic", im.convert("RGBA").copy(), True))
+    for label, path in variants:
+        if path.is_file():
+            with Image.open(path) as im:
+                items.append((label, im.convert("RGBA").copy(), False))
+
+    header_h = 28
+    region_h = 20
+    row_h = region_h + cell
+    sheet = Image.new(
+        "RGBA",
+        (cell * len(items), header_h + row_h * len(DETAIL_REGIONS)),
+        (0, 0, 0, 255),
+    )
+    draw = ImageDraw.Draw(sheet)
+    font = ImageFont.load_default()
+
+    for col, (label, _im, _classic) in enumerate(items):
+        draw.text((col * cell + 4, 7), label, fill=(255, 255, 255, 255), font=font)
+
+    for row, (region_label, cx, cy) in enumerate(DETAIL_REGIONS):
+        y0 = header_h + row * row_h
+        for col, (_label, im, classic) in enumerate(items):
+            x0 = col * cell
+            draw.text(
+                (x0 + 4, y0 + 3),
+                region_label,
+                fill=(255, 255, 255, 255),
+                font=font,
+            )
+            background = _checkerboard(cell, cell)
+            sheet.alpha_composite(background, (x0, y0 + region_h))
+            crop = _normalized_crop(im, cx, cy, fraction)
+            preview = _fit_preview(crop, cell, classic)
+            px = x0 + (cell - preview.width) // 2
+            py = y0 + region_h + (cell - preview.height) // 2
+            sheet.alpha_composite(preview, (px, py))
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert("RGB").save(out, format="PNG", optimize=False)
+
+
 def make_sheet(texture_id: str, source: Path, variants: list[tuple[str, Path]], out: Path, cell: int) -> None:
     items: list[tuple[str, Image.Image, bool]] = []
     with Image.open(source) as im:
