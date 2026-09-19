@@ -127,13 +127,24 @@ def main() -> int:
         default=ROOT / "data/texture_lab/structural_drift.json",
     )
     parser.add_argument("--allow-missing", action="store_true")
+    parser.add_argument(
+        "--only",
+        nargs="*",
+        default=None,
+        help="Measure only these canonical texture IDs.",
+    )
     args = parser.parse_args()
 
     selection = json.loads(args.selection.read_text(encoding="utf-8"))
+    wanted = set(args.only or [])
     rows = []
     missing = []
+    found_ids = set()
     for entry in selection["textures"]:
         texture_id = str(entry["id"])
+        if wanted and texture_id not in wanted:
+            continue
+        found_ids.add(texture_id)
         source = args.source_dir / f"{texture_id}.png"
         candidate = _resolve_candidate(args.candidate_dir, texture_id, args.variant)
         if not source.is_file():
@@ -149,6 +160,14 @@ def main() -> int:
         row.update(analyze_pair(source, candidate))
         rows.append(row)
 
+    if wanted:
+        unknown = sorted(wanted - found_ids)
+        if unknown:
+            raise SystemExit(
+                "selected structural IDs are not canonical: "
+                + ", ".join(unknown)
+            )
+
     if missing and not args.allow_missing:
         raise SystemExit("missing candidates:\n" + "\n".join(missing))
 
@@ -163,6 +182,7 @@ def main() -> int:
                 "against the mathematical Enhanced baseline and reviewed AI candidates."
             ),
             "variant": args.variant,
+            "only": sorted(wanted) if wanted else None,
             "results": rows,
             "missing": missing,
         },
