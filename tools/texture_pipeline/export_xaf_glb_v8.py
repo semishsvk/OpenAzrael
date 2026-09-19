@@ -114,7 +114,7 @@ def face_material_names(meshb, poly_count):
 def parse(src,texture_dir):
     src=Path(src); t=src.read_text('latin1')
     mats=material_table(t); tex_idx=texture_index(texture_dir)
-    scene=trimesh.Scene(); missing=set(); resolved=set(); material_cache={}
+    scene=trimesh.Scene(); missing=set(); resolved=set(); material_cache={}; material_alpha_mode={}
     nodes=all_object_nodes(t)
     # Unique names are expected in demo rooms; disambiguate defensively.
     used=defaultdict(int)
@@ -130,10 +130,26 @@ def parse(src,texture_dir):
         if tex_name and tex_path is None: missing.add(tex_name)
         if tex_path is not None:
             resolved.add(tex_path.name)
-            mat=trimesh.visual.material.SimpleMaterial(image=Image.open(tex_path).convert('RGB'),name=mn)
+            with Image.open(tex_path) as source_image:
+                has_alpha='A' in source_image.getbands() and source_image.getchannel('A').getextrema()[0] < 255
+                if has_alpha:
+                    image=source_image.convert('RGBA')
+                    mat=trimesh.visual.material.PBRMaterial(
+                        name=mn,
+                        baseColorTexture=image,
+                        metallicFactor=0.0,
+                        roughnessFactor=1.0,
+                        alphaMode='MASK',
+                        alphaCutoff=0.5
+                    )
+                    material_alpha_mode[mn]='MASK'
+                else:
+                    mat=trimesh.visual.material.SimpleMaterial(image=source_image.convert('RGB'),name=mn)
+                    material_alpha_mode[mn]='OPAQUE'
         else:
             col=md.get('colour'); rgba=[max(0,min(255,round(x*255))) for x in col[:4]] if col else [180,180,180,255]
             mat=trimesh.visual.material.SimpleMaterial(diffuse=rgba,name=mn)
+            material_alpha_mode[mn]='OPAQUE'
         material_cache[mn]=mat; return mat
 
     object_stats=[]; primitive_stats=[]
@@ -193,6 +209,7 @@ def parse(src,texture_dir):
             scene.add_geometry(mesh,node_name=child,geom_name=child,parent_node_name=name,transform=np.eye(4))
             primitive_stats.append({'object':nod['name'],'object_node':name,'node':child,'parent_object':objrec['parent'],
                                     'material':mn,'texture':tex,'resolved_png':resolve_texture(tex,tex_idx).name if resolve_texture(tex,tex_idx) else None,
+                                    'alpha_mode':material_alpha_mode.get(mn,'OPAQUE'),
                                     'corner_vertices':len(ov),'triangles':len(of),'bad_uv_corners':bad_uv,'bad_normal_corners':bad_normal})
             objrec['primitive_count']+=1; objrec['corner_vertices']+=len(ov); objrec['triangles']+=len(of)
             objrec['bad_uv_corners']+=bad_uv; objrec['bad_normal_corners']+=bad_normal
@@ -218,7 +235,10 @@ def main():
     report={'source':src.name,'exporter_version':8,'object_count_all_levels':len(objs),'top_level_object_count':sum(o['depth']==0 for o in objs),
             'nested_object_count':sum(o['depth']>0 for o in objs),'primitive_count':len(prims),
             'corner_vertices':sum(x['corner_vertices'] for x in prims),'triangles':sum(x['triangles'] for x in prims),
-            'textured_primitives':sum(x['resolved_png'] is not None for x in prims),'resolved_textures':resolved,'missing_textures':missing,
+            'textured_primitives':sum(x['resolved_png'] is not None for x in prims),
+            'alpha_mask_primitives':sum(x.get('alpha_mode')=='MASK' for x in prims),
+            'alpha_mask_materials':sorted({x['material'] for x in prims if x.get('alpha_mode')=='MASK'}),
+            'resolved_textures':resolved,'missing_textures':missing,
             'materials':mats,'objects':objs,'primitives':prims,
             'format_correction_v8':'Exporter can attach engine-neutral legacy spatial-audio evidence to the room manifest without converting or guessing source coordinates.',
             'format_correction_v7':'XAF object declarations can be nested. Child matrices are local to parent objects. v7 preserves the full object hierarchy instead of skipping nested objects.',
