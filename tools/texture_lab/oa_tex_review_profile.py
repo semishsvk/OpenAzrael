@@ -124,7 +124,7 @@ def build_review_profile(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build an editor-only Godot review profile from an immutable named "
+            "Build an editor-only Godot review profile from a preset-scoped named "
             "Texture Lab stage. This manifest is never valid for export."
         )
     )
