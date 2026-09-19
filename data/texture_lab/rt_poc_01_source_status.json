@@ -55,7 +55,8 @@
       "evidence_change_status": "STALE",
       "init_requires_complete_stage_evidence": true,
       "changed_candidate_status": "STALE",
-      "stage_approval_requires_nonempty_note": true
+      "stage_approval_requires_nonempty_note": true,
+      "binds_complete_stage_evidence_sha256": true
     }
   },
   "godot_lab": {
