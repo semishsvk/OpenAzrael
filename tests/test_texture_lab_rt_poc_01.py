@@ -31,6 +31,7 @@ from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_enhance import upscale_one
 from oa_tex_prompt import build_prompt_pair
+from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
 from oa_tex_qwen_preflight import (
     exact_loader_check,
     inspect_workflow,
@@ -595,6 +596,61 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertIn("drift_above_deterministic_max", row["attention"])
         self.assertIn("exact_alpha_lock", row["attention"])
         self.assertIn("repeat_sampling:u,v", row["attention"])
+
+    def test_qwen_bootstrap_verifies_exact_file_identity(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            payload = b"qwen-test-model"
+            path = root / "model.safetensors"
+            path.write_bytes(payload)
+            spec = {
+                "size_bytes": len(payload),
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            }
+
+            good = verify_qwen_bootstrap_model(path, spec)
+            self.assertEqual(good["status"], "PASS")
+            self.assertTrue(good["size_ok"])
+            self.assertTrue(good["sha256_ok"])
+
+            path.write_bytes(b"x" * len(payload))
+            bad_hash = verify_qwen_bootstrap_model(path, spec)
+            self.assertEqual(bad_hash["status"], "FAIL")
+            self.assertTrue(bad_hash["size_ok"])
+            self.assertFalse(bad_hash["sha256_ok"])
+
+    def test_qwen_bootstrap_plan_counts_only_unverified_models(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            present = b"present-model"
+            missing = b"missing-model"
+            contract = {
+                "required_models": {
+                    "diffusion": {
+                        "relative_path": "models/diffusion_models/a.safetensors",
+                        "size_bytes": len(present),
+                        "sha256": hashlib.sha256(present).hexdigest(),
+                        "download_url": "https://example.invalid/a",
+                    },
+                    "vae": {
+                        "relative_path": "models/vae/b.safetensors",
+                        "size_bytes": len(missing),
+                        "sha256": hashlib.sha256(missing).hexdigest(),
+                        "download_url": "https://example.invalid/b",
+                    },
+                }
+            }
+            present_path = root / "models/diffusion_models/a.safetensors"
+            present_path.parent.mkdir(parents=True)
+            present_path.write_bytes(present)
+
+            plan = build_qwen_bootstrap_plan(root, contract)
+
+        self.assertFalse(plan["all_models_ready"])
+        self.assertEqual(plan["download_bytes"], len(missing))
+        by_role = {row["role"]: row for row in plan["models"]}
+        self.assertEqual(by_role["diffusion"]["verification"]["status"], "PASS")
+        self.assertEqual(by_role["vae"]["verification"]["status"], "MISSING")
 
     def test_checkpoint_identity_verification(self):
         with tempfile.TemporaryDirectory() as td:
