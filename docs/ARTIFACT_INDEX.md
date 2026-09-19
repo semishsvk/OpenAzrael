@@ -21,9 +21,12 @@
 - `tools/texture_lab/oa_tex_realesrgan_doctor.py`
 - `tools/texture_lab/oa_tex_recreate.py`
 - `tools/texture_lab/oa_tex_ai_bakeoff.py`
+- `tools/texture_lab/oa_tex_local_preflight.py`
+- `tools/texture_lab/oa_tex_stage_gate.py`
 - `tools/texture_lab/oa_tex_review_report.py`
 - `tools/texture_lab/oa_tex_comfy_doctor.py`
 - `tools/texture_lab/oa_tex_qwen_preflight.py`
+- `tools/texture_lab/requirements-source-safe.txt`
 - `tools/texture_lab/config/enhance.json`
 - `tools/texture_lab/config/rt_poc_01_selection.json`
 - `data/texture_lab/rt_poc_01_sampling_review.json`
