@@ -6,8 +6,11 @@ import json
 import math
 import statistics
 from pathlib import Path
+import sys
 
-from common import ROOT, write_json
+from PIL import __version__ as PILLOW_VERSION
+
+from common import ROOT, PINNED_PILLOW_VERSION, require_pinned_pillow, write_json
 from oa_tex_structural_drift import analyze_pair
 
 
@@ -52,6 +55,7 @@ def main() -> int:
         default=ROOT / "data/texture_lab/rt_poc_01_drift_baseline.json",
     )
     args = parser.parse_args()
+    require_pinned_pillow()
 
     selection = json.loads(args.selection.read_text(encoding="utf-8"))
     all_rows = []
@@ -100,7 +104,7 @@ def main() -> int:
     write_json(
         args.out,
         {
-            "schema": "openazrael.texture_lab.rt_poc_01_drift_baseline.v1",
+            "schema": "openazrael.texture_lab.rt_poc_01_drift_baseline.v2",
             "status": "OBSERVATIONAL_MATHEMATICAL_BASELINE",
             "source": (
                 "Canonical RT-POC-01 Classic textures versus alpha-safe deterministic "
@@ -112,6 +116,9 @@ def main() -> int:
                 "or promote a generative candidate."
             ),
             "factor": args.factor,
+            "pillow_version": PILLOW_VERSION,
+            "pillow_version_expected": PINNED_PILLOW_VERSION,
+            "python_version": sys.version,
             "methods": args.methods,
             "metrics": by_method,
             "global_envelope": global_envelope,
