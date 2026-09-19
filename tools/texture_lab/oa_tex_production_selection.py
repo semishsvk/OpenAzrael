@@ -9,6 +9,7 @@ from pathlib import Path
 from common import ROOT, sha256_file, write_json
 from oa_tex_stage_gate import (
     DEFAULT_APPROVAL_ROOT,
+    DEFAULT_MANUAL_REVIEW_ROOT,
     DEFAULT_RUN_ROOT,
     file_evidence,
     preset_record,
@@ -71,8 +72,14 @@ def select_candidate(
     run_root: Path,
     approval_root: Path,
     note: str,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
 ) -> dict:
-    receipt_status = validate_receipt(preset, run_root, approval_root)
+    receipt_status = validate_receipt(
+        preset,
+        run_root,
+        approval_root,
+        manual_review_root,
+    )
     if receipt_status.get("status") != "PASS":
         raise SystemExit(
             "production selection requires a current approved stage receipt; "
@@ -133,12 +140,18 @@ def validate_record(
     record: dict,
     run_root: Path,
     approval_root: Path,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
 ) -> dict:
     preset = str(record.get("selected_from_preset", ""))
     texture_id = str(record.get("texture_id", ""))
     checks = {}
 
-    receipt = validate_receipt(preset, run_root, approval_root)
+    receipt = validate_receipt(
+        preset,
+        run_root,
+        approval_root,
+        manual_review_root,
+    )
     checks["stage_approval_current"] = receipt.get("status") == "PASS"
 
     candidate_path = ROOT / str(record.get("candidate_path", ""))
@@ -195,11 +208,17 @@ def registry_status(
     registry_path: Path,
     run_root: Path,
     approval_root: Path,
+    manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
 ) -> dict:
     registry = load_registry(registry_path)
     profile = registry["profiles"]["remastered"]
     rows = [
-        validate_record(record, run_root, approval_root)
+        validate_record(
+            record,
+            run_root,
+            approval_root,
+            manual_review_root,
+        )
         for _, record in sorted(profile.items())
         if isinstance(record, dict)
     ]
@@ -256,6 +275,11 @@ def main() -> int:
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--approval-root", type=Path, default=DEFAULT_APPROVAL_ROOT)
+    parser.add_argument(
+        "--manual-review-root",
+        type=Path,
+        default=DEFAULT_MANUAL_REVIEW_ROOT,
+    )
     parser.add_argument("--note", default=None)
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
@@ -272,6 +296,7 @@ def main() -> int:
             args.run_root,
             args.approval_root,
             args.note,
+            args.manual_review_root,
         )
         status = "PASS"
     elif args.command == "revoke":
@@ -282,7 +307,12 @@ def main() -> int:
         result = revoke_candidate(args.texture_id, args.registry, args.note)
         status = "PASS"
     else:
-        result = registry_status(args.registry, args.run_root, args.approval_root)
+        result = registry_status(
+            args.registry,
+            args.run_root,
+            args.approval_root,
+            args.manual_review_root,
+        )
         status = str(result["status"])
 
     if args.out:
