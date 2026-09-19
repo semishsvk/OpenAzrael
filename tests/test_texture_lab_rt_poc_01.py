@@ -71,8 +71,10 @@ from oa_tex_realesrgan_runtime import evaluate_probe, load_contract as load_real
 from oa_tex_stage_gate import (
     approve,
     check_prerequisites,
+    _qwen_job_checks,
     evidence_snapshot,
     expected_recreated_job_records,
+    restored_generation_provenance,
     valid_run_instance_id,
     validate_receipt,
 )
@@ -984,6 +986,104 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(row["tile_preview"]["sha256"], sha256_file(tile))
             self.assertEqual(row["repeat_axes"], ["u", "v"])
 
+    def test_restored_generation_provenance_matches_reviewed_hashes(self):
+        pack = {
+            "rows": [
+                {
+                    "id": "CORIROCK",
+                    "source": {"sha256": "a" * 64},
+                    "candidate": {"sha256": "b" * 64},
+                }
+            ]
+        }
+        run = {
+            "schema": "openazrael.texture_lab.ai_restore_run.v4",
+            "mode": "ai_restored",
+            "reproducibility": {
+                "runtime_identity": {"status": "PASS"},
+            },
+            "textures": [
+                {
+                    "id": "CORIROCK",
+                    "source_sha256": "a" * 64,
+                    "output_sha256": "b" * 64,
+                    "model": "RealESRGAN_x4plus",
+                    "factor": 4,
+                    "backend": "realesrgan-python",
+                }
+            ],
+        }
+        good = restored_generation_provenance(
+            run,
+            pack,
+            ["CORIROCK"],
+        )
+        self.assertEqual(good["status"], "PASS")
+
+        bad = json.loads(json.dumps(run))
+        bad["textures"][0]["output_sha256"] = "c" * 64
+        result = restored_generation_provenance(
+            bad,
+            pack,
+            ["CORIROCK"],
+        )
+        self.assertEqual(result["status"], "FAIL")
+        self.assertFalse(
+            result["rows"][0]["checks"]["output_hash_matches_review"]
+        )
+
+    def test_qwen_job_provenance_matches_pinned_contract(self):
+        contract = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        workflow = (
+            ROOT
+            / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+        )
+        model_files = [
+            {
+                "file": spec["filename"],
+                "sha256": spec["sha256"],
+                "size": spec["size_bytes"],
+            }
+            for spec in contract["required_models"].values()
+        ]
+        job = {
+            "schema": "openazrael.texture_lab.ai_recreated_job.v4",
+            "source_sha256": "a" * 64,
+            "conditioning_image_sha256": "b" * 64,
+            "output_sha256": "c" * 64,
+            "workflow_template_sha256": sha256_file(workflow),
+            "model_label": contract["model_label"],
+            "seed": contract["poc_sampling"]["seed"],
+            "model_files": model_files,
+        }
+        checks = _qwen_job_checks(
+            job,
+            "a" * 64,
+            "b" * 64,
+            "c" * 64,
+            contract,
+            sha256_file(workflow),
+        )
+        self.assertTrue(all(checks.values()))
+
+        bad = json.loads(json.dumps(job))
+        bad["seed"] = 1
+        bad["output_sha256"] = "d" * 64
+        checks = _qwen_job_checks(
+            bad,
+            "a" * 64,
+            "b" * 64,
+            "c" * 64,
+            contract,
+            sha256_file(workflow),
+        )
+        self.assertFalse(checks["seed_ok"])
+        self.assertFalse(checks["output_hash_ok"])
+
     def test_restored_stage_approval_is_bound_to_reviewed_candidate(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as td:
             root = Path(td)
@@ -1018,6 +1118,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             (run_dir / "restored_plan.json").write_text(
                 json.dumps(
                     {
+                        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v5",
                         "preset": {"name": "restored_smoke_1"},
                         "dry_run": False,
                         "run_instance_id": run_instance_id(
@@ -1231,6 +1332,28 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     manual_review_root,
                 )["status"],
                 "PASS",
+            )
+
+            receipt_path = approval_root / "restored_smoke_1.json"
+            wrong_schema = json.loads(
+                receipt_path.read_text(encoding="utf-8")
+            )
+            wrong_schema["schema"] = "openazrael.texture_lab.stage_approval.v4"
+            receipt_path.write_text(
+                json.dumps(wrong_schema),
+                encoding="utf-8",
+            )
+            old_receipt = validate_receipt(
+                "restored_smoke_1",
+                run_root,
+                approval_root,
+                manual_review_root,
+            )
+            self.assertEqual(old_receipt["status"], "STALE")
+            self.assertFalse(old_receipt["checks"]["schema_ok"])
+            receipt_path.write_text(
+                json.dumps(approved["receipt"]),
+                encoding="utf-8",
             )
 
             registry = root / "production_selection.json"
