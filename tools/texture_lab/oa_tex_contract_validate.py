@@ -16,6 +16,7 @@ DEFAULT_QWEN = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 DEFAULT_REALESRGAN_RUNTIME = ROOT / "tools/texture_lab/config/realesrgan_runtime_contract.json"
 DEFAULT_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 DEFAULT_POLICY_SUMMARY = ROOT / "data/texture_lab/rt_poc_01_ai_policy_summary.json"
+DEFAULT_PRODUCTION_REGISTRY = ROOT / "data/texture_lab/production_selection.json"
 
 
 def load_json(path: Path) -> dict:
@@ -71,11 +72,30 @@ def validate_contracts(
     workflow: dict,
     policy_summary: dict,
     realesrgan_runtime: dict | None = None,
+    production_registry: dict | None = None,
 ) -> dict:
     checks: dict[str, bool] = {}
     details: dict[str, object] = {}
     if realesrgan_runtime is None:
         realesrgan_runtime = load_json(DEFAULT_REALESRGAN_RUNTIME)
+    if production_registry is None:
+        production_registry = load_json(DEFAULT_PRODUCTION_REGISTRY)
+
+    checks["production_registry_schema_v2"] = (
+        production_registry.get("schema")
+        == "openazrael.texture_lab.production_selection.v2"
+    )
+    checks["production_registry_manual_only"] = (
+        production_registry.get("automatic_selection") is False
+    )
+    checks["production_registry_remastered_profile"] = isinstance(
+        production_registry.get("profiles", {}).get("remastered"),
+        dict,
+    )
+    checks["production_registry_history_lists"] = (
+        isinstance(production_registry.get("superseded_selections"), list)
+        and isinstance(production_registry.get("revocations"), list)
+    )
 
     textures = [
         row for row in selection.get("textures", [])
@@ -361,6 +381,11 @@ def main() -> int:
     )
     parser.add_argument("--workflow", type=Path, default=DEFAULT_WORKFLOW)
     parser.add_argument("--policy-summary", type=Path, default=DEFAULT_POLICY_SUMMARY)
+    parser.add_argument(
+        "--production-registry",
+        type=Path,
+        default=DEFAULT_PRODUCTION_REGISTRY,
+    )
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
@@ -374,6 +399,7 @@ def main() -> int:
         load_json(args.workflow),
         load_json(args.policy_summary),
         load_json(args.realesrgan_runtime),
+        load_json(args.production_registry),
     )
     if args.out:
         write_json(args.out, result)
