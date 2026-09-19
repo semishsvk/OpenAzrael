@@ -190,5 +190,14 @@
     "preserves_superseded_history": true,
     "preserves_revocation_history": true,
     "legacy_v1_in_memory_migration": true
+  },
+  "first_real_pixel_gate": {
+    "status": "NOT_EXECUTED",
+    "readiness_command": "python tools/texture_lab/oa_tex_first_run.py check-restored-smoke-1",
+    "execution_command": "python tools/texture_lab/oa_tex_first_run.py restored-smoke-1",
+    "first_preset": "restored_smoke_1",
+    "first_texture": "CORIROCK",
+    "readiness_semantics": "PASS means runtime-ready only; no AI pixel generation is implied",
+    "execution_semantics": "only a successful real restored-smoke-1 run may move real Restored pixels from NOT_EXECUTED"
   }
 }
