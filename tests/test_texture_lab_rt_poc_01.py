@@ -52,7 +52,8 @@ from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, v
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_run_summary import build_summary
-from oa_tex_runtime_manifest import build_manifest
+from oa_tex_runtime_manifest import build_manifest, input_file_record
+from oa_tex_runtime_verify import verify_manifest
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
@@ -1260,7 +1261,9 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 "selected_tier": "ai_restored",
                 "selected_from_preset": "restored_smoke_1",
                 "candidate_path": "assets/textures/ai_restored/A/realesrgan_x4.png",
-                "candidate_sha256": "synthetic",
+                "candidate_sha256": sha256_file(
+                    root / "assets/textures/ai_restored/A/realesrgan_x4.png"
+                ),
             }
             registry = {
                 "profiles": {
@@ -1314,6 +1317,63 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 remastered_stale["status"],
                 "SAFE_CLASSIC_FALLBACK_STALE_SELECTIONS",
             )
+
+    def test_runtime_manifest_verifier_detects_changed_and_unsafe_files(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            classic = root / "assets/textures/classic/A.png"
+            classic.parent.mkdir(parents=True)
+            Image.new("RGBA", (16, 8), (1, 2, 3, 255)).save(classic)
+
+            selection_path = root / "selection.json"
+            policy_path = root / "policy.json"
+            registry_path = root / "registry.json"
+            selection = {
+                "textures": [
+                    {
+                        "id": "A",
+                        "room": "R1",
+                        "content_class": "rock_organic_surface",
+                        "expected_size": [16, 8],
+                    }
+                ]
+            }
+            policy = {"classes": {}}
+            registry = {"profiles": {"remastered": {}}}
+            selection_path.write_text(json.dumps(selection), encoding="utf-8")
+            policy_path.write_text(json.dumps(policy), encoding="utf-8")
+            registry_path.write_text(json.dumps(registry), encoding="utf-8")
+
+            manifest = build_manifest(
+                "classic",
+                selection,
+                policy,
+                registry,
+                root / "runs",
+                root / "approvals",
+                root=root,
+            )
+            manifest["inputs"] = {
+                "selection": input_file_record(selection_path, root),
+                "policy": input_file_record(policy_path, root),
+                "production_registry": input_file_record(registry_path, root),
+            }
+            manifest_path = root / "classic_manifest.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            good = verify_manifest(manifest_path, root)
+            self.assertEqual(good["status"], "PASS")
+
+            Image.new("RGBA", (16, 8), (9, 9, 9, 255)).save(classic)
+            stale = verify_manifest(manifest_path, root)
+            self.assertEqual(stale["status"], "STALE")
+            self.assertEqual(stale["stale_texture_ids"], ["A"])
+
+            manifest["textures"][0]["path"] = "res://assets/textures/../escape.png"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            unsafe = verify_manifest(manifest_path, root)
+            self.assertEqual(unsafe["status"], "HOLD")
+            self.assertEqual(unsafe["missing_or_unsafe_texture_ids"], ["A"])
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
