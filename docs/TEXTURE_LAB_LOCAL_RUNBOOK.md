@@ -24,13 +24,15 @@ To create/download the pinned Real-ESRGAN source, checkpoint and isolated venv:
 python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan
 ```
 
-Optional pinned Real-ESRGAN Python package installation is explicit:
+PyTorch/CUDA remains a machine-specific explicit prerequisite; the launchpad does not guess which build should be installed. After the venv exists, install the appropriate PyTorch + torchvision build into that venv using the official PyTorch instructions for the development machine.
+
+Only then request the remaining pinned Real-ESRGAN Python dependencies:
 
 ```bash
 python tools/texture_lab/oa_tex_first_run.py bootstrap-realesrgan --install-python-deps
 ```
 
-PyTorch/CUDA remains a machine-specific explicit prerequisite; the launchpad does not guess which build should be installed.
+That launchpad path first executes an import/version check for `torch` and `torchvision`. If either is absent, it stops before running pip for BasicSR/GFPGAN/Real-ESRGAN, preventing an accidental dependency resolver from silently choosing a different Torch build.
 
 Once `status` is source-ready and the runtime doctor can pass, execute the first canonical experiment with:
 
