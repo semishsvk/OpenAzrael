@@ -1053,6 +1053,21 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             }
             for spec in contract["required_models"].values()
         ]
+        submitted = json.loads(workflow.read_text(encoding="utf-8"))
+        bindings = contract["canonical_openazrael_workflow"]["bindings"]
+        submitted[str(bindings["load_image_node"])]["inputs"]["image"] = (
+            "uploaded.png"
+        )
+        submitted[str(bindings["prompt_node"])]["inputs"]["prompt"] = (
+            "POSITIVE"
+        )
+        submitted[str(bindings["negative_prompt_node"])]["inputs"]["prompt"] = (
+            "NEGATIVE"
+        )
+        submitted[str(bindings["seed_node"])]["inputs"]["seed"] = (
+            contract["poc_sampling"]["seed"]
+        )
+
         job = {
             "schema": "openazrael.texture_lab.ai_recreated_job.v4",
             "source_sha256": "a" * 64,
@@ -1061,6 +1076,10 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "workflow_template_sha256": sha256_file(workflow),
             "model_label": contract["model_label"],
             "seed": contract["poc_sampling"]["seed"],
+            "positive_prompt": "POSITIVE",
+            "negative_prompt": "NEGATIVE",
+            "uploaded_name": "uploaded.png",
+            "submitted_workflow": submitted,
             "model_files": model_files,
         }
         checks = _qwen_job_checks(
@@ -1070,12 +1089,15 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "c" * 64,
             contract,
             sha256_file(workflow),
+            "POSITIVE",
+            "NEGATIVE",
         )
         self.assertTrue(all(checks.values()))
 
         bad = json.loads(json.dumps(job))
         bad["seed"] = 1
         bad["output_sha256"] = "d" * 64
+        bad["positive_prompt"] = "WRONG"
         checks = _qwen_job_checks(
             bad,
             "a" * 64,
@@ -1083,9 +1105,12 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "c" * 64,
             contract,
             sha256_file(workflow),
+            "POSITIVE",
+            "NEGATIVE",
         )
         self.assertFalse(checks["seed_ok"])
         self.assertFalse(checks["output_hash_ok"])
+        self.assertFalse(checks["positive_prompt_ok"])
 
     def test_restored_stage_approval_is_bound_to_reviewed_candidate(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as td:
