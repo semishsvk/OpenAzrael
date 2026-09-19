@@ -43,10 +43,12 @@ python tools/texture_lab/oa_tex_run_poc.py
 The canonical selection is stored in `config/rt_poc_01_selection.json`. It contains four R1, four R7 and four R8 textures covering rock/organic surface, architecture, parchment, hard-edge mask, carved wall, character detail, mechanism, floor, glass, high-detail mural and text/decorative content.
 
 ### `oa_tex_restore.py`
-A command-template adapter for a locally installed Real-ESRGAN implementation. The exact executable/model version must be pinned in the run record before a result can be considered reproducible.
+Supports a pinned official Real-ESRGAN Python backend plus a fallback command-template backend. The preferred POC path records the exact checkpoint SHA-256, tile setting, precision mode and denoise strength. `tile=0` is the default fidelity path; tiling is a resource fallback, not the baseline.
 
 ### `oa_tex_recreate.py`
-Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. This keeps the repository independent of a particular image-edit graph while preserving the exact submitted workflow in each job record.
+Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. Each job record fingerprints the workflow template, submitted workflow, source, output and explicitly supplied model files.
+
+`config/ai_backends.json` defines the POC backend matrix. `profiles/recreate_profiles.json` plus `oa_tex_prompt.py` produce consistent preservation-first prompts from each selected texture's content class; prompts remain input evidence for the experiment, not proof of visual fidelity.
 
 ### Godot Texture Lab
 `tools/texture_lab/godot/texture_lab.tscn` is an isolated comparison scene, not the normal OpenAzrael main scene. It loads local texture pixels at runtime and supports:
