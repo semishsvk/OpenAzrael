@@ -304,9 +304,30 @@ def restored_generation_provenance(
         )
 
     reproducibility = restore_run.get("reproducibility", {})
+    performance = restore_run.get("performance", {})
+    performance_checks = {
+        "performance_present": isinstance(performance, dict),
+        "texture_count_ok": (
+            isinstance(performance, dict)
+            and _int_equal(performance.get("texture_count"), len(expected))
+        ),
+        "run_wall_nonnegative": (
+            isinstance(performance, dict)
+            and isinstance(performance.get("run_wall_seconds"), (int, float))
+            and float(performance.get("run_wall_seconds")) >= 0.0
+        ),
+        "inference_wall_nonnegative": (
+            isinstance(performance, dict)
+            and isinstance(
+                performance.get("measured_inference_wall_seconds"),
+                (int, float),
+            )
+            and float(performance.get("measured_inference_wall_seconds")) >= 0.0
+        ),
+    }
     global_checks = {
         "schema_ok": restore_run.get("schema")
-        == "openazrael.texture_lab.ai_restore_run.v4",
+        == "openazrael.texture_lab.ai_restore_run.v5",
         "mode_ok": restore_run.get("mode") == "ai_restored",
         "ids_exact": (
             len(rows) == len(expected)
@@ -317,6 +338,7 @@ def restored_generation_provenance(
             and isinstance(reproducibility.get("runtime_identity"), dict)
             and reproducibility["runtime_identity"].get("status") == "PASS"
         ),
+        **performance_checks,
     }
     status = (
         "PASS"
