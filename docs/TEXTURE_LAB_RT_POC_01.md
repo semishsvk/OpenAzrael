@@ -25,10 +25,10 @@ Scans local Classic PNGs and writes a metadata-only manifest. Default expected d
 Creates deterministic 4x candidates using Pillow nearest, bicubic and Lanczos resampling. An external xBRZ executable can be integrated only by an explicitly pinned command template.
 
 ### `oa_tex_validate.py`
-Checks target dimensions and records observational fidelity metrics: Lanczos round-trip MAE, optional SSIM when scikit-image is available, mean-channel drift, alpha/color-key safety and raw edge-seam MAE. Missing candidates are technical failures.
+Checks target dimensions and records observational fidelity metrics: Lanczos round-trip MAE, optional SSIM when scikit-image is available, mean-channel drift, alpha/color-key safety and edge-seam MAE. Seam QA now records both the Classic source seam and generated candidate seam plus source-relative U/V delta and ratio. These seam deltas are observational, not automatic pass/fail thresholds. Missing candidates are technical failures.
 
 ### `oa_tex_compare.py`
-Creates a local visual comparison sheet across Classic, mathematical Enhanced, AI Restored and AI Recreated variants.
+Creates a local visual comparison sheet across Classic, mathematical Enhanced, AI Restored and AI Recreated variants. Review rendering preserves each texture's aspect ratio instead of stretching it to a square; transparent content is composited over a neutral checkerboard so mask/alpha defects remain visible.
 
 ### `oa_tex_review_pack.py`
 Builds the stage-scoped manual visual-review evidence after AI generation and QA. For every generated candidate it creates a comparison sheet against Classic and deterministic Enhanced variants; textures with observed repeat sampling additionally receive a 3x3 seam/tile preview. The manifest fingerprints the Classic source, AI candidate and rendered review artifacts. These files remain local/ignored, but stage approval is bound to their hashes so changed pixels or changed review imagery invalidate an old receipt.
