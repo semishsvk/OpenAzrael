@@ -160,22 +160,38 @@ def build_restore_plan(args, entries: list[dict]) -> list[dict]:
         "--out", str(drift_out),
         "--allow-missing",
     ]
+    review_json = args.run_dir / "ai_restored_review_queue.json"
     review = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_review_report.py"),
         "restored",
         "--drift", str(drift_out),
         "--selection", str(args.selection),
-        "--out-json", str(args.run_dir / "ai_restored_review_queue.json"),
+        "--out-json", str(review_json),
         "--out-md", str(args.run_dir / "ai_restored_review_queue.md"),
         "--only", *ids,
     ]
+    review_pack = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_review_pack.py"),
+        "restored",
+        "--review-queue", str(review_json),
+        "--source-dir", str(args.source_dir),
+        "--restored-dir", str(args.restored_dir),
+        "--out-dir", str(args.run_dir / "review_pack"),
+        "--manifest", str(args.run_dir / "ai_restored_review_pack.json"),
+        "--markdown", str(args.run_dir / "ai_restored_review_pack.md"),
+    ]
+    enhanced_dir = getattr(args, "recreate_input_dir", None)
+    if enhanced_dir is not None:
+        review_pack.extend(["--enhanced-dir", str(enhanced_dir)])
     return [
         {"stage": "realesrgan_doctor", "argv": doctor, "command": _quoted_command(doctor)},
         {"stage": "generate", "argv": argv, "command": _quoted_command(argv)},
         {"stage": "technical_qa", "argv": technical, "command": _quoted_command(technical)},
         {"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)},
         {"stage": "review_queue", "argv": review, "command": _quoted_command(review)},
+        {"stage": "review_pack", "argv": review_pack, "command": _quoted_command(review_pack)},
     ]
 
 
@@ -399,17 +415,34 @@ def build_recreate_plan(args, entries: list[dict], profiles: dict, contract: dic
     ]
     jobs.append({"stage": "structural_qa", "argv": qa, "command": _quoted_command(qa)})
 
+    review_json = args.run_dir / "ai_recreated_review_queue.json"
     review = [
         sys.executable,
         str(ROOT / "tools/texture_lab/oa_tex_review_report.py"),
         "recreated",
         "--drift", str(drift_out),
         "--selection", str(args.selection),
-        "--out-json", str(args.run_dir / "ai_recreated_review_queue.json"),
+        "--out-json", str(review_json),
         "--out-md", str(args.run_dir / "ai_recreated_review_queue.md"),
         "--only", *review_ids,
     ]
     jobs.append({"stage": "review_queue", "argv": review, "command": _quoted_command(review)})
+
+    review_pack = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_review_pack.py"),
+        "recreated",
+        "--review-queue", str(review_json),
+        "--source-dir", str(args.source_dir),
+        "--enhanced-dir", str(args.recreate_input_dir),
+        "--recreated-dir", str(args.recreated_dir),
+        "--out-dir", str(args.run_dir / "review_pack"),
+        "--manifest", str(args.run_dir / "ai_recreated_review_pack.json"),
+        "--markdown", str(args.run_dir / "ai_recreated_review_pack.md"),
+    ]
+    jobs.append(
+        {"stage": "review_pack", "argv": review_pack, "command": _quoted_command(review_pack)}
+    )
     return jobs
 
 def build_local_preflight_job(args) -> dict | None:
