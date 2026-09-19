@@ -494,6 +494,22 @@ def build_stage_gate_job(args) -> dict | None:
     }
 
 
+def build_review_profile_job(args) -> dict | None:
+    if not args.preset:
+        return None
+    argv = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_review_profile.py"),
+        args.preset,
+        "--run-root", str(args.run_root),
+    ]
+    return {
+        "stage": "review_profile",
+        "argv": argv,
+        "command": _quoted_command(argv),
+    }
+
+
 def build_run_summary_job(args) -> dict | None:
     if not args.preset:
         return None
@@ -662,6 +678,9 @@ def main() -> int:
     if local_preflight_job is not None:
         prefix_jobs.append(local_preflight_job)
     jobs = prefix_jobs + jobs
+    review_profile_job = build_review_profile_job(args)
+    if review_profile_job is not None:
+        jobs.append(review_profile_job)
     summary_job = build_run_summary_job(args)
     if summary_job is not None:
         jobs.append(summary_job)
