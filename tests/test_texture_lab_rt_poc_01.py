@@ -50,6 +50,7 @@ from oa_tex_realesrgan_bootstrap import verify_checkpoint
 from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, validate_receipt
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
+from oa_tex_run_summary import build_summary
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
@@ -796,6 +797,23 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             snapshot = evidence_snapshot("restored_smoke_1", run_root)
             self.assertEqual(snapshot["status"], "PASS")
             self.assertEqual(snapshot["outputs"][0]["path"], str(candidate))
+
+            summary = build_summary("restored_smoke_1", run_root)
+            self.assertEqual(summary["evidence_status"], "PASS")
+            self.assertEqual(
+                summary["manual_review_status"],
+                "READY_FOR_MANUAL_REVIEW",
+            )
+            self.assertFalse(summary["automatic_quality_verdict"])
+            self.assertFalse(summary["automatic_stage_approval"])
+            self.assertEqual(
+                summary["textures"][0]["visual_evidence"]["candidate"],
+                str(candidate),
+            )
+            self.assertEqual(
+                summary["textures"][0]["visual_evidence"]["detail_comparison"],
+                str(detail),
+            )
 
             approved = approve(
                 "restored_smoke_1",
