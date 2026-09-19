@@ -556,6 +556,12 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         args = SimpleNamespace(
             preset="restored_smoke_1",
             mode="restored",
+            selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+            policy=ROOT / "tools/texture_lab/config/ai_review_policy.json",
+            profiles=ROOT / "tools/texture_lab/profiles/recreate_profiles.json",
+            source_dir=ROOT / "assets/textures/classic",
+            only=None,
+            model_file=[],
             restore_model="RealESRGAN_x4plus",
             factor=4,
             tile=0,
@@ -570,6 +576,12 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             ("fp32", False),
             ("restore_model", "other"),
             ("denoise_strength", 0.5),
+            ("selection", ROOT / "wrong_selection.json"),
+            ("policy", ROOT / "wrong_policy.json"),
+            ("profiles", ROOT / "wrong_profiles.json"),
+            ("source_dir", ROOT / "wrong_source"),
+            ("only", ["CORIROCK"]),
+            ("model_file", [ROOT / "extra_model.bin"]),
         ]:
             bad = SimpleNamespace(**vars(args))
             setattr(bad, field, value)
@@ -591,6 +603,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         args = SimpleNamespace(
             preset="recreated_smoke_1",
             mode="recreated",
+            selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+            policy=ROOT / "tools/texture_lab/config/ai_review_policy.json",
+            profiles=ROOT / "tools/texture_lab/profiles/recreate_profiles.json",
+            source_dir=ROOT / "assets/textures/classic",
+            recreate_input_dir=ROOT / "assets/textures/enhanced",
+            only=None,
+            model_file=[],
             workflow=ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json",
             model_label="Qwen-Image-Edit-2511",
             seed=734234,
@@ -619,6 +638,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             ("prompt_key", "text"),
             ("negative_prompt_key", "text"),
             ("seed_key", "noise_seed"),
+            ("selection", ROOT / "wrong_selection.json"),
+            ("policy", ROOT / "wrong_policy.json"),
+            ("profiles", ROOT / "wrong_profiles.json"),
+            ("source_dir", ROOT / "wrong_source"),
+            ("recreate_input_dir", ROOT / "wrong_enhanced"),
+            ("only", ["CORIROCK"]),
+            ("model_file", [ROOT / "extra_model.bin"]),
         ]
         for field, value in mutations:
             bad = SimpleNamespace(**vars(args))
