@@ -10,12 +10,16 @@
 - `tools/texture_lab/oa_tex_validate.py`
 - `tools/texture_lab/oa_tex_compare.py`
 - `tools/texture_lab/oa_tex_tile.py`
+- `tools/texture_lab/oa_tex_sampling_audit.py`
+- `tools/texture_lab/oa_tex_structural_drift.py`
+- `tools/texture_lab/oa_tex_calibrate_drift.py`
 - `tools/texture_lab/oa_tex_run_poc.py`
 - `tools/texture_lab/oa_tex_restore.py`
 - `tools/texture_lab/oa_tex_recreate.py`
 - `tools/texture_lab/config/enhance.json`
 - `tools/texture_lab/config/rt_poc_01_selection.json`
 - `data/texture_lab/rt_poc_01_sampling_review.json`
+- `data/texture_lab/rt_poc_01_drift_baseline.json`
 - `tools/texture_lab/config/ai_backends.json`
 - `tools/texture_lab/profiles/base_preserve.json`
 - `tools/texture_lab/profiles/recreate_profiles.json`
@@ -81,7 +85,7 @@
 - `docs/KG001_HEADLESS_V109.md`
 - `scripts/kg001_headless_runner_v109.gd`
 - `tools/validate_kg001_headless_v109.py`
-- `data/tests/kg001_headless_contract_v109.json`
+- `data/tests/kg001_headless_runner_contract_v109.json`
 
 ## KG-001 v108 state-space
 - `docs/KG001_STATE_SPACE_V108.md`
