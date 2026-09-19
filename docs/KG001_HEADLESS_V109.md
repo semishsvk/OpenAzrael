@@ -29,6 +29,6 @@ godot --headless --path . --script res://scripts/kg001_headless_runner_v109.gd
 
 ## Current status
 
-The source contract is ready, but this analysis environment still does not have a Godot executable/runtime. Therefore v109 is **READY / NOT EXECUTED**, not a runtime PASS. When run in a Godot-capable checkout, the script exits non-zero on any failed assertion and prints one `OPENAZRAEL_KG001_V109` JSON result line.
+The recorded Godot 4.7.2 baseline `6528d438ab2b14d344fb0e19f83ba5d5e699cd60` is **PASS, 13 checks**; see `data/tests/kg001_headless_runtime_v109.json`. The script exits non-zero on any failed assertion and prints one `OPENAZRAEL_KG001_V109` JSON result line. Graphics/icon integration is included in the tested source.
 
 This still does not test 3D room geometry, physical trigger volumes, actual WAV playback, original timing or Classic audio parity. Those remain later KG-001/runtime and forensic gates.

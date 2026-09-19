@@ -1,7 +1,12 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v24` — technical base v116 plus current context/Git/quality layer.
+- `v116-context-v26` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+
+## Localization architecture
+- `docs/LOCALIZATION_ARCHITECTURE.md`
+- `docs/DECISIONS.md` ADR-024
+- implementation deliberately deferred until after Candidate 1 runtime/manual validation
 
 ## KG-001 Candidate 1 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
@@ -100,4 +105,7 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 - `data/backup/source_fingerprints.json`
 
 ## Candidate 1 Windows integration attempt
-See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`: v109 runtime PASS; v110/v111 blocked by canonical demo assets; G10 manual pending.
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`: final v109/v110/v111 and G00-G09 PASS; Windows export and smoke PASS; G10 manual pending. Canonical context is v26 and the requested application watermark remains v24.
+
+## Historical source summaries
+- `docs/HISTORY_PRE_V116.md`: verbatim README from main `92dc9089be0c71dd7177bcc433faa336c3a5a7e1`, retaining the v105 forensic summary after the concise v26 README refresh. Historical statuses do not override the current context.

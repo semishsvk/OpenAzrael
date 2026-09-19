@@ -8,7 +8,7 @@
       ],
       "returncode": 0,
       "status": "PASS",
-      "output": "OpenAzrael context validation: PASS\n checkpoint: v116-context-v24\n KG-001 contract: ACCEPTED\n"
+      "output": "OpenAzrael context validation: PASS\n checkpoint: v116-context-v26\n KG-001 contract: ACCEPTED\n"
     },
     {
       "command": [

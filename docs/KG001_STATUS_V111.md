@@ -1,23 +1,16 @@
-# OpenAzrael v111 — consolidated KG-001 gate status
+# OpenAzrael KG-001 gate status
 
-The repository now has one machine-readable status layer for all G00-G10 gates.
+`tools/kg001_status_v112.py` and `data/tests/kg001_status_v112.json` are the current
+evidence-driven gate summary. The recorded tested source `6528d438ab2b14d344fb0e19f83ba5d5e699cd60` has
+**G00-G09 PASS** and **G10 PENDING_MANUAL_USER**. Overall release status is
+**AWAITING_RUNTIME_OR_MANUAL** and final_tag_allowed is false.
 
-Current overall state is **PRE_RUNTIME_READY**. No required gate is recorded as FAIL, but the release tag is **not allowed** because source/model readiness is intentionally distinct from runtime PASS.
+Final graphics/icon integration is included in the tested commit; Windows export and smoke checks are PASS. G10 remains manual pending.
 
-## Current gate picture
+The older `tools/kg001_status_v111.py` and regenerated `kg001_status_v111.json`
+remain a legacy status view. Its source-only READY/SOURCE_* values and
+PRE_RUNTIME_READY summary are not the current release-gate decision. Runtime
+inputs in that view are now updated from the recorded PASS evidence.
 
-- G00 context integrity — validator ready, not yet recorded as release PASS.
-- G01 data validation — validators ready, not yet recorded as release PASS.
-- G02 gameplay logic — source-model PASS, Godot runtime pending.
-- G03 exhaustive puzzle state-space — source-model PASS: 63 reachable states, 0 modeled softlocks.
-- G04 room transitions — source contract PASS, asset-backed runtime pending.
-- G05 triggers — source contract PASS, asset-backed runtime pending.
-- G06 logical audio event stream — source contract PASS, runtime pending.
-- G07 save/load state hash — source contract PASS, runtime pending.
-- G08 full synthetic demo — source contract PASS, runtime pending.
-- G09 fresh checkout — pending.
-- G10 user manual sanity — pending.
-
-tools/kg001_status_v111.py automatically looks for future runtime result files and upgrades only the corresponding gates. It never treats SOURCE_*, READY_* or PENDING as release PASS.
-
-The tag demo-known-good-001 is allowed only if **every** G00-G10 status is literal PASS.
+Only literal PASS for every G00-G10 permits `demo-known-good-001`. G10 must be
+completed by the actual manual checklist and is never inferred from automation.

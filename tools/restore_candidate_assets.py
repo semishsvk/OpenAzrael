@@ -1,0 +1,46 @@
+"""Restore excluded Candidate 1 assets from a locally extracted ATDEMO directory.
+
+Requires numpy, Pillow and trimesh (validated with trimesh 5.1.0).
+Original files and generated room/texture/audio binaries remain outside Git.
+"""
+from pathlib import Path
+import argparse, hashlib, json, shutil, subprocess, sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'tools/texture_pipeline'))
+from azf_decode_v14 import save_png
+from export_xaf_glb_v8 import parse
+from prepare_candidate_audio import prepare
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('demo_dir', type=Path)
+    a = ap.parse_args(); src = a.demo_dir.resolve()
+    textures = ROOT / 'assets/textures/classic'; textures.mkdir(parents=True, exist_ok=True)
+    rooms = ROOT / 'assets/rooms'; rooms.mkdir(parents=True, exist_ok=True)
+    audio = ROOT / 'assets/audio'; audio.mkdir(parents=True, exist_ok=True)
+    azfs = sorted((src/'TEXTURES').glob('*.AZF'))
+    if len(azfs) != 86: raise ValueError('Expected canonical demo corpus: 86 AZF textures')
+    for p in azfs: save_png(p, textures/(p.stem+'.png'))
+    expected = {'R1':(69,593,62), 'R7':(48,689,40), 'R8':(87,1050,74)}
+    for room, counts in expected.items():
+        scene, objs, prims, mats, resolved, missing = parse(src/'TEXTURES'/(room+'.XAF'), textures)
+        actual = (len(prims), sum(x['triangles'] for x in prims), sum(x['resolved_png'] is not None for x in prims))
+        if actual != counts or missing: raise ValueError((room, actual, missing))
+        scene.export(rooms/(room+'.glb'))
+        manifest = dict(source=room+'.XAF', exporter_version=8, objects=objs, primitives=prims,
+                        missing_textures=missing, textured_primitives=actual[2], primitive_count=actual[0], triangles=actual[1])
+        (ROOT/'data'/f'{room}.textured.v44.manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+    fingerprints = json.loads((ROOT/'data/backup/source_fingerprints.json').read_text(encoding='utf-8'))
+    for entry in fingerprints['entries']:
+        if not entry['path'].startswith('assets/audio/'): continue
+        p = src/Path(entry['path']).name
+        if hashlib.sha256(p.read_bytes()).hexdigest() != entry['sha256']: raise ValueError('Audio fingerprint mismatch: '+p.name)
+        shutil.copyfile(p, ROOT/entry['path'])
+    prepare(src/'797TAP.WAV', audio/'797TAP.WAV')
+    prepare(src/'S137.WAV', audio/'S137.WAV')
+    subprocess.run([sys.executable, str(ROOT/'tools/legacy_export/export_legacy_world_v21.py'), str(src), str(ROOT/'data/audio')], check=True)
+    subprocess.run([sys.executable, str(ROOT/'tools/validate_graphics_pipeline_v44.py')], check=True)
+    print('Candidate assets restored; all raw/commercial binaries remain Git-ignored.')
+
+if __name__ == '__main__': main()

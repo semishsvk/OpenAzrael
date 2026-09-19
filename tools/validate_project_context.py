@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v24"
+EXPECTED_CHECKPOINT="v116-context-v26"
 errors=[]
 
 def req(p):
@@ -67,6 +67,8 @@ for p in [
     "tools/analyze_world_action_lifecycle_v115.py",
     "tools/validate_world_action_lifecycle_v115.py",
     "data/world_action_lifecycle_v115.json",
+    "docs/LOCALIZATION_ARCHITECTURE.md",
+    "docs/HISTORY_PRE_V116.md",
     "docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md",
     "scripts/candidate_diagnostics_v116.gd",
     "scripts/kg001_trigger_debug_v116.gd",
@@ -93,11 +95,11 @@ try:
         errors.append("KG-001 v109 runtime status drift")
     if c.get("quality",{}).get("kg001_room_trigger_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v110 room/trigger source-contract drift")
-    if c.get("quality",{}).get("kg001_room_trigger_runtime") not in ("NOT_EXECUTED", "BLOCKED_MISSING_ASSETS"):
+    if c.get("quality",{}).get("kg001_room_trigger_runtime") not in ("NOT_EXECUTED", "BLOCKED_MISSING_ASSETS", "PASS"):
         errors.append("KG-001 v110 runtime status drift")
     if c.get("quality",{}).get("kg001_full_demo_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v111 full-demo source-contract drift")
-    if c.get("quality",{}).get("kg001_full_demo_runtime") not in ("NOT_EXECUTED", "BLOCKED_MISSING_ASSETS"):
+    if c.get("quality",{}).get("kg001_full_demo_runtime") not in ("NOT_EXECUTED", "BLOCKED_MISSING_ASSETS", "PASS"):
         errors.append("KG-001 v111 runtime status drift")
     if c.get("quality",{}).get("kg001_candidate_runner")!="SOURCE_CONTRACT_READY":
         errors.append("KG-001 v112 candidate runner drift")
@@ -107,10 +109,68 @@ try:
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
-    if c.get("quality",{}).get("kg001_headless_runtime") == "PASS":
-        runtime=json.loads((ROOT/"data/tests/kg001_headless_runtime_v109.json").read_text(encoding="utf-8"))
-        if runtime.get("status") != "PASS" or runtime.get("_process_returncode") != 0 or runtime.get("failed"):
-            errors.append("v109 PASS requires successful recorded runtime evidence")
+    runtime_records={}
+    oracle=json.loads((ROOT/"data/tests/kg001_state_space_v108.json").read_text(encoding="utf-8"))
+    for version,field,stem in (
+        (109,"kg001_headless_runtime","headless"),
+        (110,"kg001_room_trigger_runtime","room_trigger"),
+        (111,"kg001_full_demo_runtime","full_demo"),
+    ):
+        if c.get("quality",{}).get(field) != "PASS":
+            continue
+        runtime=json.loads((ROOT/f"data/tests/kg001_{stem}_runtime_v{version}.json").read_text(encoding="utf-8"))
+        runtime_records[f"v{version}"]=runtime
+        if (runtime.get("status") != "PASS" or runtime.get("_process_returncode") != 0
+                or runtime.get("failed") != []
+                or runtime.get("schema") != f"openazrael.kg001.{stem}"
+                or runtime.get("version") != version):
+            errors.append(f"v{version} PASS requires successful recorded runtime evidence")
+        if version in (109,111):
+            if (runtime.get("persistent_hash") != oracle.get("shortest_success_persistent_state_sha256")
+                    or runtime.get("logical_audio_events") != oracle.get("shortest_success_audio_events")):
+                errors.append(f"v{version} runtime hash/audio must match the v108 oracle")
+    evidence_commit=c.get("quality",{}).get("kg001_runtime_evidence_commit")
+    if evidence_commit:
+        fresh=json.loads((ROOT/"data/tests/kg001_fresh_checkout.json").read_text(encoding="utf-8"))
+        rooms={f"assets/rooms/{room}.glb" for room in ("R1","R7","R8")}
+        def room_evidence_pass(mapping):
+            return isinstance(mapping,dict) and {
+                key.replace("\\","/") for key,value in mapping.items() if value is True
+            } == rooms
+        if (fresh.get("status") != "PASS" or fresh.get("commit_sha") != evidence_commit
+                or fresh.get("schema") != "openazrael.kg001.fresh_checkout" or fresh.get("version") != 112
+                or fresh.get("clean_before") is not True or fresh.get("clean_after") is not True
+                or fresh.get("godot_import_status") != "PASS" or fresh.get("source_validators_pass") is not True
+                or fresh.get("forbidden_tracked_files") != []
+                or fresh.get("runtime_status") != {"v109":"PASS","v110":"PASS","v111":"PASS"}
+                or set(runtime_records) != {"v109","v110","v111"}
+                or not room_evidence_pass(fresh.get("room_assets_present"))
+                or not room_evidence_pass(fresh.get("room_assets_git_ignored"))):
+            errors.append("recorded runtime baseline requires complete clean-checkout PASS evidence at its stated commit")
+        source=json.loads((ROOT/"data/tests/kg001_source_validation_v112.json").read_text(encoding="utf-8"))
+        if source.get("status") != "PASS":
+            errors.append("recorded runtime baseline requires source-validation PASS evidence")
+    manual_path=ROOT/"data/tests/kg001_manual_sanity.json"
+    if c.get("quality",{}).get("kg001_manual_sanity") == "CHECKLIST_READY_PENDING_USER":
+        if manual_path.is_file() and json.loads(manual_path.read_text(encoding="utf-8")).get("status") == "PASS":
+            errors.append("manual PASS evidence conflicts with pending context; review G10 explicitly")
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V26":
+        errors.append("documentation consistency drift")
+    if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
+        errors.append("documentation/runtime boundary drift")
+    loc=c.get("localization",{})
+    if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
+        errors.append("localization architecture status drift")
+    if loc.get("key_strategy")!="STABLE_SEMANTIC_IDS":
+        errors.append("localization key strategy drift")
+    if loc.get("authoring_format")!="GETTEXT_POT_PO":
+        errors.append("localization authoring-format drift")
+    if loc.get("distribution_format")!="EXTERNAL_VERSIONED_PCK":
+        errors.append("localization distribution-format drift")
+    if loc.get("runtime_fallback")!="EN":
+        errors.append("localization fallback drift")
+    if loc.get("resource_pack_replace_core") is not False:
+        errors.append("localization core-replacement safety drift")
 except Exception as e:
     errors.append(f"context json: {e}")
 
@@ -124,7 +184,7 @@ try:
         errors.append("v106 tracked EOF/section-count summary missing")
     if forensic.get("world_exact_eof") is not True or forensic.get("world_section_counts") != [1303,12,37,3,101,8,15]:
         errors.append("v106 machine-readable EOF/section-count evidence drift")
-    if "## v105" not in (ROOT/"README.md").read_text(encoding="utf-8"):
+    if "## v105" not in (ROOT/"docs/HISTORY_PRE_V116.md").read_text(encoding="utf-8"):
         errors.append("v105 tracked summary missing")
 except Exception as e:
     errors.append(f"v106 evidence json: {e}")

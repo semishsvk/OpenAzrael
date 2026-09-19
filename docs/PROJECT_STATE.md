@@ -1,18 +1,19 @@
 # OpenAzrael Project State
 
-## Windows integration attempt — 2026-09-19
+## Windows Candidate 1 integration — 2026-09-19
 
-Latest execution supersedes the earlier NOT_EXECUTED preparation notes below:
-Godot 4.7.2 v109 PASS (13 checks); v110/v111 BLOCKED_MISSING_ASSETS.
-Canonical demo GLBs and legacy ambient IR are still required. The available
-retail prototype GLBs are not equivalent. Source-safe compile/runner fixes,
-a Windows export preset and matching templates are prepared.
-See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md` for the exact boundary and resume steps.
-G10 remains PENDING_MANUAL_USER; no known-good tag was created.
+Final tested source `6528d438ab2b14d344fb0e19f83ba5d5e699cd60` includes current main
+`43637474b4bddc34fcf38355901352f505c0c2a4` (canonical `v116-context-v26`).
+The requested application watermark remains `KG-001 Candidate 1 / v116-context-v24`.
+Godot 4.7.2 import, the source suite, v109 (13 checks), v110, v111 (33 checks)
+and the clean-checkout gate all PASS: **G00-G09 PASS**.
+The Windows x86_64 export includes the supplied Sigil icon; EXE headless/graphical
+smoke tests and R1/R7/R8 captures from its PCK passed. Evidence is in `data/tests/`.
+**G10 remains PENDING_MANUAL_USER; no known-good tag was created.**
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md` for the build and asset boundary.
 
-
-**Canonical checkpoint:** `v116-context-v24`
-**Date:** 2026-09-18
+**Canonical checkpoint:** `v116-context-v26`
+**Date:** 2026-09-19
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
 
@@ -24,7 +25,12 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v24**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v26**.
+
+## 3. Immediate execution priority
+The current priority is the first real **KG-001 Candidate 1** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build.
+
+Localization runtime work and the deferred v117 forensic copy/mutator audit follow this runtime/manual cycle; neither is a blocker for Candidate 1.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -102,20 +108,20 @@ The newest technical base is now **v116**. The context/Git/quality layer is merg
 - DemoState supports schema-validated reset/restore round-trips against its canonical payload/hash.
 - LegacyEvents supports capture-only logical audio instrumentation without loading excluded WAV payloads.
 - `scripts/kg001_headless_runner_v109.gd` exercises the real autoload/Event-IR state path without loading `main.tscn`.
-- Source contract is PASS; actual Godot runtime execution is NOT EXECUTED in this environment.
+- Source contract and recorded v109 runtime are PASS (13 checks). Final build revalidation remains pending.
 - The runner is designed to verify the v108 reference hashes and logical audio sequence before later physical room/trigger gates.
 
 ### KG-001 room/trigger runner — v110
 - `scripts/kg001_room_trigger_runner_v110.gd` prepares asset-backed G04/G05 execution using the real `RoomManager`.
 - It verifies all four tracked room edges, negative locked R1->R7/R8 gates, trigger centroid/outside bounds, and inventory persistence across room replacement.
 - Missing R1/R7/R8 local GLBs produce `BLOCKED_MISSING_ASSETS` (exit 2), not a misleading test failure.
-- Source contract is PASS; asset-backed Godot execution remains NOT EXECUTED in this environment.
+- Source contract and recorded v110 asset-backed runtime are PASS. Final build revalidation remains pending.
 
 ### KG-001 full synthetic demo — v111
 - `scripts/kg001_full_demo_runner_v111.gd` drives the complete demo through production `interact()` scripts and real RoomManager transitions.
 - It uses evidence-backed trigger centroids / R8 activation center for synthetic positioning, but does not directly inject gameplay flags or puzzle nodes.
 - Final hash must equal the v108 exhaustive-model success hash and the logical audio stream must equal the four Event IR sound actions.
-- `tools/kg001_status_v111.py` consolidates G00-G10. Current overall state is **PRE_RUNTIME_READY** and the known-good tag remains forbidden until every gate is literal PASS.
+- `tools/kg001_status_v112.py` is the current evidence-driven G00-G10 status engine. Recorded v111 runtime is PASS (33 checks); the overall status remains **AWAITING_RUNTIME_OR_MANUAL** with G10 pending. The v111 status engine is retained as a legacy view.
 
 ### KG-001 candidate orchestration — v112
 - `tools/run_kg001_candidate_v112.py` provides a one-command candidate workflow.
@@ -123,6 +129,18 @@ The newest technical base is now **v116**. The context/Git/quality layer is merg
 - Temporary evidence is written only to ignored `.tmp/kg001/`; promotion into `data/tests/` is explicit and happens after the clean-checkout observation.
 - `tools/kg001_status_v112.py` promotes G00-G09 only from recorded PASS evidence. G10 remains manual with a dedicated checklist/template.
 - Overall state remains **AWAITING_RUNTIME_OR_MANUAL**; the known-good tag remains forbidden.
+
+### Localization architecture — approved
+- External, versioned language packs are now the canonical localization direction.
+- Runtime/UI will use immutable semantic IDs rather than editable English sentences as keys.
+- Translator-facing source format is POT/PO; English ships in the base game as mandatory fallback.
+- Release packs use `openazrael-<locale>.pck` and a validated manifest/string revision.
+- External packs must be mounted with resource replacement disabled and may only expose a dedicated localization namespace.
+- The future `LocalizationManager` owns discovery/validation/locale switching only; it does not own gameplay state.
+- The format is extensible to locale fonts, subtitles and optional localized voice assets.
+- Pseudolocalization, missing-ID checks, Unicode coverage and deterministic pack-building are required implementation tests.
+- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 1 runtime/manual cycle**, so this approval does not perturb the current test candidate.
+- Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
 ### KG-001 Candidate 1 diagnostics — v116
 - The first real Godot integration candidate is now source-ready as **KG-001 Candidate 1**.
@@ -132,7 +150,7 @@ The newest technical base is now **v116**. The context/Git/quality layer is merg
 - Room GLBs are runtime-loaded after explicit resource preflight rather than preloaded at script parse time, giving deterministic missing-asset diagnostics.
 - Non-headless preflight also requires the four golden Event-IR WAV assets used by the accepted demo route; headless capture-only tests do not.
 - `tools/validate_candidate_diagnostics_v116.py` is included in the v112 one-command candidate source suite.
-- Source contract: **PASS**. Godot runtime execution: **NOT EXECUTED** in the current environment.
+- Source contract and baseline automated Godot execution: **PASS**. Graphical launch is observed after rendering integration; Windows export/smoke PASS and G10 remains pending.
 - The earlier uncommitted static producer/copy experiment is deferred and renumbered to v117.
 
 ### KG-001 known-good demo gate — context v24
@@ -154,7 +172,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Run the v112 candidate runner with --fresh-checkout --promote-results on the v116 Candidate 1 source tree, then perform an interactive Candidate 1 pass with F6/F7/F10 diagnostics and complete G10 only if G00-G09 are PASS.
+1. Run the v112 candidate runner with --fresh-checkout --promote-results on the final graphics/icon source commit, export and smoke-test Windows Candidate 1, then perform an interactive full-demo pass with F6/F7/F10 diagnostics and complete G10 only if G00-G09 are PASS.
 2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.

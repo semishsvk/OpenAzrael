@@ -2,11 +2,9 @@
   "schema": "openazrael.kg001.gate_status",
   "version": 112,
   "target_tag": "demo-known-good-001",
-  "overall_status": "FAIL",
+  "overall_status": "AWAITING_RUNTIME_OR_MANUAL",
   "final_tag_allowed": false,
-  "failed_inputs": [
-    "fresh"
-  ],
+  "failed_inputs": [],
   "gates": {
     "G00": {
       "name": "context_integrity",
@@ -26,15 +24,15 @@
     },
     "G04": {
       "name": "room_transition_state",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G05": {
       "name": "trigger_semantics",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G06": {
       "name": "audio_event_stream",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G07": {
       "name": "save_load_state_hash",
@@ -42,11 +40,11 @@
     },
     "G08": {
       "name": "synthetic_full_demo_playthrough",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G09": {
       "name": "fresh_checkout_build",
-      "status": "PENDING"
+      "status": "PASS"
     },
     "G10": {
       "name": "manual_sanity",

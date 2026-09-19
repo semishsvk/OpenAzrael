@@ -1,72 +1,82 @@
-# KG-001 Candidate 1 / v116-context-v24 — Windows integration attempt
+# KG-001 Candidate 1 — Windows build
 
-Date: 2026-09-19. Base main: `fb5a68a4f57c387cfc340997e3a9cf0191a481b6`.
-Engine: Godot `4.7.2.stable.official.ed1daf0bf`.
+The final tested source is `6528d438ab2b14d344fb0e19f83ba5d5e699cd60`, including main
+`43637474b4bddc34fcf38355901352f505c0c2a4`. Canonical documentation is
+`v116-context-v26`; the requested application watermark stays
+**KG-001 Candidate 1 / v116-context-v24**.
 
-## Result and boundary
+## Verified results
 
-The actual v109 run passes 13 checks, including the final canonical hash
+`python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`
+completed successfully with Godot `4.7.2.stable.official.ed1daf0bf`.
+The checkout was clean before and after import/tests. All restored room files
+were present and ignored; no forbidden payload was tracked.
+
+| Gate | Result |
+|---|---|
+| G00 context/evidence integrity | PASS |
+| G01 data validation | PASS |
+| G02 gameplay logic | PASS — v109, 13 checks |
+| G03 exhaustive source state-space | PASS — 63 states, 123 changed edges, 0 softlocks |
+| G04 room transitions | PASS — v110 |
+| G05 physical trigger semantics | PASS — v110 |
+| G06 logical audio events | PASS — v109/v111 |
+| G07 save/load hash | PASS — v109 |
+| G08 synthetic full demo | PASS — v111, 33 checks |
+| G09 fresh checkout/import | PASS |
+| G10 human sanity | PENDING_MANUAL_USER |
+
+v109/v111 match the v108 hash
 `69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8`
-and the four-event audio oracle. All 31 GDScript resources load in a running
-project with the real autoloads. This is not a completed playable build.
+and `S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
+The v110 process has a nonfatal ObjectDB cleanup warning at exit, retained in
+its evidence. No ERROR or SCRIPT ERROR occurs in the final suite.
 
-The Windows debug EXE/PCK export completed with exit code 0 and no export
-errors. Its headless launch exits 2 with explicit missing R1/R7/R8 diagnostics.
-The downloadable Windows artifact is therefore labelled **BLOCKED / NOT
-PLAYABLE**; it is retained only as export and fail-fast evidence.
+## Export and graphical checks
 
-Final automated results: G00/G01/G02/G03/G07 PASS; G04/G05/G06/G08 remain
-runtime-pending because v110/v111 are blocked. G09's fresh-checkout observation
-has clean_before=true, clean_after=true, no forbidden tracked files and all
-room paths ignored, but FAIL overall because required rooms/runtime runs are
-absent. G10 remains manual pending. No known-good tag was created.
+The source-safe `Windows Candidate 1` preset exports a Windows x86_64 debug EXE
+and external PCK. Create the `exports/` directory first, then run Godot with
+`--headless --path . --export-debug "Windows Candidate 1"`.
+Matching official Godot templates are installed locally; their ZIP CRC and
+SHA-256 provenance are included in the artifact evidence.
 
-The local earlier retail prototype's GLBs are unsuitable for the canonical
-demo: R1 has 67 primitives / 587 triangles instead of 69 / 593; R8 has 86 /
-1048 instead of 87 / 1050. R7 has the expected 48 / 689, but all three GLBs
-have zero embedded images. None were substituted into the candidate.
+- EXE SHA-256: `0118115a8c1e59a2792670cc08a5fa8433bf3526133157f9a105fb1c7a8e482c`.
+- PCK SHA-256: `43a1374a000a3144bec8b7f10af7f6203330d28916c430a599c2afb8ee11aaae`.
+- Exported EXE headless and graphical launch smoke: PASS, exit 0, no engine errors.
+- R1/R7/R8 rendered from the exported PCK through the same Godot 4.7.2 engine;
+  a separate capture script uses the existing debug room navigation and disables
+  player physics during screenshots. This is automated rendering evidence only.
+- Supplied Sigil PNG/ICO is used by the project/export. Six standard Windows
+  icon sizes (16/32/48/64/128/256) match the ICO payload exactly in the EXE.
 
-The eight locally available audio files exactly match the tracked source
-fingerprints and were restored only under ignored `assets/audio/`. Godot's
-import of original 797TAP.WAV reported a seek error. The local runtime copy now
-has a terminal empty RIFF JUNK chunk; its format and all 5,079 PCM bytes are
-identical. `tools/prepare_candidate_audio.py` reproduces this fix only from the
-fingerprint-verified original. The original source is unchanged. The subsequent
-audio import completed without engine errors.
+## Restoration and integration scope
 
-Required remaining inputs: canonical demo R1/R7/R8 GLBs (or the original
-demo XAF/AZF corpus to regenerate them), and the existing legacy ambient IR
-`data/audio/legacy_world_ir.json`. The earlier local retail corpus is not an
-equivalent replacement. Official Godot 4.7.2 Windows export templates have now
-been downloaded, checked against ZIP member sizes/CRCs, fingerprinted and
-installed in the discovered portable Godot installation.
+The supplied `atdemo.zip` was unpacked as nested ZIP/SFX containers without
+executing its installer. `tools/restore_candidate_assets.py` rebuilds the local
+assets from the extracted ATDEMO folder (numpy, Pillow, trimesh 5.1.0).
+R1 has 69 primitives/593 triangles/62 textured primitives; R7 has 48/689/40;
+R8 has 87/1050/74. All 86 demo AZF textures decode. Runtime WAVs are verified
+against recorded original fingerprints before copying. S137 receives only a
+missing terminal RIFF padding byte and corrected container length; PCM bytes
+remain identical. 797TAP remains byte-identical to the original.
 
-## Integration fixes
+Original archives, commercial GLBs/textures/WAVs, imports and export binaries
+remain outside Git. Git contains tools, compact IR/validation metadata, source
+and supplied branding. A full private project snapshot includes restored assets;
+the source/evidence ZIP excludes reusable commercial assets from its source tree.
 
-- Explicit numeric/String/Dictionary declarations resolve GDScript inference
-  errors. GraphicsMode's enum and autoload name collided in type annotations;
-  the integer enum values are unchanged. No puzzle actions or semantics changed.
-- Candidate commands have UTF-8 capture and a timeout. Nonzero exits or engine
-  errors cannot pass merely because a PASS marker was printed. Blocked runs
-  overwrite previous runtime evidence, preventing stale-result promotion.
-- Context validation checks the retained v106 canonical summary and matching
-  section-count/EOF metadata, plus the retained v105 README summary. The old
-  validator required two files that have never been in this source mirror.
-  This verifies source context, not a rerun of excluded binary forensics.
-- A source-safe Windows x86_64 export preset includes runtime JSON explicitly
-  and labels the executable Candidate 1. It contains no local asset payloads.
-- Generated script UID metadata is retained for repeatable clean imports.
+Integration fixes are limited to explicit GDScript types, startup camera ordering,
+null ambient-position fallback, UTF-8 subprocess/timeout/error handling, stable
+import UIDs/line endings and rendering compatibility. Ambient source was disabled
+and imported legacy materials defaulted to fully metallic, producing a black
+viewport; explicit color ambient and nonmetallic imported materials restore
+visibility. Shared imported material resources avoid stale override handles when
+rooms are replaced rapidly. No puzzle, trigger, inventory or event semantics changed.
 
-## Resume
+## Manual boundary
 
-Restore the matching local demo assets without adding them to Git. Resolve the
-797TAP container via `tools/prepare_candidate_audio.py`, install matching Godot
-Windows templates, then use a clean candidate checkout and run:
-
-    python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results
-
-Set `GODOT_BIN` to the discovered console executable. After all automated gates
-pass, export `Windows Candidate 1` with `--export-debug` and test the exported
-binary. Preserve the build, logs, fingerprints and source patch together.
-
-G10 is **PENDING_MANUAL_USER**. Do not create `demo-known-good-001`.
+**G10 remains PENDING_MANUAL_USER; `demo-known-good-001` is not created or allowed.**
+Follow `docs/KG001_MANUAL_SANITY_CHECKLIST.md` using the normal Windows application.
+Automated audio events do not establish audible quality or original Miles parity.
+Original framebuffer parity and forensic HOLDs remain unpromoted. The earlier
+BLOCKED Windows artifact is superseded by the final Candidate 1 artifact.

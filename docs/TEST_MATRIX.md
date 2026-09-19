@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v116-context-v24`
+**Canonical checkpoint:** `v116-context-v26`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v116-context-v24 | PASS target | Source/context validation |
+| Project context | v116-context-v26 | Recorded final source PASS | Windows export/smoke PASS; G10 pending |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -14,9 +14,24 @@
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
-| Source-safe runtime IR | v116-context-v24 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v116-context-v24 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
-| Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
+| Source-safe runtime IR | v116-context-v26 | VALIDATED metadata | Excluded binary assets restored locally and remain ignored |
+| KG-001 acceptance contract | v116-context-v26 | ACCEPTED / contract validator | G10 manual pending; final tag forbidden |
+| Godot runtime launch | Godot 4.7.2 | Baseline automation PASS; visible graphical launch observed | Windows export/smoke PASS; G10 pending |
+
+## Current execution summary
+
+| Item | Current state |
+|---|---|
+| Technical base | v116 |
+| Candidate | KG-001 Candidate 1 |
+| Candidate diagnostic source contract | PASS |
+| v109 headless runtime | PASS at baseline `6528d43`; Windows export and smoke PASS |
+| v110 room/trigger runtime | PASS at baseline `6528d43`; Windows export and smoke PASS |
+| v111 full-demo runtime | PASS at baseline `6528d43`; Windows export and smoke PASS |
+| G09 fresh-checkout build | PASS at baseline `6528d43`; Windows export and smoke PASS |
+| G10 manual sanity | PENDING_MANUAL_USER |
+| Known-good tag | NOT ALLOWED |
+| Localization architecture | APPROVED / IMPLEMENTATION DEFERRED |
 
 ## KG-001 required release gates
 
@@ -29,53 +44,53 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| Canonical DemoState hash | IMPLEMENTED / source-contract checked | Godot runtime hash parity still to execute |
-| G02 gameplay logic model | SOURCE-MODEL PASS | Runtime unit execution pending |
-| G03 puzzle state-space | SOURCE-MODEL PASS — 63 states, 0 softlocks | Godot headless parity pending |
-| G04-G08 runtime chain | PENDING | Next implementation target |
+| Canonical DemoState hash | IMPLEMENTED / source-contract checked | Recorded v109/v111 baseline hash parity PASS |
+| G02 gameplay logic model | SOURCE-MODEL PASS | Recorded v109 baseline PASS |
+| G03 puzzle state-space | SOURCE-MODEL PASS — 63 states, 0 softlocks | Recorded v109/v111 baseline PASS |
+| G04-G08 runtime chain | Recorded final source PASS | Windows export/smoke PASS; G10 pending |
 
 
 ## v109 KG-001 headless status
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| Persistent save/reset/restore | IMPLEMENTED / source-contract checked | Godot runtime execution pending |
+| Persistent save/reset/restore | IMPLEMENTED / source-contract checked | Recorded v109 baseline PASS |
 | Logical audio capture | IMPLEMENTED / source-contract checked | Does not test WAV playback or Classic spatial parity |
-| Headless autoload/Event IR runner | READY / NOT EXECUTED | Requires Godot executable |
-| G04/G05 physical rooms/triggers | PENDING | Requires locally restored excluded demo assets |
+| Headless autoload/Event IR runner | Recorded final source PASS | Godot 4.7.2, 13 checks |
+| G04/G05 physical rooms/triggers | Recorded v110 baseline PASS | Restored local ignored demo assets |
 
 
 ## v110 KG-001 room/trigger status
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| G04 room transitions | SOURCE_CONTRACT_PASS / runtime pending | Requires restored local R1/R7/R8 GLBs |
-| G05 trigger bounds/gates | SOURCE_CONTRACT_PASS / runtime pending | Uses real RoomManager path when executed |
+| G04 room transitions | Recorded v110 baseline PASS | Restored local ignored R1/R7/R8 GLBs |
+| G05 trigger bounds/gates | Recorded v110 baseline PASS | Real RoomManager path |
 | Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
-| G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
+| G08 full synthetic demo | Recorded v111 baseline PASS | 33 checks through production interactions |
 
 
 ## v111 KG-001 full-demo status
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| G08 production-interaction synthetic route | SOURCE_CONTRACT_PASS / runtime pending | Uses real interaction scripts and RoomManager |
+| G08 production-interaction synthetic route | Recorded v111 baseline PASS | Real interaction scripts and RoomManager |
 | Direct gameplay state injection | FORBIDDEN / validated absent | Trigger positioning is synthetic, state effects are production code |
-| Final state hash oracle | WIRED | v108 success hash |
-| Logical audio oracle | WIRED | S152V2 -> S137 -> S121 -> 799SECDR |
-| Consolidated G00-G10 status | PRE_RUNTIME_READY | Final tag forbidden until all gates literal PASS |
+| Final state hash oracle | Recorded final source PASS | Matches v108 success hash |
+| Logical audio oracle | Recorded final source PASS | S152V2 -> S137 -> S121 -> 799SECDR |
+| Consolidated G00-G10 status (v112) | AWAITING_RUNTIME_OR_MANUAL | Baseline G00-G09 PASS, G10 pending; final tag forbidden |
 
 
 ## v112 KG-001 candidate workflow
 
 | Layer | Status | Evidence boundary |
 |---|---|---|
-| One-command candidate runner | SOURCE_CONTRACT_READY | Runtime execution requires Godot |
-| Godot restored-asset import | REQUIRED FOR G09 | Import output retained in .tmp/kg001 |
-| Git clean before/after | WIRED | Ignored local commercial-derived assets permitted |
-| Forbidden tracked payload scan | WIRED | Blocks G09 on violation |
+| One-command candidate runner | Recorded final source PASS | Final graphics/icon source passed the fresh run |
+| Godot restored-asset import | Recorded final source PASS | Import output retained in .tmp/kg001 |
+| Git clean before/after | Recorded final source PASS | Ignored local commercial-derived assets permitted |
+| Forbidden tracked payload scan | Recorded final source PASS | No forbidden tracked payloads |
 | Runtime evidence promotion | OPTIONAL / EXPLICIT | Happens only after clean-checkout observation |
-| G00-G09 evidence-driven status | WIRED | Only recorded PASS promotes a gate |
+| G00-G09 evidence-driven status | Recorded final source PASS | Only recorded PASS promotes a gate; exact commit boundary applies |
 | G10 manual sanity | CHECKLIST_READY / PENDING_USER | Never auto-promoted |
 
 
@@ -132,7 +147,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Layer | Status | Evidence boundary |
 |---|---|---|
 | Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 1 / v116-context-v24 |
-| Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime execution pending |
+| Fail-fast room/IR preflight | Baseline automation PASS | Windows export/smoke PASS; G10 pending |
 | Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 1 |
 | JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |
 | Trigger enter/exit telemetry | SOURCE_CONTRACT_PASS | Initial false states seeded without EXIT spam |
@@ -142,7 +157,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | F9 audio parity capture | PRESERVED | Existing v71 path |
 | F10 canonical state dump | SOURCE_CONTRACT_PASS | Includes payload/hash, room, player XYZ and last-event context |
 | v112 candidate source suite integration | PASS | v116 validator appended to SOURCE_COMMANDS |
-| Actual Godot Candidate 1 execution | NOT_EXECUTED | Requires Godot + restored ignored assets |
+| Actual Godot Candidate 1 execution | Baseline automation PASS; graphical visibility observed | Windows export/smoke PASS; G10 pending |
 
 ## Candidate 1 Windows integration attempt
-See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`: v109 runtime PASS; v110/v111 blocked by canonical demo assets; G10 manual pending.
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`: final v109/v110/v111 and G00-G09 PASS; Windows export and smoke PASS; G10 manual pending. Canonical context is v26 and the requested application watermark remains v24.

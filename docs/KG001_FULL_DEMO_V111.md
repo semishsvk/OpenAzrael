@@ -33,6 +33,6 @@ godot --headless --path . --import
 godot --headless --path . --script res://scripts/kg001_full_demo_runner_v111.gd
 ```
 
-Missing room resources return `BLOCKED_MISSING_ASSETS` (exit 2). Current repository status is **SOURCE_CONTRACT_PASS / GODOT_RUNTIME_NOT_EXECUTED**.
+Missing room resources return `BLOCKED_MISSING_ASSETS` (exit 2). Source contract and Godot 4.7.2 runtime are **PASS, 33 checks** at tested source `6528d438ab2b14d344fb0e19f83ba5d5e699cd60`; see `data/tests/kg001_full_demo_runtime_v111.json`. Windows export and smoke are PASS; G10 remains manual pending.
 
 This synthetic runner validates gameplay integration, not player locomotion skill, ray-aim ergonomics, rendered visuals, real WAV playback, original motion timing or Classic spatial-audio parity. Those remain separate gates/boundaries.

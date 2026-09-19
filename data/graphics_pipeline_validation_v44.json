@@ -1,0 +1,676 @@
+{
+  "version": 44,
+  "status": "PASS",
+  "classic_texture_count": 86,
+  "azf_decoder_model": "v14 exact demo Huffman/tree decoder; local palette RGB with engine-observed component quantization",
+  "textures": [
+    {
+      "file": "BAPALCVE.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "55ac91ba20ec20c3ae4d2c8f8e5042d6597249b3ed52922f1c205acd305ba486"
+    },
+    {
+      "file": "BAPBACK1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "3f4fbe3e6de97061ea56f16b850bc24423a5c28de39f26a4c811941507a9d7df"
+    },
+    {
+      "file": "BAPBALFL.png",
+      "width": 256,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "9b197f881c17001d0551d1dd993425a02e8f90801e1c4df14a076a773eea5754"
+    },
+    {
+      "file": "BAPBIBLE.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "3d65176a0e695bbadba2522de64d41e5888ddbb4b39721446b2168e81f5d0717"
+    },
+    {
+      "file": "BAPBROK#.png",
+      "width": 128,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "06d7cfb9f6699427f7d1b22ad232c5a32e615c302f18360424736da0c5f19823"
+    },
+    {
+      "file": "BAPFLOR#.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "79060a33bccb5ba2af02679e1cb03b558a941621d2cf548fb60ae9171b75cf21"
+    },
+    {
+      "file": "BAPFONT2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "sha256": "3e1b588d53db54224c939498d5981d97043dda20419184785263e482500550fd"
+    },
+    {
+      "file": "BAPFRAME.png",
+      "width": 256,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "9d17d8dc1627927ff1052fbff2a93b36559ac3f1affe1bc319bbfaad29c34e00"
+    },
+    {
+      "file": "BAPFRNT1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "22376752315ce575cd276357cb51d9b5e347309d7b076df5832fa40ae56ca0a7"
+    },
+    {
+      "file": "BAPGLASS.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "214c7ae380a289523333186380d634a6cfa49b37fa7910ef9b951a6d366d1373"
+    },
+    {
+      "file": "BAPGLSNW.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "c073175d4b8f202325c359335a9dd6410bb8215a24a03cc08587528a770ed17e"
+    },
+    {
+      "file": "BAPLEFT1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "c3c5ee0dcabf4ce1b7192a30e8211fba54cb53164dfad68a4986a26f3d3e9fba"
+    },
+    {
+      "file": "BAPMSG.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "cf4f8b0315ad50a167a007b5beb1c46e9d4c8adcd137456b754b59c91f65a6c3"
+    },
+    {
+      "file": "BAPPILLR.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "76ac0c33476a2c2ea2c1dccabb385c7538f624ad64490fe9533f10267f2d92aa"
+    },
+    {
+      "file": "BAPPLAQ.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "2e40f45b579c00866e2d17daf97ca8c49b44cadaa8e9ce8dd859c135a885edce"
+    },
+    {
+      "file": "BAPRAFT.png",
+      "width": 256,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "9a2fc6b7a6c198f849d8b3c340df701ee12ea3a77fd004d2b4223d5771e02381"
+    },
+    {
+      "file": "BAPRGHT1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "a4b268779cde9758908a76bf44dd214834ad90225c481d26874f64d3d4158a0b"
+    },
+    {
+      "file": "BAPSTAI1.png",
+      "width": 128,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "7a139f785dfe646505bab066bb3468b17bb63cfd217002787369aa248bb1b657"
+    },
+    {
+      "file": "BAPSTAI2.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "dfb6a9f3de89a9746112378819ebc22d5521f8b93537d79a8267c2ae9ff7292e"
+    },
+    {
+      "file": "BAPTAP.png",
+      "width": 512,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "8e90b66b261b47601d6206dc9d9c2aad3c68e661df054a03eed0dbd8239470cf"
+    },
+    {
+      "file": "BAPTAPCE.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "fd423fb4ff72838f9df6f4d144158c0243acf447c3c3c61bdc4036672a1f924c"
+    },
+    {
+      "file": "BAPWATER.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "061f08d771a99e6abf190511e33f60ee5d5cee8707e6fd2731fb655f9781c014"
+    },
+    {
+      "file": "BAPWHITE.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "dbd8e6235a1dba90a6d5e5199db421b6e9f037d56643d2ddec01b18afb7ae64a"
+    },
+    {
+      "file": "BLACK.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "dbd8e6235a1dba90a6d5e5199db421b6e9f037d56643d2ddec01b18afb7ae64a"
+    },
+    {
+      "file": "BLOOD2#.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "73ba0c217f47c0857f562b7aac77d263ddaed7825e5133f3c4110ae605006db3"
+    },
+    {
+      "file": "BLOOD5#.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "dedebf22fdbd9acc7e0de556c6a773b81a7f4300a0e722b093ebe863c1d77b77"
+    },
+    {
+      "file": "BLOOD6#.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "30d057f332dcb393eb886aa7bbaecf01646957c5ed007d309f4140626ca0c69c"
+    },
+    {
+      "file": "BLOOS3#.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "49530928fe16ff3fbfcf47da088a52547ad46496d0c8149d932e46b1b16169aa"
+    },
+    {
+      "file": "BLOOS4#.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "bea7107e9dfb616a28a3a8016b3911e21a3ab85762b1836ed34011147dd42ba2"
+    },
+    {
+      "file": "BUBBLE#.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "4b23c44ff344f11d7316339f34cf4897870b47cc54cdf8c2891b4c868864c9e1"
+    },
+    {
+      "file": "CORIROCK.png",
+      "width": 256,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "92cf3a72e1b89a3cd0b71569f58cff273517033f386b347a9daaf5817d9843b5"
+    },
+    {
+      "file": "DROWN1.png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "sha256": "52aa3695523efff38b718f3ed943f0c29a4afbc3f12e59238a0418420010143a"
+    },
+    {
+      "file": "ECRDOR01.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "8fa93f5fd0ab207403f29aba100d44ebbd2892861b20c43da1564dd88cff4170"
+    },
+    {
+      "file": "ECRDOR02.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "sha256": "e2cd59a4639e1fe901ea231d99165d74ac3e84c681d2792ef7eb10ce6399c8bb"
+    },
+    {
+      "file": "ECRFLR01.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "abda55c689ea980a8aa0a6664863ba4663e4ae178cbf31ff31ef46f8475d1ae2"
+    },
+    {
+      "file": "ECRFLR02.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "371d8659ec32fcc8b954b8c68842a644c8e18022f03cf64de67224825341f0d6"
+    },
+    {
+      "file": "ECRFLR03.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "313ea9d0d291df71b66e53c6a9258562a8632752a549ce6fe988b044a516cfd3"
+    },
+    {
+      "file": "ECRFLR04.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "318597c5df3cdb891c0414d61de265c4a8f01c9726414f2e6d1de893f634c7d9"
+    },
+    {
+      "file": "ECRFLR05.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "c730e41b6d8774523f27a435f9e0d8eb3ac05ffe67d9cab3e1604e5fc7dcd299"
+    },
+    {
+      "file": "ECRFLRA1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "2ff95ee159872c6b83809d6ad6fe9ee3a290a171561a259362e41df00832bce2"
+    },
+    {
+      "file": "ECRFLRA2.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "c5170247b3a540e12847aeae93940d75597b32a1c4b280aa7fa5e8cddba2fa96"
+    },
+    {
+      "file": "ECRFLRA3.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "ec90a06c14e365dc3118b4f9ec1eda5c121b48720582b2af5ee855d2024c2b18"
+    },
+    {
+      "file": "ECRFLRA4.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "0f27025d1468920ab0de3c29624594eae49b2cedc0a2aa89ce6e21780e6a97c7"
+    },
+    {
+      "file": "ECRHOLE.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "7092015456414a46cd7ae33148883ac1d80f18c36ea12798279cc6c6d991a1d0"
+    },
+    {
+      "file": "ECRLWL01.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "61a4dd0f5656df2d96b64d37b7edc7bad55f665f7ce503e587e7350a12b27b65"
+    },
+    {
+      "file": "ECRRWL01.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "3bd292fbccf7c3d26aa02b781f9426e650e6a7e317e9409029c5856e1eae2049"
+    },
+    {
+      "file": "EUEYE.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "457a982252517300f7d7cd72dc56f8dffa07bf6c8407d7ab3b1fec954aaa797e"
+    },
+    {
+      "file": "EUFRNT.png",
+      "width": 256,
+      "height": 512,
+      "mode": "RGB",
+      "sha256": "feb9ba6aeb2946ee65763bb2845fa68089a6ac42a0b3c8f1477791c557ec79c9"
+    },
+    {
+      "file": "EUSIDE.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "sha256": "a095ec2a99e2e1f512f0a6a5d7182a8773b65d648e6e57ddd8aed40eae73a9ed"
+    },
+    {
+      "file": "EUTOP.png",
+      "width": 512,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "41845ad4f82caed4975bc39ece48ae7bcf573c5da2656dab070a9bf9eee9d680"
+    },
+    {
+      "file": "KEYHOLE#.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "0a68bd663171a8be70f1370834c814038d6429e7977eb38c31956aec2247540b"
+    },
+    {
+      "file": "MINEFLR2.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "6dc89cd5f83604a5904612ccff061474481979617eabf191129cb8a3d4641784"
+    },
+    {
+      "file": "MINETON#.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "1e5601c9cf6fc2c9273d1a4247fc69f6a49b49ec34f22d98e491163ea08d5050"
+    },
+    {
+      "file": "N_BLACK.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "dbd8e6235a1dba90a6d5e5199db421b6e9f037d56643d2ddec01b18afb7ae64a"
+    },
+    {
+      "file": "NIABOD.png",
+      "width": 256,
+      "height": 512,
+      "mode": "RGB",
+      "sha256": "cea8479f8e0a7685cd3983d4aae3a4fd8a2bd5eee5459740d7874ce5bee0d9c0"
+    },
+    {
+      "file": "NIAHED.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "db1bd5399fbad83460507f8bdd7467c447273a731ee711f1337ddb3baf5f1646"
+    },
+    {
+      "file": "OR_TUNNL.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "bf454c550a2391c4ef75afb9e407eafcdf8e0f2daa4cf4d3cfab6c7a44237161"
+    },
+    {
+      "file": "ORR2BAP.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "28dc33b9e8375b46ed3eadae38528792d701ef6386baf5f8cdc0f68f1d5789a1"
+    },
+    {
+      "file": "R12R7.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "56cab941ac8236bdb3249e15853aee5512cddfc13893c79e0e43fea3a9eba225"
+    },
+    {
+      "file": "R72R1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "aeeac596c5ba7093b0e956a4ba6b385ff291f22e1c94f266da7a3906a3dc430b"
+    },
+    {
+      "file": "R82R1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "88dba3ef0ab7338cb2b715c5c383bce338591da402cfc4b3026c2db2f9e000b6"
+    },
+    {
+      "file": "SHIELD1.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "sha256": "e4b16218bf1298170c0603b56da188166994287869ed9b178a665ad3015bfc42"
+    },
+    {
+      "file": "SPADOOR.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "1f7f3c5dde3d128249e357f7975c49b1f881ae76c8a60ddc51166feeb3186b1a"
+    },
+    {
+      "file": "VSTPAP01.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "34ec3f8deff0d6b915c74702acd3a3ab08cfe5bdad8e3ffa528ac84ea3049411"
+    },
+    {
+      "file": "WEL_BDY1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "bc833b2f40eaa826c69cf1d4ed217cd7ec2743dc5f4db345f735565fe7b5c113"
+    },
+    {
+      "file": "WEL_BDY2.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "39755b3a0946821eaf82e53736e4b8c8fbc7aaa6b5dd0e896836d7f53484b7e9"
+    },
+    {
+      "file": "WEL_COLD.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "37949e62d4e3d8255ca5741a27400ab13741ddc5d864fc842670ebb8e84f4452"
+    },
+    {
+      "file": "WEL_FLOR.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "d545842e637ed1c6d78358d4a8b5cb3649e91394267ec5b1104da1d3f05cdd74"
+    },
+    {
+      "file": "WEL_KEY.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "1fbc5ff86392072bfae885f873be74c71dcdb1bd66519f4bb8dcc18e2fc4b5ff"
+    },
+    {
+      "file": "WEL_PI2.png",
+      "width": 128,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "d6a83d60d1d45c5d21d43f218e1877107ff20fc69ececb3b6b533ec000794b94"
+    },
+    {
+      "file": "WEL_PIP1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "07109c1cc2d9f6c8489b9eb280588a90803ea094c8e8e0477d8360630582585c"
+    },
+    {
+      "file": "WEL_PUZ1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "cc1be15d90e93ebf0b009f71a22d15a6dc2fb33243541d6da2e9aa766300cc24"
+    },
+    {
+      "file": "WEL_PUZ2.png",
+      "width": 128,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "757089783d241a674617e045d8c5191f04152c4a8050671176cbbafe7cd5beb4"
+    },
+    {
+      "file": "WEL_R01.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "4b6b8759d10710b7f234a2ae34d4c687cb580a2b64daa40886a4c1f6a75ffea6"
+    },
+    {
+      "file": "WEL_WAL1.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "63e664fd8b01796b92774e7628749074a64096e32d2a34d827d4ad0904532de3"
+    },
+    {
+      "file": "WEL_WAL2.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "3690af5e9debcf5a866d58683235c5887d6dd32df5353358df04e4c649ce90f9"
+    },
+    {
+      "file": "WEL_WAL3.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "63057a02c0fd71e73f69e8d52ff649942944e57ce827ce825de2841909f87bee"
+    },
+    {
+      "file": "WEL_WAL4.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "f0efd72d0f80d371b7ce932b14e0055d1d04d6d31c9f443b211eddc75278c7ee"
+    },
+    {
+      "file": "WEL_WAL5.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "c98f2bc81557dcf0b17c4eb9302403c06565bb5b22f67f398ce35a704fdada1a"
+    },
+    {
+      "file": "WEL_WAL6.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "164dbccca8b99f559cf4367c251c7f095801f617147a84c7239f5a388e252d27"
+    },
+    {
+      "file": "WEL_WAL7.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "0a2c90e3f63b4cdcc616299b7cc17cc33ace7455042a7a20b56521de0bab34ed"
+    },
+    {
+      "file": "WEL_WAL8.png",
+      "width": 128,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "58a524f65edac53d0f5cb51b687d5ff05a751dfcffc389be08629d7399cdb450"
+    },
+    {
+      "file": "WEL_WAL9.png",
+      "width": 128,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "b9640b43e9b4c12bfc13aeab55f23ae28b133580829f5860056ef2a54fcbcc56"
+    },
+    {
+      "file": "WEL_WHOT.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB",
+      "sha256": "4c6e2c9c35ab06d1b3ac8aa59726ea65832ed45107751b8c59d5e593509b7dc0"
+    },
+    {
+      "file": "WEL_WWA2.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "a0c88763d471042df42738c28d1cf170740a898784032b426732ddb01380ecfa"
+    },
+    {
+      "file": "WEL_WWAL.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB",
+      "sha256": "eb0f1dffbdde05c812aab9061c8dce236d1ff09932442d586029e796e28f3cb8"
+    }
+  ],
+  "rooms": {
+    "R1": {
+      "geometries": 69,
+      "triangles": 593,
+      "uv_geometries": 69,
+      "textured_geometries": 62,
+      "sha256": "3bb6f106da8cecbb6f95e6c871d4bbc23a844a808fd5757b3eb748ab040e24e8",
+      "bounds": [
+        [
+          -421.2277212794909,
+          -140.53460208740233,
+          -738.4151729605001
+        ],
+        [
+          634.1554338513192,
+          106.94904932974698,
+          462.3054328538796
+        ]
+      ]
+    },
+    "R7": {
+      "geometries": 48,
+      "triangles": 689,
+      "uv_geometries": 48,
+      "textured_geometries": 40,
+      "sha256": "51b6b950368afb2678e81f091a0f09607ac4987494cd37f0910d1d3e97d3b798",
+      "bounds": [
+        [
+          -204.9816164158201,
+          -4569.406023495364,
+          -196.9500994899644
+        ],
+        [
+          469.52868858970095,
+          85.5001144409965,
+          325.40629094366847
+        ]
+      ]
+    },
+    "R8": {
+      "geometries": 87,
+      "triangles": 1050,
+      "uv_geometries": 87,
+      "textured_geometries": 74,
+      "sha256": "7ad0b61fb69a2a9fc5fece22c79922600570a8d5431996bbc7ff25f1b4696ad5",
+      "bounds": [
+        [
+          -390.3833624186889,
+          -163.25996285795728,
+          -226.73950251514339
+        ],
+        [
+          515.6330998032167,
+          241.48621968966853,
+          503.5840088253569
+        ]
+      ]
+    }
+  },
+  "confidence": {
+    "AZF entropy decode": "VERIFIED on all 86 demo AZF files",
+    "XAF geometry/UV/material binding": "HIGH",
+    "GLB embedded texture presence": "VERIFIED for R1/R7/R8 output",
+    "Godot visual parity with original renderer": "HOLD until direct runtime/screenshot comparison",
+    "global renderer palette remap": "HOLD"
+  }
+}

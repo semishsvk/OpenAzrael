@@ -115,7 +115,10 @@ func _spawn_emitter(rec: Dictionary, legacy_slot: int) -> void:
         push_warning("Missing legacy ambient sample: " + path); return
     var p := AudioStreamPlayer3D.new()
     p.name = "LegacyAmbient_" + fn.get_basename()
-    p.position = _v3(rec.get("godot_position", rec.get("legacy_position", [0,0,0])))
+    var position_value = rec.get("godot_position")
+    if position_value == null:
+        position_value = rec.get("legacy_position", [0,0,0])
+    p.position = _v3(position_value)
     var stream = load(path)
     if stream is AudioStreamWAV:
         stream = stream.duplicate()

@@ -28,4 +28,4 @@ godot --headless --path . --import
 godot --headless --path . --script res://scripts/kg001_room_trigger_runner_v110.gd
 ```
 
-Current status is **SOURCE_CONTRACT_PASS / GODOT_RUNTIME_NOT_EXECUTED** in this environment.
+Source contract and asset-backed Godot 4.7.2 runtime are **PASS** at tested source `6528d438ab2b14d344fb0e19f83ba5d5e699cd60`; see `data/tests/kg001_room_trigger_runtime_v110.json`. Windows export and smoke are PASS; G10 remains manual pending.

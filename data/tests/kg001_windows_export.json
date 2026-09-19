@@ -1,0 +1,92 @@
+{
+  "executable": "C:\\Users\\msemj\\Documents\\Codex\\2026-09-19\\referenced-chatgpt-conversation-this-is-an\\work\\verify-release2\\exports\\OpenAzrael-KG001-Candidate1-v116.exe",
+  "executable_sha256": "0118115a8c1e59a2792670cc08a5fa8433bf3526133157f9a105fb1c7a8e482c",
+  "pck_sha256": "43a1374a000a3144bec8b7f10af7f6203330d28916c430a599c2afb8ee11aaae",
+  "results": [
+    {
+      "test": "headless",
+      "status": "PASS",
+      "returncode": 0,
+      "errors": [],
+      "seconds": 1.48,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "test": "graphical",
+      "status": "PASS",
+      "returncode": 0,
+      "errors": [],
+      "seconds": 1.64,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nOpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4090\n\n"
+    }
+  ],
+  "schema": "openazrael.kg001.windows_export",
+  "tested_commit": "6528d438ab2b14d344fb0e19f83ba5d5e699cd60",
+  "status": "PASS",
+  "icon": {
+    "executable_sha256": "0118115a8c1e59a2792670cc08a5fa8433bf3526133157f9a105fb1c7a8e482c",
+    "icon_entries": [
+      {
+        "width": 16,
+        "height": 16,
+        "sha256": "980a0e1d4ed428ee2f65c00144fc841407dd87ed4b2f507c8018935735bc2ed2",
+        "embedded_exactly": true
+      },
+      {
+        "width": 24,
+        "height": 24,
+        "sha256": "728854b540925d29588404e10ad7a1447bb3c71bc336ba8d3d43fd220821f189",
+        "embedded_exactly": false
+      },
+      {
+        "width": 32,
+        "height": 32,
+        "sha256": "89604885b50f226f5116097113f8425ffd06f88d62b48b5fef0b64300fa60a03",
+        "embedded_exactly": true
+      },
+      {
+        "width": 48,
+        "height": 48,
+        "sha256": "3c53e3b354d5c79bd02bd82989522144795dbf174948ee5463f9d42a797ccbe1",
+        "embedded_exactly": true
+      },
+      {
+        "width": 64,
+        "height": 64,
+        "sha256": "cf5c889035502d29c350dd6a8e94ebce43065f0fa67a157a4671381490b30b79",
+        "embedded_exactly": true
+      },
+      {
+        "width": 128,
+        "height": 128,
+        "sha256": "0b319015caa9319bbd1ba4243735f822a1d10c15472732f4d2d56b3bee4b0d30",
+        "embedded_exactly": true
+      },
+      {
+        "width": 256,
+        "height": 256,
+        "sha256": "816dd57772b06e5f00fe15be290ab5b123aecbd3e441cb884d9b0546205bfd78",
+        "embedded_exactly": true
+      }
+    ],
+    "required_windows_sizes": [
+      16,
+      32,
+      48,
+      64,
+      128,
+      256
+    ],
+    "note": "The exporter embeds six standard sizes; the extra 24px source entry is not required.",
+    "status": "PASS"
+  },
+  "graphical_capture": {
+    "scope": "Exported PCK loaded by matching Godot editor binary, diagnostic room jumps with frozen physics; not G10",
+    "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nOpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4090\n\nOpenAzrael room: Entry Corridor (R1)\nROOM_RENDER_CAPTURE R1 0\nOpenAzrael room: Well Room (R7)\nROOM_RENDER_CAPTURE R7 0\nOpenAzrael room: Baptistery (R8)\nROOM_RENDER_CAPTURE R8 0\n",
+    "screenshots": {
+      "candidate-R1.png": "aab15b2b96d6036f439f4000b5fd4195c1ffa9e2b2dc25d939cea27b81d1e6ed",
+      "candidate-R7.png": "cac0bb1441360c7600219584de9858e6f87e59160332ebc3635af422aed2c1ed",
+      "candidate-R8.png": "fef596fb3b07180171ff48f942ac69ca362b5c61aef5df9eb993c85a733b6222"
+    }
+  }
+}

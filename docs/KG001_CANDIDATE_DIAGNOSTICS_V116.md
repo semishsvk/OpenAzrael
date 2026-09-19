@@ -56,4 +56,4 @@ F6 renders translucent boxes from the authored XAF trigger bounds already used b
 
 ## Evidence boundary
 
-`tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. Actual Godot execution remains **NOT_EXECUTED** until the candidate workflow is run in a Godot-capable checkout with locally restored ignored assets.
+`tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. The final clean Candidate passes v109-v111 and import with locally restored ignored assets; see `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`. Graphical visibility is observed after rendering integration. Windows export and automated smoke are PASS; G10 manual diagnostics/sanity remains pending.

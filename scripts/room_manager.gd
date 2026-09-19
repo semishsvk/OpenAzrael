@@ -128,6 +128,16 @@ func _create_world_collision(room_id: String) -> void:
         if not (n is MeshInstance3D):
             continue
         var mi := n as MeshInstance3D
+        # Legacy XAF diffuse materials have no authored PBR metalness. The
+        # SimpleMaterial GLB conversion leaves glTF's metallic default at 1,
+        # which renders black without reflection lighting. Preserve textures,
+        # colors and geometry while correcting that import-only default on
+        # the shared imported material; no per-frame override RID is needed.
+        if mi.mesh != null:
+            for surface in range(mi.mesh.get_surface_count()):
+                var imported := mi.get_active_material(surface) as BaseMaterial3D
+                if imported != null:
+                    imported.metallic = 0.0
         var obj_name := _object_name_for_mesh(mi)
         if hidden.has(obj_name):
             mi.visible = false

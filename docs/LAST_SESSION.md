@@ -1,46 +1,23 @@
 # OpenAzrael Last Session
 
-## Windows integration attempt — 2026-09-19
+Canonical checkpoint: **v116-context-v26**. Date: 2026-09-19.
+Application watermark: **KG-001 Candidate 1 / v116-context-v24**.
 
-Latest execution supersedes the earlier NOT_EXECUTED preparation notes below:
-Godot 4.7.2 v109 PASS (13 checks); v110/v111 BLOCKED_MISSING_ASSETS.
-Canonical demo GLBs and legacy ambient IR are still required. The available
-retail prototype GLBs are not equivalent. Source-safe compile/runner fixes,
-a Windows export preset and matching templates are prepared.
-See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md` for the exact boundary and resume steps.
-G10 remains PENDING_MANUAL_USER; no known-good tag was created.
+## Completed
 
+- Integrated current main `43637474b4bddc34fcf38355901352f505c0c2a4`; its v26 documentation/localization decisions remain intact. Historical README is retained in `docs/HISTORY_PRE_V116.md`.
+- Restored canonical demo R1/R7/R8 GLBs, 86 textures, required WAVs and ambient IR from the supplied demo. Commercial assets remain Git-ignored. Supplied branding PNG/ICO is tracked.
+- Fixed GDScript typing, startup ordering/null fallback, S137 RIFF padding, Classic material/ambient integration and deterministic restore/import metadata. No puzzle semantics were changed.
+- Ran `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results` at `6528d438ab2b14d344fb0e19f83ba5d5e699cd60`: source/import/v109/v110/v111/fresh PASS, clean before/after and no forbidden tracked files.
+- G00-G09 PASS. v109 has 13 checks; v111 has 33 checks; their final hash and four logical audio events equal the v108 oracle.
+- Exported Windows x86_64 with supplied icon. EXE headless and graphical smoke PASS; six standard embedded icon sizes match the source ICO exactly. Captured R1/R7/R8 from the exported PCK with the same Godot 4.7.2 engine.
+- Deliverables: `OpenAzrael-KG001-Candidate1-Windows.zip`, `OpenAzrael-KG001-Candidate1-source-evidence.zip`, a complete private project snapshot, and SHA-256 manifests. ZIP members are integrity-verified.
 
-**Checkpoint prepared:** `v116-context-v24`
-**Date:** 2026-09-18
+## Boundary and next action
 
-## What changed
-- Advanced technical base to **v116** and canonical context to **v116-context-v24**.
-- v116 is now the diagnostic integration layer for **KG-001 Candidate 1**. The previously discussed but uncommitted producer/copy scan is deferred to v117.
-- Added `CandidateDiagnostics` autoload with structured event telemetry and canonical DemoState SHA-256 on every recorded event.
-- Added persistent non-headless event log: `user://openazrael_candidate1_events.jsonl`.
-- Added F10 canonical state dumps under `user://openazrael_kg001_state_dump_<timestamp>_<sequence>.json`.
-- Added F6 authored trigger-volume visualization and F7 Candidate diagnostics HUD.
-- Preserved existing F8 audio debug and F9 audio parity capture unchanged in purpose.
-- Logged interactions, trigger enter/exit edges, room transitions/loads, debug room jumps, inventory/flag/puzzle changes and logical audio.
-- Changed R1/R7/R8 from script-time GLB preloads to runtime loads behind a deterministic fail-fast resource preflight.
-- Non-headless Candidate 1 additionally requires the four golden Event-IR WAVs: S152V2, S137, S121 and 799SECDR.
-- Added `tools/validate_candidate_diagnostics_v116.py` to the existing v112 candidate source suite and committed the v116 source contract.
-- Hardened evidence parsing and suppressed noisy initial false trigger-edge events.
-- Current v116 diagnostic source contract: **PASS**. Godot runtime execution remains **NOT EXECUTED** here.
-- KG-001 final tag remains forbidden until G00-G10 all pass.
+**G10 PENDING_MANUAL_USER. No `demo-known-good-001` tag was created or permitted.**
+Run the normal graphical full-demo manual checklist, including movement, interaction, audio perception and save/load. Automated launches/captures do not replace it.
+The v110 test process retains a nonfatal ObjectDB cleanup warning at exit; no ERROR/SCRIPT ERROR occurs in the final suite or export smoke.
+Classic pixel-perfect framebuffer/original Miles parity and other forensic HOLDs remain unpromoted. Localization runtime and v117 are deferred until after the first runtime/manual cycle.
 
-## Current blockers / HOLD
-- v109/v110/v111 still need real Godot execution with locally restored ignored room assets.
-- Candidate 1 non-headless run also requires the four golden Event-IR audio assets.
-- G09 fresh-checkout and G10 final manual sanity remain pending.
-- Complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
-- The deferred generic copy/mutator producer audit is now the v117 forensic target.
-- Original-runtime Classic audio pan/volume parity remains UNOBSERVED/HOLD.
-
-## Exact next action
-On the development machine:
-1. restore the ignored R1/R7/R8 room assets and required Candidate 1 audio assets;
-2. run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`;
-3. if G00-G09 are PASS, launch the normal Godot Candidate 1 build and manually traverse the full demo using F6/F7/F10 diagnostics as needed;
-4. complete G10 only after that manual run is clean.
+The final source snapshot adds only documentation/context and promoted evidence after the tested runtime commit. See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md`.

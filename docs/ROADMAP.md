@@ -1,15 +1,50 @@
 # OpenAzrael Roadmap
 
-## Now
-1. Reverse the 27-byte WORLD section-6 sound-action record and reader chain.
-2. Map WORLD runtime fields against PUZZLES opcode-`0x28` operands/state tokens.
-3. Extend action-by-action PUZZLES -> WORLD compilation evidence beyond token identity.
-4. Preserve/extend evidence-aware Event IR.
-5. Obtain a genuine original-runtime Classic audio parity capture.
+**Canonical checkpoint:** `v116-context-v26`
+**Technical base:** `openazrael_godot_poc_v116`
 
-## Next
-- investigate indirect/computed WORLD-writer reachability only when new evidence justifies it;
-- close remaining demo gameplay timing/motion semantics;
-- widen demo validations into retail rooms/data;
-- generalize import/runtime interfaces for full-game loading;
-- keep Classic/Enhanced/Remastered renderers on shared gameplay/world IR.
+## Now — complete the Candidate 1 runtime/manual cycle
+
+The clean baseline `6528d438ab2b14d344fb0e19f83ba5d5e699cd60` has recorded G00-G09 PASS evidence. The final graphics/icon integration and Windows export are verified; G10 remains PENDING_MANUAL_USER. The application watermark remains `KG-001 Candidate 1 / v116-context-v24`.
+
+1. Reuse the restored ignored room/audio assets, or restore them reproducibly on a fresh checkout.
+2. Final fresh-checkout, Windows export and smoke checks are PASS at the recorded source commit.
+3. Review G00-G09 evidence using the v112 status tooling.
+4. If G00-G09 are literal PASS, launch the normal graphical **KG-001 Candidate 1** build.
+5. Manually traverse the full demo route with the v116 diagnostics: F6 trigger volumes, F7 Candidate HUD, F8 audio debug, F9 audio parity capture, F10 canonical state dump.
+6. Complete G10 only after the interactive route is clean.
+7. Keep `demo-known-good-001` forbidden until all G00-G10 are PASS, with zero known critical bugs and zero reproducible softlocks.
+
+## Next — after Candidate 1 validation
+
+### Localization implementation
+Architecture is approved in `docs/LOCALIZATION_ARCHITECTURE.md`, but runtime implementation waits until after the first clean Candidate 1 runtime/manual cycle.
+
+1. Define String IR and immutable semantic-ID conventions.
+2. Generate the built-in English fallback catalog and `openazrael.pot`.
+3. Add POT/PO tooling, glossary workflow and missing/duplicate-ID validators.
+4. Implement `LocalizationManager` with manifest validation and non-overriding external PCK mounting.
+5. Add pseudolocalization, overflow and Unicode/font coverage tests.
+6. Build a small Slovak smoke-test pack.
+7. Migrate demo-facing strings away from hard-coded user-visible text.
+8. Feed the separately prepared Slovak translation corpus into the approved runtime pack format.
+
+### Deferred forensic v117
+- Audit generic/exact 27-byte copy classes and variable/generic allocation paths.
+- Audit plausible stores into WORLD action-record +17..+26.
+- Strengthen indirect/computed reachability evidence for the paired WORLD writer only where static evidence supports it.
+- Preserve `PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE` and `WORLD_WRITER_INDIRECT_REACHABILITY` as HOLD unless direct evidence changes them.
+
+## Later
+- Close remaining demo timing/motion semantics where recoverable.
+- Obtain genuine original-runtime Classic audio parity evidence.
+- Widen validated import/runtime coverage from the demo slice into retail rooms/data.
+- Generalize import/runtime interfaces for full-game loading.
+- Keep Classic / Enhanced / Remastered presentation modes on shared gameplay/world IR.
+- Expand external language packs beyond the Slovak smoke-test path.
+
+## Invariants
+- Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
+- Git remains source history, not commercial-data backup.
+- Original/commercial payloads remain outside normal Git history.
+- Passing KG-001 validates the defined demo gates only; it does not automatically promote forensic HOLDs.

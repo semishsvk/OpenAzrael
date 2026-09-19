@@ -105,7 +105,7 @@ def main():
       "npc_state_instances":npcs,
       "counts":{"wav":len(sounds),"ambient_emitters":len(emitters),"xmi":len(music),"npc_instances":len(npcs)}
     }
-    (out/'legacy_world_ir.json').write_text(json.dumps(ir,indent=2),encoding='utf8')
+    (out/'legacy_world_ir.json').write_text(json.dumps(ir,indent=2),encoding='utf8',newline='\n')
     for rid,r in ROOMS.items():
         room_ir={"schema":"openazrael.room_legacy_ir","version":1,"room_id":rid,**r,
                  "ambient_emitters":[e for e in emitters if e['room_id']==rid]}

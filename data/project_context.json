@@ -1,7 +1,7 @@
 {
-  "checkpoint": "v116-context-v24",
+  "checkpoint": "v116-context-v26",
   "technical_base": "openazrael_godot_poc_v116",
-  "date": "2026-09-18",
+  "date": "2026-09-19",
   "workflow": [
     "DEMO",
     "FAITHFUL_RECONSTRUCTION",
@@ -27,7 +27,8 @@
     "audio_map": "docs/AUDIO_MAP.md",
     "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
     "git_baseline": "docs/GIT_BASELINE.md",
-    "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md"
+    "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md",
+    "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md"
   },
   "current_forensics": {
     "world_runtime_loader": "VERIFIED",
@@ -86,7 +87,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "BLOCKED_MISSING_ASSETS",
+    "kg001_build_status": "WINDOWS_EXPORTED_SMOKE_PASS_G10_PENDING",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -97,14 +98,14 @@
     "kg001_changed_edges": 123,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "PARTIAL_V109_PASS_ASSET_BACKED_BLOCKED",
+    "kg001_runtime_gate_status": "G00_G09_PASS_G10_PENDING",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_headless_runtime": "PASS",
     "kg001_state_restore": "RUNTIME_PASS_V109",
     "kg001_room_trigger_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_room_trigger_runtime": "BLOCKED_MISSING_ASSETS",
+    "kg001_room_trigger_runtime": "PASS",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_full_demo_runtime": "BLOCKED_MISSING_ASSETS",
+    "kg001_full_demo_runtime": "PASS",
     "kg001_overall_status": "AWAITING_RUNTIME_OR_MANUAL",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
@@ -113,7 +114,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 1",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "PARTIAL_V109_PASS_ASSET_BACKED_BLOCKED",
+    "kg001_candidate_build_runtime": "AUTOMATED_RUNTIME_PASS_MANUAL_PENDING",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -122,7 +123,11 @@
       "F10": "canonical_state_dump"
     },
     "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
-    "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS"
+    "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS",
+    "kg001_runtime_evidence_commit": "6528d438ab2b14d344fb0e19f83ba5d5e699cd60",
+    "documentation_consistency": "PASS_V26",
+    "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
+    "documentation_checkpoint_note": "These fields describe the docs-only main v26 synchronization; actual runtime PASS records independently identify the tested baseline and do not validate subsequent integration changes."
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -132,7 +137,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Restore canonical demo R1/R7/R8 assets and legacy ambient IR from the retained demo snapshot; retail prototype GLBs are not equivalent. Rerun the clean-checkout Candidate suite, export Windows Candidate 1 and leave G10 manual pending.",
+  "next_target": "Complete G10 through a normal human full-demo run of the exported Windows Candidate 1. Keep demo-known-good-001 blocked until all G00-G10 are PASS. Localization implementation and deferred v117 work follow the first runtime/manual cycle.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -147,13 +152,15 @@
     "runner": "scripts/kg001_headless_runner_v109.gd",
     "validator": "tools/validate_kg001_headless_v109.py",
     "result": "data/tests/kg001_headless_contract_v109.json",
-    "note": "docs/KG001_HEADLESS_V109.md"
+    "note": "docs/KG001_HEADLESS_V109.md",
+    "runtime_result": "data/tests/kg001_headless_runtime_v109.json"
   },
   "kg001_v110": {
     "runner": "scripts/kg001_room_trigger_runner_v110.gd",
     "validator": "tools/validate_kg001_room_trigger_v110.py",
     "result": "data/tests/kg001_room_trigger_contract_v110.json",
-    "note": "docs/KG001_ROOM_TRIGGER_V110.md"
+    "note": "docs/KG001_ROOM_TRIGGER_V110.md",
+    "runtime_result": "data/tests/kg001_room_trigger_runtime_v110.json"
   },
   "kg001_v111": {
     "runner": "scripts/kg001_full_demo_runner_v111.gd",
@@ -162,7 +169,8 @@
     "status_tool": "tools/kg001_status_v111.py",
     "status_snapshot": "data/tests/kg001_status_v111.json",
     "note": "docs/KG001_FULL_DEMO_V111.md",
-    "status_note": "docs/KG001_STATUS_V111.md"
+    "status_note": "docs/KG001_STATUS_V111.md",
+    "runtime_result": "data/tests/kg001_full_demo_runtime_v111.json"
   },
   "kg001_v112": {
     "candidate_runner": "tools/run_kg001_candidate_v112.py",
@@ -219,7 +227,7 @@
     "contract": "data/tests/kg001_candidate_diagnostics_contract_v116.json",
     "note": "docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md",
     "source_status": "SOURCE_CONTRACT_PASS",
-    "runtime_status": "PARTIAL_V109_PASS_ASSET_BACKED_BLOCKED",
+    "runtime_status": "AUTOMATED_RUNTIME_PASS_MANUAL_PENDING",
     "controls": {
       "F6": "trigger volumes",
       "F7": "candidate HUD",
@@ -236,6 +244,43 @@
     "godot": "4.7.2.stable.official.ed1daf0bf",
     "note": "docs/CANDIDATE1_WINDOWS_ATTEMPT.md",
     "g10": "PENDING_MANUAL_USER",
-    "known_good_tag_created": false
+    "known_good_tag_created": false,
+    "canonical_main_sha": "43637474b4bddc34fcf38355901352f505c0c2a4",
+    "runtime_baseline_sha": "6528d438ab2b14d344fb0e19f83ba5d5e699cd60",
+    "runtime_baseline_scope": "Final graphics, icon and main-v26 integration: clean checkout/import/v109-v111 PASS; exported EXE headless/graphical smoke PASS.",
+    "build_watermark": "KG-001 Candidate 1 / v116-context-v24",
+    "canonical_checkpoint": "v116-context-v26",
+    "windows_export": "Windows x86_64 debug",
+    "windows_executable_sha256": "0118115a8c1e59a2792670cc08a5fa8433bf3526133157f9a105fb1c7a8e482c",
+    "windows_pck_sha256": "43a1374a000a3144bec8b7f10af7f6203330d28916c430a599c2afb8ee11aaae"
+  },
+  "localization": {
+    "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",
+    "runtime_boundary": "AFTER_FIRST_KG001_CANDIDATE1_RUNTIME_MANUAL_CYCLE",
+    "key_strategy": "STABLE_SEMANTIC_IDS",
+    "forensic_source_strategy": "ORIGINAL_STRINGS_SEPARATE_FROM_RUNTIME_KEYS",
+    "authoring_format": "GETTEXT_POT_PO",
+    "runtime_fallback": "EN",
+    "distribution_format": "EXTERNAL_VERSIONED_PCK",
+    "resource_pack_replace_core": false,
+    "namespace_policy": "DEDICATED_LOCALIZATION_NAMESPACE_ONLY",
+    "manifest_schema": 1,
+    "manager_planned": "LocalizationManager",
+    "optional_future_payloads": [
+      "fonts",
+      "subtitle_metadata",
+      "localized_voice"
+    ],
+    "required_tests": [
+      "manifest_validation",
+      "missing_duplicate_ids",
+      "fallback",
+      "pseudolocalization",
+      "ui_overflow",
+      "unicode_font_coverage",
+      "deterministic_pack_build"
+    ],
+    "first_smoke_pack": "sk",
+    "architecture_doc": "docs/LOCALIZATION_ARCHITECTURE.md"
   }
 }

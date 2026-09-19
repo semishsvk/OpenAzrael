@@ -1,17 +1,18 @@
 # OpenAzrael Context Bootstrap
 
-## Windows integration attempt — 2026-09-19
+## Windows Candidate 1 integration — 2026-09-19
 
-Latest execution supersedes the earlier NOT_EXECUTED preparation notes below:
-Godot 4.7.2 v109 PASS (13 checks); v110/v111 BLOCKED_MISSING_ASSETS.
-Canonical demo GLBs and legacy ambient IR are still required. The available
-retail prototype GLBs are not equivalent. Source-safe compile/runner fixes,
-a Windows export preset and matching templates are prepared.
-See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md` for the exact boundary and resume steps.
-G10 remains PENDING_MANUAL_USER; no known-good tag was created.
+Final tested source `6528d438ab2b14d344fb0e19f83ba5d5e699cd60` includes current main
+`43637474b4bddc34fcf38355901352f505c0c2a4` (canonical `v116-context-v26`).
+The requested application watermark remains `KG-001 Candidate 1 / v116-context-v24`.
+Godot 4.7.2 import, the source suite, v109 (13 checks), v110, v111 (33 checks)
+and the clean-checkout gate all PASS: **G00-G09 PASS**.
+The Windows x86_64 export includes the supplied Sigil icon; EXE headless/graphical
+smoke tests and R1/R7/R8 captures from its PCK passed. Evidence is in `data/tests/`.
+**G10 remains PENDING_MANUAL_USER; no known-good tag was created.**
+See `docs/CANDIDATE1_WINDOWS_ATTEMPT.md` for the build and asset boundary.
 
-
-**Current canonical checkpoint:** `v116-context-v24`
+**Current canonical checkpoint:** `v116-context-v26`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -65,6 +66,13 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - No action-record copy/normalization step is present between WORLD deserialization and opcode execution in this audited runtime path; opcode-0x28 also does not mutate the record before consuming its fields.
 - Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
 
+## Immediate execution priority
+- Run the existing v112 candidate workflow on a Godot-capable fresh checkout with locally restored ignored assets.
+- Candidate 1 source status is PASS; canonical runtime evidence is still NOT_EXECUTED.
+- If G00-G09 pass, perform the normal graphical full-demo G10 sanity route.
+- Do not add localization runtime code or new gameplay scope before that first Candidate 1 runtime/manual cycle unless fixing a blocker.
+- Resume the deferred static copy/mutator producer audit as v117 afterwards.
+
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
 - `tools/extract_xaf_triggers.py` is portable and regenerates the trigger IR from a local corrected-GLB corpus via explicit CLI paths.
@@ -78,19 +86,19 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - DemoState now supports reset/restore round-trip against the canonical payload/hash.
 - LegacyEvents has a capture-only logical audio mode that avoids loading excluded WAV assets.
 - `scripts/kg001_headless_runner_v109.gd` tests the real autoload/Event-IR state path without loading `main.tscn`.
-- Source contract: PASS. Godot runtime execution: NOT EXECUTED in this environment.
+- Source contract: PASS. Recorded v109 runtime: PASS, 13 checks; Windows export and smoke PASS.
 
 ## KG-001 v110 room/trigger layer
 - `scripts/kg001_room_trigger_runner_v110.gd` prepares asset-backed G04/G05 tests using the real RoomManager trigger implementation.
 - It covers all four tracked transitions, both R1 locked negative gates, trigger inside/outside bounds and persistence across room replacement.
 - Missing local room assets are reported as BLOCKED_MISSING_ASSETS rather than FAIL.
-- Source contract: PASS. Godot asset-backed execution: NOT EXECUTED here.
+- Source contract: PASS. Recorded v110 asset-backed runtime: PASS; Windows export and smoke PASS.
 
 ## KG-001 v111 full-demo layer
 - `scripts/kg001_full_demo_runner_v111.gd` executes the complete synthetic demo path through production interaction scripts and real RoomManager transitions.
 - Direct gameplay flag/puzzle-node injection is forbidden by the source validator.
 - `tools/kg001_status_v111.py` consolidates G00-G10 and only literal PASS for every gate permits the known-good tag.
-- Overall status: PRE_RUNTIME_READY. v109/v110/v111 Godot execution remains pending.
+- Recorded final source v109/v110/v111 runtime: PASS. Current v112 release status remains AWAITING_RUNTIME_OR_MANUAL because G10 is pending.
 
 ## KG-001 v112 candidate workflow
 - `tools/run_kg001_candidate_v112.py` runs source validators plus v109/v110/v111 and can record G09 clean-checkout evidence.
@@ -106,7 +114,17 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Room transitions, trigger enter/exit edges, interactions, state changes and logical audio are logged with canonical state hashes.
 - R1/R7/R8 are now runtime-loaded rather than script-preloaded so missing assets can be reported by an explicit fail-fast preflight.
 - Core room/IR resources are always required; the four golden Event-IR WAVs are additionally required for a non-headless Candidate 1 run.
-- v116 source contract: PASS. Actual Godot execution: NOT EXECUTED.
+- v116 source contract: PASS. Baseline automated Godot execution: PASS; graphical launch observed after rendering integration. Windows export and smoke PASS; G10 remains pending.
+
+## Approved localization architecture
+- Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.
+- English is the mandatory built-in fallback.
+- Translator-facing catalogs use POT/PO.
+- Distributable language packs are external versioned PCKs with manifests and dedicated namespaces.
+- External PCKs must not replace core resources.
+- Optional future payloads include fonts, subtitle metadata and localized voice.
+- Runtime implementation is deferred until after the first KG-001 Candidate 1 runtime/manual cycle.
+- See `docs/LOCALIZATION_ARCHITECTURE.md` and ADR-024.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
