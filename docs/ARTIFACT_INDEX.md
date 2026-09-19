@@ -16,6 +16,9 @@
 - `tools/texture_lab/config/enhance.json`
 - `tools/texture_lab/config/rt_poc_01_selection.json`
 - `tools/texture_lab/profiles/base_preserve.json`
+- `tools/texture_lab/godot/texture_lab.gd`
+- `tools/texture_lab/godot/texture_lab.tscn`
+- `tools/texture_lab/validate_godot_lab.py`
 - `tests/test_texture_lab_rt_poc_01.py`
 - generated Classic/Enhanced/AI pixels remain excluded from Git by ADR-024
 
