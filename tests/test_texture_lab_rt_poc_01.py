@@ -36,6 +36,7 @@ from oa_tex_ai_bakeoff import (
     build_restore_plan,
     eligible_entries,
     resolve_named_candidate_namespace,
+    validate_named_preset_contract,
 )
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
@@ -463,6 +464,90 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         resolve_named_candidate_namespace(adhoc)
         self.assertEqual(adhoc.restored_dir, DEFAULT_RESTORED_DIR)
+
+    def test_named_restored_preset_parameters_are_canonical(self):
+        backends = json.loads(
+            (ROOT / "tools/texture_lab/config/ai_backends.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        qwen = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        args = SimpleNamespace(
+            preset="restored_smoke_1",
+            mode="restored",
+            restore_model="RealESRGAN_x4plus",
+            factor=4,
+            tile=0,
+            fp32=True,
+            denoise_strength=None,
+        )
+        validate_named_preset_contract(args, qwen, backends)
+
+        for field, value in [
+            ("factor", 2),
+            ("tile", 128),
+            ("fp32", False),
+            ("restore_model", "other"),
+            ("denoise_strength", 0.5),
+        ]:
+            bad = SimpleNamespace(**vars(args))
+            setattr(bad, field, value)
+            with self.assertRaises(SystemExit):
+                validate_named_preset_contract(bad, qwen, backends)
+
+    def test_named_recreated_preset_parameters_are_canonical(self):
+        backends = json.loads(
+            (ROOT / "tools/texture_lab/config/ai_backends.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        qwen = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        bindings = qwen["canonical_openazrael_workflow"]["bindings"]
+        args = SimpleNamespace(
+            preset="recreated_smoke_1",
+            mode="recreated",
+            workflow=ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json",
+            model_label="Qwen-Image-Edit-2511",
+            seed=734234,
+            factor=4,
+            recreate_input_variant="lanczos_x4.png",
+            load_image_node=str(bindings["load_image_node"]),
+            prompt_node=str(bindings["prompt_node"]),
+            negative_prompt_node=str(bindings["negative_prompt_node"]),
+            seed_node=str(bindings["seed_node"]),
+            prompt_key="prompt",
+            negative_prompt_key="prompt",
+            seed_key="seed",
+        )
+        validate_named_preset_contract(args, qwen, backends)
+
+        mutations = [
+            ("workflow", ROOT / "wrong_workflow.json"),
+            ("model_label", "other"),
+            ("seed", 1),
+            ("factor", 2),
+            ("recreate_input_variant", "nearest_x4.png"),
+            ("load_image_node", "999"),
+            ("prompt_node", "999"),
+            ("negative_prompt_node", "999"),
+            ("seed_node", "999"),
+            ("prompt_key", "text"),
+            ("negative_prompt_key", "text"),
+            ("seed_key", "noise_seed"),
+        ]
+        for field, value in mutations:
+            bad = SimpleNamespace(**vars(args))
+            setattr(bad, field, value)
+            with self.assertRaises(SystemExit):
+                validate_named_preset_contract(bad, qwen, backends)
 
     def test_restored_plan_starts_with_runtime_doctor(self):
         with tempfile.TemporaryDirectory() as td:
