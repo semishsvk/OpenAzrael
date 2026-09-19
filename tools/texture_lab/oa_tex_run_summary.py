@@ -44,6 +44,48 @@ def _pack_rows(run_dir: Path, mode: str) -> dict[str, dict]:
     }
 
 
+def restored_performance_summary(run_dir: Path) -> dict | None:
+    report_path = run_dir / "ai_restore_run.json"
+    if not report_path.is_file():
+        return None
+    report = load_json(report_path)
+    if report.get("schema") != "openazrael.texture_lab.ai_restore_run.v5":
+        return None
+    performance = report.get("performance")
+    if not isinstance(performance, dict):
+        return None
+
+    mean = performance.get("mean_inference_wall_seconds_per_texture")
+    if not isinstance(mean, (int, float)) or float(mean) <= 0:
+        return {
+            "status": "OBSERVED_NO_ESTIMATE",
+            "report": str(report_path),
+            "performance": performance,
+        }
+
+    estimates = {}
+    for target in ["restored_smoke_4", "restored_full"]:
+        spec = preset_record(target)
+        count = len(spec.get("textures", []))
+        estimates[target] = {
+            "texture_count": count,
+            "linear_inference_only_seconds": float(mean) * count,
+            "linear_inference_only_minutes": float(mean) * count / 60.0,
+        }
+
+    return {
+        "status": "OBSERVED_WITH_LINEAR_ESTIMATE",
+        "report": str(report_path),
+        "performance": performance,
+        "estimates": estimates,
+        "estimate_scope": (
+            "naive linear inference-only projection from observed mean wall "
+            "time per texture; excludes review, QA, I/O variability, warm-up "
+            "effects and GPU contention"
+        ),
+    }
+
+
 def build_summary(preset: str, run_root: Path) -> dict:
     spec = preset_record(preset)
     mode = str(spec["mode"])
@@ -95,6 +137,11 @@ def build_summary(preset: str, run_root: Path) -> dict:
         )
 
     ready = evidence.get("status") == "PASS"
+    performance = (
+        restored_performance_summary(run_dir)
+        if mode == "restored"
+        else None
+    )
     return {
         "schema": "openazrael.texture_lab.run_summary.v1",
         "preset": preset,
@@ -117,6 +164,7 @@ def build_summary(preset: str, run_root: Path) -> dict:
             if review_handoff.is_file()
             else None
         ),
+        "performance": performance,
         "textures": rows,
         "manual_next_steps": (
             [
@@ -162,6 +210,44 @@ def markdown(summary: dict) -> str:
                 "",
             ]
         )
+
+    performance = summary.get("performance")
+    if isinstance(performance, dict):
+        observed = performance.get("performance", {})
+        lines.extend(
+            [
+                "## Observed Restored runtime",
+                "",
+                "- Run wall time: "
+                + _fmt(observed.get("run_wall_seconds"), 3)
+                + " s",
+                "- Measured inference wall time: "
+                + _fmt(
+                    observed.get("measured_inference_wall_seconds"),
+                    3,
+                )
+                + " s",
+                "- Mean inference wall time / texture: "
+                + _fmt(
+                    observed.get("mean_inference_wall_seconds_per_texture"),
+                    3,
+                )
+                + " s",
+            ]
+        )
+        for target, estimate in performance.get("estimates", {}).items():
+            lines.append(
+                f"- Naive {target} inference-only projection: "
+                f"{_fmt(estimate.get('linear_inference_only_minutes'), 2)} min "
+                f"for {estimate.get('texture_count')} textures"
+            )
+        if performance.get("estimate_scope"):
+            lines.extend(
+                [
+                    "- Estimate scope: " + str(performance["estimate_scope"]),
+                    "",
+                ]
+            )
 
     for row in summary.get("textures", []):
         seam = row.get("candidate_minus_source_seam_mae_rgba_0_255") or {}
