@@ -52,6 +52,7 @@ from oa_tex_stage_gate import approve, check_prerequisites, evidence_snapshot, v
 from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_run_summary import build_summary
+from oa_tex_runtime_export import compile_export
 from oa_tex_runtime_manifest import build_manifest, input_file_record
 from oa_tex_runtime_verify import verify_manifest
 from oa_tex_scan import scan
@@ -1374,6 +1375,77 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             unsafe = verify_manifest(manifest_path, root)
             self.assertEqual(unsafe["status"], "HOLD")
             self.assertEqual(unsafe["missing_or_unsafe_texture_ids"], ["A"])
+
+    def test_runtime_export_compiler_requires_verified_immutable_inputs(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            classic = root / "assets/textures/classic/A.png"
+            classic.parent.mkdir(parents=True)
+            Image.new("RGBA", (16, 8), (1, 2, 3, 255)).save(classic)
+
+            selection_path = root / "selection.json"
+            policy_path = root / "policy.json"
+            registry_path = root / "registry.json"
+            selection = {
+                "textures": [
+                    {
+                        "id": "A",
+                        "room": "R1",
+                        "content_class": "rock_organic_surface",
+                        "expected_size": [16, 8],
+                    }
+                ]
+            }
+            policy = {"classes": {}}
+            registry = {"profiles": {"remastered": {}}}
+            selection_path.write_text(json.dumps(selection), encoding="utf-8")
+            policy_path.write_text(json.dumps(policy), encoding="utf-8")
+            registry_path.write_text(json.dumps(registry), encoding="utf-8")
+
+            manifest = build_manifest(
+                "classic",
+                selection,
+                policy,
+                registry,
+                root / "runs",
+                root / "approvals",
+                root=root,
+            )
+            manifest["inputs"] = {
+                "selection": input_file_record(selection_path, root),
+                "policy": input_file_record(policy_path, root),
+                "production_registry": input_file_record(registry_path, root),
+            }
+            manifest_path = root / "classic_manifest.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            out_script = root / "export/texture_runtime_map.gd"
+            snapshot = root / "export/snapshot.json"
+
+            result = compile_export(
+                manifest_path,
+                root,
+                out_script,
+                snapshot,
+            )
+            self.assertEqual(result["status"], "READY_FOR_GODOT_IMPORT")
+            self.assertTrue(out_script.is_file())
+            self.assertTrue(snapshot.is_file())
+            script = out_script.read_text(encoding="utf-8")
+            self.assertIn('const PROFILE := "classic"', script)
+            self.assertIn(
+                '"path": "res://assets/textures/classic/A.png"',
+                script,
+            )
+            self.assertIn(sha256_file(manifest_path), script)
+
+            Image.new("RGBA", (16, 8), (9, 9, 9, 255)).save(classic)
+            with self.assertRaises(RuntimeError):
+                compile_export(
+                    manifest_path,
+                    root,
+                    root / "export/stale_map.gd",
+                    root / "export/stale_snapshot.json",
+                )
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
