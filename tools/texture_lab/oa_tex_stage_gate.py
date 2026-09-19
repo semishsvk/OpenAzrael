@@ -84,7 +84,7 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
     artifacts_ok = True
 
     for row in rows:
-        for key in ["source", "candidate", "comparison", "tile_preview"]:
+        for key in ["source", "candidate", "comparison", "detail_comparison", "tile_preview"]:
             record = row.get(key)
             if not isinstance(record, dict):
                 continue
@@ -98,7 +98,7 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
                 artifacts_ok = False
 
     checks = {
-        "schema_ok": manifest.get("schema") == "openazrael.texture_lab.visual_review_pack.v1",
+        "schema_ok": manifest.get("schema") == "openazrael.texture_lab.visual_review_pack.v2",
         "status_ok": manifest.get("status") == "READY_FOR_MANUAL_REVIEW",
         "automatic_promotion_off": manifest.get("automatic_promotion") is False,
         "ids_ok": len(ids) == len(expected) and set(ids) == set(expected),
