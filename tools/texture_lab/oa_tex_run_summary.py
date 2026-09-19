@@ -9,6 +9,8 @@ from common import ROOT, write_json
 from oa_tex_stage_gate import evidence_snapshot, preset_record
 
 DEFAULT_RUN_ROOT = ROOT / ".local/texture_lab/runs/rt_poc_01"
+SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+AI_POLICY = ROOT / "tools/texture_lab/config/ai_review_policy.json"
 
 
 def load_json(path: Path) -> dict:
@@ -86,6 +88,108 @@ def restored_performance_summary(run_dir: Path) -> dict | None:
     }
 
 
+def recreated_generation_unit_count(preset: str) -> int:
+    spec = preset_record(preset)
+    selection = load_json(SELECTION)
+    policy = load_json(AI_POLICY)
+    by_id = {
+        str(row["id"]): row
+        for row in selection.get("textures", [])
+        if isinstance(row, dict) and row.get("id")
+    }
+    total = 0
+    for texture_id in [str(v) for v in spec.get("textures", [])]:
+        entry = by_id.get(texture_id, {})
+        rules = dict(policy.get("defaults", {}))
+        rules.update(
+            policy.get("classes", {}).get(
+                str(entry.get("content_class", "")),
+                {},
+            )
+        )
+        atlas = rules.get("atlas_split")
+        if isinstance(atlas, dict):
+            total += int(atlas.get("segments", 0))
+        else:
+            total += 1
+    return total
+
+
+def recreated_performance_summary(run_dir: Path) -> dict | None:
+    job_dir = run_dir / "recreated_jobs"
+    if not job_dir.is_dir():
+        return None
+
+    job_paths = sorted(job_dir.glob("*.job.json"))
+    timings = []
+    for path in job_paths:
+        payload = load_json(path)
+        if payload.get("schema") != "openazrael.texture_lab.ai_recreated_job.v5":
+            continue
+        performance = payload.get("performance")
+        if not isinstance(performance, dict):
+            continue
+        wall = performance.get("job_wall_seconds")
+        if isinstance(wall, (int, float)) and float(wall) >= 0.0:
+            timings.append(
+                {
+                    "path": str(path),
+                    "job_wall_seconds": float(wall),
+                    "submit_to_completion_wall_seconds": (
+                        float(
+                            performance.get(
+                                "submit_to_completion_wall_seconds",
+                                0.0,
+                            )
+                        )
+                        if isinstance(
+                            performance.get(
+                                "submit_to_completion_wall_seconds"
+                            ),
+                            (int, float),
+                        )
+                        else None
+                    ),
+                }
+            )
+
+    if not timings:
+        return {
+            "status": "OBSERVED_NO_ESTIMATE",
+            "job_count": 0,
+            "jobs": [],
+        }
+
+    total = sum(row["job_wall_seconds"] for row in timings)
+    mean = total / len(timings)
+    estimates = {}
+    for target in [
+        "recreated_smoke_4",
+        "recreated_atlas",
+        "recreated_full",
+    ]:
+        units = recreated_generation_unit_count(target)
+        estimates[target] = {
+            "generation_units": units,
+            "linear_job_only_seconds": mean * units,
+            "linear_job_only_minutes": mean * units / 60.0,
+        }
+
+    return {
+        "status": "OBSERVED_WITH_LINEAR_ESTIMATE",
+        "job_count": len(timings),
+        "observed_job_wall_seconds": total,
+        "mean_job_wall_seconds": mean,
+        "jobs": timings,
+        "estimates": estimates,
+        "estimate_scope": (
+            "naive linear client-observed ComfyUI job projection; excludes "
+            "review, QA, split/stitch, I/O variability, warm-up, queueing "
+            "changes and GPU contention"
+        ),
+    }
+
+
 def build_summary(preset: str, run_root: Path) -> dict:
     spec = preset_record(preset)
     mode = str(spec["mode"])
@@ -140,7 +244,7 @@ def build_summary(preset: str, run_root: Path) -> dict:
     performance = (
         restored_performance_summary(run_dir)
         if mode == "restored"
-        else None
+        else recreated_performance_summary(run_dir)
     )
     return {
         "schema": "openazrael.texture_lab.run_summary.v1",
@@ -213,34 +317,59 @@ def markdown(summary: dict) -> str:
 
     performance = summary.get("performance")
     if isinstance(performance, dict):
-        observed = performance.get("performance", {})
-        lines.extend(
-            [
-                "## Observed Restored runtime",
-                "",
-                "- Run wall time: "
-                + _fmt(observed.get("run_wall_seconds"), 3)
-                + " s",
-                "- Measured inference wall time: "
-                + _fmt(
-                    observed.get("measured_inference_wall_seconds"),
-                    3,
-                )
-                + " s",
-                "- Mean inference wall time / texture: "
-                + _fmt(
-                    observed.get("mean_inference_wall_seconds_per_texture"),
-                    3,
-                )
-                + " s",
-            ]
-        )
-        for target, estimate in performance.get("estimates", {}).items():
-            lines.append(
-                f"- Naive {target} inference-only projection: "
-                f"{_fmt(estimate.get('linear_inference_only_minutes'), 2)} min "
-                f"for {estimate.get('texture_count')} textures"
+        if summary.get("mode") == "restored":
+            observed = performance.get("performance", {})
+            lines.extend(
+                [
+                    "## Observed Restored runtime",
+                    "",
+                    "- Run wall time: "
+                    + _fmt(observed.get("run_wall_seconds"), 3)
+                    + " s",
+                    "- Measured inference wall time: "
+                    + _fmt(
+                        observed.get("measured_inference_wall_seconds"),
+                        3,
+                    )
+                    + " s",
+                    "- Mean inference wall time / texture: "
+                    + _fmt(
+                        observed.get("mean_inference_wall_seconds_per_texture"),
+                        3,
+                    )
+                    + " s",
+                ]
             )
+            for target, estimate in performance.get("estimates", {}).items():
+                lines.append(
+                    f"- Naive {target} inference-only projection: "
+                    f"{_fmt(estimate.get('linear_inference_only_minutes'), 2)} min "
+                    f"for {estimate.get('texture_count')} textures"
+                )
+        else:
+            lines.extend(
+                [
+                    "## Observed Recreated runtime",
+                    "",
+                    "- Completed Qwen generation jobs: "
+                    + str(performance.get("job_count", 0)),
+                    "- Observed job wall time: "
+                    + _fmt(
+                        performance.get("observed_job_wall_seconds"),
+                        3,
+                    )
+                    + " s",
+                    "- Mean job wall time: "
+                    + _fmt(performance.get("mean_job_wall_seconds"), 3)
+                    + " s",
+                ]
+            )
+            for target, estimate in performance.get("estimates", {}).items():
+                lines.append(
+                    f"- Naive {target} Qwen-job projection: "
+                    f"{_fmt(estimate.get('linear_job_only_minutes'), 2)} min "
+                    f"for {estimate.get('generation_units')} generation units"
+                )
         if performance.get("estimate_scope"):
             lines.extend(
                 [
