@@ -39,6 +39,7 @@ from oa_tex_first_run import (
     runtime_paths,
 )
 from oa_tex_prompt import build_prompt_pair
+from oa_tex_production_selection import registry_status, select_candidate
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
 from oa_tex_qwen_preflight import (
     exact_loader_check,
@@ -686,7 +687,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(row["repeat_axes"], ["u", "v"])
 
     def test_restored_stage_approval_is_bound_to_reviewed_candidate(self):
-        with tempfile.TemporaryDirectory() as td:
+        with tempfile.TemporaryDirectory(dir=ROOT) as td:
             root = Path(td)
             run_root = root / "runs"
             approval_root = root / "approvals"
@@ -829,6 +830,25 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 "PASS",
             )
 
+            registry = root / "production_selection.json"
+            selected = select_candidate(
+                "restored_smoke_1",
+                "CORIROCK",
+                registry,
+                run_root,
+                approval_root,
+                "synthetic production selection",
+            )
+            self.assertEqual(selected["selected_tier"], "ai_restored")
+            self.assertFalse(selected["automatic_selection"])
+            production_ok = registry_status(
+                registry,
+                run_root,
+                approval_root,
+            )
+            self.assertEqual(production_ok["status"], "PASS")
+            self.assertEqual(production_ok["selection_count"], 1)
+
             candidate.write_bytes(b"candidate-v2")
             write_review_manifest()
 
@@ -838,6 +858,17 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(stale["status"], "STALE")
             self.assertFalse(stale["checks"]["outputs_ok"])
             self.assertFalse(stale["checks"]["review_pack_ok"])
+
+            production_stale = registry_status(
+                registry,
+                run_root,
+                approval_root,
+            )
+            self.assertEqual(production_stale["status"], "STALE")
+            self.assertEqual(
+                production_stale["rows"][0]["status"],
+                "STALE",
+            )
 
     def test_validation_reports_source_relative_seam_drift(self):
         with tempfile.TemporaryDirectory() as td:
