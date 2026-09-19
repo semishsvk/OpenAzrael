@@ -190,3 +190,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 - local outputs live under ignored `.local/texture_lab/runtime_locks/`; repository promotion remains a separate explicit step.
 
 - `tools/texture_lab/oa_tex_realesrgan_lock_plan.py` — renders a local, hash-addressed repository-promotion proposal from the approved runtime-lock candidate; never mutates tracked files.
+
+
+## Texture Lab Qwen runtime lock
+- `tools/texture_lab/oa_tex_qwen_lock.py` — captures a local non-promoting ComfyUI/Qwen runtime-lock candidate after a current approved `recreated_smoke_1`.
+- `tools/texture_lab/oa_tex_qwen_lock_plan.py` — renders a local, hash-addressed proposed `qwen_environment_lock.json` after revalidating workflow/model/seed/runtime provenance; never mutates tracked files.
