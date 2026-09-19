@@ -1,0 +1,20 @@
+{
+  "schema": "openazrael.texture_lab.rt_poc_01_selection.v1",
+  "status": "OBSERVATIONAL",
+  "selection_basis": "Representative textures actually referenced by the v44 R1/R7/R8 manifests, chosen to cover varied visual content and edge cases.",
+  "textures": [
+    {"id":"CORIROCK","room":"R1","content_class":"rock_organic_surface","expected_size":[256,128]},
+    {"id":"ECRDOR01","room":"R1","content_class":"architectural_doorway","expected_size":[256,256]},
+    {"id":"VSTPAP01","room":"R1","content_class":"paper_parchment","expected_size":[128,128]},
+    {"id":"KEYHOLE#","room":"R1","content_class":"binary_mask_hard_edge","expected_size":[128,128]},
+    {"id":"WEL_WWAL","room":"R7","content_class":"carved_architectural_wall","expected_size":[256,256]},
+    {"id":"WEL_BDY1","room":"R7","content_class":"character_organic_detail","expected_size":[256,256]},
+    {"id":"WEL_PUZ1","room":"R7","content_class":"mechanical_puzzle","expected_size":[256,256]},
+    {"id":"WEL_FLOR","room":"R7","content_class":"floor_circular_surface","expected_size":[256,256]},
+    {"id":"BAPFLOR#","room":"R8","content_class":"stone_floor","expected_size":[256,256]},
+    {"id":"BAPGLASS","room":"R8","content_class":"glass_translucent_style","expected_size":[128,128]},
+    {"id":"BAPTAP","room":"R8","content_class":"high_detail_mural","expected_size":[512,256]},
+    {"id":"SHIELD1","room":"R8","content_class":"text_decorative_shield","expected_size":[512,512]}
+  ],
+  "automatic_winner": false
+}
