@@ -59,6 +59,11 @@ def main() -> int:
         'automatic_promotion',
         'path.contains("..")',
         'path.ends_with(".png")',
+        "HashingContext.new()",
+        "HashingContext.HASH_SHA256",
+        "runtime_ready",
+        "sha256",
+        "size_bytes",
     ]:
         assert token in resolver, token
 
