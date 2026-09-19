@@ -24,7 +24,7 @@ from common import (
     sha256_file,
     visible_legacy_magenta_pixels,
 )
-from oa_tex_ai_bakeoff import apply_execution_subset, build_recreate_plan, eligible_entries
+from oa_tex_ai_bakeoff import apply_execution_subset, build_recreate_plan, build_restore_plan, eligible_entries
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_enhance import upscale_one
@@ -384,6 +384,34 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual([entry["id"] for entry in deferred], ["BAPTAP"])
         self.assertEqual(preset["name"], "recreated_smoke_4")
+
+    def test_restored_plan_starts_with_runtime_doctor(self):
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            args = SimpleNamespace(
+                run_dir=temp / "run",
+                source_dir=temp / "classic",
+                restored_dir=temp / "restored",
+                factor=4,
+                restore_model="RealESRGAN_x4plus",
+                tile=0,
+                fp32=True,
+                denoise_strength=None,
+                realesrgan_root=temp / "Real-ESRGAN",
+                model_path=temp / "RealESRGAN_x4plus.pth",
+                selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
+            )
+            jobs = build_restore_plan(
+                args,
+                [{"id": "CORIROCK", "content_class": "rock_organic_surface"}],
+            )
+
+        self.assertEqual(
+            [job["stage"] for job in jobs],
+            ["realesrgan_doctor", "generate", "structural_qa", "review_queue"],
+        )
+        self.assertIn("--realesrgan-root", jobs[0]["argv"])
+        self.assertIn("--model-path", jobs[0]["argv"])
 
     def test_atlas_split_stitch_is_pixel_exact(self):
         with tempfile.TemporaryDirectory() as td:
