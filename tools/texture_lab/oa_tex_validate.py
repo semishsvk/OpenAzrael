@@ -6,7 +6,21 @@ from pathlib import Path
 
 from PIL import Image
 
-from common import ROOT, RESAMPLE, image_mae, mean_rgba, optional_ssim, seam_mae, sha256_file, write_json
+from common import (
+    ROOT,
+    RESAMPLE,
+    alpha_is_binary,
+    apply_legacy_colorkey,
+    has_alpha,
+    image_mae,
+    mean_rgba,
+    optional_ssim,
+    seam_mae,
+    sha256_file,
+    should_apply_legacy_colorkey,
+    visible_legacy_magenta_pixels,
+    write_json,
+)
 
 
 def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
@@ -16,13 +30,25 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
         expected = (src.width * factor, src.height * factor)
         size_ok = cand.size == expected
 
+        legacy_colorkey = should_apply_legacy_colorkey(source, src)
+        source_compare = apply_legacy_colorkey(src) if legacy_colorkey else src.convert("RGBA")
+
         roundtrip = cand.resize(src.size, RESAMPLE["lanczos"])
-        src_rgba = src.convert("RGBA")
         rt_rgba = roundtrip.convert("RGBA")
 
-        src_mean = mean_rgba(src_rgba)
+        src_mean = mean_rgba(source_compare)
         rt_mean = mean_rgba(rt_rgba)
         color_drift = [abs(a - b) for a, b in zip(src_mean, rt_mean)]
+
+        candidate_has_alpha = has_alpha(cand)
+        binary_alpha = alpha_is_binary(cand) if legacy_colorkey else None
+        visible_magenta = visible_legacy_magenta_pixels(cand) if legacy_colorkey else 0
+        colorkey_ok = (
+            (not legacy_colorkey)
+            or (candidate_has_alpha and bool(binary_alpha) and visible_magenta == 0)
+        )
+
+        technical_ok = size_ok and colorkey_ok
 
         return {
             "source": source.name,
@@ -31,12 +57,17 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
             "expected_size": list(expected),
             "actual_size": list(cand.size),
             "size_ok": size_ok,
-            "roundtrip_mae_rgba_0_255": image_mae(src_rgba, rt_rgba),
-            "roundtrip_ssim_rgb": optional_ssim(src, roundtrip),
+            "legacy_colorkey_expected": legacy_colorkey,
+            "candidate_has_alpha": candidate_has_alpha,
+            "candidate_binary_alpha": binary_alpha,
+            "visible_legacy_magenta_pixels": visible_magenta,
+            "colorkey_ok": colorkey_ok,
+            "roundtrip_mae_rgba_0_255": image_mae(source_compare, rt_rgba),
+            "roundtrip_ssim_rgb": optional_ssim(source_compare, roundtrip),
             "roundtrip_mean_rgba_abs_drift": color_drift,
             "candidate_edge_seam_mae_rgba_0_255": seam_mae(cand),
             "fidelity_thresholds": "UNCALIBRATED_HOLD",
-            "technical_status": "PASS" if size_ok else "FAIL",
+            "technical_status": "PASS" if technical_ok else "FAIL",
         }
 
 
@@ -65,7 +96,7 @@ def main() -> int:
 
     failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
-        "schema": "openazrael.texture_lab.validation.v1",
+        "schema": "openazrael.texture_lab.validation.v2",
         "variant": args.variant,
         "factor": args.factor,
         "note": "Fidelity metrics are observational until thresholds are calibrated on RT-POC-01.",
