@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
@@ -570,6 +571,76 @@ def resolve_named_candidate_namespace(args) -> None:
         args.recreated_dir = canonical
 
 
+def prepare_run_storage(
+    run_dir: Path,
+    candidate_dir: Path,
+    replace_existing: bool,
+    dry_run: bool,
+) -> dict:
+    def has_content(path: Path) -> bool:
+        return path.exists() and any(path.iterdir())
+
+    run_has_content = has_content(run_dir)
+    candidate_has_content = has_content(candidate_dir)
+    existing = run_has_content or candidate_has_content
+
+    if dry_run:
+        if replace_existing:
+            raise SystemExit("--replace-existing-run is not valid with --dry-run")
+        return {
+            "status": "DRY_RUN_NO_MUTATION",
+            "run_dir_has_content": run_has_content,
+            "candidate_dir_has_content": candidate_has_content,
+        }
+
+    if existing and not replace_existing:
+        raise SystemExit(
+            "named preset already has local run/candidate artifacts; refusing "
+            "to mix a rerun with stale evidence. Review/backup the old local "
+            "run, then rerun with --replace-existing-run to start clean."
+        )
+
+    if replace_existing:
+        if run_dir.exists():
+            shutil.rmtree(run_dir)
+        if candidate_dir.exists():
+            shutil.rmtree(candidate_dir)
+
+    return {
+        "status": "CLEAN",
+        "run_dir_has_content_before": run_has_content,
+        "candidate_dir_has_content_before": candidate_has_content,
+        "replaced_existing": bool(replace_existing and existing),
+    }
+
+
+def prepare_named_run_storage(args) -> dict | None:
+    if not args.preset:
+        return None
+
+    expected_run_dir = (args.run_root / args.preset).resolve()
+    if args.run_dir.resolve() != expected_run_dir:
+        raise SystemExit(
+            "named preset run directory is not canonical: "
+            f"actual={args.run_dir} expected={expected_run_dir}"
+        )
+    candidate_dir = (
+        args.restored_dir if args.mode == "restored" else args.recreated_dir
+    )
+    expected_candidate = named_candidate_root(args.mode, args.preset).resolve()
+    if candidate_dir.resolve() != expected_candidate:
+        raise SystemExit(
+            "named preset candidate directory is not canonical: "
+            f"actual={candidate_dir} expected={expected_candidate}"
+        )
+    return prepare_run_storage(
+        args.run_dir,
+        candidate_dir,
+        bool(args.replace_existing_run),
+        bool(args.dry_run),
+    )
+
+
 def validate_named_preset_contract(
     args,
     qwen_contract: dict,
@@ -654,6 +725,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run or dry-run the canonical OpenAzrael AI texture bake-off.")
     parser.add_argument("mode", choices=["restored", "recreated"])
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--replace-existing-run",
+        action="store_true",
+        help=(
+            "For a real named preset only: delete that preset's existing local "
+            "run evidence and preset-scoped candidates before a clean rerun."
+        ),
+    )
     parser.add_argument("--preset", default=None, help="Named staged execution set from ai_smoke_sets.json.")
     parser.add_argument("--only", nargs="*", default=None, help="Explicit eligible texture IDs for this run.")
     parser.add_argument(
@@ -729,6 +808,7 @@ def main() -> int:
         args.run_root = args.run_dir
 
     resolve_named_candidate_namespace(args)
+    storage_state = prepare_named_run_storage(args)
 
     if args.preset and args.plan_out is not None and not args.dry_run:
         raise SystemExit(
@@ -782,6 +862,12 @@ def main() -> int:
             if args.preset
             else "ad_hoc_explicit"
         ),
+        "run_storage_policy": (
+            "clean_named_preset_v1"
+            if args.preset
+            else "ad_hoc_explicit"
+        ),
+        "run_storage_state": storage_state,
         "eligible": [
             {
                 "id": entry["id"],
