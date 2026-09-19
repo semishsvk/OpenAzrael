@@ -106,6 +106,69 @@ def bootstrap_plan(
     return commands
 
 
+def restored_smoke_check_plan(runtime_dir: Path) -> list[dict]:
+    paths = runtime_paths(runtime_dir)
+    launch_dir = DEFAULT_LAUNCHPAD_DIR
+
+    runtime_probe = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_realesrgan_runtime.py"),
+        "check",
+        "--python-exe",
+        str(paths["python"]),
+        "--require-basicsr",
+        "--require-realesrgan",
+        "--out",
+        str(launch_dir / "restored_smoke_1_runtime_contract.json"),
+    ]
+    preflight = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_local_preflight.py"),
+        "--preset",
+        "restored_smoke_1",
+        "--realesrgan-root",
+        str(paths["source"]),
+        "--model-path",
+        str(paths["model"]),
+        "--realesrgan-python",
+        str(paths["python"]),
+        "--out",
+        str(launch_dir / "restored_smoke_1_preflight.json"),
+    ]
+    doctor = [
+        str(paths["python"]),
+        str(ROOT / "tools/texture_lab/oa_tex_realesrgan_doctor.py"),
+        "--runtime-dir",
+        str(runtime_dir),
+        "--realesrgan-root",
+        str(paths["source"]),
+        "--model-path",
+        str(paths["model"]),
+        "--report",
+        str(launch_dir / "restored_smoke_1_doctor.json"),
+    ]
+    dry_run = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_ai_bakeoff.py"),
+        "restored",
+        "--preset",
+        "restored_smoke_1",
+        "--realesrgan-python",
+        str(paths["python"]),
+        "--realesrgan-root",
+        str(paths["source"]),
+        "--model-path",
+        str(paths["model"]),
+        "--dry-run",
+    ]
+    return [
+        command_record("runtime_contract", runtime_probe),
+        command_record("local_preflight", preflight),
+        command_record("runtime_doctor", doctor),
+        command_record("canonical_bakeoff_dry_run", dry_run),
+    ]
+
+
 def restored_smoke_plan(runtime_dir: Path) -> list[dict]:
     paths = runtime_paths(runtime_dir)
     launch_dir = DEFAULT_LAUNCHPAD_DIR
@@ -341,6 +404,7 @@ def main() -> int:
             "status",
             "prepare-baseline",
             "bootstrap-realesrgan",
+            "check-restored-smoke-1",
             "restored-smoke-1",
         ],
     )
@@ -417,6 +481,17 @@ def main() -> int:
             args.install_python_deps,
             runtime_python,
         )
+    elif args.command == "check-restored-smoke-1":
+        status = build_status(runtime_dir)
+        if not status["source_ready_for_smoke_preflight"]:
+            write_json(args.out, status)
+            print(
+                "HOLD check-restored-smoke-1 source prerequisites: "
+                + ",".join(status["blockers"])
+                + f" report={args.out}"
+            )
+            return 1
+        commands = restored_smoke_check_plan(runtime_dir)
     else:
         status = build_status(runtime_dir)
         if not args.dry_run and not status["source_ready_for_smoke_preflight"]:
