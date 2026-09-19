@@ -75,6 +75,11 @@ from oa_tex_qwen_preflight import (
 from oa_tex_realesrgan_bootstrap import dependency_install_commands, verify_checkpoint
 from oa_tex_realesrgan_runtime import evaluate_probe, load_contract as load_realesrgan_runtime_contract
 from oa_tex_realesrgan_lock import build_lock_candidate, requirements_text
+from oa_tex_realesrgan_lock_plan import (
+    build_promotion_plan,
+    candidate_compatibility,
+    write_plan_artifacts,
+)
 from oa_tex_stage_gate import (
     approve,
     check_prerequisites,
@@ -1826,6 +1831,134 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertFalse(hold["checks"]["pip_freeze_pass"])
         with self.assertRaises(SystemExit):
             requirements_text(hold)
+
+    def test_realesrgan_runtime_lock_promotion_plan_is_non_mutating_and_hash_stable(self):
+        contract = load_realesrgan_runtime_contract()
+        packages = [
+            "basicsr==1.4.2",
+            "torch==2.1.2",
+            "torchvision==0.16.2",
+        ]
+        freeze_text = "\n".join(sorted(packages)) + "\n"
+        freeze_sha = hashlib.sha256(freeze_text.encode("utf-8")).hexdigest()
+        candidate = {
+            "schema": "openazrael.texture_lab.realesrgan_runtime_lock_candidate.v1",
+            "status": "PASS",
+            "preset": "restored_smoke_1",
+            "automatic_promotion": False,
+            "canonical_config_mutated": False,
+            "runtime_contract": {
+                "schema": contract["schema"],
+                "python_major_minor": "3.11",
+                "torch": "2.1.2",
+                "torchvision": "0.16.2",
+                "basicsr": "1.4.2",
+            },
+            "observed": {
+                "python": "3.11.x",
+                "platform": "test-platform",
+                "source_version": "0.3.0",
+                "source_git_head": "fa4c8a03ae3dbc9ea6ed471a6ab5da94ac15c2ea",
+                "checkpoint": {
+                    "status": "PASS",
+                    "sha256": "a" * 64,
+                    "size_bytes": 10,
+                },
+                "torch_runtime": {
+                    "status": "PASS",
+                    "version": "2.1.2",
+                    "cuda_available": True,
+                    "cuda_version": "12.1",
+                },
+                "runtime_probe": {
+                    "status": "PASS",
+                    "observed": {
+                        "python_major_minor": "3.11",
+                        "torch": "2.1.2",
+                        "torchvision": "0.16.2",
+                        "basicsr": "1.4.2",
+                    },
+                },
+                "pip_freeze": {
+                    "status": "PASS",
+                    "packages": sorted(packages),
+                    "package_count": len(packages),
+                    "sha256": freeze_sha,
+                },
+            },
+            "doctor_evidence": {
+                "path": "doctor.json",
+                "sha256": "b" * 64,
+                "size_bytes": 20,
+            },
+            "approval": {
+                "status": "PASS",
+                "path": "approval.json",
+            },
+        }
+
+        compatibility = candidate_compatibility(candidate, contract)
+        self.assertEqual(compatibility["status"], "PASS")
+
+        plan = build_promotion_plan(
+            candidate,
+            "c" * 64,
+            contract,
+        )
+        self.assertEqual(
+            plan["status"],
+            "READY_FOR_HUMAN_PROMOTION_REVIEW",
+        )
+        self.assertFalse(plan["automatic_promotion"])
+        self.assertFalse(plan["canonical_files_mutated"])
+        self.assertEqual(len(plan["proposed_files"]), 2)
+
+        with tempfile.TemporaryDirectory() as td:
+            out_dir = Path(td)
+            rendered = write_plan_artifacts(plan, out_dir)
+            self.assertTrue(
+                Path(
+                    rendered["local_proposed_files"]["environment_lock"]
+                ).is_file()
+            )
+            self.assertTrue(
+                Path(
+                    rendered["local_proposed_files"]["requirements_lock"]
+                ).is_file()
+            )
+            lock_text = Path(
+                rendered["local_proposed_files"]["environment_lock"]
+            ).read_text(encoding="utf-8")
+            req_text = Path(
+                rendered["local_proposed_files"]["requirements_lock"]
+            ).read_text(encoding="utf-8")
+            by_target = {
+                row["target"]: row["sha256"]
+                for row in rendered["proposed_files"]
+            }
+            self.assertEqual(
+                hashlib.sha256(lock_text.encode("utf-8")).hexdigest(),
+                by_target[
+                    "tools/texture_lab/config/realesrgan_environment_lock.json"
+                ],
+            )
+            self.assertEqual(
+                hashlib.sha256(req_text.encode("utf-8")).hexdigest(),
+                by_target[
+                    "tools/texture_lab/requirements-realesrgan-lock.txt"
+                ],
+            )
+            self.assertEqual(req_text, freeze_text)
+
+        bad = json.loads(json.dumps(candidate))
+        bad["runtime_contract"]["torch"] = "2.2.0"
+        hold = build_promotion_plan(
+            bad,
+            "d" * 64,
+            contract,
+        )
+        self.assertEqual(hold["status"], "HOLD")
+        self.assertFalse(hold["compatibility"]["checks"]["torch_ok"])
 
     def test_realesrgan_texture_dependency_plan_excludes_face_stack(self):
         contract = load_realesrgan_runtime_contract()
