@@ -492,6 +492,22 @@ def build_stage_gate_job(args) -> dict | None:
     }
 
 
+def build_run_summary_job(args) -> dict | None:
+    if not args.preset:
+        return None
+    argv = [
+        sys.executable,
+        str(ROOT / "tools/texture_lab/oa_tex_run_summary.py"),
+        args.preset,
+        "--run-root", str(args.run_root),
+    ]
+    return {
+        "stage": "run_summary",
+        "argv": argv,
+        "command": _quoted_command(argv),
+    }
+
+
 def resolve_qwen_defaults(args, contract: dict) -> None:
     bindings = contract["canonical_openazrael_workflow"]["bindings"]
     if args.workflow is None:
@@ -620,6 +636,9 @@ def main() -> int:
     if local_preflight_job is not None:
         prefix_jobs.append(local_preflight_job)
     jobs = prefix_jobs + jobs
+    summary_job = build_run_summary_job(args)
+    if summary_job is not None:
+        jobs.append(summary_job)
 
     plan = {
         "schema": "openazrael.texture_lab.ai_bakeoff_plan.v3",
