@@ -85,6 +85,12 @@ python tools/texture_lab/oa_tex_realesrgan_doctor.py
 
 Dependency installation is deliberately explicit (`--install-python-deps`) so the tool never silently rewrites an existing Python environment.
 
+### Post-smoke environment lock proposal
+
+After a current approved real `restored_smoke_1`, `oa_tex_realesrgan_lock.py` captures a local non-promoting runtime-lock candidate from the exact approved doctor evidence and pip-freeze fingerprint. `oa_tex_realesrgan_lock_plan.py` can then render, still locally, the exact proposed tracked environment lock and requirements lock together with SHA-256 values and a human-review checklist.
+
+Neither tool mutates canonical repository files. The final tracked environment lock remains intentionally absent until an explicit human-reviewed repository promotion is performed.
+
 ### Pinned Real-ESRGAN Python compatibility contract
 
 `config/realesrgan_runtime_contract.json` separates the AI inference environment from the source-safe tooling environment. RT-POC-01 currently pins:
@@ -100,6 +106,12 @@ Dependency installation is deliberately explicit (`--install-python-deps`) so th
 The CUDA/CPU wheel index is machine-specific, but the Python/Torch/torchvision versions are part of the experiment contract. `oa_tex_realesrgan_runtime.py` verifies the pair independently of the bootstrap. The bootstrap refuses the dependency phase unless that probe passes, installs exact BasicSR plus the pinned Real-ESRGAN source with `--no-deps`, and does not install the face stack.
 
 `oa_tex_realesrgan_doctor.py` rechecks the runtime immediately before inference and records the installed `pip freeze` fingerprint along with Torch/CUDA/GPU information. This environment snapshot is still **provisional**: it becomes a candidate final package lock only after a successful reviewed real `restored_smoke_1` run.
+
+### Restored runtime timing evidence
+
+`oa_tex_restore.py` generation report schema v5 records per-texture subprocess wall time plus total run wall time, measured inference wall time, mean inference time per texture and an inference-only textures/minute figure. These numbers are observational wall-clock evidence, not GPU kernel benchmarks.
+
+`oa_tex_run_summary.py` uses the observed mean inference wall time to provide a deliberately naive linear projection for `restored_smoke_4` and `restored_full`. The projection excludes review, QA, I/O variability, warm-up effects and GPU contention; it exists only to size later stages after the first real CORIROCK run.
 
 ### `oa_tex_restore.py`
 Supports a pinned official Real-ESRGAN Python backend plus a fallback command-template backend. For a registered model, the adapter itself re-verifies the pinned upstream version, checkpoint byte size and SHA-256 immediately before inference; a mismatch aborts the run. The preferred POC path records the exact checkpoint SHA-256, tile setting, precision mode and denoise strength. `tile=0` is the default fidelity path; tiling is a resource fallback, not the baseline.
