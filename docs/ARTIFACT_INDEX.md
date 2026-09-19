@@ -188,3 +188,5 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 ## Texture Lab post-smoke runtime lock
 - `tools/texture_lab/oa_tex_realesrgan_lock.py` — creates a local non-promoting runtime lock candidate only after a current approved `restored_smoke_1`; captures doctor/runtime/pip-freeze evidence without mutating the canonical runtime contract.
 - local outputs live under ignored `.local/texture_lab/runtime_locks/`; repository promotion remains a separate explicit step.
+
+- `tools/texture_lab/oa_tex_realesrgan_lock_plan.py` — renders a local, hash-addressed repository-promotion proposal from the approved runtime-lock candidate; never mutates tracked files.
