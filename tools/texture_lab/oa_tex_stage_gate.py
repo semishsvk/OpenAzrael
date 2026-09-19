@@ -16,6 +16,8 @@ from common import (
 )
 
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+AI_POLICY = ROOT / "tools/texture_lab/config/ai_review_policy.json"
 DEFAULT_RUN_ROOT = ROOT / ".local/texture_lab/runs/rt_poc_01"
 DEFAULT_APPROVAL_ROOT = ROOT / ".local/texture_lab/approvals/rt_poc_01"
 DEFAULT_MANUAL_REVIEW_ROOT = ROOT / ".local/texture_lab/manual_reviews/rt_poc_01"
@@ -147,6 +149,57 @@ def runtime_evidence_paths(mode: str, run_dir: Path) -> list[Path]:
     ]
 
 
+def expected_recreated_job_records(preset: str, run_dir: Path) -> list[Path]:
+    spec = preset_record(preset)
+    expected_ids = [str(value) for value in spec.get("textures", [])]
+    selection = load_json(SELECTION)
+    policy = load_json(AI_POLICY)
+    by_id = {
+        str(row["id"]): row
+        for row in selection.get("textures", [])
+        if isinstance(row, dict) and row.get("id")
+    }
+    records: list[Path] = []
+
+    for texture_id in expected_ids:
+        entry = by_id.get(texture_id)
+        if not isinstance(entry, dict):
+            continue
+        rules = dict(policy.get("defaults", {}))
+        rules.update(
+            policy.get("classes", {}).get(
+                str(entry.get("content_class", "")),
+                {},
+            )
+        )
+        atlas = rules.get("atlas_split")
+        if isinstance(atlas, dict):
+            segments = int(atlas.get("segments", 0))
+            atlas_root = run_dir / "atlas_parts" / texture_id
+            records.extend(
+                [
+                    run_dir
+                    / "recreated_jobs"
+                    / f"{texture_id}_part_{index:02d}.job.json"
+                    for index in range(segments)
+                ]
+            )
+            records.extend(
+                [
+                    atlas_root / "classic_split.json",
+                    atlas_root / "enhanced_split.json",
+                    atlas_root / "stitch.json",
+                ]
+            )
+        else:
+            safe_id = texture_id.replace("#", "_")
+            records.append(
+                run_dir / "recreated_jobs" / f"{safe_id}.job.json"
+            )
+
+    return sorted(records)
+
+
 def recreated_job_records(run_dir: Path) -> list[Path]:
     jobs = sorted((run_dir / "recreated_jobs").glob("*.job.json"))
     atlases = sorted((run_dir / "atlas_parts").glob("**/*.json"))
@@ -178,10 +231,18 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     missing = [str(path) for path in required if not path.is_file()]
 
     job_paths: list[Path] = []
+    expected_job_paths: list[Path] = []
     if mode == "recreated":
         job_paths = recreated_job_records(run_dir)
-        if not job_paths:
-            missing.append(str(run_dir / "recreated_jobs/*.job.json"))
+        expected_job_paths = expected_recreated_job_records(
+            preset,
+            run_dir,
+        )
+        missing.extend(
+            str(path)
+            for path in expected_job_paths
+            if not path.is_file()
+        )
 
     if missing:
         return {
@@ -283,7 +344,10 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         qwen = load_json(run_dir / "qwen_preflight.json")
         checks["runtime_doctor_ok"] = comfy.get("ready") is True
         checks["qwen_preflight_ok"] = qwen.get("ready_for_execution") is True
-        checks["generation_records_present"] = bool(job_paths)
+        checks["generation_records_exact"] = (
+            {path.resolve() for path in job_paths}
+            == {path.resolve() for path in expected_job_paths}
+        )
 
     return {
         "status": "PASS" if all(checks.values()) else "FAIL",
@@ -297,6 +361,9 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         "review_pack": pack,
         "runtime": [file_evidence(path) for path in runtime_paths],
         "generation_records": [file_evidence(path) for path in job_paths],
+        "expected_generation_records": [
+            str(path) for path in expected_job_paths
+        ],
         "outputs": output_rows,
         "candidate_namespace": str(expected_output_root),
         "checks": checks,
