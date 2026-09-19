@@ -41,8 +41,19 @@
     ],
     "repeat_sampling_preview": "3x3",
     "source_relative_seam_metrics": true,
-    "approval_receipt_schema": 3,
-    "changed_reviewed_pixels_invalidate_approval": true
+    "approval_receipt_schema": 4,
+    "changed_reviewed_pixels_invalidate_approval": true,
+    "structured_manual_review": {
+      "schema": "openazrael.texture_lab.manual_review.v1",
+      "required_before_stage_approval": true,
+      "per_texture_decisions": [
+        "ACCEPTED_FOR_STAGE",
+        "HOLD",
+        "REJECTED"
+      ],
+      "accepted_requires_all_required_checks_true": true,
+      "evidence_change_status": "STALE"
+    }
   },
   "godot_lab": {
     "isolated": true,
