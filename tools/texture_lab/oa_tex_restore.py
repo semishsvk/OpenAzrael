@@ -39,11 +39,21 @@ def verify_registered_runtime(model_name: str, realesrgan_root: Path, model_path
 
     version_path = realesrgan_root / "VERSION"
     version = version_path.read_text(encoding="utf-8").strip() if version_path.is_file() else None
+    git_head = None
+    if (realesrgan_root / ".git").exists():
+        try:
+            git_head = subprocess.check_output(
+                ["git", "-C", str(realesrgan_root), "rev-parse", "HEAD"],
+                text=True,
+            ).strip()
+        except Exception:
+            git_head = None
     digest = sha256_file(model_path) if model_path.is_file() else None
     size = model_path.stat().st_size if model_path.is_file() else None
 
     checks = {
         "source_version_ok": version == str(spec["upstream_version"]),
+        "source_commit_ok": git_head == str(spec["upstream_commit"]),
         "checkpoint_size_ok": size == int(spec["checkpoint_size_bytes"]),
         "checkpoint_sha256_ok": digest == str(spec["checkpoint_sha256"]),
         "factor_ok": int(spec["scale"]) == 4,
@@ -55,6 +65,8 @@ def verify_registered_runtime(model_name: str, realesrgan_root: Path, model_path
         "model": model_name,
         "source_version": version,
         "expected_source_version": spec["upstream_version"],
+        "source_git_head": git_head,
+        "expected_source_git_head": spec["upstream_commit"],
         "checkpoint_size_bytes": size,
         "expected_checkpoint_size_bytes": spec["checkpoint_size_bytes"],
         "checkpoint_sha256": digest,
