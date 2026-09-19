@@ -25,6 +25,8 @@ func load_manifest(path: String) -> bool:
         return false
     if bool(parsed.get("automatic_promotion", true)):
         return false
+    if not bool(parsed.get("runtime_ready", false)):
+        return false
 
     var rows = parsed.get("textures", [])
     if not rows is Array:
@@ -39,6 +41,8 @@ func load_manifest(path: String) -> bool:
             return false
         if not _safe_texture_path(texture_path):
             return false
+        if not _row_integrity_ok(raw):
+            return false
         _rows[texture_id] = raw.duplicate(true)
 
     profile = String(parsed.get("profile", ""))
@@ -52,6 +56,34 @@ func _safe_texture_path(path: String) -> bool:
     if path.contains(".."):
         return false
     return path.ends_with(".png")
+
+func _sha256_file(path: String) -> String:
+    if not FileAccess.file_exists(path):
+        return ""
+    var file := FileAccess.open(path, FileAccess.READ)
+    if file == null:
+        return ""
+    var ctx := HashingContext.new()
+    if ctx.start(HashingContext.HASH_SHA256) != OK:
+        return ""
+    const CHUNK_SIZE := 1024 * 1024
+    while file.get_position() < file.get_length():
+        var remaining := file.get_length() - file.get_position()
+        ctx.update(file.get_buffer(min(CHUNK_SIZE, remaining)))
+    return ctx.finish().hex_encode()
+
+func _row_integrity_ok(row: Dictionary) -> bool:
+    var path := String(row.get("path", ""))
+    if not FileAccess.file_exists(path):
+        return false
+    var expected_sha := String(row.get("sha256", ""))
+    var expected_size := int(row.get("size_bytes", -1))
+    if expected_sha.is_empty() or expected_size < 0:
+        return false
+    var file := FileAccess.open(path, FileAccess.READ)
+    if file == null or file.get_length() != expected_size:
+        return false
+    return _sha256_file(path) == expected_sha
 
 func has_texture(texture_id: String) -> bool:
     return _rows.has(texture_id)
