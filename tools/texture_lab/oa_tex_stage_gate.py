@@ -377,6 +377,9 @@ def approve(
     note: str | None,
     manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
 ) -> dict:
+    if not note or not note.strip():
+        raise SystemExit("stage approval requires a non-empty --note")
+
     evidence = evidence_snapshot(preset, run_root)
     if evidence.get("status") != "PASS":
         raise SystemExit(
