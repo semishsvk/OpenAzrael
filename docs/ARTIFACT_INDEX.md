@@ -1,56 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v25` — technical base v116 plus current context/Git/quality/architecture layer.
-
-## Localization architecture
-- `docs/LOCALIZATION_ARCHITECTURE.md`
-- `docs/DECISIONS.md` ADR-024
-- implementation deliberately deferred until after Candidate 1 runtime/manual validation
-
-## Texture Lab RT-POC-01
-- `docs/TEXTURE_LAB_RT_POC_01.md`
-- `docs/TEXTURE_LAB_LOCAL_RUNBOOK.md`
-- `tools/texture_lab/oa_tex_scan.py`
-- `tools/texture_lab/oa_tex_enhance.py`
-- `tools/texture_lab/oa_tex_validate.py`
-- `tools/texture_lab/oa_tex_compare.py`
-- `tools/texture_lab/oa_tex_tile.py`
-- `tools/texture_lab/oa_tex_atlas.py`
-- `tools/texture_lab/oa_tex_sampling_audit.py`
-- `tools/texture_lab/oa_tex_structural_drift.py`
-- `tools/texture_lab/oa_tex_calibrate_drift.py`
-- `tools/texture_lab/oa_tex_run_poc.py`
-- `tools/texture_lab/oa_tex_restore.py`
-- `tools/texture_lab/oa_tex_realesrgan_bootstrap.py`
-- `tools/texture_lab/oa_tex_realesrgan_doctor.py`
-- `tools/texture_lab/oa_tex_recreate.py`
-- `tools/texture_lab/oa_tex_ai_bakeoff.py`
-- `tools/texture_lab/oa_tex_local_preflight.py`
-- `tools/texture_lab/oa_tex_stage_gate.py`
-- `tools/texture_lab/oa_tex_review_report.py`
-- `tools/texture_lab/oa_tex_comfy_doctor.py`
-- `tools/texture_lab/oa_tex_qwen_preflight.py`
-- `tools/texture_lab/requirements-source-safe.txt`
-- `tools/texture_lab/config/enhance.json`
-- `tools/texture_lab/config/rt_poc_01_selection.json`
-- `data/texture_lab/rt_poc_01_sampling_review.json`
-- `data/texture_lab/rt_poc_01_drift_baseline.json`
-- `data/texture_lab/rt_poc_01_ai_policy_summary.json`
-- `tools/texture_lab/config/ai_backends.json`
-- `tools/texture_lab/config/model_registry.json`
-- `tools/texture_lab/config/ai_review_policy.json`
-- `tools/texture_lab/config/ai_smoke_sets.json`
-- `tools/texture_lab/config/qwen_2511_contract.json`
-- `tools/texture_lab/workflows/qwen_2511_openazrael_api.json`
-- `tools/texture_lab/profiles/base_preserve.json`
-- `tools/texture_lab/profiles/recreate_profiles.json`
-- `tools/texture_lab/oa_tex_prompt.py`
-- `tools/texture_lab/godot/texture_lab.gd`
-- `tools/texture_lab/godot/texture_lab.tscn`
-- `tools/texture_lab/validate_godot_lab.py`
-- `tests/test_texture_lab_rt_poc_01.py`
-- generated Classic/Enhanced/AI pixels remain excluded from Git by ADR-025
+- `v116-context-v24` — technical base v116 plus current context/Git/quality layer.
 
 ## KG-001 Candidate 1 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
