@@ -6,7 +6,14 @@ from pathlib import Path
 
 from PIL import Image, __version__ as PILLOW_VERSION
 
-from common import ROOT, has_alpha, sha256_file, write_json
+from common import (
+    ROOT,
+    has_alpha,
+    legacy_colorkey_stats,
+    sha256_file,
+    should_apply_legacy_colorkey,
+    write_json,
+)
 
 
 def scan(input_dir: Path) -> dict:
@@ -14,6 +21,7 @@ def scan(input_dir: Path) -> dict:
     for path in sorted(input_dir.glob("*.png")):
         with Image.open(path) as im:
             im.load()
+            key_stats = legacy_colorkey_stats(im)
             entries.append(
                 {
                     "id": path.stem,
@@ -23,6 +31,9 @@ def scan(input_dir: Path) -> dict:
                     "mode": im.mode,
                     "has_alpha": has_alpha(im),
                     "source_sha256": sha256_file(path),
+                    "legacy_colorkey_candidate": should_apply_legacy_colorkey(path, im),
+                    "legacy_magenta_pixels": key_stats["pixels"],
+                    "legacy_magenta_fraction": key_stats["fraction"],
                     "material_class": "unclassified",
                     "tileable": None,
                     "room_usage": [],
@@ -34,9 +45,14 @@ def scan(input_dir: Path) -> dict:
                 }
             )
     return {
-        "schema": "openazrael.texture_lab.classic_manifest.v1",
+        "schema": "openazrael.texture_lab.classic_manifest.v2",
         "source_kind": "local_excluded_commercial_derived",
         "pillow_version": PILLOW_VERSION,
+        "legacy_colorkey_policy": {
+            "status": "POC_PRESENTATION_SAFETY_NOT_ORIGINAL_RENDERER_PROOF",
+            "candidate_rule": "filename contains # AND quantized magenta pixels exist",
+            "magenta_rule": "R>=248 AND B>=248 AND G<=12",
+        },
         "texture_count": len(entries),
         "textures": entries,
     }
