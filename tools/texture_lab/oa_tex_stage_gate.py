@@ -37,20 +37,70 @@ def plan_filename(mode: str) -> str:
     return f"{mode}_plan.json"
 
 
+def technical_filename(mode: str) -> str:
+    return f"ai_{mode}_validation.json"
+
+
+def structural_filename(mode: str) -> str:
+    return f"ai_{mode}_structural_drift.json"
+
+
 def output_path(mode: str, texture_id: str) -> Path:
     if mode == "restored":
         return ROOT / "assets/textures/ai_restored" / texture_id / "realesrgan_x4.png"
     return ROOT / "assets/textures/ai_recreated" / texture_id / "selected.png"
 
 
+def file_evidence(path: Path) -> dict:
+    return {
+        "path": str(path),
+        "sha256": sha256_file(path),
+        "size_bytes": path.stat().st_size,
+    }
+
+
+def runtime_evidence_paths(mode: str, run_dir: Path) -> list[Path]:
+    common = [
+        run_dir / "local_preflight.json",
+        run_dir / "stage_gate.json",
+    ]
+    if mode == "restored":
+        return common + [
+            run_dir / "realesrgan_doctor.json",
+            run_dir / "ai_restore_run.json",
+        ]
+    return common + [
+        run_dir / "comfy_doctor.json",
+        run_dir / "qwen_preflight.json",
+    ]
+
+
+def recreated_job_records(run_dir: Path) -> list[Path]:
+    jobs = sorted((run_dir / "recreated_jobs").glob("*.job.json"))
+    atlases = sorted((run_dir / "atlas_parts").glob("**/*.json"))
+    return jobs + atlases
+
+
 def evidence_snapshot(preset: str, run_root: Path) -> dict:
     spec = preset_record(preset)
     mode = str(spec["mode"])
     run_dir = run_dir_for(preset, run_root)
+
     plan = run_dir / plan_filename(mode)
     review = run_dir / review_filename(mode)
+    technical = run_dir / technical_filename(mode)
+    structural = run_dir / structural_filename(mode)
+    runtime_paths = runtime_evidence_paths(mode, run_dir)
 
-    missing = [str(path) for path in [plan, review] if not path.is_file()]
+    required = [plan, review, technical, structural, *runtime_paths]
+    missing = [str(path) for path in required if not path.is_file()]
+
+    job_paths: list[Path] = []
+    if mode == "recreated":
+        job_paths = recreated_job_records(run_dir)
+        if not job_paths:
+            missing.append(str(run_dir / "recreated_jobs/*.job.json"))
+
     output_rows = []
     for texture_id in spec.get("textures", []):
         path = output_path(mode, str(texture_id))
@@ -60,9 +110,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         output_rows.append(
             {
                 "id": str(texture_id),
-                "path": str(path),
-                "sha256": sha256_file(path),
-                "size_bytes": path.stat().st_size,
+                **file_evidence(path),
             }
         )
 
@@ -76,38 +124,84 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
 
     plan_data = load_json(plan)
     review_data = load_json(review)
+    technical_data = load_json(technical)
+    local_preflight = load_json(run_dir / "local_preflight.json")
+    stage_gate = load_json(run_dir / "stage_gate.json")
+
     selected = [str(value) for value in plan_data.get("selected", [])]
     expected = [str(value) for value in spec.get("textures", [])]
-    review_ids = [str(row.get("id")) for row in review_data.get("rows", [])]
+    review_rows = [
+        row for row in review_data.get("rows", []) if isinstance(row, dict)
+    ]
+    review_ids = [str(row.get("id")) for row in review_rows]
+    technical_rows = [
+        row for row in technical_data.get("results", []) if isinstance(row, dict)
+    ]
+    technical_ids = [str(row.get("id")) for row in technical_rows]
 
     checks = {
         "plan_preset_ok": (
             isinstance(plan_data.get("preset"), dict)
             and plan_data["preset"].get("name") == preset
+            and plan_data.get("dry_run") is False
         ),
         "selected_ids_ok": selected == expected,
         "review_ids_ok": (
             len(review_ids) == len(expected)
             and set(review_ids) == set(expected)
         ),
-        "review_complete_ok": all(
-            row.get("review_state") == "MANUAL_REVIEW_REQUIRED"
-            for row in review_data.get("rows", [])
-        ) and len(review_ids) == len(expected),
+        "review_complete_ok": (
+            len(review_rows) == len(expected)
+            and all(
+                row.get("review_state") == "MANUAL_REVIEW_REQUIRED"
+                for row in review_rows
+            )
+        ),
+        "technical_ids_ok": (
+            len(technical_ids) == len(expected)
+            and set(technical_ids) == set(expected)
+        ),
+        "technical_pass_ok": (
+            technical_data.get("technical_failures") == 0
+            and all(
+                row.get("technical_status") == "PASS"
+                for row in technical_rows
+            )
+        ),
+        "local_preflight_ok": local_preflight.get("ready_for_runtime_doctors") is True,
+        "stage_prerequisites_ok": stage_gate.get("status") == "PASS",
     }
+
+    if mode == "restored":
+        doctor = load_json(run_dir / "realesrgan_doctor.json")
+        restore_run = load_json(run_dir / "ai_restore_run.json")
+        checks["runtime_doctor_ok"] = doctor.get("ready") is True
+        checks["generation_record_ok"] = (
+            len(restore_run.get("textures", [])) == len(expected)
+            and {
+                str(row.get("id"))
+                for row in restore_run.get("textures", [])
+                if isinstance(row, dict)
+            } == set(expected)
+        )
+    else:
+        comfy = load_json(run_dir / "comfy_doctor.json")
+        qwen = load_json(run_dir / "qwen_preflight.json")
+        checks["runtime_doctor_ok"] = comfy.get("ready") is True
+        checks["qwen_preflight_ok"] = qwen.get("ready_for_execution") is True
+        checks["generation_records_present"] = bool(job_paths)
+
     return {
         "status": "PASS" if all(checks.values()) else "FAIL",
         "preset": preset,
         "mode": mode,
         "run_dir": str(run_dir),
-        "plan": {
-            "path": str(plan),
-            "sha256": sha256_file(plan),
-        },
-        "review": {
-            "path": str(review),
-            "sha256": sha256_file(review),
-        },
+        "plan": file_evidence(plan),
+        "review": file_evidence(review),
+        "technical": file_evidence(technical),
+        "structural": file_evidence(structural),
+        "runtime": [file_evidence(path) for path in runtime_paths],
+        "generation_records": [file_evidence(path) for path in job_paths],
         "outputs": output_rows,
         "checks": checks,
     }
@@ -133,12 +227,17 @@ def validate_receipt(preset: str, run_root: Path, approval_root: Path) -> dict:
             "current": current,
         }
 
+    old = receipt.get("evidence", {})
     checks = {
-        "plan_hash_ok": receipt.get("evidence", {}).get("plan", {}).get("sha256")
-        == current["plan"]["sha256"],
-        "review_hash_ok": receipt.get("evidence", {}).get("review", {}).get("sha256")
-        == current["review"]["sha256"],
-        "outputs_ok": receipt.get("evidence", {}).get("outputs") == current["outputs"],
+        "plan_hash_ok": old.get("plan") == current["plan"],
+        "review_hash_ok": old.get("review") == current["review"],
+        "technical_hash_ok": old.get("technical") == current["technical"],
+        "structural_hash_ok": old.get("structural") == current["structural"],
+        "runtime_ok": old.get("runtime") == current["runtime"],
+        "generation_records_ok": (
+            old.get("generation_records") == current["generation_records"]
+        ),
+        "outputs_ok": old.get("outputs") == current["outputs"],
         "approved_ok": receipt.get("decision") == "APPROVED_FOR_NEXT_STAGE",
     }
     return {
@@ -179,7 +278,7 @@ def approve(
 
     approval_root.mkdir(parents=True, exist_ok=True)
     receipt = {
-        "schema": "openazrael.texture_lab.stage_approval.v1",
+        "schema": "openazrael.texture_lab.stage_approval.v2",
         "preset": preset,
         "mode": evidence["mode"],
         "decision": "APPROVED_FOR_NEXT_STAGE",
@@ -188,6 +287,10 @@ def approve(
         "evidence": {
             "plan": evidence["plan"],
             "review": evidence["review"],
+            "technical": evidence["technical"],
+            "structural": evidence["structural"],
+            "runtime": evidence["runtime"],
+            "generation_records": evidence["generation_records"],
             "outputs": evidence["outputs"],
         },
     }
