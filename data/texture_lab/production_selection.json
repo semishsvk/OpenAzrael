@@ -1,9 +1,11 @@
 {
-  "schema": "openazrael.texture_lab.production_selection.v1",
+  "schema": "openazrael.texture_lab.production_selection.v2",
   "status": "NO_PRODUCTION_SELECTIONS",
   "automatic_selection": false,
   "profiles": {
     "remastered": {}
   },
-  "note": "Production selections are explicit manual records bound to approved Texture Lab evidence. This file does not contain or copy generated pixels."
+  "note": "Production selections are explicit manual records bound to approved Texture Lab evidence. This file does not contain or copy generated pixels.",
+  "superseded_selections": [],
+  "revocations": []
 }
