@@ -269,5 +269,31 @@
     "download_wall_seconds": true,
     "estimate_usage": "run summary aggregates Qwen generation units, including separate atlas segments, for naive later-stage job-only projections",
     "benchmark_claim": false
+  },
+  "qwen_runtime_lock_candidate": {
+    "status": "AWAITING_APPROVED_REAL_SMOKE",
+    "tool": "tools/texture_lab/oa_tex_qwen_lock.py",
+    "schema": "openazrael.texture_lab.qwen_runtime_lock_candidate.v1",
+    "prerequisite": "current PASS approval v5 for recreated_smoke_1",
+    "output": ".local/texture_lab/runtime_locks/qwen_2511_rt_poc_01_candidate.json",
+    "automatic_promotion": false,
+    "canonical_config_mutated": false,
+    "captures": [
+      "ComfyUI/Python/PyTorch/device system identity",
+      "required node/input contract",
+      "canonical workflow hash and bindings",
+      "pinned Qwen model file identities",
+      "sampling contract",
+      "approved job record provenance and timing"
+    ]
+  },
+  "qwen_runtime_lock_promotion": {
+    "status": "AWAITING_RUNTIME_LOCK_CANDIDATE",
+    "tool": "tools/texture_lab/oa_tex_qwen_lock_plan.py",
+    "schema": "openazrael.texture_lab.qwen_lock_promotion_plan.v1",
+    "proposed_target": "tools/texture_lab/config/qwen_environment_lock.json",
+    "automatic_promotion": false,
+    "canonical_files_mutated": false,
+    "promotion_requires": "explicit human-reviewed repository change after a current approved real recreated_smoke_1"
   }
 }
