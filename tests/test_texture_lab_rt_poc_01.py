@@ -31,6 +31,7 @@ from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_compare import _fit_preview
 from oa_tex_enhance import upscale_one
+from oa_tex_first_run import baseline_plan, bootstrap_plan, restored_smoke_plan, runtime_paths
 from oa_tex_prompt import build_prompt_pair
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
 from oa_tex_qwen_preflight import (
@@ -1018,6 +1019,48 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 seams = seam_mae(im)
                 self.assertIn("x", seams)
                 self.assertIn("y", seams)
+
+    def test_first_run_launchpad_builds_canonical_smoke_plan(self):
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            paths = runtime_paths(runtime)
+            plan = restored_smoke_plan(runtime)
+
+            self.assertEqual(
+                [row["name"] for row in plan],
+                ["local_preflight", "runtime_doctor", "canonical_bakeoff"],
+            )
+            self.assertIn("restored_smoke_1", plan[0]["argv"])
+            self.assertIn(str(paths["source"]), plan[0]["argv"])
+            self.assertIn(str(paths["model"]), plan[0]["argv"])
+            self.assertIn(str(paths["python"]), plan[0]["argv"])
+            self.assertEqual(plan[1]["argv"][0], str(paths["python"]))
+            self.assertIn("oa_tex_realesrgan_doctor.py", plan[1]["command"])
+            self.assertIn("oa_tex_ai_bakeoff.py", plan[2]["command"])
+            self.assertIn("--preset", plan[2]["argv"])
+            self.assertIn("restored_smoke_1", plan[2]["argv"])
+
+    def test_first_run_launchpad_baseline_and_bootstrap_are_explicit(self):
+        baseline = baseline_plan()
+        self.assertEqual(
+            [row["name"] for row in baseline],
+            ["scan_classic", "build_enhanced", "calibrate_drift"],
+        )
+        commands = " ".join(row["command"] for row in baseline)
+        self.assertIn("oa_tex_scan.py", commands)
+        self.assertIn("oa_tex_run_poc.py", commands)
+        self.assertIn("oa_tex_calibrate_drift.py", commands)
+
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            no_deps = bootstrap_plan(runtime, False)[0]["argv"]
+            with_deps = bootstrap_plan(runtime, True)[0]["argv"]
+
+        self.assertIn("--clone-upstream", no_deps)
+        self.assertIn("--download-model", no_deps)
+        self.assertIn("--create-venv", no_deps)
+        self.assertNotIn("--install-python-deps", no_deps)
+        self.assertIn("--install-python-deps", with_deps)
 
     def test_comparison_preview_preserves_aspect_ratio(self):
         wide = Image.new("RGBA", (64, 32), (255, 0, 0, 128))
