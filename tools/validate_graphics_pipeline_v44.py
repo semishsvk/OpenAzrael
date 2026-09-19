@@ -59,6 +59,6 @@ def main():
   }
  }
  out=ROOT/'data/graphics_pipeline_validation_v44.json'
- out.write_text(json.dumps(report,indent=2)+'\n')
+ out.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
  print(json.dumps({'status':'PASS','textures':len(textures),'rooms':rooms},indent=2))
 if __name__=='__main__': main()
