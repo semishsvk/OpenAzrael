@@ -1,6 +1,6 @@
 # OpenAzrael Texture Lab — RT-POC-01
 
-**Status:** IMPLEMENTED ON FEATURE BRANCH / RUNTIME-ASSET EXECUTION PENDING  
+**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / AI BAKE-OFF PENDING  
 **Scope:** presentation tooling only; no gameplay/runtime-semantic changes.
 
 ## Purpose
@@ -19,87 +19,55 @@ None of these tiers changes gameplay, geometry, UVs, collision or recovered worl
 ## Tools
 
 ### `oa_tex_scan.py`
-
 Scans local Classic PNGs and writes a metadata-only manifest. Default expected demo count is 86.
 
-```bash
-python tools/texture_lab/oa_tex_scan.py
-```
-
 ### `oa_tex_enhance.py`
-
-Creates deterministic 4x candidates using Pillow nearest, bicubic and Lanczos resampling. An external xBRZ executable can be integrated by an explicitly pinned command template; it is intentionally not assumed to exist.
-
-```bash
-python tools/texture_lab/oa_tex_enhance.py --factor 4
-```
-
-A small POC selection can be processed with:
-
-```bash
-python tools/texture_lab/oa_tex_enhance.py --only TEX_0001 TEX_0002
-```
+Creates deterministic 4x candidates using Pillow nearest, bicubic and Lanczos resampling. An external xBRZ executable can be integrated only by an explicitly pinned command template.
 
 ### `oa_tex_validate.py`
-
-Checks target dimensions and records observational fidelity metrics: Lanczos round-trip MAE, optional SSIM when scikit-image is available, mean-channel drift and raw edge-seam MAE.
-
-No automatic fidelity winner is selected in RT-POC-01. Thresholds are deliberately `UNCALIBRATED_HOLD` until representative R1/R7/R8 candidates are reviewed.
-
-```bash
-python tools/texture_lab/oa_tex_validate.py --variant lanczos_x4.png
-```
+Checks target dimensions and records observational fidelity metrics: Lanczos round-trip MAE, optional SSIM when scikit-image is available, mean-channel drift and raw edge-seam MAE. Missing candidates are technical failures.
 
 ### `oa_tex_compare.py`
-
 Creates a local visual comparison sheet across Classic, mathematical Enhanced, AI Restored and AI Recreated variants.
 
-### `oa_tex_restore.py`
+### `oa_tex_tile.py`
+Creates a 3x3 (or configurable) repeated texture preview for direct seam/tiling inspection. The image remains repository-ignored.
 
+### `oa_tex_run_poc.py`
+Runs the canonical 12-texture mathematical RT-POC-01 selection in one command and produces nearest/bicubic/Lanczos variants plus observational metrics.
+
+```bash
+python tools/texture_lab/oa_tex_run_poc.py
+```
+
+The canonical selection is stored in `config/rt_poc_01_selection.json`. It contains four R1, four R7 and four R8 textures covering rock/organic surface, architecture, parchment, hard-edge mask, carved wall, character detail, mechanism, floor, glass, high-detail mural and text/decorative content.
+
+### `oa_tex_restore.py`
 A command-template adapter for a locally installed Real-ESRGAN implementation. The exact executable/model version must be pinned in the run record before a result can be considered reproducible.
 
 ### `oa_tex_recreate.py`
+Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. This keeps the repository independent of a particular Qwen/FLUX graph while preserving the exact submitted workflow in each job record.
 
-Generic ComfyUI API runner. It consumes an **API-format** exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. This keeps the repository independent of any one Qwen/FLUX graph while preserving the exact submitted workflow in each job record.
+## Real mathematical POC observation
 
-The current intended bake-off is Qwen Image Edit as the primary image-conditioned reconstruction path and FLUX Kontext as a secondary comparison path. Model licensing and exact checkpoints remain external deployment concerns and must be recorded before production adoption.
+A real 12-texture bake-off was executed against the restored v44 Classic corpus on 2026-09-19. All 36 nearest/bicubic/Lanczos outputs were produced at 4x dimensions.
+
+Round-trip similarity predictably favors nearest-neighbour because it preserves the original pixel lattice most directly. This is **not** treated as a visual-quality winner. Visual inspection shows why the selection must remain content-aware: hard-edge/mask content benefits from exact edge preservation, while photographic/organic/architectural surfaces can benefit from smoother high-quality reconstruction. No global method is promoted by RT-POC-01.
 
 ## Repository safety
 
-The following stay out of Git:
+Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheets remain outside Git. Metadata-only manifests/reports may be committed only after review.
 
-- Classic decoded PNGs;
-- mathematical Enhanced pixels;
-- Real-ESRGAN outputs;
-- generative AI outputs;
-- comparison sheets.
+## Test policy
 
-Metadata-only manifests/reports may be committed after review when they contain no recoverable commercial image payload.
-
-## RT-POC-01 test policy
-
-`tests/test_texture_lab_rt_poc_01.py` creates a synthetic RGBA fixture and checks:
-
-- source scanning;
-- alpha detection;
-- deterministic byte-identical Pillow upscales across two runs;
-- expected 4x dimensions;
-- stable metric helpers.
-
-This source-safe test does not claim visual quality or original-renderer parity.
+`tests/test_texture_lab_rt_poc_01.py` uses a synthetic RGBA fixture and checks scan/alpha behavior, deterministic byte-identical upscale output, expected dimensions, stable metrics and tile-preview dimensions. GitHub Actions executes the source-safe suite on Python 3.11 and 3.12.
 
 ## Next execution step
 
-On the development machine with the ignored v44 Classic texture corpus restored:
+1. calibrate tileability/material metadata for the 12-texture set;
+2. pin a local Real-ESRGAN implementation/checkpoint and run AI Restored;
+3. export API-format ComfyUI workflows for the selected image-edit models and run AI Recreated with fixed seeds;
+4. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
+5. inspect the candidates in a dedicated Godot Texture Lab scene before production-wide conversion.
 
-1. scan all 86 textures;
-2. select ~12 representative R1/R7/R8 textures;
-3. generate nearest/bicubic/Lanczos candidates;
-4. pin and add xBRZ if desired;
-5. run validation and visual comparison;
-6. calibrate material/tileability metadata;
-7. run a Real-ESRGAN bake-off;
-8. export two ComfyUI API workflows (Qwen / FLUX) and run constrained AI Recreated candidates;
-9. inspect candidates in a dedicated Godot Texture Lab scene before any production-wide conversion.
-
-RT-POC-01 must remain observational: it does not replace Classic evidence or promote a visual candidate automatically.
+RT-POC-01 remains observational: it does not replace Classic evidence or automatically select a production winner.
