@@ -51,8 +51,33 @@ python tools/texture_lab/oa_tex_run_poc.py
 
 The canonical selection is stored in `config/rt_poc_01_selection.json`. It contains four R1, four R7 and four R8 textures covering rock/organic surface, architecture, parchment, hard-edge mask, carved wall, character detail, mechanism, floor, glass, high-detail mural and text/decorative content.
 
+### Pinned Real-ESRGAN runtime
+
+`config/model_registry.json` pins the primary AI Restored runtime identity:
+
+- upstream source: `xinntao/Real-ESRGAN` tag `v0.3.0`;
+- model: `RealESRGAN_x4plus`;
+- official checkpoint release: `v0.1.0`;
+- exact checkpoint size: `67040989` bytes;
+- SHA-256: `4fa0d38905f75ac06eb49a7951b426670021be3018265fd191d2125df9d682f1`;
+- inference baseline: 4x, `tile=0`, FP32.
+
+`oa_tex_realesrgan_bootstrap.py` can clone/download the pinned runtime on a network-enabled development machine and refuses a checkpoint identity mismatch. `oa_tex_realesrgan_doctor.py` records Python/platform/module/source/checkpoint readiness before a real bake-off.
+
+Typical local preparation:
+
+```bash
+python tools/texture_lab/oa_tex_realesrgan_bootstrap.py \
+  --clone-upstream \
+  --download-model
+
+python tools/texture_lab/oa_tex_realesrgan_doctor.py
+```
+
+Dependency installation is deliberately explicit (`--install-python-deps`) so the tool never silently rewrites an existing Python environment.
+
 ### `oa_tex_restore.py`
-Supports a pinned official Real-ESRGAN Python backend plus a fallback command-template backend. The preferred POC path records the exact checkpoint SHA-256, tile setting, precision mode and denoise strength. `tile=0` is the default fidelity path; tiling is a resource fallback, not the baseline.
+Supports a pinned official Real-ESRGAN Python backend plus a fallback command-template backend. For a registered model, the adapter itself re-verifies the pinned upstream version, checkpoint byte size and SHA-256 immediately before inference; a mismatch aborts the run. The preferred POC path records the exact checkpoint SHA-256, tile setting, precision mode and denoise strength. `tile=0` is the default fidelity path; tiling is a resource fallback, not the baseline.
 
 Legacy color-key candidates are converted to alpha-safe input before the backend and the exact source-derived binary mask is reapplied afterward.
 
@@ -121,11 +146,9 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 
 ## Next execution step
 
-1. run a pinned Real-ESRGAN checkpoint on the canonical 12-texture set;
-2. run `oa_tex_structural_drift.py` and compare AI Restored results with the mathematical baseline;
-3. export a fixed-seed API-format ComfyUI workflow for the selected image-edit model and run AI Recreated;
-4. apply the same structural, color-key, seam and text/mask review;
-5. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
-6. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
+1. bootstrap/doctor the pinned Real-ESRGAN v0.3.0 + x4plus runtime on the development machine;\n2. run the pinned checkpoint on the 11 AI-Restored-eligible textures;
+3. run `oa_tex_structural_drift.py` and compare AI Restored results with the mathematical baseline;\n4. export a fixed-seed API-format ComfyUI workflow for the selected image-edit model and run AI Recreated;
+5. apply the same structural, color-key, seam and text/mask review;\n6. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
+7. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
 
 RT-POC-01 remains observational: it does not replace Classic evidence or automatically select a production winner.
