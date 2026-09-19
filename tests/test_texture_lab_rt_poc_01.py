@@ -35,6 +35,7 @@ from oa_tex_ai_bakeoff import (
     build_recreate_plan,
     build_restore_plan,
     eligible_entries,
+    prepare_run_storage,
     resolve_named_candidate_namespace,
     validate_named_preset_contract,
 )
@@ -422,6 +423,63 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual([entry["id"] for entry in deferred], ["BAPTAP"])
         self.assertEqual(preset["name"], "recreated_smoke_4")
+
+    def test_named_run_storage_refuses_stale_mix_and_replaces_explicitly(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            run_dir = root / "run"
+            candidate_dir = root / "candidate"
+
+            clean = prepare_run_storage(
+                run_dir,
+                candidate_dir,
+                replace_existing=False,
+                dry_run=False,
+            )
+            self.assertEqual(clean["status"], "CLEAN")
+            self.assertFalse(clean["replaced_existing"])
+
+            run_dir.mkdir()
+            candidate_dir.mkdir()
+            (run_dir / "old_report.json").write_text("{}", encoding="utf-8")
+            (candidate_dir / "old.png").write_bytes(b"old")
+
+            with self.assertRaises(SystemExit):
+                prepare_run_storage(
+                    run_dir,
+                    candidate_dir,
+                    replace_existing=False,
+                    dry_run=False,
+                )
+            self.assertTrue((run_dir / "old_report.json").is_file())
+            self.assertTrue((candidate_dir / "old.png").is_file())
+
+            dry = prepare_run_storage(
+                run_dir,
+                candidate_dir,
+                replace_existing=False,
+                dry_run=True,
+            )
+            self.assertEqual(dry["status"], "DRY_RUN_NO_MUTATION")
+            self.assertTrue((run_dir / "old_report.json").is_file())
+
+            with self.assertRaises(SystemExit):
+                prepare_run_storage(
+                    run_dir,
+                    candidate_dir,
+                    replace_existing=True,
+                    dry_run=True,
+                )
+
+            replaced = prepare_run_storage(
+                run_dir,
+                candidate_dir,
+                replace_existing=True,
+                dry_run=False,
+            )
+            self.assertTrue(replaced["replaced_existing"])
+            self.assertFalse(run_dir.exists())
+            self.assertFalse(candidate_dir.exists())
 
     def test_named_presets_use_preset_scoped_candidate_namespaces(self):
         restored = SimpleNamespace(
