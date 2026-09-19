@@ -156,11 +156,39 @@ It points to the stage's full comparison, deterministic detail comparison and an
 
 `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/ai_restored_review_queue.md`
 
-After manual PNG/Godot review, explicitly approve the stage:
+After the PNG/Godot inspection, initialize the structured manual review:
+
+```bash
+python tools/texture_lab/oa_tex_manual_review.py init restored_smoke_1
+```
+
+For each texture, record the final human decision and every required check. For example, inspect the generated review record to see the exact required check names, then record them:
+
+```bash
+python tools/texture_lab/oa_tex_manual_review.py record restored_smoke_1 CORIROCK \
+  --decision ACCEPTED_FOR_STAGE \
+  --check composition_geometry_preserved=true \
+  --check no_invented_objects_symbols_or_text=true \
+  --check material_detail_plausible=true \
+  --check detail_artifacts_acceptable=true \
+  --check alpha_mask_boundaries_acceptable=true \
+  --check gameplay_scale_acceptable=true \
+  --note "manual full/detail/Godot A/B review completed"
+```
+
+The exact required check list may contain additional seam/text/artwork/geometry/atlas checks depending on the texture policy. An accepted texture requires every required check to be `true`.
+
+Confirm the whole stage review is complete:
+
+```bash
+python tools/texture_lab/oa_tex_manual_review.py status restored_smoke_1
+```
+
+Only after that returns PASS may the stage be approved:
 
 ```bash
 python tools/texture_lab/oa_tex_stage_gate.py approve restored_smoke_1 \
-  --note "manual visual/QA review completed"
+  --note "structured manual review PASS"
 ```
 
 Only then run `restored_smoke_4`. Review it and approve it the same way before `restored_full`.
