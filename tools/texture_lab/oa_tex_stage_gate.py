@@ -603,6 +603,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     plan_data = load_json(plan)
     review_data = load_json(review)
     technical_data = load_json(technical)
+    structural_data = load_json(structural)
     local_preflight = load_json(run_dir / "local_preflight.json")
     stage_gate = load_json(run_dir / "stage_gate.json")
 
@@ -616,6 +617,12 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         row for row in technical_data.get("results", []) if isinstance(row, dict)
     ]
     technical_ids = [str(row.get("id")) for row in technical_rows]
+    structural_rows = [
+        row
+        for row in structural_data.get("results", [])
+        if isinstance(row, dict)
+    ]
+    structural_ids = [str(row.get("id")) for row in structural_rows]
     pack = review_pack_snapshot(mode, run_dir, expected)
 
     pack_manifest = load_json(review_pack_manifest)
@@ -630,6 +637,30 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         output_rows.append({"id": str(row["id"]), **candidate})
 
     output_ids = [row["id"] for row in output_rows]
+    pack_rows_by_id = _pack_rows_by_id(pack_manifest)
+
+    def qa_hashes_match(rows: list[dict]) -> bool:
+        if len(rows) != len(expected):
+            return False
+        for row in rows:
+            texture_id = str(row.get("id", ""))
+            pack_row = pack_rows_by_id.get(texture_id)
+            if not isinstance(pack_row, dict):
+                return False
+            source = pack_row.get("source")
+            candidate = pack_row.get("candidate")
+            if not isinstance(source, dict) or not isinstance(candidate, dict):
+                return False
+            if row.get("source_sha256") != source.get("sha256"):
+                return False
+            if row.get("candidate_sha256") != candidate.get("sha256"):
+                return False
+        return True
+
+    expected_variant = (
+        "realesrgan_x4.png" if mode == "restored" else "selected.png"
+    )
+    expected_only = sorted(expected)
     expected_output_root = named_candidate_root(mode, preset)
     output_namespace_ok = all(
         path_is_within(Path(str(row.get("path", ""))), expected_output_root)
@@ -646,6 +677,14 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
             and valid_run_instance_id(plan_data.get("run_instance_id"))
         ),
         "selected_ids_ok": selected == expected,
+        "review_contract_ok": (
+            review_data.get("schema")
+            == "openazrael.texture_lab.ai_review_queue.v1"
+            and review_data.get("status") == "OBSERVATIONAL_MANUAL_REVIEW"
+            and review_data.get("mode") == mode
+            and review_data.get("automatic_promotion") is False
+            and review_data.get("only") == expected_only
+        ),
         "review_ids_ok": (
             len(review_ids) == len(expected)
             and set(review_ids) == set(expected)
@@ -657,10 +696,30 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
                 for row in review_rows
             )
         ),
+        "technical_contract_ok": (
+            technical_data.get("schema")
+            == "openazrael.texture_lab.validation.v5"
+            and technical_data.get("variant") == expected_variant
+            and _int_equal(technical_data.get("factor"), 4)
+            and technical_data.get("only") == expected_only
+        ),
         "technical_ids_ok": (
             len(technical_ids) == len(expected)
             and set(technical_ids) == set(expected)
         ),
+        "technical_hash_linkage_ok": qa_hashes_match(technical_rows),
+        "structural_contract_ok": (
+            structural_data.get("schema")
+            == "openazrael.texture_lab.structural_drift.v2"
+            and structural_data.get("variant") == expected_variant
+            and structural_data.get("only") == expected_only
+            and structural_data.get("missing") == []
+        ),
+        "structural_ids_ok": (
+            len(structural_ids) == len(expected)
+            and set(structural_ids) == set(expected)
+        ),
+        "structural_hash_linkage_ok": qa_hashes_match(structural_rows),
         "technical_pass_ok": (
             technical_data.get("technical_failures") == 0
             and all(
