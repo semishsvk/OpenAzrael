@@ -295,5 +295,22 @@
     "automatic_promotion": false,
     "canonical_files_mutated": false,
     "promotion_requires": "explicit human-reviewed repository change after a current approved real recreated_smoke_1"
+  },
+  "production_review_bundle": {
+    "status": "SOURCE_READY_AWAITING_DUAL_APPROVED_CANDIDATES",
+    "tool": "tools/texture_lab/oa_tex_production_review.py",
+    "schema": "openazrael.texture_lab.production_review_bundle.v1",
+    "requires": "current approved Restored and Recreated stage evidence for the same texture",
+    "presentation": [
+      "Classic",
+      "Enhanced Lanczos",
+      "AI Restored",
+      "AI Recreated"
+    ],
+    "detail_comparison": true,
+    "repeat_tile_comparison": true,
+    "automatic_selection": false,
+    "automatic_quality_verdict": false,
+    "production_registry_mutated": false
   }
 }
