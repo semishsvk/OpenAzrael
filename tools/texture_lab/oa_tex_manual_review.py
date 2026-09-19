@@ -59,6 +59,33 @@ def review_queue_path(preset: str, run_root: Path) -> Path:
     return run_root / preset / f"ai_{mode}_review_queue.json"
 
 
+def godot_review_profile_path(preset: str, run_root: Path) -> Path:
+    return run_root / preset / "godot_review_profile.json"
+
+
+def validate_godot_review_profile(preset: str, run_root: Path) -> dict:
+    path = godot_review_profile_path(preset, run_root)
+    if not path.is_file():
+        return {"status": "MISSING", "path": str(path)}
+    payload = load_json(path)
+    checks = {
+        "schema_ok": (
+            payload.get("schema")
+            == "openazrael.texture_lab.review_texture_manifest.v1"
+        ),
+        "preset_ok": payload.get("preset") == preset,
+        "runtime_ready": payload.get("runtime_ready") is True,
+        "automatic_promotion_off": payload.get("automatic_promotion") is False,
+        "export_disabled": payload.get("export_allowed") is False,
+    }
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "path": str(path),
+        "record": file_evidence(path),
+        "checks": checks,
+    }
+
+
 def required_checks_for(review_row: dict, pack_row: dict) -> list[str]:
     checks = list(BASE_CHECKS)
     attention = [str(value) for value in review_row.get("attention", [])]
@@ -88,10 +115,15 @@ def build_template(preset: str, run_root: Path) -> dict:
 
     pack_path = review_pack_path(preset, run_root)
     queue_path = review_queue_path(preset, run_root)
-    if not pack_path.is_file() or not queue_path.is_file():
+    godot_profile = validate_godot_review_profile(preset, run_root)
+    if (
+        not pack_path.is_file()
+        or not queue_path.is_file()
+        or godot_profile.get("status") != "PASS"
+    ):
         raise SystemExit(
             "manual review init requires completed review pack and queue; "
-            f"pack={pack_path} queue={queue_path}"
+            f"pack={pack_path} queue={queue_path} godot={godot_profile.get('path')}"
         )
 
     pack = load_json(pack_path)
@@ -141,6 +173,7 @@ def build_template(preset: str, run_root: Path) -> dict:
         "automatic_approval": False,
         "review_pack": file_evidence(pack_path),
         "review_queue": file_evidence(queue_path),
+        "godot_review_profile": godot_profile["record"],
         "stage_evidence_sha256": stage_evidence_digest(evidence),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "updated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -252,7 +285,12 @@ def validate_manual_review(
     payload = load_json(path)
     pack_path = review_pack_path(preset, run_root)
     queue_path = review_queue_path(preset, run_root)
-    if not pack_path.is_file() or not queue_path.is_file():
+    godot_profile = validate_godot_review_profile(preset, run_root)
+    if (
+        not pack_path.is_file()
+        or not queue_path.is_file()
+        or godot_profile.get("status") != "PASS"
+    ):
         return {
             "status": "STALE",
             "preset": preset,
@@ -276,6 +314,7 @@ def validate_manual_review(
     evidence_current = (
         payload.get("review_pack") == file_evidence(pack_path)
         and payload.get("review_queue") == file_evidence(queue_path)
+        and payload.get("godot_review_profile") == godot_profile.get("record")
         and stage_evidence_current
     )
     row_results = []
@@ -332,6 +371,10 @@ def validate_manual_review(
         "ids_ok": ids_ok,
         "evidence_current": evidence_current,
         "stage_evidence_current": stage_evidence_current,
+        "godot_review_profile_current": (
+            godot_profile.get("status") == "PASS"
+            and payload.get("godot_review_profile") == godot_profile.get("record")
+        ),
         "candidates_current": candidates_current,
         "rows": row_results,
     }
