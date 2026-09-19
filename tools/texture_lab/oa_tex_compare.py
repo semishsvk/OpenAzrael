@@ -9,23 +9,58 @@ from PIL import Image, ImageDraw, ImageFont
 from common import ROOT
 
 
+def _checkerboard(width: int, height: int, tile: int = 16) -> Image.Image:
+    canvas = Image.new("RGBA", (width, height), (176, 176, 176, 255))
+    draw = ImageDraw.Draw(canvas)
+    light = (216, 216, 216, 255)
+    dark = (176, 176, 176, 255)
+    for y in range(0, height, tile):
+        for x in range(0, width, tile):
+            fill = light if ((x // tile) + (y // tile)) % 2 == 0 else dark
+            draw.rectangle(
+                (x, y, min(x + tile - 1, width - 1), min(y + tile - 1, height - 1)),
+                fill=fill,
+            )
+    return canvas
+
+
+def _fit_preview(image: Image.Image, cell: int, classic: bool) -> Image.Image:
+    if cell <= 0:
+        raise ValueError("cell must be positive")
+    scale = min(float(cell) / image.width, float(cell) / image.height)
+    target = (
+        max(1, int(round(image.width * scale))),
+        max(1, int(round(image.height * scale))),
+    )
+    resampling = getattr(Image, "Resampling", Image)
+    if classic and scale >= 1.0:
+        filter_mode = resampling.NEAREST
+    else:
+        filter_mode = resampling.LANCZOS
+    return image.resize(target, filter_mode)
+
+
 def make_sheet(texture_id: str, source: Path, variants: list[tuple[str, Path]], out: Path, cell: int) -> None:
-    items: list[tuple[str, Image.Image]] = []
+    items: list[tuple[str, Image.Image, bool]] = []
     with Image.open(source) as im:
-        items.append(("Classic", im.convert("RGBA").copy()))
+        items.append(("Classic", im.convert("RGBA").copy(), True))
     for label, path in variants:
         if path.is_file():
             with Image.open(path) as im:
-                items.append((label, im.convert("RGBA").copy()))
+                items.append((label, im.convert("RGBA").copy(), False))
 
     label_h = 28
     sheet = Image.new("RGBA", (cell * len(items), cell + label_h), (0, 0, 0, 255))
     draw = ImageDraw.Draw(sheet)
     font = ImageFont.load_default()
-    for index, (label, im) in enumerate(items):
-        preview = im.resize((cell, cell), getattr(Image, "Resampling", Image).NEAREST)
+    for index, (label, im, classic) in enumerate(items):
+        preview = _fit_preview(im, cell, classic)
         x = index * cell
-        sheet.alpha_composite(preview, (x, label_h))
+        background = _checkerboard(cell, cell)
+        sheet.alpha_composite(background, (x, label_h))
+        px = x + (cell - preview.width) // 2
+        py = label_h + (cell - preview.height) // 2
+        sheet.alpha_composite(preview, (px, py))
         draw.text((x + 4, 7), label, fill=(255, 255, 255, 255), font=font)
 
     out.parent.mkdir(parents=True, exist_ok=True)
