@@ -1,0 +1,70 @@
+{
+  "schema": "openazrael.texture_lab.qwen_2511_contract.v1",
+  "status": "PINNED_POC",
+  "model_label": "Qwen-Image-Edit-2511",
+  "official_template": {
+    "repository": "Comfy-Org/workflow_templates",
+    "path": "templates/image_qwen_image_edit_2511.json",
+    "blob_sha": "f439d8f10c247ae856d1aa4c4e7e37e55c6d2f94",
+    "workflow_id": "ad18abd3-bdee-4f80-8fae-d15d4f845b9d",
+    "observed_subgraph_name": "Image Edit (Qwen-Image 2511)",
+    "note": "OpenAzrael uses a single-input API-format derivative. The UI template itself is multi-reference."
+  },
+  "poc_sampling": {
+    "seed": 734234,
+    "steps": 40,
+    "cfg": 4.0,
+    "sampler": "euler",
+    "scheduler": "simple",
+    "lightning_lora_enabled": false,
+    "reason": "Favor fidelity/reference behavior over accelerated 4-step generation during calibration."
+  },
+  "required_nodes": [
+    "LoadImage",
+    "TextEncodeQwenImageEditPlus",
+    "KSampler",
+    "UNETLoader",
+    "CLIPLoader",
+    "VAELoader",
+    "VAEEncode",
+    "VAEDecode",
+    "SaveImage"
+  ],
+  "required_models": {
+    "diffusion": {
+      "relative_path": "models/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
+      "filename": "qwen_image_edit_2511_fp8mixed.safetensors",
+      "size_bytes": 20533762817,
+      "sha256": "c9fdc158e46d3b61ef75f21ae866ca2fe808bf4a53643120d1c1e87c19280a4e"
+    },
+    "text_encoder": {
+      "relative_path": "models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "filename": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "size_bytes": 9384670680,
+      "sha256": "cb5636d852a0ea6a9075ab1bef496c0db7aef13c02350571e388aea959c5c0b4"
+    },
+    "vae": {
+      "relative_path": "models/vae/qwen_image_vae.safetensors",
+      "filename": "qwen_image_vae.safetensors",
+      "size_bytes": 253806246,
+      "sha256": "a70580f0213e67967ee9c95f05bb400e8fb08307e017a924bf3441223e023d1f"
+    }
+  },
+  "optional_models": {
+    "lightning_lora": {
+      "enabled_by_default": false,
+      "relative_path": "models/loras/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "filename": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "size_bytes": 849608296,
+      "sha256": "22226e8d05d354bb356627d428809f5afd7819399b077238a2b70a82883a904f"
+    }
+  },
+  "api_workflow_policy": {
+    "single_primary_load_image": true,
+    "separate_positive_and_negative_prompt_nodes": true,
+    "fixed_seed_required": true,
+    "exact_required_model_filenames": true,
+    "model_file_sha256_required_before_execution": true,
+    "automatic_production_promotion": false
+  }
+}
