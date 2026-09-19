@@ -236,5 +236,15 @@
     "automatic_promotion": false,
     "canonical_files_mutated": false,
     "promotion_requires": "explicit human-reviewed repository change after a current approved real restored_smoke_1"
+  },
+  "restored_generation_report": {
+    "schema": "openazrael.texture_lab.ai_restore_run.v5",
+    "per_texture_inference_wall_seconds": true,
+    "run_wall_seconds": true,
+    "measured_inference_wall_seconds": true,
+    "mean_inference_wall_seconds_per_texture": true,
+    "textures_per_minute_inference_only": true,
+    "estimate_usage": "run summary may produce naive linear smoke_4/full inference-only projections after a real run",
+    "benchmark_claim": false
   }
 }
