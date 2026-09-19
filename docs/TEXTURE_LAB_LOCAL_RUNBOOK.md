@@ -514,6 +514,33 @@ Controls:
 
 The Texture Lab scene does not mutate gameplay state.
 
+## Cross-tier production review
+
+When the same texture has current approved candidates from both Restored and Recreated, build the recommended four-tier review bundle before choosing a production default:
+
+```bash
+python tools/texture_lab/oa_tex_production_review.py CORIROCK \
+  --restored-preset restored_smoke_1 \
+  --recreated-preset recreated_smoke_1
+```
+
+The output lives under:
+
+`.local/texture_lab/production_review/CORIROCK/restored_smoke_1__recreated_smoke_1/`
+
+and contains:
+
+- Classic → Enhanced Lanczos → AI Restored → AI Recreated full comparison;
+- normalized four-tier detail crops;
+- separate 3×3 Restored/Recreated repeat previews when repeat sampling applies;
+- SHA-256 fingerprints for every input/output;
+- current approval provenance;
+- explicit human review questions and allowed manual outcomes.
+
+The bundle schema is `openazrael.texture_lab.production_review_bundle.v1`. It carries both `automatic_selection=false` and `automatic_quality_verdict=false`. It never ranks Restored versus Recreated and never writes `production_selection.json`.
+
+This comparison is recommended whenever both AI modes are valid for a texture. It is not a mandatory gate for textures whose policy permits only one AI mode or deliberately prefers Classic/Enhanced.
+
 ## Production selection registry
 
 A successful stage approval still does **not** make its textures production defaults.
