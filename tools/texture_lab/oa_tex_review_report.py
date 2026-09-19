@@ -74,6 +74,7 @@ def build_review_rows(
     sampling: dict,
     baseline: dict,
     drift_report: dict,
+    only_ids: set[str] | None = None,
 ) -> list[dict]:
     key = "ai_restored" if mode == "restored" else "ai_recreated"
     drift = drift_index(drift_report)
@@ -94,6 +95,8 @@ def build_review_rows(
             continue
 
         texture_id = str(entry["id"])
+        if only_ids is not None and texture_id not in only_ids:
+            continue
         result = drift.get(texture_id)
         reasons = policy_reasons(rules) + sampling_reasons(sampling_by_id.get(texture_id))
 
@@ -204,6 +207,7 @@ def main() -> int:
     )
     parser.add_argument("--out-json", type=Path, required=True)
     parser.add_argument("--out-md", type=Path, required=True)
+    parser.add_argument("--only", nargs="*", default=None)
     args = parser.parse_args()
 
     selection = load_json(args.selection)
@@ -212,14 +216,16 @@ def main() -> int:
     baseline = load_json(args.baseline)
     drift_report = load_json(args.drift)
 
+    only_ids = set(args.only) if args.only else None
     rows = build_review_rows(
-        args.mode, selection, policy, sampling, baseline, drift_report
+        args.mode, selection, policy, sampling, baseline, drift_report, only_ids
     )
     payload = {
         "schema": "openazrael.texture_lab.ai_review_queue.v1",
         "status": "OBSERVATIONAL_MANUAL_REVIEW",
         "mode": args.mode,
         "automatic_promotion": False,
+        "only": sorted(only_ids) if only_ids is not None else None,
         "rows": rows,
     }
     write_json(args.out_json, payload)
