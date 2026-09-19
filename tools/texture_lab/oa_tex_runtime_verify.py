@@ -70,16 +70,22 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
 
     schema_ok = manifest.get("schema") == EXPECTED_SCHEMA
     promotion_ok = manifest.get("automatic_promotion") is False
+    profile = str(manifest.get("profile", ""))
+    profile_ok = profile in {"classic", "enhanced", "remastered"}
     rows = manifest.get("textures")
     rows_ok = isinstance(rows, list)
-    fatal = not (schema_ok and promotion_ok and rows_ok)
+    fatal = not (schema_ok and promotion_ok and profile_ok and rows_ok)
 
     declared_status = str(manifest.get("status", ""))
     declared_runtime_ready = manifest.get("runtime_ready") is True
     stale_selection_count = int(
         manifest.get("stale_production_selection_count", 0) or 0
     )
-    allowed_ready_statuses = {"READY", "SAFE_CLASSIC_FALLBACKS"}
+    allowed_ready_statuses = (
+        {"READY", "SAFE_CLASSIC_FALLBACKS"}
+        if profile == "remastered"
+        else {"READY"}
+    )
 
     input_checks = {}
     stale = False
@@ -114,6 +120,29 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
         elif not check["sha256_ok"] or not check["size_ok"]:
             stale = True
 
+    expected_selection_rows = []
+    selection_record = inputs.get("selection") if isinstance(inputs, dict) else None
+    if isinstance(selection_record, dict):
+        selection_path = resolve_path(
+            str(selection_record.get("path", "")),
+            root,
+        )
+        if selection_path.is_file():
+            try:
+                selection_payload = load_json(selection_path)
+                expected_selection_rows = [
+                    row
+                    for row in selection_payload.get("textures", [])
+                    if isinstance(row, dict) and row.get("id")
+                ]
+            except (OSError, json.JSONDecodeError):
+                hold = True
+
+    expected_by_id = {
+        str(row["id"]): row for row in expected_selection_rows
+    }
+    expected_ids = list(expected_by_id)
+
     texture_checks = []
     if rows_ok:
         for row in rows:
@@ -140,6 +169,14 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
                 else bool(actual_sha and selection_expected == actual_sha)
             )
             manifest_integrity_flag = row.get("integrity_ok") is True
+            selection_entry = expected_by_id.get(texture_id)
+            row_profile_ok = row.get("profile") == profile
+            row_promotion_ok = row.get("automatic_promotion") is False
+            expected_size_ok = bool(
+                isinstance(selection_entry, dict)
+                and row.get("expected_size")
+                == selection_entry.get("expected_size")
+            )
 
             check = {
                 "id": texture_id,
@@ -154,10 +191,25 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
                 "size_ok": size_ok,
                 "selection_hash_ok": selection_hash_ok,
                 "manifest_integrity_flag": manifest_integrity_flag,
+                "row_profile_ok": row_profile_ok,
+                "row_automatic_promotion_off": row_promotion_ok,
+                "expected_size_ok": expected_size_ok,
+                "resolution_reason": row.get("resolution_reason"),
+                "resolved_tier": row.get("resolved_tier"),
+                "production_selection_status": row.get(
+                    "production_selection_status"
+                ),
             }
             texture_checks.append(check)
 
-            if not texture_id or not safe or not exists:
+            if (
+                not texture_id
+                or not safe
+                or not exists
+                or not row_profile_ok
+                or not row_promotion_ok
+                or not expected_size_ok
+            ):
                 hold = True
             elif not hash_ok or not size_ok:
                 stale = True
@@ -165,6 +217,63 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
                 stale = True
             if not manifest_integrity_flag:
                 stale = True
+
+    row_ids = [
+        str(row.get("id", ""))
+        for row in rows
+        if isinstance(row, dict)
+    ] if rows_ok else []
+    ids_unique = len(row_ids) == len(set(row_ids))
+    selection_coverage_ok = (
+        bool(expected_ids)
+        and len(row_ids) == len(expected_ids)
+        and set(row_ids) == set(expected_ids)
+    )
+    declared_texture_count_ok = manifest.get("texture_count") == len(row_ids)
+
+    explicit_count = sum(
+        1
+        for row in rows
+        if isinstance(row, dict)
+        and row.get("resolution_reason")
+        == "explicit_current_production_selection"
+    ) if rows_ok else 0
+    fallback_count = sum(
+        1
+        for row in rows
+        if isinstance(row, dict)
+        and "fallback_to_classic" in str(row.get("resolution_reason", ""))
+    ) if rows_ok else 0
+    stale_count = sum(
+        1
+        for row in rows
+        if isinstance(row, dict)
+        and row.get("production_selection_status") == "STALE"
+    ) if rows_ok else 0
+    missing_count = sum(
+        1 for row in texture_checks if not row.get("exists")
+    )
+    integrity_failure_count = sum(
+        1
+        for row in texture_checks
+        if row.get("manifest_integrity_flag") is False
+        or row.get("selection_hash_ok") is False
+    )
+    declared_counts_ok = (
+        manifest.get("explicit_production_selection_count") == explicit_count
+        and manifest.get("classic_fallback_count") == fallback_count
+        and manifest.get("stale_production_selection_count") == stale_count
+        and manifest.get("missing_resolved_file_count") == missing_count
+        and manifest.get("integrity_failure_count") == integrity_failure_count
+    )
+
+    if not (
+        ids_unique
+        and selection_coverage_ok
+        and declared_texture_count_ok
+        and declared_counts_ok
+    ):
+        hold = True
 
     status = "HOLD" if hold else ("STALE" if stale else "PASS")
     return {
@@ -177,7 +286,8 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
             "schema_ok": schema_ok,
             "automatic_promotion_off": promotion_ok,
             "rows_ok": rows_ok,
-            "profile": manifest.get("profile"),
+            "profile": profile,
+            "profile_ok": profile_ok,
             "declared_status": declared_status,
             "declared_runtime_ready": declared_runtime_ready,
             "stale_production_selection_count": stale_selection_count,
@@ -185,6 +295,21 @@ def verify_manifest(manifest_path: Path, root: Path = ROOT) -> dict:
         "inputs": input_checks,
         "textures": texture_checks,
         "texture_count": len(texture_checks),
+        "coverage": {
+            "expected_ids": expected_ids,
+            "row_ids": row_ids,
+            "ids_unique": ids_unique,
+            "selection_coverage_ok": selection_coverage_ok,
+            "declared_texture_count_ok": declared_texture_count_ok,
+            "declared_counts_ok": declared_counts_ok,
+            "computed_counts": {
+                "explicit_production_selection_count": explicit_count,
+                "classic_fallback_count": fallback_count,
+                "stale_production_selection_count": stale_count,
+                "missing_resolved_file_count": missing_count,
+                "integrity_failure_count": integrity_failure_count,
+            },
+        },
         "stale_texture_ids": [
             row.get("id")
             for row in texture_checks
