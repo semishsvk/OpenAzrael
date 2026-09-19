@@ -292,9 +292,7 @@ func _save_screenshot() -> void:
     var tier := (
         (
             "profile_"
-            + String(profile_resolver.profile).to_lower()
-                .replace(":", "_")
-                .replace("/", "_")
+            + String(profile_resolver.profile).to_lower().replace(":", "_").replace("/", "_")
         )
         if profile_mode and profile_loaded
         else TIER_NAMES[tier_index].to_lower().replace(" ", "_")
