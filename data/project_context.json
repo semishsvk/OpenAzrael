@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v24",
+  "checkpoint": "v116-context-v25",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-18",
   "workflow": [
@@ -27,7 +27,8 @@
     "audio_map": "docs/AUDIO_MAP.md",
     "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
     "git_baseline": "docs/GIT_BASELINE.md",
-    "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md"
+    "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md",
+    "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md"
   },
   "current_forensics": {
     "world_runtime_loader": "VERIFIED",
@@ -229,5 +230,34 @@
     },
     "event_log": "user://openazrael_candidate1_events.jsonl",
     "state_dump_prefix": "user://openazrael_kg001_state_dump_"
+  },
+  "localization": {
+    "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",
+    "runtime_boundary": "AFTER_FIRST_KG001_CANDIDATE1_RUNTIME_MANUAL_CYCLE",
+    "key_strategy": "STABLE_SEMANTIC_IDS",
+    "forensic_source_strategy": "ORIGINAL_STRINGS_SEPARATE_FROM_RUNTIME_KEYS",
+    "authoring_format": "GETTEXT_POT_PO",
+    "runtime_fallback": "EN",
+    "distribution_format": "EXTERNAL_VERSIONED_PCK",
+    "resource_pack_replace_core": false,
+    "namespace_policy": "DEDICATED_LOCALIZATION_NAMESPACE_ONLY",
+    "manifest_schema": 1,
+    "manager_planned": "LocalizationManager",
+    "optional_future_payloads": [
+      "fonts",
+      "subtitle_metadata",
+      "localized_voice"
+    ],
+    "required_tests": [
+      "manifest_validation",
+      "missing_duplicate_ids",
+      "fallback",
+      "pseudolocalization",
+      "ui_overflow",
+      "unicode_font_coverage",
+      "deterministic_pack_build"
+    ],
+    "first_smoke_pack": "sk",
+    "architecture_doc": "docs/LOCALIZATION_ARCHITECTURE.md"
   }
 }

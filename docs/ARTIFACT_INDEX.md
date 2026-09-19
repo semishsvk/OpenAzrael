@@ -1,7 +1,12 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v24` — technical base v116 plus current context/Git/quality layer.
+- `v116-context-v25` — technical base v116 plus current context/Git/quality/architecture layer.
+
+## Localization architecture
+- `docs/LOCALIZATION_ARCHITECTURE.md`
+- `docs/DECISIONS.md` ADR-024
+- implementation deliberately deferred until after Candidate 1 runtime/manual validation
 
 ## KG-001 Candidate 1 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`

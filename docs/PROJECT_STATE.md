@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v116-context-v24`
+**Canonical checkpoint:** `v116-context-v25`
 **Date:** 2026-09-18
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v24**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v25**.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -112,6 +112,18 @@ The newest technical base is now **v116**. The context/Git/quality layer is merg
 - Temporary evidence is written only to ignored `.tmp/kg001/`; promotion into `data/tests/` is explicit and happens after the clean-checkout observation.
 - `tools/kg001_status_v112.py` promotes G00-G09 only from recorded PASS evidence. G10 remains manual with a dedicated checklist/template.
 - Overall state remains **AWAITING_RUNTIME_OR_MANUAL**; the known-good tag remains forbidden.
+
+### Localization architecture — approved
+- External, versioned language packs are now the canonical localization direction.
+- Runtime/UI will use immutable semantic IDs rather than editable English sentences as keys.
+- Translator-facing source format is POT/PO; English ships in the base game as mandatory fallback.
+- Release packs use `openazrael-<locale>.pck` and a validated manifest/string revision.
+- External packs must be mounted with resource replacement disabled and may only expose a dedicated localization namespace.
+- The future `LocalizationManager` owns discovery/validation/locale switching only; it does not own gameplay state.
+- The format is extensible to locale fonts, subtitles and optional localized voice assets.
+- Pseudolocalization, missing-ID checks, Unicode coverage and deterministic pack-building are required implementation tests.
+- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 1 runtime/manual cycle**, so this approval does not perturb the current test candidate.
+- Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
 ### KG-001 Candidate 1 diagnostics — v116
 - The first real Godot integration candidate is now source-ready as **KG-001 Candidate 1**.

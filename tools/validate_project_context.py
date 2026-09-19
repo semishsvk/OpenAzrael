@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v24"
+EXPECTED_CHECKPOINT="v116-context-v25"
 errors=[]
 
 def req(p):
@@ -69,6 +69,7 @@ for p in [
     "tools/analyze_world_action_lifecycle_v115.py",
     "tools/validate_world_action_lifecycle_v115.py",
     "data/world_action_lifecycle_v115.json",
+    "docs/LOCALIZATION_ARCHITECTURE.md",
     "docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md",
     "scripts/candidate_diagnostics_v116.gd",
     "scripts/kg001_trigger_debug_v116.gd",
@@ -109,6 +110,19 @@ try:
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
+    loc=c.get("localization",{})
+    if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
+        errors.append("localization architecture status drift")
+    if loc.get("key_strategy")!="STABLE_SEMANTIC_IDS":
+        errors.append("localization key strategy drift")
+    if loc.get("authoring_format")!="GETTEXT_POT_PO":
+        errors.append("localization authoring-format drift")
+    if loc.get("distribution_format")!="EXTERNAL_VERSIONED_PCK":
+        errors.append("localization distribution-format drift")
+    if loc.get("runtime_fallback")!="EN":
+        errors.append("localization fallback drift")
+    if loc.get("resource_pack_replace_core") is not False:
+        errors.append("localization core-replacement safety drift")
 except Exception as e:
     errors.append(f"context json: {e}")
 

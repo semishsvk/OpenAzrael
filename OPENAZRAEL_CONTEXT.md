@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v24`
+**Current canonical checkpoint:** `v116-context-v25`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -96,6 +96,16 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - R1/R7/R8 are now runtime-loaded rather than script-preloaded so missing assets can be reported by an explicit fail-fast preflight.
 - Core room/IR resources are always required; the four golden Event-IR WAVs are additionally required for a non-headless Candidate 1 run.
 - v116 source contract: PASS. Actual Godot execution: NOT EXECUTED.
+
+## Approved localization architecture
+- Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.
+- English is the mandatory built-in fallback.
+- Translator-facing catalogs use POT/PO.
+- Distributable language packs are external versioned PCKs with manifests and dedicated namespaces.
+- External PCKs must not replace core resources.
+- Optional future payloads include fonts, subtitle metadata and localized voice.
+- Runtime implementation is deferred until after the first KG-001 Candidate 1 runtime/manual cycle.
+- See `docs/LOCALIZATION_ARCHITECTURE.md` and ADR-024.
 
 ## KG-001 quality gate
 The accepted first known-good demo target is `demo-known-good-001`. It requires G00-G10 PASS, including exhaustive puzzle-state checks, transition/trigger/audio-event/save-load tests, a headless synthetic full-demo playthrough, fresh-checkout verification and final manual sanity, with zero known critical bugs and zero reproducible softlocks.
