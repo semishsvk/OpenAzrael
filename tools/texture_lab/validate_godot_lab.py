@@ -6,6 +6,7 @@ SCENE = ROOT / "tools/texture_lab/godot/texture_lab.tscn"
 SCRIPT = ROOT / "tools/texture_lab/godot/texture_lab.gd"
 SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
 PROFILE_RESOLVER = ROOT / "tools/texture_lab/godot/texture_profile_resolver.gd"
+RUNTIME_RESOURCE_LOADER = ROOT / "tools/texture_lab/godot/runtime_texture_resource_loader.gd"
 
 
 def main() -> int:
@@ -13,9 +14,11 @@ def main() -> int:
     assert SCRIPT.is_file(), SCRIPT
     assert SELECTION.is_file(), SELECTION
     assert PROFILE_RESOLVER.is_file(), PROFILE_RESOLVER
+    assert RUNTIME_RESOURCE_LOADER.is_file(), RUNTIME_RESOURCE_LOADER
     scene = SCENE.read_text(encoding="utf-8")
     script = SCRIPT.read_text(encoding="utf-8")
     resolver = PROFILE_RESOLVER.read_text(encoding="utf-8")
+    runtime_loader = RUNTIME_RESOURCE_LOADER.read_text(encoding="utf-8")
 
     assert 'path="res://tools/texture_lab/godot/texture_lab.gd"' in scene
     for token in [
@@ -77,6 +80,24 @@ def main() -> int:
         "production_selection.json",
     ]:
         assert forbidden not in resolver, forbidden
+
+
+    for token in [
+        'ALLOWED_PREFIX := "res://assets/textures/"',
+        "ResourceLoader.load(path)",
+        "resource is Texture2D",
+        'path.ends_with(".png")',
+    ]:
+        assert token in runtime_loader, token
+
+    for forbidden in [
+        "FileAccess",
+        "HashingContext",
+        "production_selection.json",
+        "DemoState.",
+        "RoomManager",
+    ]:
+        assert forbidden not in runtime_loader, forbidden
 
     print("PASS Texture Lab Godot source contract")
     return 0
