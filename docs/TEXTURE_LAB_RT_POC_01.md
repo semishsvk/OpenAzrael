@@ -30,6 +30,9 @@ Checks target dimensions and records observational fidelity metrics: Lanczos rou
 ### `oa_tex_compare.py`
 Creates a local visual comparison sheet across Classic, mathematical Enhanced, AI Restored and AI Recreated variants.
 
+### `oa_tex_review_pack.py`
+Builds the stage-scoped manual visual-review evidence after AI generation and QA. For every generated candidate it creates a comparison sheet against Classic and deterministic Enhanced variants; textures with observed repeat sampling additionally receive a 3x3 seam/tile preview. The manifest fingerprints the Classic source, AI candidate and rendered review artifacts. These files remain local/ignored, but stage approval is bound to their hashes so changed pixels or changed review imagery invalidate an old receipt.
+
 ### `oa_tex_tile.py`
 Creates a 3x3 (or configurable) repeated texture preview for direct seam/tiling inspection. The image remains repository-ignored.
 
@@ -180,7 +183,7 @@ R8 geometry provides four non-overlapping U regions for BAPTAP: tapestry1 ≈ 0.
 
 ### Manual review queue
 
-`oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a stage-scoped manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. `oa_tex_stage_gate.py` records an explicit manual approval receipt only after the stage has complete local-preflight, runtime, technical, structural, generation and review evidence; the receipt fingerprints those artifacts and the generated output hashes. It deliberately never promotes a generated asset automatically.
+`oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a stage-scoped manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. `oa_tex_review_pack.py` then renders the concrete visual evidence to inspect: Classic/Enhanced/AI comparison sheets for every selected texture and 3x3 repeated previews where repeat sampling was observed. `oa_tex_stage_gate.py` records an explicit manual approval receipt only after the stage has complete local-preflight, runtime, technical, structural, generation, review-queue and visual-review-pack evidence; the receipt fingerprints those artifacts and the generated output hashes. It deliberately never promotes a generated asset automatically.
 
 ## Structural-drift baseline
 
