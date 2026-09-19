@@ -94,6 +94,33 @@ def resize_with_legacy_colorkey(
     return premultiplied
 
 
+def prepare_backend_colorkey_input(source: Path, prepared: Path) -> tuple[Path, bool]:
+    with Image.open(source) as image:
+        image.load()
+        if not should_apply_legacy_colorkey(source, image):
+            return source, False
+        rgba = apply_legacy_colorkey(image)
+    prepared.parent.mkdir(parents=True, exist_ok=True)
+    rgba.save(prepared, format="PNG", optimize=False)
+    return prepared, True
+
+
+def reapply_source_colorkey_mask(source: Path, output: Path) -> bool:
+    with Image.open(source) as source_image:
+        source_image.load()
+        if not should_apply_legacy_colorkey(source, source_image):
+            return False
+        source_alpha = apply_legacy_colorkey(source_image).getchannel("A")
+
+    with Image.open(output) as output_image:
+        output_image.load()
+        rgba = output_image.convert("RGBA")
+        alpha = source_alpha.resize(rgba.size, RESAMPLE["nearest"])
+        rgba.putalpha(alpha)
+    rgba.save(output, format="PNG", optimize=False)
+    return True
+
+
 def visible_legacy_magenta_pixels(image: Image.Image) -> int:
     rgba = image.convert("RGBA")
     px = rgba.load()
