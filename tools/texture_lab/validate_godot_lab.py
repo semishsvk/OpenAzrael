@@ -36,8 +36,11 @@ def main() -> int:
         "KEY_B",
         "KEY_R",
         "KEY_P",
+        "KEY_O",
         "KEY_S",
-        "PROFILE_MANIFEST_PATH",
+        "PROFILE_MANIFEST_PATHS",
+        "review_current.json",
+        "remastered.json",
         "texture_profile_resolver.gd",
         "SurfaceB",
         "compare_mode",
@@ -57,7 +60,9 @@ def main() -> int:
 
 
     for token in [
-        'EXPECTED_SCHEMA := "openazrael.texture_lab.runtime_texture_manifest.v1"',
+        'RUNTIME_SCHEMA := "openazrael.texture_lab.runtime_texture_manifest.v1"',
+        'REVIEW_SCHEMA := "openazrael.texture_lab.review_texture_manifest.v1"',
+        "export_allowed",
         'ALLOWED_PREFIX := "res://assets/textures/"',
         'automatic_promotion',
         'path.contains("..")',
