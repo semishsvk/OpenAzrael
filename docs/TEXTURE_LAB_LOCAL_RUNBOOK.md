@@ -135,7 +135,24 @@ Required model locations inside the ComfyUI root:
 - `models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors`
 - `models/vae/qwen_image_vae.safetensors`
 
-The preflight verifies exact byte sizes and SHA-256 hashes. The optional Lightning LoRA is deliberately disabled for calibration.
+Plan the model installation first; this performs no network download:
+
+```bash
+python tools/texture_lab/oa_tex_qwen_bootstrap.py \
+  --comfy-root <COMFYUI_ROOT>
+```
+
+Then download missing models from the pinned HTTPS sources:
+
+```bash
+python tools/texture_lab/oa_tex_qwen_bootstrap.py \
+  --comfy-root <COMFYUI_ROOT> \
+  --download
+```
+
+Downloads use `.partial` files and HTTP Range when available, so an interrupted multi-GB transfer can resume. A server that ignores Range causes a safe restart instead of an append/corruption. The final filename is created only after exact size and SHA-256 verification. An existing invalid final file is never overwritten unless `--replace-invalid` is explicitly supplied. Public model files need no token; if the host requires authentication, the bootstrap reads `HF_TOKEN` by default without storing it in Git or the report.
+
+The bootstrap verifies model-file identity, but it does **not** replace the independent runtime/workflow preflight below. The optional Lightning LoRA remains deliberately disabled for calibration.
 
 With ComfyUI running:
 
