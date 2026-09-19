@@ -638,7 +638,9 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
 
     checks = {
         "plan_preset_ok": (
-            isinstance(plan_data.get("preset"), dict)
+            plan_data.get("schema")
+            == "openazrael.texture_lab.ai_bakeoff_plan.v5"
+            and isinstance(plan_data.get("preset"), dict)
             and plan_data["preset"].get("name") == preset
             and plan_data.get("dry_run") is False
             and valid_run_instance_id(plan_data.get("run_instance_id"))
