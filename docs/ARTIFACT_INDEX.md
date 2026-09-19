@@ -183,3 +183,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 ## Texture Lab production selection audit
 - `data/texture_lab/production_selection.json` — production selection registry schema v2; active Remastered choices plus superseded/revocation audit history.
 - named AI run plans use schema v5 with a unique `run_instance_id`; real reruns require explicit `--replace-existing-run` when stage artifacts already exist.
+
+
+## Texture Lab post-smoke runtime lock
+- `tools/texture_lab/oa_tex_realesrgan_lock.py` — creates a local non-promoting runtime lock candidate only after a current approved `restored_smoke_1`; captures doctor/runtime/pip-freeze evidence without mutating the canonical runtime contract.
+- local outputs live under ignored `.local/texture_lab/runtime_locks/`; repository promotion remains a separate explicit step.
