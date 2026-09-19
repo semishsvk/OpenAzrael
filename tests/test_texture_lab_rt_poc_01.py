@@ -72,6 +72,7 @@ from oa_tex_stage_gate import (
     approve,
     check_prerequisites,
     evidence_snapshot,
+    expected_recreated_job_records,
     valid_run_instance_id,
     validate_receipt,
 )
@@ -656,6 +657,53 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertIn("--model-path", jobs[0]["argv"])
         self.assertIn("--python-exe", jobs[1]["argv"])
         self.assertIn(str(temp / "venv" / "bin" / "python"), jobs[1]["argv"])
+
+    def test_recreated_stage_gate_has_exact_generation_record_contract(self):
+        with tempfile.TemporaryDirectory() as td:
+            run_root = Path(td)
+
+            smoke4 = expected_recreated_job_records(
+                "recreated_smoke_4",
+                run_root / "recreated_smoke_4",
+            )
+            self.assertEqual(len(smoke4), 4)
+            self.assertEqual(
+                sorted(path.name for path in smoke4),
+                [
+                    "BAPFLOR_.job.json",
+                    "CORIROCK.job.json",
+                    "ECRDOR01.job.json",
+                    "WEL_PUZ1.job.json",
+                ],
+            )
+
+            atlas = expected_recreated_job_records(
+                "recreated_atlas",
+                run_root / "recreated_atlas",
+            )
+            self.assertEqual(len(atlas), 7)
+            self.assertEqual(
+                sorted(path.name for path in atlas),
+                [
+                    "BAPTAP_part_00.job.json",
+                    "BAPTAP_part_01.job.json",
+                    "BAPTAP_part_02.job.json",
+                    "BAPTAP_part_03.job.json",
+                    "classic_split.json",
+                    "enhanced_split.json",
+                    "stitch.json",
+                ],
+            )
+
+            full = expected_recreated_job_records(
+                "recreated_full",
+                run_root / "recreated_full",
+            )
+            self.assertEqual(len(full), 16)
+            self.assertEqual(
+                len([path for path in full if path.suffix == ".json"]),
+                16,
+            )
 
     def test_stage_gate_requires_manual_receipt_after_first_smoke(self):
         with tempfile.TemporaryDirectory() as td:
