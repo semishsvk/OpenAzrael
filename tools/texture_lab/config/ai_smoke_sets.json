@@ -3,7 +3,7 @@
   "status": "POC_EXECUTION_ORDER",
   "approval_receipts": {
     "root": ".local/texture_lab/approvals/rt_poc_01",
-    "policy": "A later named preset may execute only after every listed prerequisite has a current v4 manual approval receipt bound to current plan/review/output hashes and a PASS structured per-texture manual review record.",
+    "policy": "A later named preset may execute only after every listed prerequisite has a current v5 manual approval receipt bound to current plan/review/runtime/generation-provenance/output hashes and a PASS structured per-texture manual review record.",
     "manual_review_root": ".local/texture_lab/manual_reviews/rt_poc_01"
   },
   "presets": {
