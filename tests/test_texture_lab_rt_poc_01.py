@@ -1394,7 +1394,14 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 manual_review_root,
             )
             self.assertEqual(stale["status"], "STALE")
-            self.assertIn("manual review", stale.get("reason", ""))
+            self.assertEqual(
+                stale.get("reason"),
+                "current evidence is incomplete or invalid",
+            )
+            self.assertEqual(stale["current"]["status"], "FAIL")
+            self.assertFalse(
+                stale["current"]["checks"]["generation_record_ok"]
+            )
 
             production_stale = registry_status(
                 registry,
