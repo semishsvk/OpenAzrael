@@ -1825,6 +1825,23 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertIn("--preset", plan[2]["argv"])
             self.assertIn("restored_smoke_1", plan[2]["argv"])
 
+    def test_first_run_launchpad_clean_rerun_is_explicit(self):
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            normal = restored_smoke_plan(runtime)
+            replacement = restored_smoke_plan(
+                runtime,
+                replace_existing_run=True,
+            )
+
+        normal_bakeoff = normal[-1]["argv"]
+        replacement_bakeoff = replacement[-1]["argv"]
+        self.assertNotIn("--replace-existing-run", normal_bakeoff)
+        self.assertEqual(
+            replacement_bakeoff.count("--replace-existing-run"),
+            1,
+        )
+
     def test_first_run_launchpad_baseline_and_bootstrap_are_explicit(self):
         baseline = baseline_plan()
         self.assertEqual(
