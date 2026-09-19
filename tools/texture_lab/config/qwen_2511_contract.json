@@ -13,7 +13,7 @@
   "poc_sampling": {
     "seed": 734234,
     "steps": 40,
-    "cfg": 4.0,
+    "cfg": 4,
     "sampler": "euler",
     "scheduler": "simple",
     "lightning_lora_enabled": false,
@@ -65,6 +65,20 @@
     "fixed_seed_required": true,
     "exact_required_model_filenames": true,
     "model_file_sha256_required_before_execution": true,
-    "automatic_production_promotion": false
+    "automatic_production_promotion": false,
+    "no_lightning_lora": true,
+    "exactly_two_prompt_nodes": true,
+    "sampling_must_match_contract": true
+  },
+  "canonical_openazrael_workflow": {
+    "path": "tools/texture_lab/workflows/qwen_2511_openazrael_api.json",
+    "bindings": {
+      "load_image_node": "1",
+      "prompt_node": "7",
+      "negative_prompt_node": "8",
+      "seed_node": "10"
+    },
+    "conditioning_canvas": "4x Enhanced texture, not raw Classic pixels",
+    "input_count": 1
   }
 }
