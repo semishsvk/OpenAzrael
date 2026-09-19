@@ -169,7 +169,10 @@ def restored_smoke_check_plan(runtime_dir: Path) -> list[dict]:
     ]
 
 
-def restored_smoke_plan(runtime_dir: Path) -> list[dict]:
+def restored_smoke_plan(
+    runtime_dir: Path,
+    replace_existing_run: bool = False,
+) -> list[dict]:
     paths = runtime_paths(runtime_dir)
     launch_dir = DEFAULT_LAUNCHPAD_DIR
     preflight = [
@@ -211,6 +214,8 @@ def restored_smoke_plan(runtime_dir: Path) -> list[dict]:
         "--model-path",
         str(paths["model"]),
     ]
+    if replace_existing_run:
+        bakeoff.append("--replace-existing-run")
     return [
         command_record("local_preflight", preflight),
         command_record("runtime_doctor", doctor),
@@ -415,6 +420,14 @@ def main() -> int:
     )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
+        "--replace-existing-run",
+        action="store_true",
+        help=(
+            "For restored-smoke-1 only: explicitly clear that preset's local "
+            "run evidence and preset-scoped candidates before a clean rerun."
+        ),
+    )
+    parser.add_argument(
         "--runtime-python",
         default=None,
         help=(
@@ -482,6 +495,12 @@ def main() -> int:
             runtime_python,
         )
     elif args.command == "check-restored-smoke-1":
+        if args.replace_existing_run:
+            print(
+                "HOLD check-restored-smoke-1: --replace-existing-run is "
+                "not valid for the non-generating readiness gate"
+            )
+            return 1
         status = build_status(runtime_dir)
         if not status["source_ready_for_smoke_preflight"]:
             write_json(args.out, status)
@@ -502,7 +521,10 @@ def main() -> int:
                 + f" report={args.out}"
             )
             return 1
-        commands = restored_smoke_plan(runtime_dir)
+        commands = restored_smoke_plan(
+            runtime_dir,
+            replace_existing_run=args.replace_existing_run,
+        )
 
     rc, results = run_commands(commands, args.dry_run)
     report = write_launch_report(args.command, runtime_dir, results, rc)
