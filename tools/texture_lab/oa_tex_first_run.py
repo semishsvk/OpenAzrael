@@ -396,16 +396,22 @@ def main() -> int:
         commands = baseline_plan()
     elif args.command == "bootstrap-realesrgan":
         runtime_python = args.runtime_python
+        existing_runtime_python = runtime_paths(runtime_dir)["python"]
         if runtime_python is None:
-            required = str(load_runtime_contract()["python"]["major_minor"])
-            current = f"{sys.version_info.major}.{sys.version_info.minor}"
-            if current != required:
-                print(
-                    "HOLD bootstrap-realesrgan: provide --runtime-python pointing "
-                    f"to Python {required}; current launcher is Python {current}"
-                )
-                return 1
-            runtime_python = sys.executable
+            if existing_runtime_python.is_file():
+                # The base interpreter is irrelevant once the isolated venv
+                # already exists; bootstrap will select the venv executable.
+                runtime_python = sys.executable
+            else:
+                required = str(load_runtime_contract()["python"]["major_minor"])
+                current = f"{sys.version_info.major}.{sys.version_info.minor}"
+                if current != required:
+                    print(
+                        "HOLD bootstrap-realesrgan: provide --runtime-python pointing "
+                        f"to Python {required}; current launcher is Python {current}"
+                    )
+                    return 1
+                runtime_python = sys.executable
         commands = bootstrap_plan(
             runtime_dir,
             args.install_python_deps,
