@@ -1,0 +1,186 @@
+{
+  "schema": "openazrael.classic_colorkey_audit",
+  "version": 1,
+  "corpus": "Work Classic demo PNG corpus",
+  "classic_texture_count": 86,
+  "hash_suffix_texture_count": 10,
+  "keyed_texture_count": 10,
+  "non_hash_magenta_candidate_count": 0,
+  "source_png_state": "CURRENT_WORK_CORPUS_RGB_ONLY_BEFORE_FIX",
+  "detector": "For # suffixed indexed AZF textures, use the most-used palette index whose engine-quantized RGB satisfies R>=240, G<=16, B>=240. Only that palette index becomes alpha=0; every other index remains alpha=255.",
+  "issue": 8,
+  "keyed_textures": [
+    {
+      "file": "BAPBROK#.png",
+      "width": 128,
+      "height": 256,
+      "key_rgb": [
+        252,
+        8,
+        252
+      ],
+      "keyed_pixels": 6422,
+      "keyed_fraction": 0.19598389,
+      "active_bindings": {
+        "room": "R8",
+        "material": "1BROKE#",
+        "objects": [
+          "broken",
+          "broken01",
+          "broken3"
+        ]
+      }
+    },
+    {
+      "file": "BAPFLOR#.png",
+      "width": 256,
+      "height": 256,
+      "key_rgb": [
+        252,
+        8,
+        252
+      ],
+      "keyed_pixels": 1280,
+      "keyed_fraction": 0.01953125,
+      "active_bindings": {
+        "room": "R8",
+        "material": "BAPFLOOR",
+        "objects": [
+          "step011",
+          "floor2",
+          "floor01",
+          "secretflor",
+          "fontbot02",
+          "fonttop01",
+          "bath"
+        ]
+      }
+    },
+    {
+      "file": "BLOOD2#.png",
+      "width": 64,
+      "height": 64,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 2999,
+      "keyed_fraction": 0.73217773,
+      "active_bindings": null
+    },
+    {
+      "file": "BLOOD5#.png",
+      "width": 64,
+      "height": 64,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 3501,
+      "keyed_fraction": 0.85473633,
+      "active_bindings": null
+    },
+    {
+      "file": "BLOOD6#.png",
+      "width": 64,
+      "height": 64,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 2208,
+      "keyed_fraction": 0.5390625,
+      "active_bindings": null
+    },
+    {
+      "file": "BLOOS3#.png",
+      "width": 64,
+      "height": 64,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 3296,
+      "keyed_fraction": 0.8046875,
+      "active_bindings": null
+    },
+    {
+      "file": "BLOOS4#.png",
+      "width": 64,
+      "height": 64,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 3688,
+      "keyed_fraction": 0.90039062,
+      "active_bindings": null
+    },
+    {
+      "file": "BUBBLE#.png",
+      "width": 64,
+      "height": 64,
+      "key_rgb": [
+        252,
+        8,
+        252
+      ],
+      "keyed_pixels": 2708,
+      "keyed_fraction": 0.66113281,
+      "active_bindings": {
+        "room": "R7",
+        "material": "1BUBBLE",
+        "objects": [
+          "Object0101",
+          "ZQbubb1",
+          "ZQbubb01",
+          "ZQbubb02",
+          "ZQbubb03"
+        ]
+      }
+    },
+    {
+      "file": "KEYHOLE#.png",
+      "width": 128,
+      "height": 128,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 11184,
+      "keyed_fraction": 0.68261719,
+      "active_bindings": {
+        "room": "R1",
+        "material": "1KEYHOLE",
+        "objects": [
+          "doorcor2"
+        ]
+      }
+    },
+    {
+      "file": "MINETON#.png",
+      "width": 128,
+      "height": 128,
+      "key_rgb": [
+        252,
+        0,
+        252
+      ],
+      "keyed_pixels": 13627,
+      "keyed_fraction": 0.83172607,
+      "active_bindings": {
+        "room": "R1",
+        "material": "1TONGS",
+        "objects": [
+          "TONG6"
+        ]
+      }
+    }
+  ]
+}
