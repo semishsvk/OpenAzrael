@@ -69,6 +69,12 @@ from oa_tex_production_selection import (
     store_selection_record,
 )
 from oa_tex_qwen_bootstrap import build_plan as build_qwen_bootstrap_plan, verify_model as verify_qwen_bootstrap_model
+from oa_tex_qwen_lock import build_qwen_lock_candidate
+from oa_tex_qwen_lock_plan import (
+    build_promotion_plan as build_qwen_promotion_plan,
+    candidate_compatibility as qwen_candidate_compatibility,
+    write_plan_artifacts as write_qwen_plan_artifacts,
+)
 from oa_tex_qwen_preflight import (
     exact_loader_check,
     inspect_workflow,
@@ -1892,6 +1898,146 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual(bad["status"], "FAIL")
         self.assertFalse(bad["checks"]["torch_ok"])
+
+    def test_qwen_runtime_lock_candidate_and_promotion_plan_are_non_mutating(self):
+        contract = json.loads(
+            (ROOT / "tools/texture_lab/config/qwen_2511_contract.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        workflow = (
+            ROOT
+            / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+        )
+        workflow_sha = sha256_file(workflow)
+        bindings = contract["canonical_openazrael_workflow"]["bindings"]
+
+        model_files = {}
+        for role, spec in contract["required_models"].items():
+            model_files[role] = {
+                "status": "PASS",
+                "path": str(
+                    ROOT / ".local/test_comfy" / spec["relative_path"]
+                ),
+                "size_bytes": spec["size_bytes"],
+                "sha256": spec["sha256"],
+            }
+
+        doctor = {
+            "schema": "openazrael.texture_lab.comfy_doctor.v1",
+            "server": "http://127.0.0.1:8188",
+            "ready": True,
+            "system": {
+                "os": "test-os",
+                "python_version": "3.11.9",
+                "pytorch_version": "2.6.0+cu124",
+                "comfyui_version": "0.3.test",
+                "devices": [{"name": "Test GPU"}],
+            },
+            "node_contract": {
+                "all_required_classes_present": True,
+                "all_expected_inputs_present": True,
+            },
+        }
+        preflight = {
+            "schema": "openazrael.texture_lab.qwen_2511_preflight.v2",
+            "workflow": str(workflow),
+            "workflow_sha256": workflow_sha,
+            "canonical_bindings": {
+                key: str(value)
+                for key, value in bindings.items()
+            },
+            "sampling_check": {"status": "PASS"},
+            "model_files": model_files,
+            "model_files_required": True,
+            "ready_for_execution": True,
+        }
+        job = {
+            "schema": "openazrael.texture_lab.ai_recreated_job.v5",
+            "prompt_id": "prompt-1",
+            "workflow_template_sha256": workflow_sha,
+            "model_label": contract["model_label"],
+            "seed": contract["poc_sampling"]["seed"],
+            "model_files": [
+                {
+                    "file": spec["filename"],
+                    "sha256": spec["sha256"],
+                    "size": spec["size_bytes"],
+                }
+                for spec in contract["required_models"].values()
+            ],
+            "performance": {"job_wall_seconds": 10.0},
+        }
+
+        candidate = build_qwen_lock_candidate(
+            "recreated_smoke_1",
+            doctor,
+            preflight,
+            contract,
+            [job],
+        )
+        self.assertEqual(candidate["status"], "PASS")
+        self.assertFalse(candidate["automatic_promotion"])
+        self.assertFalse(candidate["canonical_config_mutated"])
+
+        compatibility = qwen_candidate_compatibility(
+            candidate,
+            contract,
+            workflow_sha,
+        )
+        self.assertEqual(compatibility["status"], "PASS")
+
+        plan = build_qwen_promotion_plan(
+            candidate,
+            "a" * 64,
+            contract,
+            workflow_sha,
+        )
+        self.assertEqual(
+            plan["status"],
+            "READY_FOR_HUMAN_PROMOTION_REVIEW",
+        )
+        self.assertFalse(plan["automatic_promotion"])
+        self.assertFalse(plan["canonical_files_mutated"])
+
+        with tempfile.TemporaryDirectory() as td:
+            rendered = write_qwen_plan_artifacts(plan, Path(td))
+            lock_path = Path(
+                rendered["local_proposed_files"]["environment_lock"]
+            )
+            self.assertTrue(lock_path.is_file())
+            lock_text = lock_path.read_text(encoding="utf-8")
+            self.assertEqual(
+                hashlib.sha256(lock_text.encode("utf-8")).hexdigest(),
+                rendered["proposed_files"][0]["sha256"],
+            )
+
+        bad_candidate = json.loads(json.dumps(candidate))
+        bad_candidate["observed"]["workflow_sha256"] = "b" * 64
+        hold = build_qwen_promotion_plan(
+            bad_candidate,
+            "c" * 64,
+            contract,
+            workflow_sha,
+        )
+        self.assertEqual(hold["status"], "HOLD")
+        self.assertFalse(
+            hold["compatibility"]["checks"]["workflow_hash_ok"]
+        )
+
+        bad_model = json.loads(json.dumps(candidate))
+        first_role = next(iter(bad_model["observed"]["model_files"]))
+        bad_model["observed"]["model_files"][first_role]["sha256"] = "d" * 64
+        hold = build_qwen_promotion_plan(
+            bad_model,
+            "e" * 64,
+            contract,
+            workflow_sha,
+        )
+        self.assertEqual(hold["status"], "HOLD")
+        self.assertFalse(
+            hold["compatibility"]["checks"]["model_files_ok"]
+        )
 
     def test_realesrgan_runtime_lock_candidate_requires_complete_doctor_evidence(self):
         contract = load_realesrgan_runtime_contract()
