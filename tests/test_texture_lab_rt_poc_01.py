@@ -36,6 +36,7 @@ from oa_tex_qwen_preflight import (
     sampling_check,
 )
 from oa_tex_realesrgan_bootstrap import verify_checkpoint
+from oa_tex_stage_gate import check_prerequisites
 from oa_tex_review_report import build_review_rows
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
@@ -416,6 +417,36 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertIn("--model-path", jobs[0]["argv"])
         self.assertIn("--python-exe", jobs[1]["argv"])
         self.assertIn(str(temp / "venv" / "bin" / "python"), jobs[1]["argv"])
+
+    def test_stage_gate_requires_manual_receipt_after_first_smoke(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            run_root = root / "runs"
+            approval_root = root / "approvals"
+
+            first = check_prerequisites(
+                "restored_smoke_1", run_root, approval_root
+            )
+            second = check_prerequisites(
+                "restored_smoke_4", run_root, approval_root
+            )
+            recreated_first = check_prerequisites(
+                "recreated_smoke_1", run_root, approval_root
+            )
+            recreated_full = check_prerequisites(
+                "recreated_full", run_root, approval_root
+            )
+
+        self.assertEqual(first["status"], "PASS")
+        self.assertEqual(first["requires_approval"], [])
+        self.assertEqual(second["status"], "HOLD")
+        self.assertEqual(second["requires_approval"], ["restored_smoke_1"])
+        self.assertEqual(recreated_first["status"], "PASS")
+        self.assertEqual(recreated_full["status"], "HOLD")
+        self.assertEqual(
+            recreated_full["requires_approval"],
+            ["recreated_smoke_4", "recreated_atlas"],
+        )
 
     def test_atlas_split_stitch_is_pixel_exact(self):
         with tempfile.TemporaryDirectory() as td:
