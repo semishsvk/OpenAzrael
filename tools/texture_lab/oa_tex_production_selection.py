@@ -26,6 +26,7 @@ from oa_tex_stage_gate import (
 DEFAULT_REGISTRY = ROOT / "data/texture_lab/production_selection.json"
 CURRENT_REGISTRY_SCHEMA = "openazrael.texture_lab.production_selection.v2"
 LEGACY_REGISTRY_SCHEMA = "openazrael.texture_lab.production_selection.v1"
+CURRENT_RECORD_SCHEMA = "openazrael.texture_lab.production_selection_record.v2"
 
 
 def load_json(path: Path) -> dict:
@@ -52,7 +53,15 @@ def load_registry(path: Path) -> dict:
         data["schema"] = CURRENT_REGISTRY_SCHEMA
         data["migrated_from_schema"] = LEGACY_REGISTRY_SCHEMA
 
-    data.setdefault("profiles", {}).setdefault("remastered", {})
+    profile = data.setdefault("profiles", {}).setdefault("remastered", {})
+    if schema == LEGACY_REGISTRY_SCHEMA:
+        for record in profile.values():
+            if isinstance(record, dict):
+                record.setdefault("schema", CURRENT_RECORD_SCHEMA)
+                record.setdefault(
+                    "migrated_from_record_schema",
+                    "legacy_unversioned",
+                )
     data.setdefault("superseded_selections", [])
     data.setdefault("revocations", [])
     return data
@@ -117,6 +126,11 @@ def select_candidate(
     note: str,
     manual_review_root: Path = DEFAULT_MANUAL_REVIEW_ROOT,
 ) -> dict:
+    if not note or not note.strip():
+        raise SystemExit(
+            "production selection requires a non-empty manual note"
+        )
+
     receipt_status = validate_receipt(
         preset,
         run_root,
@@ -163,6 +177,7 @@ def select_candidate(
     selected_at = datetime.now(timezone.utc).isoformat()
 
     record = {
+        "schema": CURRENT_RECORD_SCHEMA,
         "texture_id": texture_id,
         "presentation_profile": "remastered",
         "selected_tier": "ai_restored" if mode == "restored" else "ai_recreated",
@@ -191,19 +206,43 @@ def validate_record(
 ) -> dict:
     preset = str(record.get("selected_from_preset", ""))
     texture_id = str(record.get("texture_id", ""))
-    checks = {}
+    checks = {
+        "record_schema_ok": record.get("schema") == CURRENT_RECORD_SCHEMA,
+        "texture_id_present": bool(texture_id),
+        "presentation_profile_ok": (
+            record.get("presentation_profile") == "remastered"
+        ),
+        "automatic_selection_off": record.get("automatic_selection") is False,
+    }
 
-    receipt = validate_receipt(
-        preset,
-        run_root,
-        approval_root,
-        manual_review_root,
-    )
-    checks["stage_approval_current"] = receipt.get("status") == "PASS"
+    try:
+        spec = preset_record(preset)
+        mode = str(spec.get("mode", ""))
+        receipt = validate_receipt(
+            preset,
+            run_root,
+            approval_root,
+            manual_review_root,
+        )
+        checks["preset_valid"] = mode in {"restored", "recreated"}
+        checks["stage_approval_current"] = receipt.get("status") == "PASS"
+    except SystemExit:
+        return {
+            "texture_id": texture_id,
+            "status": "STALE",
+            "checks": {
+                **checks,
+                "preset_valid": False,
+                "stage_approval_current": False,
+            },
+        }
+
+    checks["selected_tier_matches_preset"] = record.get(
+        "selected_tier"
+    ) == ("ai_restored" if mode == "restored" else "ai_recreated")
 
     candidate_path = ROOT / str(record.get("candidate_path", ""))
     source_path = ROOT / str(record.get("classic_source_path", ""))
-    mode = str(preset_record(preset).get("mode", ""))
     expected_root = named_candidate_root(mode, preset)
     checks["candidate_namespace_current"] = path_is_within(
         candidate_path,
@@ -293,6 +332,8 @@ def revoke_candidate(
     registry_path: Path,
     note: str,
 ) -> dict:
+    if not note or not note.strip():
+        raise SystemExit("production revocation requires a non-empty note")
     registry = load_registry(registry_path)
     profile = registry["profiles"]["remastered"]
     previous = profile.pop(texture_id, None)
