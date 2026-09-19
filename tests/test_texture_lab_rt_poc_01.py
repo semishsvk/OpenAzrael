@@ -11,7 +11,13 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools/texture_lab"))
 
-from common import image_mae, seam_mae, sha256_file
+from common import (
+    alpha_is_binary,
+    image_mae,
+    seam_mae,
+    sha256_file,
+    visible_legacy_magenta_pixels,
+)
 from oa_tex_enhance import upscale_one
 from oa_tex_scan import scan
 from oa_tex_tile import tile_preview
@@ -30,6 +36,14 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     (x * 11 + y * 17) % 256,
                     255 if (x + y) % 3 else 128,
                 )
+        im.save(path)
+
+    def _legacy_key_fixture(self, path: Path) -> None:
+        im = Image.new("RGB", (8, 8), (252, 0, 252))
+        px = im.load()
+        for y in range(2, 6):
+            for x in range(2, 6):
+                px[x, y] = (48 + x * 10, 32 + y * 8, 20)
         im.save(path)
 
     def test_scan_and_deterministic_upscale(self):
@@ -58,6 +72,32 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             result = validate_pair(src, nearest, 4)
             self.assertEqual(result["technical_status"], "PASS")
             self.assertEqual(result["actual_size"], [32, 32])
+
+    def test_legacy_magenta_colorkey_is_alpha_safe(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source_dir = root / "classic"
+            source_dir.mkdir()
+            src = source_dir / "SPRITE#.png"
+            self._legacy_key_fixture(src)
+
+            manifest = scan(source_dir)
+            row = manifest["textures"][0]
+            self.assertTrue(row["legacy_colorkey_candidate"])
+            self.assertGreater(row["legacy_magenta_pixels"], 0)
+
+            out = root / "enhanced"
+            variants = upscale_one(src, out, 4, ["nearest", "bicubic", "lanczos"])
+            self.assertEqual(len(variants), 3)
+            for variant in variants:
+                candidate = out / variant["file"]
+                with Image.open(candidate) as im:
+                    self.assertEqual(im.mode, "RGBA")
+                    self.assertTrue(alpha_is_binary(im))
+                    self.assertEqual(visible_legacy_magenta_pixels(im), 0)
+                report = validate_pair(src, candidate, 4)
+                self.assertEqual(report["technical_status"], "PASS")
+                self.assertTrue(report["colorkey_ok"])
 
     def test_metrics_are_stable(self):
         with tempfile.TemporaryDirectory() as td:
