@@ -79,6 +79,7 @@ for p in [
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     "data/classic_colorkey_audit_v1.json",
     "tools/validate_classic_colorkey_v1.py",
+    "tools/texture_pipeline/apply_colorkey_alpha_v1.py",
 ]:
     req(p)
 
