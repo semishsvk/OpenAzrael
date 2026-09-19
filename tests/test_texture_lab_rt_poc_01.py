@@ -20,6 +20,7 @@ from common import (
     sha256_file,
     visible_legacy_magenta_pixels,
 )
+from oa_tex_ai_bakeoff import eligible_entries
 from oa_tex_enhance import upscale_one
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
@@ -157,6 +158,38 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 good_metrics["edge_map_mae_0_255"],
                 bad_metrics["edge_map_mae_0_255"],
             )
+
+    def test_ai_policy_excludes_mask_and_text_recreation(self):
+        selection = {
+            "textures": [
+                {"id": "KEYHOLE#", "content_class": "binary_mask_hard_edge"},
+                {"id": "SHIELD1", "content_class": "text_decorative_shield"},
+                {"id": "BAPFLOR#", "content_class": "stone_floor"},
+            ]
+        }
+        policy = {
+            "defaults": {"ai_restored": True, "ai_recreated": True},
+            "classes": {
+                "binary_mask_hard_edge": {
+                    "ai_restored": False,
+                    "ai_recreated": False,
+                    "preferred_tier": "enhanced_nearest",
+                },
+                "text_decorative_shield": {"ai_restored": True, "ai_recreated": False},
+                "stone_floor": {"ai_restored": True, "ai_recreated": True},
+            },
+        }
+
+        restored, restored_skipped = eligible_entries(selection, policy, "restored")
+        recreated, recreated_skipped = eligible_entries(selection, policy, "recreated")
+
+        self.assertEqual([row["id"] for row in restored], ["SHIELD1", "BAPFLOR#"])
+        self.assertEqual([row["id"] for row in recreated], ["BAPFLOR#"])
+        self.assertEqual([row["id"] for row in restored_skipped], ["KEYHOLE#"])
+        self.assertEqual(
+            [row["id"] for row in recreated_skipped],
+            ["KEYHOLE#", "SHIELD1"],
+        )
 
     def test_metrics_are_stable(self):
         with tempfile.TemporaryDirectory() as td:
