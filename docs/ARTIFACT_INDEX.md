@@ -178,3 +178,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 ## Texture Lab Real-ESRGAN runtime compatibility
 - `tools/texture_lab/config/realesrgan_runtime_contract.json` — provisional Python 3.11 / torch 2.1.2 / torchvision 0.16.2 / BasicSR 1.4.2 texture-only compatibility contract.
 - `tools/texture_lab/oa_tex_realesrgan_runtime.py` — exact runtime probe and pip-environment fingerprint helper used by bootstrap/doctor.
+
+
+## Texture Lab production selection audit
+- `data/texture_lab/production_selection.json` — production selection registry schema v2; active Remastered choices plus superseded/revocation audit history.
+- named AI run plans use schema v5 with a unique `run_instance_id`; real reruns require explicit `--replace-existing-run` when stage artifacts already exist.
