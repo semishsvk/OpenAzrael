@@ -78,11 +78,30 @@ def main() -> int:
     parser.add_argument("--variant", default="lanczos_x4.png")
     parser.add_argument("--factor", type=int, default=4)
     parser.add_argument("--out", type=Path, default=ROOT / "data/texture_lab/validation.json")
+    parser.add_argument(
+        "--only",
+        nargs="*",
+        default=None,
+        help="Validate only these Classic texture IDs. Missing selected outputs remain hard failures.",
+    )
     args = parser.parse_args()
 
-    sources = sorted(args.source_dir.glob("*.png"))
+    wanted = set(args.only or [])
+    sources = [
+        src
+        for src in sorted(args.source_dir.glob("*.png"))
+        if not wanted or src.stem in wanted
+    ]
     if not sources:
-        raise SystemExit(f"no Classic source PNGs found in {args.source_dir}")
+        raise SystemExit(f"no selected Classic source PNGs found in {args.source_dir}")
+
+    if wanted:
+        found = {src.stem for src in sources}
+        missing_sources = sorted(wanted - found)
+        if missing_sources:
+            raise SystemExit(
+                "selected Classic source IDs are missing: " + ", ".join(missing_sources)
+            )
 
     rows = []
     for src in sources:
@@ -96,9 +115,10 @@ def main() -> int:
 
     failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
-        "schema": "openazrael.texture_lab.validation.v2",
+        "schema": "openazrael.texture_lab.validation.v3",
         "variant": args.variant,
         "factor": args.factor,
+        "only": sorted(wanted) if wanted else None,
         "note": "Fidelity metrics are observational until thresholds are calibrated on RT-POC-01.",
         "results": rows,
         "technical_failures": len(failures),
