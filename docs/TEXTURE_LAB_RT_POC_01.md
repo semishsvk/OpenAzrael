@@ -117,7 +117,8 @@ Legacy color-key candidates follow the same alpha-lock policy as AI Restored: al
 - 1/2/3/4: select the active/candidate tier: Classic / Enhanced / AI Restored / AI Recreated;
 - B: toggle isolated side-by-side A/B comparison;
 - R: cycle the A/reference tier while B is active;
-- P: reload/toggle the local resolved Remastered runtime profile;
+- O: switch profile source between current-stage REVIEW and REMASTERED production profile;
+- P: reload/toggle the selected local profile source;
 - Q/W/E: nearest / bicubic / Lanczos Enhanced variants;
 - T: 1x1 / 2x2 / 4x4 repeated display;
 - L: unshaded vs directional-light inspection;
@@ -125,8 +126,16 @@ Legacy color-key candidates follow the same alpha-lock policy as AI Restored: al
 
 The scene does not access DemoState, CandidateDiagnostics or RoomManager and does not mutate gameplay state. A/B mode uses two isolated QuadMesh surfaces with the same tile and lighting state, so the comparison changes presentation only. `validate_godot_lab.py` enforces this source contract. Actual Godot execution remains pending on a machine with Godot and the ignored local texture corpus.
 
+### `oa_tex_review_profile.py`
+Builds an editor-only `openazrael.texture_lab.review_texture_manifest.v1` from a completed named stage. It resolves the stage's reviewed candidate hashes and Classic fallbacks, writes a stage-specific `godot_review_profile.json` into the run evidence directory, and refreshes the convenience pointer `.local/texture_lab/runtime_manifests/review_current.json`. The schema carries `export_allowed=false`; the production export verifier deliberately rejects it.
+
+Named stage candidates live under preset-scoped ignored namespaces: `assets/textures/ai_restored/_runs/<preset>/` or `assets/textures/ai_recreated/_runs/<preset>/`. Different presets cannot overwrite one another's reviewed pixels. Re-running the same preset intentionally replaces that preset's evidence and invalidates its older review/approval chain.
+
 ### `oa_tex_run_summary.py`
 Builds a single manual-review handoff from the completed named stage evidence. It collects evidence status, low-frequency drift, source-relative seam deltas, review attention and the exact candidate/full/detail/tile paths. The summary explicitly carries `automatic_quality_verdict=false` and `automatic_stage_approval=false`. Every named AI bake-off appends this as its final source-controlled orchestration step.
+
+### `oa_tex_contract_validate.py`
+Cross-validates the canonical selection, AI policy, smoke-stage DAG, policy summary, primary backend/model registry and Qwen workflow/contract. CI runs it on Python 3.11 and 3.12 and also triggers on `data/texture_lab/**`, so eligibility/count/seed/scale/model-loader drift cannot silently desynchronize the pipeline.
 
 ### `oa_tex_first_run.py`
 Cross-platform launchpad for the first real AI Restored execution. It separates source status, deterministic-baseline preparation, pinned Real-ESRGAN bootstrap and the canonical `restored_smoke_1` run. The launchpad never auto-selects a PyTorch/CUDA build; backend readiness remains the responsibility of the Real-ESRGAN doctor. A dry-run mode is covered by CI.
