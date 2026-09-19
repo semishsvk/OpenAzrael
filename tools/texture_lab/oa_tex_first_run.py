@@ -415,8 +415,10 @@ def classify_restored_smoke_1_state(
         return {
             "state": "STAGE_APPROVED",
             "next_action": (
-                "restored_smoke_4 is now eligible to begin; production "
-                "selection remains a separate manual decision"
+                "capture the non-promoting Real-ESRGAN runtime lock candidate "
+                "with oa_tex_realesrgan_lock.py, then restored_smoke_4 is "
+                "eligible to begin; production selection remains a separate "
+                "manual decision"
             ),
         }
     if receipt_status == "STALE":
