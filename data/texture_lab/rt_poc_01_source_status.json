@@ -1,0 +1,54 @@
+{
+  "schema": "openazrael.texture_lab.rt_poc_01_source_status.v1",
+  "date": "2026-09-19",
+  "canonical_context": "v116-context-v26",
+  "branch": "texture-lab-rt-poc-01",
+  "source_status": "SOURCE_SAFE_READY_FOR_LOCAL_RUNTIME",
+  "real_ai_outputs": "PENDING",
+  "real_realesrgan_execution": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
+  "real_qwen_execution": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
+  "godot_texture_lab_runtime": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
+  "ci": {
+    "workflow": "Texture Lab source-safe tests",
+    "run_number": 231,
+    "conclusion": "success",
+    "python": [
+      "3.11",
+      "3.12"
+    ],
+    "unit_tests": "PASS",
+    "all_staged_ai_presets_dry_run": "PASS",
+    "godot_source_contract": "PASS"
+  },
+  "pipeline": [
+    "classic",
+    "enhanced",
+    "ai_generation",
+    "technical_qa",
+    "structural_qa",
+    "manual_review_queue",
+    "fingerprinted_visual_review_pack",
+    "manual_stage_approval"
+  ],
+  "review_evidence": {
+    "visual_review_pack_schema": 2,
+    "full_comparison": "ASPECT_RATIO_SAFE_CHECKERBOARD",
+    "deterministic_detail_regions": [
+      "upper_left",
+      "center",
+      "lower_right"
+    ],
+    "repeat_sampling_preview": "3x3",
+    "source_relative_seam_metrics": true,
+    "approval_receipt_schema": 3,
+    "changed_reviewed_pixels_invalidate_approval": true
+  },
+  "godot_lab": {
+    "isolated": true,
+    "gameplay_state_access": false,
+    "ab_compare": true,
+    "reference_tier_cycle": true,
+    "shared_tile_and_lighting_state": true
+  },
+  "next_real_execution": "Run restored_smoke_1 on a development machine with the pinned Pillow baseline, restored Classic/Enhanced corpus, pinned Real-ESRGAN v0.3.0 source and verified RealESRGAN_x4plus checkpoint. Review CORIROCK outputs before approving restored_smoke_4."
+}
