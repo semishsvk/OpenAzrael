@@ -28,7 +28,9 @@
     "VAELoader",
     "VAEEncode",
     "VAEDecode",
-    "SaveImage"
+    "SaveImage",
+    "ModelSamplingAuraFlow",
+    "CFGNorm"
   ],
   "required_models": {
     "diffusion": {
