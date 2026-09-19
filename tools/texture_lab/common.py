@@ -16,6 +16,9 @@ RESAMPLE = {
     "lanczos": RESAMPLING.LANCZOS,
 }
 
+LEGACY_MAGENTA_RB_MIN = 248
+LEGACY_MAGENTA_G_MAX = 12
+
 
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
@@ -29,6 +32,91 @@ def has_alpha(image: Image.Image) -> bool:
     if image.mode in ("RGBA", "LA"):
         return True
     return image.mode == "P" and "transparency" in image.info
+
+
+def is_legacy_magenta(rgb: tuple[int, int, int] | tuple[int, int, int, int]) -> bool:
+    r, g, b = int(rgb[0]), int(rgb[1]), int(rgb[2])
+    return r >= LEGACY_MAGENTA_RB_MIN and b >= LEGACY_MAGENTA_RB_MIN and g <= LEGACY_MAGENTA_G_MAX
+
+
+def legacy_colorkey_stats(image: Image.Image) -> dict[str, float | int]:
+    rgb = image.convert("RGB")
+    px = rgb.load()
+    count = 0
+    for y in range(rgb.height):
+        for x in range(rgb.width):
+            if is_legacy_magenta(px[x, y]):
+                count += 1
+    total = rgb.width * rgb.height
+    return {
+        "pixels": count,
+        "fraction": (float(count) / float(total)) if total else 0.0,
+    }
+
+
+def should_apply_legacy_colorkey(path: Path, image: Image.Image) -> bool:
+    # Conservative POC rule: only legacy '#' assets with observed quantized
+    # magenta pixels are converted. This is a presentation-safety rule, not a
+    # claim that the complete original transparency semantics are recovered.
+    if "#" not in path.stem:
+        return False
+    return int(legacy_colorkey_stats(image)["pixels"]) > 0
+
+
+def apply_legacy_colorkey(image: Image.Image) -> Image.Image:
+    rgba = image.convert("RGBA")
+    px = rgba.load()
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            r, g, b, a = px[x, y]
+            if is_legacy_magenta((r, g, b)):
+                px[x, y] = (0, 0, 0, 0)
+            else:
+                px[x, y] = (r, g, b, a)
+    return rgba
+
+
+def resize_with_legacy_colorkey(
+    image: Image.Image,
+    target_size: tuple[int, int],
+    resample: int,
+) -> Image.Image:
+    rgba = apply_legacy_colorkey(image)
+    if resample == RESAMPLE["nearest"]:
+        return rgba.resize(target_size, resample)
+
+    # Premultiplied RGB prevents transparent-magenta bleed during filtering.
+    # Alpha is then restored with nearest-neighbour so the legacy binary mask
+    # remains exact in the deterministic Enhanced tier.
+    premultiplied = rgba.convert("RGBa").resize(target_size, resample).convert("RGBA")
+    alpha = rgba.getchannel("A").resize(target_size, RESAMPLE["nearest"])
+    premultiplied.putalpha(alpha)
+    return premultiplied
+
+
+def visible_legacy_magenta_pixels(image: Image.Image) -> int:
+    rgba = image.convert("RGBA")
+    px = rgba.load()
+    count = 0
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            r, g, b, a = px[x, y]
+            if a > 0 and is_legacy_magenta((r, g, b)):
+                count += 1
+    return count
+
+
+def alpha_is_binary(image: Image.Image) -> bool:
+    rgba = image.convert("RGBA")
+    extrema = rgba.getchannel("A").getextrema()
+    if extrema == (255, 255):
+        return True
+    px = rgba.getchannel("A").load()
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            if px[x, y] not in (0, 255):
+                return False
+    return True
 
 
 def write_json(path: Path, payload: Any) -> None:
