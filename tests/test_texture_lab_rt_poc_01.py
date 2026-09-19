@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools/texture_lab"))
 
 from common import (
+    PILLOW_VERSION,
+    PINNED_PILLOW_VERSION,
     alpha_is_binary,
     image_mae,
     prepare_backend_colorkey_input,
@@ -403,7 +405,6 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 model_path=temp / "RealESRGAN_x4plus.pth",
                 realesrgan_python=str(temp / "venv" / "bin" / "python"),
                 selection=ROOT / "tools/texture_lab/config/rt_poc_01_selection.json",
-                factor=4,
             )
             jobs = build_restore_plan(
                 args,
@@ -615,6 +616,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertEqual(bad["status"], "FAIL")
             self.assertFalse(bad["size_ok"])
             self.assertFalse(bad["sha256_ok"])
+
+    def test_source_safe_pillow_pin_matches_runtime_and_requirements(self):
+        requirements = (
+            ROOT / "tools/texture_lab/requirements-source-safe.txt"
+        ).read_text(encoding="utf-8").splitlines()
+        self.assertIn(f"Pillow=={PINNED_PILLOW_VERSION}", requirements)
+        self.assertEqual(PILLOW_VERSION, PINNED_PILLOW_VERSION)
 
     def test_metrics_are_stable(self):
         with tempfile.TemporaryDirectory() as td:
