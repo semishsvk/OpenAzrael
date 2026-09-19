@@ -32,7 +32,7 @@ def probe_code(require_basicsr: bool, require_realesrgan: bool) -> str:
         " import torchvision",
         " payload['torchvision'] = getattr(torchvision, '__version__', 'unknown').split('+', 1)[0]",
         " try:",
-        "  from torchvision.transforms import functional_tensor as _functional_tensor",
+        "  from torchvision.transforms.functional_tensor import rgb_to_grayscale as _rgb_to_grayscale",
         "  payload['functional_tensor_import'] = True",
         " except Exception as exc:",
         "  payload['functional_tensor_import'] = False",
