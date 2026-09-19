@@ -95,6 +95,11 @@ Legacy color-key candidates are converted to alpha-safe input before the backend
 
 AI Recreated is conditioned on the 4x Enhanced canvas (Lanczos in RT-POC-01), while Classic remains the source of truth for structural QA and legacy alpha masks. This reduces the amount of geometry the model has to infer from low-resolution source pixels.
 
+### `oa_tex_qwen_bootstrap.py`
+Plans, resumably downloads and verifies the three pinned Qwen-Image-Edit-2511 ComfyUI model files. Transfers use `.partial` files and HTTP Range where supported, restart safely when a server ignores Range, and promote a partial file to its final model path only after exact byte-size and SHA-256 verification. Existing invalid final files are not overwritten unless explicitly requested. Optional Hugging Face authentication is read from an environment variable rather than stored in repository data.
+
+The bootstrap is an installation helper only. `oa_tex_qwen_preflight.py` remains mandatory because it independently validates workflow topology, sampler contract, model filenames/hashes and runtime bindings before generation.
+
 ### `oa_tex_recreate.py`
 Generic ComfyUI API runner. It consumes an API-format workflow and patches explicit Load Image / positive prompt / negative prompt / seed nodes. The canonical OpenAzrael graph is single-image and receives the deterministic 4× Enhanced canvas (Lanczos for RT-POC-01) as its conditioning image; Classic remains the structural/alpha source of truth. Each job record fingerprints the workflow template, submitted workflow, source, output and explicitly supplied model files.
 
