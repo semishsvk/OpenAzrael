@@ -40,10 +40,23 @@ For Qwen, missing model files are translated into an exact required-byte total p
 
 ## 1. Rebuild deterministic Enhanced baseline
 
+Install the pinned source-safe image toolchain first:
+
+```bash
+python -m pip install -r tools/texture_lab/requirements-source-safe.txt
+```
+
+RT-POC-01 currently pins Pillow **12.3.0**. The mathematical bake-off and drift calibration refuse to run under a different Pillow version so that the Enhanced reference is not silently changed by a library upgrade.
+
+Rebuild the Enhanced candidates and then recalibrate the deterministic structural envelope:
+
 ```bash
 python tools/texture_lab/oa_tex_scan.py
 python tools/texture_lab/oa_tex_run_poc.py
+python tools/texture_lab/oa_tex_calibrate_drift.py
 ```
+
+The new `data/texture_lab/rt_poc_01_drift_baseline.json` records the Pillow and Python toolchain used for calibration. The local AI preflight requires the baseline's Pillow version to match the pinned source-safe version.
 
 The canonical Qwen conditioning variant for RT-POC-01 is `lanczos_x4.png`, except assets excluded by AI policy.
 
@@ -106,7 +119,7 @@ python tools/texture_lab/oa_tex_stage_gate.py approve restored_smoke_1 \
 
 Only then run `restored_smoke_4`. Review it and approve it the same way before `restored_full`.
 
-The next preset begins with a stage-gate check. An approval receipt is bound to the exact plan, review queue and output SHA-256 values. Re-running a previously approved stage with changed evidence makes its receipt stale and requires a new manual approval.
+The next preset begins with a stage-gate check. An approval receipt is bound to the exact plan, local preflight, backend doctor/preflight, technical validation, structural-drift report, generation/job records, review queue and output SHA-256 values. Re-running a previously approved stage with changed evidence makes its receipt stale and requires a new manual approval.
 
 ## 4. Prepare Qwen / ComfyUI
 
@@ -164,7 +177,7 @@ Then proceed through the gated sequence:
 - `recreated_atlas` — requires approved `recreated_smoke_4`;
 - `recreated_full` — requires current approvals for both `recreated_smoke_4` and `recreated_atlas`.
 
-Each named preset has an isolated evidence directory under `.local/texture_lab/runs/rt_poc_01/<preset>/`. Review queues therefore cannot accidentally inherit stale results from another stage.
+Each named preset has an isolated evidence directory under `.local/texture_lab/runs/rt_poc_01/<preset>/`. Review queues therefore cannot accidentally inherit stale results from another stage. A `--dry-run` plan is written under `.local/texture_lab/runs/rt_poc_01/_dry_run_plans/` so it cannot overwrite an approved real-run plan.
 
 The canonical graph uses:
 
@@ -227,12 +240,14 @@ No numerical metric or completed command promotes an asset automatically.
 
 A candidate can become a production default only after:
 
-1. technical validation;
-2. structural-drift review;
-3. alpha/seam/atlas/text/puzzle checks required by its policy;
-4. visual inspection in the Godot Texture Lab;
-5. explicit stage approval receipt for staged execution;
-6. explicit production selection.
+1. pinned-toolchain local preflight;
+2. backend runtime doctor/preflight;
+3. technical validation;
+4. structural-drift review;
+5. alpha/seam/atlas/text/puzzle checks required by its policy;
+6. visual inspection in the Godot Texture Lab;
+7. explicit stage approval receipt for staged execution;
+8. explicit production selection.
 
 Stage approval is intentionally separate from production promotion: an approved smoke stage only permits the next experiment stage. It does not make its generated textures production defaults.
 
