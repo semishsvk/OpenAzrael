@@ -1,35 +1,37 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v116-context-v24`
-**Date:** 2026-09-18
+**Checkpoint prepared:** `v116-context-v26`  
+**Date:** 2026-09-19  
+**Technical base:** `openazrael_godot_poc_v116`
 
-## What changed
-- Advanced technical base to **v116** and canonical context to **v116-context-v24**.
-- v116 is now the diagnostic integration layer for **KG-001 Candidate 1**. The previously discussed but uncommitted producer/copy scan is deferred to v117.
-- Added `CandidateDiagnostics` autoload with structured event telemetry and canonical DemoState SHA-256 on every recorded event.
-- Added persistent non-headless event log: `user://openazrael_candidate1_events.jsonl`.
-- Added F10 canonical state dumps under `user://openazrael_kg001_state_dump_<timestamp>_<sequence>.json`.
-- Added F6 authored trigger-volume visualization and F7 Candidate diagnostics HUD.
-- Preserved existing F8 audio debug and F9 audio parity capture unchanged in purpose.
-- Logged interactions, trigger enter/exit edges, room transitions/loads, debug room jumps, inventory/flag/puzzle changes and logical audio.
-- Changed R1/R7/R8 from script-time GLB preloads to runtime loads behind a deterministic fail-fast resource preflight.
-- Non-headless Candidate 1 additionally requires the four golden Event-IR WAVs: S152V2, S137, S121 and 799SECDR.
-- Added `tools/validate_candidate_diagnostics_v116.py` to the existing v112 candidate source suite and committed the v116 source contract.
-- Hardened evidence parsing and suppressed noisy initial false trigger-edge events.
-- Current v116 diagnostic source contract: **PASS**. Godot runtime execution remains **NOT EXECUTED** here.
-- KG-001 final tag remains forbidden until G00-G10 all pass.
+## Current canonical state
+- KG-001 Candidate 1 remains the active integration target.
+- Candidate diagnostics source contract is PASS and the candidate is source-ready.
+- Canonical Godot runtime evidence is still **NOT_EXECUTED**.
+- `demo-known-good-001` remains forbidden until G00-G10 are all literal PASS.
+- Localization architecture is approved but runtime implementation is intentionally deferred until after the first clean Candidate 1 runtime/manual cycle.
+- Existing forensic HOLDs remain unchanged.
 
-## Current blockers / HOLD
-- v109/v110/v111 still need real Godot execution with locally restored ignored room assets.
-- Candidate 1 non-headless run also requires the four golden Event-IR audio assets.
-- G09 fresh-checkout and G10 final manual sanity remain pending.
+## Documentation consistency update
+- Refreshed README to lead with the actual v116 Candidate 1 status instead of old historical checkpoints.
+- Replaced stale roadmap items that still targeted already completed v113-v115 work.
+- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v26`.
+- Preserved historical milestone notes rather than rewriting project history.
+- Kept runtime/forensic boundaries explicit: documentation cleanup does not count as Godot execution and does not promote any evidence status.
+
+## Current blockers / pending gates
+- Real Godot execution of v109/v110/v111 remains pending in the canonical evidence set.
+- R1/R7/R8 ignored room assets must be restored locally.
+- Non-headless Candidate 1 requires S152V2.WAV, S137.WAV, S121.WAV and 799SECDR.WAV.
+- G09 fresh-checkout build evidence and G10 final manual sanity remain pending.
 - Complete PUZZLES/ROOMS -> WORLD producer/compiler remains HOLD.
-- The deferred generic copy/mutator producer audit is now the v117 forensic target.
 - Original-runtime Classic audio pan/volume parity remains UNOBSERVED/HOLD.
+- Deferred generic copy/mutator producer investigation is designated v117.
 
 ## Exact next action
-On the development machine:
-1. restore the ignored R1/R7/R8 room assets and required Candidate 1 audio assets;
-2. run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`;
-3. if G00-G09 are PASS, launch the normal Godot Candidate 1 build and manually traverse the full demo using F6/F7/F10 diagnostics as needed;
-4. complete G10 only after that manual run is clean.
+1. Restore the ignored R1/R7/R8 room assets and required Candidate 1 audio assets.
+2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
+3. Evaluate the resulting G00-G09 evidence.
+4. If G00-G09 are PASS, run the normal graphical Candidate 1 and traverse the full demo.
+5. Complete G10 only after a clean manual run.
+6. Only then consider the `demo-known-good-001` tag.
