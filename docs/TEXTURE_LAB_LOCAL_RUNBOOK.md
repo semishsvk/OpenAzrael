@@ -269,3 +269,10 @@ A candidate can become a production default only after:
 Stage approval is intentionally separate from production promotion: an approved smoke stage only permits the next experiment stage. It does not make its generated textures production defaults.
 
 Until then, Classic remains the evidence source and generated variants remain observational.
+
+
+## Source-relative seam review
+
+Technical QA records the Classic edge seam and the generated candidate edge seam separately. The review queue shows the candidate-minus-Classic delta for U and V. A positive delta means the generated candidate has a larger edge discontinuity than the Classic source on that axis; a negative delta means the measured edge discontinuity is smaller. These values are observational and must be interpreted together with the 3x3 visual tile preview rather than used as an automatic quality verdict.
+
+Comparison sheets preserve original aspect ratio and show transparent pixels over a checkerboard. Do not judge geometry from older square-stretched comparison images.
