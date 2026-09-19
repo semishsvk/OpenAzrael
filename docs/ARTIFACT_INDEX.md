@@ -173,3 +173,8 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 - `tools/texture_lab/oa_tex_contract_validate.py` — cross-file CI validator for selection/policy/stages/model/backend/Qwen consistency.
 - `tools/texture_lab/oa_tex_review_profile.py` — creates non-exportable stage-specific Godot review manifests and the local `review_current.json` convenience pointer.
 - named AI candidates are isolated under ignored `assets/textures/ai_restored/_runs/<preset>/` / `ai_recreated/_runs/<preset>/` namespaces.
+
+
+## Texture Lab Real-ESRGAN runtime compatibility
+- `tools/texture_lab/config/realesrgan_runtime_contract.json` — provisional Python 3.11 / torch 2.1.2 / torchvision 0.16.2 / BasicSR 1.4.2 texture-only compatibility contract.
+- `tools/texture_lab/oa_tex_realesrgan_runtime.py` — exact runtime probe and pip-environment fingerprint helper used by bootstrap/doctor.
