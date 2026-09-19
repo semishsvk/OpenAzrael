@@ -259,5 +259,15 @@
     "execution_semantics": "only a successful real recreated-smoke-1 run may move real Recreated pixels from NOT_EXECUTED",
     "automatic_action": false,
     "production_selection_implied": false
+  },
+  "recreated_generation_record": {
+    "schema": "openazrael.texture_lab.ai_recreated_job.v5",
+    "job_wall_seconds": true,
+    "upload_wall_seconds": true,
+    "submit_wall_seconds": true,
+    "submit_to_completion_wall_seconds": true,
+    "download_wall_seconds": true,
+    "estimate_usage": "run summary aggregates Qwen generation units, including separate atlas segments, for naive later-stage job-only projections",
+    "benchmark_claim": false
   }
 }
