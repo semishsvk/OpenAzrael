@@ -1010,10 +1010,17 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             ]
         }
         run = {
-            "schema": "openazrael.texture_lab.ai_restore_run.v4",
+            "schema": "openazrael.texture_lab.ai_restore_run.v5",
             "mode": "ai_restored",
             "reproducibility": {
                 "runtime_identity": {"status": "PASS"},
+            },
+            "performance": {
+                "texture_count": 1,
+                "run_wall_seconds": 1.0,
+                "measured_inference_wall_seconds": 0.8,
+                "mean_inference_wall_seconds_per_texture": 0.8,
+                "textures_per_minute_inference_only": 75.0,
             },
             "textures": [
                 {
@@ -1269,10 +1276,17 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             (run_dir / "ai_restore_run.json").write_text(
                 json.dumps(
                     {
-                        "schema": "openazrael.texture_lab.ai_restore_run.v4",
+                        "schema": "openazrael.texture_lab.ai_restore_run.v5",
                         "mode": "ai_restored",
                         "reproducibility": {
                             "runtime_identity": {"status": "PASS"}
+                        },
+                        "performance": {
+                            "texture_count": 1,
+                            "run_wall_seconds": 1.0,
+                            "measured_inference_wall_seconds": 0.8,
+                            "mean_inference_wall_seconds_per_texture": 0.8,
+                            "textures_per_minute_inference_only": 75.0
                         },
                         "textures": [
                             {
