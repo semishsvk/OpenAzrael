@@ -3,9 +3,9 @@ extends Node
 signal event_recorded(entry: Dictionary)
 signal bug_report_created(path: String)
 
-const BUILD_ID := "KG-001 Candidate 1"
-const BUILD_CHECKPOINT := "v116-context-v28"
-const EVENT_LOG_PATH := "user://openazrael_candidate1_events.jsonl"
+const BUILD_ID := "KG-001 Candidate 2"
+const BUILD_CHECKPOINT := "v116-context-v29"
+const EVENT_LOG_PATH := "user://openazrael_candidate2_events.jsonl"
 const STATE_DUMP_PREFIX := "user://openazrael_kg001_state_dump_"
 const BUG_REPORT_PREFIX := "user://openazrael_bugreport_"
 const BUG_REPORT_SCHEMA := "openazrael.bug_report"
@@ -17,16 +17,20 @@ const REQUIRED_CORE_RESOURCES := [
     "res://assets/rooms/R7.glb",
     "res://assets/rooms/R8.glb",
     "res://data/xaf_trigger_evidence.json",
-    "res://data/gameplay_event_graph_v87.json"
+    "res://data/gameplay_event_graph_v87.json",
+    "res://data/audio/legacy_world_ir.json"
 ]
 
-# Golden Event-IR stream used by the KG-001 demo route. Ambient/classic parity
-# has its own evidence track and is intentionally not promoted here.
+# Physical Candidate audio resources required for G06 readiness. Original
+# Miles pan/volume parity remains a separate forensic HOLD.
 const REQUIRED_CANDIDATE_AUDIO := [
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
-    "res://assets/audio/799SECDR.WAV"
+    "res://assets/audio/799SECDR.WAV",
+    "res://assets/audio/S174ELP1.WAV",
+    "res://assets/audio/S174ELP2.WAV",
+    "res://assets/audio/S186.WAV"
 ]
 
 var last_event: Dictionary = {}
@@ -163,7 +167,7 @@ func fail_fast_if_required_resources_missing(require_audio: bool) -> bool:
         })
         return true
     for path in startup_errors:
-        push_error("OpenAzrael KG-001 Candidate 1 missing required resource: " + path)
+        push_error("OpenAzrael KG-001 Candidate 2 missing required resource: " + path)
     record_event("candidate_asset_validation", {
         "status": "FAIL",
         "audio_required": require_audio,
@@ -204,7 +208,7 @@ func dump_state(room_id: String, player_position: Vector3) -> String:
     return path
 
 
-# v116-context-v28: observational one-key bug-report capture.
+# v116-context-v29: observational one-key bug-report capture.
 # Reads diagnostics/runtime state only; no gameplay mutator is called.
 func stable_room_id(room_id: String) -> String:
     return "ROOM:" + (room_id if not room_id.is_empty() else "UNKNOWN")
