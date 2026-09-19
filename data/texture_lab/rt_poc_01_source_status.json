@@ -246,5 +246,18 @@
     "textures_per_minute_inference_only": true,
     "estimate_usage": "run summary may produce naive linear smoke_4/full inference-only projections after a real run",
     "benchmark_claim": false
+  },
+  "first_recreated_pixel_gate": {
+    "status": "NOT_EXECUTED",
+    "readiness_command": "python tools/texture_lab/oa_tex_first_run.py check-recreated-smoke-1 --comfy-root <COMFYUI_ROOT>",
+    "execution_command": "python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1 --comfy-root <COMFYUI_ROOT>",
+    "state_command": "python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1-status",
+    "state_schema": "openazrael.texture_lab.first_recreated_smoke_state.v1",
+    "first_preset": "recreated_smoke_1",
+    "first_texture": "CORIROCK",
+    "readiness_semantics": "PASS means Comfy/Qwen runtime ready only; no Qwen job submission or AI pixel generation is implied",
+    "execution_semantics": "only a successful real recreated-smoke-1 run may move real Recreated pixels from NOT_EXECUTED",
+    "automatic_action": false,
+    "production_selection_implied": false
   }
 }
