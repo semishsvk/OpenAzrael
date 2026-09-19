@@ -10,7 +10,7 @@
   "godot_texture_lab_runtime": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
   "ci": {
     "workflow": "Texture Lab source-safe tests",
-    "run_number": 231,
+    "run_number": 263,
     "conclusion": "success",
     "python": [
       "3.11",
@@ -18,7 +18,8 @@
     ],
     "unit_tests": "PASS",
     "all_staged_ai_presets_dry_run": "PASS",
-    "godot_source_contract": "PASS"
+    "godot_source_contract": "PASS",
+    "production_selection_registry": "PASS_EMPTY_INVARIANT"
   },
   "pipeline": [
     "classic",
@@ -62,5 +63,17 @@
     "poc_source_identity_check": "12_CANONICAL_IDS_PLUS_EXPECTED_DIMENSIONS",
     "torch_installation_policy": "EXPLICIT_MACHINE_SPECIFIC_PREREQUISITE",
     "dependency_install_guard": "TORCH_AND_TORCHVISION_MUST_IMPORT_BEFORE_REALESRGAN_DEPS"
+  },
+  "production_selection": {
+    "registry": "data/texture_lab/production_selection.json",
+    "status": "EMPTY_BY_DESIGN",
+    "automatic_selection": false,
+    "command": "tools/texture_lab/oa_tex_production_selection.py",
+    "requires_current_stage_approval": true,
+    "binds_candidate_hash": true,
+    "binds_classic_source_hash": true,
+    "binds_review_pack_hash": true,
+    "binds_stage_receipt_hash": true,
+    "changed_evidence_status": "STALE"
   }
 }
