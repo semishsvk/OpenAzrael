@@ -67,6 +67,7 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
 
         return {
             "source": source.name,
+            "source_sha256": sha256_file(source),
             "candidate": candidate.name,
             "candidate_sha256": sha256_file(candidate),
             "expected_size": list(expected),
@@ -134,7 +135,7 @@ def main() -> int:
 
     failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
-        "schema": "openazrael.texture_lab.validation.v4",
+        "schema": "openazrael.texture_lab.validation.v5",
         "variant": args.variant,
         "factor": args.factor,
         "only": sorted(wanted) if wanted else None,
