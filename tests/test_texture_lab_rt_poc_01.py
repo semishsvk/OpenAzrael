@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 import sys
 import tempfile
@@ -22,6 +23,7 @@ from common import (
 )
 from oa_tex_ai_bakeoff import eligible_entries
 from oa_tex_enhance import upscale_one
+from oa_tex_realesrgan_bootstrap import verify_checkpoint
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
@@ -40,7 +42,6 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     (x * 11 + y * 17) % 256,
                     255 if (x + y) % 3 else 128,
                 )
-        # Add a stable high-contrast landmark so displacement is measurable.
         for y in range(4, 9):
             for x in range(3, 7):
                 px[x, y] = (245, 232, 40, 255)
@@ -191,6 +192,27 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             [row["id"] for row in recreated_skipped],
             ["KEYHOLE#", "SHIELD1"],
         )
+
+    def test_checkpoint_identity_verification(self):
+        with tempfile.TemporaryDirectory() as td:
+            checkpoint = Path(td) / "model.pth"
+            payload = b"openazrael-test-checkpoint"
+            checkpoint.write_bytes(payload)
+            spec = {
+                "checkpoint_size_bytes": len(payload),
+                "checkpoint_sha256": hashlib.sha256(payload).hexdigest(),
+            }
+
+            good = verify_checkpoint(checkpoint, spec)
+            self.assertEqual(good["status"], "PASS")
+            self.assertTrue(good["size_ok"])
+            self.assertTrue(good["sha256_ok"])
+
+            checkpoint.write_bytes(payload + b"-corrupted")
+            bad = verify_checkpoint(checkpoint, spec)
+            self.assertEqual(bad["status"], "FAIL")
+            self.assertFalse(bad["size_ok"])
+            self.assertFalse(bad["sha256_ok"])
 
     def test_metrics_are_stable(self):
         with tempfile.TemporaryDirectory() as td:
