@@ -6,6 +6,7 @@
       "purpose": "AI Restored primary baseline",
       "upstream_repository": "https://github.com/xinntao/Real-ESRGAN",
       "upstream_tag": "v0.3.0",
+      "upstream_commit": "fa4c8a03ae3dbc9ea6ed471a6ab5da94ac15c2ea",
       "upstream_version": "0.3.0",
       "official_checkpoint_url": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth",
       "checkpoint_release": "v0.1.0",
