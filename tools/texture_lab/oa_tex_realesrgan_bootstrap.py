@@ -93,6 +93,9 @@ def main() -> int:
     parser.add_argument("--clone-upstream", action="store_true")
     parser.add_argument("--install-python-deps", action="store_true")
     parser.add_argument("--python-exe", default=sys.executable)
+    parser.add_argument("--create-venv", action="store_true")
+    parser.add_argument("--venv-dir", type=Path, default=None)
+    parser.add_argument("--venv-system-site-packages", action="store_true")
     parser.add_argument("--report", type=Path, default=None)
     args = parser.parse_args()
 
@@ -104,6 +107,22 @@ def main() -> int:
 
     runtime.mkdir(parents=True, exist_ok=True)
 
+    effective_python = Path(args.python_exe)
+    venv_dir = args.venv_dir or (runtime / "venv")
+    if args.create_venv:
+        candidate = (
+            venv_dir / "Scripts" / "python.exe"
+            if sys.platform.startswith("win")
+            else venv_dir / "bin" / "python"
+        )
+        if not candidate.is_file():
+            argv = [args.python_exe, "-m", "venv"]
+            if args.venv_system_site_packages:
+                argv.append("--system-site-packages")
+            argv.append(str(venv_dir))
+            subprocess.run(argv, check=True)
+        effective_python = candidate
+
     if args.clone_upstream and not source_dir.exists():
         clone_upstream(spec, source_dir)
 
@@ -112,7 +131,7 @@ def main() -> int:
             raise SystemExit("--install-python-deps requires the pinned upstream source directory")
         subprocess.run(
             [
-                args.python_exe,
+                str(effective_python),
                 "-m",
                 "pip",
                 "install",
@@ -163,6 +182,12 @@ def main() -> int:
         "runtime_dir": str(runtime),
         "source": upstream_status,
         "checkpoint": verification,
+        "python_runtime": {
+            "executable": str(effective_python),
+            "venv_dir": str(venv_dir) if args.create_venv else None,
+            "created_or_selected_venv": bool(args.create_venv),
+            "system_site_packages": bool(args.venv_system_site_packages),
+        },
         "ready_for_inference": (
             verification.get("status") == "PASS"
             and upstream_status["exists"]
@@ -182,7 +207,8 @@ def main() -> int:
 
     print(
         "PASS Real-ESRGAN runtime identity "
-        f"model={args.model} sha256={verification['sha256']} report={report_path}"
+        f"model={args.model} sha256={verification['sha256']} "
+        f"python={effective_python} report={report_path}"
     )
     return 0
 
