@@ -578,29 +578,34 @@ def main() -> int:
     parser.add_argument(
         "--out",
         type=Path,
-        default=DEFAULT_LAUNCHPAD_DIR / "status.json",
+        default=None,
     )
     args = parser.parse_args()
 
     runtime_dir = args.runtime_dir.resolve()
 
     if args.command == "status":
+        target = args.out or DEFAULT_LAUNCHPAD_DIR / "status.json"
         payload = build_status(runtime_dir)
-        write_json(args.out, payload)
+        write_json(target, payload)
         state = "PASS" if payload["source_ready_for_smoke_preflight"] else "HOLD"
         print(
             f"{state} launchpad_status blockers="
             + (",".join(payload["blockers"]) if payload["blockers"] else "none")
-            + f" report={args.out}"
+            + f" report={target}"
         )
         return 0 if state == "PASS" else 1
 
     if args.command == "restored-smoke-1-status":
+        target = (
+            args.out
+            or DEFAULT_LAUNCHPAD_DIR / "restored-smoke-1-status.json"
+        )
         payload = build_restored_smoke_1_state()
-        write_json(args.out, payload)
+        write_json(target, payload)
         print(
             f"{payload['state']} restored_smoke_1_status "
-            f"next={payload['next_action']} report={args.out}"
+            f"next={payload['next_action']} report={target}"
         )
         return 0
 
@@ -644,22 +649,30 @@ def main() -> int:
             return 1
         status = build_status(runtime_dir)
         if not status["source_ready_for_smoke_preflight"]:
-            write_json(args.out, status)
+            target = (
+                args.out
+                or DEFAULT_LAUNCHPAD_DIR / "check-restored-smoke-1.json"
+            )
+            write_json(target, status)
             print(
                 "HOLD check-restored-smoke-1 source prerequisites: "
                 + ",".join(status["blockers"])
-                + f" report={args.out}"
+                + f" report={target}"
             )
             return 1
         commands = restored_smoke_check_plan(runtime_dir)
     else:
         status = build_status(runtime_dir)
         if not args.dry_run and not status["source_ready_for_smoke_preflight"]:
-            write_json(args.out, status)
+            target = (
+                args.out
+                or DEFAULT_LAUNCHPAD_DIR / "restored-smoke-1.json"
+            )
+            write_json(target, status)
             print(
                 "HOLD restored-smoke-1 source prerequisites: "
                 + ",".join(status["blockers"])
-                + f" report={args.out}"
+                + f" report={target}"
             )
             return 1
         commands = restored_smoke_plan(
