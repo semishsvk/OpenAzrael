@@ -1,9 +1,16 @@
 # OpenAzrael Roadmap
 
-**Canonical checkpoint:** `v116-context-v27`  
+**Canonical checkpoint:** `v116-context-v28`  
 **Technical base:** `openazrael_godot_poc_v116`
 
-## Now — first real Candidate 1 runtime cycle
+## Now — Critical Issue #6 collision retest
+
+1. Run the corrected v28 source with restored room assets.
+2. Require the v110 R1 physical floor-support regression to PASS.
+3. Manually confirm that the real player capsule no longer falls through the floor.
+4. Keep Issue #6 open and `demo-known-good-001` blocked until both automated and manual collision checks pass.
+
+## Then — resume Candidate 1 runtime cycle
 
 1. Restore the locally ignored R1/R7/R8 GLBs and required Candidate 1 audio assets on a Godot-capable checkout.
 2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
