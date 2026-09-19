@@ -62,9 +62,18 @@ def main() -> int:
     }
 
     source_version = None
+    source_head = None
     version_path = source_dir / "VERSION"
     if version_path.is_file():
         source_version = version_path.read_text(encoding="utf-8").strip()
+    if (source_dir / ".git").exists():
+        try:
+            source_head = subprocess.check_output(
+                ["git", "-C", str(source_dir), "rev-parse", "HEAD"],
+                text=True,
+            ).strip()
+        except Exception:
+            source_head = None
 
     report = {
         "schema": "openazrael.texture_lab.realesrgan_doctor.v1",
@@ -74,11 +83,14 @@ def main() -> int:
         "source_exists": source_dir.is_dir(),
         "source_version": source_version,
         "source_version_ok": source_version == spec["upstream_version"],
+        "source_git_head": source_head,
+        "source_git_head_ok": source_head == spec["upstream_commit"],
         "checkpoint": checkpoint_status,
         "modules": modules,
         "ready": (
             source_dir.is_dir()
             and source_version == spec["upstream_version"]
+            and source_head == spec["upstream_commit"]
             and checkpoint_status.get("status") == "PASS"
             and modules["torch"]["status"] == "PASS"
             and modules["torchvision"]["status"] == "PASS"
