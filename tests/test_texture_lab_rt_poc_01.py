@@ -807,6 +807,117 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertFalse(stale["checks"]["outputs_ok"])
             self.assertFalse(stale["checks"]["review_pack_ok"])
 
+    def test_validation_reports_source_relative_seam_drift(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source.png"
+            candidate = root / "candidate.png"
+            self._fixture(source)
+
+            with Image.open(source) as im:
+                enlarged = im.convert("RGBA").resize(
+                    (im.width * 4, im.height * 4),
+                    getattr(Image, "Resampling", Image).NEAREST,
+                )
+            enlarged.save(candidate)
+
+            result = validate_pair(source, candidate, 4)
+            self.assertIn("source_edge_seam_mae_rgba_0_255", result)
+            self.assertIn("candidate_edge_seam_mae_rgba_0_255", result)
+            self.assertIn("candidate_minus_source_seam_mae_rgba_0_255", result)
+            self.assertIn("candidate_to_source_seam_ratio", result)
+            self.assertAlmostEqual(
+                result["candidate_minus_source_seam_mae_rgba_0_255"]["x"],
+                result["candidate_edge_seam_mae_rgba_0_255"]["x"]
+                - result["source_edge_seam_mae_rgba_0_255"]["x"],
+            )
+            self.assertAlmostEqual(
+                result["candidate_minus_source_seam_mae_rgba_0_255"]["y"],
+                result["candidate_edge_seam_mae_rgba_0_255"]["y"]
+                - result["source_edge_seam_mae_rgba_0_255"]["y"],
+            )
+
+    def test_review_queue_carries_technical_seam_drift(self):
+        selection = {
+            "textures": [
+                {
+                    "id": "BAPFLOR#",
+                    "room": "R8",
+                    "content_class": "stone_floor",
+                }
+            ]
+        }
+        policy = {
+            "defaults": {"ai_recreated": True},
+            "classes": {
+                "stone_floor": {
+                    "ai_recreated": True,
+                    "seam_review": "u_and_v_required",
+                }
+            },
+        }
+        sampling = {
+            "textures": [
+                {
+                    "id": "BAPFLOR#",
+                    "repeat_sampling_observed": True,
+                    "repeat_axes": ["u", "v"],
+                }
+            ]
+        }
+        baseline = {
+            "global_envelope": {
+                "low_frequency_luma_mae_0_255": {
+                    "p95": 0.25,
+                    "max": 0.40,
+                }
+            }
+        }
+        drift = {
+            "results": [
+                {
+                    "id": "BAPFLOR#",
+                    "low_frequency_luma_mae_0_255": 0.20,
+                    "alpha_silhouette_mismatch_fraction": 0.0,
+                }
+            ]
+        }
+        technical = {
+            "results": [
+                {
+                    "id": "BAPFLOR#",
+                    "source_edge_seam_mae_rgba_0_255": {"x": 4.0, "y": 6.0},
+                    "candidate_edge_seam_mae_rgba_0_255": {"x": 5.5, "y": 5.0},
+                    "candidate_minus_source_seam_mae_rgba_0_255": {
+                        "x": 1.5,
+                        "y": -1.0,
+                    },
+                    "candidate_to_source_seam_ratio": {
+                        "x": 1.375,
+                        "y": 0.8333333333,
+                    },
+                }
+            ]
+        }
+
+        rows = build_review_rows(
+            "recreated",
+            selection,
+            policy,
+            sampling,
+            baseline,
+            drift,
+            technical_report=technical,
+        )
+        self.assertEqual(
+            rows[0]["candidate_minus_source_seam_mae_rgba_0_255"],
+            {"x": 1.5, "y": -1.0},
+        )
+        self.assertEqual(
+            rows[0]["source_edge_seam_mae_rgba_0_255"],
+            {"x": 4.0, "y": 6.0},
+        )
+
     def test_qwen_bootstrap_verifies_exact_file_identity(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
