@@ -297,6 +297,35 @@ Controls:
 
 The Texture Lab scene does not mutate gameplay state.
 
+## Production selection registry
+
+A successful stage approval still does **not** make its textures production defaults.
+
+After a candidate has separately passed the intended manual production review, record that explicit choice with:
+
+```bash
+python tools/texture_lab/oa_tex_production_selection.py select CORIROCK \
+  --preset restored_smoke_1 \
+  --note "manual production selection after full/detail/Godot A/B review"
+```
+
+Check all current selections with:
+
+```bash
+python tools/texture_lab/oa_tex_production_selection.py status
+```
+
+If candidate pixels, the Classic source, the review pack or the underlying stage approval change, status becomes `STALE`.
+
+To withdraw a selection without deleting its audit history:
+
+```bash
+python tools/texture_lab/oa_tex_production_selection.py revoke CORIROCK \
+  --note "selection withdrawn after later comparison"
+```
+
+The registry records metadata only; it does not copy pixels or alter the game.
+
 ## 8. Promotion rule
 
 No numerical metric or completed command promotes an asset automatically.
