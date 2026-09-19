@@ -1,6 +1,6 @@
 # OpenAzrael Texture Lab — RT-POC-01
 
-**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / AI BAKE-OFF PENDING  
+**Status:** SOURCE-SAFE TOOLING TESTED / REAL MATHEMATICAL BAKE-OFF EXECUTED / GODOT LAB SOURCE-READY / AI BAKE-OFF PENDING  
 **Scope:** presentation tooling only; no gameplay/runtime-semantic changes.
 
 ## Purpose
@@ -46,7 +46,19 @@ The canonical selection is stored in `config/rt_poc_01_selection.json`. It conta
 A command-template adapter for a locally installed Real-ESRGAN implementation. The exact executable/model version must be pinned in the run record before a result can be considered reproducible.
 
 ### `oa_tex_recreate.py`
-Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. This keeps the repository independent of a particular Qwen/FLUX graph while preserving the exact submitted workflow in each job record.
+Generic ComfyUI API runner. It consumes an API-format exported workflow and patches explicit Load Image / prompt / seed nodes supplied on the command line. This keeps the repository independent of a particular image-edit graph while preserving the exact submitted workflow in each job record.
+
+### Godot Texture Lab
+`tools/texture_lab/godot/texture_lab.tscn` is an isolated comparison scene, not the normal OpenAzrael main scene. It loads local texture pixels at runtime and supports:
+
+- Left/Right: previous/next canonical POC texture;
+- 1/2/3/4: Classic / Enhanced / AI Restored / AI Recreated;
+- Q/W/E: nearest / bicubic / Lanczos Enhanced variants;
+- T: 1x1 / 2x2 / 4x4 repeated display;
+- L: unshaded vs directional-light inspection;
+- S: local screenshot.
+
+The scene does not access DemoState, CandidateDiagnostics or RoomManager and does not mutate gameplay state. `validate_godot_lab.py` enforces this source contract. Actual Godot execution remains pending on a machine with Godot and the ignored local texture corpus.
 
 ## Real mathematical POC observation
 
@@ -60,7 +72,7 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 
 ## Test policy
 
-`tests/test_texture_lab_rt_poc_01.py` uses a synthetic RGBA fixture and checks scan/alpha behavior, deterministic byte-identical upscale output, expected dimensions, stable metrics and tile-preview dimensions. GitHub Actions executes the source-safe suite on Python 3.11 and 3.12.
+`tests/test_texture_lab_rt_poc_01.py` uses a synthetic RGBA fixture and checks scan/alpha behavior, deterministic byte-identical upscale output, expected dimensions, stable metrics and tile-preview dimensions. GitHub Actions executes the source-safe suite on Python 3.11 and 3.12 and runs the Godot Texture Lab source-contract validator.
 
 ## Next execution step
 
@@ -68,6 +80,6 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 2. pin a local Real-ESRGAN implementation/checkpoint and run AI Restored;
 3. export API-format ComfyUI workflows for the selected image-edit models and run AI Recreated with fixed seeds;
 4. compare Classic / Enhanced / AI Restored / AI Recreated using identical source IDs;
-5. inspect the candidates in a dedicated Godot Texture Lab scene before production-wide conversion.
+5. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
 
 RT-POC-01 remains observational: it does not replace Classic evidence or automatically select a production winner.
