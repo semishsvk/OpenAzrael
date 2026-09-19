@@ -18,6 +18,9 @@ from common import (
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
 AI_POLICY = ROOT / "tools/texture_lab/config/ai_review_policy.json"
+AI_BACKENDS = ROOT / "tools/texture_lab/config/ai_backends.json"
+QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
+QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 DEFAULT_RUN_ROOT = ROOT / ".local/texture_lab/runs/rt_poc_01"
 DEFAULT_APPROVAL_ROOT = ROOT / ".local/texture_lab/approvals/rt_poc_01"
 DEFAULT_MANUAL_REVIEW_ROOT = ROOT / ".local/texture_lab/manual_reviews/rt_poc_01"
@@ -206,6 +209,329 @@ def recreated_job_records(run_dir: Path) -> list[Path]:
     return jobs + atlases
 
 
+def _pack_rows_by_id(pack_manifest: dict) -> dict[str, dict]:
+    return {
+        str(row["id"]): row
+        for row in pack_manifest.get("rows", [])
+        if isinstance(row, dict) and row.get("id")
+    }
+
+
+def restored_generation_provenance(
+    restore_run: dict,
+    pack_manifest: dict,
+    expected: list[str],
+) -> dict:
+    primary = load_json(AI_BACKENDS)["ai_restored"]["primary"]
+    pack_rows = _pack_rows_by_id(pack_manifest)
+    rows = [
+        row
+        for row in restore_run.get("textures", [])
+        if isinstance(row, dict) and row.get("id")
+    ]
+    by_id = {str(row["id"]): row for row in rows}
+    row_checks = []
+
+    for texture_id in expected:
+        generation = by_id.get(texture_id)
+        pack = pack_rows.get(texture_id)
+        source = pack.get("source") if isinstance(pack, dict) else None
+        candidate = pack.get("candidate") if isinstance(pack, dict) else None
+        checks = {
+            "generation_row_present": isinstance(generation, dict),
+            "pack_row_present": isinstance(pack, dict),
+            "source_hash_matches_review": bool(
+                isinstance(generation, dict)
+                and isinstance(source, dict)
+                and generation.get("source_sha256") == source.get("sha256")
+            ),
+            "output_hash_matches_review": bool(
+                isinstance(generation, dict)
+                and isinstance(candidate, dict)
+                and generation.get("output_sha256") == candidate.get("sha256")
+            ),
+            "model_ok": bool(
+                isinstance(generation, dict)
+                and generation.get("model") == primary.get("model")
+            ),
+            "factor_ok": bool(
+                isinstance(generation, dict)
+                and int(generation.get("factor", -1))
+                == int(primary.get("factor", -2))
+            ),
+            "backend_ok": bool(
+                isinstance(generation, dict)
+                and generation.get("backend") == "realesrgan-python"
+            ),
+        }
+        row_checks.append(
+            {
+                "id": texture_id,
+                "status": "PASS" if all(checks.values()) else "FAIL",
+                "checks": checks,
+            }
+        )
+
+    reproducibility = restore_run.get("reproducibility", {})
+    global_checks = {
+        "schema_ok": restore_run.get("schema")
+        == "openazrael.texture_lab.ai_restore_run.v4",
+        "mode_ok": restore_run.get("mode") == "ai_restored",
+        "ids_exact": (
+            len(rows) == len(expected)
+            and set(by_id) == set(expected)
+        ),
+        "runtime_identity_ok": (
+            isinstance(reproducibility, dict)
+            and isinstance(reproducibility.get("runtime_identity"), dict)
+            and reproducibility["runtime_identity"].get("status") == "PASS"
+        ),
+    }
+    status = (
+        "PASS"
+        if all(global_checks.values())
+        and all(row["status"] == "PASS" for row in row_checks)
+        else "FAIL"
+    )
+    return {
+        "status": status,
+        "checks": global_checks,
+        "rows": row_checks,
+        "intermediate_files": [],
+    }
+
+
+def _expected_qwen_model_set(contract: dict) -> set[tuple[str, str, int]]:
+    return {
+        (
+            str(spec["filename"]),
+            str(spec["sha256"]),
+            int(spec["size_bytes"]),
+        )
+        for spec in contract.get("required_models", {}).values()
+    }
+
+
+def _job_model_set(job: dict) -> set[tuple[str, str, int]]:
+    rows = job.get("model_files", [])
+    return {
+        (
+            str(row.get("file", "")),
+            str(row.get("sha256", "")),
+            int(row.get("size", -1)),
+        )
+        for row in rows
+        if isinstance(row, dict)
+    }
+
+
+def _qwen_job_checks(
+    job: dict,
+    source_sha: str,
+    conditioning_sha: str,
+    output_sha: str,
+    contract: dict,
+    workflow_sha: str,
+) -> dict:
+    return {
+        "schema_ok": job.get("schema")
+        == "openazrael.texture_lab.ai_recreated_job.v4",
+        "source_hash_ok": job.get("source_sha256") == source_sha,
+        "conditioning_hash_ok": (
+            job.get("conditioning_image_sha256") == conditioning_sha
+        ),
+        "output_hash_ok": job.get("output_sha256") == output_sha,
+        "workflow_hash_ok": job.get("workflow_template_sha256") == workflow_sha,
+        "model_label_ok": job.get("model_label") == contract.get("model_label"),
+        "seed_ok": int(job.get("seed", -1))
+        == int(contract.get("poc_sampling", {}).get("seed", -2)),
+        "model_files_ok": _job_model_set(job)
+        == _expected_qwen_model_set(contract),
+    }
+
+
+def recreated_generation_provenance(
+    preset: str,
+    run_dir: Path,
+    pack_manifest: dict,
+    expected: list[str],
+) -> dict:
+    contract = load_json(QWEN_CONTRACT)
+    workflow_sha = sha256_file(QWEN_WORKFLOW)
+    selection = load_json(SELECTION)
+    policy = load_json(AI_POLICY)
+    by_selection = {
+        str(row["id"]): row
+        for row in selection.get("textures", [])
+        if isinstance(row, dict) and row.get("id")
+    }
+    pack_rows = _pack_rows_by_id(pack_manifest)
+    row_results = []
+    intermediate_files: list[dict] = []
+
+    for texture_id in expected:
+        entry = by_selection.get(texture_id, {})
+        rules = dict(policy.get("defaults", {}))
+        rules.update(
+            policy.get("classes", {}).get(
+                str(entry.get("content_class", "")),
+                {},
+            )
+        )
+        pack = pack_rows.get(texture_id)
+        source = pack.get("source") if isinstance(pack, dict) else None
+        candidate = pack.get("candidate") if isinstance(pack, dict) else None
+        checks: dict[str, bool] = {
+            "pack_row_present": isinstance(pack, dict),
+            "source_record_present": isinstance(source, dict),
+            "candidate_record_present": isinstance(candidate, dict),
+        }
+
+        atlas = rules.get("atlas_split")
+        if isinstance(atlas, dict):
+            axis = str(atlas.get("axis", ""))
+            segments = int(atlas.get("segments", 0))
+            atlas_root = run_dir / "atlas_parts" / texture_id
+            classic_split_path = atlas_root / "classic_split.json"
+            enhanced_split_path = atlas_root / "enhanced_split.json"
+            stitch_path = atlas_root / "stitch.json"
+            classic_split = load_json(classic_split_path)
+            enhanced_split = load_json(enhanced_split_path)
+            stitch = load_json(stitch_path)
+            enhanced_full = (
+                ROOT / "assets/textures/enhanced" / texture_id / "lanczos_x4.png"
+            )
+            checks.update(
+                {
+                    "classic_split_schema_ok": classic_split.get("schema")
+                    == "openazrael.texture_lab.atlas_split.v1",
+                    "enhanced_split_schema_ok": enhanced_split.get("schema")
+                    == "openazrael.texture_lab.atlas_split.v1",
+                    "stitch_schema_ok": stitch.get("schema")
+                    == "openazrael.texture_lab.atlas_stitch.v1",
+                    "classic_split_source_ok": bool(
+                        isinstance(source, dict)
+                        and classic_split.get("source_sha256")
+                        == source.get("sha256")
+                    ),
+                    "enhanced_split_source_ok": bool(
+                        enhanced_full.is_file()
+                        and enhanced_split.get("source_sha256")
+                        == sha256_file(enhanced_full)
+                    ),
+                    "atlas_axis_ok": (
+                        classic_split.get("axis") == axis
+                        and enhanced_split.get("axis") == axis
+                        and stitch.get("axis") == axis
+                    ),
+                    "atlas_segments_ok": (
+                        int(classic_split.get("segments", -1)) == segments
+                        and int(enhanced_split.get("segments", -1)) == segments
+                        and int(stitch.get("segments", -1)) == segments
+                    ),
+                    "stitch_hash_matches_review": bool(
+                        isinstance(candidate, dict)
+                        and stitch.get("sha256") == candidate.get("sha256")
+                    ),
+                    "stitch_path_matches_review": bool(
+                        isinstance(candidate, dict)
+                        and Path(str(stitch.get("file", ""))).resolve()
+                        == Path(str(candidate.get("path", ""))).resolve()
+                    ),
+                }
+            )
+
+            part_results = []
+            for index in range(segments):
+                part_name = f"part_{index:02d}.png"
+                classic_part = atlas_root / "classic" / part_name
+                enhanced_part = atlas_root / "enhanced" / part_name
+                generated_part = atlas_root / "generated" / part_name
+                job_path = (
+                    run_dir
+                    / "recreated_jobs"
+                    / f"{texture_id}_part_{index:02d}.job.json"
+                )
+                job = load_json(job_path)
+                part_checks = _qwen_job_checks(
+                    job,
+                    sha256_file(classic_part),
+                    sha256_file(enhanced_part),
+                    sha256_file(generated_part),
+                    contract,
+                    workflow_sha,
+                )
+                part_results.append(
+                    {
+                        "part": index,
+                        "status": (
+                            "PASS" if all(part_checks.values()) else "FAIL"
+                        ),
+                        "checks": part_checks,
+                    }
+                )
+                intermediate_files.extend(
+                    [
+                        file_evidence(classic_part),
+                        file_evidence(enhanced_part),
+                        file_evidence(generated_part),
+                    ]
+                )
+            checks["part_jobs_ok"] = all(
+                row["status"] == "PASS" for row in part_results
+            )
+            row_results.append(
+                {
+                    "id": texture_id,
+                    "status": "PASS" if all(checks.values()) else "FAIL",
+                    "checks": checks,
+                    "parts": part_results,
+                }
+            )
+            continue
+
+        job_path = (
+            run_dir
+            / "recreated_jobs"
+            / f"{texture_id.replace('#', '_')}.job.json"
+        )
+        job = load_json(job_path)
+        enhanced = (
+            ROOT / "assets/textures/enhanced" / texture_id / "lanczos_x4.png"
+        )
+        job_checks = _qwen_job_checks(
+            job,
+            str(source.get("sha256", "")) if isinstance(source, dict) else "",
+            sha256_file(enhanced) if enhanced.is_file() else "",
+            str(candidate.get("sha256", ""))
+            if isinstance(candidate, dict)
+            else "",
+            contract,
+            workflow_sha,
+        )
+        checks["job_ok"] = all(job_checks.values())
+        row_results.append(
+            {
+                "id": texture_id,
+                "status": "PASS" if all(checks.values()) else "FAIL",
+                "checks": checks,
+                "job_checks": job_checks,
+            }
+        )
+
+    status = (
+        "PASS"
+        if len(row_results) == len(expected)
+        and all(row["status"] == "PASS" for row in row_results)
+        else "FAIL"
+    )
+    return {
+        "status": status,
+        "rows": row_results,
+        "intermediate_files": intermediate_files,
+    }
+
+
 def evidence_snapshot(preset: str, run_root: Path) -> dict:
     spec = preset_record(preset)
     mode = str(spec["mode"])
@@ -271,6 +597,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     pack = review_pack_snapshot(mode, run_dir, expected)
 
     pack_manifest = load_json(review_pack_manifest)
+    generation_provenance: dict
     output_rows = []
     for row in pack_manifest.get("rows", []):
         if not isinstance(row, dict) or not row.get("id"):
@@ -331,13 +658,13 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         doctor = load_json(run_dir / "realesrgan_doctor.json")
         restore_run = load_json(run_dir / "ai_restore_run.json")
         checks["runtime_doctor_ok"] = doctor.get("ready") is True
+        generation_provenance = restored_generation_provenance(
+            restore_run,
+            pack_manifest,
+            expected,
+        )
         checks["generation_record_ok"] = (
-            len(restore_run.get("textures", [])) == len(expected)
-            and {
-                str(row.get("id"))
-                for row in restore_run.get("textures", [])
-                if isinstance(row, dict)
-            } == set(expected)
+            generation_provenance.get("status") == "PASS"
         )
     else:
         comfy = load_json(run_dir / "comfy_doctor.json")
@@ -347,6 +674,15 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         checks["generation_records_exact"] = (
             {path.resolve() for path in job_paths}
             == {path.resolve() for path in expected_job_paths}
+        )
+        generation_provenance = recreated_generation_provenance(
+            preset,
+            run_dir,
+            pack_manifest,
+            expected,
+        )
+        checks["generation_provenance_ok"] = (
+            generation_provenance.get("status") == "PASS"
         )
 
     return {
@@ -361,6 +697,7 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         "review_pack": pack,
         "runtime": [file_evidence(path) for path in runtime_paths],
         "generation_records": [file_evidence(path) for path in job_paths],
+        "generation_provenance": generation_provenance,
         "expected_generation_records": [
             str(path) for path in expected_job_paths
         ],
@@ -430,6 +767,10 @@ def validate_receipt(
         "generation_records_ok": (
             old.get("generation_records") == current["generation_records"]
         ),
+        "generation_provenance_ok": (
+            old.get("generation_provenance")
+            == current["generation_provenance"]
+        ),
         "outputs_ok": old.get("outputs") == current["outputs"],
         "manual_review_ok": old.get("manual_review") == manual_review,
         "approved_ok": receipt.get("decision") == "APPROVED_FOR_NEXT_STAGE",
@@ -492,7 +833,7 @@ def approve(
 
     approval_root.mkdir(parents=True, exist_ok=True)
     receipt = {
-        "schema": "openazrael.texture_lab.stage_approval.v4",
+        "schema": "openazrael.texture_lab.stage_approval.v5",
         "preset": preset,
         "mode": evidence["mode"],
         "decision": "APPROVED_FOR_NEXT_STAGE",
@@ -506,6 +847,7 @@ def approve(
             "review_pack": evidence["review_pack"],
             "runtime": evidence["runtime"],
             "generation_records": evidence["generation_records"],
+            "generation_provenance": evidence["generation_provenance"],
             "outputs": evidence["outputs"],
             "manual_review": manual_review,
         },
