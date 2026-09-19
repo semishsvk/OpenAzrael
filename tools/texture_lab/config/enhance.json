@@ -1,0 +1,14 @@
+{
+  "schema": "openazrael.texture_lab.enhance_config.v1",
+  "factor": 4,
+  "built_in_methods": [
+    "nearest",
+    "bicubic",
+    "lanczos"
+  ],
+  "xbrz": {
+    "enabled_by_default": false,
+    "reason": "External implementation and version must be explicitly pinned before results are treated as reproducible."
+  },
+  "selection_policy": "OBSERVATIONAL_POC_NO_AUTOMATIC_WINNER"
+}
