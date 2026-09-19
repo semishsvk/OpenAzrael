@@ -8,10 +8,13 @@ import shlex
 import subprocess
 import sys
 
+from PIL import Image
+
 from common import PINNED_PILLOW_VERSION, PILLOW_VERSION, ROOT, write_json
 
 DEFAULT_RUNTIME = ROOT / ".local/texture_lab/realesrgan"
 DEFAULT_LAUNCHPAD_DIR = ROOT / ".local/texture_lab/launchpad"
+SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
 
 
 def venv_python(runtime_dir: Path) -> Path:
@@ -151,6 +154,47 @@ def restored_smoke_plan(runtime_dir: Path) -> list[dict]:
     ]
 
 
+def poc_source_status(
+    source_dir: Path = ROOT / "assets/textures/classic",
+    selection_path: Path = SELECTION,
+) -> dict:
+    selection = json.loads(selection_path.read_text(encoding="utf-8"))
+    rows = []
+    for entry in selection.get("textures", []):
+        texture_id = str(entry["id"])
+        expected = tuple(int(v) for v in entry.get("expected_size", []))
+        path = source_dir / f"{texture_id}.png"
+        actual = None
+        readable = False
+        if path.is_file():
+            try:
+                with Image.open(path) as image:
+                    image.load()
+                    actual = tuple(image.size)
+                    readable = True
+            except Exception:
+                readable = False
+        rows.append(
+            {
+                "id": texture_id,
+                "path": str(path),
+                "exists": path.is_file(),
+                "readable": readable,
+                "expected_size": list(expected),
+                "actual_size": list(actual) if actual is not None else None,
+                "size_ok": bool(readable and expected and actual == expected),
+            }
+        )
+    ok = bool(rows) and all(row["size_ok"] for row in rows)
+    return {
+        "status": "PASS" if ok else "HOLD",
+        "selection_path": str(selection_path),
+        "source_dir": str(source_dir),
+        "expected_texture_count": len(rows),
+        "rows": rows,
+    }
+
+
 def classic_count() -> int:
     classic = ROOT / "assets/textures/classic"
     return len(list(classic.glob("*.png"))) if classic.is_dir() else 0
@@ -169,6 +213,7 @@ def baseline_status() -> dict:
         payload.get("schema") == "openazrael.texture_lab.rt_poc_01_drift_baseline.v2"
         and payload.get("pillow_version") == PINNED_PILLOW_VERSION
     )
+    poc = poc_source_status()
     return {
         "classic_count": classic_count(),
         "classic_expected": 86,
@@ -181,6 +226,7 @@ def baseline_status() -> dict:
         "baseline_ok": baseline_ok,
         "run_report_path": str(run_report),
         "run_report_exists": run_report.is_file(),
+        "poc_selection": poc,
     }
 
 
@@ -206,6 +252,8 @@ def build_status(runtime_dir: Path) -> dict:
     blockers: list[str] = []
     if not baseline["classic_ok"]:
         blockers.append("classic_corpus")
+    if baseline["poc_selection"]["status"] != "PASS":
+        blockers.append("poc_source_identity")
     if not baseline["pillow_ok"]:
         blockers.append("pinned_pillow")
     if not baseline["baseline_ok"]:
