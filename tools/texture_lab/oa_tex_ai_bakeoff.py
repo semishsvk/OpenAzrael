@@ -13,6 +13,8 @@ from oa_tex_prompt import build_prompt_pair
 QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+DEFAULT_RESTORED_DIR = ROOT / "assets/textures/ai_restored"
+DEFAULT_RECREATED_DIR = ROOT / "assets/textures/ai_recreated"
 
 
 def load_json(path: Path) -> dict:
@@ -523,6 +525,28 @@ def resolve_qwen_defaults(args, contract: dict) -> None:
     args.seed = int(contract["poc_sampling"]["seed"])
 
 
+def resolve_named_candidate_namespace(args) -> None:
+    if not args.preset:
+        return
+
+    if args.mode == "restored":
+        canonical = DEFAULT_RESTORED_DIR / "_runs" / args.preset
+        if args.restored_dir not in {DEFAULT_RESTORED_DIR, canonical}:
+            raise SystemExit(
+                "named restored presets use a fixed immutable candidate namespace: "
+                f"{canonical}"
+            )
+        args.restored_dir = canonical
+    else:
+        canonical = DEFAULT_RECREATED_DIR / "_runs" / args.preset
+        if args.recreated_dir not in {DEFAULT_RECREATED_DIR, canonical}:
+            raise SystemExit(
+                "named recreated presets use a fixed immutable candidate namespace: "
+                f"{canonical}"
+            )
+        args.recreated_dir = canonical
+
+
 def validate_execution_args(args) -> None:
     if args.dry_run:
         return
@@ -563,8 +587,8 @@ def main() -> int:
         default=ROOT / "tools/texture_lab/profiles/recreate_profiles.json",
     )
     parser.add_argument("--source-dir", type=Path, default=ROOT / "assets/textures/classic")
-    parser.add_argument("--restored-dir", type=Path, default=ROOT / "assets/textures/ai_restored")
-    parser.add_argument("--recreated-dir", type=Path, default=ROOT / "assets/textures/ai_recreated")
+    parser.add_argument("--restored-dir", type=Path, default=DEFAULT_RESTORED_DIR)
+    parser.add_argument("--recreated-dir", type=Path, default=DEFAULT_RECREATED_DIR)
     parser.add_argument("--recreate-input-dir", type=Path, default=ROOT / "assets/textures/enhanced")
     parser.add_argument("--recreate-input-variant", default="lanczos_x4.png")
     parser.add_argument("--run-dir", type=Path, default=ROOT / ".local/texture_lab/runs/rt_poc_01")
@@ -617,6 +641,8 @@ def main() -> int:
     else:
         args.run_root = args.run_dir
 
+    resolve_named_candidate_namespace(args)
+
     if args.preset and args.plan_out is not None and not args.dry_run:
         raise SystemExit(
             "--plan-out is not allowed for a real named preset; "
@@ -641,7 +667,7 @@ def main() -> int:
         jobs.append(summary_job)
 
     plan = {
-        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v3",
+        "schema": "openazrael.texture_lab.ai_bakeoff_plan.v4",
         "mode": args.mode,
         "dry_run": bool(args.dry_run),
         "selection_count": len(selection["textures"]),
@@ -651,6 +677,16 @@ def main() -> int:
         "deferred_count": len(deferred),
         "preset": preset_meta,
         "run_dir": str(args.run_dir),
+        "candidate_namespace": (
+            str(args.restored_dir)
+            if args.mode == "restored"
+            else str(args.recreated_dir)
+        ),
+        "candidate_namespace_policy": (
+            "named_preset_immutable_v1"
+            if args.preset
+            else "ad_hoc_explicit"
+        ),
         "eligible": [
             {
                 "id": entry["id"],
