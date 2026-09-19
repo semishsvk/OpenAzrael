@@ -148,3 +148,7 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 - `docs/GITHUB_SYNC_SCOPE.md`
 - `docs/GIT_BASELINE.md`
 - `data/backup/source_fingerprints.json`
+
+
+## Texture Lab RT-POC-01 source checkpoint
+- `data/texture_lab/rt_poc_01_source_status.json` — machine-readable boundary between source-safe/CI readiness and still-unexecuted real Real-ESRGAN, Qwen and Godot Texture Lab runtime evidence.
