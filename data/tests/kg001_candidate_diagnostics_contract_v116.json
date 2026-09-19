@@ -2,13 +2,13 @@
   "schema": "openazrael.kg001.candidate_diagnostics_contract",
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
-  "build_id": "KG-001 Candidate 1",
-  "checkpoint": "v116-context-v28",
+  "build_id": "KG-001 Candidate 2",
+  "checkpoint": "v116-context-v29",
   "features": {
     "build_watermark": true,
     "fail_fast_core_assets": true,
     "fail_fast_golden_audio_non_headless": true,
-    "event_jsonl_log": "user://openazrael_candidate1_events.jsonl",
+    "event_jsonl_log": "user://openazrael_candidate2_events.jsonl",
     "state_dump_key": "F10",
     "trigger_visualization_key": "F6",
     "candidate_hud_key": "F7",
@@ -32,7 +32,18 @@
       "ITEM:<item>"
     ],
     "github_issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml",
-    "bug_report_source_safe": true
+    "bug_report_source_safe": true,
+    "fail_fast_physical_audio_non_headless": true,
+    "ambient_ir_required": "res://data/audio/legacy_world_ir.json",
+    "required_physical_audio": [
+      "S152V2.WAV",
+      "S137.WAV",
+      "S121.WAV",
+      "799SECDR.WAV",
+      "S174ELP1.WAV",
+      "S174ELP2.WAV",
+      "S186.WAV"
+    ]
   },
-  "runtime_boundary": "Source contract only until executed in a Godot-capable checkout. F11 bug capture is observational and must not mutate gameplay state or include excluded commercial assets."
+  "runtime_boundary": "Source contract only until Candidate 2 executes in a Godot-capable checkout. Physical-player readiness is automated; human audibility remains G10 and original Miles parity remains HOLD."
 }

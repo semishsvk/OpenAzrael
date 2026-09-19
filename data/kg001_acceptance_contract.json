@@ -60,7 +60,12 @@
       "id": "G06",
       "name": "audio_event_stream",
       "required": true,
-      "automation": "mock_backend_golden"
+      "automation": "logical_golden_plus_physical_playback_readiness",
+      "runtime_evidence": [
+        "v109/v111 logical golden event stream",
+        "v116 physical audio resource/load/player readiness"
+      ],
+      "manual_audibility_remains_in_g10": true
     },
     {
       "id": "G07",

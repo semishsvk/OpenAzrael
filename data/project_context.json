@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v28",
+  "checkpoint": "v116-context-v29",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-19",
   "workflow": [
@@ -88,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_build_status": "CANDIDATE2_SOURCE_READY_RUNTIME_RETEST_REQUIRED",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -107,15 +107,15 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "BLOCKED_CRITICAL_BUG_ISSUE_6_RETEST",
+    "kg001_overall_status": "BLOCKED_ISSUES_6_9_RETEST",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "BLOCKED_ISSUE_6_RETEST_REQUIRED",
+    "kg001_manual_sanity": "BLOCKED_ISSUES_6_9_RETEST_REQUIRED",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
-    "kg001_candidate_build_id": "KG-001 Candidate 1",
+    "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V28_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V29_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -124,19 +124,31 @@
       "F10": "canonical_state_dump",
       "F11": "bug_report_capture"
     },
-    "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
-    "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS",
-    "documentation_consistency": "PASS_V28",
+    "kg001_candidate_event_log": "user://openazrael_candidate2_events.jsonl",
+    "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS",
+    "documentation_consistency": "PASS_V29",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_bugreport_",
     "kg001_bug_report_source_safe": true,
-    "kg001_candidate_previous_runtime": "MANUAL_FAIL_ISSUE_6_V27",
+    "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9",
     "kg001_known_critical_bugs": [
       "#6 PLAYER_FALLS_THROUGH_FLOOR"
     ],
     "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
-    "kg001_release_blocked_by_issue_6": true
+    "kg001_release_blocked_by_issue_6": true,
+    "kg001_known_major_bugs": [
+      "#9 NO_AUDIBLE_AUDIO"
+    ],
+    "kg001_audio_issue_9": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_release_blocked_by_issue_9": true,
+    "kg001_physical_audio_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_physical_audio_runtime": "NOT_EXECUTED",
+    "kg001_audio_expected_ambient_counts": {
+      "R1": 2,
+      "R7": 3,
+      "R8": 2
+    }
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -146,7 +158,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run the v116-context-v28 candidate suite on a Godot-capable checkout, require the new Issue #6 R1 physical floor-support regression to PASS, then manually relaunch the demo and verify that the player no longer falls through the floor. Keep Issue #6 and demo-known-good-001 blocked until that retest passes.",
+  "next_target": "Build and run KG-001 Candidate 2 from v116-context-v29. Require the Issue #6 floor regression and the Issue #9 physical-audio regression to PASS, rerun the complete v109/v110/v111/audio-v116 fresh-checkout suite, then manually verify stable floor collision and audible event/ambient audio before continuing the full G10 route. Keep demo-known-good-001 blocked while either issue remains open.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -228,7 +240,7 @@
     "tail_origin": "UPSTREAM_UNKNOWN_HOLD"
   },
   "kg001_v116": {
-    "build_id": "KG-001 Candidate 1",
+    "build_id": "KG-001 Candidate 2",
     "diagnostics_script": "scripts/candidate_diagnostics_v116.gd",
     "trigger_debug": "scripts/kg001_trigger_debug_v116.gd",
     "validator": "tools/validate_candidate_diagnostics_v116.py",
@@ -244,15 +256,16 @@
       "F10": "state dump",
       "F11": "bug report ZIP"
     },
-    "event_log": "user://openazrael_candidate1_events.jsonl",
+    "event_log": "user://openazrael_candidate2_events.jsonl",
     "state_dump_prefix": "user://openazrael_kg001_state_dump_",
     "bug_report_prefix": "user://openazrael_bugreport_",
     "bug_report_doc": "docs/BUG_REPORTING.md",
-    "issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml"
+    "issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml",
+    "physical_audio_regression": "KG001_AUDIO_V116_ISSUE_9"
   },
   "localization": {
     "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",
-    "runtime_boundary": "AFTER_FIRST_KG001_CANDIDATE1_RUNTIME_MANUAL_CYCLE",
+    "runtime_boundary": "AFTER_FIRST_CLEAN_KG001_CANDIDATE2_RUNTIME_MANUAL_CYCLE",
     "key_strategy": "STABLE_SEMANTIC_IDS",
     "forensic_source_strategy": "ORIGINAL_STRINGS_SEPARATE_FROM_RUNTIME_KEYS",
     "authoring_format": "GETTEXT_POT_PO",
@@ -278,5 +291,21 @@
     ],
     "first_smoke_pack": "sk",
     "architecture_doc": "docs/LOCALIZATION_ARCHITECTURE.md"
+  },
+  "kg001_audio_v116": {
+    "runner": "scripts/kg001_audio_runtime_runner_v116.gd",
+    "validator": "tools/validate_kg001_audio_runtime_v116.py",
+    "contract": "data/tests/kg001_audio_runtime_contract_v116.json",
+    "runtime_result": "data/tests/kg001_audio_runtime_v116.json",
+    "issue": "#9",
+    "expected_ambient_counts": {
+      "R1": 2,
+      "R7": 3,
+      "R8": 2
+    },
+    "event_probe": "R8_LENS_PLACE -> S152V2.WAV",
+    "source_status": "SOURCE_CONTRACT_PASS",
+    "runtime_status": "NOT_EXECUTED",
+    "boundary": "Automated readiness does not prove human audibility or original Miles parity."
   }
 }

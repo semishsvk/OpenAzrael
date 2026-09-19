@@ -8,6 +8,7 @@ def load_optional(path):
     return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
 
 contract=json.loads((ROOT/"data/kg001_acceptance_contract.json").read_text(encoding="utf-8"))
+context=json.loads((ROOT/"data/project_context.json").read_text(encoding="utf-8"))
 v108=json.loads((ROOT/"data/tests/kg001_state_space_v108.json").read_text(encoding="utf-8"))
 source=load_optional(ROOT/"data/tests/kg001_source_validation_v112.json")
 r109=load_optional(ROOT/"data/tests/kg001_headless_runtime_v109.json")
@@ -41,7 +42,13 @@ gates={
  "G09":{"name":"fresh_checkout_build","status":"PASS" if fresh_pass else "PENDING"},
  "G10":{"name":"manual_sanity","status":"PASS" if manual_pass else "PENDING_MANUAL_USER"}
 }
-all_pass=all(x["status"]=="PASS" for x in gates.values())
+release_blockers=sorted([
+    key for key,value in context.get("quality",{}).items()
+    if key.startswith("kg001_release_blocked_by_") and value is True
+])
+defect_clear=not release_blockers
+all_gates_pass=all(x["status"]=="PASS" for x in gates.values())
+all_pass=all_gates_pass and defect_clear
 failed=[]
 for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("audio_v116",audio),("fresh",fresh),("manual",manual)):
     if isinstance(obj,dict) and obj.get("status")=="FAIL":
@@ -50,11 +57,12 @@ out={
  "schema":"openazrael.kg001.gate_status",
  "version":112,
  "target_tag":contract["target_tag"],
- "overall_status":"PASS" if all_pass else ("FAIL" if failed else "AWAITING_RUNTIME_OR_MANUAL"),
+ "overall_status":"PASS" if all_pass else ("FAIL" if failed else ("BLOCKED_KNOWN_BUGS" if release_blockers else "AWAITING_RUNTIME_OR_MANUAL")),
  "final_tag_allowed":all_pass,
  "failed_inputs":failed,
+ "known_release_blockers":release_blockers,
  "gates":gates,
- "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS."
+ "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains."
 }
 print(json.dumps(out,indent=2))
 sys.exit(1 if failed else 0)
