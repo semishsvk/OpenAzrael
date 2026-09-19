@@ -228,6 +228,25 @@ The runtime presentation manifest now fingerprints every resolved texture file (
 
 The future exported runtime loader contract lives in `godot/runtime_texture_resource_loader.gd`. It validates the safe `res://assets/textures/` namespace and uses `ResourceLoader` to obtain `Texture2D` resources. Raw FileAccess/SHA hashing is intentionally limited to development/pre-export verification because Godot's import/export pipeline may replace source image files with imported resources.
 
+## Structured manual review contract
+
+Stage approval is no longer based on a free-form note alone. `oa_tex_manual_review.py` creates a per-texture review record bound to the current review queue, review pack and candidate hashes.
+
+Every reviewed texture always requires checks for:
+
+- composition/geometry preservation;
+- no invented objects, symbols or text;
+- plausible material/detail reconstruction;
+- acceptable detail artifacts;
+- alpha/mask boundaries;
+- gameplay-scale appearance.
+
+Policy/evidence adds required checks when relevant for repeated seams, exact text/layout, artwork figures/objects, puzzle/special geometry, atlas boundaries and alpha-policy constraints.
+
+A texture may be `ACCEPTED_FOR_STAGE` only when every required check is explicitly `true`. `HOLD` and `REJECTED` require a note. A stage receives manual-review PASS only when every expected texture is accepted, every required check passes, candidate hashes remain current and the underlying review queue/pack fingerprints still match.
+
+`oa_tex_stage_gate.py approve` now requires that PASS record and writes stage-approval schema v4, fingerprinting the manual review alongside the existing technical/runtime/review evidence. Any later evidence or manual-review change makes the approval stale.
+
 ## Explicit production selection contract
 
 `data/texture_lab/production_selection.json` starts empty and contains no automatic defaults. `oa_tex_production_selection.py` can record a `remastered` selection only after the source stage has a current manual approval receipt.
