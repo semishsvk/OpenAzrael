@@ -5,6 +5,7 @@
 
 ## Texture Lab RT-POC-01
 - `docs/TEXTURE_LAB_RT_POC_01.md`
+- `docs/TEXTURE_LAB_LOCAL_RUNBOOK.md`
 - `tools/texture_lab/oa_tex_scan.py`
 - `tools/texture_lab/oa_tex_enhance.py`
 - `tools/texture_lab/oa_tex_validate.py`
