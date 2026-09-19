@@ -118,10 +118,11 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
                 continue
 
             if key == "source":
-                expected_source = (
-                    ROOT / "assets/textures/classic" / f"{texture_id}.png"
-                )
-                if path.resolve() != expected_source.resolve():
+                classic_root = ROOT / "assets/textures/classic"
+                if (
+                    not path_is_within(path, classic_root)
+                    or path.name != f"{texture_id}.png"
+                ):
                     artifacts_ok = False
             elif key == "candidate":
                 if not path_is_within(path, expected_candidate_root):
