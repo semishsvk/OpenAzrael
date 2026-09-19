@@ -50,5 +50,17 @@
     "reference_tier_cycle": true,
     "shared_tile_and_lighting_state": true
   },
-  "next_real_execution": "Run restored_smoke_1 on a development machine with the pinned Pillow baseline, restored Classic/Enhanced corpus, pinned Real-ESRGAN v0.3.0 source and verified RealESRGAN_x4plus checkpoint. Review CORIROCK outputs before approving restored_smoke_4."
+  "next_real_execution": "Run restored_smoke_1 on a development machine with the pinned Pillow baseline, restored Classic/Enhanced corpus, pinned Real-ESRGAN v0.3.0 source and verified RealESRGAN_x4plus checkpoint. Review CORIROCK outputs before approving restored_smoke_4.",
+  "launchpad": {
+    "entrypoint": "tools/texture_lab/oa_tex_first_run.py",
+    "commands": [
+      "status",
+      "prepare-baseline",
+      "bootstrap-realesrgan",
+      "restored-smoke-1"
+    ],
+    "poc_source_identity_check": "12_CANONICAL_IDS_PLUS_EXPECTED_DIMENSIONS",
+    "torch_installation_policy": "EXPLICIT_MACHINE_SPECIFIC_PREREQUISITE",
+    "dependency_install_guard": "TORCH_AND_TORCHVISION_MUST_IMPORT_BEFORE_REALESRGAN_DEPS"
+  }
 }
