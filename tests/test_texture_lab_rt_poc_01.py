@@ -131,6 +131,7 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 self.assertTrue(alpha_is_binary(im))
                 alpha = im.getchannel("A")
                 self.assertEqual(alpha.getpixel((0, 0)), 0)
+                self.assertEqual(im.getpixel((0, 0)), (0, 0, 0, 0))
                 self.assertEqual(alpha.getpixel((16, 16)), 255)
 
     def test_structural_drift_detects_displacement(self):
