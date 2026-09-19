@@ -142,6 +142,14 @@ Legacy color-key candidates follow the same alpha-lock policy as AI Restored: al
 
 The scene does not access DemoState, CandidateDiagnostics or RoomManager and does not mutate gameplay state. A/B mode uses two isolated QuadMesh surfaces with the same tile and lighting state, so the comparison changes presentation only. `validate_godot_lab.py` enforces this source contract. Actual Godot execution remains pending on a machine with Godot and the ignored local texture corpus.
 
+### Named-stage clean-run identity
+
+Every real named preset writes bake-off plan schema v5 with a fresh UUID-like `run_instance_id`. Named presets are locked to the canonical repository selection, policy, profiles, Classic source corpus, Enhanced conditioning root, model/workflow parameters and preset-scoped output namespace.
+
+Existing local run/candidate artifacts cause a real named rerun to fail closed. `--replace-existing-run` is the explicit destructive opt-in that clears only that preset's run evidence and candidate namespace before a fresh run. Dry-runs never clear stage artifacts.
+
+This prevents partial reruns from mixing new outputs with stale QA files and prevents an older approval from becoming current again after a byte-identical rerun.
+
 ### `oa_tex_review_profile.py`
 Builds an editor-only `openazrael.texture_lab.review_texture_manifest.v1` from a completed named stage. It resolves the stage's reviewed candidate hashes and Classic fallbacks, writes a stage-specific `godot_review_profile.json` into the run evidence directory, and refreshes the convenience pointer `.local/texture_lab/runtime_manifests/review_current.json`. The schema carries `export_allowed=false`; the production export verifier deliberately rejects it.
 
@@ -326,3 +334,8 @@ Classic decoded PNGs, all generated Enhanced/AI pixels and comparison/tile sheet
 7. execute the dedicated Godot Texture Lab scene on the development machine before production-wide conversion.
 
 RT-POC-01 remains observational: it does not replace Classic evidence or automatically select a production winner.
+
+
+### Production selection registry v2
+
+`data/texture_lab/production_selection.json` uses `openazrael.texture_lab.production_selection.v2`. Active Remastered selections remain explicit and manual; replaced selections are retained in `superseded_selections`, while explicit withdrawals are retained in `revocations`. The loader can migrate legacy v1 data in memory, but new writes use v2.
