@@ -27,7 +27,12 @@ def main() -> int:
         "KEY_4",
         "KEY_T",
         "KEY_L",
+        "KEY_B",
+        "KEY_R",
         "KEY_S",
+        "SurfaceB",
+        "compare_mode",
+        "reference_tier_index",
     ]:
         assert token in script, token
 
