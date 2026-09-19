@@ -353,6 +353,26 @@ After generating `remastered.json`, launch the isolated Godot Texture Lab and pr
 
 The Godot profile resolver reads only the resolved manifest. It does not read stage evidence or `production_selection.json` directly.
 
+## Pre-export texture integrity
+
+After generating a runtime profile manifest, verify it before any export/build handoff:
+
+```bash
+python tools/texture_lab/oa_tex_runtime_verify.py \
+  .local/texture_lab/runtime_manifests/remastered.json
+```
+
+Only a PASS manifest may be compiled into the static Godot runtime map:
+
+```bash
+python tools/texture_lab/oa_tex_runtime_export.py \
+  .local/texture_lab/runtime_manifests/remastered.json
+```
+
+The export compiler writes only local metadata/code under `.local/texture_lab/runtime_export/`. It does not copy texture pixels. If any resolved PNG, selection/policy input or production registry changes, regenerate and reverify the runtime manifest.
+
+The exported-game loader contract uses `ResourceLoader` for imported `Texture2D` assets. The editor-only profile preview additionally verifies raw source hashes before displaying a manifest.
+
 ## 8. Promotion rule
 
 No numerical metric or completed command promotes an asset automatically.
