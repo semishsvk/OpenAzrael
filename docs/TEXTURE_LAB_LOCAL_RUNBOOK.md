@@ -85,6 +85,31 @@ python tools/texture_lab/oa_tex_first_run.py restored-smoke-1 \
 
 The non-generating `check-restored-smoke-1` command refuses `--replace-existing-run`; readiness checks therefore never clear stage data.
 
+After any real `restored_smoke_1` attempt, inspect the passive state machine:
+
+```bash
+python tools/texture_lab/oa_tex_first_run.py restored-smoke-1-status
+```
+
+It never creates review decisions or approvals. It reports one of:
+
+- `NOT_EXECUTED`
+- `EVIDENCE_HOLD`
+- `READY_FOR_MANUAL_REVIEW`
+- `MANUAL_REVIEW_IN_PROGRESS`
+- `MANUAL_REVIEW_STALE`
+- `READY_FOR_STAGE_APPROVAL`
+- `APPROVAL_STALE`
+- `STAGE_APPROVED`
+
+and includes the exact next action. `STAGE_APPROVED` still does **not** imply production selection.
+
+A successful named stage also writes:
+
+`.local/texture_lab/runs/rt_poc_01/restored_smoke_1/review_handoff.html`
+
+The HTML handoff embeds/links the full comparison sheet, detail comparison, repeat-tile preview when applicable, review attention, required manual checks and the Godot REVIEW instructions. It is explicitly observational and is **not** included as approval evidence; authoritative approval remains the structured manual-review record plus approval v5 chain.
+
 Use the lower-level commands in the rest of this runbook for diagnosis or controlled reruns.
 
 ## 0. Preconditions
