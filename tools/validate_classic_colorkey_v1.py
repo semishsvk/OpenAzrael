@@ -8,6 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 AUDIT=ROOT/"data/classic_colorkey_audit_v1.json"
 DECODER=ROOT/"tools/texture_pipeline/azf_decode_v14.py"
 EXPORTER=ROOT/"tools/texture_pipeline/export_xaf_glb_v8.py"
+MIGRATOR=ROOT/"tools/texture_pipeline/apply_colorkey_alpha_v1.py"
 
 EXPECTED={
     "BAPBROK#.png","BAPFLOR#.png","BLOOD2#.png","BLOOD5#.png","BLOOD6#.png",
@@ -19,6 +20,7 @@ def main():
     audit=json.loads(AUDIT.read_text(encoding="utf-8"))
     decoder=DECODER.read_text(encoding="utf-8")
     exporter=EXPORTER.read_text(encoding="utf-8")
+    migrator=MIGRATOR.read_text(encoding="utf-8")
 
     audited={x["file"] for x in audit.get("keyed_textures",[])}
     if audit.get("classic_texture_count") != 86:
@@ -38,6 +40,7 @@ def main():
         "exporter_rgba": "source_image.convert('RGBA')" in exporter,
         "exporter_mask": "alphaMode='MASK'" in exporter and "alphaCutoff=0.5" in exporter,
         "manifest_alpha": "'alpha_mode':material_alpha_mode.get(mn,'OPAQUE')" in exporter,
+        "migration_exact_key": "np.all(rgb==key,axis=2)" in migrator and "keyed!=spec[\"keyed_pixels\"]" in migrator,
     }
     for name,ok in source_checks.items():
         if not ok:
