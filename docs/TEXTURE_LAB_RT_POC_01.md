@@ -193,6 +193,27 @@ R8 geometry provides four non-overlapping U regions for BAPTAP: tapestry1 ≈ 0.
 
 `oa_tex_review_report.py` converts structural-drift output plus asset policy/sampling evidence into a stage-scoped manual QA queue. It reports drift ratios against the deterministic p95/max and carries through alpha, seam, atlas, puzzle, artwork and text review requirements. `oa_tex_review_pack.py` then renders the concrete visual evidence to inspect: Classic/Enhanced/AI comparison sheets for every selected texture and 3x3 repeated previews where repeat sampling was observed. `oa_tex_stage_gate.py` records an explicit manual approval receipt only after the stage has complete local-preflight, runtime, technical, structural, generation, review-queue and visual-review-pack evidence; the receipt fingerprints those artifacts and the generated output hashes. It deliberately never promotes a generated asset automatically.
 
+## Explicit production selection contract
+
+`data/texture_lab/production_selection.json` starts empty and contains no automatic defaults. `oa_tex_production_selection.py` can record a `remastered` selection only after the source stage has a current manual approval receipt.
+
+A selection is bound to:
+
+- texture ID and source stage/preset;
+- selected presentation tier (`ai_restored` or `ai_recreated`);
+- candidate project-relative path and SHA-256;
+- Classic source SHA-256;
+- visual-review-pack manifest fingerprint;
+- stage-approval receipt fingerprint;
+- required manual note.
+
+The command never copies generated pixels and never changes gameplay/runtime state. `status` revalidates candidate/source hashes, the review pack and the stage receipt; any changed evidence makes the production record `STALE`. `revoke` removes the active selection while keeping an audit record.
+
+This preserves the distinction:
+
+**stage approval** = the experiment may progress to the next stage;  
+**production selection** = a human explicitly selected one reviewed candidate for the Remastered presentation profile.
+
 ## Structural-drift baseline
 
 The 36 alpha-safe deterministic candidates established the first reference envelope for a layout-preserving transformation. These values are retained as historical calibration evidence; before any real AI run, RT-POC-01 now requires a fresh schema-v2 recalibration under the pinned Pillow 12.3.0 toolchain:
