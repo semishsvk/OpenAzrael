@@ -165,19 +165,6 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         if not job_paths:
             missing.append(str(run_dir / "recreated_jobs/*.job.json"))
 
-    output_rows = []
-    for texture_id in spec.get("textures", []):
-        path = output_path(mode, str(texture_id))
-        if not path.is_file():
-            missing.append(str(path))
-            continue
-        output_rows.append(
-            {
-                "id": str(texture_id),
-                **file_evidence(path),
-            }
-        )
-
     if missing:
         return {
             "status": "MISSING",
@@ -203,6 +190,18 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
     ]
     technical_ids = [str(row.get("id")) for row in technical_rows]
     pack = review_pack_snapshot(mode, run_dir, expected)
+
+    pack_manifest = load_json(review_pack_manifest)
+    output_rows = []
+    for row in pack_manifest.get("rows", []):
+        if not isinstance(row, dict) or not row.get("id"):
+            continue
+        candidate = row.get("candidate")
+        if not isinstance(candidate, dict):
+            continue
+        output_rows.append({"id": str(row["id"]), **candidate})
+
+    output_ids = [row["id"] for row in output_rows]
 
     checks = {
         "plan_preset_ok": (
@@ -236,6 +235,10 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
         "local_preflight_ok": local_preflight.get("ready_for_runtime_doctors") is True,
         "stage_prerequisites_ok": stage_gate.get("status") == "PASS",
         "review_pack_ok": pack.get("status") == "PASS",
+        "reviewed_outputs_ok": (
+            len(output_ids) == len(expected)
+            and set(output_ids) == set(expected)
+        ),
     }
 
     if mode == "restored":
