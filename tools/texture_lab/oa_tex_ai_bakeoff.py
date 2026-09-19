@@ -18,6 +18,7 @@ from oa_tex_prompt import build_prompt_pair
 
 QWEN_CONTRACT = ROOT / "tools/texture_lab/config/qwen_2511_contract.json"
 QWEN_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
+AI_BACKENDS = ROOT / "tools/texture_lab/config/ai_backends.json"
 SMOKE_SETS = ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
 DEFAULT_RESTORED_DIR = AI_RESTORED_ROOT
 DEFAULT_RECREATED_DIR = AI_RECREATED_ROOT
@@ -569,6 +570,68 @@ def resolve_named_candidate_namespace(args) -> None:
         args.recreated_dir = canonical
 
 
+def validate_named_preset_contract(
+    args,
+    qwen_contract: dict,
+    backends: dict,
+) -> None:
+    if not args.preset:
+        return
+
+    if args.mode == "restored":
+        primary = backends["ai_restored"]["primary"]
+        expected = {
+            "restore_model": str(primary["model"]),
+            "factor": int(primary["factor"]),
+            "tile": int(primary["tile"]),
+            "fp32": bool(primary["fp32"]),
+        }
+        actual = {
+            "restore_model": args.restore_model,
+            "factor": int(args.factor),
+            "tile": int(args.tile),
+            "fp32": bool(args.fp32),
+        }
+        if actual != expected:
+            raise SystemExit(
+                "named restored preset parameters are canonical and cannot be "
+                f"overridden: expected={expected} actual={actual}"
+            )
+        if args.denoise_strength is not None:
+            raise SystemExit(
+                "named restored presets require denoise_strength=None for the "
+                "primary RealESRGAN_x4plus baseline"
+            )
+        return
+
+    bindings = qwen_contract["canonical_openazrael_workflow"]["bindings"]
+    sampling = qwen_contract["poc_sampling"]
+    primary = backends["ai_recreated"]["primary"]
+    checks = {
+        "workflow": args.workflow.resolve() == QWEN_WORKFLOW.resolve(),
+        "model_label": args.model_label == str(primary["model_label"]),
+        "seed": int(args.seed) == int(sampling["seed"]),
+        "factor": int(args.factor) == 4,
+        "conditioning_variant": args.recreate_input_variant == "lanczos_x4.png",
+        "load_image_node": str(args.load_image_node) == str(bindings["load_image_node"]),
+        "prompt_node": str(args.prompt_node) == str(bindings["prompt_node"]),
+        "negative_prompt_node": (
+            str(args.negative_prompt_node)
+            == str(bindings["negative_prompt_node"])
+        ),
+        "seed_node": str(args.seed_node) == str(bindings["seed_node"]),
+        "prompt_key": args.prompt_key == "prompt",
+        "negative_prompt_key": args.negative_prompt_key == "prompt",
+        "seed_key": args.seed_key == "seed",
+    }
+    failed = [name for name, ok in checks.items() if not ok]
+    if failed:
+        raise SystemExit(
+            "named recreated preset parameters are canonical and cannot be "
+            "overridden; mismatches=" + ",".join(failed)
+        )
+
+
 def validate_execution_args(args) -> None:
     if args.dry_run:
         return
@@ -644,7 +707,9 @@ def main() -> int:
     policy = load_json(args.policy)
     profiles = load_json(args.profiles)
     qwen_contract = load_json(QWEN_CONTRACT)
+    backends = load_json(AI_BACKENDS)
     resolve_qwen_defaults(args, qwen_contract)
+    validate_named_preset_contract(args, qwen_contract, backends)
     validate_execution_args(args)
 
     allowed, skipped = eligible_entries(selection, policy, args.mode)
@@ -709,6 +774,11 @@ def main() -> int:
         ),
         "candidate_namespace_policy": (
             "named_preset_scoped_v1"
+            if args.preset
+            else "ad_hoc_explicit"
+        ),
+        "parameter_policy": (
+            "canonical_named_preset_v1"
             if args.preset
             else "ad_hoc_explicit"
         ),
