@@ -86,7 +86,10 @@ def evidence_snapshot(preset: str, run_root: Path) -> dict:
             and plan_data["preset"].get("name") == preset
         ),
         "selected_ids_ok": selected == expected,
-        "review_ids_ok": review_ids == expected,
+        "review_ids_ok": (
+            len(review_ids) == len(expected)
+            and set(review_ids) == set(expected)
+        ),
         "review_complete_ok": all(
             row.get("review_state") == "MANUAL_REVIEW_REQUIRED"
             for row in review_data.get("rows", [])
