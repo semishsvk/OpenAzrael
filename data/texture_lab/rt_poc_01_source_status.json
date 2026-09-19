@@ -70,6 +70,14 @@
       "restored": "source/output hashes in ai_restore_run must match visual-review source/candidate hashes and canonical RealESRGAN model/factor/backend",
       "recreated": "Qwen job source/conditioning/output/workflow/model/seed hashes must match current evidence; atlas stitch must match reviewed final candidate",
       "intermediate_atlas_parts_bound_into_evidence": true
+    },
+    "local_html_handoff": {
+      "path": "<run_dir>/review_handoff.html",
+      "schema": "openazrael.texture_lab.review_handoff.v1",
+      "generated_after": "godot_review_profile",
+      "automatic_approval": false,
+      "approval_evidence": false,
+      "purpose": "human convenience surface for full/detail/tile/Godot/manual-check review"
     }
   },
   "godot_lab": {
@@ -198,6 +206,8 @@
     "first_preset": "restored_smoke_1",
     "first_texture": "CORIROCK",
     "readiness_semantics": "PASS means runtime-ready only; no AI pixel generation is implied",
-    "execution_semantics": "only a successful real restored-smoke-1 run may move real Restored pixels from NOT_EXECUTED"
+    "execution_semantics": "only a successful real restored-smoke-1 run may move real Restored pixels from NOT_EXECUTED",
+    "state_command": "python tools/texture_lab/oa_tex_first_run.py restored-smoke-1-status",
+    "state_schema": "openazrael.texture_lab.first_restored_smoke_state.v1"
   }
 }
