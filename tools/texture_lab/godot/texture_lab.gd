@@ -4,6 +4,8 @@ const SELECTION_PATH := "res://tools/texture_lab/config/rt_poc_01_selection.json
 const TIER_NAMES := ["CLASSIC", "ENHANCED", "AI RESTORED", "AI RECREATED"]
 const ENHANCED_METHODS := ["nearest", "bicubic", "lanczos"]
 const TILE_REPEATS := [1, 2, 4]
+const PROFILE_MANIFEST_PATH := "res://.local/texture_lab/runtime_manifests/remastered.json"
+const PROFILE_RESOLVER_SCRIPT := preload("res://tools/texture_lab/godot/texture_profile_resolver.gd")
 
 @onready var surface_a: MeshInstance3D = $Surface
 @onready var surface_b: MeshInstance3D = $SurfaceB
@@ -18,6 +20,10 @@ var enhanced_method_index := 2
 var tile_index := 0
 var lit := false
 var compare_mode := false
+var profile_mode := false
+var profile_loaded := false
+var profile_message := "PROFILE NOT LOADED"
+var profile_resolver = PROFILE_RESOLVER_SCRIPT.new()
 
 var material_a := StandardMaterial3D.new()
 var material_b := StandardMaterial3D.new()
@@ -33,6 +39,7 @@ func _ready() -> void:
     surface_a.material_override = material_a
     surface_b.material_override = material_b
     _load_selection()
+    _load_profile_manifest()
     _refresh()
 
 func _configure_material(target: StandardMaterial3D) -> void:
@@ -45,6 +52,35 @@ func _load_selection() -> void:
         push_error("Texture Lab: invalid selection file")
         return
     entries = parsed["textures"]
+
+func _load_profile_manifest() -> void:
+    profile_loaded = profile_resolver.load_manifest(PROFILE_MANIFEST_PATH)
+    if profile_loaded:
+        profile_message = "PROFILE %s / %s" % [
+            String(profile_resolver.profile).to_upper(),
+            String(profile_resolver.status)
+        ]
+    else:
+        profile_mode = false
+        profile_message = "PROFILE MANIFEST MISSING/INVALID"
+
+func _candidate_path(entry: Dictionary) -> String:
+    if profile_mode and profile_loaded:
+        var id := String(entry["id"])
+        if profile_resolver.has_texture(id):
+            return profile_resolver.path_for(id)
+        return ""
+    return _path_for_entry(entry, tier_index)
+
+func _candidate_label(entry: Dictionary) -> String:
+    if profile_mode and profile_loaded:
+        var id := String(entry["id"])
+        var tier := profile_resolver.tier_for(id)
+        return "PROFILE %s / %s" % [
+            String(profile_resolver.profile).to_upper(),
+            tier.to_upper()
+        ]
+    return TIER_NAMES[tier_index]
 
 func _path_for_entry(entry: Dictionary, tier: int) -> String:
     var id := String(entry["id"])
@@ -143,7 +179,7 @@ func _refresh() -> void:
 
     var entry: Dictionary = entries[texture_index]
     var repeat: int = TILE_REPEATS[tile_index]
-    current_path = _path_for_entry(entry, tier_index)
+    current_path = _candidate_path(entry)
 
     if compare_mode:
         reference_path = _path_for_entry(entry, reference_tier_index)
@@ -199,47 +235,55 @@ func _update_label() -> void:
             + "Enhanced: %s  |  Tile: %s  |  Lighting: %s\n"
             + "A: %s\n"
             + "B: %s\n"
-            + "←/→ texture   1/2/3/4 candidate tier   R reference tier   B A/B toggle\n"
-            + "Q/W/E nearest/bicubic/lanczos   T tile 1/2/4   L lighting   S screenshot"
+            + "←/→ texture   1/2/3/4 manual candidate   P runtime profile   R reference   B A/B\n"
+            + "Q/W/E nearest/bicubic/lanczos   T tile 1/2/4   L lighting   S screenshot\n"
+            + "%s"
         ) % [
             texture_index + 1,
             entries.size(),
             String(entry["id"]),
             TIER_NAMES[reference_tier_index],
             reference_status,
-            TIER_NAMES[tier_index],
+            _candidate_label(entry),
             current_status,
             method,
             tile_text,
             lighting_text,
             reference_path,
-            current_path
+            current_path,
+            profile_message
         ]
     else:
-        var active_method := method if tier_index == 1 else "-"
+        var active_method := method if tier_index == 1 and not profile_mode else "-"
         label.text = (
             "OpenAzrael Texture Lab  |  %d/%d  %s\n"
             + "Tier: %s  |  Enhanced: %s  |  Tile: %s  |  Lighting: %s  |  %s\n"
             + "Path: %s\n"
             + "←/→ texture   1 Classic   2 Enhanced   3 AI Restored   4 AI Recreated\n"
-            + "B A/B compare   R cycle reference   Q/W/E nearest/bicubic/lanczos\n"
-            + "T tile 1/2/4   L lighting   S screenshot"
+            + "P runtime profile   B A/B compare   R reference   Q/W/E nearest/bicubic/lanczos\n"
+            + "T tile 1/2/4   L lighting   S screenshot\n"
+            + "%s"
         ) % [
             texture_index + 1,
             entries.size(),
             String(entry["id"]),
-            TIER_NAMES[tier_index],
+            _candidate_label(entry),
             active_method,
             tile_text,
             lighting_text,
             current_status,
-            current_path
+            current_path,
+            profile_message
         ]
 
 func _save_screenshot() -> void:
     var image := get_viewport().get_texture().get_image()
     var id := String(entries[texture_index]["id"]).replace("#", "_")
-    var tier := TIER_NAMES[tier_index].to_lower().replace(" ", "_")
+    var tier := (
+        ("profile_" + String(profile_resolver.profile).to_lower())
+        if profile_mode and profile_loaded
+        else TIER_NAMES[tier_index].to_lower().replace(" ", "_")
+    )
     var path := ""
     if compare_mode:
         var reference := TIER_NAMES[reference_tier_index].to_lower().replace(" ", "_")
@@ -262,21 +306,28 @@ func _unhandled_key_input(event: InputEvent) -> void:
             texture_index += 1
         KEY_1:
             tier_index = 0
+            profile_mode = false
         KEY_2:
             tier_index = 1
+            profile_mode = false
         KEY_3:
             tier_index = 2
+            profile_mode = false
         KEY_4:
             tier_index = 3
+            profile_mode = false
         KEY_Q:
             enhanced_method_index = 0
             tier_index = 1
+            profile_mode = false
         KEY_W:
             enhanced_method_index = 1
             tier_index = 1
+            profile_mode = false
         KEY_E:
             enhanced_method_index = 2
             tier_index = 1
+            profile_mode = false
         KEY_T:
             tile_index = (tile_index + 1) % TILE_REPEATS.size()
         KEY_L:
@@ -285,6 +336,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
             compare_mode = not compare_mode
         KEY_R:
             reference_tier_index = (reference_tier_index + 1) % TIER_NAMES.size()
+        KEY_P:
+            _load_profile_manifest()
+            if profile_loaded:
+                profile_mode = not profile_mode
         KEY_S:
             _save_screenshot()
         _:
