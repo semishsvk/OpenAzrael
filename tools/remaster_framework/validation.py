@@ -10,6 +10,8 @@ from typing import Any
 
 VALIDATION_SCHEMA = "remaster.validation_scenario"
 VALIDATION_VERSION = 1
+EVALUATION_SCHEMA = "remaster.validation_evaluation"
+EVALUATION_VERSION = 1
 
 
 class ActionKind(str, Enum):
@@ -80,6 +82,18 @@ class PlayerAction:
             if value not in (None, {}, [])
         }
 
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "PlayerAction":
+        return cls(
+            action_id=str(payload["action_id"]),
+            kind=ActionKind(payload["kind"]),
+            execution_mode=ExecutionMode(payload["execution_mode"]),
+            input_action=payload.get("input_action"),
+            target=payload.get("target"),
+            frames=payload.get("frames"),
+            parameters=dict(payload.get("parameters", {})),
+        )
+
 
 @dataclass(frozen=True)
 class EvidenceRequirement:
@@ -97,6 +111,47 @@ class EvidenceRequirement:
             if value not in (None, {}, [])
         }
 
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "EvidenceRequirement":
+        return cls(
+            requirement_id=str(payload["requirement_id"]),
+            kind=str(payload["kind"]),
+            match=dict(payload.get("match", {})),
+            min_count=int(payload.get("min_count", 1)),
+            max_count=(
+                int(payload["max_count"])
+                if payload.get("max_count") is not None
+                else None
+            ),
+            after_requirement=payload.get("after_requirement"),
+        )
+
+
+@dataclass(frozen=True)
+class EvidenceSequence:
+    sequence_id: str
+    kind: str
+    field: str
+    expected: tuple[Any, ...]
+    match: dict[str, Any] = field(default_factory=dict)
+    exact: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        payload = asdict(self)
+        payload["expected"] = list(self.expected)
+        return payload
+
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "EvidenceSequence":
+        return cls(
+            sequence_id=str(payload["sequence_id"]),
+            kind=str(payload["kind"]),
+            field=str(payload["field"]),
+            expected=tuple(payload.get("expected", [])),
+            match=dict(payload.get("match", {})),
+            exact=bool(payload.get("exact", True)),
+        )
+
 
 @dataclass(frozen=True)
 class StateExpectation:
@@ -106,6 +161,14 @@ class StateExpectation:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "StateExpectation":
+        return cls(
+            path=str(payload["path"]),
+            before=payload.get("before"),
+            after=payload.get("after"),
+        )
 
 
 @dataclass(frozen=True)
@@ -123,6 +186,16 @@ class RuntimeEvidence:
             if value not in (None, {}, [])
         }
 
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "RuntimeEvidence":
+        return cls(
+            event_id=str(payload["event_id"]),
+            frame=int(payload["frame"]),
+            kind=str(payload["kind"]),
+            payload=dict(payload.get("payload", {})),
+            room=payload.get("room"),
+        )
+
 
 @dataclass(frozen=True)
 class ValidationScenario:
@@ -132,6 +205,7 @@ class ValidationScenario:
     actions: tuple[PlayerAction, ...]
     requirements: tuple[EvidenceRequirement, ...]
     forbidden: tuple[EvidenceRequirement, ...] = field(default_factory=tuple)
+    sequences: tuple[EvidenceSequence, ...] = field(default_factory=tuple)
     state_expectations: tuple[StateExpectation, ...] = field(default_factory=tuple)
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -187,6 +261,23 @@ class ValidationScenario:
                     f"{requirement.after_requirement}"
                 )
 
+        sequence_ids: set[str] = set()
+        for sequence in self.sequences:
+            if not sequence.sequence_id:
+                errors.append(
+                    f"{self.scenario_id}: sequence_id must not be empty"
+                )
+            if sequence.sequence_id in sequence_ids:
+                errors.append(
+                    f"{self.scenario_id}: duplicate sequence_id "
+                    f"{sequence.sequence_id}"
+                )
+            sequence_ids.add(sequence.sequence_id)
+            if not sequence.field:
+                errors.append(
+                    f"{sequence.sequence_id}: sequence field must not be empty"
+                )
+
         return errors
 
     def to_dict(self) -> dict[str, Any]:
@@ -199,11 +290,45 @@ class ValidationScenario:
             "actions": [item.to_dict() for item in self.actions],
             "requirements": [item.to_dict() for item in self.requirements],
             "forbidden": [item.to_dict() for item in self.forbidden],
+            "sequences": [item.to_dict() for item in self.sequences],
             "state_expectations": [
                 item.to_dict() for item in self.state_expectations
             ],
             "metadata": self.metadata,
         }
+
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "ValidationScenario":
+        if payload.get("schema") != VALIDATION_SCHEMA:
+            raise ValueError("unsupported validation scenario schema")
+        if payload.get("version") != VALIDATION_VERSION:
+            raise ValueError("unsupported validation scenario version")
+        return cls(
+            scenario_id=str(payload["scenario_id"]),
+            room=str(payload["room"]),
+            setup=dict(payload.get("setup", {})),
+            actions=tuple(
+                PlayerAction.from_dict(item)
+                for item in payload.get("actions", [])
+            ),
+            requirements=tuple(
+                EvidenceRequirement.from_dict(item)
+                for item in payload.get("requirements", [])
+            ),
+            forbidden=tuple(
+                EvidenceRequirement.from_dict(item)
+                for item in payload.get("forbidden", [])
+            ),
+            sequences=tuple(
+                EvidenceSequence.from_dict(item)
+                for item in payload.get("sequences", [])
+            ),
+            state_expectations=tuple(
+                StateExpectation.from_dict(item)
+                for item in payload.get("state_expectations", [])
+            ),
+            metadata=dict(payload.get("metadata", {})),
+        )
 
 
 def _normalize(value: Any, float_places: int) -> Any:
@@ -264,6 +389,18 @@ def _state_path(value: Any, path: str) -> tuple[bool, Any]:
     return True, current
 
 
+def _is_subsequence(actual: list[Any], expected: list[Any]) -> bool:
+    if not expected:
+        return True
+    index = 0
+    for value in actual:
+        if value == expected[index]:
+            index += 1
+            if index == len(expected):
+                return True
+    return False
+
+
 def evaluate_scenario(
     scenario: ValidationScenario,
     evidence: list[RuntimeEvidence],
@@ -293,7 +430,7 @@ def evaluate_scenario(
                 f"for {action.action_id}"
             )
 
-    first_match_frame: dict[str, int] = {}
+    matches_by_requirement: dict[str, list[RuntimeEvidence]] = {}
     for requirement in scenario.requirements:
         matches = [
             item
@@ -301,33 +438,33 @@ def evaluate_scenario(
             if item.kind == requirement.kind
             and _subset_match(item.payload, requirement.match)
         ]
+        matches_by_requirement[requirement.requirement_id] = matches
         count = len(matches)
         if count < requirement.min_count:
             errors.append(
                 f"{requirement.requirement_id}: expected >= "
                 f"{requirement.min_count}, got {count}"
             )
-            continue
         if requirement.max_count is not None and count > requirement.max_count:
             errors.append(
                 f"{requirement.requirement_id}: expected <= "
                 f"{requirement.max_count}, got {count}"
             )
-        if matches:
-            first_match_frame[requirement.requirement_id] = matches[0].frame
 
-        if requirement.after_requirement is not None:
-            prior = first_match_frame.get(requirement.after_requirement)
-            if prior is None:
-                errors.append(
-                    f"{requirement.requirement_id}: prerequisite evidence "
-                    f"{requirement.after_requirement} not observed first"
-                )
-            elif matches and matches[0].frame < prior:
-                errors.append(
-                    f"{requirement.requirement_id}: occurred before "
-                    f"{requirement.after_requirement}"
-                )
+    for requirement in scenario.requirements:
+        if requirement.after_requirement is None:
+            continue
+        matches = matches_by_requirement.get(requirement.requirement_id, [])
+        prior_matches = matches_by_requirement.get(
+            requirement.after_requirement, []
+        )
+        if not matches or not prior_matches:
+            continue
+        if matches[0].frame < prior_matches[0].frame:
+            errors.append(
+                f"{requirement.requirement_id}: occurred before "
+                f"{requirement.after_requirement}"
+            )
 
     for forbidden in scenario.forbidden:
         matches = [
@@ -340,6 +477,27 @@ def evaluate_scenario(
             errors.append(
                 f"{forbidden.requirement_id}: forbidden evidence observed "
                 f"{len(matches)} time(s)"
+            )
+
+    for sequence in scenario.sequences:
+        matching_events = [
+            item
+            for item in ordered
+            if item.kind == sequence.kind
+            and _subset_match(item.payload, sequence.match)
+        ]
+        actual = [
+            item.payload.get(sequence.field)
+            for item in matching_events
+            if sequence.field in item.payload
+        ]
+        expected = list(sequence.expected)
+        ok = actual == expected if sequence.exact else _is_subsequence(actual, expected)
+        if not ok:
+            mode = "exact" if sequence.exact else "subsequence"
+            errors.append(
+                f"{sequence.sequence_id}: {mode} sequence mismatch: "
+                f"{actual!r} != {expected!r}"
             )
 
     for expectation in scenario.state_expectations:
@@ -361,3 +519,27 @@ def evaluate_scenario(
             )
 
     return errors
+
+
+def build_evaluation_report(
+    scenario: ValidationScenario,
+    evidence: list[RuntimeEvidence],
+    before_state: dict[str, Any],
+    after_state: dict[str, Any],
+) -> dict[str, Any]:
+    errors = evaluate_scenario(
+        scenario,
+        evidence,
+        before_state,
+        after_state,
+    )
+    return {
+        "schema": EVALUATION_SCHEMA,
+        "version": EVALUATION_VERSION,
+        "scenario_id": scenario.scenario_id,
+        "status": "PASS" if not errors else "FAIL",
+        "errors": errors,
+        "evidence_count": len(evidence),
+        "before_state_sha256": canonical_state_hash(before_state),
+        "after_state_sha256": canonical_state_hash(after_state),
+    }
