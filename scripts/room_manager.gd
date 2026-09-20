@@ -402,8 +402,8 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
     var mx := _v3(t["bounds"][1])
-    var y0 := min(mn.y, mx.y) - 12.0
-    var y1 := max(mn.y, mx.y) + 70.0
+    var y0: float = minf(mn.y, mx.y) - 12.0
+    var y1: float = maxf(mn.y, mx.y) + 70.0
     return p.x >= min(mn.x,mx.x) and p.x <= max(mn.x,mx.x) \
         and p.z >= min(mn.z,mx.z) and p.z <= max(mn.z,mx.z) \
         and p.y >= y0 and p.y <= y1
