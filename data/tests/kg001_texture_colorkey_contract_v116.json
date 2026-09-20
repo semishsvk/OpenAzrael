@@ -4,10 +4,14 @@
   "status": "SOURCE_CONTRACT_PASS",
   "issue": "#11",
   "policy": {
-    "candidate_rule": "filename contains # AND quantized magenta pixels exist",
-    "magenta_rule": "R>=248 AND B>=248 AND G<=12",
+    "candidate_rule": "filename contains # AND exactly one used decoded palette index matches the engine-quantized magenta key class",
+    "indexed_detection": "USED_INDEXED_PALETTE_ENTRY",
+    "magenta_rule": "after optional R.EXE-style component quantization: R>=248 AND B>=248 AND G<=12",
+    "ambiguity_policy": "FAIL_CLOSED_IF_MULTIPLE_USED_KEY_INDICES",
+    "expected_key_indices_per_hash_texture": 1,
     "alpha": "binary 0/255",
-    "transparent_rgb": "zeroed",
+    "source_hidden_rgb": "zeroed for deterministic Classic PNG evidence",
+    "runtime_hidden_rgb": "nearest opaque RGB flood-fill below alpha=0 only",
     "runtime_material": "MASK",
     "alpha_cutoff": 0.5
   },
@@ -28,13 +32,15 @@
     "rusty_tongs": "TONG6 -> MINETON#.png"
   },
   "automated_layers": [
-    "synthetic mask semantics",
+    "synthetic indexed palette key semantics and ambiguity fail-closed",
+    "synthetic hidden-RGB edge-bleed with unchanged alpha",
     "synthetic XAF->PBR MASK material",
     "restored 86-texture corpus audit when room assets are present",
-    "R1 KEYHOLE#/TONG6 manifest audit",
+    "restore evidence requires exactly one used indexed key per 10 # textures",
+    "R1 KEYHOLE#/TONG6 manifest MASK + bleed-safe audit",
     "R1 exported GLB material alphaMode audit"
   ],
   "runtime_status": "NOT_EXECUTED",
   "manual_visual_status": "PENDING",
-  "evidence_boundary": "Presentation compatibility rule only; complete original renderer transparency/blending semantics remain HOLD."
+  "evidence_boundary": "Binary presentation compatibility uses decoded indexed AZF evidence and MASK edge-bleed hardening; complete original renderer transparency/blending semantics remain HOLD."
 }
