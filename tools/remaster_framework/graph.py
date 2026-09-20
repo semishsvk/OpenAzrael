@@ -62,6 +62,9 @@ class ReferenceGraph:
             raise ValueError(f"conflicting node definition: {node_id}")
         self._nodes[node_id] = candidate
 
+    def has_node(self, node_id: str) -> bool:
+        return node_id in self._nodes
+
     def add_edge(
         self,
         source: str,
