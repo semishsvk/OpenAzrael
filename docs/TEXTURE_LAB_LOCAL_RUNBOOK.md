@@ -148,6 +148,15 @@ python tools/texture_lab/oa_tex_review_pack_01.py status \
 
 The dashboard reports Classic/Enhanced reference availability and current named-stage AI evidence. `REFERENCE_ONLY_AI_NOT_CURRENT` is informational, not a failure or quality judgment. `READY_WITH_CURRENT_AI_EVIDENCE` means only that valid current AI stage evidence exists and can be reviewed.
 
+To materialize the prioritized local full/detail visual overview from whatever current evidence is actually available:
+
+```bash
+python tools/texture_lab/oa_tex_review_pack_01.py hub \
+  --out-dir .local/texture_lab/review_pack_01/current
+```
+
+The hub refuses stale file fingerprints and never becomes approval evidence. Stage-specific tile/seam imagery and structured manual review remain authoritative.
+
 See `docs/TEXTURE_LAB_REVIEW_PACK_01.md` for the complete order and eight-axis manual rubric. No aggregate score or automatic winner is computed.
 
 ## 0. Preconditions
