@@ -105,6 +105,11 @@ for p in [
     "tools/promote_kg001_candidate_results_v118.py",
     "data/tests/kg001_test_build_contract_v118.json",
     "tools/validate_kg001_test_build_contract_v118.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/validate_kg001_build_manifest_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
 ]:
     req(p)
 
@@ -234,6 +239,27 @@ try:
         errors.append("KG-001 v117 Godot pin drift")
     if audit.get("visual_capture_runtime")!="NOT_EXECUTED":
         errors.append("KG-001 v117 visual runtime boundary drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 asset-set contract drift")
+    if q.get("kg001_build_manifest_schema")!="V2_RUNTIME_SOURCE_BOUND":
+        errors.append("KG-001 v118 build-manifest schema drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 test-build contract drift")
+    if q.get("kg001_test_build_status")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 test-build runtime boundary drift")
+    if q.get("kg001_test_build_ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 ready-status drift")
+    if q.get("kg001_release_blockers_close_automatically") is not False:
+        errors.append("KG-001 v118 blocker auto-close safety drift")
+    if q.get("kg001_test_build_known_good_tag_allowed") is not False:
+        errors.append("KG-001 v118 known-good tag safety drift")
+    v118=c.get("kg001_v118",{})
+    if v118.get("status")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 v118 context status drift")
+    if v118.get("ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 context ready-status drift")
+    if v118.get("runtime_status")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 context runtime boundary drift")
     loc=c.get("localization",{})
     if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
         errors.append("localization architecture status drift")
