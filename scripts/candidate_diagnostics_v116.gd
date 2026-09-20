@@ -4,7 +4,7 @@ signal event_recorded(entry: Dictionary)
 signal bug_report_created(path: String)
 
 const BUILD_ID := "KG-001 Candidate 2"
-const BUILD_CHECKPOINT := "v116-context-v30"
+const BUILD_CHECKPOINT := "v116-context-v31"
 const BUILD_MANIFEST_PATH := "res://data/generated/kg001_candidate_build_manifest.json"
 const RUN_ROOT_PREFIX := "user://openazrael_candidate2_runs/"
 const STATE_DUMP_BASENAME := "state_"
@@ -298,7 +298,7 @@ func dump_state(room_id: String, player_position: Vector3) -> String:
     return path
 
 
-# v116-context-v30: observational one-key bug-report capture.
+# v116-context-v31: observational one-key bug-report capture.
 # Reads diagnostics/runtime state only; no gameplay mutator is called.
 func stable_room_id(room_id: String) -> String:
     return "ROOM:" + (room_id if not room_id.is_empty() else "UNKNOWN")
