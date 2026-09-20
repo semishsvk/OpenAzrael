@@ -14,6 +14,7 @@ from tools.audio_lab.oa_audio_spectral import (
     analyze_file,
     annotate_spectral_outliers,
     main as spectral_main,
+    spectral_fingerprint,
     spectral_metrics,
     spectrogram_preview,
     stft_power,
@@ -96,8 +97,28 @@ class AudioLabSpectralTests(unittest.TestCase):
             self.assertEqual(manifest["status"],"PASS")
             self.assertTrue(manifest["source_unchanged"])
             self.assertEqual(len(manifest["assets"]),2)
+            self.assertEqual(len(manifest["analysis_fingerprint_sha256"]),64)
             self.assertTrue((out1/"spectral_review.html").is_file())
             self.assertEqual(len(list((out1/"spectrograms").glob("*.png"))),2)
+
+    def test_spectral_fingerprint_is_order_independent_and_metric_sensitive(self):
+        a={
+            "filename":"A.wav","sample_rate":8000,"channels":1,"sample_width_bits":16,
+            "frames":8000,"duration_seconds":1.0,"analysis_frames":60,"fft_bins":257,
+            "dominant_frequency_hz":440.0,"spectral_centroid_hz":500.0,
+            "spectral_bandwidth_hz":100.0,"spectral_rolloff_85_hz":600.0,
+            "spectral_flatness":0.01,"high_frequency_energy_ratio":0.001,
+            "dc_offset":0.0,"rms":0.2,"peak":0.5,"crest_factor":2.5,
+            "zero_crossing_rate":0.1,"spectral_outliers":[{"metric":"ignored"}],
+            "spectrogram":"ignored.png",
+        }
+        b=dict(a); b["filename"]="B.wav"; b["dominant_frequency_hz"]=880.0
+        f1=spectral_fingerprint([a,b])
+        f2=spectral_fingerprint([b,a])
+        self.assertEqual(f1,f2)
+        self.assertEqual(len(f1),64)
+        b2=dict(b); b2["dominant_frequency_hz"]=881.0
+        self.assertNotEqual(f1,spectral_fingerprint([a,b2]))
 
     def test_robust_outliers_are_review_only(self):
         records=[]
