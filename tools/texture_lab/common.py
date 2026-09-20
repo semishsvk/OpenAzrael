@@ -207,7 +207,7 @@ def resize_with_legacy_colorkey(
     premultiplied = rgba.convert("RGBa").resize(target_size, resample).convert("RGBA")
     alpha = rgba.getchannel("A").resize(target_size, RESAMPLE["nearest"])
     premultiplied.putalpha(alpha)
-    return premultiplied
+    return zero_fully_transparent_rgb(premultiplied)
 
 
 def prepare_conditioning_image(
