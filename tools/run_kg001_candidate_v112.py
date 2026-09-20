@@ -157,6 +157,14 @@ def main():
         if proc.returncode!=0:
             source_ok=False
 
+    if not source_ok:
+        print("KG-001 source validator failures:", file=sys.stderr)
+        for item in source:
+            if item.get("status") == "PASS":
+                continue
+            print(" - " + " ".join(item.get("command", [])), file=sys.stderr)
+            print(item.get("output", ""), file=sys.stderr)
+
     godot_version=""
     import_status="NOT_RUN"
     runtimes={}
