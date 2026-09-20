@@ -167,12 +167,15 @@ def main() -> int:
     expected_hash=sorted(str(v) for v in contract.get(
         "expected_demo_hash_textures",[]
     ))
+    canonical_audio=canonical_audio_hashes()
     contract_checks={
         "colorkey_contract_schema":contract.get("schema")
         =="openazrael.kg001.texture_colorkey_contract",
         "expected_hash_texture_count":len(expected_hash)==10,
         "expected_room_count":len(ROOM_EXPECTED)==3,
         "expected_audio_count":len(AUDIO_NAMES)==8,
+        "canonical_audio_fingerprint_count":len(canonical_audio)==8,
+        "canonical_audio_fingerprint_set":sorted(canonical_audio)==sorted(AUDIO_NAMES),
         "expected_classic_texture_count":TEXTURE_COUNT==86,
     }
 
@@ -181,7 +184,6 @@ def main() -> int:
         for room,expected in ROOM_EXPECTED.items()
     ]
 
-    canonical_audio=canonical_audio_hashes()
     audio_restore={
         "path":str(AUDIO_RESTORE_EVIDENCE.relative_to(ROOT)),
         "present":AUDIO_RESTORE_EVIDENCE.is_file(),
