@@ -16,6 +16,8 @@ def _priority(asset: dict, mapping: dict, broken_assets: set[str]) -> tuple[str,
     errors = [i for i in issues if i.get("severity") == "error"]
     warnings = [i for i in issues if i.get("severity") == "warning"]
     info = [i for i in issues if i.get("severity") == "info"]
+    if str(mapping.get("mapping_status", "")) == "MAPPED":
+        info = [i for i in info if i.get("code") != "AUD010_NO_RUNTIME_REFERENCE"]
     reasons: list[str] = []
 
     if name.casefold() in broken_assets:
