@@ -23,7 +23,9 @@
     "candidate/fresh/visual evidence commit identities match current Git HEAD",
     "visual capture evidence has non-empty run_id and exactly the canonical R1/R7/R8 captures at 1280x720 with valid SHA-256",
     "test-build receipt records visual capture run_id and visual evidence SHA-256",
-    "tracked evidence promotion occurs only after Windows export + exported-EXE startup smoke"
+    "tracked evidence promotion occurs only after Windows export + exported-EXE startup smoke",
+    "build manifest runtime-source identity includes the build-producing manifest/toolchain/export/audio-preparation tools",
+    "build manifest source-contract identity includes tracked canonical audio source_fingerprints registry"
   ],
   "ready_status": "READY_FOR_G10_MANUAL_TEST",
   "manual_requirements": [
@@ -43,6 +45,7 @@
     "audio_restore": "tracked canonical source SHA-256 -> restore evidence runtime SHA-256 -> current WAV SHA-256",
     "visual_capture": "run_id + current HEAD + exact R1/spaview, R7/view, R8/Object14 1280x720 SHA-256 rows",
     "package": "EXE/PCK/build-manifest/startup-log SHA-256",
-    "promotion": "after export and exported-EXE startup smoke in Windows wrapper"
+    "promotion": "after export and exported-EXE startup smoke in Windows wrapper",
+    "source_identity": "runtime/project/export/build-producing tools + tracked acceptance/source contracts"
   }
 }
