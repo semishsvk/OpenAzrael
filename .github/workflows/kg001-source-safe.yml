@@ -62,12 +62,17 @@ jobs:
         run: python tools/validate_kg001_export_preset_v117.py
 
       - name: Compile Python tools
-        run: |
-          python -m compileall -q tools tests 2>/dev/null || python -m compileall -q tools
+        run: python -m compileall -q tools
 
       - name: Godot project parse/import smoke
+        shell: bash
         run: |
-          "$GODOT_BIN" --headless --path . --editor --quit
+          set -euo pipefail
+          "$GODOT_BIN" --headless --path . --editor --quit 2>&1 | tee /tmp/openazrael-godot-parse.log
+          if grep -E 'SCRIPT ERROR:|ERROR: Failed to load script|ERROR: Failed to create an autoload' /tmp/openazrael-godot-parse.log; then
+            echo "Godot source parse/import reported a script/autoload failure." >&2
+            exit 1
+          fi
 
       - name: Canonical KG-001 source-safe suite
         env:
