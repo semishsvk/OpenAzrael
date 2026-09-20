@@ -163,6 +163,17 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             manifest = scan(source_dir)
             self.assertEqual(manifest["texture_count"], 1)
             self.assertTrue(manifest["textures"][0]["has_alpha"])
+            self.assertEqual(
+                manifest["textures"][0]["transparency_mode"],
+                "true_alpha",
+            )
+            self.assertFalse(
+                manifest["textures"][0]["transparency_review_required"]
+            )
+            self.assertGreater(
+                manifest["textures"][0]["partial_alpha_pixels"],
+                0,
+            )
 
             out_a = root / "run_a"
             out_b = root / "run_b"
@@ -191,6 +202,8 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             row = manifest["textures"][0]
             self.assertTrue(row["legacy_colorkey_candidate"])
             self.assertGreater(row["legacy_magenta_pixels"], 0)
+            self.assertEqual(row["transparency_mode"], "palette_colorkey")
+            self.assertFalse(row["transparency_review_required"])
 
             out = root / "enhanced"
             variants = upscale_one(src, out, 4, ["nearest", "bicubic", "lanczos"])
@@ -204,6 +217,59 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 report = validate_pair(src, candidate, 4)
                 self.assertEqual(report["technical_status"], "PASS")
                 self.assertTrue(report["colorkey_ok"])
+                self.assertEqual(report["alpha_mask_mismatch_pixels"], 0)
+                self.assertTrue(report["exact_alpha_mask_ok"])
+                self.assertEqual(report["transparent_rgb_nonzero_pixels"], 0)
+
+    def test_scan_marks_unproven_colorkey_evidence_ambiguous(self):
+        with tempfile.TemporaryDirectory() as td:
+            source_dir = Path(td) / "classic"
+            source_dir.mkdir()
+            Image.new("RGB", (4, 4), (20, 40, 60)).save(
+                source_dir / "AMBIG#.png"
+            )
+            Image.new("RGB", (4, 4), (252, 0, 252)).save(
+                source_dir / "MAGENTA_ONLY.png"
+            )
+            Image.new("RGB", (4, 4), (20, 40, 60)).save(
+                source_dir / "OPAQUE.png"
+            )
+
+            manifest = scan(source_dir)
+            rows = {row["id"]: row for row in manifest["textures"]}
+
+            self.assertEqual(rows["AMBIG#"]["transparency_mode"], "ambiguous")
+            self.assertTrue(rows["AMBIG#"]["transparency_review_required"])
+            self.assertEqual(
+                rows["MAGENTA_ONLY"]["transparency_mode"],
+                "ambiguous",
+            )
+            self.assertTrue(
+                rows["MAGENTA_ONLY"]["transparency_review_required"]
+            )
+            self.assertEqual(rows["OPAQUE"]["transparency_mode"], "opaque")
+            self.assertFalse(rows["OPAQUE"]["transparency_review_required"])
+
+    def test_legacy_colorkey_exact_mask_is_hard_gate(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            src = root / "SPRITE#.png"
+            self._legacy_key_fixture(src)
+            out = root / "enhanced"
+            upscale_one(src, out, 4, ["nearest"])
+            candidate = out / "nearest_x4.png"
+
+            with Image.open(candidate) as im:
+                rgba = im.convert("RGBA")
+            rgba.putpixel((0, 0), (0, 0, 0, 255))
+            rgba.save(candidate)
+
+            report = validate_pair(src, candidate, 4)
+            self.assertEqual(report["technical_status"], "FAIL")
+            self.assertFalse(report["colorkey_ok"])
+            self.assertFalse(report["exact_alpha_mask_ok"])
+            self.assertEqual(report["alpha_mask_mismatch_pixels"], 1)
+            self.assertEqual(report["visible_legacy_magenta_pixels"], 0)
 
     def test_ai_backend_colorkey_input_and_mask_reapply(self):
         with tempfile.TemporaryDirectory() as td:
