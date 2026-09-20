@@ -61,8 +61,9 @@ v117 instead loads the real main scene and production Player, drives `move_forwa
 A v110 PASS from Candidate 2 predates this traversal contract and is therefore insufficient for a new G04 PASS without a current v117 runtime result.
 
 
-## Well+tongs animation boundary
+## Well+tongs recovered-effect boundary
 
-The v118 runner closes another Candidate 2 blind spot. The existing full-demo test confirms that using the recovered tongs precondition can produce `well_key`, `R7KeyTake` and `R7key`, but the current `well_key_interaction.gd` immediately hides the key and queues the interaction for deletion; there is no explicit animation trigger in source.
+The v118 runner closes the Candidate 2 blind spot using the official demo binaries rather than an invented visual interpolation. The recovered compiled WORLD group executes, in order: remove `R7Key`, play the original `979TONGS.WAV`, add `R7Key`, remove transient `RustyTongR6`, and consume inventory `TONG6`; the normal TAKE completion then moves the Well Key into inventory and sets `R7KeyTake/R7key`.
 
-v118 tests the negative path without tongs, then the positive path with the actual inventory precondition, while observing the real R7 well cluster over 60 frames. A one-frame hide/removal is not counted as animation. The test accepts multi-frame transform motion or staged visibility/new-node activity and deliberately does not prescribe Tween vs AnimationPlayer or invent the original trajectory/timing.
+The group contains no transform/rotation opcode. Therefore v118 asserts the exact action trace, original sample identity/duration, tongs consumption and final key state. It deliberately rejects an invented Tween as a claim of demo fidelity. Any generic HUD/inventory-hand motion outside this recovered WORLD/PUZZLES action stream remains unobserved/HOLD.
+
