@@ -64,7 +64,9 @@ The wrapper:
 7. writes EXE/PCK/build-manifest SHA-256 metadata and a `READY_FOR_G10_MANUAL_TEST` sidecar receipt;
 8. only after export/startup-smoke, optionally promotes compact runtime evidence into tracked `data/tests`.
 
-Use `-SkipRestore` only when the ignored Candidate assets have already been restored from the canonical corpus. Use `-SkipExport` when validating runtime/captures without building the Windows package. `-ValidateOnly` checks wrapper/source wiring without requiring local commercial assets.
+Use `-SkipRestore` only when the complete ignored Candidate asset set has already been restored from the canonical corpus. Use `-SkipExport` when validating runtime/captures without building the Windows package. `-ValidateOnly` checks wrapper/source wiring without requiring local commercial assets.
+
+The v118 test-build receipt is **not** release approval. `READY_FOR_G10_MANUAL_TEST` means only that automated build/runtime/export/startup checks passed and the package is ready for human G10. Issues #6/#9/#11 remain open and `demo-known-good-001` remains forbidden until G10 and all KG-001 gates are clean.
 
 ## Promoting evidence
 
