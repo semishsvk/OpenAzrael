@@ -27,6 +27,10 @@ checks={
         text.rfind("promote_kg001_candidate_results_v118.py")
         > text.find("kg001_windows_candidate2_startup.log")
     ),
+    "promotion_forbidden_when_export_skipped":all(token in text for token in [
+        "$PromoteResults -and $SkipExport",
+        "-PromoteResults cannot be combined with -SkipExport",
+    ]),
     "windows_export_preset":'"Windows Candidate 2"' in text and "--export-debug" in text,
     "build_manifest_head_binding":all(token in text for token in [
         "git rev-parse HEAD",
