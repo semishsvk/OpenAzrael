@@ -124,6 +124,7 @@ def adapt_well_tongs_contract(
             "physical_approach_required": True,
             "direct_interact_call_allowed": False,
             "source_action_steps": steps,
+            "coverage_targets": ["gameplay:R7_WELL_TONGS_USE"],
         },
     )
 
@@ -167,6 +168,7 @@ def adapt_well_tongs_contract(
             "physical_approach_required": True,
             "direct_interact_call_allowed": False,
             "negative_precondition": True,
+            "coverage_targets": ["gameplay:R7_WELL_TONGS_USE:negative"],
         },
     )
 
