@@ -149,6 +149,7 @@ for p in [
     "docs/KG001_ROOM_TRIGGER_V110.md",
     "scripts/kg001_physical_traversal_runner_v117.gd",
     "tools/validate_kg001_physical_traversal_v117.py",
+    "data/tests/kg001_physical_traversal_contract_v117.json",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
