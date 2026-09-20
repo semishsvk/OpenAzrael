@@ -59,6 +59,16 @@
 - `tests/test_texture_lab_rt_poc_01.py`
 - generated Classic/Enhanced/AI pixels remain excluded from Git by ADR-026
 
+## Texture Lab Review Pack 01
+- `docs/TEXTURE_LAB_REVIEW_PACK_01.md`
+- `tools/texture_lab/config/review_pack_01.json`
+- `tools/texture_lab/oa_tex_review_pack_01.py`
+- source plan covers all 12 canonical R1/R7/R8 POC textures
+- review order: P1=6, P2=5, P3=1
+- treatment classes: safe_upscale / ai_recreation_candidate / conservative
+- eight-axis 1–5 manual rubric; no aggregate score, automatic winner or production promotion
+- actual AI pixels remain governed by the existing named-stage evidence/review/approval pipeline
+
 ## KG-001 Candidate 1 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
 - `scripts/candidate_diagnostics_v116.gd`
