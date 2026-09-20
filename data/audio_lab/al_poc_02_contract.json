@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.audio_lab.al_poc_02_contract",
-  "version": 2,
+  "version": 3,
   "milestone": "AL-POC-02",
   "title": "Spectrogram & Perceptual QA",
   "prerequisite": {
@@ -44,7 +44,10 @@
   "required_outputs": [
     "spectral_manifest.json",
     "spectral_review.html",
-    "spectrograms/*.png"
+    "spectrograms/*.png",
+    "canonical_source_report.json",
+    "spectral_baseline_check.json",
+    "al_poc_02_summary.json"
   ],
   "acceptance_gates": [
     "al_poc_01_prerequisite_pass",
@@ -53,7 +56,8 @@
     "all_metrics_finite",
     "spectrograms_generated",
     "output_isolation_pass",
-    "audio_lab_ci_green"
+    "audio_lab_ci_green",
+    "canonical_spectral_baseline_match"
   ],
   "deferred": [
     "denoise",
