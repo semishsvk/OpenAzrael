@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.audio_lab.al_poc_02_canonical_spectral_evidence",
-  "version": 1,
+  "version": 2,
   "milestone": "AL-POC-02",
   "status": "PASS",
   "verified_on": "2026-09-20",
@@ -10,10 +10,10 @@
   "parameters": {
     "fft_size": 512,
     "hop_size": 128,
-    "spectrogram_db_floor": -64.0,
+    "spectrogram_db_floor": -64,
     "outlier_threshold_robust_z": 3.5
   },
-  "analysis_fingerprint_sha256": "b4037a954e7fb0c1dd4a08337ae8096fa48b12dea3f6a97d4400e0a18201a093",
+  "analysis_fingerprint_sha256": "e7a59c119359a9544c89d2c2bc56afd8649f0fbf86e9dbfb7c1a1fdb2decb3c4",
   "analysis_errors": 0,
   "nonfinite_metric_assets": [],
   "review_only_outliers": {
@@ -21,26 +21,102 @@
     "flagged_metrics": 8,
     "policy": "review-only; distribution outliers do not fail AL-POC-02",
     "assets": [
-      {"filename": "EUGROAR.WAV", "metric": "abs_dc_offset", "direction": "high", "robust_z": 5.127115},
-      {"filename": "HUD3.WAV", "metric": "crest_factor", "direction": "high", "robust_z": 4.512652},
-      {"filename": "S134.WAV", "metric": "crest_factor", "direction": "high", "robust_z": 4.919410},
-      {"filename": "S174ELP1.WAV", "metric": "crest_factor", "direction": "high", "robust_z": 3.757410},
-      {"filename": "S182.WAV", "metric": "zero_crossing_rate", "direction": "high", "robust_z": 4.657854},
-      {"filename": "SCAN.WAV", "metric": "abs_dc_offset", "direction": "high", "robust_z": 3.635318},
-      {"filename": "SPAPER.WAV", "metric": "zero_crossing_rate", "direction": "high", "robust_z": 3.505882},
-      {"filename": "SR27KEYS.WAV", "metric": "zero_crossing_rate", "direction": "high", "robust_z": 4.046169}
+      {
+        "filename": "EUGROAR.WAV",
+        "metric": "abs_dc_offset",
+        "direction": "high",
+        "robust_z": 5.127115
+      },
+      {
+        "filename": "HUD3.WAV",
+        "metric": "crest_factor",
+        "direction": "high",
+        "robust_z": 4.512652
+      },
+      {
+        "filename": "S134.WAV",
+        "metric": "crest_factor",
+        "direction": "high",
+        "robust_z": 4.91941
+      },
+      {
+        "filename": "S174ELP1.WAV",
+        "metric": "crest_factor",
+        "direction": "high",
+        "robust_z": 3.75741
+      },
+      {
+        "filename": "S182.WAV",
+        "metric": "zero_crossing_rate",
+        "direction": "high",
+        "robust_z": 4.657854
+      },
+      {
+        "filename": "SCAN.WAV",
+        "metric": "abs_dc_offset",
+        "direction": "high",
+        "robust_z": 3.635318
+      },
+      {
+        "filename": "SPAPER.WAV",
+        "metric": "zero_crossing_rate",
+        "direction": "high",
+        "robust_z": 3.505882
+      },
+      {
+        "filename": "SR27KEYS.WAV",
+        "metric": "zero_crossing_rate",
+        "direction": "high",
+        "robust_z": 4.046169
+      }
     ]
   },
   "distribution_summary": {
-    "dominant_frequency_hz": {"min": 43.066406250, "median": 732.128906250, "max": 3445.312500000},
-    "spectral_centroid_hz": {"min": 63.896914991, "median": 1363.772505926, "max": 4505.528732276},
-    "spectral_bandwidth_hz": {"min": 102.721376403, "median": 1145.673689216, "max": 2376.140259550},
-    "spectral_rolloff_85_hz": {"min": 86.132812500, "median": 2282.519531250, "max": 6933.691406250},
-    "spectral_flatness": {"min": 0.000518575, "median": 0.072577621, "max": 0.509981315},
-    "high_frequency_energy_ratio": {"min": 0.000013808, "median": 0.001192220, "max": 0.054511847},
-    "dc_offset": {"min": -0.004676271, "median": -0.002272036, "max": 0.051249563},
-    "crest_factor": {"min": 1.780828238, "median": 7.358274715, "max": 29.592626836},
-    "zero_crossing_rate": {"min": 0.007749935, "median": 0.118973911, "max": 0.352010845}
+    "dominant_frequency_hz": {
+      "min": 43.06640625,
+      "median": 732.12890625,
+      "max": 3445.3125
+    },
+    "spectral_centroid_hz": {
+      "min": 63.896914991,
+      "median": 1363.772505926,
+      "max": 4505.528732276
+    },
+    "spectral_bandwidth_hz": {
+      "min": 102.721376403,
+      "median": 1145.673689216,
+      "max": 2376.14025955
+    },
+    "spectral_rolloff_85_hz": {
+      "min": 86.1328125,
+      "median": 2282.51953125,
+      "max": 6933.69140625
+    },
+    "spectral_flatness": {
+      "min": 0.000518575,
+      "median": 0.072577621,
+      "max": 0.509981315
+    },
+    "high_frequency_energy_ratio": {
+      "min": 0.000013808,
+      "median": 0.00119222,
+      "max": 0.054511847
+    },
+    "dc_offset": {
+      "min": -0.004676271,
+      "median": -0.002272036,
+      "max": 0.051249563
+    },
+    "crest_factor": {
+      "min": 1.780828238,
+      "median": 7.358274715,
+      "max": 29.592626836
+    },
+    "zero_crossing_rate": {
+      "min": 0.007749935,
+      "median": 0.118973911,
+      "max": 0.352010845
+    }
   },
   "evidence_boundary": {
     "proved": [
@@ -48,7 +124,8 @@
       "all numerical metrics were finite",
       "deterministic metric fingerprint",
       "source tree remained unchanged",
-      "review-only robust outlier shortlist"
+      "review-only robust outlier shortlist",
+      "deterministic temporal energy percentile/centroid/tail metrics"
     ],
     "not_proved": [
       "subjective audio quality",
@@ -56,5 +133,50 @@
       "Miles playback parity",
       "whether any outlier is undesirable"
     ]
-  }
+  },
+  "previous_analysis_fingerprint_sha256": "b4037a954e7fb0c1dd4a08337ae8096fa48b12dea3f6a97d4400e0a18201a093",
+  "analysis_fingerprint_change_reason": "AL-POC-02 added deterministic temporal energy metrics to the canonical fingerprint; source_tree_sha256 is unchanged",
+  "temporal_energy_summary": {
+    "peak_position_ratio": {
+      "min": 0.006940088,
+      "median": 0.307148746,
+      "max": 0.894994241
+    },
+    "temporal_energy_centroid_ratio": {
+      "min": 0.044893468,
+      "median": 0.341766477,
+      "max": 0.785624748
+    },
+    "energy_p10_ratio": {
+      "min": 0.004070152,
+      "median": 0.111858288,
+      "max": 0.626829537
+    },
+    "energy_p50_ratio": {
+      "min": 0.013041533,
+      "median": 0.34224598,
+      "max": 0.839544473
+    },
+    "energy_p90_ratio": {
+      "min": 0.092571068,
+      "median": 0.653164869,
+      "max": 0.918712757
+    },
+    "energy_span_10_90_ratio": {
+      "min": 0.081099179,
+      "median": 0.446849199,
+      "max": 0.894112132
+    },
+    "head_energy_ratio_10pct": {
+      "min": 0.000004668,
+      "median": 0.076414562,
+      "max": 0.906479683
+    },
+    "tail_energy_ratio_10pct": {
+      "min": 2.34e-7,
+      "median": 0.001441952,
+      "max": 0.179325079
+    }
+  },
+  "temporal_review_policy": "temporal distribution extremes are retained as evidence/review context only and are not currently included in robust outlier scoring"
 }
