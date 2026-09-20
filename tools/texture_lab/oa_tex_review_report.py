@@ -133,6 +133,11 @@ def build_review_rows(
             "exact_alpha_mask_ok": None,
             "alpha_mask_mismatch_pixels": None,
             "transparent_rgb_nonzero_pixels": None,
+            "alpha_mae_0_255": None,
+            "alpha_edge_mae_0_255": None,
+            "alpha_edge_mismatch_fraction": None,
+            "edge_visible_legacy_magenta_pixels": None,
+            "edge_transparent_rgb_nonzero_pixels": None,
             "attention": reasons,
         }
 
@@ -190,6 +195,21 @@ def build_review_rows(
             row["transparent_rgb_nonzero_pixels"] = technical_result.get(
                 "transparent_rgb_nonzero_pixels"
             )
+            row["alpha_mae_0_255"] = technical_result.get(
+                "alpha_mae_0_255"
+            )
+            row["alpha_edge_mae_0_255"] = technical_result.get(
+                "alpha_edge_mae_0_255"
+            )
+            row["alpha_edge_mismatch_fraction"] = technical_result.get(
+                "alpha_edge_mismatch_fraction"
+            )
+            row["edge_visible_legacy_magenta_pixels"] = technical_result.get(
+                "edge_visible_legacy_magenta_pixels"
+            )
+            row["edge_transparent_rgb_nonzero_pixels"] = technical_result.get(
+                "edge_transparent_rgb_nonzero_pixels"
+            )
             if technical_result.get("source_transparency_review_required") is True:
                 row["attention"].append("transparency_classification_ambiguous")
             if technical_result.get("exact_alpha_mask_ok") is False:
@@ -198,6 +218,10 @@ def build_review_rows(
                 row["attention"].append("transparent_rgb_not_normalized")
             if int(technical_result.get("visible_legacy_magenta_pixels") or 0) > 0:
                 row["attention"].append("visible_legacy_magenta")
+            if int(technical_result.get("edge_visible_legacy_magenta_pixels") or 0) > 0:
+                row["attention"].append("edge_visible_legacy_magenta")
+            if int(technical_result.get("edge_transparent_rgb_nonzero_pixels") or 0) > 0:
+                row["attention"].append("edge_transparent_rgb_contamination")
 
         # Stable de-duplication while preserving reason order.
         row["attention"] = list(dict.fromkeys(row["attention"]))
@@ -225,8 +249,8 @@ def markdown_report(mode: str, rows: list[dict], baseline: dict) -> str:
             f"p95={low['p95']} / 255, max={low['max']} / 255."
         ),
         "",
-        "| Texture | State | Transparency | Low-freq MAE | vs p95 | Seam ΔU | Seam ΔV | Review attention |",
-        "|---|---|---|---:|---:|---:|---:|---|",
+        "| Texture | State | Transparency | Alpha edge MAE | Low-freq MAE | vs p95 | Seam ΔU | Seam ΔV | Review attention |",
+        "|---|---|---|---:|---:|---:|---:|---:|---|",
     ]
     for row in rows:
         value = row["low_frequency_luma_mae_0_255"]
@@ -239,11 +263,15 @@ def markdown_report(mode: str, rows: list[dict], baseline: dict) -> str:
         seam_u_text = "—" if seam_u is None else f"{float(seam_u):+.3f}"
         seam_v_text = "—" if seam_v is None else f"{float(seam_v):+.3f}"
         transparency = row.get("source_transparency_mode") or "—"
+        alpha_edge_mae = row.get("alpha_edge_mae_0_255")
+        alpha_edge_text = (
+            "—" if alpha_edge_mae is None else f"{float(alpha_edge_mae):.4f}"
+        )
         attention = "; ".join(row["attention"]) or "visual fidelity review"
         lines.append(
             f"| {row['id']} | {row['review_state']} | {transparency} | "
-            f"{value_text} | {ratio_text} | {seam_u_text} | {seam_v_text} | "
-            f"{attention} |"
+            f"{alpha_edge_text} | {value_text} | {ratio_text} | "
+            f"{seam_u_text} | {seam_v_text} | {attention} |"
         )
     lines.append("")
     return "\n".join(lines)
