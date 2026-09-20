@@ -22,6 +22,17 @@
 - Issue #11 hardening: used indexed palette key + fail-closed ambiguity + MASK hidden-RGB edge bleed
 - PR #12 remains draft pending restored-asset runtime, graphical capture and G10
 
+## KG-001 test-build hardening v118
+- `tools/validate_kg001_candidate2_asset_set_v118.py` — complete restored-asset gate
+- `tools/write_kg001_build_manifest.py` — schema v2 asset + runtime-source/export identity fingerprints
+- `tools/promote_kg001_candidate_results_v118.py` — shared post-clean/post-export evidence promotion
+- `data/tests/kg001_test_build_contract_v118.json`
+- `tools/validate_kg001_test_build_contract_v118.py`
+- `tools/run_kg001_candidate2_windows_v117.ps1` — clean export, exported-EXE startup smoke, package hashes and test-build receipt
+- runtime receipt: ignored `.tmp/kg001/kg001_test_build_receipt_v118.json`
+- distribution sidecar: ignored `exports/OpenAzrael-KG001-Candidate2-v116.test-build.json`
+- `READY_FOR_G10_MANUAL_TEST` never closes Issues #6/#9/#11 and never authorizes `demo-known-good-001`
+
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
 - `.github/ISSUE_TEMPLATE/bug_report.yml`
