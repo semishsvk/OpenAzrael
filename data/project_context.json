@@ -214,7 +214,8 @@
     "kg001_g10_requires_test_build_receipt": true,
     "kg001_g10_requires_fresh_commit_match": true,
     "kg001_g10_requires_package_hash_match": true,
-    "kg001_g10_promote_only_after_validation": true
+    "kg001_g10_promote_only_after_validation": true,
+    "kg001_startup_ready_marker_semantics": "AFTER_RESOURCE_PREFLIGHT_R1_LOAD_AND_SPAVIEW_SPAWN"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -510,7 +511,9 @@
     "g10_validation_result": "data/tests/kg001_manual_sanity_validation_v118.json",
     "g10_runtime": "NOT_EXECUTED",
     "g10_binding": "TEST_BUILD_RECEIPT_SHA256 + COMMIT + EXE_SHA256 + PCK_SHA256 + GODOT_VERSION",
-    "g10_promotion_policy": "ONLY_AFTER_ALL_REQUIRED_CHECKS_AND_BLOCKER_CHECKS_PASS_AND_RECEIPT_VALIDATION_PASS"
+    "g10_promotion_policy": "ONLY_AFTER_ALL_REQUIRED_CHECKS_AND_BLOCKER_CHECKS_PASS_AND_RECEIPT_VALIDATION_PASS",
+    "startup_ready_marker": "OPENAZRAEL_CANDIDATE_STARTUP_READY",
+    "startup_ready_semantics": "EMITTED_ONCE_AFTER_REQUIRED_RESOURCE_PREFLIGHT_PASS_AND_SUCCESSFUL_R1_LOAD_AND_SPAVIEW_SPAWN"
   },
   "kg001_v118_build_hardening": {
     "status": "SOURCE_CONTRACT_PASS",
@@ -550,6 +553,7 @@
     "visual_capture_receipt_binding": "CURRENT_HEAD + RUN_ID + EXACT_R1_R7_R8_1280X720_SHA256",
     "promotion_order": "WINDOWS_EXPORT -> EXPORTED_EXE_STARTUP_SMOKE -> OPTIONAL_TRACKED_EVIDENCE_PROMOTION",
     "runtime_source_identity_scope": "PROJECT_RUNTIME_EXPORT_PLUS_BUILD_MANIFEST_TOOLCHAIN_AUDIO_PREPARATION",
-    "source_contract_identity_includes": "data/backup/source_fingerprints.json"
+    "source_contract_identity_includes": "data/backup/source_fingerprints.json",
+    "startup_ready_semantics": "POST_PREFLIGHT__POST_R1_LOAD__POST_SPAVIEW_SPAWN"
   }
 }
