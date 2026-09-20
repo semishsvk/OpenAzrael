@@ -63,15 +63,38 @@ def validate_runtime_evidence(quality):
         return isinstance(mapping,dict) and {
             key.replace("\\","/") for key,value in mapping.items() if value is True
         }==rooms
+    runtime_status=fresh.get("runtime_status")
+    base_runtime_names={name for name,_,_,_,_ in runtime_specs}
+    runtime_status_ok=(
+        isinstance(runtime_status,dict)
+        and all(runtime_status.get(name)=="PASS" for name in base_runtime_names)
+        and set(runtime_status).issubset(base_runtime_names|{"physical_v117"})
+        and runtime_status.get("physical_v117","PASS")=="PASS"
+    )
     if (fresh.get("status")!="PASS" or fresh.get("commit_sha")!=evidence_commit
             or fresh.get("schema")!="openazrael.kg001.fresh_checkout" or fresh.get("version")!=112
             or fresh.get("clean_before") is not True or fresh.get("clean_after") is not True
             or fresh.get("godot_import_status")!="PASS" or fresh.get("source_validators_pass") is not True
             or fresh.get("forbidden_tracked_files")!=[]
-            or fresh.get("runtime_status")!={name:"PASS" for name,_,_,_,_ in runtime_specs}
+            or not runtime_status_ok
             or not room_evidence_pass(fresh.get("room_assets_present"))
             or not room_evidence_pass(fresh.get("room_assets_git_ignored"))):
         errors.append("runtime promotion requires complete clean-checkout PASS evidence")
+
+    physical_path=ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json"
+    physical_required=isinstance(runtime_status,dict) and "physical_v117" in runtime_status
+    if physical_required:
+        if not physical_path.is_file():
+            errors.append("physical traversal fresh-checkout PASS requires v117 runtime evidence")
+        else:
+            physical=read_json("data/tests/kg001_physical_traversal_runtime_v117.json")
+            if (physical.get("status")!="PASS" or physical.get("failed")!=[]
+                    or physical.get("schema")!="openazrael.kg001.physical_traversal"
+                    or physical.get("version")!=117 or physical.get("_commit_sha")!=evidence_commit
+                    or physical.get("_process_returncode")!=0 or physical.get("engine_errors",[])!=[]
+                    or any(line.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))
+                           for line in physical.get("_output_tail","").splitlines())):
+                errors.append("physical traversal v117 PASS requires successful runtime evidence at the tested commit")
 
     source=read_json("data/tests/kg001_source_validation_v112.json")
     required={
@@ -80,6 +103,8 @@ def validate_runtime_evidence(quality):
         "validate_kg001_full_demo_v111.py","validate_candidate_diagnostics_v116.py",
         "validate_kg001_audio_runtime_v116.py","validate_kg001_texture_colorkey_v116.py",
     }
+    if physical_required:
+        required.add("validate_kg001_physical_traversal_v117.py")
     commands=source.get("commands",[])
     passed={Path(arg).name for item in commands if item.get("status")=="PASS" and item.get("returncode")==0
             for arg in item.get("command",[])}
@@ -122,6 +147,8 @@ for p in [
     "tools/validate_kg001_room_trigger_v110.py",
     "data/tests/kg001_room_trigger_contract_v110.json",
     "docs/KG001_ROOM_TRIGGER_V110.md",
+    "scripts/kg001_physical_traversal_runner_v117.gd",
+    "tools/validate_kg001_physical_traversal_v117.py",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
