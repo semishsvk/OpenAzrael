@@ -20,7 +20,7 @@ room=read("scripts/room_manager.gd")
 hud=read("scripts/hud.gd")
 probe=read("scripts/interaction_probe.gd")
 runner=read("tools/run_kg001_candidate_v112.py")
-bug_capture=diag.split("# v116-context-v31: observational one-key bug-report capture.",1)[-1]
+bug_capture=diag.split("# v116-context-v32: observational one-key bug-report capture.",1)[-1]
 bugdoc=read("docs/BUG_REPORTING.md")
 issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
 
@@ -68,7 +68,7 @@ try:
     contract=json.loads(read("data/tests/kg001_candidate_diagnostics_contract_v116.json"))
     if contract.get("version")!=116 or contract.get("status")!="SOURCE_CONTRACT_PASS":
         errors.append("contract drift")
-    if contract.get("checkpoint")!="v116-context-v31":
+    if contract.get("checkpoint")!="v116-context-v32":
         errors.append("contract checkpoint drift")
 except Exception as e:
     errors.append("contract parse: "+str(e))

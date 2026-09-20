@@ -3,7 +3,7 @@
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
   "build_id": "KG-001 Candidate 2",
-  "checkpoint": "v116-context-v31",
+  "checkpoint": "v116-context-v32",
   "features": {
     "build_watermark": true,
     "fail_fast_core_assets": true,
@@ -45,5 +45,5 @@
       "S186.WAV"
     ]
   },
-  "runtime_boundary": "Candidate 2 source frozen at v116-context-v31; no runtime promotion until the complete fresh-checkout suite and manual blocker smoke execute."
+  "runtime_boundary": "Candidate 2 re-frozen at v116-context-v32 after empirical color-key corpus correction; no runtime promotion until fresh-checkout suite and manual blocker smoke execute."
 }

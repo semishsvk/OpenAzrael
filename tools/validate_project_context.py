@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v31"
+EXPECTED_CHECKPOINT="v116-context-v32"
 errors=[]
 
 def req(p):
@@ -81,6 +81,7 @@ for p in [
     "tools/texture_pipeline/legacy_colorkey.py",
     "tools/validate_kg001_texture_colorkey_v116.py",
     "data/tests/kg001_texture_colorkey_contract_v116.json",
+    "data/tests/kg001_colorkey_corpus_audit_v116.json",
     "data/audio/legacy_world_ir.json",
     "tools/restore_candidate_assets.py",
     "tools/prepare_candidate_audio.py",
@@ -131,23 +132,23 @@ try:
         errors.append("KG-001 Issue #9 release blocker drift")
     if c.get("quality",{}).get("kg001_physical_audio_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 physical audio source-contract drift")
-    if c.get("quality",{}).get("kg001_texture_issue_11")!="SOURCE_FIX_READY_INDEXED_RUNTIME_RETEST_REQUIRED":
+    if c.get("quality",{}).get("kg001_texture_issue_11")!="SOURCE_FIX_READY_AUDITED_SENTINEL_RUNTIME_RETEST_REQUIRED":
         errors.append("KG-001 Issue #11 texture status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_11") is not True:
         errors.append("KG-001 Issue #11 release blocker drift")
-    if c.get("quality",{}).get("kg001_legacy_colorkey_source_contract")!="INDEXED_SOURCE_CONTRACT_PASS":
+    if c.get("quality",{}).get("kg001_legacy_colorkey_source_contract")!="AUDITED_SOURCE_SENTINEL_CONTRACT_PASS":
         errors.append("KG-001 legacy color-key source-contract drift")
-    if c.get("quality",{}).get("kg001_build_status")!="CANDIDATE2_SOURCE_FROZEN_RUNTIME_RETEST_REQUIRED":
+    if c.get("quality",{}).get("kg001_build_status")!="CANDIDATE2_SOURCE_REFROZEN_V32_RUNTIME_RETEST_REQUIRED":
         errors.append("KG-001 Candidate 2 source status drift")
-    if c.get("quality",{}).get("kg001_candidate_source_freeze")!="FROZEN_V31_NO_FEATURE_CHANGES_BEFORE_RUNTIME":
+    if c.get("quality",{}).get("kg001_candidate_source_freeze")!="REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT":
         errors.append("KG-001 Candidate 2 source-freeze drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_expected_hash_textures")!=10:
         errors.append("KG-001 legacy color-key texture-class drift")
     if "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS" not in c.get("hard_holds",[]):
         errors.append("legacy transparency HOLD boundary missing")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V31_NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V32_NOT_EXECUTED":
         errors.append("KG-001 Candidate 2 runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V31":
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V32":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
