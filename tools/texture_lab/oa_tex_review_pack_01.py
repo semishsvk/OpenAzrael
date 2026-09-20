@@ -5,8 +5,9 @@ import argparse
 import json
 from pathlib import Path
 
-from common import ROOT, write_json
+from common import ROOT, sha256_file, write_json
 from oa_tex_review_report import merged_policy, policy_reasons, sampling_reasons
+from oa_tex_stage_gate import DEFAULT_RUN_ROOT, evidence_snapshot
 
 DEFAULT_REVIEW = ROOT / "tools/texture_lab/config/review_pack_01.json"
 DEFAULT_SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
@@ -371,6 +372,176 @@ def build_source_plan(
     }
 
 
+def _local_file_status(path: Path) -> dict:
+    if not path.is_file():
+        return {
+            "status": "MISSING",
+            "path": str(path),
+        }
+    return {
+        "status": "PRESENT",
+        "path": str(path),
+        "size_bytes": path.stat().st_size,
+        "sha256": sha256_file(path),
+    }
+
+
+def build_availability(
+    plan: dict,
+    source_dir: Path,
+    enhanced_dir: Path,
+    run_root: Path,
+) -> dict:
+    stage_cache: dict[str, dict] = {}
+
+    def stage_snapshot(name: str) -> dict:
+        if name not in stage_cache:
+            stage_cache[name] = evidence_snapshot(name, run_root)
+        return stage_cache[name]
+
+    rows = []
+    for row in plan["rows"]:
+        texture_id = str(row["id"])
+        classic = _local_file_status(source_dir / f"{texture_id}.png")
+
+        enhanced_method = next(
+            variant["tier"].removeprefix("enhanced_")
+            for variant in row["comparison_variants"]
+            if str(variant["tier"]).startswith("enhanced_")
+        )
+        enhanced = _local_file_status(
+            enhanced_dir
+            / texture_id
+            / f"{enhanced_method}_x4.png"
+        )
+
+        ai_rows = []
+        for variant in row["comparison_variants"]:
+            tier = str(variant["tier"])
+            if tier not in {"ai_restored", "ai_recreated"}:
+                continue
+            stage = str(variant.get("stage") or "")
+            snapshot = (
+                stage_snapshot(stage)
+                if stage
+                else {"status": "MISSING"}
+            )
+            output = None
+            if snapshot.get("status") == "PASS":
+                output = next(
+                    (
+                        value
+                        for value in snapshot.get("outputs", [])
+                        if isinstance(value, dict)
+                        and str(value.get("id")) == texture_id
+                    ),
+                    None,
+                )
+            ai_rows.append(
+                {
+                    "tier": tier,
+                    "stage": stage or None,
+                    "stage_evidence_status": snapshot.get("status"),
+                    "candidate": output,
+                    "available": isinstance(output, dict),
+                }
+            )
+
+        reference_ready = (
+            classic["status"] == "PRESENT"
+            and enhanced["status"] == "PRESENT"
+        )
+        available_ai = sum(
+            bool(value.get("available"))
+            for value in ai_rows
+        )
+        if not reference_ready:
+            visual_status = "BLOCKED_REFERENCE_INPUTS"
+        elif available_ai > 0:
+            visual_status = "READY_WITH_CURRENT_AI_EVIDENCE"
+        else:
+            visual_status = "REFERENCE_ONLY_AI_NOT_CURRENT"
+
+        rows.append(
+            {
+                "id": texture_id,
+                "review_order": row["review_order"],
+                "priority": row["priority"],
+                "treatment_class": row["treatment_class"],
+                "reference_ready": reference_ready,
+                "visual_review_status": visual_status,
+                "classic": classic,
+                "enhanced": enhanced,
+                "ai": ai_rows,
+                "available_ai_candidate_count": available_ai,
+                "automatic_decision": False,
+            }
+        )
+
+    p1 = [row for row in rows if row["priority"] == "P1"]
+    return {
+        "schema": "openazrael.texture_lab.review_pack_01_availability.v1",
+        "status": "OBSERVATIONAL_LOCAL_STATUS",
+        "automatic_selection": False,
+        "automatic_quality_verdict": False,
+        "texture_count": len(rows),
+        "reference_ready_count": sum(
+            row["reference_ready"] for row in rows
+        ),
+        "ready_with_ai_count": sum(
+            row["visual_review_status"]
+            == "READY_WITH_CURRENT_AI_EVIDENCE"
+            for row in rows
+        ),
+        "p1_ready_with_ai_count": sum(
+            row["visual_review_status"]
+            == "READY_WITH_CURRENT_AI_EVIDENCE"
+            for row in p1
+        ),
+        "p1_count": len(p1),
+        "stage_evidence": {
+            name: {
+                "status": snapshot.get("status"),
+                "mode": snapshot.get("mode"),
+            }
+            for name, snapshot in sorted(stage_cache.items())
+        },
+        "rows": rows,
+    }
+
+
+def markdown_availability(status: dict) -> str:
+    lines = [
+        "# OpenAzrael Texture Lab — Review Pack 01 Availability",
+        "",
+        "Observational local evidence status only. Missing/current outputs are "
+        "not quality judgments and never imply approval or production selection.",
+        "",
+        (
+            f"References ready: {status['reference_ready_count']}/"
+            f"{status['texture_count']} | Ready with current AI evidence: "
+            f"{status['ready_with_ai_count']}/{status['texture_count']} | "
+            f"P1 ready with AI: {status['p1_ready_with_ai_count']}/"
+            f"{status['p1_count']}"
+        ),
+        "",
+        "| # | Texture | Priority | References | AI evidence | Status |",
+        "|---:|---|---|---|---|---|",
+    ]
+    for row in status["rows"]:
+        ai_text = ", ".join(
+            f"{value['tier']}:{value['stage_evidence_status']}"
+            for value in row["ai"]
+        ) or "not eligible"
+        lines.append(
+            f"| {row['review_order']} | {row['id']} | {row['priority']} | "
+            f"{'ready' if row['reference_ready'] else 'missing'} | "
+            f"{ai_text} | {row['visual_review_status']} |"
+        )
+    lines.append("")
+    return "\n".join(lines)
+
+
 def markdown_plan(plan: dict) -> str:
     lines = [
         "# OpenAzrael Texture Lab — Review Pack 01",
@@ -427,12 +598,30 @@ def main() -> int:
             "Validate or render the source-safe Texture Lab Review Pack 01 plan."
         )
     )
-    parser.add_argument("command", choices=["validate", "render"])
+    parser.add_argument(
+        "command",
+        choices=["validate", "render", "status"],
+    )
     parser.add_argument("--review", type=Path, default=DEFAULT_REVIEW)
     parser.add_argument("--selection", type=Path, default=DEFAULT_SELECTION)
     parser.add_argument("--policy", type=Path, default=DEFAULT_POLICY)
     parser.add_argument("--sampling", type=Path, default=DEFAULT_SAMPLING)
     parser.add_argument("--smoke", type=Path, default=DEFAULT_SMOKE)
+    parser.add_argument(
+        "--source-dir",
+        type=Path,
+        default=ROOT / "assets/textures/classic",
+    )
+    parser.add_argument(
+        "--enhanced-dir",
+        type=Path,
+        default=ROOT / "assets/textures/enhanced",
+    )
+    parser.add_argument(
+        "--run-root",
+        type=Path,
+        default=DEFAULT_RUN_ROOT,
+    )
     parser.add_argument("--out-json", type=Path, default=None)
     parser.add_argument("--out-md", type=Path, default=None)
     args = parser.parse_args()
@@ -474,6 +663,30 @@ def main() -> int:
         sampling,
         smoke,
     )
+    if args.command == "status":
+        result = build_availability(
+            plan,
+            args.source_dir,
+            args.enhanced_dir,
+            args.run_root,
+        )
+        if args.out_json:
+            write_json(args.out_json, result)
+        if args.out_md:
+            args.out_md.parent.mkdir(parents=True, exist_ok=True)
+            args.out_md.write_text(
+                markdown_availability(result),
+                encoding="utf-8",
+            )
+        print(
+            "PASS review_pack_01_status "
+            f"references={result['reference_ready_count']}/"
+            f"{result['texture_count']} ai={result['ready_with_ai_count']}/"
+            f"{result['texture_count']} p1_ai="
+            f"{result['p1_ready_with_ai_count']}/{result['p1_count']}"
+        )
+        return 0
+
     if args.out_json:
         write_json(args.out_json, plan)
     if args.out_md:
