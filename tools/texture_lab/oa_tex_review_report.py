@@ -127,6 +127,12 @@ def build_review_rows(
             "candidate_edge_seam_mae_rgba_0_255": None,
             "candidate_minus_source_seam_mae_rgba_0_255": None,
             "candidate_to_source_seam_ratio": None,
+            "source_transparency_mode": None,
+            "source_transparency_review_required": None,
+            "source_transparency_reason": None,
+            "exact_alpha_mask_ok": None,
+            "alpha_mask_mismatch_pixels": None,
+            "transparent_rgb_nonzero_pixels": None,
             "attention": reasons,
         }
 
@@ -166,6 +172,32 @@ def build_review_rows(
             row["candidate_to_source_seam_ratio"] = technical_result.get(
                 "candidate_to_source_seam_ratio"
             )
+            row["source_transparency_mode"] = technical_result.get(
+                "source_transparency_mode"
+            )
+            row["source_transparency_review_required"] = technical_result.get(
+                "source_transparency_review_required"
+            )
+            row["source_transparency_reason"] = technical_result.get(
+                "source_transparency_reason"
+            )
+            row["exact_alpha_mask_ok"] = technical_result.get(
+                "exact_alpha_mask_ok"
+            )
+            row["alpha_mask_mismatch_pixels"] = technical_result.get(
+                "alpha_mask_mismatch_pixels"
+            )
+            row["transparent_rgb_nonzero_pixels"] = technical_result.get(
+                "transparent_rgb_nonzero_pixels"
+            )
+            if technical_result.get("source_transparency_review_required") is True:
+                row["attention"].append("transparency_classification_ambiguous")
+            if technical_result.get("exact_alpha_mask_ok") is False:
+                row["attention"].append("exact_alpha_mask_mismatch")
+            if int(technical_result.get("transparent_rgb_nonzero_pixels") or 0) > 0:
+                row["attention"].append("transparent_rgb_not_normalized")
+            if int(technical_result.get("visible_legacy_magenta_pixels") or 0) > 0:
+                row["attention"].append("visible_legacy_magenta")
 
         # Stable de-duplication while preserving reason order.
         row["attention"] = list(dict.fromkeys(row["attention"]))
@@ -193,8 +225,8 @@ def markdown_report(mode: str, rows: list[dict], baseline: dict) -> str:
             f"p95={low['p95']} / 255, max={low['max']} / 255."
         ),
         "",
-        "| Texture | State | Low-freq MAE | vs p95 | Seam ΔU | Seam ΔV | Review attention |",
-        "|---|---|---:|---:|---:|---:|---|",
+        "| Texture | State | Transparency | Low-freq MAE | vs p95 | Seam ΔU | Seam ΔV | Review attention |",
+        "|---|---|---|---:|---:|---:|---:|---|",
     ]
     for row in rows:
         value = row["low_frequency_luma_mae_0_255"]
@@ -206,10 +238,12 @@ def markdown_report(mode: str, rows: list[dict], baseline: dict) -> str:
         seam_v = seam_delta.get("y")
         seam_u_text = "—" if seam_u is None else f"{float(seam_u):+.3f}"
         seam_v_text = "—" if seam_v is None else f"{float(seam_v):+.3f}"
+        transparency = row.get("source_transparency_mode") or "—"
         attention = "; ".join(row["attention"]) or "visual fidelity review"
         lines.append(
-            f"| {row['id']} | {row['review_state']} | {value_text} | "
-            f"{ratio_text} | {seam_u_text} | {seam_v_text} | {attention} |"
+            f"| {row['id']} | {row['review_state']} | {transparency} | "
+            f"{value_text} | {ratio_text} | {seam_u_text} | {seam_v_text} | "
+            f"{attention} |"
         )
     lines.append("")
     return "\n".join(lines)
