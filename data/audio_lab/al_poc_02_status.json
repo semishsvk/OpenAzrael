@@ -1,0 +1,53 @@
+{
+  "schema": "openazrael.audio_lab.al_poc_02_status",
+  "version": 1,
+  "milestone": "AL-POC-02",
+  "status": "READY_FOR_FREEZE",
+  "baseline_branch": "audio-lab-al-poc-01",
+  "development_branch": "audio-lab-al-poc-02",
+  "canonical_source": {
+    "asset_count": 30,
+    "source_tree_sha256": "d7a283d07b948249827d026d932dd5716101f48e452112f1248c95dd5cb47cba",
+    "errors": 0,
+    "source_mutation": false
+  },
+  "analysis": {
+    "analysis_fingerprint_sha256": "e7a59c119359a9544c89d2c2bc56afd8649f0fbf86e9dbfb7c1a1fdb2decb3c4",
+    "nonfinite_metric_assets": 0,
+    "review_only_outlier_assets": 8,
+    "review_only_outlier_metrics": 8,
+    "spectral_and_temporal_qa": true,
+    "canonical_drift_comparator": true,
+    "one_command_runner": true
+  },
+  "scope_audit": {
+    "runtime_or_gameplay_files_modified": 0,
+    "source_audio_files_modified": 0,
+    "allowed_changed_areas": [
+      ".github/workflows/audio-lab.yml",
+      "tools/audio_lab/",
+      "tests/test_audio_lab_*.py",
+      "data/audio_lab/",
+      "docs/AUDIO_LAB_AL_POC_02.md",
+      "docs/ARTIFACT_INDEX.md"
+    ]
+  },
+  "safety_locks": {
+    "source_mutation_allowed": false,
+    "runtime_mutation_allowed": false,
+    "audio_enhancement_allowed": false,
+    "ai_restoration_allowed": false,
+    "automatic_outlier_repair_allowed": false
+  },
+  "remaining_non_blocking_review": {
+    "spectral_outliers_are_review_only": true,
+    "temporal_extremes_are_review_context_only": true,
+    "runtime_audibility_not_proved": true,
+    "miles_playback_parity_not_proved": true,
+    "subjective_quality_not_scored": true
+  },
+  "freeze_gate": {
+    "required_external_gate": "Audio Lab source-safe tests must be green on this exact status commit",
+    "workflow": ".github/workflows/audio-lab.yml"
+  }
+}
