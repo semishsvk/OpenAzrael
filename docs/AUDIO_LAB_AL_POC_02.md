@@ -17,7 +17,7 @@ AL-POC-02 was run against all 30 canonical assets with zero decode errors and fi
 Committed real-corpus evidence:
 
 - `data/audio_lab/al_poc_02_canonical_spectral_evidence.json`
-- spectral analysis fingerprint: `b4037a954e7fb0c1dd4a08337ae8096fa48b12dea3f6a97d4400e0a18201a093`
+- spectral analysis fingerprint: `e7a59c119359a9544c89d2c2bc56afd8649f0fbf86e9dbfb7c1a1fdb2decb3c4`
 
 The fingerprint covers deterministic spectral metrics only. It intentionally excludes review annotations, HTML paths, spectrogram filenames, and other presentation data.
 
@@ -43,9 +43,20 @@ Per asset:
 - RMS and peak
 - crest factor
 - zero-crossing rate
+- peak position
+- temporal energy centroid
+- 10/50/90% cumulative-energy positions
+- 10–90% energy span
+- first/last 10% energy ratios
 - deterministic grayscale spectrogram PNG
 
 The -64 dB display floor was calibrated visually on the canonical 8-bit corpus. It reduces visible quantization background while retaining weaker spectral structure. This parameter affects review images, not the numerical spectral fingerprint.
+
+## Temporal QA
+
+Temporal metrics were added after the first spectral-only baseline. This intentionally changed the analysis fingerprint from `b4037a954e7fb0c1dd4a08337ae8096fa48b12dea3f6a97d4400e0a18201a093` to the current `e7a59c119359a9544c89d2c2bc56afd8649f0fbf86e9dbfb7c1a1fdb2decb3c4`, while the canonical source-tree hash remained unchanged.
+
+Temporal distribution extremes are **not** part of the current outlier score. They are review context only. This avoids treating legitimate game-SFX timing, delayed impacts, long tails, or front-loaded transients as defects.
 
 ## Review-only outliers
 
