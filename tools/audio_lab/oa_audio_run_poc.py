@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the complete AL-POC-01 source-safe inventory, validation and mapping audit."""
+"""Run the complete AL-POC-01 source-safe inventory, validation, mapping audit and review pack."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,6 +13,7 @@ if __package__ in (None, ""):
 from tools.audio_lab.oa_audio_scan import main as scan_main
 from tools.audio_lab.oa_audio_validate import validate
 from tools.audio_lab.oa_audio_reference_audit import build_audit, load_json
+from tools.audio_lab.oa_audio_review_pack import build_review_pack, write_html as write_review_html
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -40,7 +41,7 @@ def main(argv: list[str] | None = None) -> int:
     if not manifest_path.is_file():
         summary = {
             "schema": "openazrael.audio_lab.al_poc_01_summary",
-            "version": 1,
+            "version": 2,
             "status": "FAIL",
             "scan_exit_code": scan_rc,
             "reason": "scanner did not produce audio_manifest.json",
@@ -60,19 +61,28 @@ def main(argv: list[str] | None = None) -> int:
     reference_path = out / "audio_reference_report.json"
     reference_path.write_text(json.dumps(reference_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
+    review_pack = build_review_pack(manifest, reference_report)
+    review_json_path = out / "audio_review_pack.json"
+    review_html_path = out / "audio_review_pack.html"
+    review_json_path.write_text(json.dumps(review_pack, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_review_html(review_html_path, review_pack, args.source_root)
+
     qa = manifest.get("qa", {})
     gates = {
         "scan_pass": scan_rc == 0,
         "manifest_validation_pass": not validation_errors,
         "expected_corpus_complete": bool(qa.get("expected_corpus_complete")),
         "reference_integrity_pass": reference_report.get("status") == "PASS",
+        "review_pack_not_blocked": review_pack.get("status") != "BLOCKED",
         "source_digest_present": bool(manifest.get("source_tree_sha256")),
         "inventory_count_matches": manifest.get("source_file_count") == len(manifest.get("assets", [])),
     }
     status = "PASS" if all(gates.values()) else "FAIL"
+    reference_summary = reference_report.get("summary", {})
+    review_summary = review_pack.get("summary", {})
     summary = {
         "schema": "openazrael.audio_lab.al_poc_01_summary",
-        "version": 1,
+        "version": 2,
         "status": status,
         "gates": gates,
         "scan_exit_code": scan_rc,
@@ -80,16 +90,26 @@ def main(argv: list[str] | None = None) -> int:
         "inventory": {
             "assets": len(manifest.get("assets", [])),
             "expected_corpus": qa.get("expected_corpus_count", 0),
-            "runtime_mapped": reference_report.get("summary", {}).get("mapped_assets", 0),
-            "runtime_unmapped": reference_report.get("summary", {}).get("unmapped_assets", 0),
-            "broken_references": reference_report.get("summary", {}).get("broken_reference_count", 0),
+            "runtime_mapped": reference_summary.get("mapped_assets", 0),
+            "runtime_unmapped": reference_summary.get("unmapped_assets", 0),
+            "expected_unmapped": reference_summary.get("expected_unmapped_assets", 0),
+            "unexpected_orphans": reference_summary.get("unexpected_orphan_assets", 0),
+            "broken_references": reference_summary.get("broken_reference_count", 0),
+        },
+        "review": {
+            "status": review_pack.get("status"),
+            "priority_counts": review_summary.get("priority_counts", {}),
+            "review_required": review_summary.get("review_required", 0),
+            "clean": review_summary.get("clean", 0),
         },
         "artifacts": {
             "manifest": "audio_manifest.json",
             "inventory_csv": "audio_inventory.csv",
             "qa_report": "audio_qa_report.json",
-            "html_review": "audio_qa_report.html",
+            "html_qa_review": "audio_qa_report.html",
             "reference_report": "audio_reference_report.json",
+            "review_pack": "audio_review_pack.json",
+            "html_review_pack": "audio_review_pack.html",
         },
     }
     (out / "al_poc_01_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
