@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 from common import ROOT, sha256_file, write_json
-from oa_tex_compare import make_detail_sheet, make_sheet
+from oa_tex_compare import make_alpha_sheet, make_detail_sheet, make_sheet
 from oa_tex_review_report import merged_policy, policy_reasons, sampling_reasons
 from oa_tex_stage_gate import DEFAULT_RUN_ROOT, evidence_snapshot
 
@@ -613,6 +613,26 @@ def build_visual_hub(
         make_sheet(texture_id, source, variants, full, cell)
         make_detail_sheet(texture_id, source, variants, detail, cell)
 
+        alpha_evidence = []
+        for variant in variant_records:
+            tier = str(variant["tier"])
+            candidate_path = Path(str(variant["record"]["path"]))
+            alpha_path = texture_dir / f"alpha_{tier}.png"
+            make_alpha_sheet(
+                texture_id,
+                source,
+                candidate_path,
+                alpha_path,
+                cell,
+            )
+            alpha_evidence.append(
+                {
+                    "tier": tier,
+                    "stage": variant.get("stage"),
+                    "preview": _hub_file_record(alpha_path),
+                }
+            )
+
         rows.append(
             {
                 "id": texture_id,
@@ -626,6 +646,7 @@ def build_visual_hub(
                 "variants": variant_records,
                 "comparison": _hub_file_record(full),
                 "detail_comparison": _hub_file_record(detail),
+                "alpha_evidence": alpha_evidence,
                 "review_attention": list(
                     plan_row.get("review_attention", [])
                 ),
@@ -682,6 +703,32 @@ def render_visual_hub_html(hub: dict, html_path: Path) -> str:
             )
             for value in row.get("variants", [])
         )
+        alpha_blocks = "".join(
+            (
+                '<figure><figcaption>Alpha evidence — '
+                + html.escape(str(value.get("tier")))
+                + '</figcaption><a href="'
+                + html.escape(
+                    _relative_href(
+                        Path(str(value["preview"]["path"])),
+                        html_path,
+                    ),
+                    quote=True,
+                )
+                + '"><img src="'
+                + html.escape(
+                    _relative_href(
+                        Path(str(value["preview"]["path"])),
+                        html_path,
+                    ),
+                    quote=True,
+                )
+                + '" alt="alpha evidence"></a></figure>'
+            )
+            for value in row.get("alpha_evidence", [])
+            if isinstance(value, dict)
+            and isinstance(value.get("preview"), dict)
+        )
         attention = "".join(
             f"<li>{html.escape(str(value))}</li>"
             for value in row.get("review_attention", [])
@@ -695,6 +742,7 @@ def render_visual_hub_html(hub: dict, html_path: Path) -> str:
 <div class="grid">
 <figure><figcaption>Full comparison</figcaption><a href="{comparison_href}"><img src="{comparison_href}" alt="full comparison"></a></figure>
 <figure><figcaption>Detail comparison</figcaption><a href="{detail_href}"><img src="{detail_href}" alt="detail comparison"></a></figure>
+{alpha_blocks}
 </div>
 <h3>Review attention</h3><ul>{attention}</ul>
 </section>
