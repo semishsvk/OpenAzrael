@@ -30,8 +30,15 @@ The current recovered demo IR describes 30 WAV assets. They are all mono 8-bit P
 
 ## Usage
 
+Preferred one-command AL-POC-01 run:
+
+    python tools/audio_lab/oa_audio_run_poc.py /path/to/ATDEMO
+
+Individual stages remain available:
+
     python tools/audio_lab/oa_audio_scan.py /path/to/ATDEMO
     python tools/audio_lab/oa_audio_validate.py .tmp/audio_lab/al_poc_01/audio_manifest.json --source-root /path/to/ATDEMO
+    python tools/audio_lab/oa_audio_reference_audit.py .tmp/audio_lab/al_poc_01/audio_manifest.json
 
 Outputs:
 
@@ -39,6 +46,8 @@ Outputs:
 - audio_inventory.csv
 - audio_qa_report.json
 - audio_qa_report.html
+- audio_reference_report.json
+- al_poc_01_summary.json
 
 The JSON manifest intentionally has no wall-clock timestamp, so two scans of unchanged inputs produce byte-identical manifests.
 
