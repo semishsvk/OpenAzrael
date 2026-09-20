@@ -22,6 +22,10 @@
     "physical_traversal_v117_source_validation": true,
     "physical_traversal_v117_runtime_capture": true,
     "physical_traversal_result_promotion": true,
-    "g04_requires_v110_and_v117": true
+    "g04_requires_v110_and_v117": true,
+    "well_tongs_v118_source_validation": true,
+    "well_tongs_v118_runtime_capture": true,
+    "well_tongs_result_promotion": true,
+    "g05_requires_v110_and_v118": true
   }
 }
