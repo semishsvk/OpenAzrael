@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v29"
+EXPECTED_CHECKPOINT="v116-context-v30"
 errors=[]
 
 def req(p):
@@ -78,6 +78,9 @@ for p in [
     "scripts/kg001_audio_runtime_runner_v116.gd",
     "tools/validate_kg001_audio_runtime_v116.py",
     "data/tests/kg001_audio_runtime_contract_v116.json",
+    "tools/texture_pipeline/legacy_colorkey.py",
+    "tools/validate_kg001_texture_colorkey_v116.py",
+    "data/tests/kg001_texture_colorkey_contract_v116.json",
     "data/audio/legacy_world_ir.json",
     "tools/restore_candidate_assets.py",
     "tools/prepare_candidate_audio.py",
@@ -114,7 +117,7 @@ try:
         errors.append("KG-001 v112 candidate runner drift")
     if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
         errors.append("KG-001 v112 status-engine drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_ISSUES_6_9_RETEST":
+    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_ISSUES_6_9_11_RETEST":
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
@@ -128,9 +131,19 @@ try:
         errors.append("KG-001 Issue #9 release blocker drift")
     if c.get("quality",{}).get("kg001_physical_audio_source_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 physical audio source-contract drift")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V29_NOT_EXECUTED":
-        errors.append("KG-001 v28 candidate runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V29":
+    if c.get("quality",{}).get("kg001_texture_issue_11")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 Issue #11 texture status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_issue_11") is not True:
+        errors.append("KG-001 Issue #11 release blocker drift")
+    if c.get("quality",{}).get("kg001_legacy_colorkey_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 legacy color-key source-contract drift")
+    if c.get("quality",{}).get("kg001_legacy_colorkey_expected_hash_textures")!=10:
+        errors.append("KG-001 legacy color-key texture-class drift")
+    if "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS" not in c.get("hard_holds",[]):
+        errors.append("legacy transparency HOLD boundary missing")
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V30_NOT_EXECUTED":
+        errors.append("KG-001 Candidate 2 runtime boundary drift")
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V30":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")

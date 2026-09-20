@@ -1,7 +1,7 @@
 {
-  "checkpoint": "v116-context-v29",
+  "checkpoint": "v116-context-v30",
   "technical_base": "openazrael_godot_poc_v116",
-  "date": "2026-09-19",
+  "date": "2026-09-20",
   "workflow": [
     "DEMO",
     "FAITHFUL_RECONSTRUCTION",
@@ -107,15 +107,15 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "BLOCKED_ISSUES_6_9_RETEST",
+    "kg001_overall_status": "BLOCKED_ISSUES_6_9_11_RETEST",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "BLOCKED_ISSUES_6_9_RETEST_REQUIRED",
+    "kg001_manual_sanity": "BLOCKED_ISSUES_6_9_11_RETEST_REQUIRED",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V29_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V30_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -125,20 +125,21 @@
       "F11": "bug_report_capture"
     },
     "kg001_candidate_event_log": "user://openazrael_candidate2_events.jsonl",
-    "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS",
-    "documentation_consistency": "PASS_V29",
+    "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
+    "documentation_consistency": "PASS_V30",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_bugreport_",
     "kg001_bug_report_source_safe": true,
-    "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9",
+    "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9_11",
     "kg001_known_critical_bugs": [
       "#6 PLAYER_FALLS_THROUGH_FLOOR"
     ],
     "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
-      "#9 NO_AUDIBLE_AUDIO"
+      "#9 NO_AUDIBLE_AUDIO",
+      "#11 LEGACY_COLORKEY_MAGENTA_VISIBLE"
     ],
     "kg001_audio_issue_9": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_9": true,
@@ -148,7 +149,16 @@
       "R1": 2,
       "R7": 3,
       "R8": 2
-    }
+    },
+    "kg001_texture_issue_11": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_release_blocked_by_issue_11": true,
+    "kg001_legacy_colorkey_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_legacy_colorkey_runtime": "NOT_EXECUTED",
+    "kg001_legacy_colorkey_expected_hash_textures": 10,
+    "kg001_legacy_colorkey_known_r1_examples": [
+      "KEYHOLE#",
+      "TONG6 -> MINETON#"
+    ]
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -156,9 +166,10 @@
     "CLASSIC_AUDIO_ORIGINAL_RUNTIME_PARITY",
     "RETAIL_GLOBAL_COORDINATE_PARITY",
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
-    "WORLD_WRITER_INDIRECT_REACHABILITY"
+    "WORLD_WRITER_INDIRECT_REACHABILITY",
+    "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Build and run KG-001 Candidate 2 from v116-context-v29. Require the Issue #6 floor regression and the Issue #9 physical-audio regression to PASS, rerun the complete v109/v110/v111/audio-v116 fresh-checkout suite, then manually verify stable floor collision and audible event/ambient audio before continuing the full G10 route. Keep demo-known-good-001 blocked while either issue remains open.",
+  "next_target": "Build and run KG-001 Candidate 2 from v116-context-v30. Restore assets with the corrected #+magenta binary color-key pipeline, require Issue #6 floor, Issue #9 physical-audio and Issue #11 texture color-key regressions to PASS in the fresh-checkout suite, then manually verify stable floor support, audible audio and no visible magenta color-key backgrounds before continuing the full G10 route. Keep demo-known-good-001 blocked while any issue remains open.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -261,7 +272,8 @@
     "bug_report_prefix": "user://openazrael_bugreport_",
     "bug_report_doc": "docs/BUG_REPORTING.md",
     "issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml",
-    "physical_audio_regression": "KG001_AUDIO_V116_ISSUE_9"
+    "physical_audio_regression": "KG001_AUDIO_V116_ISSUE_9",
+    "texture_colorkey_regression": "KG001_TEXTURE_COLORKEY_V116_ISSUE_11"
   },
   "localization": {
     "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",
@@ -307,5 +319,24 @@
     "source_status": "SOURCE_CONTRACT_PASS",
     "runtime_status": "NOT_EXECUTED",
     "boundary": "Automated readiness does not prove human audibility or original Miles parity."
+  },
+  "kg001_texture_colorkey_v116": {
+    "validator": "tools/validate_kg001_texture_colorkey_v116.py",
+    "contract": "data/tests/kg001_texture_colorkey_contract_v116.json",
+    "helper": "tools/texture_pipeline/legacy_colorkey.py",
+    "decoder": "tools/texture_pipeline/azf_decode_v14.py",
+    "exporter": "tools/texture_pipeline/export_xaf_glb_v8.py",
+    "issue": "#11",
+    "candidate_rule": "filename contains # AND quantized magenta pixels exist",
+    "magenta_rule": "R>=248 AND B>=248 AND G<=12",
+    "expected_hash_texture_count": 10,
+    "known_r1_examples": [
+      "KEYHOLE#",
+      "TONG6 -> MINETON#"
+    ],
+    "source_status": "SOURCE_CONTRACT_PASS",
+    "runtime_status": "NOT_EXECUTED",
+    "manual_visual_status": "PENDING",
+    "boundary": "Binary legacy color-key presentation compatibility only; complete original transparency/blending semantics remain HOLD."
   }
 }
