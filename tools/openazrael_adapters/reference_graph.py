@@ -110,7 +110,7 @@ def build_openazrael_reference_graph(
             metadata=metadata,
             qualifier=f"{index}:{trigger}",
         )
-        if trigger_node in {node["node_id"] for node in graph.to_dict()["nodes"]}:
+        if graph.has_node(trigger_node):
             graph.add_edge(
                 trigger_node,
                 "activates_transition",
@@ -130,7 +130,7 @@ def build_openazrael_reference_graph(
 
         room_prefix = graph_id.split("_", 1)[0]
         room_node = f"room:{room_prefix}"
-        if room_node in {node["node_id"] for node in graph.to_dict()["nodes"]}:
+        if graph.has_node(room_node):
             graph.add_edge(room_node, "owns_gameplay", gameplay_node)
 
         for source in payload.get("source", []):
