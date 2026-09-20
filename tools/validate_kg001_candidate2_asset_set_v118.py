@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import argparse
+import hashlib
 import json
 import struct
 import subprocess
@@ -36,6 +37,8 @@ AUDIO_NAMES=[
 TEXTURE_COUNT=86
 COLORKEY_CONTRACT=ROOT/"data/tests/kg001_texture_colorkey_contract_v116.json"
 RESTORE_EVIDENCE=ROOT/".tmp/kg001/legacy_colorkey_restore.json"
+AUDIO_RESTORE_EVIDENCE=ROOT/".tmp/kg001/audio_restore_v118.json"
+SOURCE_FINGERPRINTS=ROOT/"data/backup/source_fingerprints.json"
 
 
 def ignored(path: Path) -> bool:
@@ -55,6 +58,24 @@ def ignored(path: Path) -> bool:
 
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def sha256(path: Path) -> str:
+    h=hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda:stream.read(1024*1024),b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def canonical_audio_hashes() -> dict[str,str]:
+    payload=read_json(SOURCE_FINGERPRINTS)
+    return {
+        Path(str(entry["path"])).name:str(entry["sha256"])
+        for entry in payload.get("entries",[])
+        if isinstance(entry,dict)
+        and str(entry.get("path","")).startswith("assets/audio/")
+    }
 
 
 def wav_pcm_summary(path: Path) -> dict:
@@ -160,6 +181,68 @@ def main() -> int:
         for room,expected in ROOM_EXPECTED.items()
     ]
 
+    canonical_audio=canonical_audio_hashes()
+    audio_restore={
+        "path":str(AUDIO_RESTORE_EVIDENCE.relative_to(ROOT)),
+        "present":AUDIO_RESTORE_EVIDENCE.is_file(),
+        "schema_ok":False,
+        "version_ok":False,
+        "status_ok":False,
+        "asset_count":0,
+        "exact_asset_set":False,
+        "source_hashes_match_canonical":False,
+        "runtime_hashes_recorded":False,
+        "prepared_pcm_unchanged":False,
+        "rows":{},
+    }
+    if AUDIO_RESTORE_EVIDENCE.is_file():
+        try:
+            payload=read_json(AUDIO_RESTORE_EVIDENCE)
+            rows={
+                str(row.get("asset")):row
+                for row in payload.get("assets",[])
+                if isinstance(row,dict) and row.get("asset")
+            }
+            audio_restore.update({
+                "schema_ok":payload.get("schema")=="openazrael.kg001.audio_restore",
+                "version_ok":payload.get("version")==118,
+                "status_ok":payload.get("status")=="PASS",
+                "asset_count":int(payload.get("asset_count",-1)),
+                "exact_asset_set":sorted(rows)==sorted(AUDIO_NAMES),
+                "source_hashes_match_canonical":(
+                    sorted(canonical_audio)==sorted(AUDIO_NAMES)
+                    and all(
+                        str(rows.get(name,{}).get("source_sha256",""))
+                        == canonical_audio.get(name,"")
+                        and str(rows.get(name,{}).get("canonical_source_sha256",""))
+                        == canonical_audio.get(name,"")
+                        for name in AUDIO_NAMES
+                    )
+                ),
+                "runtime_hashes_recorded":all(
+                    len(str(rows.get(name,{}).get("runtime_sha256","")))==64
+                    for name in AUDIO_NAMES
+                ),
+                "prepared_pcm_unchanged":all(
+                    rows.get(name,{}).get("pcm_unchanged") is True
+                    for name in ("797TAP.WAV","S137.WAV")
+                ),
+                "rows":rows,
+            })
+        except Exception as exc:
+            audio_restore["error"]=str(exc)
+    audio_restore["complete"]=all([
+        audio_restore["present"],
+        audio_restore["schema_ok"],
+        audio_restore["version_ok"],
+        audio_restore["status_ok"],
+        audio_restore["asset_count"]==len(AUDIO_NAMES),
+        audio_restore["exact_asset_set"],
+        audio_restore["source_hashes_match_canonical"],
+        audio_restore["runtime_hashes_recorded"],
+        audio_restore["prepared_pcm_unchanged"],
+    ])
+
     audio_rows=[]
     for name in AUDIO_NAMES:
         path=ROOT/"assets/audio"/name
@@ -171,8 +254,27 @@ def main() -> int:
             "git_ignored":path.is_file() and ignored(path),
             "wav_valid":False,
             "pcm_non_silent":False,
+            "canonical_source_sha256":canonical_audio.get(name,""),
+            "restore_source_sha256":str(
+                audio_restore.get("rows",{}).get(name,{}).get("source_sha256","")
+            ),
+            "restore_runtime_sha256":str(
+                audio_restore.get("rows",{}).get(name,{}).get("runtime_sha256","")
+            ),
+            "runtime_sha256":"",
+            "source_fingerprint_bound":False,
+            "runtime_fingerprint_matches_restore":False,
         }
         if path.is_file():
+            row["runtime_sha256"]=sha256(path)
+            row["source_fingerprint_bound"]=(
+                len(row["canonical_source_sha256"])==64
+                and row["restore_source_sha256"]==row["canonical_source_sha256"]
+            )
+            row["runtime_fingerprint_matches_restore"]=(
+                len(row["restore_runtime_sha256"])==64
+                and row["runtime_sha256"]==row["restore_runtime_sha256"]
+            )
             try:
                 summary=wav_pcm_summary(path)
                 row["wav"]=summary
@@ -192,6 +294,8 @@ def main() -> int:
             row["git_ignored"],
             row["wav_valid"],
             row["pcm_non_silent"],
+            row["source_fingerprint_bound"],
+            row["runtime_fingerprint_matches_restore"],
         ])
         audio_rows.append(row)
 
@@ -275,7 +379,9 @@ def main() -> int:
 
     local_complete=all(contract_checks.values()) and all(
         row["complete"] for row in room_rows
-    ) and all(row["complete"] for row in audio_rows) and bool(
+    ) and bool(audio_restore["complete"]) and all(
+        row["complete"] for row in audio_rows
+    ) and bool(
         texture_rows["complete"]
     ) and bool(restore["complete"])
 
@@ -293,6 +399,7 @@ def main() -> int:
         "local_asset_status":"COMPLETE" if local_complete else "INCOMPLETE_OR_NOT_RESTORED",
         "contract_checks":contract_checks,
         "rooms":room_rows,
+        "audio_restore_evidence":audio_restore,
         "audio":audio_rows,
         "classic_textures":texture_rows,
         "indexed_colorkey_restore":restore,
