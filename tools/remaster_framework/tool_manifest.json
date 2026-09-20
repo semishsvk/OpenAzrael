@@ -6,8 +6,12 @@
       "family": "data_lab",
       "description": "Deterministic SHA-256 inventory for source-safe asset and project corpus auditing.",
       "entrypoint": "tools/remaster_framework/inventory.py",
-      "inputs": ["directory"],
-      "outputs": ["json_manifest"],
+      "inputs": [
+        "directory"
+      ],
+      "outputs": [
+        "json_manifest"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -18,8 +22,12 @@
       "family": "data_lab",
       "description": "Catalog existing JSON artifacts with SHA-256 provenance and normalized IR descriptors without rewriting source artifacts.",
       "entrypoint": "tools/remaster_framework/cli.py",
-      "inputs": ["artifact_directory"],
-      "outputs": ["artifact_manifest"],
+      "inputs": [
+        "artifact_directory"
+      ],
+      "outputs": [
+        "artifact_manifest"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -30,8 +38,30 @@
       "family": "data_lab",
       "description": "Verify artifact catalog path containment, sizes, uniqueness, and SHA-256 content integrity.",
       "entrypoint": "tools/remaster_framework/cli.py",
-      "inputs": ["artifact_directory", "artifact_manifest"],
-      "outputs": ["validation_report"],
+      "inputs": [
+        "artifact_directory",
+        "artifact_manifest"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "corpus_discovery",
+      "family": "data_lab",
+      "description": "Identify legacy game corpora using evidence-backed filename/count profiles without modifying source files.",
+      "entrypoint": "tools/remaster_framework/cli.py",
+      "inputs": [
+        "legacy_corpus_directory",
+        "corpus_profiles"
+      ],
+      "outputs": [
+        "corpus_discovery_report"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -42,8 +72,12 @@
       "family": "data_lab",
       "description": "Validate recovered demo runtime intermediate representation.",
       "entrypoint": "tools/validate_demo_runtime_ir.py",
-      "inputs": ["runtime_ir"],
-      "outputs": ["validation_report"],
+      "inputs": [
+        "runtime_ir"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -54,8 +88,12 @@
       "family": "validation_lab",
       "description": "Audit recovered puzzle event IR and its structural assumptions.",
       "entrypoint": "tools/audit_puzzles_event_ir_v88.py",
-      "inputs": ["puzzle_event_ir"],
-      "outputs": ["audit_report"],
+      "inputs": [
+        "puzzle_event_ir"
+      ],
+      "outputs": [
+        "audit_report"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -66,8 +104,12 @@
       "family": "validation_lab",
       "description": "Analyze KG-001 state-space coverage for deterministic demo validation.",
       "entrypoint": "tools/kg001_state_space_v108.py",
-      "inputs": ["runtime_ir"],
-      "outputs": ["state_space_report"],
+      "inputs": [
+        "runtime_ir"
+      ],
+      "outputs": [
+        "state_space_report"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -78,8 +120,13 @@
       "family": "audio_lab",
       "description": "Analyze the recovered bridge between world actions, puzzle events, and sound records.",
       "entrypoint": "tools/analyze_world_puzzle_sound_bridge_v107.py",
-      "inputs": ["world_ir", "puzzle_ir"],
-      "outputs": ["bridge_report"],
+      "inputs": [
+        "world_ir",
+        "puzzle_ir"
+      ],
+      "outputs": [
+        "bridge_report"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -90,8 +137,12 @@
       "family": "texture_lab",
       "description": "Decode recovered AZF texture data for the texture pipeline.",
       "entrypoint": "tools/texture_pipeline/azf_decode_v14.py",
-      "inputs": ["azf_texture"],
-      "outputs": ["decoded_texture"],
+      "inputs": [
+        "azf_texture"
+      ],
+      "outputs": [
+        "decoded_texture"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -102,8 +153,12 @@
       "family": "project_release",
       "description": "Validate the persistent project-context documentation set.",
       "entrypoint": "tools/validate_project_context.py",
-      "inputs": ["project_context"],
-      "outputs": ["validation_report"],
+      "inputs": [
+        "project_context"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
       "source_safe": true,
       "deterministic": true,
       "mutates_runtime": false,
@@ -114,8 +169,12 @@
       "family": "project_release",
       "description": "Create integrity-oriented project snapshots under the established backup policy.",
       "entrypoint": "tools/backup/create_snapshot.py",
-      "inputs": ["project_tree"],
-      "outputs": ["snapshot"],
+      "inputs": [
+        "project_tree"
+      ],
+      "outputs": [
+        "snapshot"
+      ],
       "source_safe": true,
       "deterministic": false,
       "mutates_runtime": false,
