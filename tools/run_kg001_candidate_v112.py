@@ -32,6 +32,7 @@ FORBIDDEN_TRACKED_PREFIXES=(
 FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
 SOURCE_COMMANDS=[
+    [sys.executable,"tools/validate_kg001_build_manifest_v118.py"],
     [sys.executable,"tools/validate_project_context.py"],
     [sys.executable,"tools/validate_demo_runtime_ir.py"],
     [sys.executable,"tools/audit_gameplay_event_graph_v87.py","--source-only"],
