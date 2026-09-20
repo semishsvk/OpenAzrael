@@ -3,7 +3,7 @@ from pathlib import Path
 import struct
 import numpy as np
 from PIL import Image
-from legacy_colorkey import apply_legacy_colorkey
+from legacy_colorkey import apply_legacy_indexed_colorkey
 
 HEADER_SIZE=60
 NODE_TABLE_BYTES=2048
@@ -61,23 +61,25 @@ def save_png(azf_path: Path, png_path: Path, quantize_like_engine=True):
     a=decode_azf(azf_path)
     if a['raw_size'] != a['width']*a['height']:
         raise ValueError('not a w*h indexed texture')
-    rgb=a['palette'][:,:3].copy()
-    # R.EXE LoadAZF quantizes palette components to multiples of 4 before
-    # nearest-colour mapping into the renderer palette. For preservation PNGs,
-    # retaining that quantization best matches the original path while avoiding
-    # the runtime global-palette remap.
-    if quantize_like_engine:
-        rgb=(rgb//4)*4
     idx=a['indices']
-    if idx.max() >= len(rgb):
-        raise ValueError(f'pixel index {idx.max()} exceeds palette size {len(rgb)}')
-    rendered, colorkey = apply_legacy_colorkey(rgb[idx], azf_path)
+    rendered, colorkey = apply_legacy_indexed_colorkey(
+        a['palette'],
+        idx,
+        azf_path,
+        quantize_like_engine=quantize_like_engine,
+    )
     mode = 'RGBA' if rendered.shape[-1] == 4 else 'RGB'
     Image.fromarray(rendered, mode).save(png_path)
     a['legacy_colorkey_candidate'] = colorkey['candidate']
     a['legacy_colorkey_applied'] = colorkey['applied']
     a['legacy_colorkey_pixels'] = colorkey['magenta_pixels']
     a['legacy_colorkey_rule'] = colorkey['rule']
+    a['legacy_colorkey_key_index'] = colorkey.get('key_index')
+    a['legacy_colorkey_key_candidates'] = colorkey.get(
+        'used_magenta_key_indices',
+        [],
+    )
+    a['legacy_colorkey_detection'] = colorkey.get('detection')
     return a
 
 if __name__=='__main__':
