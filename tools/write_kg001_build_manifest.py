@@ -127,7 +127,7 @@ def main() -> int:
         "schema":"openazrael.kg001.candidate_build_manifest",
         "version":1,
         "build_id":"KG-001 Candidate 2",
-        "checkpoint":"v116-context-v30",
+        "checkpoint":"v116-context-v31",
         "generated_utc":datetime.now(timezone.utc).isoformat(),
         "repository":"semishsvk/OpenAzrael",
         "commit_sha":git_head(),
