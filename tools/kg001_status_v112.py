@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import json, sys
+import json, subprocess, sys
 
 ROOT=Path(__file__).resolve().parents[1]
 
 def load_optional(path):
     return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+def git_head():
+    proc=subprocess.run(
+        ["git","rev-parse","HEAD"], cwd=ROOT, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
+    )
+    return proc.stdout.strip() if proc.returncode==0 else ""
+
+HEAD=git_head()
 
 contract=json.loads((ROOT/"data/kg001_acceptance_contract.json").read_text(encoding="utf-8"))
 context=json.loads((ROOT/"data/project_context.json").read_text(encoding="utf-8"))
@@ -20,18 +29,28 @@ well_tongs=load_optional(ROOT/"data/tests/kg001_well_tongs_animation_runtime_v11
 fresh=load_optional(ROOT/"data/tests/kg001_fresh_checkout.json")
 manual=load_optional(ROOT/"data/tests/kg001_manual_sanity.json")
 
-def is_pass(obj):
-    return isinstance(obj,dict) and obj.get("status")=="PASS"
+def evidence_sha(obj):
+    if not isinstance(obj,dict):
+        return ""
+    return str(obj.get("_commit_sha", obj.get("commit_sha", "")))
 
-source_pass=is_pass(source)
-v109_pass=is_pass(r109)
-v110_pass=is_pass(r110)
-v111_pass=is_pass(r111)
-audio_pass=is_pass(audio)
-physical_pass=is_pass(physical)
-well_tongs_pass=is_pass(well_tongs)
-fresh_pass=is_pass(fresh)
-manual_pass=is_pass(manual)
+def is_current_pass(obj):
+    return (
+        isinstance(obj,dict)
+        and obj.get("status")=="PASS"
+        and bool(HEAD)
+        and evidence_sha(obj)==HEAD
+    )
+
+source_pass=is_current_pass(source)
+v109_pass=is_current_pass(r109)
+v110_pass=is_current_pass(r110)
+v111_pass=is_current_pass(r111)
+audio_pass=is_current_pass(audio)
+physical_pass=is_current_pass(physical)
+well_tongs_pass=is_current_pass(well_tongs)
+fresh_pass=is_current_pass(fresh)
+manual_pass=is_current_pass(manual)
 
 gates={
  "G00":{"name":"context_integrity","status":"PASS" if source_pass else "PENDING_RECORDED_SOURCE_VALIDATION"},
@@ -55,7 +74,11 @@ all_gates_pass=all(x["status"]=="PASS" for x in gates.values())
 all_pass=all_gates_pass and defect_clear
 failed=[]
 for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("audio_v116",audio),("physical_v117",physical),("well_tongs_v118",well_tongs),("fresh",fresh),("manual",manual)):
-    if isinstance(obj,dict) and obj.get("status")=="FAIL":
+    if (
+        isinstance(obj,dict)
+        and obj.get("status")=="FAIL"
+        and evidence_sha(obj)==HEAD
+    ):
         failed.append(gid)
 out={
  "schema":"openazrael.kg001.gate_status",
@@ -64,6 +87,7 @@ out={
  "overall_status":"PASS" if all_pass else ("FAIL" if failed else ("BLOCKED_KNOWN_BUGS" if release_blockers else "AWAITING_RUNTIME_OR_MANUAL")),
  "final_tag_allowed":all_pass,
  "failed_inputs":failed,
+ "current_commit":HEAD,
  "known_release_blockers":release_blockers,
  "gates":gates,
  "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains."
