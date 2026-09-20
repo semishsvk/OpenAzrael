@@ -10,6 +10,10 @@ Thumbs.db
 *.tmp
 *.log
 
+# Godot 4.7 editor/import-generated script UID sidecars. OpenAzrael's tracked
+# scene/autoload contracts are path-based; these are local import metadata.
+*.gd.uid
+
 # Local/editor state
 .vscode/
 .idea/
