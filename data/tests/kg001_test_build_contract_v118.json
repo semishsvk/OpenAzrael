@@ -26,7 +26,9 @@
     "tracked evidence promotion occurs only after Windows export + exported-EXE startup smoke",
     "build manifest runtime-source identity includes the build-producing manifest/toolchain/export/audio-preparation tools",
     "build manifest source-contract identity includes tracked canonical audio source_fingerprints registry",
-    "startup-ready marker is emitted only after required-resource preflight, R1 load and canonical spawn"
+    "startup-ready marker is emitted only after required-resource preflight, R1 load and canonical spawn",
+    "source-safe build-manifest sidecar is copied beside the Windows package and hash-matches the manifest used for export",
+    "SHA256SUMS covers EXE, PCK, build-manifest sidecar, test-build receipt and testing guide"
   ],
   "ready_status": "READY_FOR_G10_MANUAL_TEST",
   "manual_requirements": [
@@ -48,6 +50,9 @@
     "package": "EXE/PCK/build-manifest/startup-log SHA-256",
     "promotion": "after export and exported-EXE startup smoke in Windows wrapper",
     "source_identity": "runtime/project/export/build-producing tools + tracked acceptance/source contracts",
-    "startup_ready": "marker is emitted only after resource preflight PASS, successful R1 load and R1/spaview spawn"
-  }
+    "startup_ready": "marker is emitted only after resource preflight PASS, successful R1 load and R1/spaview spawn",
+    "distribution_integrity": "SHA256SUMS covers EXE + PCK + build-manifest + receipt + testing guide; distributed build-manifest hash must equal the source manifest used for export"
+  },
+  "distribution_build_manifest": "exports/OpenAzrael-KG001-Candidate2-v116.build-manifest.json",
+  "distribution_checksum_manifest": "exports/OpenAzrael-KG001-Candidate2-v116.SHA256SUMS"
 }
