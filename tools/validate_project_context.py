@@ -104,6 +104,7 @@ for p in [
     "tools/promote_kg001_candidate_results_v118.py",
     "data/tests/kg001_test_build_contract_v118.json",
     "tools/validate_kg001_test_build_contract_v118.py",
+    "tools/validate_kg001_build_manifest_v118.py",
     "tools/validate_kg001_candidate2_asset_set_v118.py",
     "tools/promote_kg001_candidate_results_v118.py",
     "data/tests/kg001_test_build_contract_v118.json",
