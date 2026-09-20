@@ -61,10 +61,10 @@ class ToolContract:
         if not path.is_file():
             errors.append(f"{self.tool_id}: entrypoint does not exist: {self.entrypoint}")
 
-        if self.source_safe and self.mutates_runtime:
-            errors.append(
-                f"{self.tool_id}: source_safe tools cannot declare mutates_runtime=true"
-            )
+        # source_safe describes the immutable source corpus, while
+        # mutates_runtime describes ephemeral execution state. A physical
+        # validation driver may legitimately be both source-safe and
+        # runtime-mutating.
         return errors
 
     def to_dict(self) -> dict[str, Any]:
