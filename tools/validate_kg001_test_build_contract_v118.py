@@ -46,6 +46,15 @@ checks={
     "contract_evidence_binding":isinstance(contract.get("evidence_binding"),dict)
         and contract.get("evidence_binding",{}).get("promotion")
         =="after export and exported-EXE startup smoke in Windows wrapper",
+    "contract_startup_ready_binding":(
+        isinstance(contract.get("evidence_binding"),dict)
+        and "resource preflight PASS" in str(
+            contract.get("evidence_binding",{}).get("startup_ready","")
+        )
+        and "R1/spaview" in str(
+            contract.get("evidence_binding",{}).get("startup_ready","")
+        )
+    ),
     "wrapper_candidate_fresh_commit_binding":all(token in wrapper for token in [
         "candidateEvidence.commit_sha",
         "freshEvidence.commit_sha",
