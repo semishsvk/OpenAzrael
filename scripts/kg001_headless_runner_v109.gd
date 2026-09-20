@@ -1,8 +1,8 @@
 extends SceneTree
 
 const INITIAL_HASH := "90fdebf6dff29bf2b4b78980615205c2e6c067b65a28c2aff0b7f10b513f6abf"
-const COMPLETE_HASH := "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8"
-const EXPECTED_AUDIO := ["S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
+const COMPLETE_HASH := "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902"
+const EXPECTED_AUDIO := ["979TONGS.WAV", "S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
 
 var failures: Array[String] = []
 
@@ -29,7 +29,7 @@ func _run() -> void:
 
     state.acquire("rusty_tongs")
     state.set_flag("R1Door1Open")
-    _check("retrieve_well_key", state.retrieve_well_key())
+    events.run("R7_WELL_TONGS_USE")\n    _check("retrieve_well_key", state.retrieve_well_key())\n    _check("tongs_consumed", not state.has("rusty_tongs"))
     _check("switch_1", state.switchboard_step("well_lev02") == "correct")
     _check("switch_2", state.switchboard_step("well_weel3") == "correct")
     _check("switch_3", state.switchboard_step("well_lev02") == "solved")
@@ -58,7 +58,7 @@ func _run() -> void:
         "schema": "openazrael.kg001.headless",
         "version": 109,
         "status": "PASS" if failures.is_empty() else "FAIL",
-        "checks": 13,
+        "checks": 14,
         "failed": failures,
         "persistent_hash": state.canonical_state_hash(),
         "logical_audio_events": events.captured_audio(),
