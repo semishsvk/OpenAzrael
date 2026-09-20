@@ -46,6 +46,21 @@ checks={
     "state_dump": 'canonical_state_hash' in diag and 'STATE_DUMP_BASENAME' in diag and 'run_dir' in diag,
     "golden_audio_assets": all(x in diag for x in ["797TAP.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV","S174ELP1.WAV","S174ELP2.WAV","S186.WAV"]) and "data/audio/legacy_world_ir.json" in diag,
     "startup_ready_marker":"OPENAZRAEL_CANDIDATE_STARTUP_READY" in diag and '"build_commit_sha": String(build_manifest.get("commit_sha", ""))' in diag,
+    "startup_ready_not_early":(
+        "func emit_startup_ready" in diag
+        and "OPENAZRAEL_CANDIDATE_STARTUP_READY" not in diag.split("func emit_startup_ready",1)[0]
+    ),
+    "startup_ready_after_preflight":(
+        'CandidateDiagnostics.emit_startup_ready("R1")' in room
+        and room.find("fail_fast_if_required_resources_missing")
+            < room.find('CandidateDiagnostics.emit_startup_ready("R1")')
+        and room.find('load_room("R1", false)')
+            < room.find('CandidateDiagnostics.emit_startup_ready("R1")')
+        and room.find('_spawn_at_portal("R1", "spaview")')
+            < room.find('CandidateDiagnostics.emit_startup_ready("R1")')
+        and '"required_resource_preflight": "PASS"' in diag
+        and 'record_event("candidate_startup_ready"' in diag
+    ),
     "headless_audio_boundary": 'DisplayServer.get_name() != "headless"' in room,
     "f6_triggers": 'KEY_F6' in trigger and 'BoxMesh.new()' in trigger,
     "f7_candidate_hud": 'KEY_F7' in hud and 'CandidateDebugPanelV116' in hud,
