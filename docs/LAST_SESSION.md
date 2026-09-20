@@ -1,7 +1,7 @@
 # OpenAzrael Last Session
 
 **Checkpoint prepared:** `v116-context-v31`  
-**Date:** 2026-09-19  
+**Date:** 2026-09-20  
 **Technical base:** `openazrael_godot_poc_v116`
 
 ## Current canonical state
@@ -11,14 +11,14 @@
 - Candidate 1 manual evidence remains FAIL. Candidate 2 is source-ready but NOT_EXECUTED; Issues #6/#9/#11 require restored-asset/runtime and manual retest.
 - Added source-contract bug reporting: F11 creates a source-safe ZIP with screenshot, state snapshot/hash, telemetry tail and system metadata; GitHub issue intake and regression workflow are tracked in-repo.
 - KG-001 Candidate 2 remains the active integration target.
-- Candidate diagnostics source contract is PASS and the candidate is source-ready.
+- Candidate diagnostics source contract is PASS and the candidate is source-frozen pending runtime evidence.
 - Canonical Godot runtime evidence is still **NOT_EXECUTED**.
 - `demo-known-good-001` remains forbidden until G00-G10 are all literal PASS.
 - Localization architecture is approved but runtime implementation is intentionally deferred until after the first clean Candidate 2 runtime/manual cycle.
 - Existing forensic HOLDs remain unchanged.
 
 ## Documentation consistency update
-- Refreshed README to lead with the current Candidate 2 / v29 stabilization status while preserving Candidate 1 failure evidence.
+- Refreshed README to lead with the source-frozen Candidate 2 / v31 stabilization status while preserving Candidate 1 failure evidence.
 - Replaced stale roadmap items that still targeted already completed v113-v115 work.
 - Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v31`.
 - Preserved historical milestone notes rather than rewriting project history.

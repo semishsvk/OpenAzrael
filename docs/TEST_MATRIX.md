@@ -191,4 +191,4 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Fix -> regression rule | DEFINED | Reproducible fixes require regression evidence at the lowest useful layer |
 | v112 candidate source suite integration | PASS | v116 validator appended to SOURCE_COMMANDS |
 | v27 manual Candidate execution | **FAIL / Critical Issue #6** | Player fell through floor |
-| Corrected v28 Candidate execution | NOT_EXECUTED | Must pass v110 floor regression and manual retest |
+| Source-frozen v31 Candidate execution | NOT_EXECUTED | Must pass multi-room v110 floor regression, audio-v116, indexed color-key validation and manual blocker smoke |

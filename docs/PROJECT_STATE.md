@@ -170,7 +170,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Restore Candidate 2 assets with the v30 color-key pipeline, run the v112 candidate runner with --fresh-checkout --promote-results, require v109/v110/v111/audio-v116 plus texture color-key validation PASS, then complete G10 only after floor collision, audible audio and visual transparency are clean.
+1. Restore Candidate 2 assets with the v31 frozen indexed color-key pipeline, run the v112 candidate runner with --fresh-checkout --promote-results, require v109/v110/v111/audio-v116 plus texture color-key validation PASS, then complete G10 only after floor collision, audible audio and visual transparency are clean.
 2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
