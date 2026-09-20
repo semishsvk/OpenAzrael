@@ -27,13 +27,21 @@ checks={
     "event_current_scene_guard": "cannot start event sound without current_scene" in events,
     "candidate_ambient_ir_preflight": "data/audio/legacy_world_ir.json" in diag,
     "candidate_all_audio_preflight": all(x in diag for x in [
-        "S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV",
+        "979TONGS.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV",
         "S174ELP1.WAV","S174ELP2.WAV","S186.WAV"
     ]),
     "runtime_master_bus": "master_bus_not_muted" in runner and "master_bus_not_silent" in runner,
     "runtime_ambient_counts": all(x in runner for x in ['"R1": 2','"R7": 3','"R8": 2']),
-    "runtime_event_player": "event_physical_player_created" in runner and "event_player_playing" in runner,
+    "runtime_event_players": (
+        "R7_WELL_TONGS_USE" in runner
+        and "979TONGS.WAV" in runner
+        and "R7_WATER_SWITCHBOARD_SOLVED" in runner
+        and "S152V2.WAV" in runner
+        and "event_physical_player_created_" in runner
+        and "event_player_playing_" in runner
+    ),
     "restore_audio_fingerprints": "Audio fingerprint mismatch" in restore,
+    "well_tongs_audio_ir": "979TONGS.WAV" in ir_text and "0.9501133786848073" in ir_text,
     "restore_legacy_ir": "export_legacy_world_v21.py" in restore,
     "wav_pcm_preserved": "pcm_unchanged" in prepare,
 }
@@ -66,6 +74,6 @@ if errors:
 
 print("OpenAzrael KG-001 physical audio source contract: PASS")
 print(" ambient emitters: R1=2 R7=3 R8=2")
-print(" event physical-player readiness: WIRED")
+print(" triggered events: 979TONGS + S152V2 physical-player readiness WIRED")
 print(" human audibility: MANUAL_PENDING")
 print(" original Miles parity: HOLD")
