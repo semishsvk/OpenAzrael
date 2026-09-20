@@ -147,6 +147,10 @@ checks = {
             'check_prefix + "_down_floor_contact"',
         )
     ),
+    "stair_runs_are_near_landing_to_landing": (
+        runner.count("ascent_distance * 0.98") >= 2
+        and "ascent_distance * 0.94" in runner
+    ),
     "no_fake_stair_fixture": (
         "BoxShape3D.new()" not in runner
         and "StaticBody3D.new()" not in runner
