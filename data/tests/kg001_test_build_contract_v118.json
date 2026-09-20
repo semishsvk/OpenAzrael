@@ -25,7 +25,8 @@
     "test-build receipt records visual capture run_id and visual evidence SHA-256",
     "tracked evidence promotion occurs only after Windows export + exported-EXE startup smoke",
     "build manifest runtime-source identity includes the build-producing manifest/toolchain/export/audio-preparation tools",
-    "build manifest source-contract identity includes tracked canonical audio source_fingerprints registry"
+    "build manifest source-contract identity includes tracked canonical audio source_fingerprints registry",
+    "startup-ready marker is emitted only after required-resource preflight, R1 load and canonical spawn"
   ],
   "ready_status": "READY_FOR_G10_MANUAL_TEST",
   "manual_requirements": [
@@ -46,6 +47,7 @@
     "visual_capture": "run_id + current HEAD + exact R1/spaview, R7/view, R8/Object14 1280x720 SHA-256 rows",
     "package": "EXE/PCK/build-manifest/startup-log SHA-256",
     "promotion": "after export and exported-EXE startup smoke in Windows wrapper",
-    "source_identity": "runtime/project/export/build-producing tools + tracked acceptance/source contracts"
+    "source_identity": "runtime/project/export/build-producing tools + tracked acceptance/source contracts",
+    "startup_ready": "marker is emitted only after resource preflight PASS, successful R1 load and R1/spaview spawn"
   }
 }
