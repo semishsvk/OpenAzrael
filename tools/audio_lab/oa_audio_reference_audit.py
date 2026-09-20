@@ -15,7 +15,7 @@ def load_json(path: Path) -> dict:
 def _production_direct_ref(ref: str) -> bool:
     folded = ref.casefold()
     if folded.startswith("data/gameplay_event_graph"):
-        return True
+        return False
     if not folded.startswith(("scripts/", "main.tscn")):
         return False
     diagnostic_tokens = (
