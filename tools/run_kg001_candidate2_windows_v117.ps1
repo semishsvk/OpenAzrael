@@ -32,6 +32,8 @@ $requiredSource = @(
     "tools/validate_kg001_candidate2_asset_set_v118.py",
     "tools/promote_kg001_candidate_results_v118.py",
     "data/tests/kg001_test_build_contract_v118.json",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
     "export_presets.cfg",
     "data/tests/kg001_toolchain_contract_v117.json",
     "scripts/kg001_visual_capture_v117.gd"
