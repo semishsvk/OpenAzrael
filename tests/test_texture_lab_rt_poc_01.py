@@ -3867,6 +3867,49 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 smoke,
             )
 
+    def test_source_side_stabilization_evidence_is_conservative(self):
+        evidence = json.loads(
+            (
+                ROOT
+                / "data/texture_lab/rt_poc_01_stabilization_evidence.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            evidence["schema"],
+            "openazrael.texture_lab.stabilization_evidence.v1",
+        )
+        corpus = evidence["classic_corpus"]
+        self.assertEqual(corpus["texture_count"], 86)
+        audit = corpus["transparency_audit"]
+        self.assertEqual(audit["status"], "PASS")
+        self.assertEqual(sum(audit["mode_counts"].values()), 86)
+        self.assertEqual(audit["mode_counts"]["ambiguous"], 0)
+        self.assertEqual(audit["policy_violation_count"], 0)
+        self.assertTrue(audit["ready_for_corpus_expansion"])
+        self.assertIn("KEYHOLE#", audit["palette_colorkey_ids"])
+        self.assertIn("BAPFLOR#", audit["palette_colorkey_ids"])
+        self.assertIn("MINETON#", audit["palette_colorkey_ids"])
+
+        baseline = evidence["deterministic_baseline_rebuild"]
+        self.assertEqual(
+            baseline["status"],
+            "PASS_MATCHES_TRACKED_BASELINE_METRICS",
+        )
+        self.assertEqual(baseline["canonical_texture_count"], 12)
+        self.assertEqual(baseline["deterministic_variant_count"], 36)
+        self.assertTrue(
+            baseline["tracked_metric_statistics_exact_match_to_6_decimals"]
+        )
+        self.assertFalse(baseline["canonical_runtime_promotion"])
+
+        real = evidence["remaining_real_runtime_gates"]
+        self.assertIn("BLOCKED", real["restored_smoke_1"]["status"])
+        self.assertFalse(real["restored_smoke_1"]["bypass_allowed"])
+        self.assertFalse(real["recreated_smoke_1"]["bypass_allowed"])
+        self.assertFalse(real["godot_ab_runtime"]["bypass_allowed"])
+        self.assertFalse(evidence["automatic_quality_verdict"])
+        self.assertFalse(evidence["automatic_production_selection"])
+
     def test_texture_lab_cross_contracts_current_repo_pass(self):
         selection = json.loads(
             (ROOT / "tools/texture_lab/config/rt_poc_01_selection.json").read_text(
