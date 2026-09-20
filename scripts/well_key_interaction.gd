@@ -37,9 +37,11 @@ func interact() -> void:
     # (WORLD section0 1245) with no XAF mesh name. Preserve its state transition
     # semantically rather than fabricating a visible model.
     _step("remove_room:RustyTongR6")
+
+    DemoState.remove("rusty_tongs")
     _step("remove_inventory:TONG6")
 
-    if DemoState.retrieve_well_key():
+    if DemoState.complete_well_key_take():
         # Default TAKE completes after the compiled action group: the key ends
         # in inventory and therefore is no longer visible in the room.
         if is_instance_valid(key_visual):
