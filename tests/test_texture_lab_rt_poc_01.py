@@ -1842,6 +1842,13 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                         "x": 1.375,
                         "y": 0.8333333333,
                     },
+                    "source_transparency_mode": "ambiguous",
+                    "source_transparency_review_required": True,
+                    "source_transparency_reason": "synthetic_unproven_colorkey",
+                    "exact_alpha_mask_ok": None,
+                    "alpha_mask_mismatch_pixels": None,
+                    "transparent_rgb_nonzero_pixels": 0,
+                    "visible_legacy_magenta_pixels": 0,
                 }
             ]
         }
@@ -1862,6 +1869,12 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         self.assertEqual(
             rows[0]["source_edge_seam_mae_rgba_0_255"],
             {"x": 4.0, "y": 6.0},
+        )
+        self.assertEqual(rows[0]["source_transparency_mode"], "ambiguous")
+        self.assertTrue(rows[0]["source_transparency_review_required"])
+        self.assertIn(
+            "transparency_classification_ambiguous",
+            rows[0]["attention"],
         )
 
     def test_qwen_bootstrap_verifies_exact_file_identity(self):
