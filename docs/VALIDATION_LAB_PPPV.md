@@ -1,7 +1,7 @@
 # Validation Lab / PPPV
 
-Status: reusable contract/evaluation POC implemented on
-`tooling/remaster-framework-poc-01`.
+Status: reusable contract, planning, Godot driver, evidence, and evaluation POC
+implemented on `tooling/remaster-framework-poc-01`.
 
 PPPV means Physical Player Puzzle Validation. Its purpose is to prove that a
 puzzle can be solved through the same movement, targeting, interaction, trigger,
@@ -22,49 +22,115 @@ A passing scenario must provide evidence for:
 6. expected logical state transition;
 7. absence of explicitly forbidden invented behavior.
 
+Test setup is separate from gameplay actions. Setup may load a room, select an
+evidence-backed spawn view, or establish a required inventory precondition.
+After action execution starts, movement must use production player input and
+interactions must use the production InteractionProbe path.
+
+## Implemented reusable runtime components
+
+- `PPVPEvidenceBus`: frame-indexed runtime evidence with stable event IDs;
+- `PPPVPlayerDriver`: real gameplay movement/look/interact input dispatch;
+- `PPPVNavigator`: mouse-input steering + move_forward toward interaction targets;
+- `OpenAzraelPPPVObserver`: state/audio/action/diagnostic evidence translation;
+- `pppv_scenario_runner.gd`: scenario setup, action execution, evidence capture,
+  and before/after state snapshots;
+- Python runtime-bundle evaluator producing deterministic PASS/FAIL reports.
+
+The navigator never sets the player's position, rotation, velocity, or calls
+`move_and_slide()`. If the target cannot be found, becomes unreachable, or
+movement stalls, it records a navigation failure instead of teleporting.
+
+The Player Driver never calls a target's `interact()` directly. It dispatches
+the production `interact` input event after the production InteractionProbe has
+identified the expected target.
+
+## Existing OpenAzrael evidence reused
+
+The framework does not add a new production trigger system merely for tests.
+`CandidateDiagnostics.event_recorded` already exposes:
+
+- interaction dispatch;
+- trigger enter/exit;
+- room transitions.
+
+The PPPV observer translates those existing diagnostics into the generic
+`trigger` / `room_transition` evidence vocabulary. DemoState signals provide
+inventory/flag/puzzle changes and LegacyEvents provides logical audio evidence.
+
 ## Player action modes
 
 Current reusable modes:
 
 - `input`: gameplay input actions such as move_forward/move_back;
-- `interaction_probe`: the production interaction targeting/probe path;
-- `physics_wait`: physics-frame waiting without logical shortcut.
+- `interaction_probe`: production interaction targeting/probe path;
+- `physics_wait`: physics-frame waiting without a logical shortcut.
 
-Movement and look actions are invalid if declared through a non-input mode.
-Interactions are invalid if declared through a direct input/logical shortcut
-instead of the interaction-probe mode.
-
-Setup state is kept separate from player actions. This permits isolated puzzle
-tests to establish a known inventory precondition without pretending that setup
-itself is part of the physical playthrough. Full-demo/retail playthroughs should
-acquire those items through earlier real-player scenarios.
+Movement and look actions are invalid through a non-input mode. Interactions are
+invalid through a direct logical call instead of the interaction-probe mode.
 
 ## Runtime evidence vocabulary
 
-The framework currently recognizes arbitrary event kinds, with these conventions
-used by OpenAzrael adapters:
+OpenAzrael currently emits or can translate:
 
-- `player_action`: action_id + execution_mode;
-- `movement`: real horizontal/goal progress result;
-- `collision_support`: floor/support continuity and fall-through result;
-- `stair_traversal`: real imported stair ascent/descent result;
-- `interaction_probe`: target reachability/selection;
-- `interaction`: accepted/rejected interaction outcome;
-- `trigger`: trigger activation evidence;
-- `demo_action_step`: ordered source-backed gameplay action step;
-- `audio`: logical/runtime audio event;
-- `animation`: animation or movement effect evidence;
-- additional event kinds may be added by game-specific adapters.
+- `player_action`;
+- `movement` / `movement_sample`;
+- `collision_support`;
+- `stair_traversal`;
+- `interaction_probe`;
+- `trigger`;
+- `room_transition`;
+- `demo_action_step`;
+- `audio`;
+- `state_change`;
+- `animation`;
+- `navigation_failure`.
 
-Every event has a unique event_id, physics/render frame, kind, optional room, and
-structured payload.
+Every evidence event has a unique event_id, physics frame, kind, optional room,
+and structured payload.
 
-## Exact sequences
+## Runtime capability preflight
 
-`EvidenceSequence` verifies ordered evidence streams.
+`tools/openazrael_adapters/runtime_capabilities.py` checks whether a source tree
+has the hooks required by the generic PPPV runtime.
 
-For Well+Tongs, the positive scenario is generated from the recovered demo
-contract and requires:
+The current tooling branch is expected to report:
+
+- generic PPPV runtime core: READY;
+- exact Well+Tongs v118 evidence: not yet available on this branch.
+
+That is deliberate. The exact Well+Tongs implementation lives in the newer
+physical-traversal/v118 development line and is not silently copied into the
+tooling branch.
+
+CI now requires the generic PPPV runtime core to remain available.
+
+## Coverage and planning
+
+`PPPV Coverage Audit` compares the deterministic reference graph with the
+scenario bundle. Every gameplay graph must eventually have at least one declared
+PPPV scenario.
+
+`PPPV Scenario Planner` turns the reference graph into a puzzle-by-puzzle
+authoring backlog containing:
+
+- owning room;
+- source evidence;
+- expected state effects;
+- expected audio effects;
+- other referenced assets;
+- scenario coverage status.
+
+On the current main-derived IR the planner sees five gameplay targets and marks
+all five as authoring-required until physical-player scenarios are supplied.
+
+This mechanism is intended to scale to the full retail build: newly recovered
+puzzles automatically appear as uncovered targets rather than being silently
+omitted from the test suite.
+
+## Exact sequences: Well+Tongs
+
+The positive scenario generated from the v118 contract requires:
 
 1. remove_room:R7Key
 2. play_sound:979TONGS.WAV
@@ -73,93 +139,75 @@ contract and requires:
 5. remove_inventory:TONG6
 6. default_take:R7Key
 
-The current demo evidence states that the compiled action group has no transform
-or rotation opcode, so the generated PPPV scenario explicitly forbids an
-`invented_transform_tween` animation event. The framework therefore tests
-faithfulness rather than adding an animation simply because an animation would
-look plausible.
+The recovered demo action group has no transform or rotation opcode. The PPPV
+scenario therefore explicitly forbids an `invented_transform_tween` event.
+
+Positive path additionally requires real physical approach, InteractionProbe
+selection, interaction dispatch, 979TONGS audio, and the expected state changes.
+
+Negative path uses the same real approach and interaction dispatch without
+rusty_tongs, then proves that no demo action steps or 979TONGS audio occurred and
+that the puzzle state did not change.
 
 ## State hashing
 
 Logical before/after state is canonicalized deterministically and hashed with
-SHA-256.
-
-The evaluator report contains:
+SHA-256. The evaluator report includes:
 
 - PASS/FAIL;
 - validation errors;
+- runtime execution status/failures;
 - evidence event count;
 - before-state SHA-256;
 - after-state SHA-256.
 
-This is intended to become a stable regression oracle for CI and saved
-playthrough evidence.
+## Commands
 
-## OpenAzrael adapters
-
-### Physical traversal v117
-
-The adapter translates the existing physical traversal contract into:
-
-- R1 forward/back real-input floor traversal;
-- R8 step011 ascent/descent;
-- R8 stairs__STAIR2 ascent/descent.
-
-Generated scenarios require real gameplay input, collision support evidence,
-movement progress, imported geometry, real landing probes, and no fake stair
-fixture.
-
-### Well+Tongs v118
-
-The adapter generates two scenarios.
-
-Positive:
-- physical approach using gameplay movement input;
-- target acquired through interaction probe;
-- trigger activation;
-- 979TONGS.WAV event;
-- exact recovered demo action order;
-- rusty_tongs consumed;
-- well_key acquired;
-- R7KeyTake and R7key transitions;
-- no invented transform tween.
-
-Negative:
-- same physical approach and real interaction path;
-- no rusty_tongs precondition;
-- interaction rejection evidence;
-- no demo action steps;
-- no 979TONGS.WAV;
-- no puzzle-state change.
-
-The existing v118 runner currently proves the action stream by calling the
-interaction node directly. That runner remains valuable source/runtime evidence,
-but it is not yet the final PPPV implementation because the new contract requires
-physical approach plus interaction-probe evidence.
-
-## CLI
-
-Adapt existing OpenAzrael contracts:
+Adapt OpenAzrael contracts:
 
     python -m tools.openazrael_adapters.pppv \
       --physical-contract data/tests/kg001_physical_traversal_contract_v117.json \
       --well-contract data/tests/kg001_well_tongs_animation_contract_v118.json \
       --output pppv_scenarios.json
 
-Evaluate one reusable scenario:
+Audit runtime capabilities:
+
+    python -m tools.openazrael_adapters.runtime_capabilities . --require-core
+
+Build a coverage report:
+
+    python -m tools.remaster_framework.coverage \
+      --reference-graph reference_graph.json \
+      --scenarios pppv_scenarios.json
+
+Build a puzzle-by-puzzle authoring plan:
+
+    python -m tools.remaster_framework.planning \
+      --reference-graph reference_graph.json \
+      --scenarios pppv_scenarios.json
+
+Run one scenario in Godot:
+
+    godot --headless --path . \
+      --script res://scripts/validation/pppv_scenario_runner.gd \
+      -- --pppv-scenario=scenario.json --pppv-output=runtime.json
+
+Evaluate its complete runtime bundle:
 
     python -m tools.remaster_framework.evaluate_validation \
-      --scenario scenario.json \
-      --evidence evidence.json \
-      --before-state before.json \
-      --after-state after.json \
+      --runtime-bundle runtime.json \
       --output evaluation.json
 
-## Next integration step
+## Remaining Validation Lab integration
 
-The next runtime-facing work is an evidence bus/driver for Godot that emits this
-generic vocabulary while exercising the existing production Player,
-InteractionProbe, collision geometry, triggers, audio and state code.
+- integrate the exact v117 physical-traversal and v118 Well+Tongs runtime changes
+  with this tooling branch through a deliberate integration branch/merge;
+- emit generic collision_support and stair_traversal evidence from the current
+  v117 physical runner or refactor that runner onto the reusable helpers;
+- add full-demo orchestration where inventory must be acquired through earlier
+  real-player scenarios rather than setup;
+- add save/load continuity and room-transition chains to the full-demo runner;
+- require complete PPPV gameplay coverage before a future retail Known-Good gate.
 
-That integration should be done on top of the current physical-traversal/runtime
-work, not by replacing it with a Python simulation.
+The reusable core must remain game-independent enough to be extracted later for
+OpenCadaver rather than becoming an OpenAzrael-only test harness.
