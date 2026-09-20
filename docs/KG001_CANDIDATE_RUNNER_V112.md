@@ -56,6 +56,6 @@ Issue #11 is validated during the source phase. The validator binds the real 86-
 
 The v117 runner closes a false-positive gap discovered during Candidate 2 manual testing. Earlier automation could PASS by raycasting a floor, placing the player slightly above that point, and waiting while stationary; the full-demo runner also teleported directly to trigger centroids.
 
-v117 instead loads the real main scene and production Player, drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor, and measures fall-through, horizontal progress and floor-contact ratio. It then derives tread levels directly from the imported R8 `step011` mesh and drives the same CharacterBody3D up and down the real staircase. No synthetic proxy stairs are accepted.
+v117 instead loads the real main scene and production Player, drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor, and measures fall-through, horizontal progress and floor-contact ratio. It then derives tread levels directly from the imported R8 `step011__mesh` and `stairs__STAIR2` meshes and drives the same CharacterBody3D up and down both real stair profiles. The first covers the lower ~5-unit risers; the main staircase covers ~12.6-unit risers and is the stronger step-up regression. No synthetic proxy stairs are accepted.
 
 A v110 PASS from Candidate 2 predates this traversal contract and is therefore insufficient for a new G04 PASS without a current v117 runtime result.
