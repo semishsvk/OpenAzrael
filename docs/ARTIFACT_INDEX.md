@@ -71,6 +71,15 @@
 - broader original transparency/blending semantics remain HOLD
 - GitHub Issue #11 remains open pending corrected asset/runtime/manual visual retest
 
+## Audio Lab AL-POC-02 — spectrogram / perceptual QA
+- `docs/AUDIO_LAB_AL_POC_02.md`
+- contract: `data/audio_lab/al_poc_02_contract.json`
+- canonical spectral evidence: `data/audio_lab/al_poc_02_canonical_spectral_evidence.json`
+- spectral analyzer / deterministic PNG review: `tools/audio_lab/oa_audio_spectral.py`
+- canonical drift comparator: `tools/audio_lab/oa_audio_spectral_baseline.py`
+- NumPy dependency pin: `tools/audio_lab/requirements-spectral.txt`
+- source/runtime mutation and all enhancement/restoration remain locked
+
 ## Audio Lab AL-POC-01 — source-safe inventory / QA
 - `docs/AUDIO_LAB_AL_POC_01.md`
 - milestone contract: `data/audio_lab/al_poc_01_contract.json`
