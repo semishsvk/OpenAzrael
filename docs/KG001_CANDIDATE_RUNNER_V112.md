@@ -61,8 +61,9 @@ The wrapper:
 4. verifies the generated build-manifest commit/source/asset identity against current HEAD;
 5. exports the tracked `Windows Candidate 2` debug preset from the still-clean checkout;
 6. launches the exported EXE headlessly for a bounded startup smoke and rejects critical script/autoload/resource-load errors;
-7. writes EXE/PCK/build-manifest SHA-256 metadata and a `READY_FOR_G10_MANUAL_TEST` sidecar receipt;
-8. only after export/startup-smoke, optionally promotes compact runtime evidence into tracked `data/tests`.
+7. writes EXE/PCK/build-manifest SHA-256 metadata and a `READY_FOR_G10_MANUAL_TEST` JSON receipt;
+8. writes `OpenAzrael-KG001-Candidate2-v116.TESTING.txt` beside the package with the manual G10 checklist, F6-F11 diagnostic keys, F11 bug-report steps and build fingerprints;
+9. only after export/startup-smoke, optionally promotes compact runtime evidence into tracked `data/tests`.
 
 Use `-SkipRestore` only when the complete ignored Candidate asset set has already been restored from the canonical corpus. Use `-SkipExport` when validating runtime/captures without building the Windows package. `-ValidateOnly` checks wrapper/source wiring without requiring local commercial assets.
 
