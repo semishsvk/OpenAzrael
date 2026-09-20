@@ -140,7 +140,8 @@
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
-      "#11 LEGACY_COLORKEY_MAGENTA_VISIBLE"
+      "#11 LEGACY_COLORKEY_MAGENTA_VISIBLE",
+      "WELL_TONGS_ANIMATION_TRIGGER_MISSING"
     ],
     "kg001_audio_issue_9": "AMBIENT_AUDIBLE_TRIGGERED_EVENT_AUDIO_NOT_YET_MANUALLY_TESTED",
     "kg001_release_blocked_by_issue_9": true,
@@ -163,7 +164,8 @@
     "kg001_candidate_source_freeze": "REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT",
     "kg001_candidate_freeze_scope": [
       "Issue #6 floor collision must pass active Input-driven R1 traversal",
-      "Critical stair traversal must pass real imported R8 step011 ascent/descent",
+      "Critical stair traversal must pass both real R8 stair profiles up/down",
+      "Well+tongs retrieval must pass v118 multi-frame animation trigger regression",
       "Issue #9 ambient is audible; triggered/event audio remains manual-test pending",
       "Issue #11 indexed AZF color-key transparency",
       "existing Candidate diagnostics and bug capture only"
@@ -174,7 +176,10 @@
     "documentation_runtime_claim_boundary_note": "The earlier documentation-only cleanup did not promote runtime. Candidate 2 promotion now rests on fresh runtime evidence at kg001_runtime_evidence_commit.",
     "kg001_stair_traversal": "MANUAL_FAIL_CANDIDATE2",
     "kg001_release_blocked_by_stair_traversal": true,
-    "kg001_physical_traversal_v117": "SOURCE_CONTRACT_READY_RUNTIME_PENDING"
+    "kg001_physical_traversal_v117": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+    "kg001_well_tongs_animation_v118": "SOURCE_CONTRACT_READY_RUNTIME_EXPECTED_FAIL_CURRENT_IMPLEMENTATION",
+    "kg001_well_tongs_animation_source_observation": "CURRENT_INTERACTION_RETRIEVES_KEY_HIDES_VISUAL_AND_QUEUE_FREES_WITHOUT_EXPLICIT_ANIMATION_TRIGGER",
+    "kg001_release_blocked_by_well_tongs_animation": true
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -185,7 +190,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Fix Candidate 2 critical floor fall-through and stair traversal first. Run source validators plus the new v117 physical traversal gate against restored R1/R7/R8 assets; require active Input-driven R1 floor walking and real R8 step011 ascent/descent to PASS before producing the next Candidate. Triggered/event audio remains manual-test pending; ambient playback was heard.",
+  "next_target": "Fix Candidate 2 critical floor fall-through and stair traversal plus the missing well+tongs retrieval animation trigger. Require v117 physical traversal and v118 well+tongs animation runtime PASS on restored assets before the next Candidate. Ambient audio is audible; triggered/event audio remains manual-test pending.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
