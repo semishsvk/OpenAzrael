@@ -38,7 +38,8 @@
     "spectrogram_db_floor": -64,
     "preview_time_bins": 256,
     "preview_frequency_bins": 128,
-    "spectrogram_floor_rationale": "calibrated on canonical 8-bit corpus to suppress quantization background while retaining weak structure"
+    "spectrogram_floor_rationale": "calibrated on canonical 8-bit corpus to suppress quantization background while retaining weak structure",
+    "outlier_threshold_robust_z": 3.5
   },
   "required_outputs": [
     "spectral_manifest.json",
