@@ -54,6 +54,16 @@ checks = {
         "PhysicsRayQueryParameters3D.create" in runner
         and "direct_space_state.intersect_ray" in runner
     ),
+    "r1_tracks_local_support_while_moving": all(
+        value in runner
+        for value in (
+            "support_missing_frames",
+            "max_below_support",
+            "below_support > 2.5",
+            "R1_forward_walk_support_continuous",
+            "R1_back_walk_support_continuous",
+        )
+    ),
     "r8_uses_imported_real_stairs": all(
         value in runner
         for value in (
