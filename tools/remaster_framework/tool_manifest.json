@@ -321,6 +321,24 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "openazrael_lab_compatibility_audit",
+      "family": "project_release",
+      "description": "Check existing OpenAzrael Texture and Audio Lab contracts against shared source-safety, evidence binding, and manual-selection invariants without issuing subjective quality rankings.",
+      "entrypoint": "tools/openazrael_adapters/lab_compatibility.py",
+      "inputs": [
+        "audio_lab_contracts",
+        "texture_lab_source_status",
+        "texture_production_selection"
+      ],
+      "outputs": [
+        "lab_compatibility_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "world_puzzle_sound_bridge_audit",
       "family": "audio_lab",
       "description": "Analyze the recovered bridge between world actions, puzzle events, and sound records.",
