@@ -19,6 +19,8 @@ const EVENT_ASSET := "S152V2.WAV"
 
 var failures: Array[String] = []
 var checks := 0
+var master_capture: AudioEffectCapture
+var master_capture_index := -1
 
 func _initialize() -> void:
     call_deferred("_run")
@@ -32,6 +34,29 @@ func _settle(frames: int = 3) -> void:
     for _i in range(frames):
         await process_frame
 
+func _install_master_capture(master: int) -> void:
+    master_capture = AudioEffectCapture.new()
+    master_capture.buffer_length = 1.0
+    master_capture_index = AudioServer.get_bus_effect_count(master)
+    AudioServer.add_bus_effect(master, master_capture, master_capture_index)
+    _check(
+        "master_capture_installed",
+        AudioServer.get_bus_effect(master, master_capture_index) == master_capture
+    )
+
+func _captured_peak() -> Dictionary:
+    if master_capture == null:
+        return {"frames": 0, "peak": 0.0}
+    var available := master_capture.get_frames_available()
+    if available <= 0:
+        return {"frames": 0, "peak": 0.0}
+    var frames: PackedVector2Array = master_capture.get_buffer(available)
+    var peak := 0.0
+    for frame in frames:
+        peak = max(peak, abs(frame.x), abs(frame.y))
+    return {"frames": frames.size(), "peak": peak}
+
+
 func _finish(scene: Node = null) -> void:
     var result := {
         "schema": "openazrael.kg001.audio_runtime",
@@ -41,12 +66,18 @@ func _finish(scene: Node = null) -> void:
         "failed": failures,
         "ambient_counts": EXPECTED_AMBIENT_COUNTS,
         "event_asset": EVENT_ASSET,
-        "scope": "G06 physical audio resource/load/player readiness; human audibility and original Miles parity remain separate"
+        "scope": "G06 physical audio resource/load/player readiness plus non-silent Master-bus capture; human audibility/quality and original Miles parity remain separate"
     }
     print("OPENAZRAEL_KG001_AUDIO_V116 " + JSON.stringify(result))
     var events = root.get_node_or_null("LegacyEvents")
     if events != null and events.has_method("clear_physical_audio"):
         events.call("clear_physical_audio")
+    if master_capture_index >= 0:
+        var master := AudioServer.get_bus_index("Master")
+        if master >= 0 and master_capture_index < AudioServer.get_bus_effect_count(master):
+            AudioServer.remove_bus_effect(master, master_capture_index)
+        master_capture_index = -1
+        master_capture = null
     if scene != null and is_instance_valid(scene):
         scene.queue_free()
     quit(0 if failures.is_empty() else 1)
@@ -64,6 +95,7 @@ func _run() -> void:
     if master >= 0:
         _check("master_bus_not_muted", not AudioServer.is_bus_mute(master))
         _check("master_bus_not_silent", AudioServer.get_bus_volume_db(master) > -79.0)
+        _install_master_capture(master)
 
     if not failures.is_empty():
         _finish()
@@ -108,8 +140,10 @@ func _run() -> void:
     events.call("clear_physical_audio")
     _check("event_graph_exists", events.call("has_graph", EVENT_GRAPH))
     if bool(events.call("has_graph", EVENT_GRAPH)):
+        if master_capture != null:
+            master_capture.clear_buffer()
         events.call("run", EVENT_GRAPH)
-        await _settle(1)
+        await create_timer(0.35).timeout
         var physical: Array = events.call("physical_audio_snapshot")
         _check("event_logical_emitted", events.call("captured_audio") == [EVENT_ASSET])
         _check("event_physical_player_created", physical.size() == 1)
@@ -119,5 +153,8 @@ func _run() -> void:
             _check("event_stream_valid", bool(snap.get("stream_valid", false)))
             _check("event_player_playing", bool(snap.get("playing", false)))
             _check("event_master_bus", String(snap.get("bus", "")) == "Master")
+        var captured := _captured_peak()
+        _check("master_capture_frames_nonzero", int(captured.get("frames", 0)) > 0)
+        _check("master_capture_peak_nonzero", float(captured.get("peak", 0.0)) > 0.000001)
 
     _finish(scene)
