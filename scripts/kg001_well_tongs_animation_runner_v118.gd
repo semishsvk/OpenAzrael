@@ -1,11 +1,19 @@
 extends SceneTree
 
 const REQUIRED_ROOM := "res://assets/rooms/R7.glb"
-const WATCH_RADIUS := 140.0
-const OBSERVE_FRAMES := 60
+const TONGS_AUDIO := "res://assets/audio/979TONGS.WAV"
+const EXPECTED_STEPS := [
+    "remove_room:R7Key",
+    "play_sound:979TONGS.WAV",
+    "add_room:R7Key",
+    "remove_room:RustyTongR6",
+    "remove_inventory:TONG6",
+    "default_take:R7Key"
+]
 
 var failures: Array[String] = []
 var check_count := 0
+var captured_steps: Array[String] = []
 
 func _initialize() -> void:
     call_deferred("_run")
@@ -28,141 +36,75 @@ func _find_named(node: Node, wanted: String) -> Node:
             return found
     return null
 
-func _collect_local_nodes(
-    node: Node,
-    center: Vector3,
-    out: Dictionary
-) -> void:
-    if node is Node3D:
-        var n := node as Node3D
-        if n.global_position.distance_to(center) <= WATCH_RADIUS:
-            out[n.get_instance_id()] = {
-                "node": n,
-                "name": String(n.name),
-                "transform": n.global_transform,
-                "visible": n.visible
-            }
-    for child in node.get_children():
-        _collect_local_nodes(child, center, out)
+func _on_demo_action_step(step: String) -> void:
+    captured_steps.append(step)
 
-func _snapshot_local_nodes(room: Node3D, center: Vector3) -> Dictionary:
-    var out: Dictionary = {}
-    _collect_local_nodes(room, center, out)
-    return out
-
-func _transform_changed(a: Transform3D, b: Transform3D) -> bool:
-    return (
-        a.origin.distance_to(b.origin) > 0.01
-        or not a.basis.is_equal_approx(b.basis)
-    )
-
-func _observe_animation_activity(
-    room: Node3D,
-    center: Vector3,
-    baseline: Dictionary
-) -> Dictionary:
-    var changed_frames: Array[int] = []
-    var transform_change_frames: Array[int] = []
-    var visibility_change_frames: Array[int] = []
-    var new_node_frames: Array[int] = []
-    var changed_names: Dictionary = {}
-
-    for frame in range(OBSERVE_FRAMES):
-        await process_frame
-        var current := _snapshot_local_nodes(room, center)
-        var frame_changed := false
-        var frame_transform := false
-        var frame_visibility := false
-        var frame_new := false
-
-        for id in current.keys():
-            var row: Dictionary = current[id]
-            if not baseline.has(id):
-                frame_changed = true
-                frame_new = true
-                changed_names[String(row["name"])] = true
-                continue
-
-            var before: Dictionary = baseline[id]
-            var node := row["node"] as Node3D
-            if not is_instance_valid(node):
-                continue
-            if _transform_changed(
-                before["transform"] as Transform3D,
-                row["transform"] as Transform3D
-            ):
-                frame_changed = true
-                frame_transform = true
-                changed_names[String(row["name"])] = true
-            if bool(before["visible"]) != bool(row["visible"]):
-                frame_changed = true
-                frame_visibility = true
-                changed_names[String(row["name"])] = true
-
-        if frame_changed:
-            changed_frames.append(frame)
-        if frame_transform:
-            transform_change_frames.append(frame)
-        if frame_visibility:
-            visibility_change_frames.append(frame)
-        if frame_new:
-            new_node_frames.append(frame)
-
-    # An instantaneous hide/removal is not an animation. Require visual
-    # activity across multiple distinct frames and either real transform
-    # motion or a multi-frame visibility/new-node sequence.
-    var distributed_activity := changed_frames.size() >= 2
-    var motion_activity := transform_change_frames.size() >= 2
-    var staged_visibility_activity := (
-        visibility_change_frames.size() >= 2
-        or new_node_frames.size() >= 2
-    )
-    return {
-        "changed_frames": changed_frames,
-        "transform_change_frames": transform_change_frames,
-        "visibility_change_frames": visibility_change_frames,
-        "new_node_frames": new_node_frames,
-        "changed_names": changed_names.keys(),
-        "animation_observed": (
-            distributed_activity
-            and (motion_activity or staged_visibility_activity)
+func _finish(scene: Node = null, status_override: String = "") -> void:
+    var status := status_override
+    if status.is_empty():
+        status = "PASS" if failures.is_empty() else "FAIL"
+    var result := {
+        "schema": "openazrael.kg001.well_tongs_animation",
+        "version": 118,
+        "status": status,
+        "checks": check_count,
+        "failed": failures,
+        "captured_steps": captured_steps,
+        "expected_steps": EXPECTED_STEPS,
+        "scope": (
+            "official-demo R7 well+tongs action stream: R7Key remove, "
+            + "979TONGS, R7Key add, RustyTongR6 remove, TONG6 consume, "
+            + "then default key take"
+        ),
+        "boundary": (
+            "No transform Tween is invented because the recovered demo "
+            + "action group contains no transform/rotation opcode."
         )
     }
+    print("OPENAZRAEL_KG001_WELL_TONGS_V118 " + JSON.stringify(result))
+    if scene != null:
+        scene.queue_free()
+    quit(0 if status == "PASS" else (2 if status.begins_with("BLOCKED") else 1))
 
 func _run() -> void:
-    if not ResourceLoader.exists(REQUIRED_ROOM):
+    var missing: Array[String] = []
+    for path in [REQUIRED_ROOM, TONGS_AUDIO]:
+        if not ResourceLoader.exists(path):
+            missing.append(path)
+    if not missing.is_empty():
         print("OPENAZRAEL_KG001_WELL_TONGS_V118 " + JSON.stringify({
             "schema": "openazrael.kg001.well_tongs_animation",
             "version": 118,
             "status": "BLOCKED_MISSING_ASSETS",
-            "missing": [REQUIRED_ROOM]
+            "missing": missing
         }))
         quit(2)
         return
 
     var state = root.get_node_or_null("DemoState")
-    if state == null:
-        print("OPENAZRAEL_KG001_WELL_TONGS_V118 " + JSON.stringify({
-            "schema": "openazrael.kg001.well_tongs_animation",
-            "version": 118,
-            "status": "FAIL",
-            "error": "DemoState missing"
-        }))
-        quit(1)
+    var events = root.get_node_or_null("LegacyEvents")
+    if state == null or events == null:
+        failures.append("required_autoloads")
+        _finish()
         return
 
     state.reset_all()
+    events.set_capture_only(true)
+    events.clear_capture()
+
+    var stream = load(TONGS_AUDIO)
+    _check("979tongs_stream_loads", stream != null)
+    if stream != null:
+        _check(
+            "979tongs_duration_matches_demo",
+            absf(stream.get_length() - 0.9501133786848073) < 0.002
+        )
+
     var packed = load("res://main.tscn")
     if packed == null:
-        print("OPENAZRAEL_KG001_WELL_TONGS_V118 " + JSON.stringify({
-            "schema": "openazrael.kg001.well_tongs_animation",
-            "version": 118,
-            "status": "FAIL",
-            "error": "main.tscn load failed"
-        }))
-        quit(1)
+        failures.append("main_scene_load")
+        _finish()
         return
-
     var scene = packed.instantiate()
     root.add_child(scene)
     await _settle(3)
@@ -177,9 +119,7 @@ func _run() -> void:
     manager.load_room("R7", false)
     await _settle(3)
 
-    var well_interact := _find_named(
-        manager.current_room, "Interact_WellKey"
-    )
+    var well_interact := _find_named(manager.current_room, "Interact_WellKey")
     var key_visual := _find_named(manager.current_room, "nibdyky01")
     _check("well_interaction_present", well_interact != null)
     _check("well_key_visual_present", key_visual is Node3D)
@@ -187,88 +127,38 @@ func _run() -> void:
         _finish(scene)
         return
 
-    # Negative precondition: touching the well without tongs must not acquire
-    # the key, set the retrieval node/flag, hide/move the visual or destroy the
-    # interaction.
-    var negative_transform := (key_visual as Node3D).global_transform
-    var negative_visible := (key_visual as Node3D).visible
+    well_interact.demo_action_step.connect(_on_demo_action_step)
+
+    # Negative path: no tongs means no compiled action group is emitted.
     well_interact.call("interact")
-    await _settle(4)
+    await _settle(1)
+    _check("without_tongs_no_steps", captured_steps.is_empty())
     _check("without_tongs_no_key", not state.has("well_key"))
-    _check(
-        "without_tongs_no_retrieval_node",
-        not state.puzzle_node("R7KeyTake")
-    )
-    _check("without_tongs_no_R7key_flag", not state.flag("R7key"))
-    _check(
-        "without_tongs_visual_transform_unchanged",
-        is_instance_valid(key_visual)
-        and (key_visual as Node3D).global_transform.is_equal_approx(
-            negative_transform
-        )
-    )
-    _check(
-        "without_tongs_visual_stays_visible",
-        is_instance_valid(key_visual)
-        and (key_visual as Node3D).visible == negative_visible
-    )
-    _check(
-        "without_tongs_interaction_remains",
-        is_instance_valid(well_interact)
-    )
+    _check("without_tongs_R7KeyTake_false", not state.puzzle_node("R7KeyTake"))
+    _check("without_tongs_R7key_false", not state.flag("R7key"))
+    _check("without_tongs_key_stays_visible", (key_visual as Node3D).visible)
 
-    # Positive precondition: use the actual inventory state expected by the
-    # production interaction, then observe the real R7 well cluster. The test
-    # intentionally does not prescribe Tween vs AnimationPlayer or a guessed
-    # original trajectory.
+    # Positive path: exact official-demo group plus the default TAKE completion.
     state.acquire("rusty_tongs")
-    var center := (key_visual as Node3D).global_position
-    var baseline := _snapshot_local_nodes(manager.current_room, center)
     well_interact.call("interact")
-    var activity := await _observe_animation_activity(
-        manager.current_room, center, baseline
-    )
+    await _settle(1)
 
-    _check("with_tongs_well_key_acquired", state.has("well_key"))
+    _check("exact_demo_action_order", captured_steps == EXPECTED_STEPS)
     _check(
-        "with_tongs_R7KeyTake_set",
-        state.puzzle_node("R7KeyTake")
+        "logical_979tongs_emitted",
+        events.captured_audio() == ["979TONGS.WAV"]
     )
-    _check("with_tongs_R7key_flag_set", state.flag("R7key"))
+    _check("well_key_acquired", state.has("well_key"))
+    _check("tongs_consumed", not state.has("rusty_tongs"))
+    _check("R7KeyTake_set", state.puzzle_node("R7KeyTake"))
+    _check("R7key_set", state.flag("R7key"))
     _check(
-        "with_tongs_animation_activity_observed",
-        bool(activity["animation_observed"])
+        "well_interaction_consumed",
+        not is_instance_valid(well_interact) or well_interact.is_queued_for_deletion()
+    )
+    _check(
+        "key_absent_after_default_take",
+        is_instance_valid(key_visual) and not (key_visual as Node3D).visible
     )
 
-    var result := {
-        "schema": "openazrael.kg001.well_tongs_animation",
-        "version": 118,
-        "status": "PASS" if failures.is_empty() else "FAIL",
-        "checks": check_count,
-        "failed": failures,
-        "activity": activity,
-        "scope": (
-            "production Interact_WellKey negative/positive preconditions plus "
-            + "multi-frame visual animation activity in the real R7 well cluster"
-        ),
-        "boundary": (
-            "The runner verifies that a real visual animation is triggered, "
-            + "but does not invent the unrecovered original trajectory/timing."
-        )
-    }
-    print("OPENAZRAEL_KG001_WELL_TONGS_V118 " + JSON.stringify(result))
-    scene.queue_free()
-    quit(0 if failures.is_empty() else 1)
-
-func _finish(scene: Node) -> void:
-    var result := {
-        "schema": "openazrael.kg001.well_tongs_animation",
-        "version": 118,
-        "status": "PASS" if failures.is_empty() else "FAIL",
-        "checks": check_count,
-        "failed": failures
-    }
-    print("OPENAZRAEL_KG001_WELL_TONGS_V118 " + JSON.stringify(result))
-    if scene != null:
-        scene.queue_free()
-    quit(0 if failures.is_empty() else 1)
+    _finish(scene)
