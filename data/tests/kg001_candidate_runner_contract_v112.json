@@ -32,7 +32,15 @@
     "candidate2_asset_set_runtime_result": true,
     "candidate2_test_build_contract_validation": true,
     "evidence_promotion_requires_fresh_checkout": true,
-    "centralized_evidence_promotion_v118": true
+    "centralized_evidence_promotion_v118": true,
+    "candidate2_complete_asset_set_v118": true,
+    "fresh_checkout_requires_complete_asset_set": true,
+    "build_manifest_v2_identity_validation": true,
+    "evidence_promotion_helper_v118": true,
+    "evidence_promotion_after_fresh_observation": true,
+    "windows_test_build_contract_v118": true,
+    "exported_exe_startup_smoke": true,
+    "test_build_receipt_ready_for_g10_only": true
   },
-  "runtime_boundary": "Default source-safe CI validates orchestration without commercial assets. Fresh-checkout now additionally requires the complete restored Candidate 2 asset set; --visual-capture and Windows package/startup-smoke remain NOT_EXECUTED until a non-headless restored-asset run."
+  "runtime_boundary": "Default source-safe CI validates v118 asset/build/export orchestration without commercial assets. Fresh-checkout must use the complete asset-set gate; Windows test-build startup smoke and READY_FOR_G10_MANUAL_TEST receipt remain NOT_EXECUTED until the restored-asset local cycle."
 }
