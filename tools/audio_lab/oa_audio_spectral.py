@@ -281,6 +281,70 @@ def _all_metrics_finite(record: dict) -> bool:
     )
     return all(math.isfinite(float(record[k])) for k in metric_keys)
 
+OUTLIER_THRESHOLD = 3.5
+
+def annotate_spectral_outliers(records: list[dict], threshold: float = OUTLIER_THRESHOLD) -> dict:
+    """Annotate robust distribution outliers for review only; never a failure gate."""
+    if threshold <= 0:
+        raise ValueError("outlier threshold must be positive")
+    if len(records) < 5:
+        for rec in records:
+            rec["spectral_outliers"] = []
+        return {"threshold": threshold, "flagged_assets": 0, "flagged_metrics": 0}
+
+    def derived(rec: dict) -> dict[str, float]:
+        nyquist = max(float(rec["sample_rate"]) / 2.0, 1.0)
+        return {
+            "dominant_frequency_ratio": float(rec["dominant_frequency_hz"]) / nyquist,
+            "spectral_centroid_ratio": float(rec["spectral_centroid_hz"]) / nyquist,
+            "spectral_bandwidth_ratio": float(rec["spectral_bandwidth_hz"]) / nyquist,
+            "spectral_rolloff_85_ratio": float(rec["spectral_rolloff_85_hz"]) / nyquist,
+            "spectral_flatness": float(rec["spectral_flatness"]),
+            "high_frequency_energy_ratio": float(rec["high_frequency_energy_ratio"]),
+            "abs_dc_offset": abs(float(rec["dc_offset"])),
+            "crest_factor": float(rec["crest_factor"]),
+            "zero_crossing_rate": float(rec["zero_crossing_rate"]),
+        }
+
+    vectors = [derived(rec) for rec in records]
+    fields = list(vectors[0])
+    stats: dict[str, tuple[float, float]] = {}
+    for field in fields:
+        values = np.asarray([v[field] for v in vectors], dtype=np.float64)
+        median = float(np.median(values))
+        mad = float(np.median(np.abs(values - median)))
+        stats[field] = (median, mad)
+
+    flagged_metrics = 0
+    flagged_assets = 0
+    for rec, vector in zip(records, vectors):
+        outliers = []
+        for field in fields:
+            median, mad = stats[field]
+            if mad <= 1e-12:
+                continue
+            robust_z = 0.67448975 * (vector[field] - median) / mad
+            if abs(robust_z) >= threshold:
+                outliers.append({
+                    "metric": field,
+                    "value": round(float(vector[field]), 9),
+                    "median": round(median, 9),
+                    "mad": round(mad, 9),
+                    "robust_z": round(float(robust_z), 6),
+                    "direction": "high" if robust_z > 0 else "low",
+                })
+        rec["spectral_outliers"] = sorted(outliers, key=lambda x: (-abs(x["robust_z"]), x["metric"]))
+        if outliers:
+            flagged_assets += 1
+            flagged_metrics += len(outliers)
+
+    return {
+        "threshold": threshold,
+        "flagged_assets": flagged_assets,
+        "flagged_metrics": flagged_metrics,
+        "policy": "review-only; spectral distribution outliers never fail AL-POC-02",
+    }
+
 def write_review_html(path: Path, manifest: dict, source_root: Path) -> None:
     rows = []
     for rec in manifest.get("assets", []):
@@ -295,6 +359,7 @@ def write_review_html(path: Path, manifest: dict, source_root: Path) -> None:
             f"<td>{rec['spectral_centroid_hz']:.1f} Hz</td>"
             f"<td>{rec['spectral_rolloff_85_hz']:.1f} Hz</td>"
             f"<td>{rec['spectral_flatness']:.6f}</td>"
+            f"<td>{html.escape(', '.join(x['metric'] for x in rec.get('spectral_outliers', [])) or '—')}</td>"
             f"<td><audio controls preload='none' src='{audio}'></audio></td>"
             "</tr>"
         )
@@ -307,7 +372,7 @@ img{{image-rendering:auto;max-width:256px}} audio{{width:220px}}
 </style></head><body>
 <h1>OpenAzrael Audio Lab — AL-POC-02 Spectral Review</h1>
 <p>Status: <strong>{html.escape(str(manifest.get('status')))}</strong> · Assets: {len(manifest.get('assets', []))}</p>
-<table><thead><tr><th>Asset</th><th>Source</th><th>Spectrogram</th><th>Dominant</th><th>Centroid</th><th>Rolloff 85%</th><th>Flatness</th><th>Preview</th></tr></thead>
+<table><thead><tr><th>Asset</th><th>Source</th><th>Spectrogram</th><th>Dominant</th><th>Centroid</th><th>Rolloff 85%</th><th>Flatness</th><th>Outlier review</th><th>Preview</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></body></html>"""
     path.write_text(doc, encoding="utf-8")
 
@@ -363,6 +428,8 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:
             errors.append({"path": rel, "code": "SPEC_ANALYSIS_FAILED", "detail": str(exc)})
 
+    outlier_summary = annotate_spectral_outliers(records)
+
     digest_after = tree_digest(source, iter_audio_files(source, {".wav", ".wave"}))
     source_unchanged = digest_before == digest_after
     if not source_unchanged:
@@ -384,6 +451,7 @@ def main(argv: list[str] | None = None) -> int:
         "source_tree_sha256": digest_before,
         "source_unchanged": source_unchanged,
         "errors": errors,
+        "outlier_review": outlier_summary,
         "assets": records,
     }
     out.mkdir(parents=True, exist_ok=True)
@@ -396,6 +464,7 @@ def main(argv: list[str] | None = None) -> int:
         "status": manifest["status"],
         "assets": len(records),
         "errors": len(errors),
+        "spectral_outliers": outlier_summary["flagged_assets"],
         "source_unchanged": source_unchanged,
         "source_tree_sha256": digest_before,
         "manifest": str(manifest_path),
