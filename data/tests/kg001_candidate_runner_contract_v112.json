@@ -27,7 +27,12 @@
     "visual_capture_requires_restored_room_audio_assets": true,
     "visual_capture_failure_affects_requested_run": true,
     "visual_capture_does_not_redefine_g09": true,
-    "visual_capture_result_promotion": true
+    "visual_capture_result_promotion": true,
+    "candidate2_complete_asset_set_gate": true,
+    "candidate2_asset_set_runtime_result": true,
+    "candidate2_test_build_contract_validation": true,
+    "evidence_promotion_requires_fresh_checkout": true,
+    "centralized_evidence_promotion_v118": true
   },
-  "runtime_boundary": "Default source-safe CI validates orchestration without commercial assets. --visual-capture remains NOT_EXECUTED until a non-headless restored-asset Candidate 2 run."
+  "runtime_boundary": "Default source-safe CI validates orchestration without commercial assets. Fresh-checkout now additionally requires the complete restored Candidate 2 asset set; --visual-capture and Windows package/startup-smoke remain NOT_EXECUTED until a non-headless restored-asset run."
 }
