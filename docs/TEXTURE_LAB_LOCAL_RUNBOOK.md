@@ -213,13 +213,16 @@ python -m pip install -r tools/texture_lab/requirements-source-safe.txt
 
 RT-POC-01 currently pins Pillow **12.3.0**. The mathematical bake-off and drift calibration refuse to run under a different Pillow version so that the Enhanced reference is not silently changed by a library upgrade.
 
-Rebuild the Enhanced candidates and then recalibrate the deterministic structural envelope:
+Rebuild the Classic manifest, run the full-corpus transparency audit, then rebuild Enhanced candidates and recalibrate the deterministic structural envelope:
 
 ```bash
 python tools/texture_lab/oa_tex_scan.py
+python tools/texture_lab/oa_tex_transparency_audit.py
 python tools/texture_lab/oa_tex_run_poc.py
 python tools/texture_lab/oa_tex_calibrate_drift.py
 ```
+
+The audit writes `.local/texture_lab/transparency_audit.json` and `.md`. `REVIEW_REQUIRED` is not a technical failure: ambiguous cases remain non-destructive and are listed for manual review. `HOLD` means the manifest/policy contract itself is unsafe or incomplete. Corpus expansion remains blocked while ambiguous cases exist, even though deterministic baseline generation may continue safely.
 
 The new `data/texture_lab/rt_poc_01_drift_baseline.json` records the Pillow and Python toolchain used for calibration. The local AI preflight requires the baseline's Pillow version to match the pinned source-safe version.
 
