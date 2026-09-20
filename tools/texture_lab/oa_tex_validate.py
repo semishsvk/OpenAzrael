@@ -161,7 +161,7 @@ def main() -> int:
 
     failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
-        "schema": "openazrael.texture_lab.validation.v6",
+        "schema": "openazrael.texture_lab.validation.v5",
         "variant": args.variant,
         "factor": args.factor,
         "only": sorted(wanted) if wanted else None,
