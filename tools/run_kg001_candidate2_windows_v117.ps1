@@ -96,9 +96,6 @@ $candidateArgs = @(
     "--fresh-checkout",
     "--visual-capture"
 )
-if ($PromoteResults) {
-    $candidateArgs += "--promote-results"
-}
 Invoke-Checked $Python $candidateArgs
 
 $buildManifestPath = Join-Path $Root "data/generated/kg001_candidate_build_manifest.json"
@@ -249,6 +246,12 @@ if (-not $SkipExport) {
         ConvertTo-Json -Depth 8 |
         Set-Content -Encoding utf8 "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json"
     $receipt | ConvertTo-Json -Depth 8
+}
+
+if ($PromoteResults) {
+    Invoke-Checked $Python @(
+        "tools/promote_kg001_candidate_results_v118.py"
+    )
 }
 
 Write-Host "OpenAzrael KG-001 Candidate 2 local Windows cycle completed."
