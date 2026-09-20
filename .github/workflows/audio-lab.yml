@@ -38,9 +38,12 @@ jobs:
           python tools/audio_lab/oa_audio_validate.py --help >/dev/null
           python tools/audio_lab/oa_audio_reference_audit.py --help >/dev/null
           python tools/audio_lab/oa_audio_repo_evidence.py --help >/dev/null
+          python tools/audio_lab/oa_audio_repo_drift.py --help >/dev/null
           python tools/audio_lab/oa_audio_review_pack.py --help >/dev/null
           python tools/audio_lab/oa_audio_run_poc.py --help >/dev/null
       - name: Audit repository audio evidence
         run: python tools/audio_lab/oa_audio_repo_evidence.py --output .tmp/audio_lab/repo_evidence.json
+      - name: Check repository mapping drift
+        run: python tools/audio_lab/oa_audio_repo_drift.py --output .tmp/audio_lab/repo_mapping_drift.json
       - name: Run AL-POC-01 tests
         run: python -m unittest discover -s tests -p "test_audio_lab_*.py" -v
