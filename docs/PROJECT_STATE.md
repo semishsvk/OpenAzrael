@@ -1,7 +1,7 @@
 # OpenAzrael Project State
 
 **Canonical checkpoint:** `v116-context-v31`
-**Date:** 2026-09-19
+**Date:** 2026-09-20
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
 
@@ -16,11 +16,20 @@ Development order remains `DEMO -> faithful reconstruction -> validation -> gene
 The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v31**.
 
 ## 3. Immediate execution priority
-Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v30 combines the two-sided collision repair, physical-audio readiness, and a conservative `# + quantized-magenta` color-key pipeline that preserves RGBA into GLB `MASK` materials. All fixes are source-ready but still require restored-asset/runtime and human confirmation.
+Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v31 now carries the independently audited source hardening: two-sided collision plus canonical R1/R7/R8 floor probes, PCM and Master-bus audio non-silence checks, and indexed-AZF color-key detection with fail-closed ambiguity handling and GLB `MASK` edge-bleed hardening. All fixes are source/CI ready but still require restored-asset runtime and human confirmation.
 
-The current priority is the corrected **KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v30 pipeline, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
+The current priority is the corrected **KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v31 pipeline, generate the build fingerprint manifest, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, run canonical R1/R7/R8 graphical captures, then complete G10 through the normal graphical build. F11 now packages run-scoped telemetry plus build/run provenance.
 
 Localization runtime work and the deferred v117 forensic copy/mutator audit follow the first clean Candidate 2 runtime/manual cycle; neither is part of the current blocker-fix scope.
+
+### Independent audit hardening — context v31
+- Pinned source-safe toolchain: Python 3.11.11, NumPy 2.3.5, Pillow 12.3.0, trimesh 5.1.0 and Godot 4.7.2.stable.official.ed1daf0bf.
+- `.github/workflows/kg001-source-safe.yml` validates the toolchain, generated build manifest, export contract, Python compile, Godot parse/import, canonical KG-001 source suite and clean working tree.
+- Candidate diagnostics are run-scoped under `user://openazrael_candidate2_runs/<run_id>/` with `run_manifest.json`, `events.jsonl`, state dumps and F11 bug packages tied to build commit identity.
+- `tools/write_kg001_build_manifest.py` fingerprints local room/audio/Classic texture payloads and source contracts without embedding commercial asset bytes.
+- `Windows Candidate 2` export preset includes the generated build manifest and remains source-contract only until a real export/runtime pass.
+- `scripts/kg001_visual_capture_v117.gd` defines canonical R1/R7/R8 1280x720 screenshots as observational regression evidence; hashes are not a cross-GPU pixel-perfect oracle.
+- PR #12 remains draft while restored-asset runtime, graphical capture and G10 are pending.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -30,10 +39,11 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 
 ### Legacy color-key textures — Issue #11
 - AZF output remains RGB for ordinary textures.
-- Only `#` filenames with observed quantized magenta key pixels are converted to RGBA.
-- Shared key threshold: R/B >= 248 and G <= 12; keyed pixels use alpha 0 with zeroed RGB.
-- XAF->GLB preserves the mask as PBR alpha mode MASK / cutoff 0.5.
-- Source-safe synthetic regression plus restored-corpus audit is wired into the Candidate runner.
+- `#` assets use decoded indexed palette evidence: exactly one used engine-quantized magenta-like palette index is accepted as the binary key; multiple used candidates fail closed.
+- Shared magenta class after optional engine-style component quantization remains R/B >= 248 and G <= 12.
+- Source Classic PNG evidence keeps deterministic zero hidden RGB under alpha=0; runtime GLB MASK textures fill hidden RGB from nearest opaque texels without changing alpha, reducing filtered edge darkening/fringing.
+- XAF->GLB preserves binary alpha as PBR alpha mode MASK / cutoff 0.5.
+- Source-safe synthetic regression plus restored-corpus/index audit is wired into the Candidate runner.
 - Complete original renderer transparency/blending semantics remain HOLD.
 
 ### Classic audio
