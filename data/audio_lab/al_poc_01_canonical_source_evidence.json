@@ -1,0 +1,70 @@
+{
+  "schema": "openazrael.audio_lab.canonical_source_evidence",
+  "version": 1,
+  "milestone": "AL-POC-01",
+  "status": "PASS",
+  "verified_on": "2026-09-20",
+  "source_archive": "openazrael_godot_poc_v108.zip",
+  "source_subpath": "data/audio/original_audio",
+  "source_archive_sha256": "ffed8233f3944a340cf349a33e2981a54d3b4f8f0e176e901cc74cb787324f76",
+  "source_file_count": 30,
+  "expected_file_count": 30,
+  "source_tree_sha256": "d7a283d07b948249827d026d932dd5716101f48e452112f1248c95dd5cb47cba",
+  "current_ir_canonical_fields_match": true,
+  "current_ir_canonical_fields_fingerprint_fnv1a64": "a753085a7e711e06",
+  "missing_expected_assets": [],
+  "unexpected_assets": [],
+  "errors": 0,
+  "warnings": 2,
+  "warning_assets": [
+    {
+      "filename": "981PULL.WAV",
+      "code": "CANON_TERMINAL_PAD_MISSING"
+    },
+    {
+      "filename": "S137.WAV",
+      "code": "CANON_TERMINAL_PAD_MISSING"
+    }
+  ],
+  "signal_qa_observations": {
+    "clipping_threshold_fraction": 0.01,
+    "assets_over_clipping_threshold": [],
+    "silence_threshold_amplitude": 0.01,
+    "suspicious_silence_threshold_seconds": 0.5,
+    "assets_with_suspicious_trailing_silence": [
+      {
+        "filename": "S134.WAV",
+        "trailing_silence_seconds": 1.365804989
+      },
+      {
+        "filename": "S16.WAV",
+        "trailing_silence_seconds": 0.519274376
+      },
+      {
+        "filename": "S174ELP2.WAV",
+        "trailing_silence_seconds": 0.557460317
+      },
+      {
+        "filename": "S188.WAV",
+        "trailing_silence_seconds": 0.571519274
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "evidence_boundary": {
+    "proved": [
+      "30-file corpus completeness",
+      "SHA-256 identity against current recovered IR",
+      "channels/sample-rate/bit-depth/frame-count/duration metadata identity",
+      "source-tree digest",
+      "RIFF structural warning inventory",
+      "signal-level clipping and near-silence screening"
+    ],
+    "not_proved": [
+      "human audibility",
+      "Godot runtime playback",
+      "original Miles pan/volume parity",
+      "subjective audio quality"
+    ]
+  }
+}
