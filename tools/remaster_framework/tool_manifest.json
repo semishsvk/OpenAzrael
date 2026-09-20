@@ -221,6 +221,23 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "pppv_scenario_planner",
+      "family": "validation_lab",
+      "description": "Build a deterministic puzzle-by-puzzle validation authoring backlog from the reference graph, including rooms, source evidence, expected state/audio effects, and scenario coverage.",
+      "entrypoint": "tools/remaster_framework/planning.py",
+      "inputs": [
+        "reference_graph",
+        "optional_pppv_scenario_bundle"
+      ],
+      "outputs": [
+        "validation_authoring_plan"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "puzzle_event_ir_audit",
       "family": "validation_lab",
       "description": "Audit recovered puzzle event IR and its structural assumptions.",
