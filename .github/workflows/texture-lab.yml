@@ -41,6 +41,9 @@ jobs:
           python tools/texture_lab/oa_tex_review_pack_01.py render \
             --out-json .tmp/texture_lab/review_pack_01/source_plan.json \
             --out-md .tmp/texture_lab/review_pack_01/source_plan.md
+          python tools/texture_lab/oa_tex_review_pack_01.py status \
+            --out-json .tmp/texture_lab/review_pack_01/availability.json \
+            --out-md .tmp/texture_lab/review_pack_01/availability.md
       - name: Dry-run every staged AI preset
         shell: bash
         run: |
