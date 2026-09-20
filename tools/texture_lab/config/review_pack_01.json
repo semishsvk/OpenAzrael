@@ -1,0 +1,226 @@
+{
+  "schema": "openazrael.texture_lab.review_pack_01.v1",
+  "status": "OBSERVATIONAL_PLAN",
+  "title": "Texture Lab Review Pack 01 — R1/R7/R8 canonical POC",
+  "scope": "All 12 canonical RT-POC-01 textures; prioritization controls human review order only.",
+  "automatic_selection": false,
+  "automatic_quality_verdict": false,
+  "automatic_production_promotion": false,
+  "comparison_model": {
+    "A": "Classic immutable source reference",
+    "B": "Deterministic Enhanced reference using the per-texture enhanced_reference method",
+    "C": "Eligible AI Restored and/or AI Recreated candidate evidence when a staged run exists and passes its normal evidence gates",
+    "note": "C may contain zero, one or two AI candidates according to the existing AI review policy. Missing AI output never changes A/B source readiness."
+  },
+  "priority_levels": {
+    "P1": "Hero/problematic or highest-information texture; review first.",
+    "P2": "Representative material/architecture/object texture; review after P1.",
+    "P3": "Lower-risk coverage texture; review after P1/P2."
+  },
+  "treatment_classes": {
+    "safe_upscale": {
+      "purpose": "Use deterministic Enhanced as the default improvement baseline; AI must beat it without reducing fidelity.",
+      "ai_role": "optional_comparison_only"
+    },
+    "ai_recreation_candidate": {
+      "purpose": "Run the full Classic/Enhanced/AI comparison because learned reconstruction may add useful material/artwork detail.",
+      "ai_role": "full_observational_comparison"
+    },
+    "conservative": {
+      "purpose": "Semantic, alpha, text, puzzle, transparency or geometry risk dominates; preserve Classic/Enhanced truth and treat AI as strictly constrained or disabled.",
+      "ai_role": "policy_gated_high_risk"
+    }
+  },
+  "rubric": {
+    "scale_min": 1,
+    "scale_max": 5,
+    "higher_is_better": true,
+    "allow_not_applicable": true,
+    "automatic_aggregate": false,
+    "automatic_threshold": false,
+    "dimensions": [
+      {
+        "id": "fidelity_to_original",
+        "label": "Fidelity to original",
+        "anchor_1": "Materially changes authored composition/identity.",
+        "anchor_5": "Preserves authored composition, geometry and identity."
+      },
+      {
+        "id": "readability_detail",
+        "label": "Readability / detail",
+        "anchor_1": "Less readable or smeared.",
+        "anchor_5": "Clearer useful detail at gameplay scale without false structure."
+      },
+      {
+        "id": "material_believability",
+        "label": "Material believability",
+        "anchor_1": "Plastic/incorrect material response.",
+        "anchor_5": "Plausible material detail consistent with source."
+      },
+      {
+        "id": "atmosphere_period_feel",
+        "label": "Atmosphere / period feel",
+        "anchor_1": "Visually out of place for Azrael's Tear.",
+        "anchor_5": "Preserves the original visual character and mood."
+      },
+      {
+        "id": "tiling_seam_safety",
+        "label": "Tiling / seam safety",
+        "anchor_1": "Introduces obvious discontinuity.",
+        "anchor_5": "No worse than Classic; required repeat/seam boundaries remain safe."
+      },
+      {
+        "id": "semantic_gameplay_safety",
+        "label": "Semantic / gameplay safety",
+        "anchor_1": "Changes symbols, puzzle cues, openings, text or object meaning.",
+        "anchor_5": "All gameplay-relevant semantics remain exact."
+      },
+      {
+        "id": "artifact_cleanliness",
+        "label": "Artifact cleanliness",
+        "anchor_1": "Strong ringing, false edges, hallucinated microdetail or anatomy errors.",
+        "anchor_5": "No material enhancement artifacts visible."
+      },
+      {
+        "id": "alpha_transparency_safety",
+        "label": "Alpha / transparency safety",
+        "anchor_1": "Mask/transparency meaning is damaged.",
+        "anchor_5": "Source alpha/transparency policy is preserved exactly where applicable."
+      }
+    ]
+  },
+  "textures": [
+    {
+      "id": "CORIROCK",
+      "priority": "P1",
+      "treatment_class": "safe_upscale",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "material_microdetail",
+        "avoid_plastic_rock",
+        "gameplay_scale_detail"
+      ]
+    },
+    {
+      "id": "ECRDOR01",
+      "priority": "P2",
+      "treatment_class": "ai_recreation_candidate",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "doorway_opening_geometry",
+        "trim_proportions",
+        "shared_architectural_use"
+      ]
+    },
+    {
+      "id": "VSTPAP01",
+      "priority": "P3",
+      "treatment_class": "conservative",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "paper_silhouette",
+        "stains_markings_preserved",
+        "no_invented_writing"
+      ]
+    },
+    {
+      "id": "KEYHOLE#",
+      "priority": "P1",
+      "treatment_class": "conservative",
+      "enhanced_reference": "nearest",
+      "review_focus": [
+        "exact_binary_mask",
+        "hard_edge_silhouette",
+        "no_ai_required"
+      ]
+    },
+    {
+      "id": "WEL_WWAL",
+      "priority": "P2",
+      "treatment_class": "safe_upscale",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "carved_wall_detail",
+        "u_edge_continuity",
+        "no_false_relief"
+      ]
+    },
+    {
+      "id": "WEL_BDY1",
+      "priority": "P2",
+      "treatment_class": "ai_recreation_candidate",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "anatomy_pose_silhouette",
+        "expression_props",
+        "no_invented_body_detail"
+      ]
+    },
+    {
+      "id": "WEL_PUZ1",
+      "priority": "P1",
+      "treatment_class": "conservative",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "puzzle_readability",
+        "holes_levers_plates_alignment",
+        "no_semantic_geometry_change"
+      ]
+    },
+    {
+      "id": "WEL_FLOR",
+      "priority": "P2",
+      "treatment_class": "safe_upscale",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "circular_structure",
+        "opening_edge_placement",
+        "near_full_u_surface"
+      ]
+    },
+    {
+      "id": "BAPFLOR#",
+      "priority": "P1",
+      "treatment_class": "conservative",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "exact_alpha_lock",
+        "u_v_repeat_seams",
+        "stone_detail_without_pattern_drift"
+      ]
+    },
+    {
+      "id": "BAPGLASS",
+      "priority": "P2",
+      "treatment_class": "conservative",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "translucent_style",
+        "no_invented_reflections",
+        "no_environment_hallucination"
+      ]
+    },
+    {
+      "id": "BAPTAP",
+      "priority": "P1",
+      "treatment_class": "ai_recreation_candidate",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "four_quarter_atlas_lock",
+        "all_figures_objects_preserved",
+        "no_cross_panel_hallucination"
+      ]
+    },
+    {
+      "id": "SHIELD1",
+      "priority": "P1",
+      "treatment_class": "conservative",
+      "enhanced_reference": "lanczos",
+      "review_focus": [
+        "exact_text_characters",
+        "line_layout",
+        "shield_symbol_geometry"
+      ]
+    }
+  ]
+}
