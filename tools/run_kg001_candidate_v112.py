@@ -12,6 +12,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
+BUILD_MANIFEST=ROOT/"data/generated/kg001_candidate_build_manifest.json"
 FORBIDDEN_TRACKED_PREFIXES=(
     "original/","raw/","source_original/","data/audio/original_audio/",
     "assets/audio/","assets/rooms/","assets/textures/classic/"
@@ -109,8 +110,27 @@ def main():
     asset_present={str(p.relative_to(ROOT)):p.is_file() for p in ROOMS}
     asset_ignored={str(p.relative_to(ROOT)):ignored(p) for p in ROOMS}
 
+    godot=find_godot(args.godot)
     source=[]
     source_ok=True
+
+    manifest_cmd=[
+        sys.executable,
+        "tools/write_kg001_build_manifest.py",
+    ]
+    if godot:
+        manifest_cmd += ["--godot",godot]
+    manifest_proc=run(manifest_cmd)
+    manifest_item={
+        "command":manifest_cmd,
+        "returncode":manifest_proc.returncode,
+        "status":"PASS" if manifest_proc.returncode==0 and BUILD_MANIFEST.is_file() else "FAIL",
+        "output":manifest_proc.stdout[-12000:],
+    }
+    source.append(manifest_item)
+    if manifest_item["status"]!="PASS":
+        source_ok=False
+
     for cmd in SOURCE_COMMANDS:
         proc=run(cmd)
         item={"command":cmd,"returncode":proc.returncode,"status":"PASS" if proc.returncode==0 else "FAIL","output":proc.stdout[-12000:]}
@@ -118,7 +138,6 @@ def main():
         if proc.returncode!=0:
             source_ok=False
 
-    godot=find_godot(args.godot)
     godot_version=""
     import_status="NOT_RUN"
     runtimes={}
@@ -162,6 +181,8 @@ def main():
         "version":112,
         "status":"PASS" if fresh_pass else ("NOT_REQUESTED" if not args.fresh_checkout else "FAIL"),
         "commit_sha":head,
+        "build_manifest":str(BUILD_MANIFEST.relative_to(ROOT)) if BUILD_MANIFEST.is_file() else "",
+        "build_manifest_present":BUILD_MANIFEST.is_file(),
         "godot_executable":godot or "",
         "godot_version":godot_version,
         "godot_import_status":import_status,
@@ -181,6 +202,7 @@ def main():
         "version":112,
         "status":"PASS" if source_ok and full_runtime_pass and (not args.fresh_checkout or fresh_pass) else "INCOMPLETE_OR_FAIL",
         "commit_sha":head,
+        "build_manifest":str(BUILD_MANIFEST.relative_to(ROOT)) if BUILD_MANIFEST.is_file() else "",
         "godot_version":godot_version,
         "godot_import_status":import_status,
         "source_validators":"PASS" if source_ok else "FAIL",
