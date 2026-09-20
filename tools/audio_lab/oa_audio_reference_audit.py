@@ -163,9 +163,11 @@ def build_audit(manifest: dict, legacy_ir: dict, event_graph: dict) -> dict:
     expected_unmapped = [r for r in rows if r["mapping_status"] == "EXPECTED_UNMAPPED"]
     unexpected_orphans = [r for r in rows if r["mapping_status"] == "UNEXPECTED_ORPHAN"]
     by_type: dict[str, int] = defaultdict(int)
+    names_by_type: dict[str, list[str]] = defaultdict(list)
     for row in rows:
         for mapping_type in row["mapping_types"]:
             by_type[mapping_type] += 1
+            names_by_type[mapping_type].append(row["filename"])
 
     return {
         "schema": "openazrael.audio_lab.reference_audit",
@@ -185,7 +187,12 @@ def build_audit(manifest: dict, legacy_ir: dict, event_graph: dict) -> dict:
             "unmapped_asset_names": [r["filename"] for r in expected_unmapped + unexpected_orphans],
             "expected_unmapped_asset_names": [r["filename"] for r in expected_unmapped],
             "unexpected_orphan_asset_names": [r["filename"] for r in unexpected_orphans],
+            "mapped_asset_names": [r["filename"] for r in mapped],
             "mapped_assets_by_type": dict(sorted(by_type.items())),
+            "mapped_asset_names_by_type": {
+                key: sorted(values, key=str.casefold)
+                for key, values in sorted(names_by_type.items())
+            },
             "broken_reference_count": len(broken),
         },
         "broken_references": broken,
