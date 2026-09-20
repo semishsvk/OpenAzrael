@@ -1,0 +1,37 @@
+{
+  "schema": "openazrael.texture_lab.ai_backends.v1",
+  "status": "POC",
+  "ai_restored": {
+    "primary": {
+      "backend": "official_realesrgan_python",
+      "model": "RealESRGAN_x4plus",
+      "factor": 4,
+      "tile": 0,
+      "fp32": true,
+      "policy": "Checkpoint path and SHA-256 are mandatory in the run record."
+    },
+    "secondary": {
+      "backend": "official_realesrgan_python",
+      "model": "realesr-general-x4v3",
+      "factor": 4,
+      "tile": 0,
+      "fp32": true,
+      "denoise_strength_candidates": [0.25, 0.5, 0.75]
+    }
+  },
+  "ai_recreated": {
+    "primary": {
+      "orchestrator": "ComfyUI",
+      "model_label": "Qwen-Image-Edit-2511",
+      "fixed_seed": 734234,
+      "workflow_policy": "Import the current native ComfyUI template, export API format, then fingerprint the exact exported JSON and all model files."
+    },
+    "secondary": {
+      "orchestrator": "ComfyUI",
+      "model_label": "FLUX.1-Kontext-dev",
+      "fixed_seed": 734234,
+      "status": "comparison_candidate_license_review_required"
+    }
+  },
+  "automatic_production_promotion": false
+}

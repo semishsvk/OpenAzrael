@@ -58,6 +58,13 @@ assets/rooms/
 assets/textures/classic/
 docs/*.png
 
+# Texture Lab generated pixels/previews remain local. Commit tools and reviewed metadata only.
+assets/textures/enhanced/
+assets/textures/ai_restored/
+assets/textures/ai_recreated/
+assets/textures/comparisons/
+assets/textures/reports/
+
 # Large reproducible forensic indexes; commit fingerprints, not multi-MB dumps.
 data/audio/trusted_object_relative_xrefs_v33.json
 data/audio/le_fixups_v27.json
@@ -69,3 +76,6 @@ data/puzzle_action_opcode_retail_corpus_v19.json
 data/audio/le_fixups_v27.json
 data/audio/trusted_object_relative_xrefs_v33.json
 data/audio/canonical_object_relative_xrefs_v36.json
+
+# Local tool/model runtimes
+.local/

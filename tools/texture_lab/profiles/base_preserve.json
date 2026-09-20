@@ -1,0 +1,26 @@
+{
+  "schema": "openazrael.texture_lab.material_profile.v1",
+  "name": "base_preserve",
+  "preserve": [
+    "composition",
+    "material boundaries",
+    "major edge locations",
+    "ornaments",
+    "symbols",
+    "color palette"
+  ],
+  "enhance": [
+    "surface microdetail",
+    "material readability"
+  ],
+  "forbid": [
+    "new objects",
+    "new symbols",
+    "new text",
+    "changed geometry",
+    "new cast shadows",
+    "new baked lighting"
+  ],
+  "default_strength": 0.25,
+  "status": "POC_UNCALIBRATED"
+}

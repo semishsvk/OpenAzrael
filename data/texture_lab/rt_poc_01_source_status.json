@@ -1,0 +1,397 @@
+{
+  "schema": "openazrael.texture_lab.rt_poc_01_source_status.v1",
+  "date": "2026-09-20",
+  "canonical_context": "v116-context-v28",
+  "branch": "texture-lab-rt-poc-01",
+  "source_status": "SOURCE_SAFE_READY_FOR_LOCAL_RUNTIME",
+  "real_ai_outputs": "PENDING",
+  "real_realesrgan_execution": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
+  "real_qwen_execution": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
+  "godot_texture_lab_runtime": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
+  "ci": {
+    "workflow": "Texture Lab source-safe tests",
+    "run_number": 697,
+    "conclusion": "success",
+    "python": [
+      "3.11",
+      "3.12"
+    ],
+    "unit_tests": "PASS",
+    "all_staged_ai_presets_dry_run": "PASS",
+    "godot_source_contract": "PASS",
+    "production_selection_registry": "PASS_EMPTY_INVARIANT"
+  },
+  "pipeline": [
+    "classic",
+    "enhanced",
+    "ai_generation",
+    "technical_qa",
+    "structural_qa",
+    "manual_review_queue",
+    "fingerprinted_visual_review_pack",
+    "manual_stage_approval"
+  ],
+  "review_evidence": {
+    "visual_review_pack_schema": 2,
+    "full_comparison": "ASPECT_RATIO_SAFE_CHECKERBOARD",
+    "deterministic_detail_regions": [
+      "upper_left",
+      "center",
+      "lower_right"
+    ],
+    "repeat_sampling_preview": "3x3",
+    "source_relative_seam_metrics": true,
+    "approval_receipt_schema": 5,
+    "changed_reviewed_pixels_invalidate_approval": true,
+    "structured_manual_review": {
+      "schema": "openazrael.texture_lab.manual_review.v1",
+      "required_before_stage_approval": true,
+      "per_texture_decisions": [
+        "ACCEPTED_FOR_STAGE",
+        "HOLD",
+        "REJECTED"
+      ],
+      "accepted_requires_all_required_checks_true": true,
+      "evidence_change_status": "STALE",
+      "init_requires_complete_stage_evidence": true,
+      "changed_candidate_status": "STALE",
+      "stage_approval_requires_nonempty_note": true,
+      "binds_complete_stage_evidence_sha256": true
+    },
+    "godot_stage_profile": {
+      "schema": "openazrael.texture_lab.review_texture_manifest.v1",
+      "stage_copy": "<run_dir>/godot_review_profile.json",
+      "convenience_pointer": ".local/texture_lab/runtime_manifests/review_current.json",
+      "export_allowed": false,
+      "bound_into_structured_manual_review": true
+    },
+    "generation_provenance": {
+      "required": true,
+      "restored": "source/output hashes in ai_restore_run must match visual-review source/candidate hashes and canonical RealESRGAN model/factor/backend",
+      "recreated": "Qwen job source/conditioning/output/workflow/model/seed hashes must match current evidence; atlas stitch must match reviewed final candidate",
+      "intermediate_atlas_parts_bound_into_evidence": true
+    },
+    "local_html_handoff": {
+      "path": "<run_dir>/review_handoff.html",
+      "schema": "openazrael.texture_lab.review_handoff.v1",
+      "generated_after": "godot_review_profile",
+      "automatic_approval": false,
+      "approval_evidence": false,
+      "purpose": "human convenience surface for full/detail/alpha/tile/Godot/manual-check review"
+    },
+    "alpha_evidence": {
+      "status": "SOURCE_SAFE_READY",
+      "expected_alpha": true,
+      "candidate_alpha": true,
+      "absolute_delta": true,
+      "expected_edge_band": true,
+      "fingerprinted_into_stage_evidence": true
+    }
+  },
+  "godot_lab": {
+    "isolated": true,
+    "gameplay_state_access": false,
+    "ab_compare": true,
+    "reference_tier_cycle": true,
+    "shared_tile_and_lighting_state": true
+  },
+  "next_real_execution": "Run restored_smoke_1 on a development machine with the pinned Python 3.11 / torch 2.1.2 / torchvision 0.16.2 / BasicSR 1.4.2 / Real-ESRGAN v0.3.0 runtime and verified RealESRGAN_x4plus checkpoint. Review CORIROCK outputs before approving restored_smoke_4.",
+  "launchpad": {
+    "entrypoint": "tools/texture_lab/oa_tex_first_run.py",
+    "commands": [
+      "status",
+      "prepare-baseline",
+      "bootstrap-realesrgan",
+      "check-restored-smoke-1",
+      "restored-smoke-1",
+      "check-recreated-smoke-1",
+      "recreated-smoke-1"
+    ],
+    "poc_source_identity_check": "12_CANONICAL_IDS_PLUS_EXPECTED_DIMENSIONS",
+    "torch_installation_policy": "EXPLICIT_MACHINE_SPECIFIC_PREREQUISITE",
+    "dependency_install_guard": "TORCH_AND_TORCHVISION_MUST_IMPORT_BEFORE_REALESRGAN_DEPS",
+    "transparency_audit": {
+      "tool": "tools/texture_lab/oa_tex_transparency_audit.py",
+      "classic_texture_count": 86,
+      "real_corpus_evidence_status": "PASS",
+      "mode_counts": {
+        "opaque": 76,
+        "palette_colorkey": 10,
+        "true_alpha": 0,
+        "ambiguous": 0
+      },
+      "manual_review_required_count": 0,
+      "policy_violation_count": 0,
+      "ready_for_corpus_expansion": true
+    }
+  },
+  "production_selection": {
+    "registry": "data/texture_lab/production_selection.json",
+    "status": "EMPTY_BY_DESIGN",
+    "automatic_selection": false,
+    "command": "tools/texture_lab/oa_tex_production_selection.py",
+    "requires_current_stage_approval": true,
+    "binds_candidate_hash": true,
+    "binds_classic_source_hash": true,
+    "binds_review_pack_hash": true,
+    "binds_stage_receipt_hash": true,
+    "changed_evidence_status": "STALE"
+  },
+  "runtime_manifest": {
+    "tool": "tools/texture_lab/oa_tex_runtime_manifest.py",
+    "schema": "openazrael.texture_lab.runtime_texture_manifest.v1",
+    "profiles": [
+      "classic",
+      "enhanced",
+      "remastered"
+    ],
+    "remastered_resolution": "CURRENT_EXPLICIT_PRODUCTION_SELECTION_ELSE_CLASSIC",
+    "stale_selection_behavior": "CLASSIC_FALLBACK_PLUS_STALE_SIGNAL",
+    "strict_mode": true,
+    "godot_resolver": "tools/texture_lab/godot/texture_profile_resolver.gd",
+    "godot_preview_key": "P",
+    "resolver_reads_production_registry": false,
+    "allowed_runtime_path_prefix": "res://assets/textures/"
+  },
+  "runtime_export": {
+    "manifest_verifier": "tools/texture_lab/oa_tex_runtime_verify.py",
+    "export_compiler": "tools/texture_lab/oa_tex_runtime_export.py",
+    "export_snapshot_schema": "openazrael.texture_lab.runtime_export_snapshot.v1",
+    "requires_manifest_verification": "PASS",
+    "copies_pixels": false,
+    "exported_runtime_loader": "tools/texture_lab/godot/runtime_texture_resource_loader.gd",
+    "runtime_loader_uses": "ResourceLoader",
+    "raw_hashing_scope": "DEVELOPMENT_AND_PRE_EXPORT_ONLY"
+  },
+  "contract_validation": {
+    "tool": "tools/texture_lab/oa_tex_contract_validate.py",
+    "ci_required": true,
+    "validates": [
+      "selection_policy_coverage",
+      "mode_eligibility_and_full_presets",
+      "approval_dag_and_recommended_order",
+      "policy_summary_counts",
+      "realesrgan_backend_registry",
+      "qwen_backend_contract_workflow"
+    ]
+  },
+  "candidate_namespaces": {
+    "policy": "PRESET_SCOPED_V1",
+    "restored": "assets/textures/ai_restored/_runs/<preset>/",
+    "recreated": "assets/textures/ai_recreated/_runs/<preset>/",
+    "cross_preset_overwrite": false,
+    "same_preset_rerun_invalidates_prior_evidence": true,
+    "enforced_by": [
+      "oa_tex_ai_bakeoff.py",
+      "oa_tex_stage_gate.py",
+      "oa_tex_production_selection.py"
+    ]
+  },
+  "realesrgan_runtime_contract": {
+    "schema": "openazrael.texture_lab.realesrgan_runtime_contract.v1",
+    "status": "PROVISIONAL_UNTIL_REAL_SMOKE",
+    "python": "3.11",
+    "torch": "2.1.2",
+    "torchvision": "0.16.2",
+    "basicsr": "1.4.2",
+    "supported_indexes": [
+      "cu118",
+      "cu121",
+      "cpu"
+    ],
+    "exact_functional_tensor_probe": true,
+    "face_enhancement": false,
+    "excluded_packages": [
+      "gfpgan",
+      "facexlib"
+    ],
+    "doctor_captures_pip_freeze": true,
+    "final_lock_condition": "successful reviewed restored_smoke_1"
+  },
+  "named_run_identity": {
+    "plan_schema": "openazrael.texture_lab.ai_bakeoff_plan.v5",
+    "unique_run_instance_id": true,
+    "canonical_repository_inputs_locked": true,
+    "canonical_named_parameters_locked": true,
+    "clean_run_default": true,
+    "explicit_replace_flag": "--replace-existing-run",
+    "dry_run_mutates_stage_artifacts": false
+  },
+  "production_selection_registry": {
+    "schema": "openazrael.texture_lab.production_selection.v2",
+    "automatic_selection": false,
+    "preserves_superseded_history": true,
+    "preserves_revocation_history": true,
+    "legacy_v1_in_memory_migration": true
+  },
+  "first_real_pixel_gate": {
+    "status": "NOT_EXECUTED",
+    "readiness_command": "python tools/texture_lab/oa_tex_first_run.py check-restored-smoke-1",
+    "execution_command": "python tools/texture_lab/oa_tex_first_run.py restored-smoke-1",
+    "first_preset": "restored_smoke_1",
+    "first_texture": "CORIROCK",
+    "readiness_semantics": "PASS means runtime-ready only; no AI pixel generation is implied",
+    "execution_semantics": "only a successful real restored-smoke-1 run may move real Restored pixels from NOT_EXECUTED",
+    "state_command": "python tools/texture_lab/oa_tex_first_run.py restored-smoke-1-status",
+    "state_schema": "openazrael.texture_lab.first_restored_smoke_state.v1"
+  },
+  "realesrgan_runtime_lock_candidate": {
+    "status": "AWAITING_APPROVED_REAL_SMOKE",
+    "tool": "tools/texture_lab/oa_tex_realesrgan_lock.py",
+    "schema": "openazrael.texture_lab.realesrgan_runtime_lock_candidate.v1",
+    "prerequisite": "current PASS approval v5 for restored_smoke_1",
+    "outputs": [
+      ".local/texture_lab/runtime_locks/realesrgan_rt_poc_01_candidate.json",
+      ".local/texture_lab/runtime_locks/realesrgan_rt_poc_01_requirements.txt"
+    ],
+    "automatic_promotion": false,
+    "canonical_config_mutated": false,
+    "purpose": "capture the exact approved working Real-ESRGAN environment before any explicit canonical lock promotion"
+  },
+  "realesrgan_runtime_lock_promotion": {
+    "status": "AWAITING_RUNTIME_LOCK_CANDIDATE",
+    "tool": "tools/texture_lab/oa_tex_realesrgan_lock_plan.py",
+    "schema": "openazrael.texture_lab.realesrgan_lock_promotion_plan.v1",
+    "input": ".local/texture_lab/runtime_locks/realesrgan_rt_poc_01_candidate.json",
+    "output_dir": ".local/texture_lab/runtime_locks/promotion_plan/",
+    "proposed_targets": [
+      "tools/texture_lab/config/realesrgan_environment_lock.json",
+      "tools/texture_lab/requirements-realesrgan-lock.txt"
+    ],
+    "automatic_promotion": false,
+    "canonical_files_mutated": false,
+    "promotion_requires": "explicit human-reviewed repository change after a current approved real restored_smoke_1"
+  },
+  "restored_generation_report": {
+    "schema": "openazrael.texture_lab.ai_restore_run.v5",
+    "per_texture_inference_wall_seconds": true,
+    "run_wall_seconds": true,
+    "measured_inference_wall_seconds": true,
+    "mean_inference_wall_seconds_per_texture": true,
+    "textures_per_minute_inference_only": true,
+    "estimate_usage": "run summary may produce naive linear smoke_4/full inference-only projections after a real run",
+    "benchmark_claim": false
+  },
+  "first_recreated_pixel_gate": {
+    "status": "NOT_EXECUTED",
+    "readiness_command": "python tools/texture_lab/oa_tex_first_run.py check-recreated-smoke-1 --comfy-root <COMFYUI_ROOT>",
+    "execution_command": "python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1 --comfy-root <COMFYUI_ROOT>",
+    "state_command": "python tools/texture_lab/oa_tex_first_run.py recreated-smoke-1-status",
+    "state_schema": "openazrael.texture_lab.first_recreated_smoke_state.v1",
+    "first_preset": "recreated_smoke_1",
+    "first_texture": "CORIROCK",
+    "readiness_semantics": "PASS means Comfy/Qwen runtime ready only; no Qwen job submission or AI pixel generation is implied",
+    "execution_semantics": "only a successful real recreated-smoke-1 run may move real Recreated pixels from NOT_EXECUTED",
+    "automatic_action": false,
+    "production_selection_implied": false
+  },
+  "recreated_generation_record": {
+    "schema": "openazrael.texture_lab.ai_recreated_job.v5",
+    "job_wall_seconds": true,
+    "upload_wall_seconds": true,
+    "submit_wall_seconds": true,
+    "submit_to_completion_wall_seconds": true,
+    "download_wall_seconds": true,
+    "estimate_usage": "run summary aggregates Qwen generation units, including separate atlas segments, for naive later-stage job-only projections",
+    "benchmark_claim": false
+  },
+  "qwen_runtime_lock_candidate": {
+    "status": "AWAITING_APPROVED_REAL_SMOKE",
+    "tool": "tools/texture_lab/oa_tex_qwen_lock.py",
+    "schema": "openazrael.texture_lab.qwen_runtime_lock_candidate.v1",
+    "prerequisite": "current PASS approval v5 for recreated_smoke_1",
+    "output": ".local/texture_lab/runtime_locks/qwen_2511_rt_poc_01_candidate.json",
+    "automatic_promotion": false,
+    "canonical_config_mutated": false,
+    "captures": [
+      "ComfyUI/Python/PyTorch/device system identity",
+      "required node/input contract",
+      "canonical workflow hash and bindings",
+      "pinned Qwen model file identities",
+      "sampling contract",
+      "approved job record provenance and timing"
+    ]
+  },
+  "qwen_runtime_lock_promotion": {
+    "status": "AWAITING_RUNTIME_LOCK_CANDIDATE",
+    "tool": "tools/texture_lab/oa_tex_qwen_lock_plan.py",
+    "schema": "openazrael.texture_lab.qwen_lock_promotion_plan.v1",
+    "proposed_target": "tools/texture_lab/config/qwen_environment_lock.json",
+    "automatic_promotion": false,
+    "canonical_files_mutated": false,
+    "promotion_requires": "explicit human-reviewed repository change after a current approved real recreated_smoke_1"
+  },
+  "production_review_bundle": {
+    "status": "SOURCE_READY_AWAITING_DUAL_APPROVED_CANDIDATES",
+    "tool": "tools/texture_lab/oa_tex_production_review.py",
+    "schema": "openazrael.texture_lab.production_review_bundle.v1",
+    "requires": "current approved Restored and Recreated stage evidence for the same texture",
+    "presentation": [
+      "Classic",
+      "Enhanced Lanczos",
+      "AI Restored",
+      "AI Recreated"
+    ],
+    "detail_comparison": true,
+    "repeat_tile_comparison": true,
+    "automatic_selection": false,
+    "automatic_quality_verdict": false,
+    "production_registry_mutated": false
+  },
+  "review_pack_01": {
+    "status": "SOURCE_PLAN_READY",
+    "schema": "openazrael.texture_lab.review_pack_01.v1",
+    "config": "tools/texture_lab/config/review_pack_01.json",
+    "planner": "tools/texture_lab/oa_tex_review_pack_01.py",
+    "texture_count": 12,
+    "priority_counts": {
+      "P1": 6,
+      "P2": 5,
+      "P3": 1
+    },
+    "treatment_classes": [
+      "safe_upscale",
+      "ai_recreation_candidate",
+      "conservative"
+    ],
+    "rubric_dimensions": 8,
+    "automatic_selection": false,
+    "automatic_quality_verdict": false,
+    "automatic_production_promotion": false,
+    "real_ai_outputs": "STAGE_DEPENDENT_NOT_INFERRED",
+    "boundary": "Review Pack 01 prioritizes and structures human A/B/C review over the existing canonical POC; it does not create, approve, rank or promote AI pixels.",
+    "availability_dashboard": {
+      "command": "python tools/texture_lab/oa_tex_review_pack_01.py status",
+      "schema": "openazrael.texture_lab.review_pack_01_availability.v1",
+      "status": "SOURCE_SAFE_READY",
+      "semantics": [
+        "Classic/Enhanced presence is reported observationally",
+        "AI availability requires current PASS named-stage evidence",
+        "missing AI is not treated as failure or quality verdict",
+        "dashboard never approves, ranks, selects or promotes a texture"
+      ]
+    },
+    "visual_hub": {
+      "status": "SOURCE_SAFE_READY",
+      "command": "python tools/texture_lab/oa_tex_review_pack_01.py hub",
+      "schema": "openazrael.texture_lab.review_pack_01_visual_hub.v1",
+      "default_output": ".local/texture_lab/review_pack_01/current/",
+      "automatic_selection": false,
+      "automatic_quality_verdict": false,
+      "approval_evidence": false,
+      "stale_evidence_policy": "REFUSE_ON_REFERENCE_OR_AI_FILE_FINGERPRINT_CHANGE",
+      "materialization_policy": "Classic + configured Enhanced are required; AI variants appear only from current PASS named-stage evidence.",
+      "authoritative_boundary": "Stage-specific review packs, seam/tile evidence, structured manual reviews and approval receipts remain authoritative.",
+      "alpha_evidence": "ONE_SHEET_PER_MATERIALIZED_ENHANCED_OR_AI_VARIANT"
+    }
+  },
+  "baseline_reproducibility": {
+    "evidence": "data/texture_lab/rt_poc_01_stabilization_evidence.json",
+    "real_corpus_rebuild_status": "PASS_MATCHES_TRACKED_BASELINE_METRICS",
+    "canonical_texture_count": 12,
+    "deterministic_variant_count": 36,
+    "pillow_version": "12.3.0",
+    "tracked_metric_statistics_exact_match_to_6_decimals": true,
+    "note": "Local rebuild used Python 3.13.5 for source-side evidence only; the pinned Real-ESRGAN runtime contract remains Python 3.11."
+  }
+}

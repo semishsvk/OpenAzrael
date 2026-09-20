@@ -1,0 +1,61 @@
+name: Texture Lab source-safe tests
+
+on:
+  push:
+    paths:
+      - "tools/texture_lab/**"
+      - "data/texture_lab/**"
+      - "tests/test_texture_lab_rt_poc_01.py"
+      - ".github/workflows/texture-lab.yml"
+  pull_request:
+    paths:
+      - "tools/texture_lab/**"
+      - "data/texture_lab/**"
+      - "tests/test_texture_lab_rt_poc_01.py"
+      - ".github/workflows/texture-lab.yml"
+
+jobs:
+  texture-lab:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install source-safe test dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/texture_lab/requirements-source-safe.txt
+      - name: Compile Texture Lab
+        run: python -m compileall -q tools/texture_lab tests/test_texture_lab_rt_poc_01.py
+      - name: Run Texture Lab unit tests
+        run: python -m unittest -v tests/test_texture_lab_rt_poc_01.py
+      - name: Validate Texture Lab cross-contract consistency
+        run: python tools/texture_lab/oa_tex_contract_validate.py
+      - name: Validate and render Review Pack 01 source plan
+        shell: bash
+        run: |
+          mkdir -p .tmp/texture_lab/review_pack_01
+          python tools/texture_lab/oa_tex_review_pack_01.py validate
+          python tools/texture_lab/oa_tex_review_pack_01.py render \
+            --out-json .tmp/texture_lab/review_pack_01/source_plan.json \
+            --out-md .tmp/texture_lab/review_pack_01/source_plan.md
+          python tools/texture_lab/oa_tex_review_pack_01.py status \
+            --out-json .tmp/texture_lab/review_pack_01/availability.json \
+            --out-md .tmp/texture_lab/review_pack_01/availability.md
+      - name: Dry-run every staged AI preset
+        shell: bash
+        run: |
+          python tools/texture_lab/oa_tex_ai_bakeoff.py restored --dry-run --preset restored_smoke_1
+          python tools/texture_lab/oa_tex_ai_bakeoff.py restored --dry-run --preset restored_smoke_4
+          python tools/texture_lab/oa_tex_ai_bakeoff.py restored --dry-run --preset restored_full
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_smoke_1
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_smoke_4
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_atlas
+          python tools/texture_lab/oa_tex_ai_bakeoff.py recreated --dry-run --preset recreated_full
+          python tools/texture_lab/oa_tex_first_run.py restored-smoke-1 --dry-run
+      - name: Validate empty production selection registry
+        run: python tools/texture_lab/oa_tex_production_selection.py status
+      - name: Validate Godot Texture Lab source contract
+        run: python tools/texture_lab/validate_godot_lab.py

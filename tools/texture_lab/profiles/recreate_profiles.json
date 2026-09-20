@@ -1,0 +1,20 @@
+{
+  "schema": "openazrael.texture_lab.recreate_profiles.v1",
+  "base": "Reconstruct this exact legacy game texture at higher resolution. Preserve the original composition, silhouettes, major edges, material boundaries, color palette, symbols, writing, damage placement and empty/background regions. Add only plausible fine surface detail that could have been lost to the original low resolution. Do not add, remove, move or redesign objects. Do not add new symbols, text, baked lighting, cast shadows or perspective changes.",
+  "classes": {
+    "rock_organic_surface": "Restore natural rock grain, mineral variation and fine erosion while keeping every major light/dark mass and boundary fixed.",
+    "architectural_doorway": "Restore stone, wood and metal surface detail conservatively. Keep doorway geometry, openings, trim and proportions exactly aligned with the source.",
+    "paper_parchment": "Restore subtle paper fibers and age variation. Preserve the exact silhouette, rolled edges, stains and any markings.",
+    "binary_mask_hard_edge": "Preserve the exact hard-edged silhouette and flat region colors. Do not soften, bevel, texture or reinterpret the mask boundaries.",
+    "carved_architectural_wall": "Restore masonry and carved surface microdetail while preserving every opening, ornament, edge and dark region.",
+    "character_organic_detail": "Restore fine surface and costume detail without changing pose, anatomy, silhouette, expression, carried objects or surrounding empty regions.",
+    "mechanical_puzzle": "Restore metal, wear and grime while keeping all holes, levers, plates, alignments and puzzle-readable geometry exactly fixed.",
+    "floor_circular_surface": "Restore stone or organic floor microdetail without changing the circular structure, openings, edge placement or tonal layout.",
+    "stone_floor": "Restore stone grain, joints, erosion and subtle grime while preserving tile/block boundaries and all architectural markings.",
+    "glass_translucent_style": "Preserve the exact color masses, highlights and silhouette. Add only subtle glass surface detail; do not invent reflections or environmental content.",
+    "high_detail_mural": "Preserve every depicted figure, object, border and color region. Improve local clarity only; do not reinterpret the artwork or invent missing scene content.",
+    "text_decorative_shield": "Preserve the shield silhouette, ornament and written message exactly. Improve legibility only where supported by the source; do not rewrite or invent characters."
+  },
+  "negative": "No new objects. No changed layout. No redesigned architecture. No extra symbols. No invented writing. No new lighting. No cast shadows. No perspective change. No crop. No frame change.",
+  "default_strength": 0.25
+}

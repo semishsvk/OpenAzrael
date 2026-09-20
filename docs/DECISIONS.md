@@ -128,3 +128,8 @@ OpenAzrael localization is an external presentation-data layer over stable seman
 - Captures may contain screenshot, canonical state, bounded telemetry tail and system metadata, but never excluded commercial room/audio/texture payloads.
 - Every reproducible fixed bug should gain regression evidence at the lowest useful automated layer.
 - Critical bugs and reproducible softlocks continue to block `demo-known-good-001`.
+
+## ADR-026 — Texture remaster layers are non-destructive generated presentation assets
+**Status:** ACCEPTED — 2026-09-19
+
+Classic decoded texture evidence remains immutable and separate from generated presentation layers. Texture Lab uses four explicit tiers: Classic, deterministic mathematical Enhanced, AI Restored and AI Recreated. Generated pixels never replace Classic source evidence and do not alter geometry, UVs, collision, gameplay or recovered identifiers. Commercial-derived Classic pixels and generated derivative pixels remain outside normal Git history; Git stores repository-safe tools, configuration, workflow metadata, tests and reviewed compact fingerprints/reports. AI fidelity metrics and visual candidates remain observational until explicit calibration/review promotes a production choice.

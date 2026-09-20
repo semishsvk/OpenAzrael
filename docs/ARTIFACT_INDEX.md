@@ -14,6 +14,64 @@
 - `docs/DECISIONS.md` ADR-024
 - implementation deliberately deferred until after Candidate 1 runtime/manual validation
 
+## Texture Lab RT-POC-01
+- `docs/TEXTURE_LAB_RT_POC_01.md`
+- `docs/TEXTURE_LAB_LOCAL_RUNBOOK.md`
+- `tools/texture_lab/oa_tex_scan.py`
+- `tools/texture_lab/oa_tex_enhance.py`
+- `tools/texture_lab/oa_tex_validate.py`
+- `tools/texture_lab/oa_tex_compare.py`
+- `tools/texture_lab/oa_tex_tile.py`
+- `tools/texture_lab/oa_tex_atlas.py`
+- `tools/texture_lab/oa_tex_sampling_audit.py`
+- `tools/texture_lab/oa_tex_structural_drift.py`
+- `tools/texture_lab/oa_tex_calibrate_drift.py`
+- `tools/texture_lab/oa_tex_run_poc.py`
+- `tools/texture_lab/oa_tex_restore.py`
+- `tools/texture_lab/oa_tex_realesrgan_bootstrap.py`
+- `tools/texture_lab/oa_tex_realesrgan_doctor.py`
+- `tools/texture_lab/oa_tex_recreate.py`
+- `tools/texture_lab/oa_tex_ai_bakeoff.py`
+- `tools/texture_lab/oa_tex_local_preflight.py`
+- `tools/texture_lab/oa_tex_stage_gate.py`
+- `tools/texture_lab/oa_tex_review_report.py`
+- `tools/texture_lab/oa_tex_comfy_doctor.py`
+- `tools/texture_lab/oa_tex_qwen_bootstrap.py`
+- `tools/texture_lab/oa_tex_qwen_preflight.py`
+- `tools/texture_lab/requirements-source-safe.txt`
+- `tools/texture_lab/config/enhance.json`
+- `tools/texture_lab/config/rt_poc_01_selection.json`
+- `data/texture_lab/rt_poc_01_sampling_review.json`
+- `data/texture_lab/rt_poc_01_drift_baseline.json`
+- `data/texture_lab/rt_poc_01_ai_policy_summary.json`
+- `tools/texture_lab/config/ai_backends.json`
+- `tools/texture_lab/config/model_registry.json`
+- `tools/texture_lab/config/ai_review_policy.json`
+- `tools/texture_lab/config/ai_smoke_sets.json`
+- `tools/texture_lab/config/qwen_2511_contract.json`
+- `tools/texture_lab/workflows/qwen_2511_openazrael_api.json`
+- `tools/texture_lab/profiles/base_preserve.json`
+- `tools/texture_lab/profiles/recreate_profiles.json`
+- `tools/texture_lab/oa_tex_prompt.py`
+- `tools/texture_lab/godot/texture_lab.gd`
+- `tools/texture_lab/godot/texture_lab.tscn`
+- `tools/texture_lab/validate_godot_lab.py`
+- `tests/test_texture_lab_rt_poc_01.py`
+- generated Classic/Enhanced/AI pixels remain excluded from Git by ADR-026
+
+## Texture Lab Review Pack 01
+- `docs/TEXTURE_LAB_REVIEW_PACK_01.md`
+- `tools/texture_lab/config/review_pack_01.json`
+- `tools/texture_lab/oa_tex_review_pack_01.py` — validate/render/status plus local prioritized visual hub materialization
+- `tools/texture_lab/oa_tex_asset_status.py` — passive per-asset lifecycle/readiness dashboard over current evidence
+- `tools/texture_lab/oa_tex_transparency_audit.py` — full-corpus transparency census with non-destructive ambiguous review queue
+- `data/texture_lab/rt_poc_01_stabilization_evidence.json` — repository-safe real-corpus audit and deterministic-baseline reproducibility evidence
+- source plan covers all 12 canonical R1/R7/R8 POC textures
+- review order: P1=6, P2=5, P3=1
+- treatment classes: safe_upscale / ai_recreation_candidate / conservative
+- eight-axis 1–5 manual rubric; no aggregate score, automatic winner or production promotion
+- actual AI pixels remain governed by the existing named-stage evidence/review/approval pipeline
+
 ## KG-001 Candidate 1 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
 - `scripts/candidate_diagnostics_v116.gd`
@@ -115,3 +173,54 @@ The full derived v107 forensic JSON remains outside Git under the repository-saf
 - `docs/GITHUB_SYNC_SCOPE.md`
 - `docs/GIT_BASELINE.md`
 - `data/backup/source_fingerprints.json`
+
+
+## Texture Lab RT-POC-01 source checkpoint
+- `data/texture_lab/rt_poc_01_source_status.json` — machine-readable boundary between source-safe/CI readiness and still-unexecuted real Real-ESRGAN, Qwen and Godot Texture Lab runtime evidence.
+
+
+## Texture Lab production selection
+- `data/texture_lab/production_selection.json` — empty-by-default Remastered production-selection registry; explicit selections are hash-bound to current reviewed/approved stage evidence.
+- `tools/texture_lab/oa_tex_production_selection.py` — select/status/revoke tooling; never copies pixels or auto-selects a winner.
+
+
+## Texture Lab runtime presentation bridge
+- `tools/texture_lab/oa_tex_runtime_manifest.py` — builds Classic/Enhanced/Remastered local presentation manifests; Remastered uses only current explicit production selections and otherwise falls back to Classic.
+- `tools/texture_lab/godot/texture_profile_resolver.gd` — isolated manifest-only Godot resolver used by Texture Lab profile preview; rejects unsafe paths and never reads stage/selection evidence directly.
+
+
+## Texture Lab manual review evidence
+- `tools/texture_lab/oa_tex_manual_review.py` — init/record/status workflow for per-texture human QA; stage approval requires a current PASS structured review.
+- local records live under `.local/texture_lab/manual_reviews/rt_poc_01/` and remain outside Git because they are bound to local generated commercial-derived candidates.
+
+
+## Texture Lab staged review/runtime contracts
+- `tools/texture_lab/oa_tex_contract_validate.py` — cross-file CI validator for selection/policy/stages/model/backend/Qwen consistency.
+- `tools/texture_lab/oa_tex_review_profile.py` — creates non-exportable stage-specific Godot review manifests and the local `review_current.json` convenience pointer.
+- named AI candidates are isolated under ignored `assets/textures/ai_restored/_runs/<preset>/` / `ai_recreated/_runs/<preset>/` namespaces.
+
+
+## Texture Lab Real-ESRGAN runtime compatibility
+- `tools/texture_lab/config/realesrgan_runtime_contract.json` — provisional Python 3.11 / torch 2.1.2 / torchvision 0.16.2 / BasicSR 1.4.2 texture-only compatibility contract.
+- `tools/texture_lab/oa_tex_realesrgan_runtime.py` — exact runtime probe and pip-environment fingerprint helper used by bootstrap/doctor.
+
+
+## Texture Lab production selection audit
+- `data/texture_lab/production_selection.json` — production selection registry schema v2; active Remastered choices plus superseded/revocation audit history.
+- named AI run plans use schema v5 with a unique `run_instance_id`; real reruns require explicit `--replace-existing-run` when stage artifacts already exist.
+
+
+## Texture Lab post-smoke runtime lock
+- `tools/texture_lab/oa_tex_realesrgan_lock.py` — creates a local non-promoting runtime lock candidate only after a current approved `restored_smoke_1`; captures doctor/runtime/pip-freeze evidence without mutating the canonical runtime contract.
+- local outputs live under ignored `.local/texture_lab/runtime_locks/`; repository promotion remains a separate explicit step.
+
+- `tools/texture_lab/oa_tex_realesrgan_lock_plan.py` — renders a local, hash-addressed repository-promotion proposal from the approved runtime-lock candidate; never mutates tracked files.
+
+
+## Texture Lab Qwen runtime lock
+- `tools/texture_lab/oa_tex_qwen_lock.py` — captures a local non-promoting ComfyUI/Qwen runtime-lock candidate after a current approved `recreated_smoke_1`.
+- `tools/texture_lab/oa_tex_qwen_lock_plan.py` — renders a local, hash-addressed proposed `qwen_environment_lock.json` after revalidating workflow/model/seed/runtime provenance; never mutates tracked files.
+
+
+## Texture Lab production review
+- `tools/texture_lab/oa_tex_production_review.py` — creates a local observational Classic/Enhanced/Restored/Recreated production-review bundle from current approved stage evidence; never ranks or selects a production texture.

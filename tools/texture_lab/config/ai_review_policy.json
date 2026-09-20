@@ -1,0 +1,84 @@
+{
+  "schema": "openazrael.texture_lab.ai_review_policy.v1",
+  "status": "POC_CONSERVATIVE",
+  "defaults": {
+    "ai_restored": true,
+    "ai_recreated": true,
+    "manual_visual_review": true,
+    "structural_drift_review": true,
+    "automatic_production_promotion": false
+  },
+  "classes": {
+    "binary_mask_hard_edge": {
+      "ai_restored": false,
+      "ai_recreated": false,
+      "preferred_tier": "enhanced_nearest",
+      "reason": "Exact binary silhouette is the asset. Learned or generative detail adds risk without useful information."
+    },
+    "text_decorative_shield": {
+      "ai_restored": true,
+      "ai_recreated": false,
+      "preferred_tier": "ai_restored_or_enhanced",
+      "manual_text_review": "exact_character_and_line_layout_required",
+      "reason": "Generative image editing can rewrite or invent lettering."
+    },
+    "high_detail_mural": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_artwork_review": "all_figures_objects_and_atlas_boundaries",
+      "atlas_boundary_lock": true,
+      "atlas_split": {
+        "axis": "x",
+        "segments": 4,
+        "evidence": "R8 BAPTAP uses four non-overlapping U quarters: tapestry1..4",
+        "boundary_policy": "exact_equal_quarters"
+      }
+    },
+    "mechanical_puzzle": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_geometry_review": "holes_levers_plates_alignment_and_puzzle_readability"
+    },
+    "stone_floor": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "exact_alpha_lock": true,
+      "seam_review": "u_and_v_required",
+      "repeat_sampling_observed": true
+    },
+    "carved_architectural_wall": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "seam_review": "u_edge_required"
+    },
+    "glass_translucent_style": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_review": "no_invented_reflections_or_environment"
+    },
+    "architectural_doorway": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_geometry_review": "opening_trim_and_proportions"
+    },
+    "character_organic_detail": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_review": "pose_anatomy_silhouette_expression_and_props"
+    },
+    "floor_circular_surface": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_geometry_review": "circular_structure_openings_and_edge_placement"
+    },
+    "paper_parchment": {
+      "ai_restored": true,
+      "ai_recreated": true,
+      "manual_review": "silhouette_edges_stains_and_markings"
+    },
+    "rock_organic_surface": {
+      "ai_restored": true,
+      "ai_recreated": true
+    }
+  }
+}
