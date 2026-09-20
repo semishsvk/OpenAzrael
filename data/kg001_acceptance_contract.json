@@ -52,9 +52,14 @@
     },
     {
       "id": "G04",
-      "name": "room_transition_state",
+      "name": "room_transition_and_physical_traversal",
       "required": true,
-      "automation": "automated"
+      "automation": "automated_asset_backed",
+      "runtime_evidence": [
+        "v110 room/transition/floor-support regression",
+        "v117 real Input-driven R1 floor walk",
+        "v117 imported R8 step011 ascent/descent with production CharacterBody3D"
+      ]
     },
     {
       "id": "G05",
