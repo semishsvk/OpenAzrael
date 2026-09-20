@@ -16,6 +16,8 @@
     "optional_result_promotion": true,
     "godot_asset_import": true,
     "physical_audio_v116_runtime_capture": true,
-    "physical_audio_result_promotion": true
+    "physical_audio_result_promotion": true,
+    "legacy_colorkey_source_validation": true,
+    "legacy_colorkey_asset_validation_when_restored": true
   }
 }

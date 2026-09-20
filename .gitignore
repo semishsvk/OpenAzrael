@@ -56,6 +56,9 @@ OpenAzrael_*.zip
 # Derived commercial-data render/export artifacts: reproducible from excluded originals.
 assets/rooms/
 assets/textures/classic/
+data/*.textured.v44.manifest.json
+data/audio/*.legacy.json
+data/graphics_pipeline_validation_v44.json
 docs/*.png
 
 # Large reproducible forensic indexes; commit fingerprints, not multi-MB dumps.

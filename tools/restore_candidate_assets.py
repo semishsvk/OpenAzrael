@@ -21,7 +21,15 @@ def main():
     audio = ROOT / 'assets/audio'; audio.mkdir(parents=True, exist_ok=True)
     azfs = sorted((src/'TEXTURES').glob('*.AZF'))
     if len(azfs) != 86: raise ValueError('Expected canonical demo corpus: 86 AZF textures')
-    for p in azfs: save_png(p, textures/(p.stem+'.png'))
+    colorkey_rows = []
+    for p in azfs:
+        decoded = save_png(p, textures/(p.stem+'.png'))
+        if decoded.get('legacy_colorkey_candidate'):
+            colorkey_rows.append({
+                'texture': p.stem + '.png',
+                'applied': bool(decoded.get('legacy_colorkey_applied')),
+                'transparent_pixels': int(decoded.get('legacy_colorkey_pixels', 0)),
+            })
     expected = {'R1':(69,593,62), 'R7':(48,689,40), 'R8':(87,1050,74)}
     for room, counts in expected.items():
         scene, objs, prims, mats, resolved, missing = parse(src/'TEXTURES'/(room+'.XAF'), textures)
@@ -29,7 +37,8 @@ def main():
         if actual != counts or missing: raise ValueError((room, actual, missing))
         scene.export(rooms/(room+'.glb'))
         manifest = dict(source=room+'.XAF', exporter_version=8, objects=objs, primitives=prims,
-                        missing_textures=missing, textured_primitives=actual[2], primitive_count=actual[0], triangles=actual[1])
+                        missing_textures=missing, textured_primitives=actual[2], primitive_count=actual[0], triangles=actual[1],
+                        legacy_colorkey_primitives=sum(bool(x.get('legacy_colorkey')) for x in prims))
         (ROOT/'data'/f'{room}.textured.v44.manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     fingerprints = json.loads((ROOT/'data/backup/source_fingerprints.json').read_text(encoding='utf-8'))
     for entry in fingerprints['entries']:
@@ -40,7 +49,13 @@ def main():
     prepare(src/'797TAP.WAV', audio/'797TAP.WAV')
     prepare(src/'S137.WAV', audio/'S137.WAV')
     subprocess.run([sys.executable, str(ROOT/'tools/legacy_export/export_legacy_world_v21.py'), str(src), str(ROOT/'data/audio')], check=True)
+    (ROOT/'.tmp/kg001').mkdir(parents=True, exist_ok=True)
+    (ROOT/'.tmp/kg001/legacy_colorkey_restore.json').write_text(
+        json.dumps({'schema':'openazrael.kg001.legacy_colorkey_restore','version':116,'textures':colorkey_rows}, indent=2) + '\n',
+        encoding='utf-8'
+    )
     subprocess.run([sys.executable, str(ROOT/'tools/validate_graphics_pipeline_v44.py')], check=True)
-    print('KG-001 Candidate assets restored; all raw/commercial binaries remain Git-ignored.')
+    subprocess.run([sys.executable, str(ROOT/'tools/validate_kg001_texture_colorkey_v116.py')], check=True)
+    print('KG-001 Candidate assets restored; legacy # color-key masks rebuilt; all raw/commercial binaries remain Git-ignored.')
 
 if __name__ == '__main__': main()

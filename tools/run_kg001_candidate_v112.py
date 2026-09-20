@@ -28,6 +28,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_full_demo_v111.py"],
     [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
     [sys.executable,"tools/validate_kg001_audio_runtime_v116.py"],
+    [sys.executable,"tools/validate_kg001_texture_colorkey_v116.py"],
 ]
 
 RUNTIMES=[
