@@ -22,7 +22,29 @@ checks={
  "legacy_trimesh_two_sided": "ConcavePolygonShape3D" in manager and "backface_collision = true" in manager,
  "floor_probe_regression": "PhysicsRayQueryParameters3D.create" in runner and "FLOOR_SUPPORT_PROBES" in runner,
  "multiroom_floor_probe_set": '["R1", "spaview"]' in runner and '["R7", "view"]' in runner and '["R8", "Object14"]' in runner,
- "player_floor_regression": 'probe_room + "_player_is_on_floor"' in runner and 'probe_room + "_player_did_not_fall_through"' in runner and "await _settle_physics(120)" in runner,
+ "player_floor_regression": 'probe_room + "_player_is_on_floor"' in runner and 'probe_room + "_player_did_not_fall_through"' in runner,
+ "real_input_floor_walk": all(x in runner for x in (
+     'Input.action_press(action, 1.0)',
+     '&"move_forward"',
+     '&"move_back"',
+     "R1_real_walk_forward_no_fall_through",
+     "R1_real_walk_back_no_fall_through",
+     "R1_real_walk_has_horizontal_progress",
+     "R1_real_walk_floor_contact",
+ )),
+ "floor_walk_uses_physics_frames": "_exercise_input_walk" in runner and "await physics_frame" in runner,
+ "real_r8_stair_mesh": all(x in runner for x in (
+     "step011__mesh",
+     "_stair_tread_levels",
+     "Mesh.ARRAY_VERTEX",
+     "R8_real_stairs_up_progress",
+     "R8_real_stairs_up_height",
+     "R8_real_stairs_down_progress",
+     "R8_real_stairs_down_height",
+ )),
+ "stair_test_uses_production_input": "_walk_toward_progress" in runner and 'Input.action_press("move_forward", 1.0)' in runner,
+ "stair_test_no_top_teleport_shortcut": "stair_run * 0.80" in runner and "R8_real_stairs_up_floor_contact" in runner and "R8_real_stairs_down_floor_contact" in runner,
+ "legacy_winding_not_trusted_for_treads": "absf(normal.y) < 0.75" in runner and "imported winding is exactly what Issue #6" in runner,
  "issue_6_regression_link": "Issue #6" in runner
 }
 failed=[k for k,v in checks.items() if not v]
