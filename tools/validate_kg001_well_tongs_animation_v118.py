@@ -107,6 +107,13 @@ checks = {
         and 'set_puzzle_node("R7KeyTake")' in state
         and 'set_flag("R7key")' in state
     ),
+    "production_state_order": (
+        interaction.find('DemoState.remove("rusty_tongs")')
+        < interaction.find('DemoState.complete_well_key_take()')
+        and interaction.find('DemoState.remove("rusty_tongs")') >= 0
+        and interaction.find('DemoState.complete_well_key_take()') >= 0
+        and "func complete_well_key_take()" in state
+    ),
     "runner_negative_precondition": all(
         value in runner
         for value in (
