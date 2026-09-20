@@ -188,6 +188,22 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "openazrael_pppv_runtime_preflight",
+      "family": "validation_lab",
+      "description": "Audit whether a given OpenAzrael source tree exposes the production movement, interaction, state, audio, and exact puzzle observability hooks required by PPPV.",
+      "entrypoint": "tools/openazrael_adapters/runtime_capabilities.py",
+      "inputs": [
+        "openazrael_source_tree"
+      ],
+      "outputs": [
+        "runtime_capability_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "puzzle_event_ir_audit",
       "family": "validation_lab",
       "description": "Audit recovered puzzle event IR and its structural assumptions.",
