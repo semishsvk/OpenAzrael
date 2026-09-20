@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v116-context-v30`
+**Canonical checkpoint:** `v116-context-v31`
 **Date:** 2026-09-19
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,7 +13,7 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v30**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v31**.
 
 ## 3. Immediate execution priority
 Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v30 combines the two-sided collision repair, physical-audio readiness, and a conservative `# + quantized-magenta` color-key pipeline that preserves RGBA into GLB `MASK` materials. All fixes are source-ready but still require restored-asset/runtime and human confirmation.
