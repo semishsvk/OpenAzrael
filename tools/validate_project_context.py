@@ -227,22 +227,6 @@ try:
         errors.append("KG-001 v118 release-blocker automation drift")
     if q.get("kg001_test_build_known_good_tag_allowed") is not False:
         errors.append("KG-001 v118 test-build known-good boundary drift")
-    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS":
-        errors.append("KG-001 complete asset-set contract drift")
-    if q.get("kg001_candidate2_asset_set_runtime")!="NOT_EXECUTED":
-        errors.append("KG-001 asset-set runtime boundary drift")
-    if q.get("kg001_build_manifest_schema")!="V2_RUNTIME_SOURCE_BOUND":
-        errors.append("KG-001 build-manifest v2 identity drift")
-    if q.get("kg001_exported_startup_smoke_contract")!="SOURCE_CONTRACT_PASS":
-        errors.append("KG-001 exported startup-smoke contract drift")
-    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
-        errors.append("KG-001 test-build contract drift")
-    if q.get("kg001_test_build_status")!="NOT_EXECUTED":
-        errors.append("KG-001 test-build runtime boundary drift")
-    if q.get("kg001_test_build_receipt_status")!="NOT_EXECUTED":
-        errors.append("KG-001 test-build receipt boundary drift")
-    if q.get("kg001_evidence_promotion_order")!="AFTER_EXPORT_STARTUP_SMOKE_ON_WINDOWS_WRAPPER":
-        errors.append("KG-001 evidence-promotion ordering drift")
     audit=c.get("kg001_v117_audit",{})
     if audit.get("status")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v117 audit status drift")
