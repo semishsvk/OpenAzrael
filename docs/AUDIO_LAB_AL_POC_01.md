@@ -13,7 +13,7 @@ The milestone contract is frozen in `data/audio_lab/al_poc_01_contract.json`.
 - Never rewrite, normalize, resample, repair, pad, rename, or relocate source audio.
 - Never modify Godot runtime/gameplay files from Audio Lab.
 - Hash source files before reporting and record a deterministic source-tree digest.
-- Write generated reports only to the chosen output directory (default: `.tmp/audio_lab/al_poc_01`).
+- Write generated reports only to the chosen output directory (default: `.tmp/audio_lab/al_poc_01`); output equal to or nested inside the source tree is rejected.
 - Treat malformed-but-readable legacy containers as evidence. Example: an odd terminal RIFF data chunk without a pad byte is reported, not silently fixed.
 - Keep enhancement/restoration out of AL-POC-01.
 
@@ -39,7 +39,9 @@ The milestone contract is frozen in `data/audio_lab/al_poc_01_contract.json`.
    - `P2` — mapping review: expected source audio without recovered production mapping.
    - `P3` — informational QA item.
    - `P4` — mapped and clean under current evidence.
-10. Validate the manifest and re-hash the source tree to prove it is unchanged.
+10. Run the canonical source gate and write `canonical_source_report.json`.
+11. Validate the manifest and re-hash the source tree to prove it is unchanged.
+12. Run repository-only mapping evidence + drift checks against the frozen AL-POC-01 topology baseline.
 
 ## Usage
 
@@ -49,6 +51,7 @@ Preferred one-command AL-POC-01 run:
 
 Individual stages remain available:
 
+    python tools/audio_lab/oa_audio_canonical_verify.py /path/to/ATDEMO --output .tmp/audio_lab/al_poc_01/canonical_source_report.json
     python tools/audio_lab/oa_audio_scan.py /path/to/ATDEMO
     python tools/audio_lab/oa_audio_validate.py .tmp/audio_lab/al_poc_01/audio_manifest.json --source-root /path/to/ATDEMO
     python tools/audio_lab/oa_audio_reference_audit.py .tmp/audio_lab/al_poc_01/audio_manifest.json
@@ -56,6 +59,7 @@ Individual stages remain available:
 
 Outputs:
 
+- `canonical_source_report.json`
 - `audio_manifest.json`
 - `audio_inventory.csv`
 - `audio_qa_report.json`
@@ -85,11 +89,28 @@ The JSON manifest intentionally has no wall-clock timestamp, so two scans of unc
 
 Reference-audit blockers use the `AUDREF...` family and are kept separate from source/container QA.
 
+## Canonical source evidence — verified 2026-09-20
+
+The recovered source corpus from `openazrael_godot_poc_v108.zip/data/audio/original_audio` has been byte-verified against the current recovered IR:
+
+- 30 / 30 expected WAV assets present;
+- 30 / 30 SHA-256 values match;
+- channels, sample rate, bit depth, frame count and duration match;
+- source-tree SHA-256: `d7a283d07b948249827d026d932dd5716101f48e452112f1248c95dd5cb47cba`;
+- zero canonical errors;
+- two read-only RIFF warnings: `981PULL.WAV` and `S137.WAV` omit a terminal alignment pad;
+- no asset exceeds the 1% clipping threshold;
+- `S134.WAV`, `S16.WAV`, `S174ELP2.WAV`, and `S188.WAV` have more than 0.5 s of trailing near-silence and are review items, not auto-fix candidates.
+
+Committed evidence: `data/audio_lab/al_poc_01_canonical_source_evidence.json`.
+
+Repository-only mapping baseline is independently frozen at 30 known assets: 8 mapped, 22 expected-unmapped, 0 unexpected orphans, 0 broken references. The eight mapped assets are one direct runtime literal, four event-graph sounds, and three positional ambient sounds. Mapping drift is a CI failure until intentionally reviewed.
+
 ## AL-POC-01 acceptance gate
 
 For a canonical demo-source scan:
 
-- all 30 recovered demo audio assets are discovered;
+- canonical source evidence is PASS and all 30 recovered demo audio assets are discovered;
 - every discovered source has a stable SHA-256;
 - recovered-corpus completeness is true;
 - no error-severity QA finding exists;
@@ -97,6 +118,8 @@ For a canonical demo-source scan:
 - the review pack contains no P0 blocker;
 - a repeated scan produces an identical `audio_manifest.json`;
 - validation with `--source-root` confirms the source-tree digest and file count are unchanged;
+- output isolation tests pass (no reports may be written inside source audio);
+- repository mapping drift matches the reviewed baseline;
 - Audio Lab CI is green.
 
 Runtime-reference coverage is deliberately **not** a completeness gate. A known source asset without a recovered mapping remains a review item rather than being mislabeled as dead content.
