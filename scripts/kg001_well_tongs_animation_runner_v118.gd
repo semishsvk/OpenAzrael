@@ -40,7 +40,7 @@ func _collect_local_nodes(
                 "node": n,
                 "name": String(n.name),
                 "transform": n.global_transform,
-                "visible": n.visible if n is VisualInstance3D else true
+                "visible": n.visible
             }
     for child in node.get_children():
         _collect_local_nodes(child, center, out)
@@ -191,11 +191,7 @@ func _run() -> void:
     # the key, set the retrieval node/flag, hide/move the visual or destroy the
     # interaction.
     var negative_transform := (key_visual as Node3D).global_transform
-    var negative_visible := (
-        (key_visual as Node3D).visible
-        if key_visual is VisualInstance3D
-        else true
-    )
+    var negative_visible := (key_visual as Node3D).visible
     well_interact.call("interact")
     await _settle(4)
     _check("without_tongs_no_key", not state.has("well_key"))
@@ -211,12 +207,11 @@ func _run() -> void:
             negative_transform
         )
     )
-    if key_visual is VisualInstance3D:
-        _check(
-            "without_tongs_visual_stays_visible",
-            is_instance_valid(key_visual)
-            and (key_visual as VisualInstance3D).visible == negative_visible
-        )
+    _check(
+        "without_tongs_visual_stays_visible",
+        is_instance_valid(key_visual)
+        and (key_visual as Node3D).visible == negative_visible
+    )
     _check(
         "without_tongs_interaction_remains",
         is_instance_valid(well_interact)
