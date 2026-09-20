@@ -43,6 +43,24 @@ checks={
         "freshEvidence.status",
         "visualEvidence.status",
     ]),
+    "contract_evidence_binding":isinstance(contract.get("evidence_binding"),dict)
+        and contract.get("evidence_binding",{}).get("promotion")
+        =="after export and exported-EXE startup smoke in Windows wrapper",
+    "wrapper_candidate_fresh_commit_binding":all(token in wrapper for token in [
+        "candidateEvidence.commit_sha",
+        "freshEvidence.commit_sha",
+        "does not match current HEAD",
+    ]),
+    "wrapper_visual_capture_binding":all(token in wrapper for token in [
+        "visualEvidence.build_commit_sha",
+        "visualEvidence.run_id",
+        "visual_capture_run_id",
+        "visual_capture_evidence_sha256",
+        "visual_captures",
+        '"R1" = "spaview"',
+        '"R7" = "view"',
+        '"R8" = "Object14"',
+    ]),
     "wrapper_hashes_package":all(token in wrapper for token in [
         "executable_sha256",
         "pck_sha256",
