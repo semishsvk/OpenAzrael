@@ -367,7 +367,7 @@ func _event_log_tail(max_lines: int = BUG_REPORT_EVENT_TAIL_LINES) -> String:
         return ""
     var content := FileAccess.get_file_as_string(event_log_path)
     var lines := content.split("\n", false)
-    var start := max(0, lines.size() - max_lines)
+    var start: int = maxi(0, lines.size() - max_lines)
     var out := ""
     for i in range(start, lines.size()):
         out += String(lines[i]) + "\n"
