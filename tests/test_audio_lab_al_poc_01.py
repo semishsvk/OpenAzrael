@@ -150,6 +150,18 @@ class AudioLabALPOC01Tests(unittest.TestCase):
             codes = [i["code"] for i in manifest["assets"][0]["issues"]]
             self.assertIn("AUD012_METADATA_MISMATCH", codes)
 
+    def test_recovered_demo_ir_contract(self):
+        root = Path(__file__).resolve().parents[1]
+        data = json.loads((root / "data/audio/legacy_world_ir.json").read_text(encoding="utf-8"))
+        sounds = data.get("audio", {}).get("sounds", [])
+        self.assertEqual(len(sounds), 30)
+        names = [str(s.get("filename", "")) for s in sounds]
+        self.assertEqual(len(names), len(set(n.casefold() for n in names)))
+        self.assertTrue(all(s.get("channels") == 1 for s in sounds))
+        self.assertTrue(all(s.get("sample_width_bits") == 8 for s in sounds))
+        self.assertEqual({s.get("sample_rate") for s in sounds}, {11025, 22050, 22222})
+        self.assertTrue(all(len(str(s.get("sha256", ""))) == 64 for s in sounds))
+
     def test_sha256_is_exact(self):
         with TemporaryDirectory() as td:
             p = Path(td) / "x.bin"
