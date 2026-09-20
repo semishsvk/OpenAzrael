@@ -16,11 +16,11 @@ The optical sequence uses the production `r8_bible_interaction.gd` coroutine and
 
 The runner verifies the final canonical persistent hash against the v108 exhaustive-model shortest-success hash:
 
-`69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8`
+`e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902`
 
 and the logical Event IR audio stream:
 
-`S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
+`979TONGS.WAV -> S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
 
 The source-contract validator also rejects direct `state.set_flag(...)` or `state.set_puzzle_node(...)` injection in the runner.
 
@@ -36,3 +36,6 @@ godot --headless --path . --script res://scripts/kg001_full_demo_runner_v111.gd
 Missing room resources return `BLOCKED_MISSING_ASSETS` (exit 2). Current repository status is **SOURCE_CONTRACT_PASS / GODOT_RUNTIME_NOT_EXECUTED**.
 
 This synthetic runner validates gameplay integration, not player locomotion skill, ray-aim ergonomics, rendered visuals, real WAV playback, original motion timing or Classic spatial-audio parity. Those remain separate gates/boundaries.
+
+
+The R7 well path now follows the recovered official-demo action stream: the Well Key room state is removed, `979TONGS.WAV` is emitted from the well event, the key room state is re-added, the transient Rusty-tongs room state is removed, and `TONG6` is consumed before the default key take completes. No transform Tween is invented because the recovered action group contains no transform/rotation opcode.
