@@ -14,6 +14,17 @@ TEXT_REFERENCE_EXTENSIONS = {
 }
 SKIP_DIR_NAMES = {".git", ".godot", ".import", ".tmp", ".cache", "build", "dist", "exports", "export", "__pycache__"}
 
+def ensure_output_outside_source(source_root: Path, output_path: Path) -> Path:
+    """Resolve output and reject any path equal to or nested inside the source tree."""
+    source = source_root.resolve()
+    output = output_path.resolve()
+    try:
+        output.relative_to(source)
+    except ValueError:
+        return output
+    raise ValueError(f"output path must be outside source root: {output}")
+
+
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
     h = sha256()
     with path.open("rb") as f:
