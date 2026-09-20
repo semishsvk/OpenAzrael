@@ -1,0 +1,39 @@
+{
+  "schema": "remaster.corpus_profiles",
+  "version": 1,
+  "profiles": [
+    {
+      "profile_id": "openazrael_demo_v1",
+      "game_id": "azraels_tear",
+      "edition": "demo",
+      "evidence": [
+        "tools/legacy_export/export_legacy_world_v21.py",
+        "Audio Lab AL-POC-01 canonical demo corpus: 30 WAV assets"
+      ],
+      "required_exact": [
+        "PUZZLES.DAT",
+        "OBJECTS.DAT"
+      ],
+      "required_patterns": [
+        {
+          "pattern": "AMB*.SND",
+          "min_count": 1
+        },
+        {
+          "pattern": "NPC*.DAT",
+          "min_count": 1
+        }
+      ],
+      "expected_counts": [
+        {
+          "pattern": "*.WAV",
+          "count": 30
+        }
+      ]
+    }
+  ],
+  "hold": [
+    "Do not guess a retail profile until a canonical retail corpus has evidence-backed anchors and counts.",
+    "Profiles identify corpus shape only; they do not prove semantic correctness of extracted data."
+  ]
+}
