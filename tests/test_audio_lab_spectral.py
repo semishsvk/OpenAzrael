@@ -12,6 +12,7 @@ import numpy as np
 from tools.audio_lab.common import sha256_file
 from tools.audio_lab.oa_audio_spectral import (
     analyze_file,
+    annotate_spectral_outliers,
     main as spectral_main,
     spectral_metrics,
     spectrogram_preview,
@@ -97,6 +98,47 @@ class AudioLabSpectralTests(unittest.TestCase):
             self.assertEqual(len(manifest["assets"]),2)
             self.assertTrue((out1/"spectral_review.html").is_file())
             self.assertEqual(len(list((out1/"spectrograms").glob("*.png"))),2)
+
+    def test_robust_outliers_are_review_only(self):
+        records=[]
+        crest_values=[2.0,2.1,1.9,2.2,2.0,2.1,20.0]
+        for i,crest in enumerate(crest_values):
+            records.append({
+                "filename":f"R{i}.wav",
+                "sample_rate":8000,
+                "dominant_frequency_hz":500.0,
+                "spectral_centroid_hz":1000.0,
+                "spectral_bandwidth_hz":500.0,
+                "spectral_rolloff_85_hz":1500.0,
+                "spectral_flatness":0.1,
+                "high_frequency_energy_ratio":0.01,
+                "dc_offset":0.0,
+                "crest_factor":crest,
+                "zero_crossing_rate":0.1,
+            })
+        summary=annotate_spectral_outliers(records,threshold=3.5)
+        self.assertEqual(summary["flagged_assets"],1)
+        self.assertEqual(records[-1]["spectral_outliers"][0]["metric"],"crest_factor")
+        self.assertGreater(records[-1]["spectral_outliers"][0]["robust_z"],3.5)
+        self.assertEqual(records[0]["spectral_outliers"],[])
+        self.assertIn("review-only",summary["policy"])
+
+    def test_small_sets_do_not_invent_distribution_outliers(self):
+        records=[{
+            "filename":f"R{i}.wav","sample_rate":8000,
+            "dominant_frequency_hz":100.0*i,
+            "spectral_centroid_hz":200.0,
+            "spectral_bandwidth_hz":100.0,
+            "spectral_rolloff_85_hz":300.0,
+            "spectral_flatness":0.1,
+            "high_frequency_energy_ratio":0.01,
+            "dc_offset":0.0,
+            "crest_factor":2.0,
+            "zero_crossing_rate":0.1,
+        } for i in range(4)]
+        summary=annotate_spectral_outliers(records)
+        self.assertEqual(summary["flagged_assets"],0)
+        self.assertTrue(all(r["spectral_outliers"]==[] for r in records))
 
     def test_output_inside_source_is_rejected(self):
         with TemporaryDirectory() as td:
