@@ -108,7 +108,14 @@ def review_pack_snapshot(mode: str, run_dir: Path, expected: list[str]) -> dict:
 
     for row in rows:
         texture_id = str(row.get("id", ""))
-        for key in ["source", "candidate", "comparison", "detail_comparison", "tile_preview"]:
+        for key in [
+            "source",
+            "candidate",
+            "comparison",
+            "detail_comparison",
+            "alpha_preview",
+            "tile_preview",
+        ]:
             record = row.get(key)
             if not isinstance(record, dict):
                 continue
