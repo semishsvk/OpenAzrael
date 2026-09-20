@@ -97,6 +97,7 @@ for p in [
     "scripts/kg001_visual_capture_v117.gd",
     "tools/validate_kg001_visual_capture_v117.py",
     "data/tests/kg001_visual_capture_contract_v117.json",
+    "tools/validate_source_safe_asset_loading_v117.py",
 ]:
     req(p)
 
@@ -282,6 +283,16 @@ try:
         errors.append("KG-001 canonical visual capture set drift")
 except Exception as e:
     errors.append(f"KG-001 visual-capture contract: {e}")
+
+workflow=(ROOT/".github/workflows/kg001-source-safe.yml").read_text(encoding="utf-8")
+for marker in [
+    "SCRIPT ERROR:",
+    "ERROR: Failed to load script",
+    "ERROR: Failed to create an autoload",
+    "openazrael-godot-parse.log",
+]:
+    if marker not in workflow:
+        errors.append(f"Godot parse-log CI guard missing: {marker}")
 
 gitignore=(ROOT/".gitignore").read_text(encoding="utf-8")
 for marker in [
