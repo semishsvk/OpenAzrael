@@ -2,7 +2,7 @@
 
 Run this only after G00-G09 are recorded PASS for the exact candidate commit.
 
-Record the Godot version, candidate commit SHA, date and tester. Then perform a normal human launch and verify:
+Record the Godot version, candidate commit SHA, date and tester. If any defect appears, press **F11 before quitting** and attach the generated diagnostic ZIP to a GitHub bug issue. Then perform a normal human launch and verify:
 
 - project launches without a blocking error;
 - mouse/look and movement controls behave normally;
@@ -19,6 +19,7 @@ Record the Godot version, candidate commit SHA, date and tester. Then perform a 
 - taking the Shield completes the demo;
 - expected gameplay sounds are present to human perception;
 - save/load round-trip preserves the tested demo state;
+- F11 creates a source-safe diagnostic ZIP without changing the observed gameplay state;
 - no reproducible critical bug or softlock was observed.
 
 If every item passes, create data/tests/kg001_manual_sanity.json with status PASS, the exact commit SHA and Godot version. Any reproducible critical bug or softlock records FAIL and blocks the tag.

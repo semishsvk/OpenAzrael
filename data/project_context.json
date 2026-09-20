@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v26",
+  "checkpoint": "v116-context-v28",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-19",
   "workflow": [
@@ -28,7 +28,8 @@
     "backup_policy": "docs/BACKUP_VERSIONING_POLICY.md",
     "git_baseline": "docs/GIT_BASELINE.md",
     "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md",
-    "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md"
+    "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md",
+    "bug_reporting": "docs/BUG_REPORTING.md"
   },
   "current_forensics": {
     "world_runtime_loader": "VERIFIED",
@@ -87,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "NOT_YET_RUN",
+    "kg001_build_status": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -106,26 +107,36 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "AWAITING_RUNTIME_OR_MANUAL",
+    "kg001_overall_status": "BLOCKED_CRITICAL_BUG_ISSUE_6_RETEST",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "CHECKLIST_READY_PENDING_USER",
+    "kg001_manual_sanity": "BLOCKED_ISSUE_6_RETEST_REQUIRED",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 1",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V28_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
       "F8": "audio_debug",
       "F9": "audio_parity_capture",
-      "F10": "canonical_state_dump"
+      "F10": "canonical_state_dump",
+      "F11": "bug_report_capture"
     },
     "kg001_candidate_event_log": "user://openazrael_candidate1_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_ALWAYS_GOLDEN_AUDIO_NON_HEADLESS",
-    "documentation_consistency": "PASS_V26",
-    "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION"
+    "documentation_consistency": "PASS_V28",
+    "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
+    "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
+    "kg001_bug_report_prefix": "user://openazrael_bugreport_",
+    "kg001_bug_report_source_safe": true,
+    "kg001_candidate_previous_runtime": "MANUAL_FAIL_ISSUE_6_V27",
+    "kg001_known_critical_bugs": [
+      "#6 PLAYER_FALLS_THROUGH_FLOOR"
+    ],
+    "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_release_blocked_by_issue_6": true
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -135,7 +146,7 @@
     "PIXEL_PERFECT_CLASSIC_FRAMEBUFFER_PARITY",
     "WORLD_WRITER_INDIRECT_REACHABILITY"
   ],
-  "next_target": "Run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results on a Godot-capable checkout with restored ignored room/audio assets. If G00-G09 pass, run KG-001 Candidate 1 interactively and complete G10. After the first clean runtime/manual cycle, begin the approved localization runtime implementation and resume deferred v117 forensic copy/mutator work.",
+  "next_target": "Run the v116-context-v28 candidate suite on a Godot-capable checkout, require the new Issue #6 R1 physical floor-support regression to PASS, then manually relaunch the demo and verify that the player no longer falls through the floor. Keep Issue #6 and demo-known-good-001 blocked until that retest passes.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -156,7 +167,9 @@
     "runner": "scripts/kg001_room_trigger_runner_v110.gd",
     "validator": "tools/validate_kg001_room_trigger_v110.py",
     "result": "data/tests/kg001_room_trigger_contract_v110.json",
-    "note": "docs/KG001_ROOM_TRIGGER_V110.md"
+    "note": "docs/KG001_ROOM_TRIGGER_V110.md",
+    "issue_6_regression": "R1_FLOOR_SUPPORT_PHYSICAL_TEST",
+    "collision_mode": "LEGACY_CONCAVE_TWO_SIDED"
   },
   "kg001_v111": {
     "runner": "scripts/kg001_full_demo_runner_v111.gd",
@@ -228,10 +241,14 @@
       "F7": "candidate HUD",
       "F8": "audio debug",
       "F9": "audio parity capture",
-      "F10": "state dump"
+      "F10": "state dump",
+      "F11": "bug report ZIP"
     },
     "event_log": "user://openazrael_candidate1_events.jsonl",
-    "state_dump_prefix": "user://openazrael_kg001_state_dump_"
+    "state_dump_prefix": "user://openazrael_kg001_state_dump_",
+    "bug_report_prefix": "user://openazrael_bugreport_",
+    "bug_report_doc": "docs/BUG_REPORTING.md",
+    "issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml"
   },
   "localization": {
     "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",

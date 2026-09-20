@@ -1,10 +1,10 @@
 # OpenAzrael Test Matrix
 
-**Canonical checkpoint:** `v116-context-v26`
+**Canonical checkpoint:** `v116-context-v28`
 
 | Area | Current checkpoint | Status | Boundary |
 |---|---:|---|---|
-| Project context | v116-context-v26 | PASS target | Source/context validation |
+| Project context | v116-context-v28 | PASS target | Source/context validation |
 | Graphics pipeline | v44 | PASS | Runtime screenshot parity separate |
 | Demo coordinate transform | v67 | HIGH | Retail-global still pending |
 | Classic audio reference/capture pipeline | v58-v86 | TESTED/HIGH pieces | Genuine original parity UNOBSERVED |
@@ -14,8 +14,8 @@
 | WORLD.DAT runtime loader | v106 | VERIFIED/HIGH | Producer lineage still HOLD |
 | WORLD/PUZZLES sound bridge | v107 | VERIFIED exact bytes / HIGH bridge | Full compiler HOLD |
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
-| Source-safe runtime IR | v116-context-v26 | VALIDATED metadata | Excluded binary assets still require local restore |
-| KG-001 acceptance contract | v116-context-v26 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
+| Source-safe runtime IR | v116-context-v28 | VALIDATED metadata | Excluded binary assets still require local restore |
+| KG-001 acceptance contract | v116-context-v28 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
 
 ## Current execution summary
@@ -29,7 +29,9 @@
 | v110 room/trigger runtime | NOT_EXECUTED |
 | v111 full-demo runtime | NOT_EXECUTED |
 | G09 fresh-checkout build | PENDING |
-| G10 manual sanity | PENDING |
+| v27 graphical Candidate observation | **FAIL — Critical Issue #6** |
+| v28 collision source fix | SOURCE_FIX_READY / runtime retest pending |
+| G10 manual sanity | **BLOCKED — Issue #6 retest required** |
 | Known-good tag | NOT ALLOWED |
 | Localization architecture | APPROVED / IMPLEMENTATION DEFERRED |
 
@@ -66,6 +68,8 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 |---|---|---|
 | G04 room transitions | SOURCE_CONTRACT_PASS / runtime pending | Requires restored local R1/R7/R8 GLBs |
 | G05 trigger bounds/gates | SOURCE_CONTRACT_PASS / runtime pending | Uses real RoomManager path when executed |
+| Issue #6 legacy trimesh collision | SOURCE_CONTRACT_PASS / runtime pending | Generated concave collision is two-sided to tolerate legacy winding |
+| Issue #6 R1 floor-support regression | WIRED / runtime pending | Downward physics probe + real player capsule must settle `is_on_floor()` |
 | Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
 | G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
 
@@ -146,7 +150,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 
 | Layer | Status | Evidence boundary |
 |---|---|---|
-| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 1 / v116-context-v26 |
+| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 1 / v116-context-v28 |
 | Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime execution pending |
 | Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 1 |
 | JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |
@@ -156,5 +160,9 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | F8 audio debug | PRESERVED | Existing v69 path |
 | F9 audio parity capture | PRESERVED | Existing v71 path |
 | F10 canonical state dump | SOURCE_CONTRACT_PASS | Includes payload/hash, room, player XYZ and last-event context |
+| F11 bug-report ZIP | SOURCE_CONTRACT_PASS | Observational capture: screenshot/state/500-event tail/system info; no commercial assets |
+| GitHub bug issue form | SOURCE_CONTRACT_PASS | Structured severity/category/reproduction intake |
+| Fix -> regression rule | DEFINED | Reproducible fixes require regression evidence at the lowest useful layer |
 | v112 candidate source suite integration | PASS | v116 validator appended to SOURCE_COMMANDS |
-| Actual Godot Candidate 1 execution | NOT_EXECUTED | Requires Godot + restored ignored assets |
+| v27 manual Candidate execution | **FAIL / Critical Issue #6** | Player fell through floor |
+| Corrected v28 Candidate execution | NOT_EXECUTED | Must pass v110 floor regression and manual retest |

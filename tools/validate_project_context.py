@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v26"
+EXPECTED_CHECKPOINT="v116-context-v28"
 errors=[]
 
 def req(p):
@@ -75,6 +75,8 @@ for p in [
     "scripts/kg001_trigger_debug_v116.gd",
     "tools/validate_candidate_diagnostics_v116.py",
     "data/tests/kg001_candidate_diagnostics_contract_v116.json",
+    "docs/BUG_REPORTING.md",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
 ]:
     req(p)
 
@@ -106,14 +108,26 @@ try:
         errors.append("KG-001 v112 candidate runner drift")
     if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
         errors.append("KG-001 v112 status-engine drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="AWAITING_RUNTIME_OR_MANUAL":
+    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_CRITICAL_BUG_ISSUE_6_RETEST":
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V26":
+    if c.get("quality",{}).get("kg001_collision_issue_6")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 Issue #6 collision status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
+        errors.append("KG-001 Issue #6 release blocker drift")
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V28_NOT_EXECUTED":
+        errors.append("KG-001 v28 candidate runtime boundary drift")
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V28":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
+    if c.get("quality",{}).get("kg001_bug_reporting")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 bug-reporting source-contract drift")
+    if c.get("quality",{}).get("kg001_candidate_debug_keys",{}).get("F11")!="bug_report_capture":
+        errors.append("KG-001 F11 bug-report key drift")
+    if c.get("quality",{}).get("kg001_bug_report_source_safe") is not True:
+        errors.append("KG-001 bug-report source-safety drift")
     loc=c.get("localization",{})
     if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
         errors.append("localization architecture status drift")

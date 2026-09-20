@@ -1,15 +1,22 @@
 # OpenAzrael Roadmap
 
-**Canonical checkpoint:** `v116-context-v26`  
+**Canonical checkpoint:** `v116-context-v28`  
 **Technical base:** `openazrael_godot_poc_v116`
 
-## Now — first real Candidate 1 runtime cycle
+## Now — Critical Issue #6 collision retest
+
+1. Run the corrected v28 source with restored room assets.
+2. Require the v110 R1 physical floor-support regression to PASS.
+3. Manually confirm that the real player capsule no longer falls through the floor.
+4. Keep Issue #6 open and `demo-known-good-001` blocked until both automated and manual collision checks pass.
+
+## Then — resume Candidate 1 runtime cycle
 
 1. Restore the locally ignored R1/R7/R8 GLBs and required Candidate 1 audio assets on a Godot-capable checkout.
 2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
 3. Review G00-G09 evidence using the v112 status tooling.
 4. If G00-G09 are literal PASS, launch the normal graphical **KG-001 Candidate 1** build.
-5. Manually traverse the full demo route with the v116 diagnostics: F6 trigger volumes, F7 Candidate HUD, F8 audio debug, F9 audio parity capture, F10 canonical state dump.
+5. Manually traverse the full demo route with the v116 diagnostics: F6 trigger volumes, F7 Candidate HUD, F8 audio debug, F9 audio parity capture, F10 canonical state dump, and F11 source-safe bug capture when a defect is observed.
 6. Complete G10 only after the interactive route is clean.
 7. Keep `demo-known-good-001` forbidden until all G00-G10 are PASS, with zero known critical bugs and zero reproducible softlocks.
 
