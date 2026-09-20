@@ -121,6 +121,8 @@ def main():
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
     ap.add_argument("--visual-capture",action="store_true",help="Also run the graphical canonical R1/R7/R8 capture contract. Requires a non-headless display plus restored room/audio assets.")
     args=ap.parse_args()
+    if args.promote_results and not args.fresh_checkout:
+        ap.error("--promote-results requires --fresh-checkout")
 
     TMP.mkdir(parents=True,exist_ok=True)
     clean_before=git_clean()
@@ -331,9 +333,18 @@ def main():
     }
     write_json(TMP/"kg001_candidate_v112.json",overall)
 
-    if args.promote_results:
+    if args.promote_results and overall_pass:
         promotion=promote_results(TMP)
         write_json(TMP/"kg001_evidence_promotion_v118.json",promotion)
+    elif args.promote_results:
+        write_json(
+            TMP/"kg001_evidence_promotion_v118.json",
+            {
+                "schema":"openazrael.kg001.evidence_promotion",
+                "version":118,
+                "status":"NOT_RUN_CANDIDATE_FAILED",
+            },
+        )
 
     print(json.dumps(overall,indent=2))
     sys.exit(0 if exit_pass else 1)
