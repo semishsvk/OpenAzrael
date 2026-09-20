@@ -105,6 +105,7 @@ from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_review_handoff import build_handoff
 from oa_tex_review_profile import build_review_profile
+from oa_tex_review_pack_01 import build_source_plan, validate_review_pack
 from oa_tex_run_summary import (
     build_summary,
     recreated_generation_unit_count,
@@ -3144,6 +3145,155 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     root / "export/stale_map.gd",
                     root / "export/stale_snapshot.json",
                 )
+
+    def test_review_pack_01_current_contract_and_source_plan(self):
+        review = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/review_pack_01.json"
+            ).read_text(encoding="utf-8")
+        )
+        selection = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+            ).read_text(encoding="utf-8")
+        )
+        policy = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_review_policy.json"
+            ).read_text(encoding="utf-8")
+        )
+        sampling = json.loads(
+            (
+                ROOT / "data/texture_lab/rt_poc_01_sampling_review.json"
+            ).read_text(encoding="utf-8")
+        )
+        smoke = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        validation = validate_review_pack(
+            review,
+            selection,
+            policy,
+            sampling,
+            smoke,
+        )
+        self.assertEqual(validation["status"], "PASS")
+        self.assertEqual(
+            validation["details"]["priority_counts"],
+            {"P1": 6, "P2": 5, "P3": 1},
+        )
+
+        plan = build_source_plan(
+            review,
+            selection,
+            policy,
+            sampling,
+            smoke,
+        )
+        self.assertEqual(plan["status"], "SOURCE_PLAN_PASS")
+        self.assertEqual(plan["texture_count"], 12)
+        self.assertFalse(plan["automatic_selection"])
+        self.assertFalse(plan["automatic_quality_verdict"])
+        self.assertFalse(plan["automatic_production_promotion"])
+
+        rows = {row["id"]: row for row in plan["rows"]}
+        self.assertEqual(
+            [row["id"] for row in plan["rows"][:6]],
+            [
+                "CORIROCK",
+                "KEYHOLE#",
+                "WEL_PUZ1",
+                "BAPFLOR#",
+                "BAPTAP",
+                "SHIELD1",
+            ],
+        )
+        self.assertEqual(
+            [v["tier"] for v in rows["KEYHOLE#"]["comparison_variants"]],
+            ["classic", "enhanced_nearest"],
+        )
+        self.assertEqual(
+            [v["tier"] for v in rows["SHIELD1"]["comparison_variants"]],
+            ["classic", "enhanced_lanczos", "ai_restored"],
+        )
+        baptap_recreated = next(
+            value
+            for value in rows["BAPTAP"]["comparison_variants"]
+            if value["tier"] == "ai_recreated"
+        )
+        self.assertEqual(
+            baptap_recreated["stage"],
+            "recreated_atlas",
+        )
+        self.assertTrue(
+            all(
+                score is None
+                for row in plan["rows"]
+                for score in row["rubric_scores"].values()
+            )
+        )
+        self.assertFalse(review["rubric"]["automatic_aggregate"])
+        self.assertFalse(review["rubric"]["automatic_threshold"])
+
+    def test_review_pack_01_fails_closed_on_sensitive_policy_drift(self):
+        review = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/review_pack_01.json"
+            ).read_text(encoding="utf-8")
+        )
+        selection = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+            ).read_text(encoding="utf-8")
+        )
+        policy = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_review_policy.json"
+            ).read_text(encoding="utf-8")
+        )
+        sampling = json.loads(
+            (
+                ROOT / "data/texture_lab/rt_poc_01_sampling_review.json"
+            ).read_text(encoding="utf-8")
+        )
+        smoke = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        broken = json.loads(json.dumps(review))
+        keyhole = next(
+            row for row in broken["textures"]
+            if row["id"] == "KEYHOLE#"
+        )
+        keyhole["treatment_class"] = "ai_recreation_candidate"
+        broken["automatic_selection"] = True
+
+        validation = validate_review_pack(
+            broken,
+            selection,
+            policy,
+            sampling,
+            smoke,
+        )
+        self.assertEqual(validation["status"], "FAIL")
+        self.assertIn("automatic_selection_off", validation["failed"])
+        self.assertIn(
+            "keyhole_conservative_nearest",
+            validation["failed"],
+        )
+        with self.assertRaises(ValueError):
+            build_source_plan(
+                broken,
+                selection,
+                policy,
+                sampling,
+                smoke,
+            )
 
     def test_texture_lab_cross_contracts_current_repo_pass(self):
         selection = json.loads(
