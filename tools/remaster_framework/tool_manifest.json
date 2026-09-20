@@ -136,6 +136,58 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "godot_pppv_player_driver",
+      "family": "validation_lab",
+      "description": "Drive the production Godot player through real gameplay input and interaction-probe paths while emitting generic PPPV runtime evidence.",
+      "entrypoint": "scripts/validation/pppv_player_driver.gd",
+      "inputs": [
+        "production_player",
+        "interaction_probe",
+        "validation_scenario"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_evidence_bus",
+      "family": "validation_lab",
+      "description": "Collect frame-indexed runtime validation evidence with deterministic event identifiers and JSON serialization.",
+      "entrypoint": "scripts/validation/pppv_evidence_bus.gd",
+      "inputs": [
+        "runtime_events"
+      ],
+      "outputs": [
+        "runtime_evidence_bundle"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_pppv_observer",
+      "family": "validation_lab",
+      "description": "Observe OpenAzrael inventory, flag, puzzle, logical-audio, and demo-action signals and translate them into generic PPPV evidence without mutating game state.",
+      "entrypoint": "scripts/validation/openazrael_pppv_observer.gd",
+      "inputs": [
+        "demo_state",
+        "legacy_events",
+        "interaction_node"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "puzzle_event_ir_audit",
       "family": "validation_lab",
       "description": "Audit recovered puzzle event IR and its structural assumptions.",
