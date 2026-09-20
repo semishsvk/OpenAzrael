@@ -8,7 +8,7 @@ Run:
 
     python tools/run_kg001_candidate_v112.py
 
-The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111 plus the audio-v116 physical playback-readiness regression. Source validation also includes the Issue #11 legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
+The tool executes the source/context validators, validates the pinned toolchain, generates the source-safe build fingerprint manifest, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111 plus the audio-v116 physical playback-readiness regression. Source validation also includes the Issue #11 indexed color-key regression and automatically becomes asset-backed when restored Classic textures are present.
 
 All temporary evidence goes under .tmp/kg001/, which is ignored by Git.
 
@@ -31,6 +31,20 @@ Fresh-checkout PASS requires all of the following simultaneously:
 
 A missing Godot binary or missing room assets cannot accidentally become PASS.
 
+## Optional canonical graphical capture
+
+Before G10, a restored graphical checkout can run the same suite plus canonical R1/R7/R8 screenshot evidence:
+
+    python tools/run_kg001_candidate_v112.py --fresh-checkout --visual-capture
+
+For evidence promotion:
+
+    python tools/run_kg001_candidate_v112.py --fresh-checkout --visual-capture --promote-results
+
+`--visual-capture` is deliberately optional and does not redefine G09. When requested, however, the overall command requires the graphical capture to PASS and exits nonzero if Godot/display/restored room+audio requirements are missing or the capture contract fails. The capture runner writes PNGs and a manifest under the Candidate run-scoped `user://openazrael_candidate2_runs/<run_id>/captures/` directory; the compact parsed result is written to `.tmp/kg001/kg001_visual_capture_v117.json` and can be promoted to `data/tests/kg001_visual_capture_runtime_v117.json`.
+
+The PNG SHA-256 values are observational evidence for that run. They are not a cross-GPU/driver pixel-perfect oracle.
+
 ## Promoting evidence
 
 After a successful candidate run, optionally use:
@@ -44,9 +58,9 @@ G10 manual sanity remains separate and cannot be auto-promoted by this tool.
 
 ## Physical audio boundary
 
-The audio-v116 runner checks that the Candidate can physically load and start its required audio resources: Master-bus routing, recovered ambient emitters and a real Event-IR AudioStreamPlayer. It does not prove speaker/headphone audibility and does not prove original Miles pan/volume parity. G10 must still confirm that the user actually hears expected ambient and event audio.
+The audio-v116 runner checks required WAV PCM non-silence when restored assets are present, Master-bus routing, recovered ambient emitters, a real Event-IR AudioStreamPlayer and nonzero frames/peak through a temporary Master-bus AudioEffectCapture. It does not prove speaker/headphone audibility or quality and does not prove original Miles pan/volume parity. G10 must still confirm that the user actually hears expected ambient and event audio.
 
 
 ## Legacy color-key boundary
 
-Issue #11 is validated during the source phase. The validator always exercises a synthetic `# + quantized-magenta` mask and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, the complete ten-name `#` candidate class, and the R1 KEYHOLE#/TONG6 mappings. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.
+Issue #11 is validated during the source phase. The validator exercises indexed palette-key semantics, fail-closed ambiguity, binary alpha, hidden-RGB edge bleed and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, requires exactly one used indexed key for each of the ten `#` assets, and checks the R1 KEYHOLE#/TONG6 mappings. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.
