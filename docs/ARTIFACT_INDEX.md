@@ -23,7 +23,8 @@
 - PR #12 remains draft pending restored-asset runtime, graphical capture and G10
 
 ## KG-001 test-build hardening v118
-- `tools/validate_kg001_candidate2_asset_set_v118.py` — complete restored-asset gate
+- `tools/validate_kg001_candidate2_asset_set_v118.py` — complete restored-asset gate with canonical source/runtime WAV fingerprint binding
+- ignored restore provenance: `.tmp/kg001/audio_restore_v118.json`
 - `tools/write_kg001_build_manifest.py` — schema v2 asset + runtime-source/export identity fingerprints
 - `tools/promote_kg001_candidate_results_v118.py` — shared post-clean/post-export evidence promotion
 - `data/tests/kg001_test_build_contract_v118.json`
