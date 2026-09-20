@@ -54,7 +54,7 @@ def validate_runtime_evidence(quality):
             errors.append(f"{name} hash/audio must match the v108 oracle")
         if name=="audio_v116" and (
                 runtime.get("ambient_counts")!={"R1":2,"R7":3,"R8":2}
-                or runtime.get("event_asset")!="S152V2.WAV"):
+                or runtime.get("event_assets")!=["979TONGS.WAV","S152V2.WAV"]):
             errors.append("physical audio evidence must match the recovered demo topology")
 
     fresh=read_json("data/tests/kg001_fresh_checkout.json")
@@ -173,6 +173,7 @@ for p in [
     "scripts/kg001_well_tongs_animation_runner_v118.gd",
     "tools/validate_kg001_well_tongs_animation_v118.py",
     "data/tests/kg001_well_tongs_animation_contract_v118.json",
+    "data/tests/kg001_well_tongs_demo_evidence_v118.json",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
@@ -287,8 +288,11 @@ try:
         errors.append("KG-001 Issue #11 release blocker drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_source_contract")!="AUDITED_SOURCE_SENTINEL_CONTRACT_PASS":
         errors.append("KG-001 legacy color-key source-contract drift")
-    if c.get("quality",{}).get("kg001_candidate_source_freeze")!="REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT":
-        errors.append("KG-001 Candidate 2 source-freeze drift")
+    if c.get("quality",{}).get("kg001_candidate_source_freeze") not in (
+            "REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT",
+            "POST_CANDIDATE2_FIX_BRANCH_RUNTIME_RETEST_REQUIRED",
+        ):
+        errors.append("KG-001 Candidate/source-freeze drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_runtime") not in ("NOT_EXECUTED","ASSET_VALIDATION_PASS_MANUAL_PENDING"):
         errors.append("KG-001 legacy color-key evidence boundary drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_expected_hash_textures")!=10:
@@ -311,7 +315,18 @@ try:
             "PASS",
         ):
         errors.append("KG-001 physical traversal v117 status drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V32":
+    if c.get("quality",{}).get("kg001_well_tongs_animation_v118") not in (
+            None,
+            "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
+            "PASS",
+        ):
+        errors.append("KG-001 well+tongs v118 status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_well_tongs_animation") not in (None,True):
+        errors.append("KG-001 well+tongs release blocker drift")
+    if c.get("quality",{}).get("documentation_consistency") not in (
+            "PASS_V32",
+            "PASS_POST_CANDIDATE2_FIX_BRANCH",
+        ):
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
