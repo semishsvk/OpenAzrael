@@ -233,6 +233,7 @@ def build_summary(preset: str, run_root: Path) -> dict:
                     for key, value in {
                         "comparison": visual.get("comparison"),
                         "detail_comparison": visual.get("detail_comparison"),
+                        "alpha_preview": visual.get("alpha_preview"),
                         "tile_preview": visual.get("tile_preview"),
                         "candidate": visual.get("candidate"),
                     }.items()
@@ -274,6 +275,7 @@ def build_summary(preset: str, run_root: Path) -> dict:
             [
                 "Inspect each full comparison sheet for composition and authored-structure preservation.",
                 "Inspect each detail comparison sheet for invented microdetail, ringing, plastic texture, false edges or lost original features.",
+                "Inspect alpha evidence sheets for silhouette drift, fringe contamination, or unexpected transparency changes.",
                 "Inspect 3x3 tile previews wherever present and interpret seam deltas relative to Classic.",
                 "Run the isolated Godot Texture Lab A/B scene at gameplay-like viewing scale; use O to select REVIEW and P to toggle the stage review profile.",
                 f"Initialize the structured review with oa_tex_manual_review.py init {preset}.",
@@ -397,6 +399,7 @@ def markdown(summary: dict) -> str:
             ("Candidate", "candidate"),
             ("Full comparison", "comparison"),
             ("Detail comparison", "detail_comparison"),
+            ("Alpha evidence", "alpha_preview"),
             ("3x3 tile preview", "tile_preview"),
         ]:
             if visual.get(key):
