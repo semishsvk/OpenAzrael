@@ -2,7 +2,7 @@
   "schema": "openazrael.kg001.headless_contract",
   "version": 109,
   "status": "SOURCE_CONTRACT_PASS",
-  "godot_runtime_status": "NOT_EXECUTED",
+  "godot_runtime_status": "NOT_EXECUTED_AFTER_WELL_TONGS_FIX",
   "checks": {
     "demo_state_autoload": true,
     "legacy_events_autoload": true,
@@ -17,7 +17,8 @@
     "runner_audio_oracle": true,
     "runner_event_graphs": true,
     "graph_ids_exist": true,
-    "runner_check_count": true
+    "runner_check_count": true,
+    "runner_tongs_consumed": true
   },
   "failed": []
 }
