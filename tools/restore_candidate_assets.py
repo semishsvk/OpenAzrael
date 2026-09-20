@@ -28,7 +28,11 @@ def main():
             colorkey_rows.append({
                 'texture': p.stem + '.png',
                 'applied': bool(decoded.get('legacy_colorkey_applied')),
+                'key_index': decoded.get('legacy_colorkey_index'),
+                'key_rgb': decoded.get('legacy_colorkey_rgb'),
                 'transparent_pixels': int(decoded.get('legacy_colorkey_pixels', 0)),
+                'used_magenta_indices': decoded.get('legacy_colorkey_used_magenta_indices', []),
+                'rule': decoded.get('legacy_colorkey_rule'),
             })
     expected = {'R1':(69,593,62), 'R7':(48,689,40), 'R8':(87,1050,74)}
     for room, counts in expected.items():
@@ -56,6 +60,6 @@ def main():
     )
     subprocess.run([sys.executable, str(ROOT/'tools/validate_graphics_pipeline_v44.py')], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/validate_kg001_texture_colorkey_v116.py')], check=True)
-    print('KG-001 Candidate assets restored; legacy # color-key masks rebuilt; all raw/commercial binaries remain Git-ignored.')
+    print('KG-001 Candidate assets restored; legacy indexed # color-key masks rebuilt; all raw/commercial binaries remain Git-ignored.')
 
 if __name__ == '__main__': main()

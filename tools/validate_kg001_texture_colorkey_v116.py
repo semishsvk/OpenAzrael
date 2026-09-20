@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""KG-001 Issue #11 legacy color-key source + optional asset regression."""
+"""KG-001 Issue #11 indexed legacy color-key source + optional asset regression."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -14,7 +14,11 @@ ROOT=Path(__file__).resolve().parents[1]
 PIPE=ROOT/"tools/texture_pipeline"
 sys.path.insert(0,str(PIPE))
 
-from legacy_colorkey import apply_legacy_colorkey, image_alpha_mode, legacy_magenta_mask
+from legacy_colorkey import (
+    analyze_indexed_colorkey,
+    legacy_magenta_mask,
+    render_indexed_colorkey,
+)
 from export_xaf_glb_v8 import parse
 
 EXPECTED_HASH_TEXTURES = [
@@ -36,27 +40,42 @@ def check(name, condition):
     if not condition:
         errors.append(name)
 
-# Pure source-safe mask semantics.
-rgb=np.array([
-    [[252,0,252],[120,40,80]],
-    [[248,12,255],[248,16,248]],
+# Source-safe indexed semantics: only one exact used palette index may become
+# transparent. A nearby non-key colour and an unused magenta entry stay safe.
+palette=np.array([
+    [252,0,252],   # index 0: exact used key
+    [120,40,80],   # index 1: ordinary opaque colour
+    [244,0,244],   # index 2: visually close but outside recovered threshold
+    [248,4,248],   # index 3: qualifying magenta but unused in the valid sample
 ],dtype=np.uint8)
-keyed,meta=apply_legacy_colorkey(rgb,"MASK#.AZF")
-plain,plain_meta=apply_legacy_colorkey(rgb,"MASK.AZF")
-no_magenta,no_magenta_meta=apply_legacy_colorkey(
-    np.full((2,2,3),[100,20,100],dtype=np.uint8),"EMPTY#.AZF"
-)
+indices=np.array([[0,1],[2,1]],dtype=np.uint8)
+keyed,meta=render_indexed_colorkey(indices,palette,"MASK#.AZF")
+plain,plain_meta=render_indexed_colorkey(indices,palette,"MASK.AZF")
+
 check("synthetic_candidate",meta["candidate"])
 check("synthetic_applied",meta["applied"])
-check("synthetic_exact_key_count",meta["magenta_pixels"]==2)
+check("synthetic_exact_key_index",meta["key_index"]==0)
+check("synthetic_exact_key_count",meta["key_pixels"]==1)
+check("synthetic_single_used_magenta_index",meta["used_magenta_indices"]==[0])
 check("synthetic_rgba",keyed.shape==(2,2,4))
-check("synthetic_alpha_zero",int((keyed[...,3]==0).sum())==2)
-check("synthetic_alpha_opaque",int((keyed[...,3]==255).sum())==2)
-check("synthetic_transparent_rgb_zero",bool(np.all(keyed[keyed[...,3]==0,:3]==0)))
+check("synthetic_alpha_exact_index",bool(np.array_equal(keyed[...,3],np.array([[0,255],[255,255]],dtype=np.uint8))))
+check("synthetic_nonkey_magenta_like_opaque",int(keyed[1,0,3])==255)
+check("synthetic_transparent_rgb_zero",bool(np.all(keyed[0,0,:3]==0)))
 check("non_hash_not_keyed",not plain_meta["applied"] and plain.shape==(2,2,3))
-check("hash_without_magenta_not_keyed",not no_magenta_meta["applied"] and no_magenta.shape==(2,2,3))
 
-# Synthetic XAF -> GLB material path: alpha must survive and become MASK.
+# Fail closed if a '#' texture has zero or multiple used qualifying indices.
+try:
+    render_indexed_colorkey(np.array([[1,2]],dtype=np.uint8),palette,"EMPTY#.AZF")
+    check("hash_without_used_key_fails_closed",False)
+except ValueError:
+    pass
+try:
+    render_indexed_colorkey(np.array([[0,3]],dtype=np.uint8),palette,"AMBIG#.AZF")
+    check("ambiguous_used_key_fails_closed",False)
+except ValueError:
+    pass
+
+# Synthetic XAF -> GLB material path: indexed alpha must survive as MASK.
 with tempfile.TemporaryDirectory(prefix="oa_colorkey_") as td:
     td=Path(td)
     texdir=td/"textures"; texdir.mkdir()
@@ -93,10 +112,11 @@ object "quad" {
     check("synthetic_export_alpha_mode",getattr(material,"alphaMode",None)=="MASK")
     check("synthetic_export_alpha_cutoff",float(getattr(material,"alphaCutoff",0.0))==0.5)
 
-# Optional asset-backed checks run automatically after local Candidate restore.
+# Asset-backed checks run automatically after local Candidate restore.
 texture_dir=ROOT/"assets/textures/classic"
 room_dir=ROOT/"assets/rooms"
-restored_rooms_present=any((room_dir/name).is_file() for name in ("R1.glb","R7.glb","R8.glb"))
+restore_evidence=ROOT/".tmp/kg001/legacy_colorkey_restore.json"
+restored_rooms_present=all((room_dir/name).is_file() for name in ("R1.glb","R7.glb","R8.glb"))
 asset_backed=texture_dir.is_dir() and any(texture_dir.glob("*.png"))
 asset_rows=[]
 if restored_rooms_present:
@@ -106,9 +126,24 @@ if asset_backed:
     check("asset_texture_count_86",len(pngs)==86)
     actual_hash_names=sorted(p.name for p in pngs if "#" in p.stem)
     check("asset_hash_texture_set",actual_hash_names==sorted(EXPECTED_HASH_TEXTURES))
+
+    restore_rows={}
+    check("asset_restore_evidence_present",restore_evidence.is_file())
+    if restore_evidence.is_file():
+        restored=json.loads(restore_evidence.read_text(encoding="utf-8"))
+        restore_rows={str(x.get("texture")):x for x in restored.get("textures",[])}
+        check("asset_restore_exact_hash_count",len(restore_rows)==len(EXPECTED_HASH_TEXTURES))
+
     for name in EXPECTED_HASH_TEXTURES:
         path=texture_dir/name
         check("asset_exists_"+name,path.is_file())
+        row=restore_rows.get(name,{})
+        check("asset_restore_row_"+name,bool(row))
+        if row:
+            check("asset_single_index_"+name,isinstance(row.get("key_index"),int))
+            check("asset_single_used_magenta_"+name,len(row.get("used_magenta_indices",[]))==1)
+            check("asset_index_identity_"+name,row.get("used_magenta_indices")==[row.get("key_index")])
+            check("asset_rule_"+name,row.get("rule")=="indexed_hash_exact_single_used_magenta_v1")
         if not path.is_file():
             continue
         with Image.open(path) as im:
@@ -119,20 +154,16 @@ if asset_backed:
             opaque=int((alpha==255).sum())
             residual=int(legacy_magenta_mask(rgba[...,:3]).sum())
             mode=im.mode
-        # '#' is the candidate namespace; the mask is applied only when
-        # quantized magenta is actually observed. Known visible regressions
-        # KEYHOLE#/MINETON# must therefore be RGBA, while other '#' assets may
-        # remain RGB if they contain no key pixels.
-        if mode=="RGBA":
-            check("asset_has_transparency_"+name,transparent>0)
-            check("asset_has_opaque_pixels_"+name,opaque>0)
-        check("asset_no_magenta_residue_"+name,residual==0)
-        if name in ("KEYHOLE#.png","MINETON#.png"):
-            check("asset_known_regression_rgba_"+name,mode=="RGBA")
-            check("asset_known_regression_transparency_"+name,transparent>0)
+        check("asset_rgba_"+name,mode=="RGBA")
+        check("asset_has_transparency_"+name,transparent>0)
+        check("asset_has_opaque_pixels_"+name,opaque>0)
+        check("asset_no_opaque_key_magenta_"+name,residual==0)
+        if row:
+            check("asset_transparent_count_matches_index_"+name,transparent==int(row.get("transparent_pixels",-1)))
         asset_rows.append({
             "texture":name,
             "mode":mode,
+            "key_index":row.get("key_index"),
             "transparent_pixels":transparent,
             "opaque_pixels":opaque,
             "residual_magenta_pixels":residual,
@@ -175,21 +206,23 @@ result={
     "issue":"#11",
     "status":"PASS" if not errors else "FAIL",
     "source_safe_checks":"FAIL" if any(
-        e.startswith(("synthetic_","non_hash_","hash_without_")) for e in errors
+        e.startswith(("synthetic_","non_hash_","hash_without_","ambiguous_")) for e in errors
     ) else "PASS",
+    "selection_space":"ORIGINAL_INDEXED_AZF",
+    "selection_policy":"exactly one used qualifying palette index per # texture",
     "expected_hash_texture_count":len(EXPECTED_HASH_TEXTURES),
     "expected_hash_textures":EXPECTED_HASH_TEXTURES,
     "asset_backed":asset_backed,
     "asset_rows":asset_rows,
     "failed":errors,
-    "boundary":"Conservative # + quantized-magenta binary color-key only; complete original renderer transparency semantics remain HOLD.",
+    "boundary":"Indexed binary legacy color-key compatibility only; complete original renderer transparency/blending semantics remain HOLD.",
 }
 print("OPENAZRAEL_KG001_TEXTURE_COLORKEY_V116 "+json.dumps(result,separators=(",",":")))
 if errors:
-    print("OpenAzrael KG-001 legacy color-key validation: FAIL")
+    print("OpenAzrael KG-001 indexed color-key validation: FAIL")
     for e in errors:
         print(" -",e)
     sys.exit(1)
-print("OpenAzrael KG-001 legacy color-key validation: PASS")
+print("OpenAzrael KG-001 indexed color-key validation: PASS")
 print(" expected keyed class:",len(EXPECTED_HASH_TEXTURES))
 print(" asset-backed:",asset_backed)
