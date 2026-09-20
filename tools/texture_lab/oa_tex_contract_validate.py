@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from common import ROOT, write_json
+from oa_tex_review_pack_01 import validate_review_pack
 
 DEFAULT_SELECTION = ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
 DEFAULT_POLICY = ROOT / "tools/texture_lab/config/ai_review_policy.json"
@@ -17,6 +18,8 @@ DEFAULT_REALESRGAN_RUNTIME = ROOT / "tools/texture_lab/config/realesrgan_runtime
 DEFAULT_WORKFLOW = ROOT / "tools/texture_lab/workflows/qwen_2511_openazrael_api.json"
 DEFAULT_POLICY_SUMMARY = ROOT / "data/texture_lab/rt_poc_01_ai_policy_summary.json"
 DEFAULT_PRODUCTION_REGISTRY = ROOT / "data/texture_lab/production_selection.json"
+DEFAULT_REVIEW_PACK_01 = ROOT / "tools/texture_lab/config/review_pack_01.json"
+DEFAULT_SAMPLING_REVIEW = ROOT / "data/texture_lab/rt_poc_01_sampling_review.json"
 
 
 def load_json(path: Path) -> dict:
@@ -73,6 +76,8 @@ def validate_contracts(
     policy_summary: dict,
     realesrgan_runtime: dict | None = None,
     production_registry: dict | None = None,
+    review_pack_01: dict | None = None,
+    sampling_review: dict | None = None,
 ) -> dict:
     checks: dict[str, bool] = {}
     details: dict[str, object] = {}
@@ -80,6 +85,22 @@ def validate_contracts(
         realesrgan_runtime = load_json(DEFAULT_REALESRGAN_RUNTIME)
     if production_registry is None:
         production_registry = load_json(DEFAULT_PRODUCTION_REGISTRY)
+    if review_pack_01 is None:
+        review_pack_01 = load_json(DEFAULT_REVIEW_PACK_01)
+    if sampling_review is None:
+        sampling_review = load_json(DEFAULT_SAMPLING_REVIEW)
+
+    review_pack_validation = validate_review_pack(
+        review_pack_01,
+        selection,
+        policy,
+        sampling_review,
+        smoke,
+    )
+    checks["review_pack_01_contract"] = (
+        review_pack_validation.get("status") == "PASS"
+    )
+    details["review_pack_01"] = review_pack_validation
 
     checks["production_registry_schema_v2"] = (
         production_registry.get("schema")
@@ -386,6 +407,16 @@ def main() -> int:
         type=Path,
         default=DEFAULT_PRODUCTION_REGISTRY,
     )
+    parser.add_argument(
+        "--review-pack-01",
+        type=Path,
+        default=DEFAULT_REVIEW_PACK_01,
+    )
+    parser.add_argument(
+        "--sampling-review",
+        type=Path,
+        default=DEFAULT_SAMPLING_REVIEW,
+    )
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
@@ -400,6 +431,8 @@ def main() -> int:
         load_json(args.policy_summary),
         load_json(args.realesrgan_runtime),
         load_json(args.production_registry),
+        load_json(args.review_pack_01),
+        load_json(args.sampling_review),
     )
     if args.out:
         write_json(args.out, result)
