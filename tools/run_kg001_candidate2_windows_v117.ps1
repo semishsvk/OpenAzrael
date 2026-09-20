@@ -236,6 +236,14 @@ if (-not $SkipExport) {
     }
     $visualEvidenceSha256 = (Get-FileHash -Algorithm SHA256 $visualEvidencePath).Hash.ToLowerInvariant()
 
+    $distributionBuildManifest = Join-Path $Root "exports/OpenAzrael-KG001-Candidate2-v116.build-manifest.json"
+    Copy-Item -Force $buildManifestPath $distributionBuildManifest
+    $distributionBuildManifestSha256 = (Get-FileHash -Algorithm SHA256 $distributionBuildManifest).Hash.ToLowerInvariant()
+    $sourceBuildManifestSha256 = (Get-FileHash -Algorithm SHA256 $buildManifestPath).Hash.ToLowerInvariant()
+    if ($distributionBuildManifestSha256 -ne $sourceBuildManifestSha256) {
+        throw "Distributed build-manifest sidecar does not match the manifest embedded for export."
+    }
+
     $exportEvidence = [ordered]@{
         schema = "openazrael.kg001.windows_candidate2_export"
         version = 118
@@ -249,7 +257,9 @@ if (-not $SkipExport) {
         pck_size_bytes = (Get-Item $pck).Length
         pck_sha256 = (Get-FileHash -Algorithm SHA256 $pck).Hash.ToLowerInvariant()
         build_manifest = "data/generated/kg001_candidate_build_manifest.json"
-        build_manifest_sha256 = (Get-FileHash -Algorithm SHA256 $buildManifestPath).Hash.ToLowerInvariant()
+        build_manifest_sha256 = $sourceBuildManifestSha256
+        distribution_build_manifest = "exports/OpenAzrael-KG001-Candidate2-v116.build-manifest.json"
+        distribution_build_manifest_sha256 = $distributionBuildManifestSha256
         startup_smoke = [ordered]@{
             status = "PASS"
             exit_code = $startupExit
@@ -285,6 +295,9 @@ if (-not $SkipExport) {
         classic_textures_aggregate_sha256 = $buildManifest.assets.classic_textures.aggregate_sha256
         executable_sha256 = $exportEvidence.executable_sha256
         pck_sha256 = $exportEvidence.pck_sha256
+        distribution_build_manifest = $exportEvidence.distribution_build_manifest
+        distribution_build_manifest_sha256 = $exportEvidence.distribution_build_manifest_sha256
+        checksum_manifest = "exports/OpenAzrael-KG001-Candidate2-v116.SHA256SUMS"
         startup_smoke = $exportEvidence.startup_smoke
         manual_pending = @(
             "G10 verify stable floor collision in R1/R7/R8",
@@ -387,9 +400,29 @@ $($buildManifest.assets.audio.aggregate_sha256)
 Classic textures aggregate:
 $($buildManifest.assets.classic_textures.aggregate_sha256)
 "@
-    $testingText | Set-Content -Encoding utf8 "exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt"
+    $testingPath = Join-Path $Root "exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt"
+    $testingText | Set-Content -Encoding utf8 $testingPath
+
+    $receiptPath = Join-Path $Root "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json"
+    $checksumPath = Join-Path $Root "exports/OpenAzrael-KG001-Candidate2-v116.SHA256SUMS"
+    $checksumFiles = @(
+        $exe,
+        $pck,
+        $distributionBuildManifest,
+        $receiptPath,
+        $testingPath
+    )
+    $checksumLines = @(
+        foreach ($file in $checksumFiles) {
+            $hash = (Get-FileHash -Algorithm SHA256 $file).Hash.ToLowerInvariant()
+            "$hash  $([System.IO.Path]::GetFileName($file))"
+        }
+    )
+    $checksumLines | Set-Content -Encoding ascii $checksumPath
 
     $receipt | ConvertTo-Json -Depth 8
+    Write-Host "Distribution checksum manifest:"
+    Get-Content $checksumPath
 }
 
 if ($PromoteResults) {
