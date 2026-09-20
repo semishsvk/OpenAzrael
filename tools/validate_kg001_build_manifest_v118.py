@@ -27,6 +27,7 @@ audio=assets.get("audio",{})
 textures=assets.get("classic_textures",{})
 source=m.get("source_contracts",{})
 runtime=m.get("runtime_source_identity",{})
+restore=m.get("restore_evidence",{})
 runtime_paths={
     str(row.get("path"))
     for row in runtime.get("rows",[])
@@ -76,9 +77,21 @@ checks={
         and audio.get("present_count")==8
         and textures.get("present_count")==86
     ),
+    "restore_evidence_shape":isinstance(restore,dict)
+        and set(restore)=={"legacy_colorkey","audio"},
     "source_safe":m.get("source_safe") is True,
     "no_commercial_bytes":m.get("commercial_asset_bytes_embedded") is False,
 }
+if m.get("asset_counts_complete") is True:
+    for key in ("legacy_colorkey","audio"):
+        record=restore.get(key)
+        checks[f"{key}_restore_evidence_bound"]=(
+            isinstance(record,dict)
+            and isinstance(record.get("sha256"),str)
+            and len(record.get("sha256",""))==64
+            and int(record.get("size_bytes",0))>0
+        )
+
 godot=m.get("godot",{})
 if godot.get("status")=="PASS":
     checks["godot_exact"]=(
