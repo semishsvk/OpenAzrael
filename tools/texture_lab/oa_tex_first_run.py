@@ -53,6 +53,10 @@ def baseline_plan() -> list[dict]:
             [py, str(ROOT / "tools/texture_lab/oa_tex_scan.py")],
         ),
         command_record(
+            "audit_transparency",
+            [py, str(ROOT / "tools/texture_lab/oa_tex_transparency_audit.py")],
+        ),
+        command_record(
             "build_enhanced",
             [py, str(ROOT / "tools/texture_lab/oa_tex_run_poc.py")],
         ),
@@ -382,6 +386,7 @@ def classic_count() -> int:
 def baseline_status() -> dict:
     baseline = ROOT / "data/texture_lab/rt_poc_01_drift_baseline.json"
     run_report = ROOT / "data/texture_lab/rt_poc_01_run.json"
+    audit_path = ROOT / ".local/texture_lab/transparency_audit.json"
     payload = {}
     if baseline.is_file():
         try:
@@ -393,6 +398,18 @@ def baseline_status() -> dict:
         and payload.get("pillow_version") == PINNED_PILLOW_VERSION
     )
     poc = poc_source_status()
+    audit = {}
+    if audit_path.is_file():
+        try:
+            audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            audit = {}
+    audit_structural_ok = (
+        audit.get("schema")
+        == "openazrael.texture_lab.transparency_audit.v1"
+        and audit.get("safe_for_deterministic_baseline") is True
+        and audit.get("texture_count") == 86
+    )
     return {
         "classic_count": classic_count(),
         "classic_expected": 86,
@@ -405,6 +422,16 @@ def baseline_status() -> dict:
         "baseline_ok": baseline_ok,
         "run_report_path": str(run_report),
         "run_report_exists": run_report.is_file(),
+        "transparency_audit_path": str(audit_path),
+        "transparency_audit_exists": audit_path.is_file(),
+        "transparency_audit_status": audit.get("status"),
+        "transparency_audit_structural_ok": audit_structural_ok,
+        "ready_for_corpus_expansion": bool(
+            audit.get("ready_for_corpus_expansion", False)
+        ),
+        "transparency_manual_review_required_count": int(
+            audit.get("manual_review_required_count", 0)
+        ) if audit else None,
         "poc_selection": poc,
     }
 
@@ -448,6 +475,8 @@ def build_status(runtime_dir: Path) -> dict:
         blockers.append("poc_source_identity")
     if not baseline["pillow_ok"]:
         blockers.append("pinned_pillow")
+    if not baseline["transparency_audit_structural_ok"]:
+        blockers.append("transparency_audit")
     if not baseline["baseline_ok"]:
         blockers.append("deterministic_baseline")
     if not realesrgan["source_present"]:
@@ -471,6 +500,7 @@ def build_status(runtime_dir: Path) -> dict:
             "restored-smoke-1 still requires the Real-ESRGAN doctor to PASS.",
             "PyTorch/CUDA installation is intentionally explicit because the correct build depends on the development machine.",
             "The launchpad refuses dependency installation until torch and torchvision already import successfully inside the isolated venv.",
+            "Ambiguous transparency cases do not block the deterministic baseline when the audit is structurally safe, but they keep ready_for_corpus_expansion=false until manually resolved.",
         ],
     }
 
