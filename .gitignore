@@ -53,6 +53,10 @@ r.exe
 openazrael_*.zip
 OpenAzrael_*.zip
 
+# Generated candidate build manifests contain fingerprints only and are rebuilt
+# per checkout/export so the embedded commit/asset identity cannot go stale.
+data/generated/
+
 # Derived commercial-data render/export artifacts: reproducible from excluded originals.
 assets/rooms/
 assets/textures/classic/
