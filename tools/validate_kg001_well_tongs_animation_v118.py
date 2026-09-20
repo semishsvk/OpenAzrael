@@ -13,6 +13,11 @@ contract = json.loads(
         encoding="utf-8"
     )
 )
+demo_evidence = json.loads(
+    (ROOT / "data/tests/kg001_well_tongs_demo_evidence_v118.json").read_text(
+        encoding="utf-8"
+    )
+)
 fingerprints = json.loads(
     (ROOT / "data/backup/source_fingerprints.json").read_text(encoding="utf-8")
 )
@@ -33,6 +38,21 @@ runtime_fp = {
 }
 
 checks = {
+    "demo_evidence": (
+        demo_evidence.get("schema") == "openazrael.kg001.well_tongs_demo_evidence"
+        and demo_evidence.get("version") == 118
+        and demo_evidence.get("status") == "PASS"
+        and demo_evidence.get("interpretation", {}).get("invented_tween_prohibited") is True
+        and demo_evidence.get("interpretation", {}).get("transform_or_rotation_action_in_compiled_group") is False
+    ),
+    "demo_source_hashes": (
+        demo_evidence.get("sources", {}).get("PUZZLES.DAT", {}).get("sha256")
+        == "b8131cf823edb184f04740d5af0a457f4d684e7b0be654b529ec7cdfde1739d1"
+        and demo_evidence.get("sources", {}).get("WORLD.DAT", {}).get("sha256")
+        == "f055948e302fa2f6ba364f7ebd3b4bc45f20ef4445af4946c63e4e313a084ae9"
+        and demo_evidence.get("sources", {}).get("R.EXE", {}).get("sha256")
+        == "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+    ),
     "contract_schema": (
         contract.get("schema") == "openazrael.kg001.well_tongs_animation_contract"
         and contract.get("version") == 118
