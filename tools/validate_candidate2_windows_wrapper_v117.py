@@ -47,6 +47,12 @@ checks={
         "SCRIPT ERROR:",
         "Failed to load resource",
     ]),
+    "startup_marker_and_commit":all(token in text for token in [
+        "OPENAZRAEL_CANDIDATE_STARTUP_READY",
+        "startup marker was not observed",
+        "startup marker/log does not contain current build commit",
+        "build_commit_observed",
+    ]),
     "requires_candidate_fresh_visual_pass":all(token in text for token in [
         "candidateEvidence.status",
         "freshEvidence.status",
