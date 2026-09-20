@@ -4,9 +4,9 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
-from common import ROOT
+from common import ROOT, alpha_edge_mask, expected_alpha_for_candidate
 
 
 def _checkerboard(width: int, height: int, tile: int = 16) -> Image.Image:
@@ -111,6 +111,56 @@ def make_detail_sheet(
             px = x0 + (cell - preview.width) // 2
             py = y0 + region_h + (cell - preview.height) // 2
             sheet.alpha_composite(preview, (px, py))
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert("RGB").save(out, format="PNG", optimize=False)
+
+
+def make_alpha_sheet(
+    texture_id: str,
+    source: Path,
+    candidate: Path,
+    out: Path,
+    cell: int,
+) -> None:
+    if cell <= 0:
+        raise ValueError("cell must be positive")
+
+    with Image.open(source) as src, Image.open(candidate) as cand:
+        src.load()
+        cand.load()
+        expected = expected_alpha_for_candidate(source, src, cand.size)
+        actual = cand.convert("RGBA").getchannel("A")
+        delta = ImageChops.difference(expected, actual)
+        edge = alpha_edge_mask(expected)
+
+    items = [
+        ("Expected alpha", expected.convert("RGBA")),
+        ("Candidate alpha", actual.convert("RGBA")),
+        ("Absolute delta", delta.convert("RGBA")),
+        ("Expected edge band", edge.convert("RGBA")),
+    ]
+
+    label_h = 28
+    sheet = Image.new(
+        "RGBA",
+        (cell * len(items), cell + label_h),
+        (0, 0, 0, 255),
+    )
+    draw = ImageDraw.Draw(sheet)
+    font = ImageFont.load_default()
+    for index, (label, image) in enumerate(items):
+        preview = _fit_preview(image, cell, False)
+        x = index * cell
+        px = x + (cell - preview.width) // 2
+        py = label_h + (cell - preview.height) // 2
+        sheet.alpha_composite(preview, (px, py))
+        draw.text(
+            (x + 4, 7),
+            label,
+            fill=(255, 255, 255, 255),
+            font=font,
+        )
 
     out.parent.mkdir(parents=True, exist_ok=True)
     sheet.convert("RGB").save(out, format="PNG", optimize=False)
