@@ -35,6 +35,7 @@ jobs:
       - name: Smoke Audio Lab CLIs
         run: |
           python tools/audio_lab/oa_audio_scan.py --help >/dev/null
+          python tools/audio_lab/oa_audio_canonical_verify.py --help >/dev/null
           python tools/audio_lab/oa_audio_validate.py --help >/dev/null
           python tools/audio_lab/oa_audio_reference_audit.py --help >/dev/null
           python tools/audio_lab/oa_audio_repo_evidence.py --help >/dev/null
