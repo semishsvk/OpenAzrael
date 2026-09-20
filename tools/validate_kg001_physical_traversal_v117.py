@@ -68,9 +68,20 @@ checks = {
         value in runner
         for value in (
             "step011__mesh",
+            "stairs__STAIR2",
+            "_exercise_r8_stair_mesh",
             "_stair_tread_levels",
             "Mesh.ARRAY_VERTEX",
             "mesh_instance.global_transform",
+        )
+    ),
+    "r8_covers_both_walkable_stair_profiles": all(
+        value in runner
+        for value in (
+            '"step011__mesh", "R8_step011"',
+            '"stairs__STAIR2", "R8_main_stairs"',
+            "4, 14.0, 28.0",
+            "8, 80.0, 120.0",
         )
     ),
     "stair_profile_does_not_trust_legacy_winding": (
@@ -81,29 +92,29 @@ checks = {
         value in runner
         for value in (
             "_floor_at",
-            "R8_stairs_lower_landing_present",
-            "R8_stairs_upper_landing_present",
-            "R8_stairs_lower_landing_floor_contact",
-            "R8_stairs_upper_landing_floor_contact",
-            "R8_real_stair_full_path_nontrivial",
+            'check_prefix + "_lower_landing_present"',
+            'check_prefix + "_upper_landing_present"',
+            'check_prefix + "_lower_landing_floor_contact"',
+            'check_prefix + "_upper_landing_floor_contact"',
+            'check_prefix + "_full_path_nontrivial"',
         )
     ),
     "stair_ascent_is_motion_assertion": all(
         value in runner
         for value in (
-            "R8_stairs_up_progress",
-            "R8_stairs_up_height",
-            "R8_stairs_up_no_fall_through",
-            "R8_stairs_up_floor_contact",
+            'check_prefix + "_up_progress"',
+            'check_prefix + "_up_height"',
+            'check_prefix + "_up_no_fall_through"',
+            'check_prefix + "_up_floor_contact"',
         )
     ),
     "stair_descent_is_motion_assertion": all(
         value in runner
         for value in (
-            "R8_stairs_down_progress",
-            "R8_stairs_down_height",
-            "R8_stairs_down_no_fall_through",
-            "R8_stairs_down_floor_contact",
+            'check_prefix + "_down_progress"',
+            'check_prefix + "_down_height"',
+            'check_prefix + "_down_no_fall_through"',
+            'check_prefix + "_down_floor_contact"',
         )
     ),
     "no_fake_stair_fixture": (
