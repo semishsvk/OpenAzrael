@@ -18,7 +18,7 @@ The newest technical base is now **v116**. The context/Git/quality layer is merg
 ## 3. Immediate execution priority
 Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v31 now carries the independently audited source hardening: two-sided collision plus canonical R1/R7/R8 floor probes, PCM and Master-bus audio non-silence checks, and indexed-AZF color-key detection with fail-closed ambiguity handling and GLB `MASK` edge-bleed hardening. All fixes are source/CI ready but still require restored-asset runtime and human confirmation.
 
-The current priority is the corrected **KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v31 pipeline, generate the build fingerprint manifest, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, run canonical R1/R7/R8 graphical captures, then complete G10 through the normal graphical build. F11 now packages run-scoped telemetry plus build/run provenance.
+The current priority is the corrected **KG-001 Candidate 2** test-build cycle on Windows. v118 now requires a complete restored asset set before G09, binds the build manifest to current HEAD plus runtime/export source identity, exports from the clean validated checkout, smoke-launches the exported EXE, records package hashes and emits a `READY_FOR_G10_MANUAL_TEST` receipt. Only after that package smoke may tracked evidence be promoted. G10 remains human and release-blocking.
 
 Localization runtime work and the deferred v117 forensic copy/mutator audit follow the first clean Candidate 2 runtime/manual cycle; neither is part of the current blocker-fix scope.
 
@@ -30,6 +30,14 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - `Windows Candidate 2` export preset includes the generated build manifest and remains source-contract only until a real export/runtime pass.
 - `scripts/kg001_visual_capture_v117.gd` defines canonical R1/R7/R8 1280x720 screenshots as observational regression evidence; hashes are not a cross-GPU pixel-perfect oracle.
 - PR #12 remains draft while restored-asset runtime, graphical capture and G10 are pending.
+
+### Test-build hardening — v118
+- Fresh-checkout requires 3 canonical room GLBs with expected generated manifests, all 8 runtime WAVs including `797TAP.WAV`, exactly 86 Classic PNGs and all 10 valid indexed-key `#` restore records.
+- Build-manifest schema v2 fingerprints local room/audio/Classic aggregates plus runtime source, export orchestration and source-contract identity.
+- Windows packaging occurs before tracked evidence promotion so the package is built from the clean validated checkout.
+- The exported EXE is launched headlessly for a bounded startup smoke; critical script/autoload/resource-load errors fail the handoff.
+- `data/tests/kg001_test_build_contract_v118.json` defines `READY_FOR_G10_MANUAL_TEST`.
+- The receipt never closes Issues #6/#9/#11, never satisfies G10 and never authorizes `demo-known-good-001`.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
