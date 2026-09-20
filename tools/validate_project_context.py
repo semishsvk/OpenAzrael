@@ -230,15 +230,26 @@ try:
         errors.append("KG-001 v112 candidate runner drift")
     if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
         errors.append("KG-001 v112 status-engine drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_ISSUES_6_9_11_RETEST":
+    if c.get("quality",{}).get("kg001_overall_status") not in (
+            "BLOCKED_ISSUES_6_9_11_RETEST",
+            "BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL",
+        ):
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
-    if c.get("quality",{}).get("kg001_collision_issue_6") not in ("SOURCE_FIX_READY_MULTIROOM_RUNTIME_RETEST_REQUIRED","AUTOMATED_PASS_MANUAL_RETEST_REQUIRED"):
+    if c.get("quality",{}).get("kg001_collision_issue_6") not in (
+            "SOURCE_FIX_READY_MULTIROOM_RUNTIME_RETEST_REQUIRED",
+            "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
+            "MANUAL_FAIL_CANDIDATE2",
+        ):
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
         errors.append("KG-001 Issue #6 release blocker drift")
-    if c.get("quality",{}).get("kg001_audio_issue_9") not in ("SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED","AUTOMATED_PASS_MANUAL_RETEST_REQUIRED"):
+    if c.get("quality",{}).get("kg001_audio_issue_9") not in (
+            "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+            "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
+            "AMBIENT_AUDIBLE_TRIGGERED_EVENT_AUDIO_NOT_YET_MANUALLY_TESTED",
+        ):
         errors.append("KG-001 Issue #9 audio status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_9") is not True:
         errors.append("KG-001 Issue #9 release blocker drift")
@@ -260,8 +271,22 @@ try:
         errors.append("KG-001 legacy color-key texture-class drift")
     if "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS" not in c.get("hard_holds",[]):
         errors.append("legacy transparency HOLD boundary missing")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime") not in ("V32_NOT_EXECUTED","V32_AUTOMATED_PASS_MANUAL_PENDING"):
+    if c.get("quality",{}).get("kg001_candidate_build_runtime") not in (
+            "V32_NOT_EXECUTED",
+            "V32_AUTOMATED_PASS_MANUAL_PENDING",
+            "V32_MANUAL_FAIL",
+        ):
         errors.append("KG-001 Candidate 2 runtime boundary drift")
+    if c.get("quality",{}).get("kg001_stair_traversal") not in (None,"MANUAL_FAIL_CANDIDATE2"):
+        errors.append("KG-001 stair traversal status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_stair_traversal") not in (None,True):
+        errors.append("KG-001 stair traversal release blocker drift")
+    if c.get("quality",{}).get("kg001_physical_traversal_v117") not in (
+            None,
+            "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+            "PASS",
+        ):
+        errors.append("KG-001 physical traversal v117 status drift")
     if c.get("quality",{}).get("documentation_consistency")!="PASS_V32":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
