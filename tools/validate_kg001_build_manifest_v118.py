@@ -45,7 +45,10 @@ required_runtime_paths={
     "scripts/kg001_visual_capture_v117.gd",
     "tools/restore_candidate_assets.py",
     "tools/run_kg001_candidate_v112.py",
+    "tools/run_kg001_candidate2_windows_v117.ps1",
+    "tools/promote_kg001_candidate_results_v118.py",
     "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/validate_kg001_test_build_contract_v118.py",
 }
 checks={
     "schema":m.get("schema")=="openazrael.kg001.candidate_build_manifest",
