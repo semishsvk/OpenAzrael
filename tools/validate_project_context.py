@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v30"
+EXPECTED_CHECKPOINT="v116-context-v31"
 errors=[]
 
 def req(p):
@@ -142,9 +142,9 @@ try:
         errors.append("KG-001 legacy color-key texture-class drift")
     if "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS" not in c.get("hard_holds",[]):
         errors.append("legacy transparency HOLD boundary missing")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V30_NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V31_NOT_EXECUTED":
         errors.append("KG-001 Candidate 2 runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V30":
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V31":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
