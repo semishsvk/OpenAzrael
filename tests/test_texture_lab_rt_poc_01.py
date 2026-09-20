@@ -105,7 +105,11 @@ from oa_tex_review_report import build_review_rows
 from oa_tex_review_pack import build_review_pack
 from oa_tex_review_handoff import build_handoff
 from oa_tex_review_profile import build_review_profile
-from oa_tex_review_pack_01 import build_source_plan, validate_review_pack
+from oa_tex_review_pack_01 import (
+    build_availability,
+    build_source_plan,
+    validate_review_pack,
+)
 from oa_tex_run_summary import (
     build_summary,
     recreated_generation_unit_count,
@@ -3237,6 +3241,95 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertFalse(review["rubric"]["automatic_aggregate"])
         self.assertFalse(review["rubric"]["automatic_threshold"])
+
+    def test_review_pack_01_availability_never_infers_missing_ai_quality(self):
+        review = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/review_pack_01.json"
+            ).read_text(encoding="utf-8")
+        )
+        selection = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+            ).read_text(encoding="utf-8")
+        )
+        policy = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_review_policy.json"
+            ).read_text(encoding="utf-8")
+        )
+        sampling = json.loads(
+            (
+                ROOT / "data/texture_lab/rt_poc_01_sampling_review.json"
+            ).read_text(encoding="utf-8")
+        )
+        smoke = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+            ).read_text(encoding="utf-8")
+        )
+        plan = build_source_plan(
+            review,
+            selection,
+            policy,
+            sampling,
+            smoke,
+        )
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            classic = root / "classic"
+            enhanced = root / "enhanced"
+            run_root = root / "runs"
+            classic.mkdir()
+            corirock_enhanced = enhanced / "CORIROCK"
+            corirock_enhanced.mkdir(parents=True)
+            Image.new("RGB", (16, 8), (40, 50, 60)).save(
+                classic / "CORIROCK.png"
+            )
+            Image.new("RGB", (64, 32), (40, 50, 60)).save(
+                corirock_enhanced / "lanczos_x4.png"
+            )
+
+            status = build_availability(
+                plan,
+                classic,
+                enhanced,
+                run_root,
+            )
+
+        self.assertEqual(
+            status["status"],
+            "OBSERVATIONAL_LOCAL_STATUS",
+        )
+        self.assertFalse(status["automatic_selection"])
+        self.assertFalse(status["automatic_quality_verdict"])
+        self.assertEqual(status["reference_ready_count"], 1)
+        self.assertEqual(status["ready_with_ai_count"], 0)
+        self.assertEqual(status["p1_ready_with_ai_count"], 0)
+
+        rows = {row["id"]: row for row in status["rows"]}
+        self.assertTrue(rows["CORIROCK"]["reference_ready"])
+        self.assertEqual(
+            rows["CORIROCK"]["visual_review_status"],
+            "REFERENCE_ONLY_AI_NOT_CURRENT",
+        )
+        self.assertEqual(
+            rows["CORIROCK"]["available_ai_candidate_count"],
+            0,
+        )
+        self.assertFalse(rows["KEYHOLE#"]["reference_ready"])
+        self.assertEqual(rows["KEYHOLE#"]["ai"], [])
+        self.assertEqual(
+            rows["KEYHOLE#"]["visual_review_status"],
+            "BLOCKED_REFERENCE_INPUTS",
+        )
+        self.assertTrue(
+            all(
+                value["status"] == "MISSING"
+                for value in status["stage_evidence"].values()
+            )
+        )
 
     def test_review_pack_01_fails_closed_on_sensitive_policy_drift(self):
         review = json.loads(
