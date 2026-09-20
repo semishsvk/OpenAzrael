@@ -1,0 +1,78 @@
+{
+  "schema": "openazrael.texture_lab.stabilization_evidence.v1",
+  "date": "2026-09-20",
+  "status": "SOURCE_SIDE_STABILIZATION_PASS_REAL_AI_PENDING",
+  "evidence_scope": "repository_safe_metadata_only",
+  "classic_corpus": {
+    "source_snapshot": "openazrael_github_mirror_v63_context_v8.zip",
+    "source_snapshot_sha256": "fda7f964e608a8396f25ff882305bc4a3cb1a7e1716d8e43b8a159a6be7a2177",
+    "texture_count": 86,
+    "expected_texture_count": 86,
+    "pillow_version": "12.3.0",
+    "transparency_audit": {
+      "status": "PASS",
+      "mode_counts": {
+        "opaque": 76,
+        "palette_colorkey": 10,
+        "true_alpha": 0,
+        "ambiguous": 0
+      },
+      "manual_review_required_count": 0,
+      "policy_violation_count": 0,
+      "safe_for_deterministic_baseline": true,
+      "ready_for_corpus_expansion": true,
+      "palette_colorkey_ids": [
+        "BAPBROK#",
+        "BAPFLOR#",
+        "BLOOD2#",
+        "BLOOD5#",
+        "BLOOD6#",
+        "BLOOS3#",
+        "BLOOS4#",
+        "BUBBLE#",
+        "KEYHOLE#",
+        "MINETON#"
+      ]
+    }
+  },
+  "deterministic_baseline_rebuild": {
+    "status": "PASS_MATCHES_TRACKED_BASELINE_METRICS",
+    "canonical_texture_count": 12,
+    "deterministic_variant_count": 36,
+    "methods": [
+      "nearest",
+      "bicubic",
+      "lanczos"
+    ],
+    "factor": 4,
+    "pillow_version": "12.3.0",
+    "local_python_version": "3.13.5",
+    "tracked_baseline_schema": "openazrael.texture_lab.rt_poc_01_drift_baseline.v1",
+    "current_calibrator_schema": "openazrael.texture_lab.rt_poc_01_drift_baseline.v2",
+    "tracked_metric_statistics_exact_match_to_6_decimals": true,
+    "source_identity_interpretation": "METRIC_EQUIVALENCE_CONFIRMED; per-texture canonical SHA identity was not available in tracked source-status evidence",
+    "canonical_runtime_promotion": false
+  },
+  "remaining_real_runtime_gates": {
+    "restored_smoke_1": {
+      "status": "BLOCKED_BY_UNAVAILABLE_PINNED_RUNTIME_IN_CURRENT_EXECUTION_ENVIRONMENT",
+      "required_python": "3.11",
+      "required_torch": "2.1.2",
+      "required_torchvision": "0.16.2",
+      "required_basicsr": "1.4.2",
+      "required_realesrgan": "0.3.0",
+      "required_checkpoint": "RealESRGAN_x4plus",
+      "bypass_allowed": false
+    },
+    "recreated_smoke_1": {
+      "status": "PENDING_AFTER_RESTORED_SMOKE_AND_PINNED_COMFY_QWEN_RUNTIME",
+      "bypass_allowed": false
+    },
+    "godot_ab_runtime": {
+      "status": "PENDING_REAL_RUNTIME_ENVIRONMENT",
+      "bypass_allowed": false
+    }
+  },
+  "automatic_quality_verdict": false,
+  "automatic_production_selection": false
+}
