@@ -53,6 +53,8 @@ func retrieve_well_key() -> bool:
     if not can_retrieve_well_key():
         return false
     acquire("well_key")
+    # Official demo action opcode 0x09 consumes TONG6 after the well interaction.
+    remove("rusty_tongs")
     # Internal reconstructed node; production FLAGLIST uses R7key for world state.
     set_puzzle_node("R7KeyTake")
     set_flag("R7key")
