@@ -18,6 +18,10 @@
     "physical_audio_v116_runtime_capture": true,
     "physical_audio_result_promotion": true,
     "legacy_colorkey_source_validation": true,
-    "legacy_colorkey_asset_validation_when_restored": true
+    "legacy_colorkey_asset_validation_when_restored": true,
+    "physical_traversal_v117_source_validation": true,
+    "physical_traversal_v117_runtime_capture": true,
+    "physical_traversal_result_promotion": true,
+    "g04_requires_v110_and_v117": true
   }
 }
