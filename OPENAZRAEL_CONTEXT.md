@@ -59,7 +59,8 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Candidate 2 / v31 carries the independently audited source hardening: two-sided legacy concave collision plus canonical R1/R7/R8 floor probes; PCM and Master-bus audio non-silence checks; indexed-AZF color-key detection with exactly-one-used-key fail-closed semantics; and GLB MASK hidden-RGB edge bleed without changing alpha.
 - Candidate diagnostics are run-scoped under `user://openazrael_candidate2_runs/<run_id>/`; every event carries `run_id` and build commit provenance, with `run_manifest.json`, state dumps and F11 ZIPs bound to the same run.
 - The source-safe build manifest fingerprints local rooms/audio/Classic textures and source contracts without embedding commercial payloads. The pinned toolchain is Python 3.11.11 / NumPy 2.3.5 / Pillow 12.3.0 / trimesh 5.1.0 / Godot 4.7.2.stable.official.ed1daf0bf.
-- Restore corrected assets, generate the build manifest, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then execute canonical R1/R7/R8 graphical captures and manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
+- Restore corrected assets and require the v118 complete-asset gate: 3 room GLBs with expected manifests, 8 runtime WAVs including 797TAP, exactly 86 Classic textures and 10 valid indexed-key color-key restore records. Run the v112 fresh-checkout + canonical R1/R7/R8 capture workflow.
+- Before G10, export from the still-clean checkout, require the exported Candidate EXE startup smoke to PASS with no critical script/autoload/resource-load errors, and emit the v118 `READY_FOR_G10_MANUAL_TEST` receipt with EXE/PCK/build/source/asset fingerprints. Only then may tracked evidence be promoted.
 - Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass.
 
 ## Source-safe runtime IR
@@ -128,6 +129,14 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - `scripts/kg001_visual_capture_v117.gd` defines R1/R7/R8 canonical 1280x720 captures. PNG hashes are run evidence only, not a cross-GPU pixel-perfect oracle.
 - Source/CI validation does not close Issues #6/#9/#11. Restored-asset runtime, graphical capture and G10 remain required.
 - Draft PR #12 is the integration surface for this hardening.
+
+## KG-001 test-build readiness — v118
+- `tools/validate_kg001_candidate2_asset_set_v118.py --require-complete` is mandatory for fresh Candidate builds.
+- The build manifest is schema v2 and fingerprints runtime source/export identity in addition to local room/audio/Classic texture aggregates.
+- `tools/promote_kg001_candidate_results_v118.py` is the single evidence-promotion path; Windows packaging performs promotion only after export/startup smoke.
+- `data/tests/kg001_test_build_contract_v118.json` defines `READY_FOR_G10_MANUAL_TEST`.
+- The Windows wrapper smoke-launches the exported EXE headlessly and rejects critical script/autoload/resource-load errors before issuing the test-build receipt.
+- `READY_FOR_G10_MANUAL_TEST` is not release approval. G10 and Issues #6/#9/#11 remain open until human/runtime verification passes.
 
 ## Approved localization architecture
 - Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.
