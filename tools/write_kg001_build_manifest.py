@@ -44,6 +44,11 @@ RUNTIME_SOURCE=[
     ROOT/"scripts/kg001_visual_capture_v117.gd",
     ROOT/"scripts/r8_tapestry_frame.gd",
     ROOT/"tools/restore_candidate_assets.py",
+    ROOT/"tools/prepare_candidate_audio.py",
+    ROOT/"tools/write_kg001_build_manifest.py",
+    ROOT/"tools/validate_kg001_build_manifest_v118.py",
+    ROOT/"tools/validate_kg001_toolchain_v117.py",
+    ROOT/"tools/validate_kg001_export_preset_v117.py",
     ROOT/"tools/run_kg001_candidate_v112.py",
     ROOT/"tools/run_kg001_candidate2_windows_v117.ps1",
     ROOT/"tools/promote_kg001_candidate_results_v118.py",
@@ -61,6 +66,7 @@ SOURCE_CONTRACTS=[
     ROOT/"data/tests/kg001_texture_colorkey_contract_v116.json",
     ROOT/"data/tests/kg001_room_trigger_contract_v110.json",
     ROOT/"data/tests/kg001_test_build_contract_v118.json",
+    ROOT/"data/backup/source_fingerprints.json",
 ]
 EXPECTED_GODOT_VERSION="4.7.2.stable.official.ed1daf0bf"
 
