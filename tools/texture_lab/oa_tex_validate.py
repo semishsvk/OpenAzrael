@@ -9,10 +9,14 @@ from PIL import Image
 from common import (
     ROOT,
     RESAMPLE,
+    alpha_edge_mask,
+    alpha_edge_metrics,
     alpha_is_binary,
     alpha_mask_mismatch_pixels,
-    classify_transparency,
     apply_legacy_colorkey,
+    classify_transparency,
+    edge_halo_stats,
+    expected_alpha_for_candidate,
     has_alpha,
     image_mae,
     mean_rgba,
@@ -45,6 +49,12 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
         color_drift = [abs(a - b) for a, b in zip(src_mean, rt_mean)]
 
         candidate_has_alpha = has_alpha(cand)
+        candidate_alpha = cand.convert("RGBA").getchannel("A")
+        expected_alpha = expected_alpha_for_candidate(source, src, cand.size)
+        edge_metrics = alpha_edge_metrics(expected_alpha, candidate_alpha)
+        edge_mask = alpha_edge_mask(expected_alpha)
+        halo_stats = edge_halo_stats(cand, edge_mask)
+
         binary_alpha = alpha_is_binary(cand) if legacy_colorkey else None
         visible_magenta = visible_legacy_magenta_pixels(cand) if legacy_colorkey else 0
         hidden_rgb = transparent_rgb_nonzero_pixels(cand) if legacy_colorkey else 0
@@ -52,7 +62,6 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
         exact_mask_ok = None
         if legacy_colorkey:
             source_alpha = source_compare.getchannel("A")
-            candidate_alpha = cand.convert("RGBA").getchannel("A")
             mask_mismatch = alpha_mask_mismatch_pixels(source_alpha, candidate_alpha)
             exact_mask_ok = mask_mismatch == 0
         colorkey_ok = (
@@ -103,6 +112,13 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
             "transparent_rgb_nonzero_pixels": hidden_rgb,
             "alpha_mask_mismatch_pixels": mask_mismatch,
             "exact_alpha_mask_ok": exact_mask_ok,
+            **edge_metrics,
+            **halo_stats,
+            "alpha_edge_interpretation": (
+                "HARD_EXACT_MASK"
+                if legacy_colorkey
+                else "OBSERVATIONAL_UNCALIBRATED"
+            ),
             "colorkey_ok": colorkey_ok,
             "roundtrip_mae_rgba_0_255": image_mae(source_compare, rt_rgba),
             "roundtrip_ssim_rgb": optional_ssim(source_compare, roundtrip),
@@ -167,8 +183,9 @@ def main() -> int:
         "only": sorted(wanted) if wanted else None,
         "note": (
             "Legacy color-key exact-mask integrity is a hard technical gate. "
-            "Fidelity, ambiguous transparency interpretation, and source-relative "
-            "seam metrics remain observational until calibrated/manual review."
+            "Fidelity, ambiguous transparency interpretation, true-alpha edge drift, "
+            "halo-edge observations, and source-relative seam metrics remain "
+            "observational until calibrated/manual review."
         ),
         "results": rows,
         "technical_failures": len(failures),
