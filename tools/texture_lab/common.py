@@ -6,7 +6,7 @@ import hashlib
 import json
 from typing import Any
 
-from PIL import Image, ImageChops, ImageStat, __version__ as PILLOW_VERSION
+from PIL import Image, ImageChops, ImageFilter, ImageStat, __version__ as PILLOW_VERSION
 
 ROOT = Path(__file__).resolve().parents[2]
 AI_RESTORED_ROOT = ROOT / "assets/textures/ai_restored"
@@ -177,6 +177,117 @@ def transparent_rgb_nonzero_pixels(image: Image.Image) -> int:
             if a == 0 and (r != 0 or g != 0 or b != 0):
                 count += 1
     return count
+
+
+def source_alpha_channel(path: Path, image: Image.Image) -> Image.Image:
+    if should_apply_legacy_colorkey(path, image):
+        return apply_legacy_colorkey(image).getchannel("A")
+    return image.convert("RGBA").getchannel("A")
+
+
+def expected_alpha_for_candidate(
+    path: Path,
+    image: Image.Image,
+    candidate_size: tuple[int, int],
+) -> Image.Image:
+    mode = str(classify_transparency(path, image)["mode"])
+    resample = (
+        RESAMPLE["nearest"]
+        if mode == "palette_colorkey"
+        else RESAMPLE["lanczos"]
+    )
+    return source_alpha_channel(path, image).resize(candidate_size, resample)
+
+
+def alpha_edge_mask(alpha: Image.Image, radius: int = 1) -> Image.Image:
+    if radius < 1:
+        raise ValueError("radius must be >= 1")
+    gray = alpha.convert("L")
+    size = radius * 2 + 1
+    expanded = gray.filter(ImageFilter.MaxFilter(size))
+    eroded = gray.filter(ImageFilter.MinFilter(size))
+    gradient = ImageChops.difference(expanded, eroded)
+    return gradient.point(lambda value: 255 if value > 0 else 0, mode="L")
+
+
+def alpha_edge_metrics(
+    expected_alpha: Image.Image,
+    candidate_alpha: Image.Image,
+) -> dict[str, float | int]:
+    expected = expected_alpha.convert("L")
+    actual = candidate_alpha.convert("L")
+    if expected.size != actual.size:
+        raise ValueError(
+            f"alpha size mismatch: {expected.size} != {actual.size}"
+        )
+
+    diff = ImageChops.difference(expected, actual)
+    diff_hist = diff.histogram()
+    global_mae = (
+        float(sum(value * count for value, count in enumerate(diff_hist)))
+        / float(expected.width * expected.height)
+    )
+
+    edge = alpha_edge_mask(expected)
+    edge_px = edge.load()
+    diff_px = diff.load()
+    edge_pixels = 0
+    edge_mismatch_pixels = 0
+    edge_abs_sum = 0
+    for y in range(expected.height):
+        for x in range(expected.width):
+            if edge_px[x, y] == 0:
+                continue
+            edge_pixels += 1
+            value = int(diff_px[x, y])
+            edge_abs_sum += value
+            if value > 0:
+                edge_mismatch_pixels += 1
+
+    return {
+        "alpha_mae_0_255": global_mae,
+        "alpha_edge_pixels": edge_pixels,
+        "alpha_edge_mae_0_255": (
+            float(edge_abs_sum) / float(edge_pixels)
+            if edge_pixels
+            else 0.0
+        ),
+        "alpha_edge_mismatch_pixels": edge_mismatch_pixels,
+        "alpha_edge_mismatch_fraction": (
+            float(edge_mismatch_pixels) / float(edge_pixels)
+            if edge_pixels
+            else 0.0
+        ),
+    }
+
+
+def edge_halo_stats(
+    image: Image.Image,
+    edge_mask: Image.Image,
+) -> dict[str, int]:
+    rgba = image.convert("RGBA")
+    edge = edge_mask.convert("L")
+    if rgba.size != edge.size:
+        raise ValueError(f"edge-mask size mismatch: {rgba.size} != {edge.size}")
+
+    px = rgba.load()
+    edge_px = edge.load()
+    visible_magenta = 0
+    hidden_rgb = 0
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            if edge_px[x, y] == 0:
+                continue
+            r, g, b, a = px[x, y]
+            if a > 0 and is_legacy_magenta((r, g, b)):
+                visible_magenta += 1
+            if a == 0 and (r != 0 or g != 0 or b != 0):
+                hidden_rgb += 1
+
+    return {
+        "edge_visible_legacy_magenta_pixels": visible_magenta,
+        "edge_transparent_rgb_nonzero_pixels": hidden_rgb,
+    }
 
 
 def apply_legacy_colorkey(image: Image.Image) -> Image.Image:
