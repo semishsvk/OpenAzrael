@@ -16,7 +16,8 @@
     "Windows Candidate 2 export PASS",
     "exported EXE headless startup smoke PASS",
     "startup log contains no critical script/autoload/resource-load errors",
-    "EXE/PCK/build-manifest SHA-256 recorded"
+    "EXE/PCK/build-manifest SHA-256 recorded",
+    "human-readable G10/diagnostic/bug-report guide emitted beside EXE/PCK"
   ],
   "ready_status": "READY_FOR_G10_MANUAL_TEST",
   "manual_requirements": [
@@ -29,5 +30,6 @@
   "demo_known_good_tag_allowed": false,
   "runtime_receipt": ".tmp/kg001/kg001_test_build_receipt_v118.json",
   "distribution_receipt": "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
-  "boundary": "Automated PASS may make a package ready for G10 manual testing only. It cannot close Issues #6/#9/#11, satisfy G10, or authorize demo-known-good-001."
+  "boundary": "Automated PASS may make a package ready for G10 manual testing only. It cannot close Issues #6/#9/#11, satisfy G10, or authorize demo-known-good-001.",
+  "distribution_testing_guide": "exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt"
 }
