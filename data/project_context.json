@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v30",
+  "checkpoint": "v116-context-v31",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-20",
   "workflow": [
@@ -115,7 +115,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V30_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V31_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -124,12 +124,12 @@
       "F10": "canonical_state_dump",
       "F11": "bug_report_capture"
     },
-    "kg001_candidate_event_log": "user://openazrael_candidate2_events.jsonl",
+    "kg001_candidate_event_log": "user://openazrael_candidate2_runs/<run_id>/events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
-    "documentation_consistency": "PASS_V30",
+    "documentation_consistency": "PASS_V31",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
-    "kg001_bug_report_prefix": "user://openazrael_bugreport_",
+    "kg001_bug_report_prefix": "user://openazrael_candidate2_runs/<run_id>/bugreport_",
     "kg001_bug_report_source_safe": true,
     "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9_11",
     "kg001_known_critical_bugs": [
@@ -158,7 +158,26 @@
     "kg001_legacy_colorkey_known_r1_examples": [
       "KEYHOLE#",
       "TONG6 -> MINETON#"
-    ]
+    ],
+    "kg001_independent_audit_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_pinned_toolchain_contract": "PINNED_V117",
+    "kg001_build_manifest_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_candidate_run_provenance": "RUN_SCOPED_V1",
+    "kg001_floor_regression_rooms": [
+      "R1",
+      "R7",
+      "R8"
+    ],
+    "kg001_audio_pcm_non_silence_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_audio_master_capture_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_texture_colorkey_detection": "USED_INDEXED_PALETTE_ENTRY",
+    "kg001_texture_colorkey_ambiguity_policy": "FAIL_CLOSED",
+    "kg001_texture_mask_edge_bleed_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_visual_capture_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_visual_capture_runtime": "NOT_EXECUTED",
+    "kg001_windows_export_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_source_safe_ci_workflow": ".github/workflows/kg001-source-safe.yml",
+    "kg001_source_safe_ci_pre_v31_promotion": "PASS_RUN_28_COMMIT_ee6ff6560e673d5859f87cba668f4dc9bab06257"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -169,7 +188,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Build and run KG-001 Candidate 2 from v116-context-v30. Restore assets with the corrected #+magenta binary color-key pipeline, require Issue #6 floor, Issue #9 physical-audio and Issue #11 texture color-key regressions to PASS in the fresh-checkout suite, then manually verify stable floor support, audible audio and no visible magenta color-key backgrounds before continuing the full G10 route. Keep demo-known-good-001 blocked while any issue remains open.",
+  "next_target": "Validate v116-context-v31 end-to-end in PR #12 source-safe CI, then on a Godot-capable checkout restore the ignored Candidate 2 assets, generate the build fingerprint manifest, run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results, require the R1/R7/R8 floor probes, PCM/Master-bus audio regression, indexed color-key/GLB MASK regression and G00-G09 to PASS, execute the canonical R1/R7/R8 graphical capture, then complete G10 manually. Keep demo-known-good-001 blocked until Issues #6/#9/#11 are runtime/manual clean.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -191,8 +210,13 @@
     "validator": "tools/validate_kg001_room_trigger_v110.py",
     "result": "data/tests/kg001_room_trigger_contract_v110.json",
     "note": "docs/KG001_ROOM_TRIGGER_V110.md",
-    "issue_6_regression": "R1_FLOOR_SUPPORT_PHYSICAL_TEST",
-    "collision_mode": "LEGACY_CONCAVE_TWO_SIDED"
+    "issue_6_regression": "R1_R7_R8_CANONICAL_FLOOR_SUPPORT_PHYSICAL_TESTS",
+    "collision_mode": "LEGACY_CONCAVE_TWO_SIDED",
+    "floor_probe_views": {
+      "R1": "spaview",
+      "R7": "view",
+      "R8": "Object14"
+    }
   },
   "kg001_v111": {
     "runner": "scripts/kg001_full_demo_runner_v111.gd",
@@ -267,13 +291,14 @@
       "F10": "state dump",
       "F11": "bug report ZIP"
     },
-    "event_log": "user://openazrael_candidate2_events.jsonl",
-    "state_dump_prefix": "user://openazrael_kg001_state_dump_",
-    "bug_report_prefix": "user://openazrael_bugreport_",
+    "event_log": "user://openazrael_candidate2_runs/<run_id>/events.jsonl",
+    "state_dump_prefix": "user://openazrael_candidate2_runs/<run_id>/state_",
+    "bug_report_prefix": "user://openazrael_candidate2_runs/<run_id>/bugreport_",
     "bug_report_doc": "docs/BUG_REPORTING.md",
     "issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml",
     "physical_audio_regression": "KG001_AUDIO_V116_ISSUE_9",
-    "texture_colorkey_regression": "KG001_TEXTURE_COLORKEY_V116_ISSUE_11"
+    "texture_colorkey_regression": "KG001_TEXTURE_COLORKEY_V116_ISSUE_11",
+    "run_manifest": "user://openazrael_candidate2_runs/<run_id>/run_manifest.json"
   },
   "localization": {
     "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",
@@ -318,7 +343,8 @@
     "event_probe": "R8_LENS_PLACE -> S152V2.WAV",
     "source_status": "SOURCE_CONTRACT_PASS",
     "runtime_status": "NOT_EXECUTED",
-    "boundary": "Automated readiness does not prove human audibility or original Miles parity."
+    "boundary": "Automated contract covers required-WAV PCM non-silence and nonzero Godot Master-bus capture during the known Event-IR probe; human audibility/quality remains G10 and original Miles parity remains HOLD.",
+    "master_bus_capture": "AudioEffectCapture_NONZERO_FRAMES_AND_PEAK"
   },
   "kg001_texture_colorkey_v116": {
     "validator": "tools/validate_kg001_texture_colorkey_v116.py",
@@ -327,7 +353,7 @@
     "decoder": "tools/texture_pipeline/azf_decode_v14.py",
     "exporter": "tools/texture_pipeline/export_xaf_glb_v8.py",
     "issue": "#11",
-    "candidate_rule": "filename contains # AND quantized magenta pixels exist",
+    "candidate_rule": "filename contains # AND exactly one used decoded palette index matches the engine-quantized magenta key class",
     "magenta_rule": "R>=248 AND B>=248 AND G<=12",
     "expected_hash_texture_count": 10,
     "known_r1_examples": [
@@ -337,6 +363,34 @@
     "source_status": "SOURCE_CONTRACT_PASS",
     "runtime_status": "NOT_EXECUTED",
     "manual_visual_status": "PENDING",
-    "boundary": "Binary legacy color-key presentation compatibility only; complete original transparency/blending semantics remain HOLD."
+    "boundary": "Binary legacy color-key presentation compatibility is derived from decoded indexed AZF evidence and exported as GLB MASK with hidden-RGB edge-bleed hardening; complete original transparency/blending semantics remain HOLD.",
+    "detection": "USED_INDEXED_PALETTE_ENTRY",
+    "ambiguity_policy": "FAIL_CLOSED_IF_MULTIPLE_USED_KEY_INDICES",
+    "runtime_hidden_rgb": "NEAREST_OPAQUE_BLEED_BELOW_ALPHA_ZERO_ONLY"
+  },
+  "kg001_v117_audit": {
+    "status": "SOURCE_CONTRACT_PASS",
+    "independent_audit_branch": "integration/kg001-independent-audit",
+    "draft_pr": 12,
+    "toolchain_contract": "data/tests/kg001_toolchain_contract_v117.json",
+    "toolchain_validator": "tools/validate_kg001_toolchain_v117.py",
+    "python_requirements": "tools/requirements-kg001-source-safe.txt",
+    "pinned_godot": "4.7.2.stable.official.ed1daf0bf",
+    "build_manifest_generator": "tools/write_kg001_build_manifest.py",
+    "build_manifest_runtime_path": "res://data/generated/kg001_candidate_build_manifest.json",
+    "windows_export_preset": "Windows Candidate 2",
+    "export_validator": "tools/validate_kg001_export_preset_v117.py",
+    "visual_capture_runner": "scripts/kg001_visual_capture_v117.gd",
+    "visual_capture_validator": "tools/validate_kg001_visual_capture_v117.py",
+    "visual_capture_contract": "data/tests/kg001_visual_capture_contract_v117.json",
+    "visual_capture_runtime": "NOT_EXECUTED",
+    "ci_workflow": ".github/workflows/kg001-source-safe.yml",
+    "pre_promotion_ci_evidence": {
+      "run_id": 35492183372,
+      "run_number": 28,
+      "commit": "ee6ff6560e673d5859f87cba668f4dc9bab06257",
+      "conclusion": "SUCCESS"
+    },
+    "runtime_boundary": "Candidate 2 restored-asset runtime and G10 remain required; source/CI PASS does not close Issues #6/#9/#11."
   }
 }
