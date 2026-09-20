@@ -206,7 +206,8 @@
     "kg001_build_manifest_restore_evidence": "AUDIO_AND_COLORKEY_FINGERPRINT_BOUND_V118",
     "kg001_test_build_visual_capture_binding": "RUN_ID_COMMIT_EXACT_3_CAPTURE_SHA256_V118",
     "kg001_test_build_evidence_commit_binding": "CANDIDATE_FRESH_VISUAL_MATCH_CURRENT_HEAD",
-    "kg001_test_build_promotion_timing": "POST_EXPORT_STARTUP_SMOKE"
+    "kg001_test_build_promotion_timing": "POST_EXPORT_STARTUP_SMOKE",
+    "kg001_build_manifest_build_tool_identity": "SOURCE_CONTRACT_PASS_V118"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -531,6 +532,8 @@
       "audio"
     ],
     "visual_capture_receipt_binding": "CURRENT_HEAD + RUN_ID + EXACT_R1_R7_R8_1280X720_SHA256",
-    "promotion_order": "WINDOWS_EXPORT -> EXPORTED_EXE_STARTUP_SMOKE -> OPTIONAL_TRACKED_EVIDENCE_PROMOTION"
+    "promotion_order": "WINDOWS_EXPORT -> EXPORTED_EXE_STARTUP_SMOKE -> OPTIONAL_TRACKED_EVIDENCE_PROMOTION",
+    "runtime_source_identity_scope": "PROJECT_RUNTIME_EXPORT_PLUS_BUILD_MANIFEST_TOOLCHAIN_AUDIO_PREPARATION",
+    "source_contract_identity_includes": "data/backup/source_fingerprints.json"
   }
 }
