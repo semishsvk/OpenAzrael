@@ -113,6 +113,7 @@ For each reference-ready texture the hub renders:
 - only AI Restored/Recreated candidates backed by current PASS named-stage evidence;
 - a full comparison sheet;
 - a detail comparison sheet;
+- one alpha evidence sheet for every materialized Enhanced/AI variant;
 - the texture-specific Review Pack attention list.
 
 The hub verifies current file size/SHA-256 before using every reference/candidate and refuses stale evidence. Textures without local Classic/Enhanced references are listed as skipped rather than treated as quality failures.
