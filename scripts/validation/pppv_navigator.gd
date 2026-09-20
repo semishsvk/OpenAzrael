@@ -31,7 +31,7 @@ func _probe_target_name() -> String:
 
 func _mouse_sensitivity() -> float:
     var value = player.get("mouse_sensitivity")
-    if value is float and float(value) > 0.000001:
+    if typeof(value) in [TYPE_FLOAT, TYPE_INT] and float(value) > 0.000001:
         return float(value)
     return 0.0025
 
