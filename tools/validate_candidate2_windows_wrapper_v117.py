@@ -58,6 +58,31 @@ checks={
         "freshEvidence.status",
         "visualEvidence.status",
     ]),
+    "candidate_fresh_commit_binding":all(token in text for token in [
+        "candidateEvidence.commit_sha",
+        "freshEvidence.commit_sha",
+        "does not match current HEAD",
+    ]),
+    "visual_capture_commit_run_binding":all(token in text for token in [
+        "visualEvidence.build_commit_sha",
+        "visualEvidence.run_id",
+        "Visual-capture evidence has no run_id",
+        "Visual-capture evidence commit does not match current HEAD",
+    ]),
+    "visual_capture_exact_set":all(token in text for token in [
+        '"R1" = "spaview"',
+        '"R7" = "view"',
+        '"R8" = "Object14"',
+        "exactly 3 canonical captures",
+        "1280",
+        "720",
+        "^[0-9a-f]{64}$",
+    ]),
+    "visual_capture_receipt_binding":all(token in text for token in [
+        "visual_capture_run_id",
+        "visual_capture_evidence_sha256",
+        "visual_captures",
+    ]),
     "test_build_receipt":all(token in text for token in [
         "openazrael.kg001.test_build_receipt",
         "READY_FOR_G10_MANUAL_TEST",
