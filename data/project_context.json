@@ -201,7 +201,12 @@
     "kg001_release_blockers_close_automatically": false,
     "kg001_test_build_known_good_tag_allowed": false,
     "kg001_exported_startup_ready_marker": "SOURCE_CONTRACT_PASS_V118",
-    "kg001_test_build_testing_guide": "SOURCE_CONTRACT_PASS_V118"
+    "kg001_test_build_testing_guide": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_audio_restore_fingerprint_contract": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_build_manifest_restore_evidence": "AUDIO_AND_COLORKEY_FINGERPRINT_BOUND_V118",
+    "kg001_test_build_visual_capture_binding": "RUN_ID_COMMIT_EXACT_3_CAPTURE_SHA256_V118",
+    "kg001_test_build_evidence_commit_binding": "CANDIDATE_FRESH_VISUAL_MATCH_CURRENT_HEAD",
+    "kg001_test_build_promotion_timing": "POST_EXPORT_STARTUP_SMOKE"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -453,7 +458,42 @@
     "distribution_receipt": "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
     "ready_status": "READY_FOR_G10_MANUAL_TEST",
     "runtime_status": "NOT_EXECUTED",
-    "boundary": "v118 source hardening defines when a Windows package is ready for G10 manual testing. It cannot close Issues #6/#9/#11 or authorize demo-known-good-001."
+    "boundary": "v118 source hardening defines when a Windows package is ready for G10 manual testing. It cannot close Issues #6/#9/#11 or authorize demo-known-good-001.",
+    "audio_restore_evidence": ".tmp/kg001/audio_restore_v118.json",
+    "audio_fingerprint_policy": "TRACKED_CANONICAL_SOURCE_SHA256_TO_RESTORE_RUNTIME_SHA256_TO_CURRENT_WAV_SHA256",
+    "visual_receipt_binding": {
+      "required": true,
+      "commit": "CURRENT_GIT_HEAD",
+      "run_id": "NONEMPTY",
+      "captures": [
+        {
+          "room": "R1",
+          "view": "spaview",
+          "width": 1280,
+          "height": 720,
+          "sha256": "REQUIRED"
+        },
+        {
+          "room": "R7",
+          "view": "view",
+          "width": 1280,
+          "height": 720,
+          "sha256": "REQUIRED"
+        },
+        {
+          "room": "R8",
+          "view": "Object14",
+          "width": 1280,
+          "height": 720,
+          "sha256": "REQUIRED"
+        }
+      ],
+      "receipt_fields": [
+        "visual_capture_run_id",
+        "visual_capture_evidence_sha256",
+        "visual_captures"
+      ]
+    }
   },
   "kg001_v118_build_hardening": {
     "status": "SOURCE_CONTRACT_PASS",
@@ -484,6 +524,13 @@
     "demo_known_good_tag_allowed": false,
     "boundary": "Automated v118 PASS may only make Candidate 2 ready for G10 manual testing; it cannot close Issues #6/#9/#11 or authorize demo-known-good-001.",
     "startup_ready_marker": "OPENAZRAEL_CANDIDATE_STARTUP_READY",
-    "startup_marker_requires_current_commit_sha": true
+    "startup_marker_requires_current_commit_sha": true,
+    "audio_restore_fingerprint_chain": "TRACKED_CANONICAL_SOURCE_SHA256 -> RESTORE_RUNTIME_SHA256 -> CURRENT_WAV_SHA256",
+    "build_manifest_restore_evidence": [
+      "legacy_colorkey",
+      "audio"
+    ],
+    "visual_capture_receipt_binding": "CURRENT_HEAD + RUN_ID + EXACT_R1_R7_R8_1280X720_SHA256",
+    "promotion_order": "WINDOWS_EXPORT -> EXPORTED_EXE_STARTUP_SMOKE -> OPTIONAL_TRACKED_EVIDENCE_PROMOTION"
   }
 }
