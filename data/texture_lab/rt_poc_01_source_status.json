@@ -345,6 +345,18 @@
         "missing AI is not treated as failure or quality verdict",
         "dashboard never approves, ranks, selects or promotes a texture"
       ]
+    },
+    "visual_hub": {
+      "status": "SOURCE_SAFE_READY",
+      "command": "python tools/texture_lab/oa_tex_review_pack_01.py hub",
+      "schema": "openazrael.texture_lab.review_pack_01_visual_hub.v1",
+      "default_output": ".local/texture_lab/review_pack_01/current/",
+      "automatic_selection": false,
+      "automatic_quality_verdict": false,
+      "approval_evidence": false,
+      "stale_evidence_policy": "REFUSE_ON_REFERENCE_OR_AI_FILE_FINGERPRINT_CHANGE",
+      "materialization_policy": "Classic + configured Enhanced are required; AI variants appear only from current PASS named-stage evidence.",
+      "authoritative_boundary": "Stage-specific review packs, seam/tile evidence, structured manual reviews and approval receipts remain authoritative."
     }
   }
 }
