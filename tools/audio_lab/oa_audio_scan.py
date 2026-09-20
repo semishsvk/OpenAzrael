@@ -21,7 +21,7 @@ else:
     from . import TOOL_VERSION, SCHEMA_VERSION
     from .common import (
         AUDIO_EXTENSIONS, detect_format, iter_audio_files, parse_wave,
-        scan_references, sha256_file, tree_digest,
+        scan_references, sha256_file, tree_digest, ensure_output_outside_source,
     )
 
 ROOT = Path(__file__).resolve().parents[2]
