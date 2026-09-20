@@ -15,15 +15,15 @@
   "gates": {
     "G00": {
       "name": "context_integrity",
-      "status": "PASS"
+      "status": "PENDING_RECORDED_SOURCE_VALIDATION"
     },
     "G01": {
       "name": "data_validation",
-      "status": "PASS"
+      "status": "PENDING_RECORDED_SOURCE_VALIDATION"
     },
     "G02": {
       "name": "unit_gameplay_logic",
-      "status": "PASS"
+      "status": "RUNTIME_PENDING"
     },
     "G03": {
       "name": "puzzle_state_space",
@@ -34,29 +34,30 @@
       "status": "RUNTIME_PENDING"
     },
     "G05": {
-      "name": "trigger_semantics_and_well_tongs_animation",
+      "name": "trigger_semantics_and_recovered_interaction_effects",
       "status": "RUNTIME_PENDING"
     },
     "G06": {
       "name": "audio_event_stream",
-      "status": "PASS"
+      "status": "RUNTIME_PENDING"
     },
     "G07": {
       "name": "save_load_state_hash",
-      "status": "PASS"
+      "status": "RUNTIME_PENDING"
     },
     "G08": {
       "name": "synthetic_full_demo_playthrough",
-      "status": "PASS"
+      "status": "RUNTIME_PENDING"
     },
     "G09": {
       "name": "fresh_checkout_build",
-      "status": "PASS"
+      "status": "PENDING"
     },
     "G10": {
       "name": "manual_sanity",
       "status": "PENDING_MANUAL_USER"
     }
   },
-  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS, G04 includes current v117 physical traversal PASS, G05 includes current v118 well+tongs animation PASS, and no recorded KG-001 release blocker remains."
+  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS for the current tested commit, G04 includes v117, G05 includes exact-demo v118, and no recorded release blocker remains.",
+  "evidence_note": "Candidate 2 PASS JSON remains historical; v112 status now requires evidence SHA == current Git HEAD."
 }
