@@ -37,7 +37,7 @@ SOURCE_CONTRACTS=[
     ROOT/"data/tests/kg001_texture_colorkey_contract_v116.json",
     ROOT/"data/tests/kg001_room_trigger_contract_v110.json",
 ]
-EXPECTED_GODOT_PREFIX="4.7.2.stable"
+EXPECTED_GODOT_VERSION="4.7.2.stable.official.ed1daf0bf"
 
 
 def sha256(path: Path) -> str:
@@ -69,7 +69,7 @@ def godot_version(executable: str | None) -> dict:
         return {
             "executable":"",
             "version":"",
-            "expected_prefix":EXPECTED_GODOT_PREFIX,
+            "expected":EXPECTED_GODOT_VERSION,
             "matches_expected":False,
             "status":"NOT_PROBED",
         }
@@ -81,9 +81,9 @@ def godot_version(executable: str | None) -> dict:
     return {
         "executable":executable,
         "version":version,
-        "expected_prefix":EXPECTED_GODOT_PREFIX,
-        "matches_expected":proc.returncode==0 and version.startswith(EXPECTED_GODOT_PREFIX),
-        "status":"PASS" if proc.returncode==0 and version.startswith(EXPECTED_GODOT_PREFIX) else "FAIL",
+        "expected":EXPECTED_GODOT_VERSION,
+        "matches_expected":proc.returncode==0 and version==EXPECTED_GODOT_VERSION,
+        "status":"PASS" if proc.returncode==0 and version==EXPECTED_GODOT_VERSION else "FAIL",
     }
 
 
