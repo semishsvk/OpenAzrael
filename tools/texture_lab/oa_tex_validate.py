@@ -10,6 +10,8 @@ from common import (
     ROOT,
     RESAMPLE,
     alpha_is_binary,
+    alpha_mask_mismatch_pixels,
+    classify_transparency,
     apply_legacy_colorkey,
     has_alpha,
     image_mae,
@@ -18,6 +20,7 @@ from common import (
     seam_mae,
     sha256_file,
     should_apply_legacy_colorkey,
+    transparent_rgb_nonzero_pixels,
     visible_legacy_magenta_pixels,
     write_json,
 )
@@ -30,6 +33,7 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
         expected = (src.width * factor, src.height * factor)
         size_ok = cand.size == expected
 
+        source_transparency = classify_transparency(source, src)
         legacy_colorkey = should_apply_legacy_colorkey(source, src)
         source_compare = apply_legacy_colorkey(src) if legacy_colorkey else src.convert("RGBA")
 
@@ -43,9 +47,23 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
         candidate_has_alpha = has_alpha(cand)
         binary_alpha = alpha_is_binary(cand) if legacy_colorkey else None
         visible_magenta = visible_legacy_magenta_pixels(cand) if legacy_colorkey else 0
+        hidden_rgb = transparent_rgb_nonzero_pixels(cand) if legacy_colorkey else 0
+        mask_mismatch = None
+        exact_mask_ok = None
+        if legacy_colorkey:
+            source_alpha = source_compare.getchannel("A")
+            candidate_alpha = cand.convert("RGBA").getchannel("A")
+            mask_mismatch = alpha_mask_mismatch_pixels(source_alpha, candidate_alpha)
+            exact_mask_ok = mask_mismatch == 0
         colorkey_ok = (
             (not legacy_colorkey)
-            or (candidate_has_alpha and bool(binary_alpha) and visible_magenta == 0)
+            or (
+                candidate_has_alpha
+                and bool(binary_alpha)
+                and visible_magenta == 0
+                and hidden_rgb == 0
+                and bool(exact_mask_ok)
+            )
         )
 
         source_seam = seam_mae(source_compare)
@@ -73,10 +91,18 @@ def validate_pair(source: Path, candidate: Path, factor: int) -> dict:
             "expected_size": list(expected),
             "actual_size": list(cand.size),
             "size_ok": size_ok,
+            "source_transparency_mode": source_transparency["mode"],
+            "source_transparency_review_required": source_transparency[
+                "manual_review_required"
+            ],
+            "source_transparency_reason": source_transparency["reason"],
             "legacy_colorkey_expected": legacy_colorkey,
             "candidate_has_alpha": candidate_has_alpha,
             "candidate_binary_alpha": binary_alpha,
             "visible_legacy_magenta_pixels": visible_magenta,
+            "transparent_rgb_nonzero_pixels": hidden_rgb,
+            "alpha_mask_mismatch_pixels": mask_mismatch,
+            "exact_alpha_mask_ok": exact_mask_ok,
             "colorkey_ok": colorkey_ok,
             "roundtrip_mae_rgba_0_255": image_mae(source_compare, rt_rgba),
             "roundtrip_ssim_rgb": optional_ssim(source_compare, roundtrip),
@@ -135,11 +161,15 @@ def main() -> int:
 
     failures = [r for r in rows if r["technical_status"] != "PASS"]
     report = {
-        "schema": "openazrael.texture_lab.validation.v5",
+        "schema": "openazrael.texture_lab.validation.v6",
         "variant": args.variant,
         "factor": args.factor,
         "only": sorted(wanted) if wanted else None,
-        "note": "Fidelity and source-relative seam metrics are observational until thresholds are calibrated on RT-POC-01.",
+        "note": (
+            "Legacy color-key exact-mask integrity is a hard technical gate. "
+            "Fidelity, ambiguous transparency interpretation, and source-relative "
+            "seam metrics remain observational until calibrated/manual review."
+        ),
         "results": rows,
         "technical_failures": len(failures),
     }
