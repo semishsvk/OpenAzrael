@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .artifacts import verify_artifact_manifest, write_artifact_manifest
 from .contracts import ToolFamily
 from .inventory import write_inventory
 from .registry import ToolRegistry
@@ -55,6 +56,29 @@ def command_inventory(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_catalog(args: argparse.Namespace) -> int:
+    payload = write_artifact_manifest(
+        args.root,
+        args.output,
+        project=args.project,
+    )
+    print(
+        f"catalog OK: {payload['artifact_count']} artifacts; "
+        f"schema={payload['schema']} v{payload['version']}"
+    )
+    return 0
+
+
+def command_verify_catalog(args: argparse.Namespace) -> int:
+    errors = verify_artifact_manifest(args.root, args.manifest)
+    if errors:
+        for error in errors:
+            print(f"ERROR: {error}")
+        return 1
+    print("artifact catalog OK")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="openazrael-tools",
@@ -86,6 +110,23 @@ def build_parser() -> argparse.ArgumentParser:
     inventory_parser.add_argument("root", type=Path)
     inventory_parser.add_argument("--output", type=Path, required=True)
     inventory_parser.set_defaults(func=command_inventory)
+
+    catalog_parser = sub.add_parser(
+        "catalog",
+        help="Create a deterministic artifact/IR catalog without rewriting artifacts",
+    )
+    catalog_parser.add_argument("root", type=Path)
+    catalog_parser.add_argument("--output", type=Path, required=True)
+    catalog_parser.add_argument("--project", default="OpenAzrael")
+    catalog_parser.set_defaults(func=command_catalog)
+
+    verify_parser = sub.add_parser(
+        "verify-catalog",
+        help="Verify catalog paths, sizes, and SHA-256 hashes against a root",
+    )
+    verify_parser.add_argument("root", type=Path)
+    verify_parser.add_argument("--manifest", type=Path, required=True)
+    verify_parser.set_defaults(func=command_verify_catalog)
 
     return parser
 
