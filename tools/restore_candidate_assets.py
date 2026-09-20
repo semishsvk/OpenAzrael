@@ -29,9 +29,11 @@ def main():
                 'texture': p.stem + '.png',
                 'applied': bool(decoded.get('legacy_colorkey_applied')),
                 'key_index': decoded.get('legacy_colorkey_index'),
-                'key_rgb': decoded.get('legacy_colorkey_rgb'),
+                'key_source_rgba': decoded.get('legacy_colorkey_source_rgba'),
+                'key_output_rgb': decoded.get('legacy_colorkey_output_rgb'),
                 'transparent_pixels': int(decoded.get('legacy_colorkey_pixels', 0)),
-                'used_magenta_indices': decoded.get('legacy_colorkey_used_magenta_indices', []),
+                'used_sentinel_indices': decoded.get('legacy_colorkey_used_sentinel_indices', []),
+                'used_broad_magenta_indices': decoded.get('legacy_colorkey_used_broad_magenta_indices', []),
                 'rule': decoded.get('legacy_colorkey_rule'),
             })
     expected = {'R1':(69,593,62), 'R7':(48,689,40), 'R8':(87,1050,74)}

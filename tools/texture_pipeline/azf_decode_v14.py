@@ -74,15 +74,17 @@ def save_png(azf_path: Path, png_path: Path, quantize_like_engine=True):
     # Transparency is decided in original indexed space. Do not collapse to
     # RGB first: nearby palette entries may quantize to similar magenta values
     # but must remain distinct if they are not the actual key index.
-    rendered, colorkey = render_indexed_colorkey(idx, rgb, azf_path)
+    rendered, colorkey = render_indexed_colorkey(idx, a['palette'], rgb, azf_path)
     mode = 'RGBA' if rendered.shape[-1] == 4 else 'RGB'
     Image.fromarray(rendered, mode).save(png_path)
     a['legacy_colorkey_candidate'] = colorkey['candidate']
     a['legacy_colorkey_applied'] = colorkey['applied']
     a['legacy_colorkey_index'] = colorkey['key_index']
-    a['legacy_colorkey_rgb'] = colorkey['key_rgb']
+    a['legacy_colorkey_source_rgba'] = colorkey['key_source_rgba']
+    a['legacy_colorkey_output_rgb'] = colorkey['key_output_rgb']
     a['legacy_colorkey_pixels'] = colorkey['key_pixels']
-    a['legacy_colorkey_used_magenta_indices'] = colorkey['used_magenta_indices']
+    a['legacy_colorkey_used_sentinel_indices'] = colorkey['used_sentinel_indices']
+    a['legacy_colorkey_used_broad_magenta_indices'] = colorkey['used_broad_magenta_indices']
     a['legacy_colorkey_rule'] = colorkey['rule']
     a['output_mode'] = mode
     return a
