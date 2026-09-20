@@ -18,6 +18,13 @@
 4. Export/launch `Windows Candidate 2` and manually verify floor stability, actually audible audio, and no pink/magenta cutout background.
 5. Continue the full R1 -> R7 -> R1 -> R8 -> Shield route only after those blocker retests pass; `demo-known-good-001` remains blocked while any release blocker is recorded.
 
+### Windows local handoff
+For the full restored-asset cycle on Windows, use the thin canonical wrapper:
+
+    pwsh tools/run_kg001_candidate2_windows_v117.ps1 -DemoDir C:\path\to\ATDEMO -Godot C:\path\to\Godot_v4.7.2-stable_win64.exe -PromoteResults
+
+It delegates to the existing restore/runner/export contracts; it does not implement separate gameplay or acceptance logic.
+
 ### Current architectural decisions
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
 - Candidate diagnostics are observational only; they do not directly mutate gameplay state.
