@@ -360,11 +360,11 @@ func _exercise_r8_stair_mesh(
     var ascent := await _walk_toward_progress(
         player,
         up_dir,
-        ascent_distance * 0.90,
+        ascent_distance * 0.98,
         240,
         lower_floor_y - 6.0
     )
-    _check(check_prefix + "_up_progress", float(ascent["progress"]) >= ascent_distance * 0.80)
+    _check(check_prefix + "_up_progress", float(ascent["progress"]) >= ascent_distance * 0.94)
     _check(check_prefix + "_up_height", float(ascent["max_y"]) >= upper_floor_y - 3.0)
     _check(check_prefix + "_up_no_fall_through", float(ascent["min_y"]) >= lower_floor_y - 6.0)
     _check(check_prefix + "_up_floor_contact", float(ascent["floor_contact_ratio"]) >= 0.40)
@@ -380,11 +380,11 @@ func _exercise_r8_stair_mesh(
     var descent := await _walk_toward_progress(
         player,
         -up_dir,
-        ascent_distance * 0.90,
+        ascent_distance * 0.98,
         240,
         lower_floor_y - 6.0
     )
-    _check(check_prefix + "_down_progress", float(descent["progress"]) >= ascent_distance * 0.80)
+    _check(check_prefix + "_down_progress", float(descent["progress"]) >= ascent_distance * 0.94)
     _check(check_prefix + "_down_height", float(descent["min_y"]) <= lower_floor_y + 3.0)
     _check(check_prefix + "_down_no_fall_through", float(descent["min_y"]) >= lower_floor_y - 6.0)
     _check(check_prefix + "_down_floor_contact", float(descent["floor_contact_ratio"]) >= 0.40)
