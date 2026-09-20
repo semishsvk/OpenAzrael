@@ -89,7 +89,7 @@
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
     "kg001_build_status": "CANDIDATE2_SOURCE_READY_RUNTIME_RETEST_REQUIRED",
-    "release_rule": "ALL_GATES_PASS_AND_ZERO_CRITICAL_BUGS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
+    "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
     "runtime_ir_rooms": 3,

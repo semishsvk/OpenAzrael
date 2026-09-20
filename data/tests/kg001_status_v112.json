@@ -54,6 +54,7 @@
   "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains.",
   "known_release_blockers": [
     "kg001_release_blocked_by_issue_6",
-    "kg001_release_blocked_by_issue_9"
+    "kg001_release_blocked_by_issue_9",
+    "kg001_release_blocked_by_issue_11"
   ]
 }
