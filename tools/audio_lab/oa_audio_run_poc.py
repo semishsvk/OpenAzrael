@@ -5,6 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 import argparse
 import json
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from tools.audio_lab.oa_audio_scan import main as scan_main
 from tools.audio_lab.oa_audio_validate import validate
