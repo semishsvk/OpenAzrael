@@ -1,0 +1,18 @@
+{
+  "checks": 33,
+  "failed": [],
+  "logical_audio_events": [
+    "S152V2.WAV",
+    "S137.WAV",
+    "S121.WAV",
+    "799SECDR.WAV"
+  ],
+  "persistent_hash": "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8",
+  "schema": "openazrael.kg001.full_demo",
+  "scope": "synthetic production-interaction R1 -> R7 -> R1 -> R8 demo playthrough",
+  "status": "PASS",
+  "version": 111,
+  "_process_returncode": 0,
+  "_output_tail": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nOpenAzrael acquired: rusty_tongs\nPicked up: Tongs\nOpenAzrael flag: R1Door1Open = true\nOpened Entry Corridor door 1.\nOpenAzrael room: Well Room (R7)\nOpenAzrael acquired: well_key\nOpenAzrael puzzle node: R7KeyTake = true\nOpenAzrael flag: R7key = true\nRetrieved the Well Key with the tongs.\nThe switchboard setting moves into the correct position.\nThe switchboard setting moves into the correct position.\nOpenAzrael flag: R7waterswitchboard = true\nOpenAzrael flag: R8BathDrain = true\nOpenAzrael puzzle node: R8Water = false\nThe pipe locks into its new position. Water can be heard draining in the Baptistery. [R8BathDrain]\nOpenAzrael room: Entry Corridor (R1)\nOpenAzrael flag: FR1DoorUnlocked = true\nOpenAzrael flag: R1Door2Open = true\nOpened Entry Corridor door 2.\nOpenAzrael room: Baptistery (R8)\nOpenAzrael acquired: r8_lens\nOpenAzrael flag: R8Lens = true\nRetrieved the lens from the drained bath.\nOpenAzrael puzzle node: R8LensPlace = true\nPlaced the lens on the stone Bible. [R8LensPlace -> lenstop]\nOpenAzrael puzzle node: R8LensLook = true\nOpenAzrael puzzle node: R8RaiseTimer = true\nOptical mechanism starts. [R8LensLook -> R8RaiseTimer]\nOpenAzrael puzzle node: R8Counter = true\nOpenAzrael puzzle node: DoorR8 = true\nOpenAzrael acquired: shield\nOpenAzrael puzzle node: R8TakeShield = true\nOpenAzrael flag: demo_complete = true\nShield acquired \u2014 playable demo section complete.\nOPENAZRAEL_KG001_V111 {\"checks\":33,\"failed\":[],\"logical_audio_events\":[\"S152V2.WAV\",\"S137.WAV\",\"S121.WAV\",\"799SECDR.WAV\"],\"persistent_hash\":\"69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8\",\"schema\":\"openazrael.kg001.full_demo\",\"scope\":\"synthetic production-interaction R1 -> R7 -> R1 -> R8 demo playthrough\",\"status\":\"PASS\",\"version\":111}\nWARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)\n",
+  "_commit_sha": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70"
+}

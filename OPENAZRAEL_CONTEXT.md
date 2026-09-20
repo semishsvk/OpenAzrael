@@ -1,5 +1,28 @@
 # OpenAzrael Context Bootstrap
 
+## Candidate 2 Windows execution — 2026-09-20
+
+**KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
+Tested source `89ccf775dfd6abc21e6bc69f344fe2d349b4dd70`, Godot `4.7.2.stable.official.ed1daf0bf`.
+The clean-checkout suite passed source validation, asset import, v109, v110,
+v111 and audio-v116 (62 checks). The exported Windows EXE passed headless and
+graphical smoke tests. Instrumented exported-PCK checks passed real floor
+support in R1/R7/R8, nonzero Master audio output, cutout materials and F11 ZIP
+capture without a gameplay-state hash change. Supplied Sigil icons are verified
+inside the executable. Some headless scene tests report non-fatal ObjectDB
+cleanup warnings; there are no ERROR or SCRIPT ERROR lines in the passing runs.
+
+Additional integration fixes preserve the authored invisible R8/Object01
+entrance support collision, repair empty ambient WAV loop ranges, and retain
+Godot numeric typing and runner error handling. The v32 indexed palette rule
+preserves the single near-magenta non-key pixel in BLOOS4#.
+
+Candidate 1 manual failure remains historical evidence. Issues #6, #9 and #11
+await human retest and remain release blockers. No `demo-known-good-001` tag
+is allowed or created. Original Miles parity and complete original renderer
+transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
+`data/tests/kg001_candidate2_windows.json` for details.
+
 **Current canonical checkpoint:** `v116-context-v32`
 **Technical base:** `openazrael_godot_poc_v116`
 
@@ -87,7 +110,7 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - `scripts/kg001_full_demo_runner_v111.gd` executes the complete synthetic demo path through production interaction scripts and real RoomManager transitions.
 - Direct gameplay flag/puzzle-node injection is forbidden by the source validator.
 - `tools/kg001_status_v111.py` consolidates G00-G10 and only literal PASS for every gate permits the known-good tag.
-- Overall status: PRE_RUNTIME_READY. v109/v110/v111 Godot execution remains pending.
+- Overall status: G00-G09 PASS. v109/v110/v111/audio-v116 Godot execution passed; G10 remains pending.
 
 ## KG-001 v112 candidate workflow
 - `tools/run_kg001_candidate_v112.py` runs source validators plus v109/v110/v111 and the audio-v116 physical-readiness regression, then can record G09 clean-checkout evidence.
@@ -107,8 +130,8 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - A real metadata-only audit of all 86 ATDEMO AZFs disproved the broader v31 uniqueness assumption: `BLOOS4#.AZF` uses key index 5 plus one near-magenta non-key pixel at index 9.
 - Candidate 2 therefore re-froze at v32 with the source-palette sentinel rule: exactly one used entry with raw R=255, B=255, G<=8 in every `#` texture; no non-`#` texture uses that sentinel.
 - The audit is bound by demo-archive and per-texture SHA-256 in `data/tests/kg001_colorkey_corpus_audit_v116.json`.
-- The Classic AZF decoder applies a conservative shared rule: only texture names containing `#` and actually containing quantized magenta pixels are converted to binary alpha.
-- Magenta key threshold is `R>=248, B>=248, G<=12`; keyed RGB is zeroed and alpha becomes 0, all other pixels remain opaque.
+- The Classic AZF decoder applies a conservative shared rule: only texture names containing `#` with exactly one used raw palette sentinel (R=255/B=255/G<=8) are converted to binary alpha.
+- The broader quantized-magenta range is diagnostic only. Alpha is selected by the exact audited source palette index; all other indices remain opaque.
 - The XAF->GLB exporter preserves RGBA and emits a PBR `MASK` material with alpha cutoff 0.5 instead of converting the image back to RGB.
 - The demo source-safe contract tracks ten `#` texture names. R1 known regressions are `KEYHOLE#` and `TONG6 -> MINETON#`.
 - `tools/validate_kg001_texture_colorkey_v116.py` always runs source-safe synthetic checks and automatically audits the restored 86-texture corpus/R1 manifest when local assets are present.
@@ -121,7 +144,7 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Non-headless builds append JSONL events to `user://openazrael_candidate2_events.jsonl`.
 - Core room/IR resources include source-safe `data/audio/legacy_world_ir.json`. A graphical Candidate additionally requires four Event-IR WAVs plus three recovered ambient WAVs.
 - `scripts/kg001_audio_runtime_runner_v116.gd` checks resource loading, Master-bus state, ambient counts R1=2/R7=3/R8=2, ambient `playing` state and an Event-IR physical player.
-- Source contracts are PASS. Candidate 2 Godot runtime evidence remains NOT_EXECUTED until the corrected build is run.
+- Source contracts and Candidate 2 Godot automated runtime evidence are PASS. Manual confirmation remains pending.
 
 ## Approved localization architecture
 - Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.

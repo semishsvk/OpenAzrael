@@ -139,7 +139,12 @@ func _create_world_collision(room_id: String) -> void:
         var obj_name := _object_name_for_mesh(mi)
         if hidden.has(obj_name):
             mi.visible = false
-            continue
+            # R8/Object01 is the authored horizontal entrance support quad
+            # (y=-87.124, between tunnel07 and step011). Hiding its TRANSPARANT
+            # material must not remove its collision: the portal spawn lies on
+            # this otherwise open gap. Its diagnostic trigger remains unchanged.
+            if not (room_id == "R8" and obj_name == "Object01"):
+                continue
         if pickup_names.has(obj_name):
             continue
         if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
@@ -402,8 +407,8 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
     var mx := _v3(t["bounds"][1])
-    var y0 := min(mn.y, mx.y) - 12.0
-    var y1 := max(mn.y, mx.y) + 70.0
+    var y0: float = min(mn.y, mx.y) - 12.0
+    var y1: float = max(mn.y, mx.y) + 70.0
     return p.x >= min(mn.x,mx.x) and p.x <= max(mn.x,mx.x) \
         and p.z >= min(mn.z,mx.z) and p.z <= max(mn.z,mx.z) \
         and p.y >= y0 and p.y <= y1

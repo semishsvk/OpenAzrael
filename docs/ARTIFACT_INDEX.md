@@ -1,5 +1,28 @@
 # OpenAzrael Artifact Index
 
+## Candidate 2 Windows execution — 2026-09-20
+
+**KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
+Tested source `89ccf775dfd6abc21e6bc69f344fe2d349b4dd70`, Godot `4.7.2.stable.official.ed1daf0bf`.
+The clean-checkout suite passed source validation, asset import, v109, v110,
+v111 and audio-v116 (62 checks). The exported Windows EXE passed headless and
+graphical smoke tests. Instrumented exported-PCK checks passed real floor
+support in R1/R7/R8, nonzero Master audio output, cutout materials and F11 ZIP
+capture without a gameplay-state hash change. Supplied Sigil icons are verified
+inside the executable. Some headless scene tests report non-fatal ObjectDB
+cleanup warnings; there are no ERROR or SCRIPT ERROR lines in the passing runs.
+
+Additional integration fixes preserve the authored invisible R8/Object01
+entrance support collision, repair empty ambient WAV loop ranges, and retain
+Godot numeric typing and runner error handling. The v32 indexed palette rule
+preserves the single near-magenta non-key pixel in BLOOS4#.
+
+Candidate 1 manual failure remains historical evidence. Issues #6, #9 and #11
+await human retest and remain release blockers. No `demo-known-good-001` tag
+is allowed or created. Original Miles parity and complete original renderer
+transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
+`data/tests/kg001_candidate2_windows.json` for details.
+
 ## Current canonical checkpoint
 - `v116-context-v32` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
@@ -69,7 +92,7 @@
 - Candidate restore integration in `tools/restore_candidate_assets.py`
 - known R1 regressions: KEYHOLE# and TONG6 -> MINETON#
 - broader original transparency/blending semantics remain HOLD
-- GitHub Issue #11 remains open pending corrected asset/runtime/manual visual retest
+- GitHub Issue #11 remains open pending manual visual retest after automated asset/runtime PASS
 
 ## Major physical-audio regression — Issue #9
 - `scripts/kg001_audio_runtime_runner_v116.gd`
@@ -78,13 +101,13 @@
 - source-safe `data/audio/legacy_world_ir.json`
 - reproducible local restore: `tools/restore_candidate_assets.py` and `tools/prepare_candidate_audio.py`
 - recovered ambient count contract: R1=2, R7=3, R8=2
-- GitHub Issue #9 remains open pending Candidate 2 runtime/manual audibility retest
+- GitHub Issue #9 remains open pending Candidate 2 manual audibility retest after automated runtime PASS
 
 ## Critical collision regression — Issue #6
 - source fix in `scripts/room_manager.gd`: two-sided legacy `ConcavePolygonShape3D` collision
 - physical regression in `scripts/kg001_room_trigger_runner_v110.gd`
 - source validator coverage in `tools/validate_kg001_room_trigger_v110.py`
-- GitHub Issue #6 remains open pending corrected-build runtime/manual retest
+- GitHub Issue #6 remains open pending corrected-build manual retest after automated runtime PASS
 
 ## KG-001 v110 room/trigger
 - `docs/KG001_ROOM_TRIGGER_V110.md`

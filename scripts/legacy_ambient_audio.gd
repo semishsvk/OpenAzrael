@@ -122,6 +122,12 @@ func _spawn_emitter(rec: Dictionary, legacy_slot: int) -> void:
     var stream = load(path)
     if stream is AudioStreamWAV:
         stream = stream.duplicate()
+        # Imported WAVs without authored loop metadata have an empty 0..0
+        # range (including QOA-compressed imports). Loop the complete sample,
+        # using decoded frame count, before enabling ambient playback.
+        if stream.loop_end <= stream.loop_begin:
+            stream.loop_begin = 0
+            stream.loop_end = int(round(stream.get_length() * stream.mix_rate))
         stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
     p.stream = stream
     p.set_meta("openazrael_provenance", "ORIGINAL_EXPLICIT")
@@ -180,6 +186,9 @@ func get_debug_snapshot() -> Array[Dictionary]:
             "confidence": p.get_meta("renderer_confidence", ""),
             "playing": p.playing,
             "stream_valid": p.stream != null,
+            "loop_begin": p.stream.loop_begin if p.stream is AudioStreamWAV else -1,
+            "loop_end": p.stream.loop_end if p.stream is AudioStreamWAV else -1,
+            "loop_mode": p.stream.loop_mode if p.stream is AudioStreamWAV else -1,
             "bus": p.bus,
             "volume_db": p.volume_db,
             "max_distance": p.max_distance,

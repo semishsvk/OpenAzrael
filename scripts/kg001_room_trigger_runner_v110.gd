@@ -114,6 +114,12 @@ func _run() -> void:
         manager.call("_spawn_at_portal", probe_room, probe_view)
         await _settle_physics(2)
 
+        if probe_room == "R8":
+            var support = manager.call("_find_node", "Object01")
+            var support_mesh = manager.call("_first_mesh", support)
+            _check("R8_entrance_support_remains_hidden", support_mesh != null and not support_mesh.visible)
+            _check("R8_entrance_support_has_collision", support_mesh != null and support_mesh.has_node("Collision_Object01"))
+
         var concave_shapes: Array[CollisionShape3D] = []
         _collect_concave_shapes(manager.current_room, concave_shapes)
         _check(probe_room + "_concave_world_collision_present", not concave_shapes.is_empty())
@@ -127,12 +133,15 @@ func _run() -> void:
             var floor_position: Vector3 = floor_hit["position"]
             player.global_position = Vector3(
                 player.global_position.x,
-                floor_position.y + 60.0,
+                # A small drop leaves the real capsule below the low tunnel
+                # ceiling; +60 could embed it in the roof or land on its top.
+                floor_position.y + 4.0,
                 player.global_position.z
             )
             player.velocity = Vector3.ZERO
             await _settle_physics(120)
             _check(probe_room + "_player_is_on_floor", player.is_on_floor())
+            _check(probe_room + "_player_reached_probed_floor", absf(player.global_position.y - floor_position.y) < 2.0)
             _check(
                 probe_room + "_player_did_not_fall_through",
                 player.global_position.y >= floor_position.y - 2.0

@@ -1,0 +1,17 @@
+{
+  "ambient_counts": {
+    "R1": 2,
+    "R7": 3,
+    "R8": 2
+  },
+  "checks": 62,
+  "event_asset": "S152V2.WAV",
+  "failed": [],
+  "schema": "openazrael.kg001.audio_runtime",
+  "scope": "G06 physical audio resource/load/player readiness; human audibility and original Miles parity remain separate",
+  "status": "PASS",
+  "version": 116,
+  "_process_returncode": 0,
+  "_output_tail": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nOpenAzrael flag: R7waterswitchboard = true\nOpenAzrael flag: R8BathDrain = true\nOpenAzrael puzzle node: R8Water = false\nOPENAZRAEL_KG001_AUDIO_V116 {\"ambient_counts\":{\"R1\":2,\"R7\":3,\"R8\":2},\"checks\":62,\"event_asset\":\"S152V2.WAV\",\"failed\":[],\"schema\":\"openazrael.kg001.audio_runtime\",\"scope\":\"G06 physical audio resource/load/player readiness; human audibility and original Miles parity remain separate\",\"status\":\"PASS\",\"version\":116}\n",
+  "_commit_sha": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70"
+}

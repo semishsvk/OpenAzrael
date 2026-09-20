@@ -19,7 +19,7 @@
     "R8": 2
   },
   "event_probe": {
-    "graph": "R8_LENS_PLACE",
+    "graph": "R7_WATER_SWITCHBOARD_SOLVED",
     "asset": "S152V2.WAV"
   },
   "checks": [
@@ -27,11 +27,13 @@
     "Master bus exists, is unmuted and is not effectively silent",
     "R1/R7/R8 ambient emitter counts match recovered IR",
     "ambient players have valid streams and playing=true",
+    "all ambient streams have nonempty forward loop ranges",
     "Event-IR play_sound creates a physical AudioStreamPlayer with playing=true"
   ],
   "evidence_boundary": {
     "human_audibility": "G10_MANUAL",
     "original_miles_pan_volume_parity": "HOLD_SEPARATE_ORACLE"
   },
-  "runtime_status": "NOT_EXECUTED"
+  "runtime_status": "PASS",
+  "runtime_evidence_commit": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70"
 }

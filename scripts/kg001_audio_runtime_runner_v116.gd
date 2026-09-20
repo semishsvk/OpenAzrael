@@ -14,7 +14,7 @@ const REQUIRED_AUDIO := [
     "res://assets/audio/S186.WAV"
 ]
 const EXPECTED_AMBIENT_COUNTS := {"R1": 2, "R7": 3, "R8": 2}
-const EVENT_GRAPH := "R8_LENS_PLACE"
+const EVENT_GRAPH := "R7_WATER_SWITCHBOARD_SOLVED"
 const EVENT_ASSET := "S152V2.WAV"
 
 var failures: Array[String] = []
@@ -49,6 +49,11 @@ func _finish(scene: Node = null) -> void:
         events.call("clear_physical_audio")
     if scene != null and is_instance_valid(scene):
         scene.queue_free()
+    # Let queued audio players and the scene release their stream resources.
+    await _settle(3)
+    # Headless process frames can finish before the audio mixer acknowledges
+    # stop/free commands; allow one real mixer cycle before engine shutdown.
+    await create_timer(0.15).timeout
     quit(0 if failures.is_empty() else 1)
 
 func _run() -> void:
@@ -102,6 +107,8 @@ func _run() -> void:
             var snap: Dictionary = snapshots[i]
             _check("%s_ambient_%d_stream" % [room_id, i], bool(snap.get("stream_valid", false)))
             _check("%s_ambient_%d_playing" % [room_id, i], bool(snap.get("playing", false)))
+            _check("%s_ambient_%d_nonempty_loop" % [room_id, i], int(snap.get("loop_end", 0)) > int(snap.get("loop_begin", 0)))
+            _check("%s_ambient_%d_forward_loop" % [room_id, i], int(snap.get("loop_mode", -1)) == AudioStreamWAV.LOOP_FORWARD)
 
     events.call("set_capture_only", false)
     events.call("clear_capture")

@@ -5,56 +5,56 @@
   "overall_status": "BLOCKED_KNOWN_BUGS",
   "final_tag_allowed": false,
   "failed_inputs": [],
+  "known_release_blockers": [
+    "kg001_release_blocked_by_issue_11",
+    "kg001_release_blocked_by_issue_6",
+    "kg001_release_blocked_by_issue_9"
+  ],
   "gates": {
     "G00": {
       "name": "context_integrity",
-      "status": "PENDING_RECORDED_SOURCE_VALIDATION"
+      "status": "PASS"
     },
     "G01": {
       "name": "data_validation",
-      "status": "PENDING_RECORDED_SOURCE_VALIDATION"
+      "status": "PASS"
     },
     "G02": {
       "name": "unit_gameplay_logic",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G03": {
       "name": "puzzle_state_space",
-      "status": "PENDING"
+      "status": "PASS"
     },
     "G04": {
       "name": "room_transition_state",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G05": {
       "name": "trigger_semantics",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G06": {
       "name": "audio_event_stream",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G07": {
       "name": "save_load_state_hash",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G08": {
       "name": "synthetic_full_demo_playthrough",
-      "status": "RUNTIME_PENDING"
+      "status": "PASS"
     },
     "G09": {
       "name": "fresh_checkout_build",
-      "status": "PENDING"
+      "status": "PASS"
     },
     "G10": {
       "name": "manual_sanity",
       "status": "PENDING_MANUAL_USER"
     }
   },
-  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains.",
-  "known_release_blockers": [
-    "kg001_release_blocked_by_issue_6",
-    "kg001_release_blocked_by_issue_9",
-    "kg001_release_blocked_by_issue_11"
-  ]
+  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains."
 }

@@ -39,7 +39,13 @@ RUNTIMES=[
 ]
 
 def run(cmd, check=False):
-    proc=subprocess.run(cmd,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    try:
+        proc=subprocess.run(cmd,cwd=ROOT,text=True,encoding="utf-8",errors="replace",stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
+    except subprocess.TimeoutExpired as exc:
+        output=exc.stdout or ""
+        if isinstance(output,bytes):
+            output=output.decode("utf-8",errors="replace")
+        proc=subprocess.CompletedProcess(cmd,124,output+"\nERROR: Candidate command timed out after 180 seconds\n")
     if check and proc.returncode!=0:
         raise RuntimeError(f"command failed ({proc.returncode}): {' '.join(cmd)}\n{proc.stdout}")
     return proc
@@ -86,6 +92,9 @@ def parse_marker(output, marker):
                 return {"status":"FAIL","parse_error":payload}
     return {"status":"FAIL","error":"result marker missing"}
 
+def engine_errors(output):
+    return [line for line in output.splitlines() if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))]
+
 def ignored(path):
     rel=str(path.relative_to(ROOT))
     proc=run(["git","check-ignore","-q",rel])
@@ -93,12 +102,12 @@ def ignored(path):
 
 def write_json(path,data):
     path.parent.mkdir(parents=True,exist_ok=True)
-    path.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8")
+    path.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8",newline="\n")
 
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109-v111 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111 plus audio-v116 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
     args=ap.parse_args()
 
@@ -127,7 +136,7 @@ def main():
         godot_version=ver.stdout.strip()
         if all(asset_present.values()):
             imported=run([godot,"--headless","--path",str(ROOT),"--import"])
-            import_status="PASS" if imported.returncode==0 else "FAIL"
+            import_status="PASS" if imported.returncode==0 and not engine_errors(imported.stdout) else "FAIL"
             write_json(TMP/"kg001_godot_import_v112.json",{
                 "status":import_status,
                 "returncode":imported.returncode,
@@ -141,6 +150,10 @@ def main():
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
             parsed=parse_marker(proc.stdout,marker)
+            errors=engine_errors(proc.stdout)
+            if proc.returncode!=0 or errors:
+                parsed["status"]="FAIL"
+                parsed["engine_errors"]=errors
             parsed["_process_returncode"]=proc.returncode
             parsed["_output_tail"]=proc.stdout[-12000:]
             runtimes[name]=parsed
@@ -148,6 +161,14 @@ def main():
     else:
         for name,_,_ in RUNTIMES:
             runtimes[name]={"status":"BLOCKED_GODOT_NOT_FOUND"}
+
+    # Replace every result, including skipped tests, so promotion cannot reuse
+    # an earlier PASS. Bind the evidence to the checkout that ran this suite.
+    for name,result in runtimes.items():
+        result["_commit_sha"]=head
+        write_json(TMP/f"kg001_{name}_runtime.json",result)
+    if not godot or not all(asset_present.values()):
+        write_json(TMP/"kg001_godot_import_v112.json",{"status":import_status,"commit_sha":head})
 
     clean_after=git_clean()
     full_runtime_pass=all(runtimes.get(name,{}).get("status")=="PASS" for name,_,_ in RUNTIMES)
@@ -173,13 +194,13 @@ def main():
         "room_assets_git_ignored":asset_ignored,
         "runtime_status":{k:v.get("status","") for k,v in runtimes.items()}
     }
-    write_json(TMP/"kg001_source_validation_v112.json",{"status":"PASS" if source_ok else "FAIL","commands":source})
+    write_json(TMP/"kg001_source_validation_v112.json",{"status":"PASS" if source_ok else "FAIL","commit_sha":head,"commands":source})
     write_json(TMP/"kg001_fresh_checkout.json",fresh)
 
     overall={
         "schema":"openazrael.kg001.candidate_run",
         "version":112,
-        "status":"PASS" if source_ok and full_runtime_pass and (not args.fresh_checkout or fresh_pass) else "INCOMPLETE_OR_FAIL",
+        "status":"PASS" if source_ok and import_status=="PASS" and full_runtime_pass and (not args.fresh_checkout or fresh_pass) else "INCOMPLETE_OR_FAIL",
         "commit_sha":head,
         "godot_version":godot_version,
         "godot_import_status":import_status,
@@ -207,7 +228,7 @@ def main():
     print(json.dumps(overall,indent=2))
     if args.fresh_checkout:
         sys.exit(0 if fresh_pass else 1)
-    sys.exit(0 if source_ok else 1)
+    sys.exit(0 if overall["status"]=="PASS" else 1)
 
 if __name__=="__main__":
     main()

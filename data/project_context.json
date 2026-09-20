@@ -88,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "CANDIDATE2_SOURCE_REFROZEN_V32_RUNTIME_RETEST_REQUIRED",
+    "kg001_build_status": "CANDIDATE2_WINDOWS_EXPORTED_G10_MANUAL_PENDING",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -99,14 +99,14 @@
     "kg001_changed_edges": 123,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "PENDING",
+    "kg001_runtime_gate_status": "G00_G09_PASS_G10_PENDING_MANUAL_USER",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_headless_runtime": "NOT_EXECUTED",
-    "kg001_state_restore": "IMPLEMENTED_NOT_RUNTIME_EXECUTED",
+    "kg001_headless_runtime": "PASS",
+    "kg001_state_restore": "RUNTIME_ROUNDTRIP_PASS",
     "kg001_room_trigger_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_room_trigger_runtime": "NOT_EXECUTED",
+    "kg001_room_trigger_runtime": "PASS",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_full_demo_runtime": "NOT_EXECUTED",
+    "kg001_full_demo_runtime": "PASS",
     "kg001_overall_status": "BLOCKED_ISSUES_6_9_11_RETEST",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
@@ -115,7 +115,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V32_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V32_AUTOMATED_PASS_MANUAL_PENDING",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -135,25 +135,25 @@
     "kg001_known_critical_bugs": [
       "#6 PLAYER_FALLS_THROUGH_FLOOR"
     ],
-    "kg001_collision_issue_6": "SOURCE_FIX_READY_MULTIROOM_RUNTIME_RETEST_REQUIRED",
+    "kg001_collision_issue_6": "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
       "#11 LEGACY_COLORKEY_MAGENTA_VISIBLE"
     ],
-    "kg001_audio_issue_9": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_audio_issue_9": "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_9": true,
     "kg001_physical_audio_source_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_physical_audio_runtime": "NOT_EXECUTED",
+    "kg001_physical_audio_runtime": "PASS",
     "kg001_audio_expected_ambient_counts": {
       "R1": 2,
       "R7": 3,
       "R8": 2
     },
-    "kg001_texture_issue_11": "SOURCE_FIX_READY_AUDITED_SENTINEL_RUNTIME_RETEST_REQUIRED",
+    "kg001_texture_issue_11": "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_11": true,
     "kg001_legacy_colorkey_source_contract": "AUDITED_SOURCE_SENTINEL_CONTRACT_PASS",
-    "kg001_legacy_colorkey_runtime": "NOT_EXECUTED",
+    "kg001_legacy_colorkey_runtime": "ASSET_VALIDATION_PASS_MANUAL_PENDING",
     "kg001_legacy_colorkey_expected_hash_textures": 10,
     "kg001_legacy_colorkey_known_r1_examples": [
       "KEYHOLE#",
@@ -167,7 +167,9 @@
       "existing Candidate diagnostics and bug capture only"
     ],
     "kg001_legacy_colorkey_actual_corpus_audit": "PASS_86_AZF_10_HASH_ZERO_NONHASH_SENTINEL",
-    "kg001_legacy_colorkey_bloos4_control": "KEY_INDEX_5_PLUS_NEAR_MAGENTA_NONKEY_INDEX_9_ONE_PIXEL"
+    "kg001_legacy_colorkey_bloos4_control": "KEY_INDEX_5_PLUS_NEAR_MAGENTA_NONKEY_INDEX_9_ONE_PIXEL",
+    "kg001_runtime_evidence_commit": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70",
+    "documentation_runtime_claim_boundary_note": "The earlier documentation-only cleanup did not promote runtime. Candidate 2 promotion now rests on fresh runtime evidence at kg001_runtime_evidence_commit."
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -178,7 +180,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Candidate 2 is re-frozen at v116-context-v32 after the real ATDEMO 86-AZF audit invalidated the broader v31 magenta uniqueness assumption. Restore excluded assets from the bound demo corpus, run the complete v112 fresh-checkout Candidate suite, require #6 multi-room floor support, #9 physical audio and #11 audited source-sentinel transparency to PASS, then run the short graphical blocker smoke before full G10. No feature work before runtime evidence.",
+  "next_target": "Run exported KG-001 Candidate 2 / v116-context-v32 for manual Issues #6/#9/#11 retest and full G10. G00-G09 automation passed at 89ccf775dfd6abc21e6bc69f344fe2d349b4dd70. Do not tag demo-known-good-001 until G10 and all release blockers are resolved.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -272,7 +274,7 @@
     "contract": "data/tests/kg001_candidate_diagnostics_contract_v116.json",
     "note": "docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md",
     "source_status": "SOURCE_CONTRACT_PASS",
-    "runtime_status": "NOT_EXECUTED",
+    "runtime_status": "AUTOMATED_GRAPHICAL_PASS_MANUAL_PENDING",
     "controls": {
       "F6": "trigger volumes",
       "F7": "candidate HUD",
@@ -329,9 +331,9 @@
       "R7": 3,
       "R8": 2
     },
-    "event_probe": "R8_LENS_PLACE -> S152V2.WAV",
+    "event_probe": "R7_WATER_SWITCHBOARD_SOLVED -> S152V2.WAV",
     "source_status": "SOURCE_CONTRACT_PASS",
-    "runtime_status": "NOT_EXECUTED",
+    "runtime_status": "PASS",
     "boundary": "Automated readiness does not prove human audibility or original Miles parity."
   },
   "kg001_texture_colorkey_v116": {
@@ -349,12 +351,25 @@
       "TONG6 -> MINETON#"
     ],
     "source_status": "AUDITED_SOURCE_SENTINEL_CONTRACT_PASS",
-    "runtime_status": "NOT_EXECUTED",
+    "runtime_status": "ASSET_VALIDATION_PASS_MANUAL_PENDING",
     "manual_visual_status": "PENDING",
     "boundary": "Indexed source-palette binary color-key compatibility only; complete original transparency/blending semantics remain HOLD.",
     "selection_space": "ORIGINAL_INDEXED_AZF_BEFORE_RGB_EXPANSION",
     "ambiguity_policy": "FAIL_CLOSED_ZERO_OR_MULTIPLE_USED_SOURCE_SENTINELS",
     "actual_corpus_audit": "data/tests/kg001_colorkey_corpus_audit_v116.json",
     "audit_observation": "BLOOS4# has key index 5 and a one-pixel near-magenta non-key index 9; broad quantized-magenta uniqueness is false."
+  },
+  "candidate2_windows": {
+    "base_main_sha": "356dddf71163b99539badb571cce500f99835acc",
+    "integrated_fix_pr": 10,
+    "integrated_fix_head": "1342e461c0d5d0c07034b0fc8f42a1eb77510c98",
+    "branch": "build/kg001-candidate2-windows",
+    "tested_runtime_commit": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70",
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "watermark": "KG-001 Candidate 2 / v116-context-v32",
+    "export_preset": "Windows Candidate 2",
+    "windows_asset_boundary": "Commercial demo assets only in local ignored files and private build/snapshot artifacts. No raw game payload in Git.",
+    "g10": "PENDING_MANUAL_USER",
+    "known_good_tag_created": false
   }
 }

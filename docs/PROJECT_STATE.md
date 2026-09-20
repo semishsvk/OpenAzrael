@@ -1,5 +1,28 @@
 # OpenAzrael Project State
 
+## Candidate 2 Windows execution — 2026-09-20
+
+**KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
+Tested source `89ccf775dfd6abc21e6bc69f344fe2d349b4dd70`, Godot `4.7.2.stable.official.ed1daf0bf`.
+The clean-checkout suite passed source validation, asset import, v109, v110,
+v111 and audio-v116 (62 checks). The exported Windows EXE passed headless and
+graphical smoke tests. Instrumented exported-PCK checks passed real floor
+support in R1/R7/R8, nonzero Master audio output, cutout materials and F11 ZIP
+capture without a gameplay-state hash change. Supplied Sigil icons are verified
+inside the executable. Some headless scene tests report non-fatal ObjectDB
+cleanup warnings; there are no ERROR or SCRIPT ERROR lines in the passing runs.
+
+Additional integration fixes preserve the authored invisible R8/Object01
+entrance support collision, repair empty ambient WAV loop ranges, and retain
+Godot numeric typing and runner error handling. The v32 indexed palette rule
+preserves the single near-magenta non-key pixel in BLOOS4#.
+
+Candidate 1 manual failure remains historical evidence. Issues #6, #9 and #11
+await human retest and remain release blockers. No `demo-known-good-001` tag
+is allowed or created. Original Miles parity and complete original renderer
+transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
+`data/tests/kg001_candidate2_windows.json` for details.
+
 **Canonical checkpoint:** `v116-context-v32`
 **Date:** 2026-09-19
 **Runtime target:** Godot 4
@@ -16,7 +39,7 @@ Development order remains `DEMO -> faithful reconstruction -> validation -> gene
 The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v32**.
 
 ## 3. Immediate execution priority
-Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v32 is source-frozen with the two-sided collision repair plus R1/R7/R8 entry support probes, physical-audio readiness, and audited indexed-AZF source-palette sentinel selection that preserves RGBA into GLB `MASK` materials. All fixes are source-ready but still require restored-asset/runtime and human confirmation.
+Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v32 is source-frozen with the two-sided collision repair plus R1/R7/R8 entry support probes, physical-audio readiness, and audited indexed-AZF source-palette sentinel selection that preserves RGBA into GLB `MASK` materials. All fixes passed restored-asset/runtime checks and await human confirmation.
 
 The current priority is the **source-frozen KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v32 refrozen pipeline, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
 
@@ -31,8 +54,8 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 ### Legacy color-key textures — Issue #11
 - Real 86-AZF corpus audit: PASS for the source-sentinel rule. `BLOOS4#` is the control that invalidated broad quantized-magenta uniqueness: index 5 is the key; index 9 is a one-pixel near-magenta non-key.
 - AZF output remains RGB for ordinary textures.
-- Only `#` filenames with observed quantized magenta key pixels are converted to RGBA.
-- Shared key threshold: R/B >= 248 and G <= 12; keyed pixels use alpha 0 with zeroed RGB.
+- Only `#` filenames with exactly one used source sentinel R=255/B=255/G<=8 are converted to RGBA.
+- Shared key selection: exact audited source palette index with R=255/B=255/G<=8; only that index becomes transparent.
 - XAF->GLB preserves the mask as PBR alpha mode MASK / cutoff 0.5.
 - Source-safe synthetic regression plus restored-corpus audit is wired into the Candidate runner.
 - Complete original renderer transparency/blending semantics remain HOLD.
@@ -142,7 +165,7 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
 ### KG-001 Candidate 2 diagnostics — v116
-- The first real Godot integration candidate is now source-ready as **KG-001 Candidate 2**.
+- The Windows integration build is exported and automatically verified as **KG-001 Candidate 2**.
 - Added `CandidateDiagnostics` autoload with structured JSONL event logging, canonical state hashes and F10 state dumps.
 - Added F6 authored trigger-volume visualization and an F7 diagnostic HUD showing room, player XYZ, flags, puzzle nodes, value keys, last trigger, last event and last logical audio.
 - Existing F8 audio debug and F9 parity capture are deliberately preserved.

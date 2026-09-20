@@ -1,5 +1,28 @@
 # OpenAzrael Test Matrix
 
+## Candidate 2 Windows execution — 2026-09-20
+
+**KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
+Tested source `89ccf775dfd6abc21e6bc69f344fe2d349b4dd70`, Godot `4.7.2.stable.official.ed1daf0bf`.
+The clean-checkout suite passed source validation, asset import, v109, v110,
+v111 and audio-v116 (62 checks). The exported Windows EXE passed headless and
+graphical smoke tests. Instrumented exported-PCK checks passed real floor
+support in R1/R7/R8, nonzero Master audio output, cutout materials and F11 ZIP
+capture without a gameplay-state hash change. Supplied Sigil icons are verified
+inside the executable. Some headless scene tests report non-fatal ObjectDB
+cleanup warnings; there are no ERROR or SCRIPT ERROR lines in the passing runs.
+
+Additional integration fixes preserve the authored invisible R8/Object01
+entrance support collision, repair empty ambient WAV loop ranges, and retain
+Godot numeric typing and runner error handling. The v32 indexed palette rule
+preserves the single near-magenta non-key pixel in BLOOS4#.
+
+Candidate 1 manual failure remains historical evidence. Issues #6, #9 and #11
+await human retest and remain release blockers. No `demo-known-good-001` tag
+is allowed or created. Original Miles parity and complete original renderer
+transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
+`data/tests/kg001_candidate2_windows.json` for details.
+
 **Canonical checkpoint:** `v116-context-v32`
 
 | Area | Current checkpoint | Status | Boundary |
@@ -26,13 +49,13 @@
 | Candidate | KG-001 Candidate 2 |
 | Candidate diagnostic source contract | PASS |
 | Physical audio source contract | **PASS — Issue #9 regression wired** |
-| v109 headless runtime | NOT_EXECUTED |
-| v110 room/trigger runtime | NOT_EXECUTED |
-| v111 full-demo runtime | NOT_EXECUTED |
-| audio-v116 physical runtime | NOT_EXECUTED |
+| v109 headless runtime | AUTOMATED PASS |
+| v110 room/trigger runtime | AUTOMATED PASS |
+| v111 full-demo runtime | AUTOMATED PASS |
+| audio-v116 physical runtime | AUTOMATED PASS |
 | G09 fresh-checkout build | PENDING |
 | Candidate 1 manual observation | **FAIL — Issue #6 floor collision; Issue #9 no audible audio; Issue #11 magenta color-key artifacts** |
-| Candidate 2 v32 blocker fixes | SOURCE_READY / restored-asset/runtime retest pending |
+| Candidate 2 v32 blocker fixes | AUTOMATED PASS / manual retest pending |
 | G10 manual sanity | **BLOCKED — Issues #6/#9/#11 retest required** |
 | Known-good tag | NOT ALLOWED |
 | Localization architecture | APPROVED / IMPLEMENTATION DEFERRED |
@@ -49,8 +72,8 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
 | Canonical DemoState hash | IMPLEMENTED / source-contract checked | Godot runtime hash parity still to execute |
-| G02 gameplay logic model | SOURCE-MODEL PASS | Runtime unit execution pending |
-| G03 puzzle state-space | SOURCE-MODEL PASS — 63 states, 0 softlocks | Godot headless parity pending |
+| G02 gameplay logic model | SOURCE-MODEL PASS | Runtime v109 PASS |
+| G03 puzzle state-space | SOURCE-MODEL PASS — 63 states, 0 softlocks | Godot headless parity PASS |
 | G04-G08 runtime chain | PENDING | Next implementation target |
 
 
@@ -58,7 +81,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| Persistent save/reset/restore | IMPLEMENTED / source-contract checked | Godot runtime execution pending |
+| Persistent save/reset/restore | IMPLEMENTED / source-contract checked | Godot runtime PASS |
 | Logical audio capture | IMPLEMENTED / source-contract checked | Does not test WAV playback or Classic spatial parity |
 | Headless autoload/Event IR runner | READY / NOT EXECUTED | Requires Godot executable |
 | G04/G05 physical rooms/triggers | PENDING | Requires locally restored excluded demo assets |
@@ -68,10 +91,10 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| G04 room transitions | SOURCE_CONTRACT_PASS / runtime pending | Requires restored local R1/R7/R8 GLBs |
-| G05 trigger bounds/gates | SOURCE_CONTRACT_PASS / runtime pending | Uses real RoomManager path when executed |
-| Issue #6 legacy trimesh collision | SOURCE_CONTRACT_PASS / runtime pending | Generated concave collision is two-sided to tolerate legacy winding |
-| Issue #6 R1/R7/R8 entry floor-support regression | WIRED / runtime pending | Downward physics probe + real player capsule must settle `is_on_floor()` at spaview/view/Object14 |
+| G04 room transitions | AUTOMATED PASS | Requires restored local R1/R7/R8 GLBs |
+| G05 trigger bounds/gates | AUTOMATED PASS | Uses real RoomManager path when executed |
+| Issue #6 legacy trimesh collision | AUTOMATED PASS | Generated concave collision is two-sided to tolerate legacy winding |
+| Issue #6 R1/R7/R8 entry floor-support regression | AUTOMATED PASS | Downward physics probe + real player capsule must settle `is_on_floor()` at spaview/view/Object14 |
 | Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
 | G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
 
@@ -80,9 +103,9 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 
 | Layer | Status | Evidence boundary |
 |---|---|---|
-| Shared color-key rule | INDEXED_SOURCE_CONTRACT_PASS | `#` name + exactly one used palette index matching R>=248/B>=248/G<=12 before RGB expansion |
-| AZF Classic PNG output | WIRED / asset rebuild pending | Only the exact selected indexed key becomes binary alpha; ordinary palette indices remain opaque |
-| XAF -> GLB material | WIRED / asset rebuild pending | Keyed RGBA becomes PBR MASK, cutoff 0.5 |
+| Shared color-key rule | INDEXED_SOURCE_CONTRACT_PASS | `#` name + exactly one used palette index matching raw R=255/B=255/G<=8 before RGB expansion |
+| AZF Classic PNG output | ASSET-BACKED PASS | Only the exact selected indexed key becomes binary alpha; ordinary palette indices remain opaque |
+| XAF -> GLB material | ASSET-BACKED PASS | Keyed RGBA becomes PBR MASK, cutoff 0.5 |
 | Demo `#` class registry | 10 candidates / actual corpus audit PASS | Archive + per-AZF hashes bind metadata; no commercial pixels tracked |
 | BLOOS4# control | PASS | key index 5; near-magenta non-key index 9 occurs once, proving broad-threshold uniqueness invalid |
 | R1 keyhole / tongs | REGRESSION WIRED | KEYHOLE# and TONG6 -> MINETON# must resolve to MASK |
@@ -96,8 +119,8 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 |---|---|---|
 | Source contract | SOURCE_CONTRACT_PASS | Tracks ambient IR, physical WAV preflight and Event-IR physical-player wiring |
 | Ambient IR | R1=2 / R7=3 / R8=2 | Source-safe recovered metadata; audio payloads remain Git-ignored |
-| Master bus / stream / playing checks | WIRED / runtime pending | Headless Godot readiness, not human audibility |
-| Event physical player | WIRED / runtime pending | R8_LENS_PLACE -> S152V2.WAV probe |
+| Master bus / stream / playing checks | AUTOMATED PASS | Headless Godot readiness, not human audibility |
+| Event physical player | AUTOMATED PASS | R7_WATER_SWITCHBOARD_SOLVED -> S152V2.WAV probe |
 | Human audibility | G10 PENDING | Automated `playing=true` cannot prove speaker/headphone output |
 | Original Miles pan/volume parity | HOLD | Separate forensic oracle |
 
@@ -105,7 +128,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 
 | Gate/layer | Status | Evidence boundary |
 |---|---|---|
-| G08 production-interaction synthetic route | SOURCE_CONTRACT_PASS / runtime pending | Uses real interaction scripts and RoomManager |
+| G08 production-interaction synthetic route | AUTOMATED PASS | Uses real interaction scripts and RoomManager |
 | Direct gameplay state injection | FORBIDDEN / validated absent | Trigger positioning is synthetic, state effects are production code |
 | Final state hash oracle | WIRED | v108 success hash |
 | Logical audio oracle | WIRED | S152V2 -> S137 -> S121 -> 799SECDR |
@@ -178,7 +201,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Layer | Status | Evidence boundary |
 |---|---|---|
 | Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 2 / v116-context-v32 |
-| Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime execution pending |
+| Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime import PASS |
 | Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 2 |
 | JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |
 | Trigger enter/exit telemetry | SOURCE_CONTRACT_PASS | Initial false states seeded without EXIT spam |
@@ -192,4 +215,4 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Fix -> regression rule | DEFINED | Reproducible fixes require regression evidence at the lowest useful layer |
 | v112 candidate source suite integration | PASS | v116 validator appended to SOURCE_COMMANDS |
 | v27 manual Candidate execution | **FAIL / Critical Issue #6** | Player fell through floor |
-| Source-frozen v31 Candidate execution | NOT_EXECUTED | Must pass multi-room v110 floor regression, audio-v116, indexed color-key validation and manual blocker smoke |
+| Source-frozen v32 Candidate execution | AUTOMATED PASS | Multi-room v110, audio-v116 and indexed color-key validation PASS; manual blocker smoke pending |
