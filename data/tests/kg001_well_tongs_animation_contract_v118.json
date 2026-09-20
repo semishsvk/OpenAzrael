@@ -1,0 +1,50 @@
+{
+  "schema": "openazrael.kg001.well_tongs_animation_contract",
+  "version": 118,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_EXPECTED_FAIL_CURRENT_IMPLEMENTATION",
+  "requires_local_room_assets": true,
+  "room": "R7",
+  "interaction": "Interact_WellKey",
+  "key_visual": "nibdyky01",
+  "inventory_precondition": "rusty_tongs",
+  "positive_state_effects": [
+    "well_key acquired",
+    "R7KeyTake puzzle node true",
+    "R7key flag true"
+  ],
+  "negative_precondition": {
+    "without_tongs_must_not_acquire_key": true,
+    "without_tongs_must_not_set_R7KeyTake": true,
+    "without_tongs_must_not_set_R7key": true,
+    "without_tongs_must_not_move_or_hide_visual": true,
+    "interaction_must_remain_available": true
+  },
+  "animation_requirement": {
+    "multi_frame_visual_activity_required": true,
+    "instantaneous_hide_only_is_not_animation": true,
+    "implementation_mechanism_not_prescribed": true,
+    "accepted_evidence": [
+      "transform changes across at least two distinct observed frames",
+      "or staged visibility/new-node activity across at least two distinct observed frames"
+    ],
+    "watch_radius": 140,
+    "observe_frames": 60
+  },
+  "evidence_boundary": {
+    "original_animation_trajectory": "HOLD_NOT_RECOVERED",
+    "original_animation_timing": "HOLD_NOT_RECOVERED",
+    "exact_original_tongs_visual_semantics": "HOLD_NOT_RECOVERED",
+    "recovered_facts": [
+      "TONG6 maps to runtime rusty_tongs",
+      "nibdyky01 maps to well_key at reconstructed well geometry",
+      "R7KeyTake and R7key are current reconstructed retrieval state outputs"
+    ]
+  },
+  "current_implementation_observation": {
+    "source": "scripts/well_key_interaction.gd",
+    "behavior": "retrieve_well_key then hide key visual and queue_free immediately",
+    "explicit_animation_trigger_present": false,
+    "expected_v118_runtime_result_until_fixed": "FAIL"
+  },
+  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH"
+}
