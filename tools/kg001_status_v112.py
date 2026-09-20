@@ -17,6 +17,9 @@ r111=load_optional(ROOT/"data/tests/kg001_full_demo_runtime_v111.json")
 audio=load_optional(ROOT/"data/tests/kg001_audio_runtime_v116.json")
 fresh=load_optional(ROOT/"data/tests/kg001_fresh_checkout.json")
 manual=load_optional(ROOT/"data/tests/kg001_manual_sanity.json")
+manual_validation=load_optional(
+    ROOT/"data/tests/kg001_manual_sanity_validation_v118.json"
+)
 
 def is_pass(obj):
     return isinstance(obj,dict) and obj.get("status")=="PASS"
@@ -27,7 +30,15 @@ v110_pass=is_pass(r110)
 v111_pass=is_pass(r111)
 audio_pass=is_pass(audio)
 fresh_pass=is_pass(fresh)
-manual_pass=is_pass(manual)
+manual_pass=(
+    is_pass(manual)
+    and is_pass(manual_validation)
+    and manual.get("version")==2
+    and manual_validation.get("version")==118
+    and isinstance(fresh,dict)
+    and manual.get("candidate_commit")==fresh.get("commit_sha")
+    and manual_validation.get("candidate_commit")==fresh.get("commit_sha")
+)
 
 gates={
  "G00":{"name":"context_integrity","status":"PASS" if source_pass else "PENDING_RECORDED_SOURCE_VALIDATION"},
@@ -50,7 +61,16 @@ defect_clear=not release_blockers
 all_gates_pass=all(x["status"]=="PASS" for x in gates.values())
 all_pass=all_gates_pass and defect_clear
 failed=[]
-for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("audio_v116",audio),("fresh",fresh),("manual",manual)):
+for gid,obj in (
+    ("source",source),
+    ("v109",r109),
+    ("v110",r110),
+    ("v111",r111),
+    ("audio_v116",audio),
+    ("fresh",fresh),
+    ("manual",manual),
+    ("manual_validation_v118",manual_validation),
+):
     if isinstance(obj,dict) and obj.get("status")=="FAIL":
         failed.append(gid)
 out={
@@ -61,6 +81,15 @@ out={
  "final_tag_allowed":all_pass,
  "failed_inputs":failed,
  "known_release_blockers":release_blockers,
+ "manual_sanity_receipt_bound":manual_pass,
+ "manual_sanity_candidate_commit":(
+     manual.get("candidate_commit","")
+     if isinstance(manual,dict) else ""
+ ),
+ "fresh_checkout_candidate_commit":(
+     fresh.get("commit_sha","")
+     if isinstance(fresh,dict) else ""
+ ),
  "gates":gates,
  "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains."
 }
