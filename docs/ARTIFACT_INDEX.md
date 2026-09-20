@@ -75,6 +75,7 @@
 - `docs/AUDIO_LAB_AL_POC_02.md`
 - contract: `data/audio_lab/al_poc_02_contract.json`
 - canonical spectral evidence: `data/audio_lab/al_poc_02_canonical_spectral_evidence.json`
+- one-command runner: `tools/audio_lab/oa_audio_run_poc02.py`
 - spectral analyzer / deterministic PNG review: `tools/audio_lab/oa_audio_spectral.py`
 - canonical drift comparator: `tools/audio_lab/oa_audio_spectral_baseline.py`
 - NumPy dependency pin: `tools/audio_lab/requirements-spectral.txt`
