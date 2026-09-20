@@ -14,6 +14,7 @@ from tools.audio_lab.oa_audio_scan import main as scan_main
 from tools.audio_lab.oa_audio_validate import validate
 from tools.audio_lab.oa_audio_reference_audit import build_audit, load_json
 from tools.audio_lab.oa_audio_review_pack import build_review_pack, write_html as write_review_html
+from tools.audio_lab.common import ensure_output_outside_source
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -27,7 +28,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--event-graph", type=Path, default=ROOT / "data/gameplay_event_graph_v87.json")
     args = ap.parse_args(argv)
 
-    out = args.output_dir.resolve()
+    try:
+        out = ensure_output_outside_source(args.source_root, args.output_dir)
+    except ValueError as exc:
+        ap.error(str(exc))
     out.mkdir(parents=True, exist_ok=True)
     scan_rc = scan_main([
         str(args.source_root),
