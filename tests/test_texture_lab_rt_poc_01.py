@@ -220,6 +220,20 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 self.assertEqual(report["alpha_mask_mismatch_pixels"], 0)
                 self.assertTrue(report["exact_alpha_mask_ok"])
                 self.assertEqual(report["transparent_rgb_nonzero_pixels"], 0)
+                self.assertGreater(report["alpha_edge_pixels"], 0)
+                self.assertEqual(report["alpha_edge_mae_0_255"], 0.0)
+                self.assertEqual(
+                    report["alpha_edge_mismatch_fraction"],
+                    0.0,
+                )
+                self.assertEqual(
+                    report["edge_visible_legacy_magenta_pixels"],
+                    0,
+                )
+                self.assertEqual(
+                    report["edge_transparent_rgb_nonzero_pixels"],
+                    0,
+                )
 
     def test_scan_marks_unproven_colorkey_evidence_ambiguous(self):
         with tempfile.TemporaryDirectory() as td:
@@ -1079,12 +1093,18 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             row = pack["rows"][0]
             comparison = Path(row["comparison"]["path"])
             detail = Path(row["detail_comparison"]["path"])
+            alpha_preview = Path(row["alpha_preview"]["path"])
             tile = Path(row["tile_preview"]["path"])
             self.assertTrue(comparison.is_file())
             self.assertTrue(detail.is_file())
+            self.assertTrue(alpha_preview.is_file())
             self.assertTrue(tile.is_file())
             self.assertEqual(row["comparison"]["sha256"], sha256_file(comparison))
             self.assertEqual(row["detail_comparison"]["sha256"], sha256_file(detail))
+            self.assertEqual(
+                row["alpha_preview"]["sha256"],
+                sha256_file(alpha_preview),
+            )
             self.assertEqual(row["tile_preview"]["sha256"], sha256_file(tile))
             self.assertEqual(row["repeat_axes"], ["u", "v"])
 
@@ -1849,6 +1869,11 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     "alpha_mask_mismatch_pixels": None,
                     "transparent_rgb_nonzero_pixels": 0,
                     "visible_legacy_magenta_pixels": 0,
+                    "alpha_mae_0_255": 1.25,
+                    "alpha_edge_mae_0_255": 2.5,
+                    "alpha_edge_mismatch_fraction": 0.125,
+                    "edge_visible_legacy_magenta_pixels": 0,
+                    "edge_transparent_rgb_nonzero_pixels": 0,
                 }
             ]
         }
@@ -1872,6 +1897,9 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         )
         self.assertEqual(rows[0]["source_transparency_mode"], "ambiguous")
         self.assertTrue(rows[0]["source_transparency_review_required"])
+        self.assertEqual(rows[0]["alpha_mae_0_255"], 1.25)
+        self.assertEqual(rows[0]["alpha_edge_mae_0_255"], 2.5)
+        self.assertEqual(rows[0]["alpha_edge_mismatch_fraction"], 0.125)
         self.assertIn(
             "transparency_classification_ambiguous",
             rows[0]["attention"],
