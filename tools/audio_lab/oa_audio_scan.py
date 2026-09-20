@@ -15,7 +15,7 @@ if __package__ in (None, ""):
     from tools.audio_lab import TOOL_VERSION, SCHEMA_VERSION
     from tools.audio_lab.common import (
         AUDIO_EXTENSIONS, detect_format, iter_audio_files, parse_wave,
-        scan_references, sha256_file, tree_digest,
+        scan_references, sha256_file, tree_digest, ensure_output_outside_source,
     )
 else:
     from . import TOOL_VERSION, SCHEMA_VERSION
@@ -288,7 +288,10 @@ def main(argv: list[str] | None = None) -> int:
     source_root = args.source_root.resolve()
     if not source_root.is_dir():
         parser.error(f"source_root is not a directory: {source_root}")
-    out_dir = args.output_dir.resolve()
+    try:
+        out_dir = ensure_output_outside_source(source_root, args.output_dir)
+    except ValueError as exc:
+        parser.error(str(exc))
     out_dir.mkdir(parents=True, exist_ok=True)
 
     audio_files = iter_audio_files(source_root, args.extensions)
