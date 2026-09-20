@@ -1,6 +1,6 @@
 # OpenAzrael Roadmap
 
-**Canonical checkpoint:** `v116-context-v30`  
+**Canonical checkpoint:** `v116-context-v31`  
 **Technical base:** `openazrael_godot_poc_v116`
 
 ## Now — Candidate 2 blocker retest
