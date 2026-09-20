@@ -215,7 +215,10 @@
     "kg001_g10_requires_fresh_commit_match": true,
     "kg001_g10_requires_package_hash_match": true,
     "kg001_g10_promote_only_after_validation": true,
-    "kg001_startup_ready_marker_semantics": "AFTER_RESOURCE_PREFLIGHT_R1_LOAD_AND_SPAVIEW_SPAWN"
+    "kg001_startup_ready_marker_semantics": "AFTER_RESOURCE_PREFLIGHT_R1_LOAD_AND_SPAVIEW_SPAWN",
+    "kg001_distribution_build_manifest": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_distribution_sha256sums": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_distribution_integrity_runtime": "NOT_EXECUTED"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -513,7 +516,10 @@
     "g10_binding": "TEST_BUILD_RECEIPT_SHA256 + COMMIT + EXE_SHA256 + PCK_SHA256 + GODOT_VERSION",
     "g10_promotion_policy": "ONLY_AFTER_ALL_REQUIRED_CHECKS_AND_BLOCKER_CHECKS_PASS_AND_RECEIPT_VALIDATION_PASS",
     "startup_ready_marker": "OPENAZRAEL_CANDIDATE_STARTUP_READY",
-    "startup_ready_semantics": "EMITTED_ONCE_AFTER_REQUIRED_RESOURCE_PREFLIGHT_PASS_AND_SUCCESSFUL_R1_LOAD_AND_SPAVIEW_SPAWN"
+    "startup_ready_semantics": "EMITTED_ONCE_AFTER_REQUIRED_RESOURCE_PREFLIGHT_PASS_AND_SUCCESSFUL_R1_LOAD_AND_SPAVIEW_SPAWN",
+    "distribution_build_manifest": "exports/OpenAzrael-KG001-Candidate2-v116.build-manifest.json",
+    "distribution_checksum_manifest": "exports/OpenAzrael-KG001-Candidate2-v116.SHA256SUMS",
+    "distribution_integrity": "EXE_PCK_BUILD_MANIFEST_RECEIPT_TESTING_GUIDE_BOUND_BY_SHA256SUMS"
   },
   "kg001_v118_build_hardening": {
     "status": "SOURCE_CONTRACT_PASS",
@@ -554,6 +560,8 @@
     "promotion_order": "WINDOWS_EXPORT -> EXPORTED_EXE_STARTUP_SMOKE -> OPTIONAL_TRACKED_EVIDENCE_PROMOTION",
     "runtime_source_identity_scope": "PROJECT_RUNTIME_EXPORT_PLUS_BUILD_MANIFEST_TOOLCHAIN_AUDIO_PREPARATION",
     "source_contract_identity_includes": "data/backup/source_fingerprints.json",
-    "startup_ready_semantics": "POST_PREFLIGHT__POST_R1_LOAD__POST_SPAVIEW_SPAWN"
+    "startup_ready_semantics": "POST_PREFLIGHT__POST_R1_LOAD__POST_SPAVIEW_SPAWN",
+    "distribution_build_manifest": "BYTE_IDENTICAL_COPY_OF_EXPORT_BUILD_MANIFEST",
+    "distribution_checksum_manifest": "SHA256SUMS_COVERS_EXE_PCK_BUILD_MANIFEST_RECEIPT_TESTING_GUIDE"
   }
 }
