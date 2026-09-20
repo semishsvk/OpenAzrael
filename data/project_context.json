@@ -199,7 +199,8 @@
     "kg001_exported_exe_startup_smoke": "SOURCE_CONTRACT_READY_RUNTIME_NOT_EXECUTED",
     "kg001_evidence_promotion_policy": "POST_FRESH_CHECKOUT__POST_WINDOWS_EXPORT_AND_STARTUP_SMOKE",
     "kg001_release_blockers_close_automatically": false,
-    "kg001_test_build_known_good_tag_allowed": false
+    "kg001_test_build_known_good_tag_allowed": false,
+    "kg001_exported_startup_ready_marker": "SOURCE_CONTRACT_PASS_V118"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -474,6 +475,8 @@
     "g10_required": true,
     "release_blockers_close_automatically": false,
     "demo_known_good_tag_allowed": false,
-    "boundary": "Automated v118 PASS may only make Candidate 2 ready for G10 manual testing; it cannot close Issues #6/#9/#11 or authorize demo-known-good-001."
+    "boundary": "Automated v118 PASS may only make Candidate 2 ready for G10 manual testing; it cannot close Issues #6/#9/#11 or authorize demo-known-good-001.",
+    "startup_ready_marker": "OPENAZRAEL_CANDIDATE_STARTUP_READY",
+    "startup_marker_requires_current_commit_sha": true
   }
 }
