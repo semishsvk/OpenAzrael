@@ -87,6 +87,16 @@ for p in [
     "tools/prepare_candidate_audio.py",
     "docs/BUG_REPORTING.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/workflows/kg001-source-safe.yml",
+    "export_presets.cfg",
+    "tools/requirements-kg001-source-safe.txt",
+    "tools/validate_kg001_toolchain_v117.py",
+    "data/tests/kg001_toolchain_contract_v117.json",
+    "tools/write_kg001_build_manifest.py",
+    "tools/validate_kg001_export_preset_v117.py",
+    "scripts/kg001_visual_capture_v117.gd",
+    "tools/validate_kg001_visual_capture_v117.py",
+    "data/tests/kg001_visual_capture_contract_v117.json",
 ]:
     req(p)
 
@@ -154,6 +164,44 @@ try:
         errors.append("KG-001 F11 bug-report key drift")
     if c.get("quality",{}).get("kg001_bug_report_source_safe") is not True:
         errors.append("KG-001 bug-report source-safety drift")
+    q=c.get("quality",{})
+    if q.get("kg001_independent_audit_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 independent-audit source-contract drift")
+    if q.get("kg001_pinned_toolchain_contract")!="PINNED_V117":
+        errors.append("KG-001 pinned toolchain contract drift")
+    if q.get("kg001_build_manifest_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 build-manifest contract drift")
+    if q.get("kg001_candidate_run_provenance")!="RUN_SCOPED_V1":
+        errors.append("KG-001 run-scoped provenance drift")
+    if q.get("kg001_floor_regression_rooms")!=["R1","R7","R8"]:
+        errors.append("KG-001 three-room floor regression drift")
+    if q.get("kg001_audio_pcm_non_silence_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 PCM non-silence contract drift")
+    if q.get("kg001_audio_master_capture_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 Master-bus capture contract drift")
+    if q.get("kg001_texture_colorkey_detection")!="USED_INDEXED_PALETTE_ENTRY":
+        errors.append("KG-001 indexed color-key detection drift")
+    if q.get("kg001_texture_colorkey_ambiguity_policy")!="FAIL_CLOSED":
+        errors.append("KG-001 indexed color-key ambiguity policy drift")
+    if q.get("kg001_texture_mask_edge_bleed_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 MASK edge-bleed contract drift")
+    if q.get("kg001_visual_capture_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 visual-capture source-contract drift")
+    if q.get("kg001_visual_capture_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 visual-capture runtime boundary drift")
+    if q.get("kg001_windows_export_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 Windows export contract drift")
+    if q.get("kg001_source_safe_ci_workflow")!=".github/workflows/kg001-source-safe.yml":
+        errors.append("KG-001 source-safe CI workflow drift")
+    audit=c.get("kg001_v117_audit",{})
+    if audit.get("status")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 v117 audit status drift")
+    if audit.get("draft_pr")!=12:
+        errors.append("KG-001 v117 audit PR drift")
+    if audit.get("pinned_godot")!="4.7.2.stable.official.ed1daf0bf":
+        errors.append("KG-001 v117 Godot pin drift")
+    if audit.get("visual_capture_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v117 visual runtime boundary drift")
     loc=c.get("localization",{})
     if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
         errors.append("localization architecture status drift")
@@ -208,8 +256,32 @@ try:
         errors.append("KG-001 texture material policy drift")
     if t.get("evidence_boundary","").find("HOLD")<0:
         errors.append("KG-001 texture evidence boundary drift")
+    if policy.get("indexed_detection")!="USED_INDEXED_PALETTE_ENTRY":
+        errors.append("KG-001 texture indexed-detection policy drift")
+    if policy.get("ambiguity_policy")!="FAIL_CLOSED_IF_MULTIPLE_USED_KEY_INDICES":
+        errors.append("KG-001 texture ambiguity policy drift")
 except Exception as e:
     errors.append(f"KG-001 texture contract: {e}")
+
+try:
+    tc=json.loads((ROOT/"data/tests/kg001_toolchain_contract_v117.json").read_text(encoding="utf-8"))
+    if tc.get("status")!="PINNED" or tc.get("python")!="3.11.11":
+        errors.append("KG-001 toolchain contract drift")
+    if tc.get("godot",{}).get("version")!="4.7.2.stable.official.ed1daf0bf":
+        errors.append("KG-001 Godot toolchain pin drift")
+except Exception as e:
+    errors.append(f"KG-001 toolchain contract: {e}")
+
+try:
+    vc=json.loads((ROOT/"data/tests/kg001_visual_capture_contract_v117.json").read_text(encoding="utf-8"))
+    if vc.get("status")!="SOURCE_CONTRACT_PASS" or vc.get("runtime_status")!="NOT_EXECUTED":
+        errors.append("KG-001 visual-capture contract drift")
+    if [(x.get("room"),x.get("view")) for x in vc.get("captures",[])] != [
+        ("R1","spaview"),("R7","view"),("R8","Object14")
+    ]:
+        errors.append("KG-001 canonical visual capture set drift")
+except Exception as e:
+    errors.append(f"KG-001 visual-capture contract: {e}")
 
 gitignore=(ROOT/".gitignore").read_text(encoding="utf-8")
 for marker in [
@@ -221,6 +293,8 @@ for marker in [
     "data/*.textured.v44.manifest.json",
     "data/audio/*.legacy.json",
     "data/graphics_pipeline_validation_v44.json",
+    "*.gd.uid",
+    "data/generated/",
 ]:
     if marker not in gitignore:
         errors.append(f"gitignore safety missing: {marker}")
