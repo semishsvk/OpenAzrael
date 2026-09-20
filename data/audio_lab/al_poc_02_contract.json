@@ -30,9 +30,10 @@
   "default_parameters": {
     "fft_size": 512,
     "hop_size": 128,
-    "spectrogram_db_floor": -80.0,
+    "spectrogram_db_floor": -64,
     "preview_time_bins": 256,
-    "preview_frequency_bins": 128
+    "preview_frequency_bins": 128,
+    "spectrogram_floor_rationale": "calibrated on canonical 8-bit corpus to suppress quantization background while retaining weak structure"
   },
   "required_outputs": [
     "spectral_manifest.json",
