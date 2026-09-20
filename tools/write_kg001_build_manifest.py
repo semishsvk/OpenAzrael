@@ -26,8 +26,29 @@ ROOMS=[
     ROOT/"assets/rooms/R8.glb",
 ]
 AUDIO_NAMES=[
-    "S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV",
+    "797TAP.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV",
     "S174ELP1.WAV","S174ELP2.WAV","S186.WAV",
+]
+RUNTIME_SOURCE=[
+    ROOT/"project.godot",
+    ROOT/"main.tscn",
+    ROOT/"export_presets.cfg",
+    ROOT/"scripts/player.gd",
+    ROOT/"scripts/room_manager.gd",
+    ROOT/"scripts/candidate_diagnostics_v116.gd",
+    ROOT/"scripts/legacy_event_runner_v87.gd",
+    ROOT/"scripts/legacy_ambient_audio.gd",
+    ROOT/"scripts/kg001_room_trigger_runner_v110.gd",
+    ROOT/"scripts/kg001_audio_runtime_runner_v116.gd",
+    ROOT/"scripts/kg001_full_demo_runner_v111.gd",
+    ROOT/"scripts/kg001_visual_capture_v117.gd",
+    ROOT/"scripts/r8_tapestry_frame.gd",
+    ROOT/"tools/restore_candidate_assets.py",
+    ROOT/"tools/run_kg001_candidate_v112.py",
+    ROOT/"tools/validate_kg001_candidate2_asset_set_v118.py",
+    ROOT/"tools/texture_pipeline/legacy_colorkey.py",
+    ROOT/"tools/texture_pipeline/azf_decode_v14.py",
+    ROOT/"tools/texture_pipeline/export_xaf_glb_v8.py",
 ]
 SOURCE_CONTRACTS=[
     ROOT/"data/gameplay_event_graph_v87.json",
@@ -122,16 +143,33 @@ def main() -> int:
         else []
     )
     source_rows=existing_records(SOURCE_CONTRACTS)
+    runtime_source_rows=existing_records(RUNTIME_SOURCE)
+    restore_evidence_path=ROOT/".tmp/kg001/legacy_colorkey_restore.json"
+    restore_evidence=(
+        file_record(restore_evidence_path)
+        if restore_evidence_path.is_file()
+        else None
+    )
+    godot=godot_version(args.godot)
+    source_identity_complete=(
+        len(runtime_source_rows)==len(RUNTIME_SOURCE)
+        and len(source_rows)==len(SOURCE_CONTRACTS)
+    )
+    asset_counts_complete=(
+        len(room_rows)==3
+        and len(audio_rows)==len(AUDIO_NAMES)
+        and len(texture_rows)==86
+    )
 
     payload={
         "schema":"openazrael.kg001.candidate_build_manifest",
-        "version":1,
+        "version":2,
         "build_id":"KG-001 Candidate 2",
         "checkpoint":"v116-context-v31",
         "generated_utc":datetime.now(timezone.utc).isoformat(),
         "repository":"semishsvk/OpenAzrael",
         "commit_sha":git_head(),
-        "godot":godot_version(args.godot),
+        "godot":godot,
         "toolchain":{
             "python":platform.python_version(),
             "numpy":package_version("numpy"),
@@ -159,24 +197,46 @@ def main() -> int:
             },
         },
         "source_contracts":{
+            "expected_count":len(SOURCE_CONTRACTS),
+            "present_count":len(source_rows),
+            "complete":len(source_rows)==len(SOURCE_CONTRACTS),
             "rows":source_rows,
             "aggregate_sha256":aggregate(source_rows),
         },
+        "runtime_source_identity":{
+            "expected_count":len(RUNTIME_SOURCE),
+            "present_count":len(runtime_source_rows),
+            "complete":len(runtime_source_rows)==len(RUNTIME_SOURCE),
+            "rows":runtime_source_rows,
+            "aggregate_sha256":aggregate(runtime_source_rows),
+        },
+        "restore_evidence":restore_evidence,
+        "asset_counts_complete":asset_counts_complete,
+        "source_identity_complete":source_identity_complete,
         "source_safe":True,
         "commercial_asset_bytes_embedded":False,
     }
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(payload,indent=2)+"\n",encoding="utf-8")
+    status=(
+        "PASS"
+        if source_identity_complete
+        and (not args.godot or godot.get("status")=="PASS")
+        else "FAIL"
+    )
     print(json.dumps({
-        "status":"PASS",
+        "status":status,
         "out":str(args.out.relative_to(ROOT)),
         "commit_sha":payload["commit_sha"],
         "godot_status":payload["godot"]["status"],
         "rooms":len(room_rows),
         "audio":len(audio_rows),
         "textures":len(texture_rows),
+        "asset_counts_complete":asset_counts_complete,
+        "source_identity_complete":source_identity_complete,
+        "runtime_source_aggregate_sha256":aggregate(runtime_source_rows),
     },indent=2))
-    return 0
+    return 0 if status=="PASS" else 1
 
 
 if __name__=="__main__":
