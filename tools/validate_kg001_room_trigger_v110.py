@@ -20,8 +20,26 @@ checks={
  "runner_bounds_checks": "inside_" in runner and "outside_" in runner,
  "persistence_check": "persistent_inventory_survives_rooms" in runner,
  "legacy_trimesh_two_sided": "ConcavePolygonShape3D" in manager and "backface_collision = true" in manager,
- "floor_probe_regression": "R1_floor_probe_hit" in runner and "PhysicsRayQueryParameters3D.create" in runner,
- "player_floor_regression": "R1_player_is_on_floor" in runner and "R1_player_did_not_fall_through" in runner and "await _settle_physics(120)" in runner,
+ "floor_probe_matrix": "FLOOR_PROBES" in runner and all(
+     token in runner for token in [
+         '["R1", "spaview"]',
+         '["R7", "view"]',
+         '["R8", "Object14"]',
+     ]
+ ),
+ "floor_probe_regression": all(
+     room + "_floor_probe_hit" in runner
+     for room in ("R1","R7","R8")
+ ) and "PhysicsRayQueryParameters3D.create" in runner,
+ "player_floor_regression": all(
+     room + "_player_is_on_floor" in runner
+     and room + "_player_did_not_fall_through" in runner
+     for room in ("R1","R7","R8")
+ ) and "await _settle_physics(120)" in runner,
+ "all_rooms_two_sided_runtime_check": all(
+     room + "_concave_world_collision_present" in runner
+     for room in ("R1","R7","R8")
+ ),
  "issue_6_regression_link": "Issue #6" in runner
 }
 failed=[k for k,v in checks.items() if not v]
