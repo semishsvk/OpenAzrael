@@ -2,7 +2,7 @@
   "schema": "openazrael.kg001.candidate_runner_contract",
   "version": 112,
   "status": "SOURCE_CONTRACT_READY",
-  "execution_status": "NOT_EXECUTED",
+  "execution_status": "SOURCE_SAFE_CI_EXECUTED__RESTORED_ASSET_RUNTIME_NOT_EXECUTED",
   "features": {
     "source_validators": true,
     "godot_discovery": true,
@@ -18,6 +18,16 @@
     "physical_audio_v116_runtime_capture": true,
     "physical_audio_result_promotion": true,
     "legacy_colorkey_source_validation": true,
-    "legacy_colorkey_asset_validation_when_restored": true
-  }
+    "legacy_colorkey_asset_validation_when_restored": true,
+    "pinned_toolchain_validation": true,
+    "build_manifest_generation": true,
+    "export_preset_source_validation": true,
+    "visual_capture_source_validation": true,
+    "optional_visual_capture": true,
+    "visual_capture_requires_restored_room_audio_assets": true,
+    "visual_capture_failure_affects_requested_run": true,
+    "visual_capture_does_not_redefine_g09": true,
+    "visual_capture_result_promotion": true
+  },
+  "runtime_boundary": "Default source-safe CI validates orchestration without commercial assets. --visual-capture remains NOT_EXECUTED until a non-headless restored-asset Candidate 2 run."
 }
