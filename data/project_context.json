@@ -207,7 +207,14 @@
     "kg001_test_build_visual_capture_binding": "RUN_ID_COMMIT_EXACT_3_CAPTURE_SHA256_V118",
     "kg001_test_build_evidence_commit_binding": "CANDIDATE_FRESH_VISUAL_MATCH_CURRENT_HEAD",
     "kg001_test_build_promotion_timing": "POST_EXPORT_STARTUP_SMOKE",
-    "kg001_build_manifest_build_tool_identity": "SOURCE_CONTRACT_PASS_V118"
+    "kg001_build_manifest_build_tool_identity": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_g10_receipt_bound_contract": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_g10_runtime": "NOT_EXECUTED",
+    "kg001_g10_manual_result_schema": "openazrael.kg001.manual_sanity.v2",
+    "kg001_g10_requires_test_build_receipt": true,
+    "kg001_g10_requires_fresh_commit_match": true,
+    "kg001_g10_requires_package_hash_match": true,
+    "kg001_g10_promote_only_after_validation": true
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -218,7 +225,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "On Windows with extracted ATDEMO and pinned Godot 4.7.2, restore the complete Candidate 2 asset set, run the canonical fresh-checkout + visual-capture suite, require v118 asset-set/build-manifest/test-build contracts to PASS, export Windows Candidate 2, pass the exported-EXE startup smoke, produce the v118 test-build receipt, and only then perform G10 manually. Keep demo-known-good-001 blocked until Issues #6/#9/#11 and all G00-G10 evidence are clean.",
+  "next_target": "Build Candidate 2 on Windows from the complete restored asset set using the pinned Godot 4.7.2 flow, require fresh-checkout + visual capture + exported-EXE startup smoke PASS, obtain the v118 test-build receipt, then run receipt-bound G10 via tools/record_kg001_g10_v118.py. Only a fully validated v2 G10 result bound to that exact receipt/commit/package may satisfy G10; Issues #6/#9/#11 and demo-known-good-001 remain blocked until the canonical release process clears them.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -494,7 +501,16 @@
         "visual_capture_evidence_sha256",
         "visual_captures"
       ]
-    }
+    },
+    "g10_recorder": "tools/record_kg001_g10_v118.py",
+    "g10_validator": "tools/validate_kg001_manual_sanity_v118.py",
+    "g10_contract_validator": "tools/validate_kg001_g10_contract_v118.py",
+    "g10_template": "data/tests/kg001_manual_sanity_template.json",
+    "g10_result": "data/tests/kg001_manual_sanity.json",
+    "g10_validation_result": "data/tests/kg001_manual_sanity_validation_v118.json",
+    "g10_runtime": "NOT_EXECUTED",
+    "g10_binding": "TEST_BUILD_RECEIPT_SHA256 + COMMIT + EXE_SHA256 + PCK_SHA256 + GODOT_VERSION",
+    "g10_promotion_policy": "ONLY_AFTER_ALL_REQUIRED_CHECKS_AND_BLOCKER_CHECKS_PASS_AND_RECEIPT_VALIDATION_PASS"
   },
   "kg001_v118_build_hardening": {
     "status": "SOURCE_CONTRACT_PASS",
