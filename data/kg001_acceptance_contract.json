@@ -64,9 +64,16 @@
     },
     {
       "id": "G05",
-      "name": "trigger_semantics",
+      "name": "trigger_semantics_and_interaction_animation",
       "required": true,
-      "automation": "automated"
+      "automation": "automated",
+      "runtime_evidence": [
+        "v110 trigger boundary/precondition regression",
+        "v118 R7 Interact_WellKey negative precondition without tongs",
+        "v118 R7 tongs positive retrieval state effects",
+        "v118 multi-frame visual animation activity in the real well cluster"
+      ],
+      "animation_shortcut_policy": "instantaneous hide/removal alone is not animation evidence"
     },
     {
       "id": "G06",
