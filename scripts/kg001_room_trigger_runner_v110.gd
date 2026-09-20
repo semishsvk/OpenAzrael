@@ -64,6 +64,208 @@ func _floor_probe(scene: Node3D, player: CharacterBody3D) -> Dictionary:
     query.exclude = [player.get_rid()]
     return scene.get_world_3d().direct_space_state.intersect_ray(query)
 
+func _release_move_actions() -> void:
+    for action in ["move_forward", "move_back", "move_left", "move_right"]:
+        Input.action_release(action)
+
+func _horizontal_distance(a: Vector3, b: Vector3) -> float:
+    return Vector2(a.x - b.x, a.z - b.z).length()
+
+func _exercise_input_walk(
+    player: CharacterBody3D,
+    action: StringName,
+    frames: int,
+    reference_floor_y: float
+) -> Dictionary:
+    _release_move_actions()
+    var start := player.global_position
+    var min_y := start.y
+    var on_floor_frames := 0
+    Input.action_press(action, 1.0)
+    for _i in range(frames):
+        await physics_frame
+        min_y = minf(min_y, player.global_position.y)
+        if player.is_on_floor():
+            on_floor_frames += 1
+    Input.action_release(action)
+    await physics_frame
+    return {
+        "distance": _horizontal_distance(start, player.global_position),
+        "min_y": min_y,
+        "floor_contact_ratio": float(on_floor_frames) / float(maxi(frames, 1)),
+        "fell_through": min_y < reference_floor_y - 4.0
+    }
+
+func _find_named(node: Node, wanted: String) -> Node:
+    if String(node.name) == wanted:
+        return node
+    for child in node.get_children():
+        var found := _find_named(child, wanted)
+        if found != null:
+            return found
+    return null
+
+func _stair_tread_levels(mesh_instance: MeshInstance3D) -> Array[Dictionary]:
+    var groups: Array[Dictionary] = []
+    if mesh_instance.mesh == null:
+        return groups
+    for surface in range(mesh_instance.mesh.get_surface_count()):
+        var arrays := mesh_instance.mesh.surface_get_arrays(surface)
+        var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+        var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+        var triangle_count := int(indices.size() / 3) if not indices.is_empty() else int(vertices.size() / 3)
+        for tri in range(triangle_count):
+            var ia := indices[tri * 3] if not indices.is_empty() else tri * 3
+            var ib := indices[tri * 3 + 1] if not indices.is_empty() else tri * 3 + 1
+            var ic := indices[tri * 3 + 2] if not indices.is_empty() else tri * 3 + 2
+            var a := mesh_instance.global_transform * vertices[ia]
+            var b := mesh_instance.global_transform * vertices[ib]
+            var c := mesh_instance.global_transform * vertices[ic]
+            var cross := (b - a).cross(c - a)
+            var area := cross.length() * 0.5
+            if area <= 0.001:
+                continue
+            var normal := cross.normalized()
+            if absf(normal.y) < 0.75:
+                continue
+            var centroid := (a + b + c) / 3.0
+            var group_index := -1
+            for i in range(groups.size()):
+                if absf(float(groups[i]["y"]) - centroid.y) <= 0.35:
+                    group_index = i
+                    break
+            if group_index < 0:
+                groups.append({
+                    "y": centroid.y,
+                    "area": area,
+                    "weighted_center": centroid * area
+                })
+            else:
+                groups[group_index]["area"] = float(groups[group_index]["area"]) + area
+                groups[group_index]["weighted_center"] = (
+                    groups[group_index]["weighted_center"] + centroid * area
+                )
+    for group in groups:
+        group["center"] = group["weighted_center"] / float(group["area"])
+    groups.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a["y"]) < float(b["y"]))
+
+    # The legacy step011 mesh includes one broad underside plane below the
+    # actual tread tops. Exclude that structural underside by area rather than
+    # relying on source winding; imported winding is exactly what Issue #6
+    # previously proved cannot be trusted.
+    if groups.size() >= 5:
+        var largest_area := -1.0
+        var largest_index := -1
+        for i in range(groups.size()):
+            if float(groups[i]["area"]) > largest_area:
+                largest_area = float(groups[i]["area"])
+                largest_index = i
+        if largest_index == 0:
+            groups.remove_at(0)
+    return groups
+
+func _walk_toward_progress(
+    player: CharacterBody3D,
+    direction: Vector3,
+    target_progress: float,
+    max_frames: int,
+    lower_bound_y: float
+) -> Dictionary:
+    var flat := Vector3(direction.x, 0.0, direction.z).normalized()
+    if flat.length_squared() < 0.001:
+        return {"progress":0.0, "min_y":player.global_position.y, "max_y":player.global_position.y, "floor_contact_ratio":0.0}
+    player.rotation.y = atan2(-flat.x, -flat.z)
+    player.velocity = Vector3.ZERO
+    _release_move_actions()
+    var start := player.global_position
+    var min_y := start.y
+    var max_y := start.y
+    var on_floor_frames := 0
+    var used_frames := 0
+    Input.action_press("move_forward", 1.0)
+    for i in range(max_frames):
+        await physics_frame
+        used_frames = i + 1
+        min_y = minf(min_y, player.global_position.y)
+        max_y = maxf(max_y, player.global_position.y)
+        if player.is_on_floor():
+            on_floor_frames += 1
+        var delta := player.global_position - start
+        var progress := Vector3(delta.x, 0.0, delta.z).dot(flat)
+        if progress >= target_progress:
+            break
+        if min_y < lower_bound_y:
+            break
+    Input.action_release("move_forward")
+    await physics_frame
+    var moved := player.global_position - start
+    return {
+        "progress": Vector3(moved.x, 0.0, moved.z).dot(flat),
+        "min_y": min_y,
+        "max_y": max_y,
+        "floor_contact_ratio": float(on_floor_frames) / float(maxi(used_frames, 1))
+    }
+
+func _exercise_real_r8_stairs(manager, player: CharacterBody3D) -> void:
+    manager.transition_cooldown = 999.0
+    manager.load_room("R8", false)
+    await _settle(2)
+    var node := _find_named(manager.current_room, "step011__mesh")
+    if node == null:
+        node = _find_named(manager.current_room, "step011")
+    _check("R8_real_stair_mesh_present", node is MeshInstance3D)
+    if not (node is MeshInstance3D):
+        return
+
+    var levels := _stair_tread_levels(node as MeshInstance3D)
+    _check("R8_real_stair_has_multiple_treads", levels.size() >= 4)
+    if levels.size() < 4:
+        return
+
+    var low: Dictionary = levels[0]
+    var high: Dictionary = levels[levels.size() - 1]
+    var low_center: Vector3 = low["center"]
+    var high_center: Vector3 = high["center"]
+    var up_dir := Vector3(
+        high_center.x - low_center.x,
+        0.0,
+        high_center.z - low_center.z
+    ).normalized()
+    var stair_run := _horizontal_distance(low_center, high_center)
+    var stair_rise := float(high["y"]) - float(low["y"])
+    _check("R8_real_stair_rise_positive", stair_rise > 10.0)
+    _check("R8_real_stair_run_nontrivial", stair_run > 20.0)
+
+    player.global_position = Vector3(low_center.x, float(low["y"]) + 4.0, low_center.z)
+    player.velocity = Vector3.ZERO
+    await _settle_physics(12)
+    var ascent := await _walk_toward_progress(
+        player,
+        up_dir,
+        stair_run * 0.80,
+        150,
+        float(low["y"]) - 6.0
+    )
+    _check("R8_real_stairs_up_progress", float(ascent["progress"]) >= stair_run * 0.70)
+    _check("R8_real_stairs_up_height", float(ascent["max_y"]) >= float(high["y"]) - 3.0)
+    _check("R8_real_stairs_up_no_fall_through", float(ascent["min_y"]) >= float(low["y"]) - 6.0)
+    _check("R8_real_stairs_up_floor_contact", float(ascent["floor_contact_ratio"]) >= 0.45)
+
+    player.global_position = Vector3(high_center.x, float(high["y"]) + 4.0, high_center.z)
+    player.velocity = Vector3.ZERO
+    await _settle_physics(12)
+    var descent := await _walk_toward_progress(
+        player,
+        -up_dir,
+        stair_run * 0.80,
+        150,
+        float(low["y"]) - 6.0
+    )
+    _check("R8_real_stairs_down_progress", float(descent["progress"]) >= stair_run * 0.70)
+    _check("R8_real_stairs_down_height", float(descent["min_y"]) <= float(low["y"]) + 3.0)
+    _check("R8_real_stairs_down_no_fall_through", float(descent["min_y"]) >= float(low["y"]) - 6.0)
+    _check("R8_real_stairs_down_floor_contact", float(descent["floor_contact_ratio"]) >= 0.45)
+
 func _run() -> void:
     var missing: Array[String] = []
     for path in REQUIRED_ROOMS:
@@ -139,13 +341,50 @@ func _run() -> void:
                 player.global_position.z
             )
             player.velocity = Vector3.ZERO
-            await _settle_physics(120)
+            await _settle_physics(30)
             _check(probe_room + "_player_is_on_floor", player.is_on_floor())
             _check(probe_room + "_player_reached_probed_floor", absf(player.global_position.y - floor_position.y) < 2.0)
             _check(
                 probe_room + "_player_did_not_fall_through",
                 player.global_position.y >= floor_position.y - 2.0
             )
+
+            # Candidate 2 escaped the old regression because it only stood
+            # still at one raycast point. In R1, drive the production Player
+            # through the exact Input actions used by gameplay, in both
+            # directions along the canonical portal heading.
+            if probe_room == "R1":
+                var walk_origin := player.global_position
+                var walk_rotation := player.rotation
+                var forward_walk := await _exercise_input_walk(
+                    player, &"move_forward", 90, floor_position.y
+                )
+                player.global_position = walk_origin
+                player.rotation = walk_rotation
+                player.velocity = Vector3.ZERO
+                await _settle_physics(8)
+                var back_walk := await _exercise_input_walk(
+                    player, &"move_back", 90, floor_position.y
+                )
+                _check("R1_real_walk_forward_no_fall_through", not bool(forward_walk["fell_through"]))
+                _check("R1_real_walk_back_no_fall_through", not bool(back_walk["fell_through"]))
+                _check(
+                    "R1_real_walk_has_horizontal_progress",
+                    maxf(float(forward_walk["distance"]), float(back_walk["distance"])) >= 12.0
+                )
+                _check(
+                    "R1_real_walk_floor_contact",
+                    maxf(
+                        float(forward_walk["floor_contact_ratio"]),
+                        float(back_walk["floor_contact_ratio"])
+                    ) >= 0.65
+                )
+
+    # Exercise the real imported R8 stair mesh with the real CharacterBody3D,
+    # collision layer/mask, production player.gd and Input actions. The tread
+    # profile is measured from step011 at runtime; no guessed staircase proxy
+    # or teleport-to-top shortcut is accepted.
+    await _exercise_real_r8_stairs(manager, player)
 
     # Geometric boundary oracle: every transition trigger centroid is inside,
     # while a point beyond both X/Z maxima is outside.
@@ -200,7 +439,7 @@ func _run() -> void:
         "version":110,
         "status":"PASS" if failures.is_empty() else "FAIL",
         "failed":failures,
-        "scope":"G04/G05 room transitions, physical trigger bounds, and Issue #6 real-player floor-support regression at canonical R1/R7/R8 entry views with restored local assets"
+        "scope":"G04/G05 room transitions plus real CharacterBody3D traversal: active Input-driven R1 floor walking, R1/R7/R8 floor support, and measured imported R8 step011 stair ascent/descent"
     }
     print("OPENAZRAEL_KG001_V110 " + JSON.stringify(result))
     scene.queue_free()
