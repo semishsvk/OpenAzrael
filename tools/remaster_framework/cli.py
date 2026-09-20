@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .artifacts import verify_artifact_manifest, write_artifact_manifest
 from .contracts import ToolFamily
+from .corpus import discover_corpus
 from .inventory import write_inventory
 from .registry import ToolRegistry
 
@@ -79,6 +80,33 @@ def command_verify_catalog(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_discover_corpus(args: argparse.Namespace) -> int:
+    payload = discover_corpus(args.root, args.profiles)
+    rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(rendered, encoding="utf-8")
+    else:
+        print(rendered, end="")
+
+    matched = [item for item in payload["profiles"] if item["status"] == "match"]
+    partial = [item for item in payload["profiles"] if item["status"] == "partial"]
+    if matched:
+        print(
+            "corpus match: "
+            + ", ".join(str(item["profile_id"]) for item in matched)
+        )
+        return 0
+    if partial:
+        print(
+            "corpus partial: "
+            + ", ".join(str(item["profile_id"]) for item in partial)
+        )
+        return 2
+    print("corpus profile: no match")
+    return 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="openazrael-tools",
@@ -127,6 +155,15 @@ def build_parser() -> argparse.ArgumentParser:
     verify_parser.add_argument("root", type=Path)
     verify_parser.add_argument("--manifest", type=Path, required=True)
     verify_parser.set_defaults(func=command_verify_catalog)
+
+    corpus_parser = sub.add_parser(
+        "discover-corpus",
+        help="Evaluate an immutable legacy corpus against evidence-backed profiles",
+    )
+    corpus_parser.add_argument("root", type=Path)
+    corpus_parser.add_argument("--profiles", type=Path)
+    corpus_parser.add_argument("--output", type=Path)
+    corpus_parser.set_defaults(func=command_discover_corpus)
 
     return parser
 
