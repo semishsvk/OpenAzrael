@@ -19,7 +19,7 @@ checks={
     "visual_capture":"--visual-capture" in text,
     "promotion_optional":"PromoteResults" in text and "promote_kg001_candidate_results_v118.py" in text,
     "promotion_after_export_smoke":(
-        text.find("promote_kg001_candidate_results_v118.py")
+        text.rfind("promote_kg001_candidate_results_v118.py")
         > text.find("kg001_windows_candidate2_startup.log")
     ),
     "windows_export_preset":'"Windows Candidate 2"' in text and "--export-debug" in text,
