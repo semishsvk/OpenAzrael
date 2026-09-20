@@ -1,6 +1,6 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v116-context-v30`
+**Canonical checkpoint:** `v116-context-v31`
 **Date:** 2026-09-19
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
@@ -13,12 +13,12 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v30**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v31**.
 
 ## 3. Immediate execution priority
-Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v30 combines the two-sided collision repair, physical-audio readiness, and a conservative `# + quantized-magenta` color-key pipeline that preserves RGBA into GLB `MASK` materials. All fixes are source-ready but still require restored-asset/runtime and human confirmation.
+Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v31 is source-frozen with the two-sided collision repair plus R1/R7/R8 entry support probes, physical-audio readiness, and indexed-AZF color-key selection that preserves RGBA into GLB `MASK` materials. All fixes are source-ready but still require restored-asset/runtime and human confirmation.
 
-The current priority is the corrected **KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v30 pipeline, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
+The current priority is the **source-frozen KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v31 frozen pipeline, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
 
 Localization runtime work and the deferred v117 forensic copy/mutator audit follow the first clean Candidate 2 runtime/manual cycle; neither is part of the current blocker-fix scope.
 

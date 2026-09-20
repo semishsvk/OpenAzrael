@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v30`
+**Current canonical checkpoint:** `v116-context-v31`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -56,10 +56,10 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 
 ## Immediate execution priority
 - Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, Major Issue #9 produced no audible audio, and Major Issue #11 left legacy color-key magenta visible on cutout textures.
-- Candidate 2 / v30 combines the two-sided legacy concave collision fix, physical-audio readiness, and the conservative legacy `# + quantized-magenta` binary color-key repair.
+- Candidate 2 / v31 is source-frozen with two-sided legacy concave collision plus R1/R7/R8 entry probes, physical-audio readiness, and indexed-AZF color-key selection before RGB expansion.
 - Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null ambient-position fallback, validates the seven required Event/ambient WAV resources, checks recovered R1/R7/R8 ambient counts (2/3/2), checks an unmuted Master bus, and verifies a real Event-IR `play_sound` creates a playing `AudioStreamPlayer`.
 - Restore corrected assets, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
-- Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass.
+- Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass. Do not add Candidate features before this evidence exists.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.

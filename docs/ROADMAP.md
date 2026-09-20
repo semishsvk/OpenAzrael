@@ -1,14 +1,14 @@
 # OpenAzrael Roadmap
 
-**Canonical checkpoint:** `v116-context-v30`  
+**Canonical checkpoint:** `v116-context-v31`  
 **Technical base:** `openazrael_godot_poc_v116`
 
-## Now — Candidate 2 blocker retest
+## Now — source-frozen Candidate 2 blocker retest
 
-1. Restore Candidate 2 room/audio/texture assets with the v30 source pipeline.
-2. Require the v110 R1 physical floor-support regression for Issue #6 to PASS.
+1. Restore Candidate 2 room/audio/texture assets with the v31 frozen source pipeline.
+2. Require the v110 real-player floor-support regression for Issue #6 to PASS at the canonical R1/R7/R8 entry views.
 3. Require the audio-v116 regression for Issue #9 to PASS: physical WAV loading, R1/R7/R8 ambient counts 2/3/2, playing players and a non-muted Master bus.
-4. Require the Issue #11 color-key validator to PASS, including the restored asset audit for the ten-name `#` class and R1 KEYHOLE#/TONG6 mappings.
+4. Require the Issue #11 indexed color-key validator to PASS: every one of the ten demo `#` textures must resolve to exactly one used qualifying palette index, with R1 KEYHOLE#/TONG6 exported as MASK materials.
 5. Export and launch the graphical Candidate 2 build.
 6. Manually confirm stable floor collision, actually audible R1 ambient audio, and correct transparent keyhole/tongs with no pink/magenta color-key background before attempting the full route.
 7. Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until automated and human retests pass.
