@@ -33,6 +33,14 @@ jobs:
         run: python -m unittest -v tests/test_texture_lab_rt_poc_01.py
       - name: Validate Texture Lab cross-contract consistency
         run: python tools/texture_lab/oa_tex_contract_validate.py
+      - name: Validate and render Review Pack 01 source plan
+        shell: bash
+        run: |
+          mkdir -p .tmp/texture_lab/review_pack_01
+          python tools/texture_lab/oa_tex_review_pack_01.py validate
+          python tools/texture_lab/oa_tex_review_pack_01.py render \
+            --out-json .tmp/texture_lab/review_pack_01/source_plan.json \
+            --out-md .tmp/texture_lab/review_pack_01/source_plan.md
       - name: Dry-run every staged AI preset
         shell: bash
         run: |
