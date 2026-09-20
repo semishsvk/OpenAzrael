@@ -8,7 +8,7 @@ Run:
 
     python tools/run_kg001_candidate_v112.py
 
-The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111 plus the audio-v116 physical playback-readiness regression. Source validation also includes the Issue #11 legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
+The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111 plus the audio-v116 physical playback-readiness regression. Source validation also includes the Issue #11 indexed-palette legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
 
 All temporary evidence goes under .tmp/kg001/, which is ignored by Git.
 
@@ -49,4 +49,4 @@ The audio-v116 runner checks that the Candidate can physically load and start it
 
 ## Legacy color-key boundary
 
-Issue #11 is validated during the source phase. The validator always exercises a synthetic `# + quantized-magenta` mask and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, the complete ten-name `#` candidate class, and the R1 KEYHOLE#/TONG6 mappings. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.
+Issue #11 is validated during the source phase. The validator always exercises a synthetic `# + quantized-magenta` mask and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, the complete ten-name `#` candidate class, and the R1 KEYHOLE#/TONG6 mappings and exact single-key-index evidence. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.

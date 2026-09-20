@@ -137,8 +137,15 @@ OpenAzrael localization is an external presentation-data layer over stable seman
 G06 is no longer satisfied by the logical golden event stream alone. KG-001 requires an additional asset-backed Godot readiness regression proving that required Event/ambient WAV resources load, the Master bus is routable, recovered ambient emitters instantiate and report active playback, and a real Event-IR sound action creates a physical AudioStreamPlayer. Human audibility is accepted only in G10, while original Miles pan/volume parity remains a separate forensic HOLD.
 
 
-## ADR-027 — Legacy # texture color-key is a conservative presentation compatibility rule
+## ADR-027 — Legacy # texture color-key is selected in indexed AZF space
 
 **Status:** ACCEPTED — 2026-09-20
 
-For the Classic demo asset pipeline, a texture is eligible for binary color-key transparency only when its source filename contains `#` and the decoded, engine-quantized RGB pixels actually contain the legacy magenta key range (R>=248, B>=248, G<=12). Matching pixels are emitted with alpha 0 and zeroed RGB; all other pixels remain opaque. XAF->GLB export must preserve that alpha as a MASK material instead of converting the texture back to RGB. This rule fixes the evidenced KEYHOLE#/MINETON# class without claiming that all original renderer transparency or blending semantics are recovered; complete renderer transparency semantics remain HOLD.
+For the Classic demo asset pipeline, transparency is selected before RGB expansion. A source filename containing `#` must have exactly one *used* palette index whose engine-quantized colour matches the recovered magenta key range (R>=248, B>=248, G<=12). Zero or multiple used qualifying indices fail closed. Only pixels carrying that exact palette index receive alpha 0; all other indices remain opaque. XAF->GLB preserves the result as a MASK material. This is a conservative presentation compatibility rule and does not claim complete original renderer transparency/blending semantics.
+
+
+## ADR-028 — Candidate 2 source freezes before the second graphical run
+
+**Status:** ACCEPTED — 2026-09-20
+
+After the Issue #6 collision regression was widened to the canonical R1/R7/R8 entry views and Issue #11 was tightened to exact indexed-palette color-key selection, KG-001 Candidate 2 is source-frozen at `v116-context-v31`. No feature work, localization runtime, Generic Runtime refactor, remaster integration or unrelated forensic change may enter the Candidate branch before the complete fresh-checkout runtime suite and the short human blocker smoke test execute. Only fixes for failures discovered by that evidence may break the freeze.

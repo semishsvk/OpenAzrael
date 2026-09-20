@@ -1,4 +1,6 @@
-# KG-001 Candidate 2 diagnostics — v116
+# KG-001 Candidate 2 diagnostics
+
+Candidate 2 is source-frozen at `v116-context-v31`; diagnostics remain observational and no new Candidate feature work is allowed before the runtime/manual blocker cycle. — v116
 
 v116 adds a diagnostic-only layer for the first real Godot integration build. It does not intentionally change puzzle or transition semantics.
 

@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v30` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v31` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
@@ -60,7 +60,7 @@
 - `docs/KG001_STATUS_V111.md`
 
 ## Major legacy color-key regression — Issue #11
-- `tools/texture_pipeline/legacy_colorkey.py`
+- `tools/texture_pipeline/legacy_colorkey.py` — exact indexed-palette key selection; zero/multiple used key indices fail closed
 - `tools/texture_pipeline/azf_decode_v14.py`
 - `tools/texture_pipeline/export_xaf_glb_v8.py`
 - `tools/validate_kg001_texture_colorkey_v116.py`
