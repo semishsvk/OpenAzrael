@@ -17,13 +17,16 @@
 | Source-safe runtime IR | v116-context-v31 | VALIDATED metadata | Excluded binary assets still require local restore |
 | KG-001 acceptance contract | v116-context-v31 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
 | Pinned Candidate toolchain | v117 contract | PASS source/CI | Exact Python packages + Godot 4.7.2 |
-| Candidate build fingerprint manifest | v31 | SOURCE_CONTRACT_PASS | Runtime/local asset SHA-256 generation pending per build |
+| Candidate build fingerprint manifest | v118 schema v2 | SOURCE_CONTRACT_PASS | Runtime source/export identity + local asset SHA-256 generated per build |
 | Three-room floor regression | R1/R7/R8 | SOURCE_CONTRACT_PASS | Asset-backed physics execution pending |
 | PCM + Master-bus audio non-silence | v116/v31 | SOURCE_CONTRACT_PASS | Human audibility remains G10 |
 | Indexed AZF color-key policy | v116/v31 | SOURCE_CONTRACT_PASS | Restored 86-texture runtime/visual retest pending |
 | Run-scoped diagnostics provenance | v31 | SOURCE_CONTRACT_PASS | Runtime lifecycle pending |
 | Canonical visual captures | v117 | SOURCE_CONTRACT_PASS | Graphical execution NOT_EXECUTED |
-| Windows Candidate 2 export preset | v117 | SOURCE_CONTRACT_PASS | Real export/relaunch pending |
+| Complete Candidate 2 asset set | v118 | SOURCE_CONTRACT_PASS | 3 rooms + 8 runtime WAVs + 86 Classic + 10 indexed-key assets required for fresh build |
+| Windows Candidate 2 export preset | v117/v118 handoff | SOURCE_CONTRACT_PASS | Real export/relaunch pending |
+| Exported EXE startup smoke | v118 | SOURCE_CONTRACT_PASS | Windows execution NOT_EXECUTED |
+| Test-build receipt | v118 | SOURCE_CONTRACT_PASS | READY_FOR_G10_MANUAL_TEST receipt NOT_EXECUTED |
 | Pinned Godot source parse/import | v31 CI | PASS | Restored-asset gameplay runtime still pending |
 
 ## Current execution summary
