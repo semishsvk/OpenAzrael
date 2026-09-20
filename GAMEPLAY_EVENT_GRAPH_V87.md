@@ -6,7 +6,7 @@ v87 begins moving the demo vertical slice away from room-specific hard-coded sta
 
 `data/gameplay_event_graph_v87.json` is the first executable gameplay IR for the demo. Each action carries its evidence confidence. `scripts/legacy_event_runner_v87.gd` executes only a deliberately small opcode set: state flags, puzzle nodes, inventory changes, and one-shot audio.
 
-The R7 water-switchboard completion and the R8 lens placement / optical start / secret-door state / shield pickup now dispatch through named event graphs. Visual interpolation remains in the room interaction scripts because exact original timing and some movement semantics are still HOLD.
+The R7 well+tongs sound edge, R7 water-switchboard completion, and the R8 lens placement / optical start / secret-door state / shield pickup now dispatch through named event graphs. Visual interpolation remains in the room interaction scripts because exact original timing and some movement semantics are still HOLD.
 
 ## Why this matters
 
@@ -15,3 +15,8 @@ The long-term importer can translate recovered PUZZLES.DAT / OBJECTS.DAT operati
 ## Evidence boundary
 
 This is an architecture/generalization milestone, not a claim that every reconstructed action is original. `R8Counter` opcode 0x0e remains UNKNOWN. R8 timer duration and DoorR8 rotation/timing remain HOLD. Inventory IDs and `demo_complete` are OpenAzrael reconstruction state. Verified/high-confidence sound and state associations retain those labels in the graph.
+
+
+## Recovered R7 well+tongs edge
+
+`R7_WELL_TONGS_USE` is bound to the official demo `979TONGS.WAV` action recovered from `PUZZLES.DAT` and its compiled `WORLD.DAT` action group. The surrounding room-object add/remove and inventory-consumption operations are executed by the production well interaction because the current Event IR intentionally supports only canonical gameplay state/audio operations. The recovered group contains no transform/rotation opcode, so Classic fidelity explicitly forbids inventing a Tween for this event.
