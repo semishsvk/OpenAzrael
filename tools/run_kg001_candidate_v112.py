@@ -41,6 +41,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_texture_colorkey_v116.py"],
     [sys.executable,"tools/validate_kg001_export_preset_v117.py"],
     [sys.executable,"tools/validate_kg001_visual_capture_v117.py"],
+    [sys.executable,"tools/validate_source_safe_asset_loading_v117.py"],
 ]
 
 RUNTIMES=[
