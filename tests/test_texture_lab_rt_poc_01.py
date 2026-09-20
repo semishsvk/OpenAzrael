@@ -125,6 +125,7 @@ from oa_tex_runtime_verify import verify_manifest
 from oa_tex_scan import scan
 from oa_tex_structural_drift import analyze_pair
 from oa_tex_tile import tile_preview
+from oa_tex_transparency_audit import build_transparency_audit
 from oa_tex_validate import validate_pair
 
 
@@ -285,6 +286,72 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             self.assertFalse(report["exact_alpha_mask_ok"])
             self.assertEqual(report["alpha_mask_mismatch_pixels"], 1)
             self.assertEqual(report["visible_legacy_magenta_pixels"], 0)
+
+    def test_full_corpus_transparency_audit_distinguishes_review_from_hold(self):
+        manifest = {
+            "schema": "openazrael.texture_lab.classic_manifest.v2",
+            "source_kind": "local_excluded_commercial_derived",
+            "textures": [
+                {
+                    "id": "OPAQUE",
+                    "file": "OPAQUE.png",
+                    "transparency_mode": "opaque",
+                    "transparency_review_required": False,
+                    "legacy_colorkey_candidate": False,
+                },
+                {
+                    "id": "KEYED#",
+                    "file": "KEYED#.png",
+                    "transparency_mode": "palette_colorkey",
+                    "transparency_review_required": False,
+                    "legacy_colorkey_candidate": True,
+                },
+                {
+                    "id": "ALPHA",
+                    "file": "ALPHA.png",
+                    "transparency_mode": "true_alpha",
+                    "transparency_review_required": False,
+                    "legacy_colorkey_candidate": False,
+                },
+                {
+                    "id": "AMBIG#",
+                    "file": "AMBIG#.png",
+                    "transparency_mode": "ambiguous",
+                    "transparency_review_required": True,
+                    "legacy_colorkey_candidate": False,
+                    "transparency_reason": (
+                        "legacy_hash_name_without_quantized_magenta"
+                    ),
+                    "legacy_magenta_pixels": 0,
+                    "legacy_magenta_fraction": 0.0,
+                    "has_alpha": False,
+                    "transparent_pixels": 0,
+                    "partial_alpha_pixels": 0,
+                },
+            ],
+        }
+
+        audit = build_transparency_audit(manifest, expected_count=4)
+        self.assertEqual(audit["status"], "REVIEW_REQUIRED")
+        self.assertTrue(audit["safe_for_deterministic_baseline"])
+        self.assertFalse(audit["ready_for_corpus_expansion"])
+        self.assertEqual(audit["manual_review_required_count"], 1)
+        self.assertEqual(audit["mode_counts"]["opaque"], 1)
+        self.assertEqual(audit["mode_counts"]["palette_colorkey"], 1)
+        self.assertEqual(audit["mode_counts"]["true_alpha"], 1)
+        self.assertEqual(audit["mode_counts"]["ambiguous"], 1)
+        self.assertFalse(
+            audit["manual_review_queue"][0][
+                "automatic_colorkey_applied"
+            ]
+        )
+
+        bad = json.loads(json.dumps(manifest))
+        bad["textures"][-1]["legacy_colorkey_candidate"] = True
+        bad_audit = build_transparency_audit(bad, expected_count=4)
+        self.assertEqual(bad_audit["status"], "HOLD")
+        self.assertFalse(bad_audit["safe_for_deterministic_baseline"])
+        self.assertGreater(bad_audit["policy_violation_count"], 0)
 
     def test_ai_backend_colorkey_input_and_mask_reapply(self):
         with tempfile.TemporaryDirectory() as td:
@@ -2722,10 +2789,16 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
         baseline = baseline_plan()
         self.assertEqual(
             [row["name"] for row in baseline],
-            ["scan_classic", "build_enhanced", "calibrate_drift"],
+            [
+                "scan_classic",
+                "audit_transparency",
+                "build_enhanced",
+                "calibrate_drift",
+            ],
         )
         commands = " ".join(row["command"] for row in baseline)
         self.assertIn("oa_tex_scan.py", commands)
+        self.assertIn("oa_tex_transparency_audit.py", commands)
         self.assertIn("oa_tex_run_poc.py", commands)
         self.assertIn("oa_tex_calibrate_drift.py", commands)
 
