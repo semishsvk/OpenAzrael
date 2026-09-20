@@ -21,6 +21,7 @@ checks={
     "known_good_tag_not_auto_allowed":contract.get("demo_known_good_tag_allowed") is False,
     "runtime_receipt_path":contract.get("runtime_receipt")==".tmp/kg001/kg001_test_build_receipt_v118.json",
     "distribution_receipt_path":contract.get("distribution_receipt")=="exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
+    "distribution_testing_guide":contract.get("distribution_testing_guide")=="exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt",
     "wrapper_receipt_schema":"openazrael.kg001.test_build_receipt" in wrapper,
     "wrapper_receipt_v118":"version = 118" in wrapper,
     "wrapper_ready_status":"READY_FOR_G10_MANUAL_TEST" in wrapper,
@@ -48,6 +49,11 @@ checks={
         "build_manifest_sha256",
     ]),
     "wrapper_manual_pending":"manual_pending" in wrapper,
+    "wrapper_testing_guide":all(token in wrapper for token in [
+        "MANUAL G10 CHECKLIST",
+        "DIAGNOSTIC KEYS",
+        "OpenAzrael-KG001-Candidate2-v116.TESTING.txt",
+    ]),
     "wrapper_keeps_release_closed":"demo_known_good_tag_allowed = $false" in wrapper and "release_blockers_close_automatically = $false" in wrapper,
 }
 failed=[name for name,value in checks.items() if not value]
