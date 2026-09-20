@@ -3,6 +3,23 @@
 ## Current canonical checkpoint
 - `v116-context-v31` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
+## KG-001 independent audit hardening v117 / context v31
+- `.github/workflows/kg001-source-safe.yml`
+- `tools/requirements-kg001-source-safe.txt`
+- `data/tests/kg001_toolchain_contract_v117.json`
+- `tools/validate_kg001_toolchain_v117.py`
+- `tools/write_kg001_build_manifest.py`
+- `export_presets.cfg` — `Windows Candidate 2`
+- `tools/validate_kg001_export_preset_v117.py`
+- `scripts/kg001_visual_capture_v117.gd`
+- `tools/validate_kg001_visual_capture_v117.py`
+- `data/tests/kg001_visual_capture_contract_v117.json`
+- run-scoped Candidate provenance implemented in `scripts/candidate_diagnostics_v116.gd`
+- Issue #6 regression matrix: canonical R1/R7/R8 floor probes
+- Issue #9 hardening: PCM non-silence + Master-bus capture
+- Issue #11 hardening: used indexed palette key + fail-closed ambiguity + MASK hidden-RGB edge bleed
+- PR #12 remains draft pending restored-asset runtime, graphical capture and G10
+
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
 - `.github/ISSUE_TEMPLATE/bug_report.yml`
