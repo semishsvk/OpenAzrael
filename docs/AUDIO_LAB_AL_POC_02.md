@@ -83,7 +83,11 @@ Install the spectral dependency:
 
     python -m pip install -r tools/audio_lab/requirements-spectral.txt
 
-Run the canonical analysis:
+Preferred one-command canonical run:
+
+    python tools/audio_lab/oa_audio_run_poc02.py /path/to/original_audio
+
+Individual analysis stage:
 
     python tools/audio_lab/oa_audio_spectral.py /path/to/original_audio --output-dir .tmp/audio_lab/al_poc_02
 
@@ -93,9 +97,12 @@ Compare a real-corpus run with the committed baseline:
 
 Outputs:
 
+- `canonical_source_report.json`
 - `spectral_manifest.json`
 - `spectral_review.html`
 - `spectrograms/*.png`
+- `spectral_baseline_check.json`
+- `al_poc_02_summary.json`
 
 ## Source-safety gates
 
