@@ -188,7 +188,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Validate v116-context-v31 end-to-end in PR #12 source-safe CI, then on a Godot-capable checkout restore the ignored Candidate 2 assets, generate the build fingerprint manifest, run tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results, require the R1/R7/R8 floor probes, PCM/Master-bus audio regression, indexed color-key/GLB MASK regression and G00-G09 to PASS, execute the canonical R1/R7/R8 graphical capture, then complete G10 manually. Keep demo-known-good-001 blocked until Issues #6/#9/#11 are runtime/manual clean.",
+  "next_target": "On a Godot-capable checkout restore the ignored Candidate 2 assets, then run tools/run_kg001_candidate_v112.py --fresh-checkout --visual-capture --promote-results. Require R1/R7/R8 floor support, PCM/Master-bus audio, indexed color-key/GLB MASK, v109/v110/v111/audio-v116, G00-G09 and the requested canonical graphical capture to PASS. Then export/relaunch Windows Candidate 2 and complete G10 manually. Keep demo-known-good-001 blocked until Issues #6/#9/#11 are runtime/manual clean.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -235,7 +235,12 @@
     "status_snapshot": "data/tests/kg001_status_v112.json",
     "manual_checklist": "docs/KG001_MANUAL_SANITY_CHECKLIST.md",
     "manual_template": "data/tests/kg001_manual_sanity_template.json",
-    "note": "docs/KG001_CANDIDATE_RUNNER_V112.md"
+    "note": "docs/KG001_CANDIDATE_RUNNER_V112.md",
+    "optional_visual_capture_flag": "--visual-capture",
+    "visual_capture_runner": "scripts/kg001_visual_capture_v117.gd",
+    "visual_capture_tmp_result": ".tmp/kg001/kg001_visual_capture_v117.json",
+    "visual_capture_promoted_result": "data/tests/kg001_visual_capture_runtime_v117.json",
+    "visual_capture_semantics": "OPTIONAL_PRE_G10__REQUESTED_RUN_MUST_PASS__DOES_NOT_REDEFINE_G09"
   },
   "forensics_v113": {
     "analyzer": "tools/analyze_world_sound_record_fields_v113.py",
@@ -391,6 +396,7 @@
       "commit": "ee6ff6560e673d5859f87cba668f4dc9bab06257",
       "conclusion": "SUCCESS"
     },
-    "runtime_boundary": "Candidate 2 restored-asset runtime and G10 remain required; source/CI PASS does not close Issues #6/#9/#11."
+    "runtime_boundary": "Candidate 2 restored-asset runtime and G10 remain required; source/CI PASS does not close Issues #6/#9/#11.",
+    "visual_capture_orchestration": "tools/run_kg001_candidate_v112.py --visual-capture"
   }
 }
