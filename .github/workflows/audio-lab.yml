@@ -30,5 +30,11 @@ jobs:
           python-version: "3.11"
       - name: Compile Audio Lab
         run: python -m compileall -q tools/audio_lab
+      - name: Smoke Audio Lab CLIs
+        run: |
+          python tools/audio_lab/oa_audio_scan.py --help >/dev/null
+          python tools/audio_lab/oa_audio_validate.py --help >/dev/null
+          python tools/audio_lab/oa_audio_reference_audit.py --help >/dev/null
+          python tools/audio_lab/oa_audio_run_poc.py --help >/dev/null
       - name: Run AL-POC-01 tests
         run: python -m unittest discover -s tests -p "test_audio_lab_*.py" -v
