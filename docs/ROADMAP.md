@@ -1,20 +1,21 @@
 # OpenAzrael Roadmap
 
-**Canonical checkpoint:** `v116-context-v29`  
+**Canonical checkpoint:** `v116-context-v30`  
 **Technical base:** `openazrael_godot_poc_v116`
 
 ## Now — Candidate 2 blocker retest
 
-1. Run the v29 Candidate 2 source with restored room and audio assets.
+1. Restore Candidate 2 room/audio/texture assets with the v30 source pipeline.
 2. Require the v110 R1 physical floor-support regression for Issue #6 to PASS.
 3. Require the audio-v116 regression for Issue #9 to PASS: physical WAV loading, R1/R7/R8 ambient counts 2/3/2, playing players and a non-muted Master bus.
-4. Export and launch the graphical Candidate 2 build.
-5. Manually confirm stable floor collision and actually audible R1 ambient audio before attempting the full route.
-6. Keep Issues #6/#9 and `demo-known-good-001` blocked until automated and human retests pass.
+4. Require the Issue #11 color-key validator to PASS, including the restored asset audit for the ten-name `#` class and R1 KEYHOLE#/TONG6 mappings.
+5. Export and launch the graphical Candidate 2 build.
+6. Manually confirm stable floor collision, actually audible R1 ambient audio, and correct transparent keyhole/tongs with no pink/magenta color-key background before attempting the full route.
+7. Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until automated and human retests pass.
 
 ## Then — resume Candidate 2 runtime cycle
 
-1. Restore the locally ignored R1/R7/R8 GLBs and required Candidate 2 audio assets on a Godot-capable checkout.
+1. Restore the locally ignored R1/R7/R8 GLBs, Classic textures and required Candidate 2 audio assets on a Godot-capable checkout.
 2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
 3. Review G00-G09 evidence using the v112 status tooling.
 4. If G00-G09 are literal PASS, launch the normal graphical **KG-001 Candidate 2** build.

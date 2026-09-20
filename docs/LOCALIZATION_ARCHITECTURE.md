@@ -1,7 +1,7 @@
 # OpenAzrael Localization Architecture
 
 **Status:** APPROVED  
-**Context:** `v116-context-v29`  
+**Context:** `v116-context-v30`  
 **Runtime implementation:** DEFERRED until after the first clean KG-001 Candidate 2 runtime/manual cycle.
 
 ## 1. Goal

@@ -9,6 +9,11 @@
       "R1",
       "R7",
       "R8"
+    ],
+    "candidate_stabilization_blockers": [
+      "#6 floor collision",
+      "#9 physical audio",
+      "#11 legacy color-key transparency"
     ]
   },
   "release_policy": {
@@ -17,7 +22,8 @@
     "zero_failed_required_gates": true,
     "fresh_checkout_required": true,
     "manual_sanity_required": true,
-    "immutable_tag": true
+    "immutable_tag": true,
+    "zero_recorded_release_blockers": true
   },
   "gates": [
     {
@@ -89,13 +95,16 @@
       "id": "G10",
       "name": "manual_sanity",
       "required": true,
-      "automation": "manual_user"
+      "automation": "manual_user",
+      "manual_visual_colorkey_required": true,
+      "manual_audio_audibility_required": true
     }
   ],
   "forensic_boundary": {
     "known_good_does_not_promote_holds": true,
     "classic_audio_original_runtime_parity": "separate_oracle",
-    "full_puzzles_world_compiler": "HOLD"
+    "full_puzzles_world_compiler": "HOLD",
+    "complete_original_renderer_transparency_semantics": "HOLD"
   },
   "result_artifact": "data/tests/kg001_results.json"
 }

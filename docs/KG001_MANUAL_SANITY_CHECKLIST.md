@@ -6,6 +6,7 @@ Record the Godot version, candidate commit SHA, date and tester. If any defect a
 
 - project launches without a blocking error;
 - mouse/look and movement controls behave normally;
+- R1 keyhole and rusty-tongs cutout textures show transparent background with no visible pink/magenta key color;
 - R1 tongs can be picked up;
 - Door 1 opens and R1 -> R7 traversal works;
 - Well Key requires/uses the tongs and is acquired;
@@ -18,6 +19,7 @@ Record the Godot version, candidate commit SHA, date and tester. If any defect a
 - secret door opens and the Shield becomes obtainable;
 - taking the Shield completes the demo;
 - expected gameplay sounds are present to human perception;
+- no visible magenta key-color rectangles/halos remain on other `#` cutout textures encountered during the R1/R7/R8 route;
 - save/load round-trip preserves the tested demo state;
 - F11 creates a source-safe diagnostic ZIP without changing the observed gameplay state;
 - no reproducible critical bug or softlock was observed.
