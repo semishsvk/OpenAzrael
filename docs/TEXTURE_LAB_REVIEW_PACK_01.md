@@ -81,6 +81,36 @@ python tools/texture_lab/oa_tex_review_pack_01.py render \
 
 This is separate from real AI stage execution. Actual image comparisons continue to use the existing stage-specific review pack, Godot REVIEW profile and structured manual-review/approval pipeline.
 
+## Prioritized visual hub
+
+Once local Classic/Enhanced references exist, Review Pack 01 can materialize a convenience HTML overview in P1 -> P3 order:
+
+```bash
+python tools/texture_lab/oa_tex_review_pack_01.py hub \
+  --out-dir .local/texture_lab/review_pack_01/current
+```
+
+Optional explicit output paths:
+
+```bash
+python tools/texture_lab/oa_tex_review_pack_01.py hub \
+  --out-dir .local/texture_lab/review_pack_01/current \
+  --out-json .local/texture_lab/review_pack_01/current/hub.json \
+  --out-html .local/texture_lab/review_pack_01/current/hub.html
+```
+
+For each reference-ready texture the hub renders:
+- Classic source as the comparison truth;
+- the configured deterministic Enhanced reference;
+- only AI Restored/Recreated candidates backed by current PASS named-stage evidence;
+- a full comparison sheet;
+- a detail comparison sheet;
+- the texture-specific Review Pack attention list.
+
+The hub verifies current file size/SHA-256 before using every reference/candidate and refuses stale evidence. Textures without local Classic/Enhanced references are listed as skipped rather than treated as quality failures.
+
+The hub is **not approval evidence**. Stage-specific review packs, repeat/seam previews, structured manual review records and approval receipts remain authoritative.
+
 ## Evidence boundary
 
 **SOURCE_PLAN_READY** means the shortlist, treatment classes, review order, eligibility mapping and rubric are internally consistent with current Texture Lab contracts.
