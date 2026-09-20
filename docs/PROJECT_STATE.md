@@ -39,6 +39,15 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - `data/tests/kg001_test_build_contract_v118.json` defines `READY_FOR_G10_MANUAL_TEST`.
 - The receipt never closes Issues #6/#9/#11, never satisfies G10 and never authorizes `demo-known-good-001`.
 
+### Candidate 2 test-build hardening — v118
+- Fresh-checkout now requires a complete restored asset set, not merely the three room GLBs: 3/3 room GLBs with canonical manifests, 8/8 runtime WAVs including 797TAP.WAV, exactly 86 Classic PNGs, all 10 expected # textures, and complete indexed color-key restore evidence.
+- All eight runtime WAVs are checked as valid uncompressed WAV/PCM with non-empty frames and nonzero signal peak before a test build can pass the asset gate.
+- Build manifest schema v2 binds the package to current Git HEAD, pinned Godot/toolchain, source contracts, critical runtime/build source hashes, room/audio/Classic aggregate hashes and restore evidence.
+- Windows Candidate 2 is exported only after fresh-checkout + requested canonical visual capture PASS and only while the checkout is still clean.
+- The exported EXE must pass a headless startup smoke and its log must contain no critical script/autoload/resource-load errors.
+- A successful automated package emits a v118 `READY_FOR_G10_MANUAL_TEST` receipt with EXE/PCK/build/source/asset fingerprints. This is **not** release approval: G10, Issues #6/#9/#11 and `demo-known-good-001` remain blocked.
+- Optional tracked evidence promotion is deferred until after Windows export/startup verification so evidence mutation cannot change the package being tested.
+
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
 - v44 decodes all 86 demo AZF textures and validates textured R1/R7/R8 exports.
