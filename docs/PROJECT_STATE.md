@@ -47,6 +47,9 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - The exported EXE must pass a headless startup smoke and its log must contain no critical script/autoload/resource-load errors.
 - A successful automated package emits a v118 `READY_FOR_G10_MANUAL_TEST` receipt with EXE/PCK/build/source/asset fingerprints. This is **not** release approval: G10, Issues #6/#9/#11 and `demo-known-good-001` remain blocked.
 - Optional tracked evidence promotion is deferred until after Windows export/startup verification so evidence mutation cannot change the package being tested.
+- Runtime audio is provenance-bound: tracked canonical source SHA-256 -> restore-evidence runtime SHA-256 -> current WAV SHA-256, with PCM-preserving preparation required for 797TAP/S137.
+- Build-manifest source identity includes the build-producing manifest/toolchain/export/audio-preparation tools plus the tracked canonical audio fingerprint registry.
+- The test-build receipt is bound to the exact visual-capture run ID, current commit and the three canonical 1280x720 R1/R7/R8 capture hashes.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
