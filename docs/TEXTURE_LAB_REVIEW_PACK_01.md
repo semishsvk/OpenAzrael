@@ -79,7 +79,15 @@ python tools/texture_lab/oa_tex_review_pack_01.py render \
   --out-md .local/texture_lab/review_pack_01/source_plan.md
 ```
 
-This is separate from real AI stage execution. Actual image comparisons continue to use the existing stage-specific review pack, Godot REVIEW profile and structured manual-review/approval pipeline.
+This is separate from real AI stage execution. Actual image comparisons continue to use the existing stage-specific review pack, Godot REVIEW profile and structured manual-review/approval pipeline. Stage-specific review packs now also include a fingerprinted alpha evidence sheet (expected alpha, candidate alpha, absolute delta and expected edge band) for manual transparency/halo inspection.
+
+A passive per-asset lifecycle/readiness dashboard is available with:
+
+```bash
+python tools/texture_lab/oa_tex_asset_status.py
+```
+
+It reports evidence readiness only; it does not compute a winner or quality score.
 
 ## Prioritized visual hub
 
