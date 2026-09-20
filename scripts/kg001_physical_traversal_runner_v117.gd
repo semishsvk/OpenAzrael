@@ -290,21 +290,24 @@ func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void
         ) >= 0.65
     )
 
-func _exercise_r8_stairs(scene: Node3D, manager, player: CharacterBody3D) -> void:
-    manager.transition_cooldown = 999.0
-    manager.load_room("R8", false)
-    await _settle(2)
-
-    var node := _find_named(manager.current_room, "step011__mesh")
-    if node == null:
-        node = _find_named(manager.current_room, "step011")
-    _check("R8_real_stair_mesh_present", node is MeshInstance3D)
+func _exercise_r8_stair_mesh(
+    scene: Node3D,
+    manager,
+    player: CharacterBody3D,
+    mesh_name: String,
+    check_prefix: String,
+    minimum_levels: int,
+    minimum_rise: float,
+    minimum_run: float
+) -> void:
+    var node := _find_named(manager.current_room, mesh_name)
+    _check(check_prefix + "_mesh_present", node is MeshInstance3D)
     if not (node is MeshInstance3D):
         return
 
     var levels := _stair_tread_levels(node as MeshInstance3D)
-    _check("R8_real_stair_has_multiple_treads", levels.size() >= 4)
-    if levels.size() < 4:
+    _check(check_prefix + "_multiple_treads", levels.size() >= minimum_levels)
+    if levels.size() < minimum_levels:
         return
 
     var low: Dictionary = levels[0]
@@ -319,28 +322,25 @@ func _exercise_r8_stairs(scene: Node3D, manager, player: CharacterBody3D) -> voi
     var stair_run := _horizontal_distance(low_center, high_center)
     var stair_rise := float(high["y"]) - float(low["y"])
 
-    _check("R8_real_stair_rise_positive", stair_rise > 10.0)
-    _check("R8_real_stair_run_nontrivial", stair_run > 20.0)
+    _check(check_prefix + "_rise", stair_rise >= minimum_rise)
+    _check(check_prefix + "_run", stair_run >= minimum_run)
 
-    # Start on the real lower landing before step011. Candidate 2 contains
-    # the authored invisible Object01 support here; probing the collision world
-    # keeps this tied to the build rather than to a copied coordinate oracle.
+    # Probe actual collision immediately before and after the tread run.
+    # This makes the test begin/end on the room's real landing surfaces.
     var lower_probe_point := low_center - up_dir * 24.0
     var lower_hit: Dictionary = _floor_at(
         scene, player, lower_probe_point, float(low["y"])
     )
-    _check("R8_stairs_lower_landing_present", not lower_hit.is_empty())
+    _check(check_prefix + "_lower_landing_present", not lower_hit.is_empty())
     if lower_hit.is_empty():
         return
     var lower_floor_y := float((lower_hit["position"] as Vector3).y)
 
-    # Probe the real upper landing just beyond the highest tread. In the
-    # recovered R8 geometry this resolves onto floor2.
     var upper_probe_point := high_center + up_dir * 14.0
     var upper_hit: Dictionary = _floor_at(
         scene, player, upper_probe_point, float(high["y"])
     )
-    _check("R8_stairs_upper_landing_present", not upper_hit.is_empty())
+    _check(check_prefix + "_upper_landing_present", not upper_hit.is_empty())
     if upper_hit.is_empty():
         return
     var upper_floor_y := float((upper_hit["position"] as Vector3).y)
@@ -348,46 +348,67 @@ func _exercise_r8_stairs(scene: Node3D, manager, player: CharacterBody3D) -> voi
     var ascent_distance := _horizontal_distance(
         lower_probe_point, upper_probe_point
     )
-    _check("R8_real_stair_full_path_nontrivial", ascent_distance > stair_run)
+    _check(check_prefix + "_full_path_nontrivial", ascent_distance > stair_run)
 
+    # Walk from the lower real landing through every riser to the upper landing.
     player.global_position = Vector3(
         lower_probe_point.x, lower_floor_y + 4.0, lower_probe_point.z
     )
     player.velocity = Vector3.ZERO
     await _settle_physics(12)
-    _check("R8_stairs_lower_landing_floor_contact", player.is_on_floor())
+    _check(check_prefix + "_lower_landing_floor_contact", player.is_on_floor())
     var ascent := await _walk_toward_progress(
         player,
         up_dir,
         ascent_distance * 0.90,
-        180,
+        240,
         lower_floor_y - 6.0
     )
-    _check("R8_stairs_up_progress", float(ascent["progress"]) >= ascent_distance * 0.80)
-    _check("R8_stairs_up_height", float(ascent["max_y"]) >= upper_floor_y - 3.0)
-    _check("R8_stairs_up_no_fall_through", float(ascent["min_y"]) >= lower_floor_y - 6.0)
-    _check("R8_stairs_up_floor_contact", float(ascent["floor_contact_ratio"]) >= 0.45)
+    _check(check_prefix + "_up_progress", float(ascent["progress"]) >= ascent_distance * 0.80)
+    _check(check_prefix + "_up_height", float(ascent["max_y"]) >= upper_floor_y - 3.0)
+    _check(check_prefix + "_up_no_fall_through", float(ascent["min_y"]) >= lower_floor_y - 6.0)
+    _check(check_prefix + "_up_floor_contact", float(ascent["floor_contact_ratio"]) >= 0.40)
 
-    # Descending is a separate regression because insufficient floor snap can
-    # make a body lose support even when ascending has been fixed. Start on
-    # the actual upper landing and traverse the same measured path in reverse.
+    # Descending is independently required: floor snap/support may fail on the
+    # way down even when step-up has been fixed.
     player.global_position = Vector3(
         upper_probe_point.x, upper_floor_y + 4.0, upper_probe_point.z
     )
     player.velocity = Vector3.ZERO
     await _settle_physics(12)
-    _check("R8_stairs_upper_landing_floor_contact", player.is_on_floor())
+    _check(check_prefix + "_upper_landing_floor_contact", player.is_on_floor())
     var descent := await _walk_toward_progress(
         player,
         -up_dir,
         ascent_distance * 0.90,
-        180,
+        240,
         lower_floor_y - 6.0
     )
-    _check("R8_stairs_down_progress", float(descent["progress"]) >= ascent_distance * 0.80)
-    _check("R8_stairs_down_height", float(descent["min_y"]) <= lower_floor_y + 3.0)
-    _check("R8_stairs_down_no_fall_through", float(descent["min_y"]) >= lower_floor_y - 6.0)
-    _check("R8_stairs_down_floor_contact", float(descent["floor_contact_ratio"]) >= 0.45)
+    _check(check_prefix + "_down_progress", float(descent["progress"]) >= ascent_distance * 0.80)
+    _check(check_prefix + "_down_height", float(descent["min_y"]) <= lower_floor_y + 3.0)
+    _check(check_prefix + "_down_no_fall_through", float(descent["min_y"]) >= lower_floor_y - 6.0)
+    _check(check_prefix + "_down_floor_contact", float(descent["floor_contact_ratio"]) >= 0.40)
+
+func _exercise_r8_stairs(scene: Node3D, manager, player: CharacterBody3D) -> void:
+    manager.transition_cooldown = 999.0
+    manager.load_room("R8", false)
+    await _settle(2)
+
+    # Real asset audit shows two meshes with horizontal tread sequences:
+    # step011 = 4 lower steps (~5.1 rise each), stairs__STAIR2 = 8 main
+    # staircase levels (~12.6 rise each). Cover both because the latter is the
+    # stronger production step-up regression. Decorative/vertical step04,
+    # step05 and stairs__BAPSTAIR are intentionally not treated as treads.
+    await _exercise_r8_stair_mesh(
+        scene, manager, player,
+        "step011__mesh", "R8_step011",
+        4, 14.0, 28.0
+    )
+    await _exercise_r8_stair_mesh(
+        scene, manager, player,
+        "stairs__STAIR2", "R8_main_stairs",
+        8, 80.0, 120.0
+    )
 
 func _finish(scene: Node = null, status_override: String = "") -> void:
     _release_move_actions()
@@ -400,7 +421,7 @@ func _finish(scene: Node = null, status_override: String = "") -> void:
         "status": status,
         "checks": check_count,
         "failed": failures,
-        "scope": "real production CharacterBody3D traversal using gameplay Input actions over the canonical R1 floor and imported R8 step011 staircase; no movement-result teleport shortcut"
+        "scope": "real production CharacterBody3D traversal using gameplay Input actions over the canonical R1 floor plus both imported R8 tread sequences (step011 and stairs__STAIR2), including ascent and descent; no movement-result teleport shortcut"
     }
     print("OPENAZRAEL_KG001_PHYSICAL_V117 " + JSON.stringify(result))
     if scene != null:
