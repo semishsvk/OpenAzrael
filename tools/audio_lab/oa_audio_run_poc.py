@@ -14,7 +14,8 @@ from tools.audio_lab.oa_audio_scan import main as scan_main
 from tools.audio_lab.oa_audio_validate import validate
 from tools.audio_lab.oa_audio_reference_audit import build_audit, load_json
 from tools.audio_lab.oa_audio_review_pack import build_review_pack, write_html as write_review_html
-from tools.audio_lab.common import ensure_output_outside_source
+from tools.audio_lab.oa_audio_canonical_verify import verify_corpus
+from tools.audio_lab.common import ensure_output_outside_source, iter_audio_files, tree_digest
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -28,13 +29,25 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--event-graph", type=Path, default=ROOT / "data/gameplay_event_graph_v87.json")
     args = ap.parse_args(argv)
 
+    source = args.source_root.resolve()
+    if not source.is_dir():
+        ap.error(f"source_root is not a directory: {source}")
     try:
-        out = ensure_output_outside_source(args.source_root, args.output_dir)
+        out = ensure_output_outside_source(source, args.output_dir)
     except ValueError as exc:
         ap.error(str(exc))
     out.mkdir(parents=True, exist_ok=True)
+
+    legacy_ir = load_json(args.legacy_ir)
+    source_files_before = iter_audio_files(source, {".wav", ".wave"})
+    source_digest_before = tree_digest(source, source_files_before)
+    canonical_report = verify_corpus(source, legacy_ir)
+    canonical_report["source_unchanged"] = canonical_report.get("source_tree_sha256") == source_digest_before
+    canonical_path = out / "canonical_source_report.json"
+    canonical_path.write_text(json.dumps(canonical_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
     scan_rc = scan_main([
-        str(args.source_root),
+        str(source),
         "--output-dir", str(out),
         "--reference-root", str(args.reference_root),
         "--fingerprints", str(args.fingerprints),
@@ -45,7 +58,7 @@ def main(argv: list[str] | None = None) -> int:
     if not manifest_path.is_file():
         summary = {
             "schema": "openazrael.audio_lab.al_poc_01_summary",
-            "version": 2,
+            "version": 3,
             "status": "FAIL",
             "scan_exit_code": scan_rc,
             "reason": "scanner did not produce audio_manifest.json",
@@ -71,8 +84,16 @@ def main(argv: list[str] | None = None) -> int:
     review_json_path.write_text(json.dumps(review_pack, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_review_html(review_html_path, review_pack, args.source_root)
 
+    source_digest_after = tree_digest(source, iter_audio_files(source, {".wav", ".wave"}))
+    canonical_report["source_unchanged_through_pipeline"] = (
+        source_digest_before == source_digest_after == canonical_report.get("source_tree_sha256")
+    )
+    canonical_path.write_text(json.dumps(canonical_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
     qa = manifest.get("qa", {})
     gates = {
+        "canonical_source_pass": canonical_report.get("status") == "PASS",
+        "source_unchanged_through_pipeline": bool(canonical_report.get("source_unchanged_through_pipeline")),
         "scan_pass": scan_rc == 0,
         "manifest_validation_pass": not validation_errors,
         "expected_corpus_complete": bool(qa.get("expected_corpus_complete")),
@@ -107,6 +128,7 @@ def main(argv: list[str] | None = None) -> int:
             "clean": review_summary.get("clean", 0),
         },
         "artifacts": {
+            "canonical_source_report": "canonical_source_report.json",
             "manifest": "audio_manifest.json",
             "inventory_csv": "audio_inventory.csv",
             "qa_report": "audio_qa_report.json",
