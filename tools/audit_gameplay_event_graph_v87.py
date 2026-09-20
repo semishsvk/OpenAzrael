@@ -6,7 +6,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_GRAPHS = {
-    "R7_WATER_SWITCHBOARD_SOLVED", "R8_LENS_PLACE", "R8_OPTICAL_START",
+    "R7_WELL_TONGS_USE", "R7_WATER_SWITCHBOARD_SOLVED", "R8_LENS_PLACE", "R8_OPTICAL_START",
     "R8_SECRET_DOOR_OPEN", "R8_TAKE_SHIELD",
 }
 ALLOWED = {"set_flag", "set_puzzle_node", "add_inventory", "remove_inventory", "play_sound"}
@@ -44,6 +44,7 @@ def main():
         "scripts/r8_bible_interaction.gd": ["R8_LENS_PLACE", "R8_OPTICAL_START", "R8_SECRET_DOOR_OPEN"],
         "scripts/r8_shield_interaction.gd": ["R8_TAKE_SHIELD"],
         "scripts/demo_state.gd": ["R7_WATER_SWITCHBOARD_SOLVED"],
+        "scripts/well_key_interaction.gd": ["R7_WELL_TONGS_USE"],
     }
     for relative_path, graph_ids in call_sites.items():
         source = (ROOT / relative_path).read_text(encoding="utf-8")
