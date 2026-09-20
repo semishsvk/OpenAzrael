@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v29`
+**Current canonical checkpoint:** `v116-context-v30`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -55,11 +55,11 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
 
 ## Immediate execution priority
-- Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, and Major Issue #9 produced no audible audio.
-- Candidate 2 / v29 keeps the two-sided legacy concave collision fix and adds a dedicated physical-audio readiness regression.
+- Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, Major Issue #9 produced no audible audio, and Major Issue #11 left legacy color-key magenta visible on cutout textures.
+- Candidate 2 / v30 combines the two-sided legacy concave collision fix, physical-audio readiness, and the conservative legacy `# + quantized-magenta` binary color-key repair.
 - Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null ambient-position fallback, validates the seven required Event/ambient WAV resources, checks recovered R1/R7/R8 ambient counts (2/3/2), checks an unmuted Master bus, and verifies a real Event-IR `play_sound` creates a playing `AudioStreamPlayer`.
-- Run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 all to PASS. Then manually verify stable floor collision and actually audible ambient/event audio before continuing the full demo route.
-- Keep Issues #6/#9 and `demo-known-good-001` blocked until both automated and human retests pass.
+- Restore corrected assets, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
+- Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
@@ -102,6 +102,14 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - `LegacyEvents` tracks real physical Event-IR `AudioStreamPlayer` instances in addition to the logical golden stream.
 - `scripts/kg001_audio_runtime_runner_v116.gd` and `tools/validate_kg001_audio_runtime_v116.py` form the G06 physical-readiness layer.
 - Automated readiness does not prove speaker/headphone audibility and does not promote original Miles pan/volume parity. Human audibility is G10; Miles parity remains HOLD.
+
+## KG-001 legacy color-key compatibility — v116 / Issue #11
+- The Classic AZF decoder applies a conservative shared rule: only texture names containing `#` and actually containing quantized magenta pixels are converted to binary alpha.
+- Magenta key threshold is `R>=248, B>=248, G<=12`; keyed RGB is zeroed and alpha becomes 0, all other pixels remain opaque.
+- The XAF->GLB exporter preserves RGBA and emits a PBR `MASK` material with alpha cutoff 0.5 instead of converting the image back to RGB.
+- The demo source-safe contract tracks ten `#` texture names. R1 known regressions are `KEYHOLE#` and `TONG6 -> MINETON#`.
+- `tools/validate_kg001_texture_colorkey_v116.py` always runs source-safe synthetic checks and automatically audits the restored 86-texture corpus/R1 manifest when local assets are present.
+- This is a presentation compatibility rule, not proof of complete original renderer transparency/blending semantics; that broader claim remains HOLD.
 
 ## KG-001 Candidate 2 diagnostics — v116
 - Candidate 2 is the corrected diagnostic integration build after the first manual Candidate failure; unrelated forensic v117 work remains deferred.

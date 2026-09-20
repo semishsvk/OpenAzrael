@@ -135,3 +135,10 @@ OpenAzrael localization is an external presentation-data layer over stable seman
 **Status:** ACCEPTED — 2026-09-19
 
 G06 is no longer satisfied by the logical golden event stream alone. KG-001 requires an additional asset-backed Godot readiness regression proving that required Event/ambient WAV resources load, the Master bus is routable, recovered ambient emitters instantiate and report active playback, and a real Event-IR sound action creates a physical AudioStreamPlayer. Human audibility is accepted only in G10, while original Miles pan/volume parity remains a separate forensic HOLD.
+
+
+## ADR-027 — Legacy # texture color-key is a conservative presentation compatibility rule
+
+**Status:** ACCEPTED — 2026-09-20
+
+For the Classic demo asset pipeline, a texture is eligible for binary color-key transparency only when its source filename contains `#` and the decoded, engine-quantized RGB pixels actually contain the legacy magenta key range (R>=248, B>=248, G<=12). Matching pixels are emitted with alpha 0 and zeroed RGB; all other pixels remain opaque. XAF->GLB export must preserve that alpha as a MASK material instead of converting the texture back to RGB. This rule fixes the evidenced KEYHOLE#/MINETON# class without claiming that all original renderer transparency or blending semantics are recovered; complete renderer transparency semantics remain HOLD.

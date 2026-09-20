@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v29` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v30` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
@@ -58,6 +58,17 @@
 - `tools/kg001_status_v111.py`
 - `data/tests/kg001_status_v111.json`
 - `docs/KG001_STATUS_V111.md`
+
+## Major legacy color-key regression — Issue #11
+- `tools/texture_pipeline/legacy_colorkey.py`
+- `tools/texture_pipeline/azf_decode_v14.py`
+- `tools/texture_pipeline/export_xaf_glb_v8.py`
+- `tools/validate_kg001_texture_colorkey_v116.py`
+- `data/tests/kg001_texture_colorkey_contract_v116.json`
+- Candidate restore integration in `tools/restore_candidate_assets.py`
+- known R1 regressions: KEYHOLE# and TONG6 -> MINETON#
+- broader original transparency/blending semantics remain HOLD
+- GitHub Issue #11 remains open pending corrected asset/runtime/manual visual retest
 
 ## Major physical-audio regression — Issue #9
 - `scripts/kg001_audio_runtime_runner_v116.gd`
