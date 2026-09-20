@@ -140,6 +140,57 @@ def stft_power(samples: np.ndarray, sample_rate: int, fft_size: int, hop_size: i
     freqs = np.fft.rfftfreq(fft_size, d=1.0 / sample_rate)
     return power, freqs
 
+def temporal_metrics(samples: np.ndarray, sample_rate: int) -> dict:
+    """Deterministic energy-distribution metrics for truncation/tail review."""
+    if sample_rate <= 0:
+        raise ValueError("sample_rate must be positive")
+    x = np.asarray(samples, dtype=np.float64)
+    if x.size == 0:
+        x = np.zeros(1, dtype=np.float64)
+    energy = x * x
+    total = float(np.sum(energy))
+    n = int(x.size)
+    denom = float(max(1, n - 1))
+
+    peak_index = int(np.argmax(np.abs(x))) if n else 0
+    peak_ratio = peak_index / denom
+
+    if total <= np.finfo(np.float64).tiny:
+        centroid_index = 0.0
+        q10 = q50 = q90 = 0
+        head_ratio = tail_ratio = 0.0
+    else:
+        indices = np.arange(n, dtype=np.float64)
+        centroid_index = float(np.sum(indices * energy) / total)
+        cumulative = np.cumsum(energy)
+        def q_index(q: float) -> int:
+            return min(n - 1, int(np.searchsorted(cumulative, q * total, side="left")))
+        q10, q50, q90 = q_index(0.10), q_index(0.50), q_index(0.90)
+        edge = max(1, int(math.ceil(n * 0.10)))
+        head_ratio = float(np.sum(energy[:edge]) / total)
+        tail_ratio = float(np.sum(energy[-edge:]) / total)
+
+    centroid_ratio = centroid_index / denom
+    q10_ratio = q10 / denom
+    q50_ratio = q50 / denom
+    q90_ratio = q90 / denom
+    return {
+        "peak_position_seconds": peak_index / float(sample_rate),
+        "peak_position_ratio": peak_ratio,
+        "temporal_energy_centroid_seconds": centroid_index / float(sample_rate),
+        "temporal_energy_centroid_ratio": centroid_ratio,
+        "energy_p10_seconds": q10 / float(sample_rate),
+        "energy_p10_ratio": q10_ratio,
+        "energy_p50_seconds": q50 / float(sample_rate),
+        "energy_p50_ratio": q50_ratio,
+        "energy_p90_seconds": q90 / float(sample_rate),
+        "energy_p90_ratio": q90_ratio,
+        "energy_span_10_90_seconds": max(0.0, (q90 - q10) / float(sample_rate)),
+        "energy_span_10_90_ratio": max(0.0, q90_ratio - q10_ratio),
+        "head_energy_ratio_10pct": head_ratio,
+        "tail_energy_ratio_10pct": tail_ratio,
+    }
+
 def spectral_metrics(samples: np.ndarray, sample_rate: int, power: np.ndarray, freqs: np.ndarray) -> dict:
     x = np.asarray(samples, dtype=np.float64)
     if x.size == 0:
@@ -252,6 +303,7 @@ def analyze_file(
     samples, sample_rate, parsed = decode_wave_mono(path)
     power, freqs = stft_power(samples, sample_rate, fft_size, hop_size)
     metrics = spectral_metrics(samples, sample_rate, power, freqs)
+    temporal = temporal_metrics(samples, sample_rate)
     preview = spectrogram_preview(power, db_floor, time_bins, freq_bins)
     record = {
         "filename": path.name,
@@ -263,6 +315,7 @@ def analyze_file(
         "analysis_frames": int(power.shape[0]),
         "fft_bins": int(power.shape[1]),
         **{k: round(float(v), 9) for k, v in metrics.items()},
+        **{k: round(float(v), 9) for k, v in temporal.items()},
     }
     return record, preview
 
@@ -279,6 +332,20 @@ def _all_metrics_finite(record: dict) -> bool:
         "peak",
         "crest_factor",
         "zero_crossing_rate",
+        "peak_position_seconds",
+        "peak_position_ratio",
+        "temporal_energy_centroid_seconds",
+        "temporal_energy_centroid_ratio",
+        "energy_p10_seconds",
+        "energy_p10_ratio",
+        "energy_p50_seconds",
+        "energy_p50_ratio",
+        "energy_p90_seconds",
+        "energy_p90_ratio",
+        "energy_span_10_90_seconds",
+        "energy_span_10_90_ratio",
+        "head_energy_ratio_10pct",
+        "tail_energy_ratio_10pct",
     )
     return all(math.isfinite(float(record[k])) for k in metric_keys)
 
@@ -304,6 +371,20 @@ FINGERPRINT_FIELDS = (
     "peak",
     "crest_factor",
     "zero_crossing_rate",
+    "peak_position_seconds",
+    "peak_position_ratio",
+    "temporal_energy_centroid_seconds",
+    "temporal_energy_centroid_ratio",
+    "energy_p10_seconds",
+    "energy_p10_ratio",
+    "energy_p50_seconds",
+    "energy_p50_ratio",
+    "energy_p90_seconds",
+    "energy_p90_ratio",
+    "energy_span_10_90_seconds",
+    "energy_span_10_90_ratio",
+    "head_energy_ratio_10pct",
+    "tail_energy_ratio_10pct",
 )
 
 def spectral_fingerprint(records: list[dict]) -> str:
