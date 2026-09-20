@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v30` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v31` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
