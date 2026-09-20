@@ -1,16 +1,19 @@
 # OpenAzrael reusable remaster toolchain
 
-Status: POC foundation started on tooling/remaster-framework-poc-01.
+Status: Phase 0 complete; Phase 1 Data Lab POC implemented on
+`tooling/remaster-framework-poc-01`.
 
 ## Architecture
 
 The intended reusable flow is:
 
 Original game data
--> source-safe inventory and provenance
+-> source-safe inventory and corpus discovery
 -> game-specific extraction / forensics
--> normalized intermediate representation
--> validators and graph analysis
+-> artifact provenance catalog
+-> normalized IR descriptors/adapters
+-> deterministic reference graph
+-> validators
 -> engine adapter / Godot runtime
 -> physical-player validation
 -> evidence capture
@@ -24,37 +27,126 @@ Asset-side labs consume the same provenance and normalized metadata:
 
 ## Phase 0 - foundation
 
-Implemented in the first POC:
+Implemented:
 
-- common ToolContract;
+- common `ToolContract`;
 - six stable tool-family identifiers;
 - machine-readable tool registry;
 - registry validation;
 - CLI for listing and inspecting contracts;
 - deterministic source-safe SHA-256 inventory;
-- tests covering deterministic inventory and registry integrity.
+- isolated CI workflow and unit-test suite.
 
-Existing tools are registered rather than renamed, so this branch does not alter
-runtime behavior or invalidate historical investigation artifacts.
+Existing tools are registered rather than renamed, so framework adoption does not
+alter runtime behavior or invalidate historical investigation artifacts.
 
 ## Phase 1 - Data Lab adapters
 
-Next safe targets:
+Implemented POC components:
 
-- register the remaining extraction and forensics scripts;
-- define a common ArtifactManifest and ProvenanceRecord schema;
-- add adapters for demo/retail corpus discovery;
-- establish normalized IR schema/version metadata;
-- add graph export for room, puzzle, trigger, and asset references.
+### Artifact and provenance contracts
+
+`ArtifactRecord` and `ProvenanceRecord` provide deterministic metadata around
+existing artifacts. The catalog records path, size, SHA-256, media type, declared
+sources, and normalized IR metadata without rewriting the artifact.
+
+The verifier checks:
+
+- path containment below the declared root;
+- unique artifact IDs and paths;
+- file existence;
+- size identity;
+- SHA-256 identity.
+
+### IR adapter layer
+
+`IRDescriptor` provides a common schema ID, schema version, kind, adapter ID,
+and legacy flag.
+
+Current OpenAzrael formats are adapted rather than converted in place. This
+includes:
+
+- declared-schema IR such as `openazrael.legacy_world_ir`;
+- legacy gameplay graph v87;
+- numeric-schema XAF trigger evidence;
+- audit, audio, project-context, and test-contract fallbacks.
+
+### Corpus discovery
+
+The corpus-profile mechanism is generic and data-driven. The first committed
+profile is `openazrael_demo_v1`.
+
+Its demo identification rules are based on evidence already present in the
+project, including PUZZLES.DAT / OBJECTS.DAT anchors, legacy AMB/NPC inputs, and
+the Audio Lab AL-POC-01 canonical 30-WAV demo corpus.
+
+A retail profile is intentionally HOLD until canonical retail evidence provides
+anchors/counts. The framework supports adding it without code changes; we do not
+guess retail corpus identity.
+
+### Reference graph
+
+The reusable `ReferenceGraph` contract stores deterministic nodes and edges.
+
+The OpenAzrael adapter currently connects:
+
+- rooms;
+- trigger volumes;
+- portal views;
+- room transitions;
+- gameplay/puzzle graphs;
+- state and inventory keys;
+- evidence sources;
+- referenced texture assets;
+- referenced audio assets.
+
+This makes cross-domain questions machine-queryable, for example:
+
+- which puzzle graph plays a given WAV;
+- which trigger enters a destination room;
+- which portal references a texture;
+- which state keys a puzzle mutates;
+- which source evidence supports a gameplay graph.
+
+### Data Lab commands
+
+From repository root:
+
+    python -m tools.remaster_framework.cli validate
+    python -m tools.remaster_framework.cli inventory SOURCE --output inventory.json
+    python -m tools.remaster_framework.cli discover-corpus SOURCE --output corpus.json
+    python -m tools.remaster_framework.cli catalog data --output artifact_manifest.json
+    python -m tools.remaster_framework.cli verify-catalog data --manifest artifact_manifest.json
+
+OpenAzrael-specific reference graph:
+
+    python -m tools.openazrael_adapters.reference_graph \
+      --xaf data/xaf_trigger_evidence.json \
+      --gameplay data/gameplay_event_graph_v87.json \
+      --output openazrael_reference_graph.json
+
+## Phase 1 remaining hardening
+
+Before declaring Data Lab stable rather than POC:
+
+- register more existing extractor/forensics scripts in the tool registry;
+- ingest canonical retail corpus evidence and add a retail profile;
+- add explicit graph relations for Audio Lab emitters/mappings when those
+  branches are integrated;
+- add artifact-level producer/tool-version metadata where the legacy output
+  already proves it;
+- run the catalog/reference graph against a recovered full retail corpus.
+
+None of these block moving on to the Validation Lab interface design.
 
 ## Phase 2 - Validation Lab
 
 Build the reusable PPPV layer around the current physical-traversal work:
 
-- PlayerDriver interface;
+- `PlayerDriver` interface;
 - Action and Observation contracts;
-- TriggerContract;
-- RuntimeEvidence record;
+- `TriggerContract`;
+- `RuntimeEvidence` record;
 - before/after canonical state hashing;
 - physical traversal assertions for floor, stairs, portals, and interactions;
 - golden puzzle scenario: Tongs -> Well;
