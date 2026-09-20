@@ -1,7 +1,6 @@
 # OpenAzrael reusable remaster toolchain
 
-Status: Phase 0 complete; Phase 1 Data Lab POC implemented on
-`tooling/remaster-framework-poc-01`.
+Status: Phase 0 complete; Phase 1 Data Lab POC implemented; Phase 2 Validation Lab/PPPV core POC implemented on\n`tooling/remaster-framework-poc-01`.
 
 ## Architecture
 
@@ -141,18 +140,32 @@ None of these block moving on to the Validation Lab interface design.
 
 ## Phase 2 - Validation Lab
 
-Build the reusable PPPV layer around the current physical-traversal work:
+Core POC implemented:
 
-- `PlayerDriver` interface;
-- Action and Observation contracts;
-- `TriggerContract`;
-- `RuntimeEvidence` record;
-- before/after canonical state hashing;
-- physical traversal assertions for floor, stairs, portals, and interactions;
-- golden puzzle scenario: Tongs -> Well;
-- reusable full-playthrough scenario format.
+- player actions with enforced execution modes;
+- runtime evidence records;
+- required and forbidden evidence matching;
+- exact ordered evidence sequences;
+- deterministic before/after canonical state hashing;
+- machine-readable PASS/FAIL evaluation reports;
+- OpenAzrael physical traversal v117 adapter;
+- OpenAzrael Well+Tongs v118 positive/negative scenario adapter.
 
-The critical rule is that a puzzle test must prove observable runtime effects,
+The current Well+Tongs PPPV contract requires physical approach through gameplay
+input plus interaction-probe evidence. This is intentionally stricter than the
+existing v118 direct interaction call.
+
+Remaining runtime-facing work:
+
+- Godot PlayerDriver/evidence bus implementation;
+- production InteractionProbe instrumentation;
+- trigger/audio/animation/state evidence emitters;
+- adapter from current v117/v118 runners to the generic evidence vocabulary;
+- full-demo scenario orchestration and persistence checks.
+
+See `docs/VALIDATION_LAB_PPPV.md`.
+
+The critical rule remains: a puzzle test must prove observable runtime effects,
 not merely call puzzle logic directly.
 
 ## Phase 3 - Labs
