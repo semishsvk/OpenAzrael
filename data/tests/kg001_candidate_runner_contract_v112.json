@@ -40,7 +40,17 @@
     "evidence_promotion_after_fresh_observation": true,
     "windows_test_build_contract_v118": true,
     "exported_exe_startup_smoke": true,
-    "test_build_receipt_ready_for_g10_only": true
+    "test_build_receipt_ready_for_g10_only": true,
+    "canonical_audio_fingerprint_binding_v118": true,
+    "build_manifest_runtime_source_identity_v2": true,
+    "build_manifest_restore_evidence_fingerprints_v118": true,
+    "shared_post_validation_promotion_helper_v118": true,
+    "windows_export_before_tracked_promotion": true,
+    "exported_exe_startup_smoke_v118": true,
+    "exported_startup_ready_marker_commit_binding": true,
+    "test_build_receipt_v118": true,
+    "visual_capture_receipt_run_commit_hash_binding_v118": true,
+    "test_build_never_auto_closes_release_blockers": true
   },
-  "runtime_boundary": "Default source-safe CI validates v118 asset/build/export orchestration without commercial assets. Fresh-checkout must use the complete asset-set gate; Windows test-build startup smoke and READY_FOR_G10_MANUAL_TEST receipt remain NOT_EXECUTED until the restored-asset local cycle."
+  "runtime_boundary": "Source-safe CI validates the complete v118 build/readiness contract without commercial assets. Actual complete restore, runtime, graphical capture, Windows export/startup smoke and G10 remain NOT_EXECUTED."
 }
