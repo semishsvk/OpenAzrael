@@ -13,9 +13,9 @@
 
 ### Immediate priority
 1. Restore the ignored Candidate room/audio/texture assets with `tools/restore_candidate_assets.py`; the restore derives `#` transparency from used indexed AZF palette keys and rebuilds GLB `MASK` materials.
-2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --visual-capture --promote-results`; the runner generates the per-build fingerprint manifest and now optionally includes canonical R1/R7/R8 graphical capture in the same evidence cycle.
-3. Require all blocker regressions to PASS: canonical R1/R7/R8 floor support (#6), PCM + Master-bus physical audio readiness (#9), indexed color-key source/asset validation (#11), and the requested graphical capture contract.
-4. Export/launch `Windows Candidate 2` and manually verify floor stability, actually audible audio, and no pink/magenta cutout background.
+2. Prefer the Windows v118 handoff wrapper. Fresh-checkout now requires the complete restored set: 3 room GLBs, all 8 runtime WAVs including `797TAP.WAV`, exactly 86 Classic PNGs and all 10 valid indexed-key `#` textures.
+3. Require all blocker regressions plus canonical R1/R7/R8 graphical capture to PASS; the build manifest must match current HEAD and fingerprint the runtime/export source identity.
+4. Export `Windows Candidate 2`, require the exported EXE headless startup smoke to PASS with no critical script/resource-load errors, and obtain a `READY_FOR_G10_MANUAL_TEST` receipt before manual testing.
 5. Continue the full R1 -> R7 -> R1 -> R8 -> Shield route only after those blocker retests pass; `demo-known-good-001` remains blocked while any release blocker is recorded.
 
 ### Windows local handoff
@@ -23,7 +23,7 @@ For the full restored-asset cycle on Windows, use the thin canonical wrapper:
 
     pwsh tools/run_kg001_candidate2_windows_v117.ps1 -DemoDir C:\path\to\ATDEMO -Godot C:\path\to\Godot_v4.7.2-stable_win64.exe -PromoteResults
 
-It delegates to the existing restore/runner/export contracts; it does not implement separate gameplay or acceptance logic.
+It delegates to the canonical restore/runner/export contracts, exports from the clean validated checkout, smoke-launches the real EXE, records package hashes and emits a v118 test-build receipt. Evidence promotion occurs only afterwards. It does not implement separate gameplay or acceptance logic.
 
 ### Current architectural decisions
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
