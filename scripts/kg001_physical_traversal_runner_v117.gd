@@ -58,6 +58,7 @@ func _floor_at(
     return scene.get_world_3d().direct_space_state.intersect_ray(query)
 
 func _exercise_input_walk(
+    scene: Node3D,
     player: CharacterBody3D,
     action: StringName,
     frames: int,
@@ -67,19 +68,43 @@ func _exercise_input_walk(
     var start := player.global_position
     var min_y := start.y
     var on_floor_frames := 0
+    var support_y := reference_floor_y
+    var support_missing_frames := 0
+    var max_below_support := 0.0
+    var fell_through := false
+
     Input.action_press(action, 1.0)
     for _i in range(frames):
         await physics_frame
         min_y = minf(min_y, player.global_position.y)
         if player.is_on_floor():
             on_floor_frames += 1
+
+        # Track the expected local support independently of the player's Y.
+        # This keeps a legitimate slope/step from looking like a fall, while a
+        # capsule that crosses below the same floor surface fails immediately.
+        var support_hit: Dictionary = _floor_at(
+            scene, player, player.global_position, support_y
+        )
+        if support_hit.is_empty() or absf(float((support_hit["normal"] as Vector3).y)) < 0.5:
+            support_missing_frames += 1
+        else:
+            support_y = float((support_hit["position"] as Vector3).y)
+            var below_support := support_y - player.global_position.y
+            max_below_support = maxf(max_below_support, below_support)
+            if below_support > 2.5:
+                fell_through = true
+                break
+
     Input.action_release(action)
     await physics_frame
     return {
         "distance": _horizontal_distance(start, player.global_position),
         "min_y": min_y,
         "floor_contact_ratio": float(on_floor_frames) / float(maxi(frames, 1)),
-        "fell_through": min_y < reference_floor_y - 4.0
+        "support_missing_frames": support_missing_frames,
+        "max_below_support": max_below_support,
+        "fell_through": fell_through
     }
 
 func _find_named(node: Node, wanted: String) -> Node:
@@ -238,7 +263,7 @@ func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void
     var origin := player.global_position
     var rotation_before := player.rotation
     var forward_walk := await _exercise_input_walk(
-        player, &"move_forward", 90, floor_y
+        scene, player, &"move_forward", 90, floor_y
     )
 
     player.global_position = origin
@@ -246,11 +271,13 @@ func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void
     player.velocity = Vector3.ZERO
     await _settle_physics(8)
     var back_walk := await _exercise_input_walk(
-        player, &"move_back", 90, floor_y
+        scene, player, &"move_back", 90, floor_y
     )
 
     _check("R1_forward_walk_no_fall_through", not bool(forward_walk["fell_through"]))
     _check("R1_back_walk_no_fall_through", not bool(back_walk["fell_through"]))
+    _check("R1_forward_walk_support_continuous", int(forward_walk["support_missing_frames"]) <= 3)
+    _check("R1_back_walk_support_continuous", int(back_walk["support_missing_frames"]) <= 3)
     _check(
         "R1_walk_has_real_horizontal_progress",
         maxf(float(forward_walk["distance"]), float(back_walk["distance"])) >= 12.0
