@@ -108,7 +108,7 @@ A successful named stage also writes:
 
 `.local/texture_lab/runs/rt_poc_01/restored_smoke_1/review_handoff.html`
 
-The HTML handoff embeds/links the full comparison sheet, detail comparison, repeat-tile preview when applicable, review attention, required manual checks and the Godot REVIEW instructions. It is explicitly observational and is **not** included as approval evidence; authoritative approval remains the structured manual-review record plus approval v5 chain.
+The HTML handoff embeds/links the full comparison sheet, detail comparison, alpha evidence sheet, repeat-tile preview when applicable, review attention, required manual checks and the Godot REVIEW instructions. It is explicitly observational and is **not** included as approval evidence; authoritative approval remains the structured manual-review record plus approval v5 chain.
 
 Use the lower-level commands in the rest of this runbook for diagnosis or controlled reruns.
 
@@ -147,6 +147,14 @@ python tools/texture_lab/oa_tex_review_pack_01.py status \
 ```
 
 The dashboard reports Classic/Enhanced reference availability and current named-stage AI evidence. `REFERENCE_ONLY_AI_NOT_CURRENT` is informational, not a failure or quality judgment. `READY_WITH_CURRENT_AI_EVIDENCE` means only that valid current AI stage evidence exists and can be reviewed.
+
+For a single per-asset lifecycle/readiness view, build the passive asset-status dashboard:
+
+```bash
+python tools/texture_lab/oa_tex_asset_status.py
+```
+
+It writes `.local/texture_lab/asset_status.json` and `.local/texture_lab/asset_status.md`. The dashboard combines the canonical review plan, local Classic/Enhanced presence, current named-stage AI evidence, optional transparency scan metadata, and explicit production-selection validity. It never ranks candidates, infers visual quality, or promotes a texture.
 
 To materialize the prioritized local full/detail visual overview from whatever current evidence is actually available:
 
