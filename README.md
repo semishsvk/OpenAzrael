@@ -1,20 +1,20 @@
 # OpenAzrael
 
-## Current status — v116-context-v31
+## Current status — v116-context-v32
 
 **Technical base:** `openazrael_godot_poc_v116`  
 **Runtime:** Godot 4  
 **Active slice:** R1 -> R7 -> R8  
 **Current candidate:** KG-001 Candidate 2  
-**Candidate source status:** SOURCE_FROZEN_V31 / blocker regressions wired / runtime retest required  
+**Candidate source status:** SOURCE_REFROZEN_V32 / blocker regressions wired / runtime retest required  
 **Observed Candidate 1 status:** manual FAIL — Issue #6 floor collision, Issue #9 no audible audio, Issue #11 magenta color-key textures  
-**Candidate 2 v31 runtime status:** NOT_EXECUTED  
+**Candidate 2 v32 runtime status:** NOT_EXECUTED  
 **Known-good tag:** `demo-known-good-001` — NOT ALLOWED until G00-G10 all pass
 
 ### Immediate priority
 1. Restore the ignored Candidate room/audio/texture assets with `tools/restore_candidate_assets.py`; the restore now rebuilds legacy indexed `#` color-key masks as binary alpha.
 2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
-3. Require all three blocker regressions to PASS: v110 R1/R7/R8 floor support (#6), audio-v116 physical readiness (#9), and indexed-AZF color-key source/asset validation (#11).
+3. Require all three blocker regressions to PASS: v110 R1/R7/R8 floor support (#6), audio-v116 physical readiness (#9), and audited source-palette color-key source/asset validation (#11).
 4. Export/launch Candidate 2 and manually verify stable R1 floor collision, audible R1 ambient audio, and no pink/magenta background on the keyhole/tongs or other `#` cutout textures.
 5. Continue the full R1 -> R7 -> R1 -> R8 -> Shield route only after those blocker retests pass; `demo-known-good-001` remains blocked while any release blocker is recorded.
 

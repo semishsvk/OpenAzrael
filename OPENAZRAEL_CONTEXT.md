@@ -1,6 +1,6 @@
 # OpenAzrael Context Bootstrap
 
-**Current canonical checkpoint:** `v116-context-v31`
+**Current canonical checkpoint:** `v116-context-v32`
 **Technical base:** `openazrael_godot_poc_v116`
 
 This file is the mandatory entry point for every OpenAzrael work session.
@@ -56,7 +56,7 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 
 ## Immediate execution priority
 - Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, Major Issue #9 produced no audible audio, and Major Issue #11 left legacy color-key magenta visible on cutout textures.
-- Candidate 2 / v31 is source-frozen with two-sided legacy concave collision plus R1/R7/R8 entry probes, physical-audio readiness, and indexed-AZF color-key selection before RGB expansion.
+- Candidate 2 / v32 is source-frozen with two-sided legacy concave collision plus R1/R7/R8 entry probes, physical-audio readiness, and indexed-AZF color-key selection before RGB expansion using the empirically audited raw source-palette sentinel family R=255/B=255/G<=8.
 - Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null ambient-position fallback, validates the seven required Event/ambient WAV resources, checks recovered R1/R7/R8 ambient counts (2/3/2), checks an unmuted Master bus, and verifies a real Event-IR `play_sound` creates a playing `AudioStreamPlayer`.
 - Restore corrected assets, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
 - Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass. Do not add Candidate features before this evidence exists.
@@ -104,6 +104,9 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Automated readiness does not prove speaker/headphone audibility and does not promote original Miles pan/volume parity. Human audibility is G10; Miles parity remains HOLD.
 
 ## KG-001 legacy color-key compatibility — v116 / Issue #11
+- A real metadata-only audit of all 86 ATDEMO AZFs disproved the broader v31 uniqueness assumption: `BLOOS4#.AZF` uses key index 5 plus one near-magenta non-key pixel at index 9.
+- Candidate 2 therefore re-froze at v32 with the source-palette sentinel rule: exactly one used entry with raw R=255, B=255, G<=8 in every `#` texture; no non-`#` texture uses that sentinel.
+- The audit is bound by demo-archive and per-texture SHA-256 in `data/tests/kg001_colorkey_corpus_audit_v116.json`.
 - The Classic AZF decoder applies a conservative shared rule: only texture names containing `#` and actually containing quantized magenta pixels are converted to binary alpha.
 - Magenta key threshold is `R>=248, B>=248, G<=12`; keyed RGB is zeroed and alpha becomes 0, all other pixels remain opaque.
 - The XAF->GLB exporter preserves RGBA and emits a PBR `MASK` material with alpha cutoff 0.5 instead of converting the image back to RGB.
