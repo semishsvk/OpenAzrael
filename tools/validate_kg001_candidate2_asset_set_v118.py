@@ -12,8 +12,10 @@ from __future__ import annotations
 from pathlib import Path
 import argparse
 import json
+import struct
 import subprocess
 import sys
+import wave
 
 ROOT=Path(__file__).resolve().parents[1]
 ROOM_EXPECTED={
@@ -53,6 +55,49 @@ def ignored(path: Path) -> bool:
 
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def wav_pcm_summary(path: Path) -> dict:
+    with wave.open(str(path),"rb") as wav:
+        channels=wav.getnchannels()
+        sample_width=wav.getsampwidth()
+        frame_rate=wav.getframerate()
+        frame_count=wav.getnframes()
+        compression=wav.getcomptype()
+        raw=wav.readframes(frame_count)
+    if frame_count<=0 or channels<=0 or frame_rate<=0 or not raw:
+        peak=0
+    elif sample_width==1:
+        peak=max(abs(int(value)-128) for value in raw)
+    elif sample_width==2:
+        usable=len(raw)-(len(raw)%2)
+        peak=max(
+            (abs(value[0]) for value in struct.iter_unpack("<h",raw[:usable])),
+            default=0,
+        )
+    elif sample_width==3:
+        peak=0
+        for offset in range(0,len(raw)-2,3):
+            value=int.from_bytes(raw[offset:offset+3],"little",signed=False)
+            if value & 0x800000:
+                value-=1<<24
+            peak=max(peak,abs(value))
+    elif sample_width==4:
+        usable=len(raw)-(len(raw)%4)
+        peak=max(
+            (abs(value[0]) for value in struct.iter_unpack("<i",raw[:usable])),
+            default=0,
+        )
+    else:
+        peak=0
+    return {
+        "channels":channels,
+        "sample_width":sample_width,
+        "frame_rate":frame_rate,
+        "frames":frame_count,
+        "compression":compression,
+        "peak":int(peak),
+    }
 
 
 def room_manifest_check(room: str, expected: dict) -> dict:
@@ -118,17 +163,37 @@ def main() -> int:
     audio_rows=[]
     for name in AUDIO_NAMES:
         path=ROOT/"assets/audio"/name
-        audio_rows.append({
+        row={
             "asset":name,
             "path":str(path.relative_to(ROOT)),
             "present":path.is_file(),
             "nonempty":path.is_file() and path.stat().st_size>0,
             "git_ignored":path.is_file() and ignored(path),
-        })
-    for row in audio_rows:
+            "wav_valid":False,
+            "pcm_non_silent":False,
+        }
+        if path.is_file():
+            try:
+                summary=wav_pcm_summary(path)
+                row["wav"]=summary
+                row["wav_valid"]=(
+                    summary["compression"]=="NONE"
+                    and summary["frames"]>0
+                    and summary["channels"]>0
+                    and summary["frame_rate"]>0
+                    and summary["sample_width"] in (1,2,3,4)
+                )
+                row["pcm_non_silent"]=summary["peak"]>0
+            except Exception as exc:
+                row["wav_error"]=str(exc)
         row["complete"]=all([
-            row["present"],row["nonempty"],row["git_ignored"]
+            row["present"],
+            row["nonempty"],
+            row["git_ignored"],
+            row["wav_valid"],
+            row["pcm_non_silent"],
         ])
+        audio_rows.append(row)
 
     texture_dir=ROOT/"assets/textures/classic"
     pngs=sorted(texture_dir.glob("*.png")) if texture_dir.is_dir() else []
