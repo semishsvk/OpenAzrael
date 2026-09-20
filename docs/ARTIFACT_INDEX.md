@@ -65,6 +65,7 @@
 - `tools/texture_lab/oa_tex_review_pack_01.py` — validate/render/status plus local prioritized visual hub materialization
 - `tools/texture_lab/oa_tex_asset_status.py` — passive per-asset lifecycle/readiness dashboard over current evidence
 - `tools/texture_lab/oa_tex_transparency_audit.py` — full-corpus transparency census with non-destructive ambiguous review queue
+- `data/texture_lab/rt_poc_01_stabilization_evidence.json` — repository-safe real-corpus audit and deterministic-baseline reproducibility evidence
 - source plan covers all 12 canonical R1/R7/R8 POC textures
 - review order: P1=6, P2=5, P3=1
 - treatment classes: safe_upscale / ai_recreation_candidate / conservative
