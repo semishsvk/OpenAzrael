@@ -59,6 +59,7 @@ func _ready() -> void:
         return
     _spawn_at_portal("R1", "spaview")
     transition_cooldown = 1.0
+    CandidateDiagnostics.emit_startup_ready("R1")
 
 func _walk(node: Node, out: Array[Node]) -> void:
     out.append(node)
