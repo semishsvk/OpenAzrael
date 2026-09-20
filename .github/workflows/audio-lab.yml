@@ -6,7 +6,7 @@ on:
       - audio-lab-al-poc-01
     paths:
       - "tools/audio_lab/**"
-      - "tests/test_audio_lab_al_poc_01.py"
+      - "tests/test_audio_lab_*.py"
       - "data/audio/legacy_world_ir.json"
       - "data/backup/source_fingerprints.json"
       - ".github/workflows/audio-lab.yml"
@@ -31,4 +31,4 @@ jobs:
       - name: Compile Audio Lab
         run: python -m compileall -q tools/audio_lab
       - name: Run AL-POC-01 tests
-        run: python -m unittest discover -s tests -p "test_audio_lab_al_poc_01.py" -v
+        run: python -m unittest discover -s tests -p "test_audio_lab_*.py" -v
