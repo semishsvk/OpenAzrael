@@ -43,6 +43,7 @@ var run_manifest_path := ""
 var run_started_unix := 0
 var build_manifest: Dictionary = {}
 var last_event: Dictionary = {}
+var startup_ready_emitted := false
 var last_trigger := "(none)"
 var last_audio := "(none)"
 var startup_errors: Array[String] = []
@@ -75,12 +76,21 @@ func _ready() -> void:
         "checkpoint": BUILD_CHECKPOINT,
         "file_logging": file_logging_enabled
     })
-    print("OPENAZRAEL_CANDIDATE_STARTUP_READY " + JSON.stringify({
+
+func emit_startup_ready(room_id: String) -> void:
+    if startup_ready_emitted:
+        return
+    startup_ready_emitted = true
+    var payload := {
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
         "run_id": run_id,
-        "build_commit_sha": String(build_manifest.get("commit_sha", ""))
-    }))
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
+        "room": room_id,
+        "required_resource_preflight": "PASS"
+    }
+    record_event("candidate_startup_ready", payload)
+    print("OPENAZRAEL_CANDIDATE_STARTUP_READY " + JSON.stringify(payload))
 
 func _exit_tree() -> void:
     if run_id.is_empty():
