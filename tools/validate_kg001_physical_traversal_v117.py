@@ -67,6 +67,17 @@ checks = {
         "absf(normal.y) < 0.75" in runner
         and "Issue #6 proved source winding is not a safe semantic oracle" in runner
     ),
+    "stair_real_landings_are_probed": all(
+        value in runner
+        for value in (
+            "_floor_at",
+            "R8_stairs_lower_landing_present",
+            "R8_stairs_upper_landing_present",
+            "R8_stairs_lower_landing_floor_contact",
+            "R8_stairs_upper_landing_floor_contact",
+            "R8_real_stair_full_path_nontrivial",
+        )
+    ),
     "stair_ascent_is_motion_assertion": all(
         value in runner
         for value in (
