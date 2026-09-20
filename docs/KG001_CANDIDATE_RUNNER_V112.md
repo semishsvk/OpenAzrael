@@ -8,7 +8,7 @@ Run:
 
     python tools/run_kg001_candidate_v112.py
 
-The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111, the audio-v116 physical playback-readiness regression, and the v117 physical traversal regression. Source validation also includes the Issue #11 indexed-palette legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
+The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111, the audio-v116 physical playback-readiness regression, the v117 physical traversal regression, and the v118 R7 well+tongs animation-trigger regression. Source validation also includes the Issue #11 indexed-palette legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
 
 All temporary evidence goes under .tmp/kg001/, which is ignored by Git.
 
@@ -25,7 +25,7 @@ Fresh-checkout PASS requires all of the following simultaneously:
 - source validators PASS;
 - Godot found;
 - Godot room-asset import PASS;
-- v109, v110, v111, audio-v116 and physical-traversal-v117 runtime status all PASS;
+- v109, v110, v111, audio-v116, physical-traversal-v117 and well-tongs-v118 runtime status all PASS;
 - R1/R7/R8 room assets present locally;
 - those local room assets are ignored by Git.
 
@@ -59,3 +59,10 @@ The v117 runner closes a false-positive gap discovered during Candidate 2 manual
 v117 instead loads the real main scene and production Player, drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor, and measures fall-through, horizontal progress and floor-contact ratio. It then derives tread levels directly from the imported R8 `step011__mesh` and `stairs__STAIR2` meshes and drives the same CharacterBody3D up and down both real stair profiles. The first covers the lower ~5-unit risers; the main staircase covers ~12.6-unit risers and is the stronger step-up regression. No synthetic proxy stairs are accepted.
 
 A v110 PASS from Candidate 2 predates this traversal contract and is therefore insufficient for a new G04 PASS without a current v117 runtime result.
+
+
+## Well+tongs animation boundary
+
+The v118 runner closes another Candidate 2 blind spot. The existing full-demo test confirms that using the recovered tongs precondition can produce `well_key`, `R7KeyTake` and `R7key`, but the current `well_key_interaction.gd` immediately hides the key and queues the interaction for deletion; there is no explicit animation trigger in source.
+
+v118 tests the negative path without tongs, then the positive path with the actual inventory precondition, while observing the real R7 well cluster over 60 frames. A one-frame hide/removal is not counted as animation. The test accepts multi-frame transform motion or staged visibility/new-node activity and deliberately does not prescribe Tween vs AnimationPlayer or invent the original trajectory/timing.
