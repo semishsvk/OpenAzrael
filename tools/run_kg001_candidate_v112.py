@@ -12,6 +12,15 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
+VISUAL_AUDIO=[
+    ROOT/"assets/audio/S152V2.WAV",
+    ROOT/"assets/audio/S137.WAV",
+    ROOT/"assets/audio/S121.WAV",
+    ROOT/"assets/audio/799SECDR.WAV",
+    ROOT/"assets/audio/S174ELP1.WAV",
+    ROOT/"assets/audio/S174ELP2.WAV",
+    ROOT/"assets/audio/S186.WAV",
+]
 BUILD_MANIFEST=ROOT/"data/generated/kg001_candidate_build_manifest.json"
 FORBIDDEN_TRACKED_PREFIXES=(
     "original/","raw/","source_original/","data/audio/original_audio/",
@@ -103,6 +112,7 @@ def main():
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
     ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109-v111 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
+    ap.add_argument("--visual-capture",action="store_true",help="Also run the graphical canonical R1/R7/R8 capture contract. Requires a non-headless display plus restored room/audio assets.")
     args=ap.parse_args()
 
     TMP.mkdir(parents=True,exist_ok=True)
@@ -195,8 +205,40 @@ def main():
         for name,_,_ in RUNTIMES:
             runtimes[name]={"status":"BLOCKED_GODOT_NOT_FOUND"}
 
+    visual_capture={"status":"NOT_REQUESTED"}
+    if args.visual_capture:
+        missing_visual=[
+            str(path.relative_to(ROOT))
+            for path in [*ROOMS,*VISUAL_AUDIO]
+            if not path.is_file()
+        ]
+        if godot is None:
+            visual_capture={"status":"BLOCKED_GODOT_NOT_FOUND"}
+        elif missing_visual:
+            visual_capture={
+                "status":"BLOCKED_MISSING_ASSETS",
+                "missing":missing_visual,
+            }
+        else:
+            proc=run([
+                godot,
+                "--path",str(ROOT),
+                "--script","res://scripts/kg001_visual_capture_v117.gd",
+            ])
+            visual_capture=parse_marker(
+                proc.stdout,
+                "OPENAZRAEL_KG001_VISUAL_V117",
+            )
+            visual_capture["_process_returncode"]=proc.returncode
+            visual_capture["_output_tail"]=proc.stdout[-12000:]
+            write_json(
+                TMP/"kg001_visual_capture_v117.json",
+                visual_capture,
+            )
+
     clean_after=git_clean()
     full_runtime_pass=all(runtimes.get(name,{}).get("status")=="PASS" for name,_,_ in RUNTIMES)
+    visual_pass=(not args.visual_capture) or visual_capture.get("status")=="PASS"
     fresh_pass=(
         args.fresh_checkout and clean_before and clean_after and not bad_tracked and source_ok
         and godot is not None and import_status=="PASS" and full_runtime_pass
@@ -224,16 +266,24 @@ def main():
     write_json(TMP/"kg001_source_validation_v112.json",{"status":"PASS" if source_ok else "FAIL","commands":source})
     write_json(TMP/"kg001_fresh_checkout.json",fresh)
 
+    overall_pass=(
+        source_ok
+        and full_runtime_pass
+        and (not args.fresh_checkout or fresh_pass)
+        and visual_pass
+    )
     overall={
         "schema":"openazrael.kg001.candidate_run",
         "version":112,
-        "status":"PASS" if source_ok and full_runtime_pass and (not args.fresh_checkout or fresh_pass) else "INCOMPLETE_OR_FAIL",
+        "status":"PASS" if overall_pass else "INCOMPLETE_OR_FAIL",
         "commit_sha":head,
         "build_manifest":str(BUILD_MANIFEST.relative_to(ROOT)) if BUILD_MANIFEST.is_file() else "",
         "godot_version":godot_version,
         "godot_import_status":import_status,
         "source_validators":"PASS" if source_ok else "FAIL",
         "runtimes":{k:v.get("status","") for k,v in runtimes.items()},
+        "visual_capture":visual_capture.get("status",""),
+        "visual_capture_requested":args.visual_capture,
         "fresh_checkout":fresh["status"],
         "evidence_dir":str(TMP.relative_to(ROOT))
     }
@@ -247,6 +297,7 @@ def main():
             TMP/"kg001_audio_v116_runtime.json":ROOT/"data/tests/kg001_audio_runtime_v116.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
+            TMP/"kg001_visual_capture_v117.json":ROOT/"data/tests/kg001_visual_capture_runtime_v117.json",
         }
         for src,dst in mapping.items():
             if src.is_file():
@@ -254,9 +305,7 @@ def main():
                 shutil.copyfile(src,dst)
 
     print(json.dumps(overall,indent=2))
-    if args.fresh_checkout:
-        sys.exit(0 if fresh_pass else 1)
-    sys.exit(0 if source_ok else 1)
+    sys.exit(0 if overall_pass else 1)
 
 if __name__=="__main__":
     main()
