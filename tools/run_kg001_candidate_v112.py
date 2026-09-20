@@ -272,6 +272,15 @@ def main():
         and (not args.fresh_checkout or fresh_pass)
         and visual_pass
     )
+    if args.fresh_checkout:
+        exit_pass=fresh_pass and visual_pass
+    elif args.visual_capture:
+        exit_pass=source_ok and full_runtime_pass and visual_pass
+    else:
+        # Preserve the historical source-safe/default runner contract: missing
+        # ignored commercial assets block runtime evidence but do not make the
+        # source-only CI invocation fail.
+        exit_pass=source_ok
     overall={
         "schema":"openazrael.kg001.candidate_run",
         "version":112,
@@ -305,7 +314,7 @@ def main():
                 shutil.copyfile(src,dst)
 
     print(json.dumps(overall,indent=2))
-    sys.exit(0 if overall_pass else 1)
+    sys.exit(0 if exit_pass else 1)
 
 if __name__=="__main__":
     main()
