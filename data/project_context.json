@@ -1,5 +1,5 @@
 {
-  "checkpoint": "v116-context-v30",
+  "checkpoint": "v116-context-v31",
   "technical_base": "openazrael_godot_poc_v116",
   "date": "2026-09-20",
   "workflow": [
@@ -88,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "CANDIDATE2_SOURCE_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_build_status": "CANDIDATE2_SOURCE_FROZEN_RUNTIME_RETEST_REQUIRED",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -115,7 +115,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V30_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "V31_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -126,7 +126,7 @@
     },
     "kg001_candidate_event_log": "user://openazrael_candidate2_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
-    "documentation_consistency": "PASS_V30",
+    "documentation_consistency": "PASS_V31",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_bugreport_",
@@ -135,7 +135,7 @@
     "kg001_known_critical_bugs": [
       "#6 PLAYER_FALLS_THROUGH_FLOOR"
     ],
-    "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_collision_issue_6": "SOURCE_FIX_READY_MULTIROOM_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
@@ -150,14 +150,21 @@
       "R7": 3,
       "R8": 2
     },
-    "kg001_texture_issue_11": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_texture_issue_11": "SOURCE_FIX_READY_INDEXED_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_11": true,
-    "kg001_legacy_colorkey_source_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_legacy_colorkey_source_contract": "INDEXED_SOURCE_CONTRACT_PASS",
     "kg001_legacy_colorkey_runtime": "NOT_EXECUTED",
     "kg001_legacy_colorkey_expected_hash_textures": 10,
     "kg001_legacy_colorkey_known_r1_examples": [
       "KEYHOLE#",
       "TONG6 -> MINETON#"
+    ],
+    "kg001_candidate_source_freeze": "FROZEN_V31_NO_FEATURE_CHANGES_BEFORE_RUNTIME",
+    "kg001_candidate_freeze_scope": [
+      "Issue #6 two-sided collision + R1/R7/R8 entry floor-support regression",
+      "Issue #9 physical audio readiness",
+      "Issue #11 indexed AZF color-key transparency",
+      "existing Candidate diagnostics and bug capture only"
     ]
   },
   "hard_holds": [
@@ -169,7 +176,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Build and run KG-001 Candidate 2 from v116-context-v30. Restore assets with the corrected #+magenta binary color-key pipeline, require Issue #6 floor, Issue #9 physical-audio and Issue #11 texture color-key regressions to PASS in the fresh-checkout suite, then manually verify stable floor support, audible audio and no visible magenta color-key backgrounds before continuing the full G10 route. Keep demo-known-good-001 blocked while any issue remains open.",
+  "next_target": "Candidate 2 source is frozen at v116-context-v31. Restore excluded assets, run the complete v112 fresh-checkout Candidate suite, and require the Issue #6 R1/R7/R8 floor-support, Issue #9 physical-audio, and Issue #11 indexed color-key regressions to PASS. Then perform the short graphical blocker smoke test (floor, movement, audible R1 ambient, no magenta key backgrounds) before the full G10 route. Do not add features before this runtime evidence exists.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -191,8 +198,13 @@
     "validator": "tools/validate_kg001_room_trigger_v110.py",
     "result": "data/tests/kg001_room_trigger_contract_v110.json",
     "note": "docs/KG001_ROOM_TRIGGER_V110.md",
-    "issue_6_regression": "R1_FLOOR_SUPPORT_PHYSICAL_TEST",
-    "collision_mode": "LEGACY_CONCAVE_TWO_SIDED"
+    "issue_6_regression": "R1_R7_R8_ENTRY_FLOOR_SUPPORT_PHYSICAL_TEST",
+    "collision_mode": "LEGACY_CONCAVE_TWO_SIDED",
+    "floor_support_views": {
+      "R1": "spaview",
+      "R7": "view",
+      "R8": "Object14"
+    }
   },
   "kg001_v111": {
     "runner": "scripts/kg001_full_demo_runner_v111.gd",
@@ -327,16 +339,18 @@
     "decoder": "tools/texture_pipeline/azf_decode_v14.py",
     "exporter": "tools/texture_pipeline/export_xaf_glb_v8.py",
     "issue": "#11",
-    "candidate_rule": "filename contains # AND quantized magenta pixels exist",
+    "candidate_rule": "filename contains # AND exactly one used palette index matches the recovered quantized-magenta key range",
     "magenta_rule": "R>=248 AND B>=248 AND G<=12",
     "expected_hash_texture_count": 10,
     "known_r1_examples": [
       "KEYHOLE#",
       "TONG6 -> MINETON#"
     ],
-    "source_status": "SOURCE_CONTRACT_PASS",
+    "source_status": "INDEXED_SOURCE_CONTRACT_PASS",
     "runtime_status": "NOT_EXECUTED",
     "manual_visual_status": "PENDING",
-    "boundary": "Binary legacy color-key presentation compatibility only; complete original transparency/blending semantics remain HOLD."
+    "boundary": "Indexed binary legacy color-key presentation compatibility only; complete original transparency/blending semantics remain HOLD.",
+    "selection_space": "ORIGINAL_INDEXED_AZF_BEFORE_RGB_EXPANSION",
+    "ambiguity_policy": "FAIL_CLOSED_ZERO_OR_MULTIPLE_USED_KEY_INDICES"
   }
 }

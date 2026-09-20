@@ -3,7 +3,7 @@
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
   "build_id": "KG-001 Candidate 2",
-  "checkpoint": "v116-context-v30",
+  "checkpoint": "v116-context-v31",
   "features": {
     "build_watermark": true,
     "fail_fast_core_assets": true,
@@ -45,5 +45,5 @@
       "S186.WAV"
     ]
   },
-  "runtime_boundary": "Source contract only until Candidate 2 executes in a Godot-capable checkout. Physical-player readiness is automated; human audibility remains G10 and original Miles parity remains HOLD."
+  "runtime_boundary": "Candidate 2 source frozen at v116-context-v31; no runtime promotion until the complete fresh-checkout suite and manual blocker smoke execute."
 }
