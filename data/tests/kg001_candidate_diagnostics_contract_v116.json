@@ -8,7 +8,6 @@
     "build_watermark": true,
     "fail_fast_core_assets": true,
     "fail_fast_golden_audio_non_headless": true,
-    "event_jsonl_log": "user://openazrael_candidate2_events.jsonl",
     "state_dump_key": "F10",
     "trigger_visualization_key": "F6",
     "candidate_hud_key": "F7",
@@ -19,7 +18,6 @@
     "room_transition_logging": true,
     "canonical_state_hash_dump": true,
     "bug_report_capture_key": "F11",
-    "bug_report_zip_prefix": "user://openazrael_bugreport_",
     "bug_report_screenshot": true,
     "bug_report_event_tail_lines": 500,
     "bug_report_state_snapshot": true,
@@ -43,7 +41,21 @@
       "S174ELP1.WAV",
       "S174ELP2.WAV",
       "S186.WAV"
-    ]
+    ],
+    "build_manifest_required": "res://data/generated/kg001_candidate_build_manifest.json",
+    "run_root": "user://openazrael_candidate2_runs/<run_id>/",
+    "run_manifest": "run_manifest.json",
+    "event_jsonl_log": "events.jsonl",
+    "run_id_per_process": true,
+    "event_run_id": true,
+    "event_build_commit_sha": true,
+    "candidate_run_start_event": true,
+    "candidate_run_end_event": "BEST_EFFORT_EXIT_TREE",
+    "state_dumps_run_scoped": true,
+    "bug_reports_run_scoped": true,
+    "bug_report_run_manifest": true,
+    "bug_report_build_manifest": true,
+    "build_manifest_asset_fingerprints": true
   },
-  "runtime_boundary": "Source contract only until Candidate 2 executes in a Godot-capable checkout. Physical-player readiness is automated; human audibility remains G10 and original Miles parity remains HOLD."
+  "runtime_boundary": "Source contract only until Candidate 2 executes in a Godot-capable checkout. Per-run provenance is source-ready; actual runtime manifests/log lifecycle, physical audio and human G10 remain to be executed."
 }
