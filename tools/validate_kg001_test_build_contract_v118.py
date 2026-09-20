@@ -29,6 +29,8 @@ checks={
     "wrapper_source_identity":"source_identity_complete" in wrapper,
     "wrapper_asset_counts":"asset_counts_complete" in wrapper,
     "wrapper_startup_smoke":"--quit-after" in wrapper and "kg001_windows_candidate2_startup.log" in wrapper,
+    "wrapper_requires_startup_ready_marker":"OPENAZRAEL_CANDIDATE_STARTUP_READY" in wrapper and "startup marker was not observed" in wrapper,
+    "wrapper_requires_startup_build_sha":"startup marker/log does not contain current build commit" in wrapper and "$currentHead" in wrapper,
     "wrapper_critical_log_scan":all(token in wrapper for token in [
         "SCRIPT ERROR:",
         "Failed to load script",
