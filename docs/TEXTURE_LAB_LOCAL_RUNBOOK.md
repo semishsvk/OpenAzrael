@@ -112,6 +112,34 @@ The HTML handoff embeds/links the full comparison sheet, detail comparison, repe
 
 Use the lower-level commands in the rest of this runbook for diagnosis or controlled reruns.
 
+## Review Pack 01 — prioritized human review
+
+Review Pack 01 is a source-safe planning layer over the same 12 canonical POC textures. It does not add a new AI stage or bypass stage approval.
+
+Validate it at any time:
+
+```bash
+python tools/texture_lab/oa_tex_review_pack_01.py validate
+```
+
+Render the current deterministic source plan:
+
+```bash
+python tools/texture_lab/oa_tex_review_pack_01.py render \
+  --out-json .local/texture_lab/review_pack_01/source_plan.json \
+  --out-md .local/texture_lab/review_pack_01/source_plan.md
+```
+
+The source plan groups textures into P1/P2/P3 human-review order and into three treatment classes:
+
+- `safe_upscale`
+- `ai_recreation_candidate`
+- `conservative`
+
+It derives actual AI eligibility and the earliest named Restored/Recreated stage from the existing canonical policy/smoke contracts. For example, KEYHOLE# remains Classic + Enhanced-nearest only; BAPTAP's first Recreated evidence comes from `recreated_atlas`.
+
+See `docs/TEXTURE_LAB_REVIEW_PACK_01.md` for the complete order and eight-axis manual rubric. No aggregate score or automatic winner is computed.
+
 ## 0. Preconditions
 
 Use the `texture-lab-rt-poc-01` branch.
