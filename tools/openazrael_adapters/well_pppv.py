@@ -140,9 +140,9 @@ def adapt_well_tongs_contract(
                 match={"target": target, "reachable": True},
             ),
             EvidenceRequirement(
-                requirement_id="well_interaction_rejected",
-                kind="interaction",
-                match={"target": target, "result": "precondition_rejected"},
+                requirement_id="well_trigger_dispatched",
+                kind="trigger",
+                match={"target": target, "activated": True},
                 after_requirement="well_target_reachable",
             ),
         ),
