@@ -174,6 +174,13 @@ if (-not $SkipExport) {
     if ($criticalHits.Count -ne 0) {
         throw "Exported Candidate 2 startup log contains critical errors: $($criticalHits -join ', ')"
     }
+    $startupMarker = "OPENAZRAEL_CANDIDATE_STARTUP_READY"
+    if (-not $startupText.Contains($startupMarker)) {
+        throw "Exported Candidate 2 startup marker was not observed."
+    }
+    if (-not $startupText.Contains($currentHead)) {
+        throw "Exported Candidate 2 startup marker/log does not contain current build commit $currentHead."
+    }
 
     $candidateEvidence = Get-Content -Raw ".tmp/kg001/kg001_candidate_v112.json" | ConvertFrom-Json
     $freshEvidence = Get-Content -Raw ".tmp/kg001/kg001_fresh_checkout.json" | ConvertFrom-Json
@@ -208,6 +215,8 @@ if (-not $SkipExport) {
             log = ".tmp/kg001/kg001_windows_candidate2_startup.log"
             log_sha256 = (Get-FileHash -Algorithm SHA256 $startupLog).Hash.ToLowerInvariant()
             critical_error_hits = $criticalHits
+            startup_marker = $startupMarker
+            build_commit_observed = $currentHead
         }
         source_safe_metadata_only = $true
     }
