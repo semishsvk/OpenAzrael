@@ -138,6 +138,16 @@ The source plan groups textures into P1/P2/P3 human-review order and into three 
 
 It derives actual AI eligibility and the earliest named Restored/Recreated stage from the existing canonical policy/smoke contracts. For example, KEYHOLE# remains Classic + Enhanced-nearest only; BAPTAP's first Recreated evidence comes from `recreated_atlas`.
 
+To inspect what is actually available on the local machine without generating or approving anything:
+
+```bash
+python tools/texture_lab/oa_tex_review_pack_01.py status \
+  --out-json .local/texture_lab/review_pack_01/availability.json \
+  --out-md .local/texture_lab/review_pack_01/availability.md
+```
+
+The dashboard reports Classic/Enhanced reference availability and current named-stage AI evidence. `REFERENCE_ONLY_AI_NOT_CURRENT` is informational, not a failure or quality judgment. `READY_WITH_CURRENT_AI_EVIDENCE` means only that valid current AI stage evidence exists and can be reviewed.
+
 See `docs/TEXTURE_LAB_REVIEW_PACK_01.md` for the complete order and eight-axis manual rubric. No aggregate score or automatic winner is computed.
 
 ## 0. Preconditions
