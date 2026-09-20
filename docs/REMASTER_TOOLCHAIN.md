@@ -1,6 +1,7 @@
 # OpenAzrael reusable remaster toolchain
 
-Status: Phase 0 complete; Phase 1 Data Lab POC implemented; Phase 2 Validation Lab/PPPV runtime POC implemented on\n`tooling/remaster-framework-poc-01`.
+Status: Phase 0 complete; Phase 1 Data Lab POC implemented; Phase 2 Validation Lab/PPPV runtime POC implemented on
+`tooling/remaster-framework-poc-01`.
 
 ## Architecture
 
