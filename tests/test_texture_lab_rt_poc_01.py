@@ -108,6 +108,8 @@ from oa_tex_review_profile import build_review_profile
 from oa_tex_review_pack_01 import (
     build_availability,
     build_source_plan,
+    build_visual_hub,
+    render_visual_hub_html,
     validate_review_pack,
 )
 from oa_tex_run_summary import (
@@ -3330,6 +3332,164 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                 for value in status["stage_evidence"].values()
             )
         )
+
+    def test_review_pack_01_visual_hub_materializes_only_current_evidence(self):
+        review = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/review_pack_01.json"
+            ).read_text(encoding="utf-8")
+        )
+        selection = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/rt_poc_01_selection.json"
+            ).read_text(encoding="utf-8")
+        )
+        policy = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_review_policy.json"
+            ).read_text(encoding="utf-8")
+        )
+        sampling = json.loads(
+            (
+                ROOT / "data/texture_lab/rt_poc_01_sampling_review.json"
+            ).read_text(encoding="utf-8")
+        )
+        smoke = json.loads(
+            (
+                ROOT / "tools/texture_lab/config/ai_smoke_sets.json"
+            ).read_text(encoding="utf-8")
+        )
+        plan = build_source_plan(
+            review,
+            selection,
+            policy,
+            sampling,
+            smoke,
+        )
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            classic = root / "classic.png"
+            enhanced = root / "enhanced.png"
+            restored = root / "restored.png"
+            Image.new("RGB", (16, 8), (20, 30, 40)).save(classic)
+            Image.new("RGB", (64, 32), (22, 32, 42)).save(enhanced)
+            Image.new("RGB", (64, 32), (24, 34, 44)).save(restored)
+
+            def evidence(path: Path) -> dict:
+                return {
+                    "path": str(path),
+                    "size_bytes": path.stat().st_size,
+                    "sha256": sha256_file(path),
+                }
+
+            availability_rows = []
+            for row in plan["rows"]:
+                if row["id"] == "CORIROCK":
+                    availability_rows.append(
+                        {
+                            "id": "CORIROCK",
+                            "review_order": row["review_order"],
+                            "priority": row["priority"],
+                            "treatment_class": row["treatment_class"],
+                            "reference_ready": True,
+                            "visual_review_status": (
+                                "READY_WITH_CURRENT_AI_EVIDENCE"
+                            ),
+                            "classic": evidence(classic),
+                            "enhanced": evidence(enhanced),
+                            "ai": [
+                                {
+                                    "tier": "ai_restored",
+                                    "stage": "restored_smoke_1",
+                                    "stage_evidence_status": "PASS",
+                                    "candidate": evidence(restored),
+                                    "available": True,
+                                }
+                            ],
+                            "available_ai_candidate_count": 1,
+                            "automatic_decision": False,
+                        }
+                    )
+                else:
+                    availability_rows.append(
+                        {
+                            "id": row["id"],
+                            "review_order": row["review_order"],
+                            "priority": row["priority"],
+                            "treatment_class": row["treatment_class"],
+                            "reference_ready": False,
+                            "visual_review_status": (
+                                "BLOCKED_REFERENCE_INPUTS"
+                            ),
+                            "classic": {"status": "MISSING"},
+                            "enhanced": {"status": "MISSING"},
+                            "ai": [],
+                            "available_ai_candidate_count": 0,
+                            "automatic_decision": False,
+                        }
+                    )
+
+            availability = {
+                "schema": (
+                    "openazrael.texture_lab.review_pack_01_availability.v1"
+                ),
+                "status": "OBSERVATIONAL_LOCAL_STATUS",
+                "automatic_selection": False,
+                "automatic_quality_verdict": False,
+                "rows": availability_rows,
+            }
+            out_dir = root / "hub"
+            hub = build_visual_hub(
+                plan,
+                availability,
+                out_dir,
+                cell=128,
+            )
+
+            self.assertEqual(
+                hub["schema"],
+                "openazrael.texture_lab.review_pack_01_visual_hub.v1",
+            )
+            self.assertEqual(hub["status"], "OBSERVATIONAL_HUB_READY")
+            self.assertFalse(hub["automatic_selection"])
+            self.assertFalse(hub["automatic_quality_verdict"])
+            self.assertFalse(hub["approval_evidence"])
+            self.assertEqual(hub["texture_count"], 1)
+            self.assertEqual(hub["skipped_count"], 11)
+            self.assertEqual(hub["rows"][0]["id"], "CORIROCK")
+            self.assertEqual(hub["rows"][0]["review_order"], 1)
+            self.assertEqual(
+                [value["tier"] for value in hub["rows"][0]["variants"]],
+                ["enhanced", "ai_restored"],
+            )
+            self.assertTrue(
+                Path(hub["rows"][0]["comparison"]["path"]).is_file()
+            )
+            self.assertTrue(
+                Path(
+                    hub["rows"][0]["detail_comparison"]["path"]
+                ).is_file()
+            )
+
+            html_path = out_dir / "hub.html"
+            html_text = render_visual_hub_html(hub, html_path)
+            html_path.write_text(html_text, encoding="utf-8")
+            self.assertIn("OBSERVATIONAL HUB ONLY", html_text)
+            self.assertIn("CORIROCK", html_text)
+            self.assertIn(
+                "stage-specific review packs",
+                html_text.lower(),
+            )
+
+            Image.new("RGB", (64, 32), (200, 10, 20)).save(restored)
+            with self.assertRaises(RuntimeError):
+                build_visual_hub(
+                    plan,
+                    availability,
+                    root / "stale_hub",
+                    cell=128,
+                )
 
     def test_review_pack_01_fails_closed_on_sensitive_policy_drift(self):
         review = json.loads(
