@@ -13,7 +13,8 @@
     "candidate_stabilization_blockers": [
       "#6 floor collision",
       "#9 physical audio",
-      "#11 legacy color-key transparency"
+      "#11 legacy color-key transparency",
+      "R7 well+tongs exact demo effect"
     ]
   },
   "release_policy": {
@@ -64,16 +65,16 @@
     },
     {
       "id": "G05",
-      "name": "trigger_semantics_and_interaction_animation",
+      "name": "trigger_semantics_and_recovered_interaction_effects",
       "required": true,
       "automation": "automated",
       "runtime_evidence": [
         "v110 trigger boundary/precondition regression",
         "v118 R7 Interact_WellKey negative precondition without tongs",
-        "v118 R7 tongs positive retrieval state effects",
-        "v118 multi-frame visual animation activity in the real well cluster"
+        "v118 exact compiled action order R7Key remove -> 979TONGS -> R7Key add -> RustyTongR6 remove -> TONG6 consume",
+        "v118 default key take yields well_key + R7KeyTake + R7key and leaves TONG6 consumed"
       ],
-      "animation_shortcut_policy": "instantaneous hide/removal alone is not animation evidence"
+      "fidelity_policy": "no transform Tween may be claimed for this event because the recovered compiled group contains no transform/rotation opcode"
     },
     {
       "id": "G06",
@@ -81,8 +82,8 @@
       "required": true,
       "automation": "logical_golden_plus_physical_playback_readiness",
       "runtime_evidence": [
-        "v109/v111 logical golden event stream",
-        "v116 physical audio resource/load/player readiness"
+        "v109/v111 logical golden event stream including 979TONGS.WAV",
+        "v116 physical audio resource/load/player readiness for both 979TONGS.WAV and S152V2.WAV"
       ],
       "manual_audibility_remains_in_g10": true
     },
