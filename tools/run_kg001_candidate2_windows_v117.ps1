@@ -337,6 +337,20 @@ $($exportEvidence.executable_sha256)
 PCK SHA-256:
 $($exportEvidence.pck_sha256)
 
+DISTRIBUTION INTEGRITY
+----------------------
+Keep these files together:
+- OpenAzrael-KG001-Candidate2-v116.exe
+- OpenAzrael-KG001-Candidate2-v116.pck
+- OpenAzrael-KG001-Candidate2-v116.build-manifest.json
+- OpenAzrael-KG001-Candidate2-v116.test-build.json
+- OpenAzrael-KG001-Candidate2-v116.TESTING.txt
+- OpenAzrael-KG001-Candidate2-v116.SHA256SUMS
+
+Before testing, compare SHA-256 values against the SHA256SUMS file.
+The distributed build-manifest sidecar is byte-for-byte identical to the
+source-safe manifest used during export and contains per-asset/source hashes.
+
 IMPORTANT
 ---------
 This is a TEST BUILD, not a known-good release.
