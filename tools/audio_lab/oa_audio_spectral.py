@@ -6,6 +6,7 @@ from pathlib import Path
 import argparse
 import binascii
 import html
+import hashlib
 import json
 import math
 import struct
@@ -283,6 +284,36 @@ def _all_metrics_finite(record: dict) -> bool:
 
 OUTLIER_THRESHOLD = 3.5
 
+FINGERPRINT_FIELDS = (
+    "filename",
+    "sample_rate",
+    "channels",
+    "sample_width_bits",
+    "frames",
+    "duration_seconds",
+    "analysis_frames",
+    "fft_bins",
+    "dominant_frequency_hz",
+    "spectral_centroid_hz",
+    "spectral_bandwidth_hz",
+    "spectral_rolloff_85_hz",
+    "spectral_flatness",
+    "high_frequency_energy_ratio",
+    "dc_offset",
+    "rms",
+    "peak",
+    "crest_factor",
+    "zero_crossing_rate",
+)
+
+def spectral_fingerprint(records: list[dict]) -> str:
+    """Hash stable spectral metrics only; exclude review annotations and output paths."""
+    canonical = []
+    for rec in sorted(records, key=lambda x: str(x.get("filename", "")).casefold()):
+        canonical.append({field: rec.get(field) for field in FINGERPRINT_FIELDS})
+    payload = json.dumps(canonical, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
 def annotate_spectral_outliers(records: list[dict], threshold: float = OUTLIER_THRESHOLD) -> dict:
     """Annotate robust distribution outliers for review only; never a failure gate."""
     if threshold <= 0:
@@ -441,6 +472,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:
             errors.append({"path": rel, "code": "SPEC_ANALYSIS_FAILED", "detail": str(exc)})
 
+    analysis_fingerprint = spectral_fingerprint(records)
     outlier_summary = annotate_spectral_outliers(records)
 
     digest_after = tree_digest(source, iter_audio_files(source, {".wav", ".wave"}))
@@ -462,6 +494,7 @@ def main(argv: list[str] | None = None) -> int:
         },
         "source_file_count": len(files),
         "source_tree_sha256": digest_before,
+        "analysis_fingerprint_sha256": analysis_fingerprint,
         "source_unchanged": source_unchanged,
         "errors": errors,
         "outlier_review": outlier_summary,
@@ -478,6 +511,7 @@ def main(argv: list[str] | None = None) -> int:
         "assets": len(records),
         "errors": len(errors),
         "spectral_outliers": outlier_summary["flagged_assets"],
+        "analysis_fingerprint_sha256": analysis_fingerprint,
         "source_unchanged": source_unchanged,
         "source_tree_sha256": digest_before,
         "manifest": str(manifest_path),
