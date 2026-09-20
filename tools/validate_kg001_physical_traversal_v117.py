@@ -8,8 +8,38 @@ runner = (ROOT / "scripts/kg001_physical_traversal_runner_v117.gd").read_text(en
 player = (ROOT / "scripts/player.gd").read_text(encoding="utf-8")
 main = (ROOT / "main.tscn").read_text(encoding="utf-8")
 project = (ROOT / "project.godot").read_text(encoding="utf-8")
+contract = json.loads(
+    (ROOT / "data/tests/kg001_physical_traversal_contract_v117.json").read_text(
+        encoding="utf-8"
+    )
+)
+
+stair_contract = {
+    row["mesh"]: row for row in contract.get("stair_regressions", [])
+    if isinstance(row, dict) and row.get("mesh")
+}
 
 checks = {
+    "tracked_contract": (
+        contract.get("schema") == "openazrael.kg001.physical_traversal_contract"
+        and contract.get("version") == 117
+        and contract.get("status") == "SOURCE_CONTRACT_READY_RUNTIME_PENDING"
+        and contract.get("runtime_status") == "NOT_EXECUTED_ON_THIS_BRANCH"
+    ),
+    "tracked_contract_production_player": (
+        contract.get("production_path", {}).get("body") == "CharacterBody3D"
+        and contract.get("production_path", {}).get("collision_layer") == 4
+        and contract.get("production_path", {}).get("collision_mask") == 1
+        and contract.get("production_path", {}).get("capsule_radius") == 11.0
+        and contract.get("production_path", {}).get("capsule_height") == 52.0
+    ),
+    "tracked_contract_stair_geometry": (
+        stair_contract.get("step011__mesh", {}).get("audited_tread_levels") == 4
+        and stair_contract.get("stairs__STAIR2", {}).get("audited_tread_levels") == 8
+        and stair_contract.get("step011__mesh", {}).get("audited_total_rise", 0) > 15.0
+        and stair_contract.get("stairs__STAIR2", {}).get("audited_total_rise", 0) > 87.0
+        and stair_contract.get("stairs__STAIR2", {}).get("approximate_rise_per_step", 0) > 12.0
+    ),
     "runner_version_marker": (
         '"version": 117' in runner
         and "OPENAZRAEL_KG001_PHYSICAL_V117" in runner
