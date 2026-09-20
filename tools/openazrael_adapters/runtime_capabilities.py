@@ -21,6 +21,7 @@ def audit_runtime_capabilities(root: Path) -> dict[str, Any]:
     probe = _read(root, "scripts/interaction_probe.gd")
     state = _read(root, "scripts/demo_state.gd")
     events = _read(root, "scripts/legacy_event_runner_v87.gd")
+    diagnostics = _read(root, "scripts/candidate_diagnostics_v116.gd")
     well = _read(root, "scripts/well_key_interaction.gd")
 
     checks = {
@@ -42,6 +43,15 @@ def audit_runtime_capabilities(root: Path) -> dict[str, Any]:
         "state_puzzle_signal": "signal puzzle_node_changed" in state,
         "state_canonical_hash": "func canonical_state_hash()" in state,
         "logical_audio_signal": "signal logical_audio_event" in events,
+        "diagnostic_event_signal": "signal event_recorded" in diagnostics,
+        "diagnostic_interaction_event": (
+            'record_event("interaction"' in diagnostics
+            and "func record_interaction" in diagnostics
+        ),
+        "diagnostic_world_trigger_event": (
+            'record_event("trigger_"' in diagnostics
+            and "func observe_trigger" in diagnostics
+        ),
         "well_demo_action_step_signal": "signal demo_action_step" in well,
         "well_demo_action_trace": (
             '_step("remove_room:R7Key")' in well
@@ -69,6 +79,9 @@ def audit_runtime_capabilities(root: Path) -> dict[str, Any]:
         "state_puzzle_signal",
         "state_canonical_hash",
         "logical_audio_signal",
+        "diagnostic_event_signal",
+        "diagnostic_interaction_event",
+        "diagnostic_world_trigger_event",
     ]
     well_keys = [
         "well_demo_action_step_signal",
