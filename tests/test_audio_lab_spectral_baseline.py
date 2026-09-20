@@ -5,6 +5,14 @@ import json
 import unittest
 
 from tools.audio_lab.oa_audio_spectral_baseline import compare_spectral_baseline
+from tools.audio_lab.oa_audio_spectral import (
+    DEFAULT_DB_FLOOR,
+    DEFAULT_FFT_SIZE,
+    DEFAULT_FREQ_BINS,
+    DEFAULT_HOP_SIZE,
+    DEFAULT_TIME_BINS,
+    OUTLIER_THRESHOLD,
+)
 
 class AudioLabSpectralBaselineTests(unittest.TestCase):
     def test_exact_manifest_matches(self):
@@ -39,6 +47,17 @@ class AudioLabSpectralBaselineTests(unittest.TestCase):
         }
         diffs = compare_spectral_baseline(manifest, evidence)
         self.assertEqual([d["field"] for d in diffs], ["analysis_fingerprint_sha256"])
+
+    def test_code_defaults_match_poc02_contract(self):
+        root = Path(__file__).resolve().parents[1]
+        contract = json.loads((root/"data/audio_lab/al_poc_02_contract.json").read_text(encoding="utf-8"))
+        defaults = contract["default_parameters"]
+        self.assertEqual(DEFAULT_FFT_SIZE, defaults["fft_size"])
+        self.assertEqual(DEFAULT_HOP_SIZE, defaults["hop_size"])
+        self.assertEqual(DEFAULT_DB_FLOOR, defaults["spectrogram_db_floor"])
+        self.assertEqual(DEFAULT_TIME_BINS, defaults["preview_time_bins"])
+        self.assertEqual(DEFAULT_FREQ_BINS, defaults["preview_frequency_bins"])
+        self.assertEqual(OUTLIER_THRESHOLD, defaults["outlier_threshold_robust_z"])
 
     def test_committed_evidence_is_consistent_with_poc01_and_contract(self):
         root = Path(__file__).resolve().parents[1]
