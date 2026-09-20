@@ -165,7 +165,7 @@ def validate_review_pack(
     by_id = {str(row["id"]): row for row in review_rows}
     policy_classes = policy.get("classes", {})
     checks["canonical_classes_have_policy"] = all(
-        str(selection_rows[texture_id].get("content_class", ""))
+        str(selection_rows.get(texture_id, {}).get("content_class", ""))
         in policy_classes
         for texture_id in review_ids
     )
