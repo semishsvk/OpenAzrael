@@ -25,6 +25,12 @@ Repository mapping baseline: `data/audio_lab/al_poc_01_repo_mapping_baseline.jso
 
 ## AL-POC-02 spectral QA
 
+Preferred canonical entrypoint:
+
+    python tools/audio_lab/oa_audio_run_poc02.py /path/to/source-audio
+
+Individual stages:
+
     python -m pip install -r tools/audio_lab/requirements-spectral.txt
     python tools/audio_lab/oa_audio_spectral.py /path/to/source-audio --output-dir .tmp/audio_lab/al_poc_02
     python tools/audio_lab/oa_audio_spectral_baseline.py .tmp/audio_lab/al_poc_02/spectral_manifest.json
