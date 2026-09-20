@@ -66,7 +66,6 @@ func _ready() -> void:
         "checkpoint": BUILD_CHECKPOINT,
         "run_id": run_id,
         "build_commit_sha": String(build_manifest.get("commit_sha", "")),
-        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "run_manifest": run_manifest_path,
         "event_log": event_log_path
     })
