@@ -53,6 +53,7 @@ for p in [
     "data/tests/kg001_manual_sanity_template.json",
     "data/evidence/evidence_registry.json",
     "data/backup/source_fingerprints.json",
+    "PUZZLES_FILEIO_CENSUS_V103.md",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",
     "WORLD_PUZZLE_SOUND_BRIDGE_V107.md",
     "PUZZLES_ALTERNATIVE_OPEN_PATHS_V105.md",
@@ -171,8 +172,17 @@ except Exception as e:
 
 try:
     d=json.loads((ROOT/"data/world_runtime_serialization_v106.json").read_text(encoding="utf-8"))
-    if "96425" not in json.dumps(d):
-        errors.append("v106 EOF-size evidence missing")
+    world=d.get("world",{})
+    if (
+        d.get("schema")!="openazrael.world_runtime_serialization_summary"
+        or d.get("version")!=106
+        or d.get("status")!="PASS"
+        or world.get("file_size_bytes")!=96425
+        or world.get("reconstructed_consumed_bytes")!=96425
+        or world.get("exact_eof") is not True
+        or world.get("top_level_section_counts")!=[1303,12,37,3,101,8,15]
+    ):
+        errors.append("v106 source-safe serialization summary drift")
 except Exception as e:
     errors.append(f"v106 evidence json: {e}")
 
