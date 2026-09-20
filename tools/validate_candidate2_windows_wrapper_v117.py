@@ -67,6 +67,14 @@ checks={
     ]),
     "ignored_export_evidence":".tmp/kg001/kg001_windows_candidate2_export_v118.json" in text,
     "receipt_sidecar":"exports/OpenAzrael-KG001-Candidate2-v116.test-build.json" in text,
+    "human_testing_guide":all(token in text for token in [
+        "OpenAzrael KG-001 Candidate 2",
+        "READY_FOR_G10_MANUAL_TEST",
+        "MANUAL G10 CHECKLIST",
+        "DIAGNOSTIC KEYS",
+        "F11 Source-safe bug-report ZIP",
+        "OpenAzrael-KG001-Candidate2-v116.TESTING.txt",
+    ]),
     "no_gameplay_reimplementation":all(token not in text for token in [
         "DemoState.", "set_flag(", "set_puzzle", "load_room(",
     ]),
