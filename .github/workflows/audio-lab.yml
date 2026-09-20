@@ -13,7 +13,7 @@ on:
   pull_request:
     paths:
       - "tools/audio_lab/**"
-      - "tests/test_audio_lab_al_poc_01.py"
+      - "tests/test_audio_lab_*.py"
       - "data/audio/legacy_world_ir.json"
       - "data/backup/source_fingerprints.json"
       - ".github/workflows/audio-lab.yml"
@@ -35,6 +35,7 @@ jobs:
           python tools/audio_lab/oa_audio_scan.py --help >/dev/null
           python tools/audio_lab/oa_audio_validate.py --help >/dev/null
           python tools/audio_lab/oa_audio_reference_audit.py --help >/dev/null
+          python tools/audio_lab/oa_audio_review_pack.py --help >/dev/null
           python tools/audio_lab/oa_audio_run_poc.py --help >/dev/null
       - name: Run AL-POC-01 tests
         run: python -m unittest discover -s tests -p "test_audio_lab_*.py" -v
