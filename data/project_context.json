@@ -180,14 +180,26 @@
     "kg001_source_safe_ci_pre_v31_promotion": "PASS_RUN_28_COMMIT_ee6ff6560e673d5859f87cba668f4dc9bab06257",
     "kg001_source_safe_asset_preload_contract": "SOURCE_CONTRACT_PASS",
     "kg001_windows_local_wrapper_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_candidate2_asset_set_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_candidate2_asset_set_contract": "SOURCE_CONTRACT_PASS_V118",
     "kg001_candidate2_asset_set_runtime": "NOT_EXECUTED",
     "kg001_build_manifest_schema": "V2_RUNTIME_SOURCE_BOUND",
     "kg001_exported_startup_smoke_contract": "SOURCE_CONTRACT_PASS",
     "kg001_test_build_contract": "SOURCE_CONTRACT_PASS_V118",
     "kg001_test_build_status": "NOT_EXECUTED",
     "kg001_test_build_receipt_status": "NOT_EXECUTED",
-    "kg001_evidence_promotion_order": "AFTER_EXPORT_STARTUP_SMOKE_ON_WINDOWS_WRAPPER"
+    "kg001_evidence_promotion_order": "AFTER_EXPORT_STARTUP_SMOKE_ON_WINDOWS_WRAPPER",
+    "kg001_candidate2_expected_room_assets": 3,
+    "kg001_candidate2_expected_runtime_audio_assets": 8,
+    "kg001_candidate2_expected_classic_textures": 86,
+    "kg001_candidate2_expected_indexed_colorkey_textures": 10,
+    "kg001_build_manifest_version": 2,
+    "kg001_build_manifest_runtime_source_identity": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_test_build_runtime": "NOT_EXECUTED",
+    "kg001_test_build_ready_status": "READY_FOR_G10_MANUAL_TEST",
+    "kg001_exported_exe_startup_smoke": "SOURCE_CONTRACT_READY_RUNTIME_NOT_EXECUTED",
+    "kg001_evidence_promotion_policy": "POST_FRESH_CHECKOUT__POST_WINDOWS_EXPORT_AND_STARTUP_SMOKE",
+    "kg001_release_blockers_close_automatically": false,
+    "kg001_test_build_known_good_tag_allowed": false
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -198,7 +210,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "On Windows with the extracted canonical ATDEMO corpus and pinned Godot 4.7.2, run tools/run_kg001_candidate2_windows_v117.ps1. Require complete asset-set PASS, canonical fresh-checkout + visual capture PASS, Windows export PASS, exported EXE startup-smoke PASS and a READY_FOR_G10_MANUAL_TEST receipt. Then perform G10 manually; keep Issues #6/#9/#11 and demo-known-good-001 blocked until manual/runtime evidence is clean.",
+  "next_target": "On Windows with extracted ATDEMO and pinned Godot 4.7.2, restore the complete Candidate 2 asset set, run the canonical fresh-checkout + visual-capture suite, require v118 asset-set/build-manifest/test-build contracts to PASS, export Windows Candidate 2, pass the exported-EXE startup smoke, produce the v118 test-build receipt, and only then perform G10 manually. Keep demo-known-good-001 blocked until Issues #6/#9/#11 and all G00-G10 evidence are clean.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -434,5 +446,34 @@
     "ready_status": "READY_FOR_G10_MANUAL_TEST",
     "runtime_status": "NOT_EXECUTED",
     "boundary": "v118 source hardening defines when a Windows package is ready for G10 manual testing. It cannot close Issues #6/#9/#11 or authorize demo-known-good-001."
+  },
+  "kg001_v118_build_hardening": {
+    "status": "SOURCE_CONTRACT_PASS",
+    "asset_set_validator": "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "asset_set_require_complete_flag": "--require-complete",
+    "required_assets": {
+      "rooms": 3,
+      "runtime_audio": 8,
+      "classic_textures": 86,
+      "indexed_colorkey_hash_textures": 10
+    },
+    "build_manifest_generator": "tools/write_kg001_build_manifest.py",
+    "build_manifest_validator": "tools/validate_kg001_build_manifest_v118.py",
+    "build_manifest_schema_version": 2,
+    "runtime_source_identity": true,
+    "evidence_promotion_helper": "tools/promote_kg001_candidate_results_v118.py",
+    "evidence_promotion_timing": "AFTER_FRESH_CHECKOUT_OBSERVATION__AFTER_WINDOWS_EXPORT_AND_STARTUP_SMOKE",
+    "test_build_contract": "data/tests/kg001_test_build_contract_v118.json",
+    "test_build_validator": "tools/validate_kg001_test_build_contract_v118.py",
+    "windows_wrapper": "tools/run_kg001_candidate2_windows_v117.ps1",
+    "exported_startup_smoke": "HEADLESS_EXE__QUIT_AFTER_120__CRITICAL_LOG_SCAN",
+    "receipt_runtime": ".tmp/kg001/kg001_test_build_receipt_v118.json",
+    "receipt_distribution": "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
+    "ready_status": "READY_FOR_G10_MANUAL_TEST",
+    "runtime_status": "NOT_EXECUTED",
+    "g10_required": true,
+    "release_blockers_close_automatically": false,
+    "demo_known_good_tag_allowed": false,
+    "boundary": "Automated v118 PASS may only make Candidate 2 ready for G10 manual testing; it cannot close Issues #6/#9/#11 or authorize demo-known-good-001."
   }
 }
