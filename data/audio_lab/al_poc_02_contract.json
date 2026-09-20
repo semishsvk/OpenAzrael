@@ -1,0 +1,60 @@
+{
+  "schema": "openazrael.audio_lab.al_poc_02_contract",
+  "version": 1,
+  "milestone": "AL-POC-02",
+  "title": "Spectrogram & Perceptual QA",
+  "prerequisite": {
+    "milestone": "AL-POC-01",
+    "canonical_source_evidence": "data/audio_lab/al_poc_01_canonical_source_evidence.json",
+    "required_status": "PASS"
+  },
+  "scope": {
+    "source_mutation_allowed": false,
+    "runtime_mutation_allowed": false,
+    "audio_enhancement_allowed": false,
+    "ai_restoration_allowed": false,
+    "output_inside_source_allowed": false
+  },
+  "analysis": {
+    "stft": true,
+    "spectrogram_preview": true,
+    "dominant_frequency_hz": true,
+    "spectral_centroid_hz": true,
+    "spectral_bandwidth_hz": true,
+    "spectral_rolloff_85_hz": true,
+    "spectral_flatness": true,
+    "dc_offset": true,
+    "crest_factor": true,
+    "zero_crossing_rate": true
+  },
+  "default_parameters": {
+    "fft_size": 512,
+    "hop_size": 128,
+    "spectrogram_db_floor": -80.0,
+    "preview_time_bins": 256,
+    "preview_frequency_bins": 128
+  },
+  "required_outputs": [
+    "spectral_manifest.json",
+    "spectral_review.html",
+    "spectrograms/*.png"
+  ],
+  "acceptance_gates": [
+    "al_poc_01_prerequisite_pass",
+    "source_digest_unchanged",
+    "all_audio_decodable",
+    "all_metrics_finite",
+    "spectrograms_generated",
+    "output_isolation_pass",
+    "audio_lab_ci_green"
+  ],
+  "deferred": [
+    "denoise",
+    "resampling",
+    "loudness_normalization",
+    "ai_restoration",
+    "enhanced_asset_generation",
+    "runtime_asset_replacement",
+    "subjective_quality_scoring"
+  ]
+}
