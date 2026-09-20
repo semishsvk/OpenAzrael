@@ -49,16 +49,21 @@ func value(key: String, default_value = null):
 func can_retrieve_well_key() -> bool:
     return has("rusty_tongs")
 
-func retrieve_well_key() -> bool:
-    if not can_retrieve_well_key():
+func complete_well_key_take() -> bool:
+    if has("well_key"):
         return false
     acquire("well_key")
-    # Official demo action opcode 0x09 consumes TONG6 after the well interaction.
-    remove("rusty_tongs")
     # Internal reconstructed node; production FLAGLIST uses R7key for world state.
     set_puzzle_node("R7KeyTake")
     set_flag("R7key")
     return true
+
+func retrieve_well_key() -> bool:
+    if not can_retrieve_well_key():
+        return false
+    # Official demo opcode 0x09 consumes TONG6 before the default key TAKE.
+    remove("rusty_tongs")
+    return complete_well_key_take()
 
 func can_unlock_demo_door() -> bool:
     return has("well_key")
