@@ -100,6 +100,10 @@ for p in [
     "tools/validate_source_safe_asset_loading_v117.py",
     "tools/run_kg001_candidate2_windows_v117.ps1",
     "tools/validate_candidate2_windows_wrapper_v117.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
 ]:
     req(p)
 
@@ -196,6 +200,22 @@ try:
         errors.append("KG-001 Windows export contract drift")
     if q.get("kg001_source_safe_ci_workflow")!=".github/workflows/kg001-source-safe.yml":
         errors.append("KG-001 source-safe CI workflow drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 complete asset-set contract drift")
+    if q.get("kg001_candidate2_asset_set_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 asset-set runtime boundary drift")
+    if q.get("kg001_build_manifest_schema")!="V2_RUNTIME_SOURCE_BOUND":
+        errors.append("KG-001 build-manifest v2 identity drift")
+    if q.get("kg001_exported_startup_smoke_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 exported startup-smoke contract drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 test-build contract drift")
+    if q.get("kg001_test_build_status")!="NOT_EXECUTED":
+        errors.append("KG-001 test-build runtime boundary drift")
+    if q.get("kg001_test_build_receipt_status")!="NOT_EXECUTED":
+        errors.append("KG-001 test-build receipt boundary drift")
+    if q.get("kg001_evidence_promotion_order")!="AFTER_EXPORT_STARTUP_SMOKE_ON_WINDOWS_WRAPPER":
+        errors.append("KG-001 evidence-promotion ordering drift")
     audit=c.get("kg001_v117_audit",{})
     if audit.get("status")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v117 audit status drift")
@@ -285,6 +305,19 @@ try:
         errors.append("KG-001 canonical visual capture set drift")
 except Exception as e:
     errors.append(f"KG-001 visual-capture contract: {e}")
+
+try:
+    tb=json.loads((ROOT/"data/tests/kg001_test_build_contract_v118.json").read_text(encoding="utf-8"))
+    if (
+        tb.get("status")!="SOURCE_CONTRACT_PASS"
+        or tb.get("version")!=118
+        or tb.get("ready_status")!="READY_FOR_G10_MANUAL_TEST"
+        or tb.get("demo_known_good_tag_allowed") is not False
+        or tb.get("release_blockers_close_automatically") is not False
+    ):
+        errors.append("KG-001 test-build v118 contract drift")
+except Exception as e:
+    errors.append(f"KG-001 test-build contract: {e}")
 
 workflow=(ROOT/".github/workflows/kg001-source-safe.yml").read_text(encoding="utf-8")
 for marker in [
