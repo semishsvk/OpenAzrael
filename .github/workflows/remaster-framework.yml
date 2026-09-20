@@ -24,3 +24,6 @@ jobs:
 
       - name: Run framework unit tests
         run: python -m unittest discover -s tools/remaster_framework/tests -v
+
+      - name: Require generic PPPV runtime hooks
+        run: python -m tools.openazrael_adapters.runtime_capabilities . --require-core
