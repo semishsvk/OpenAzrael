@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v31` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v32` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
@@ -60,11 +60,12 @@
 - `docs/KG001_STATUS_V111.md`
 
 ## Major legacy color-key regression — Issue #11
-- `tools/texture_pipeline/legacy_colorkey.py` — exact indexed-palette key selection; zero/multiple used key indices fail closed
+- `tools/texture_pipeline/legacy_colorkey.py` — audited raw source-palette sentinel selection; zero/multiple used sentinels fail closed
 - `tools/texture_pipeline/azf_decode_v14.py`
 - `tools/texture_pipeline/export_xaf_glb_v8.py`
 - `tools/validate_kg001_texture_colorkey_v116.py`
 - `data/tests/kg001_texture_colorkey_contract_v116.json`
+- `data/tests/kg001_colorkey_corpus_audit_v116.json` — real 86-AZF metadata audit bound to demo/archive and per-texture SHA-256
 - Candidate restore integration in `tools/restore_candidate_assets.py`
 - known R1 regressions: KEYHOLE# and TONG6 -> MINETON#
 - broader original transparency/blending semantics remain HOLD

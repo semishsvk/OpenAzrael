@@ -49,4 +49,4 @@ The audio-v116 runner checks that the Candidate can physically load and start it
 
 ## Legacy color-key boundary
 
-Issue #11 is validated during the source phase. The validator always exercises a synthetic `# + quantized-magenta` mask and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, the complete ten-name `#` candidate class, and the R1 KEYHOLE#/TONG6 mappings and exact single-key-index evidence. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.
+Issue #11 is validated during the source phase. The validator binds the real 86-AZF metadata audit and always exercises a synthetic raw source-sentinel mask and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, the complete ten-name `#` candidate class with single-sentinel evidence, and the R1 KEYHOLE#/TONG6 mappings and exact single-key-index evidence. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.
