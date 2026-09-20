@@ -98,6 +98,8 @@ for p in [
     "tools/validate_kg001_visual_capture_v117.py",
     "data/tests/kg001_visual_capture_contract_v117.json",
     "tools/validate_source_safe_asset_loading_v117.py",
+    "tools/run_kg001_candidate2_windows_v117.ps1",
+    "tools/validate_candidate2_windows_wrapper_v117.py",
 ]:
     req(p)
 
