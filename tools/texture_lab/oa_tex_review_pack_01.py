@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
+import os
 from pathlib import Path
 
 from common import ROOT, sha256_file, write_json
+from oa_tex_compare import make_detail_sheet, make_sheet
 from oa_tex_review_report import merged_policy, policy_reasons, sampling_reasons
 from oa_tex_stage_gate import DEFAULT_RUN_ROOT, evidence_snapshot
 
@@ -510,6 +513,227 @@ def build_availability(
     }
 
 
+def _evidence_record_current(record: dict) -> bool:
+    if not isinstance(record, dict):
+        return False
+    path = Path(str(record.get("path", "")))
+    return (
+        path.is_file()
+        and int(record.get("size_bytes", -1)) == path.stat().st_size
+        and str(record.get("sha256", "")) == sha256_file(path)
+    )
+
+
+def _hub_file_record(path: Path) -> dict:
+    return {
+        "path": str(path),
+        "size_bytes": path.stat().st_size,
+        "sha256": sha256_file(path),
+    }
+
+
+def build_visual_hub(
+    plan: dict,
+    availability: dict,
+    out_dir: Path,
+    cell: int = 320,
+) -> dict:
+    available_by_id = {
+        str(row["id"]): row
+        for row in availability.get("rows", [])
+        if isinstance(row, dict) and row.get("id")
+    }
+    rows = []
+    skipped = []
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    for plan_row in plan["rows"]:
+        texture_id = str(plan_row["id"])
+        local = available_by_id.get(texture_id)
+        if not isinstance(local, dict) or not local.get("reference_ready"):
+            skipped.append(
+                {
+                    "id": texture_id,
+                    "reason": "reference_inputs_not_ready",
+                }
+            )
+            continue
+
+        classic_record = local.get("classic")
+        enhanced_record = local.get("enhanced")
+        if (
+            not _evidence_record_current(classic_record)
+            or not _evidence_record_current(enhanced_record)
+        ):
+            raise RuntimeError(
+                f"{texture_id}: reference evidence changed after availability snapshot"
+            )
+
+        source = Path(str(classic_record["path"]))
+        enhanced = Path(str(enhanced_record["path"]))
+        variants: list[tuple[str, Path]] = [
+            ("Enhanced reference", enhanced),
+        ]
+        variant_records = [
+            {
+                "tier": "enhanced",
+                "record": enhanced_record,
+            }
+        ]
+
+        for ai in local.get("ai", []):
+            if not isinstance(ai, dict) or not ai.get("available"):
+                continue
+            candidate = ai.get("candidate")
+            if not _evidence_record_current(candidate):
+                raise RuntimeError(
+                    f"{texture_id}: current {ai.get('tier')} evidence changed"
+                )
+            tier = str(ai.get("tier"))
+            candidate_path = Path(str(candidate["path"]))
+            label = (
+                "AI Restored"
+                if tier == "ai_restored"
+                else "AI Recreated"
+            )
+            variants.append((label, candidate_path))
+            variant_records.append(
+                {
+                    "tier": tier,
+                    "stage": ai.get("stage"),
+                    "record": candidate,
+                }
+            )
+
+        texture_dir = out_dir / (
+            f"{int(plan_row['review_order']):02d}_{texture_id.replace('#', '_hash')}"
+        )
+        full = texture_dir / "comparison.png"
+        detail = texture_dir / "detail.png"
+        make_sheet(texture_id, source, variants, full, cell)
+        make_detail_sheet(texture_id, source, variants, detail, cell)
+
+        rows.append(
+            {
+                "id": texture_id,
+                "review_order": plan_row["review_order"],
+                "priority": plan_row["priority"],
+                "treatment_class": plan_row["treatment_class"],
+                "visual_review_status": local.get(
+                    "visual_review_status"
+                ),
+                "source": classic_record,
+                "variants": variant_records,
+                "comparison": _hub_file_record(full),
+                "detail_comparison": _hub_file_record(detail),
+                "review_attention": list(
+                    plan_row.get("review_attention", [])
+                ),
+                "automatic_decision": False,
+            }
+        )
+
+    return {
+        "schema": "openazrael.texture_lab.review_pack_01_visual_hub.v1",
+        "status": (
+            "OBSERVATIONAL_HUB_READY"
+            if rows
+            else "NO_REFERENCE_INPUTS"
+        ),
+        "automatic_selection": False,
+        "automatic_quality_verdict": False,
+        "approval_evidence": False,
+        "texture_count": len(rows),
+        "skipped_count": len(skipped),
+        "rows": rows,
+        "skipped": skipped,
+        "boundary": (
+            "Convenience overview only. Stage-specific review packs, manual "
+            "review records and approval receipts remain authoritative."
+        ),
+    }
+
+
+def _relative_href(path: Path, html_path: Path) -> str:
+    return Path(
+        os.path.relpath(path.resolve(), html_path.parent.resolve())
+    ).as_posix()
+
+
+def render_visual_hub_html(hub: dict, html_path: Path) -> str:
+    sections = []
+    for row in hub.get("rows", []):
+        comparison = Path(str(row["comparison"]["path"]))
+        detail = Path(str(row["detail_comparison"]["path"]))
+        comparison_href = html.escape(
+            _relative_href(comparison, html_path),
+            quote=True,
+        )
+        detail_href = html.escape(
+            _relative_href(detail, html_path),
+            quote=True,
+        )
+        variants = ", ".join(
+            str(value.get("tier"))
+            + (
+                f" [{value.get('stage')}]"
+                if value.get("stage")
+                else ""
+            )
+            for value in row.get("variants", [])
+        )
+        attention = "".join(
+            f"<li>{html.escape(str(value))}</li>"
+            for value in row.get("review_attention", [])
+        )
+        sections.append(
+            f"""
+<section>
+<h2>{row['review_order']}. {html.escape(str(row['id']))}
+<small>{html.escape(str(row['priority']))} · {html.escape(str(row['treatment_class']))}</small></h2>
+<p>Available comparison variants: {html.escape(variants)}</p>
+<div class="grid">
+<figure><figcaption>Full comparison</figcaption><a href="{comparison_href}"><img src="{comparison_href}" alt="full comparison"></a></figure>
+<figure><figcaption>Detail comparison</figcaption><a href="{detail_href}"><img src="{detail_href}" alt="detail comparison"></a></figure>
+</div>
+<h3>Review attention</h3><ul>{attention}</ul>
+</section>
+"""
+        )
+
+    skipped = "".join(
+        f"<li>{html.escape(str(row['id']))}: {html.escape(str(row['reason']))}</li>"
+        for row in hub.get("skipped", [])
+    )
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenAzrael Texture Lab — Review Pack 01</title>
+<style>
+:root {{ color-scheme: dark; }}
+body {{ font-family: system-ui,sans-serif; max-width: 1600px; margin: 2rem; line-height: 1.45; }}
+.notice {{ border: 2px solid currentColor; padding: 1rem; font-weight: 700; }}
+.grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:1rem; }}
+figure {{ margin:0; }}
+img {{ width:100%; height:auto; border:1px solid #777; }}
+small {{ opacity:.75; font-weight:400; }}
+section {{ border-top:1px solid #555; padding-top:1rem; margin-top:2rem; }}
+</style>
+</head>
+<body>
+<h1>OpenAzrael Texture Lab — Review Pack 01</h1>
+<p class="notice">OBSERVATIONAL HUB ONLY — no ranking, approval, production selection or promotion is performed here.</p>
+<p>Materialized textures: {hub.get('texture_count', 0)} · skipped: {hub.get('skipped_count', 0)}</p>
+{''.join(sections)}
+<h2>Skipped</h2><ul>{skipped or '<li>none</li>'}</ul>
+<p>{html.escape(str(hub.get('boundary', '')))}</p>
+</body>
+</html>
+"""
+
+
 def markdown_availability(status: dict) -> str:
     lines = [
         "# OpenAzrael Texture Lab — Review Pack 01 Availability",
@@ -600,7 +824,7 @@ def main() -> int:
     )
     parser.add_argument(
         "command",
-        choices=["validate", "render", "status"],
+        choices=["validate", "render", "status", "hub"],
     )
     parser.add_argument("--review", type=Path, default=DEFAULT_REVIEW)
     parser.add_argument("--selection", type=Path, default=DEFAULT_SELECTION)
@@ -622,6 +846,12 @@ def main() -> int:
         type=Path,
         default=DEFAULT_RUN_ROOT,
     )
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=ROOT / ".local/texture_lab/review_pack_01/current",
+    )
+    parser.add_argument("--cell", type=int, default=320)
     parser.add_argument("--out-json", type=Path, default=None)
     parser.add_argument("--out-md", type=Path, default=None)
     args = parser.parse_args()
@@ -686,6 +916,41 @@ def main() -> int:
             f"{result['p1_ready_with_ai_count']}/{result['p1_count']}"
         )
         return 0
+
+    if args.command == "hub":
+        availability = build_availability(
+            plan,
+            args.source_dir,
+            args.enhanced_dir,
+            args.run_root,
+        )
+        hub = build_visual_hub(
+            plan,
+            availability,
+            args.out_dir,
+            args.cell,
+        )
+        manifest = (
+            args.out_json
+            or args.out_dir / "review_pack_01_visual_hub.json"
+        )
+        html_path = (
+            args.out_md
+            or args.out_dir / "review_pack_01_visual_hub.html"
+        )
+        write_json(manifest, hub)
+        html_path.parent.mkdir(parents=True, exist_ok=True)
+        html_path.write_text(
+            render_visual_hub_html(hub, html_path),
+            encoding="utf-8",
+        )
+        print(
+            f"{'PASS' if hub['texture_count'] else 'HOLD'} "
+            "review_pack_01_hub "
+            f"textures={hub['texture_count']} skipped={hub['skipped_count']} "
+            f"manifest={manifest} html={html_path}"
+        )
+        return 0 if hub["texture_count"] else 1
 
     if args.out_json:
         write_json(args.out_json, plan)
