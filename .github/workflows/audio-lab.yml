@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - audio-lab-al-poc-01
+      - audio-lab-al-poc-02
     paths:
       - "tools/audio_lab/**"
       - "tests/test_audio_lab_*.py"
@@ -30,12 +31,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install Audio Lab spectral dependencies
+        run: python -m pip install -r tools/audio_lab/requirements-spectral.txt
       - name: Compile Audio Lab
         run: python -m compileall -q tools/audio_lab
       - name: Smoke Audio Lab CLIs
         run: |
           python tools/audio_lab/oa_audio_scan.py --help >/dev/null
           python tools/audio_lab/oa_audio_canonical_verify.py --help >/dev/null
+          python tools/audio_lab/oa_audio_spectral.py --help >/dev/null
           python tools/audio_lab/oa_audio_validate.py --help >/dev/null
           python tools/audio_lab/oa_audio_reference_audit.py --help >/dev/null
           python tools/audio_lab/oa_audio_repo_evidence.py --help >/dev/null
