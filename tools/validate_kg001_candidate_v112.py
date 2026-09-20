@@ -18,6 +18,7 @@ checks={
  "source_toolchain_validator":"validate_kg001_toolchain_v117.py" in source,
  "source_export_validator":"validate_kg001_export_preset_v117.py" in source,
  "source_visual_capture_validator":"validate_kg001_visual_capture_v117.py" in source,
+ "source_asset_preload_validator":"validate_source_safe_asset_loading_v117.py" in source,
  "build_manifest_generator":"write_kg001_build_manifest.py" in source and "BUILD_MANIFEST" in source,
  "git_clean_before_after":"clean_before=git_clean()" in source and "clean_after=git_clean()" in source,
  "forbidden_tracking_check":"repository_safety()" in source and "FORBIDDEN_TRACKED_PREFIXES" in source,
@@ -31,6 +32,8 @@ checks={
  "visual_capture_requires_local_assets":"VISUAL_AUDIO" in source and "BLOCKED_MISSING_ASSETS" in source,
  "visual_capture_affects_overall_only":"visual_pass" in source and "overall_pass" in source and "fresh_pass" in source,
  "visual_capture_promotion":"kg001_visual_capture_runtime_v117.json" in source,
+ "source_only_exit_semantics":'else:\n        # Preserve the historical source-safe/default runner contract' in source and "exit_pass=source_ok" in source,
+ "requested_visual_exit_semantics":"elif args.visual_capture:" in source and "exit_pass=source_ok and full_runtime_pass and visual_pass" in source,
 }
 failed=[k for k,v in checks.items() if not v]
 print("OpenAzrael v112 candidate runner source contract:","PASS" if not failed else "FAIL")
