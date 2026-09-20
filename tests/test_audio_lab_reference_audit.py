@@ -35,6 +35,9 @@ class AudioLabReferenceAuditTests(unittest.TestCase):
         self.assertEqual(report["summary"]["unmapped_assets"], 1)
         self.assertEqual(report["summary"]["expected_unmapped_assets"], 1)
         self.assertEqual(report["summary"]["unexpected_orphan_assets"], 0)
+        self.assertEqual(report["summary"]["mapped_asset_names"], ["A.wav", "B.wav"])
+        self.assertEqual(report["summary"]["mapped_asset_names_by_type"]["EVENT_GRAPH"], ["A.wav"])
+        self.assertEqual(report["summary"]["mapped_asset_names_by_type"]["POSITIONAL_AMBIENT"], ["B.wav"])
         rows = {r["filename"]:r for r in report["assets"]}
         self.assertEqual(rows["A.wav"]["mapping_types"], ["EVENT_GRAPH"])
         self.assertEqual(rows["B.wav"]["mapping_types"], ["POSITIONAL_AMBIENT"])
