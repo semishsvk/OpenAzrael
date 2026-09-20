@@ -5,6 +5,11 @@ const REQUIRED_ROOMS := [
     "res://assets/rooms/R7.glb",
     "res://assets/rooms/R8.glb"
 ]
+const FLOOR_PROBES := [
+    ["R1", "spaview"],
+    ["R7", "view"],
+    ["R8", "Object14"]
+]
 const TRANSITIONS := [
     ["R1", "zxcoriR5", "R7"],
     ["R1", "zxcoriR2", "R8"],
@@ -59,6 +64,40 @@ func _floor_probe(scene: Node3D, player: CharacterBody3D) -> Dictionary:
     query.exclude = [player.get_rid()]
     return scene.get_world_3d().direct_space_state.intersect_ray(query)
 
+func _validate_room_floor_support(scene: Node3D, manager, player: CharacterBody3D, room_id: String, view_name: String) -> void:
+    manager.load_room(room_id, false)
+    await _settle(1)
+    manager.call("_spawn_at_portal", room_id, view_name)
+    manager.transition_cooldown = 999.0
+    await _settle_physics(2)
+
+    var concave_shapes: Array[CollisionShape3D] = []
+    _collect_concave_shapes(manager.current_room, concave_shapes)
+    _check(room_id + "_concave_world_collision_present", not concave_shapes.is_empty())
+    for i in range(concave_shapes.size()):
+        var concave := concave_shapes[i].shape as ConcavePolygonShape3D
+        _check("%s_concave_backface_%d" % [room_id, i], concave.backface_collision)
+
+    var floor_hit: Dictionary = await _floor_probe(scene, player)
+    _check(room_id + "_floor_probe_hit", not floor_hit.is_empty())
+    if floor_hit.is_empty():
+        return
+
+    var floor_position: Vector3 = floor_hit["position"]
+    player.global_position = Vector3(
+        player.global_position.x,
+        floor_position.y + 60.0,
+        player.global_position.z
+    )
+    player.velocity = Vector3.ZERO
+    await _settle_physics(120)
+    _check(room_id + "_player_is_on_floor", player.is_on_floor())
+    _check(
+        room_id + "_player_did_not_fall_through",
+        player.global_position.y >= floor_position.y - 2.0
+    )
+
+
 func _run() -> void:
     var missing: Array[String] = []
     for path in REQUIRED_ROOMS:
@@ -97,27 +136,16 @@ func _run() -> void:
     var player = scene.get_node("Player")
     _check("initial_room_R1", manager.current_room_id == "R1")
 
-    # Issue #6 regression: legacy room trimeshes must collide from either face.
-    # This catches reversed/inconsistent source triangle winding before gameplay.
-    var concave_shapes: Array[CollisionShape3D] = []
-    _collect_concave_shapes(manager.current_room, concave_shapes)
-    _check("R1_concave_world_collision_present", not concave_shapes.is_empty())
-    for i in range(concave_shapes.size()):
-        var concave := concave_shapes[i].shape as ConcavePolygonShape3D
-        _check("R1_concave_backface_%d" % i, concave.backface_collision)
-
-    # Physical floor-support regression: locate the floor below the authored R1
-    # spawn, drop the real player capsule onto it, and require grounded support.
-    manager.transition_cooldown = 999.0
-    var floor_hit: Dictionary = await _floor_probe(scene, player)
-    _check("R1_floor_probe_hit", not floor_hit.is_empty())
-    if not floor_hit.is_empty():
-        var floor_position: Vector3 = floor_hit["position"]
-        player.global_position = Vector3(player.global_position.x, floor_position.y + 60.0, player.global_position.z)
-        player.velocity = Vector3.ZERO
-        await _settle_physics(120)
-        _check("R1_player_is_on_floor", player.is_on_floor())
-        _check("R1_player_did_not_fall_through", player.global_position.y >= floor_position.y - 2.0)
+    # Issue #6 regression: probe authored playable floor support in all three
+    # KG-001 rooms from their canonical portal/view spawn positions.
+    for spec in FLOOR_PROBES:
+        await _validate_room_floor_support(
+            scene,
+            manager,
+            player,
+            String(spec[0]),
+            String(spec[1])
+        )
 
     # Geometric boundary oracle: every transition trigger centroid is inside,
     # while a point beyond both X/Z maxima is outside.
@@ -172,7 +200,7 @@ func _run() -> void:
         "version":110,
         "status":"PASS" if failures.is_empty() else "FAIL",
         "failed":failures,
-        "scope":"G04/G05 room transitions, physical trigger bounds, and Issue #6 R1 floor-support regression with restored local R1/R7/R8 assets"
+        "scope":"G04/G05 room transitions, physical trigger bounds, and Issue #6 canonical R1/R7/R8 floor-support regressions with restored local assets"
     }
     print("OPENAZRAEL_KG001_V110 " + JSON.stringify(result))
     scene.queue_free()
