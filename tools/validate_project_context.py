@@ -205,6 +205,28 @@ try:
         errors.append("KG-001 Windows export contract drift")
     if q.get("kg001_source_safe_ci_workflow")!=".github/workflows/kg001-source-safe.yml":
         errors.append("KG-001 source-safe CI workflow drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 asset-set contract drift")
+    if q.get("kg001_candidate2_asset_set_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 asset-set runtime boundary drift")
+    if q.get("kg001_candidate2_expected_room_assets")!=3:
+        errors.append("KG-001 v118 room-asset count drift")
+    if q.get("kg001_candidate2_expected_runtime_audio_assets")!=8:
+        errors.append("KG-001 v118 runtime-audio count drift")
+    if q.get("kg001_candidate2_expected_classic_textures")!=86:
+        errors.append("KG-001 v118 Classic texture count drift")
+    if q.get("kg001_build_manifest_version")!=2:
+        errors.append("KG-001 build-manifest schema drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 test-build contract status drift")
+    if q.get("kg001_test_build_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 test-build runtime boundary drift")
+    if q.get("kg001_test_build_ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 test-build ready status drift")
+    if q.get("kg001_release_blockers_close_automatically") is not False:
+        errors.append("KG-001 v118 release-blocker automation drift")
+    if q.get("kg001_test_build_known_good_tag_allowed") is not False:
+        errors.append("KG-001 v118 test-build known-good boundary drift")
     if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 complete asset-set contract drift")
     if q.get("kg001_candidate2_asset_set_runtime")!="NOT_EXECUTED":
