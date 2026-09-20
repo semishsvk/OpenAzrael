@@ -45,6 +45,25 @@ For evidence promotion:
 
 The PNG SHA-256 values are observational evidence for that run. They are not a cross-GPU/driver pixel-perfect oracle.
 
+## Windows one-command handoff
+
+On the intended local Windows development machine, the thin v117 wrapper preserves the canonical sequence without reimplementing any gameplay/test logic:
+
+    pwsh tools/run_kg001_candidate2_windows_v117.ps1 \
+      -DemoDir C:\path\to\ATDEMO \
+      -Godot C:\path\to\Godot_v4.7.2-stable_win64.exe \
+      -PromoteResults
+
+The wrapper:
+1. validates the exact pinned toolchain;
+2. restores ignored Candidate room/audio/Classic texture assets from the supplied extracted demo directory;
+3. runs the canonical v112 suite with `--fresh-checkout --visual-capture`;
+4. optionally promotes compact runtime evidence;
+5. exports the tracked `Windows Candidate 2` debug preset;
+6. writes EXE/PCK SHA-256 metadata only to ignored `.tmp/kg001/kg001_windows_candidate2_export_v117.json`.
+
+Use `-SkipRestore` only when the ignored Candidate assets have already been restored from the canonical corpus. Use `-SkipExport` when validating runtime/captures without building the Windows package. `-ValidateOnly` checks wrapper/source wiring without requiring local commercial assets.
+
 ## Promoting evidence
 
 After a successful candidate run, optionally use:
