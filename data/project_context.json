@@ -91,12 +91,12 @@
     "kg001_build_status": "CANDIDATE2_MANUAL_FAIL_CRITICAL_TRAVERSAL",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
-    "runtime_ir_event_graphs": 5,
+    "runtime_ir_event_graphs": 6,
     "runtime_ir_rooms": 3,
     "runtime_ir_transitions": 4,
     "kg001_state_model": "SOURCE_MODEL_PASS",
-    "kg001_reachable_states": 63,
-    "kg001_changed_edges": 123,
+    "kg001_reachable_states": 104,
+    "kg001_changed_edges": 214,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
     "kg001_runtime_gate_status": "G04_G05_RUNTIME_RETEST_REQUIRED_AFTER_SOURCE_FIXES",
@@ -190,7 +190,10 @@
       "S121.WAV",
       "799SECDR.WAV"
     ],
-    "kg001_well_tongs_demo_evidence": "data/tests/kg001_well_tongs_demo_evidence_v118.json"
+    "kg001_well_tongs_demo_evidence": "data/tests/kg001_well_tongs_demo_evidence_v118.json",
+    "kg001_action_attempts": 1560,
+    "kg001_invalid_or_idempotent_noops": 1346,
+    "kg001_success_states": 6
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
