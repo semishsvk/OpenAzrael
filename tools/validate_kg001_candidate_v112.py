@@ -26,6 +26,11 @@ checks={
  "fresh_requires_all_runtime":"full_runtime_pass" in source and "all(asset_present.values())" in source,
  "promotion_is_optional":"--promote-results" in source,
  "fresh_is_optional":"--fresh-checkout" in source,
+ "visual_capture_is_optional":"--visual-capture" in source,
+ "visual_capture_runner":"kg001_visual_capture_v117.gd" in source and "OPENAZRAEL_KG001_VISUAL_V117" in source,
+ "visual_capture_requires_local_assets":"VISUAL_AUDIO" in source and "BLOCKED_MISSING_ASSETS" in source,
+ "visual_capture_affects_overall_only":"visual_pass" in source and "overall_pass" in source and "fresh_pass" in source,
+ "visual_capture_promotion":"kg001_visual_capture_runtime_v117.json" in source,
 }
 failed=[k for k,v in checks.items() if not v]
 print("OpenAzrael v112 candidate runner source contract:","PASS" if not failed else "FAIL")
