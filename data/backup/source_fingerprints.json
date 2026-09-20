@@ -4,6 +4,12 @@
   "generated_utc": "2026-09-18T13:05:40.954737+00:00",
   "entries": [
     {
+      "path": "assets/audio/979TONGS.WAV",
+      "size": 20994,
+      "sha256": "46f19b82e3c85ce5c4a198d745fe9ab5789a3d1a32d552748bb5b8585e0c8469",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
       "path": "assets/audio/797TAP.WAV",
       "size": 5124,
       "sha256": "b307df0a07c48da7968b949e776f3143ba8a4c8a9fe0d9289b34432c5f1456e9",
