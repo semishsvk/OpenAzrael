@@ -26,7 +26,7 @@ checks={
     "source_tools_excluded":'tools/*' in text,
     "test_evidence_excluded":'data/tests/*' in text,
     "candidate2_version":'application/file_version="0.116.0.2"' in text,
-    "context_v30":'v116-context-v30' in text,
+    "context_v31":'v116-context-v31' in text,
     "godot_contract_pinned":toolchain.get("godot",{}).get("version")=="4.7.2.stable.official.ed1daf0bf",
 }
 failed=[k for k,v in checks.items() if not v]
