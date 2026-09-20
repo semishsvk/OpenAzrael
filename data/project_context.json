@@ -200,7 +200,8 @@
     "kg001_evidence_promotion_policy": "POST_FRESH_CHECKOUT__POST_WINDOWS_EXPORT_AND_STARTUP_SMOKE",
     "kg001_release_blockers_close_automatically": false,
     "kg001_test_build_known_good_tag_allowed": false,
-    "kg001_exported_startup_ready_marker": "SOURCE_CONTRACT_PASS_V118"
+    "kg001_exported_startup_ready_marker": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_test_build_testing_guide": "SOURCE_CONTRACT_PASS_V118"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -425,7 +426,13 @@
     "godot_parse_log_policy": "FAIL_ON_SCRIPT_OR_AUTOLOAD_ERRORS_EVEN_IF_GODOT_EXIT_ZERO",
     "windows_local_wrapper": "tools/run_kg001_candidate2_windows_v117.ps1",
     "windows_local_wrapper_validator": "tools/validate_candidate2_windows_wrapper_v117.py",
-    "windows_local_wrapper_runtime": "NOT_EXECUTED"
+    "windows_local_wrapper_runtime": "NOT_EXECUTED",
+    "test_build_distribution": [
+      "exports/OpenAzrael-KG001-Candidate2-v116.exe",
+      "exports/OpenAzrael-KG001-Candidate2-v116.pck",
+      "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
+      "exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt"
+    ]
   },
   "kg001_v118": {
     "status": "SOURCE_CONTRACT_PASS",
