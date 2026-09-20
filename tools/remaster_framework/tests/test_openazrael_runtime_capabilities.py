@@ -57,6 +57,14 @@ class OpenAzraelRuntimeCapabilityTests(unittest.TestCase):
                 "signal logical_audio_event\n",
                 encoding="utf-8",
             )
+            (scripts / "candidate_diagnostics_v116.gd").write_text(
+                "signal event_recorded\n"
+                "func record_interaction(target_name):\n    pass\n"
+                'record_event("interaction", {})\n'
+                "func observe_trigger(room_id, trigger_name, inside):\n    pass\n"
+                'record_event("trigger_" + "enter", {})\n',
+                encoding="utf-8",
+            )
             (scripts / "well_key_interaction.gd").write_text(
                 "signal demo_action_step\n"
                 '_step("remove_room:R7Key")\n'
