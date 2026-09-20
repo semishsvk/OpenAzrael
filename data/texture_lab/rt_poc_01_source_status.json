@@ -1,7 +1,7 @@
 {
   "schema": "openazrael.texture_lab.rt_poc_01_source_status.v1",
-  "date": "2026-09-19",
-  "canonical_context": "v116-context-v26",
+  "date": "2026-09-20",
+  "canonical_context": "v116-context-v28",
   "branch": "texture-lab-rt-poc-01",
   "source_status": "SOURCE_SAFE_READY_FOR_LOCAL_RUNTIME",
   "real_ai_outputs": "PENDING",
@@ -10,7 +10,7 @@
   "godot_texture_lab_runtime": "NOT_EXECUTED_IN_CANONICAL_EVIDENCE",
   "ci": {
     "workflow": "Texture Lab source-safe tests",
-    "run_number": 263,
+    "run_number": 697,
     "conclusion": "success",
     "python": [
       "3.11",
@@ -77,7 +77,15 @@
       "generated_after": "godot_review_profile",
       "automatic_approval": false,
       "approval_evidence": false,
-      "purpose": "human convenience surface for full/detail/tile/Godot/manual-check review"
+      "purpose": "human convenience surface for full/detail/alpha/tile/Godot/manual-check review"
+    },
+    "alpha_evidence": {
+      "status": "SOURCE_SAFE_READY",
+      "expected_alpha": true,
+      "candidate_alpha": true,
+      "absolute_delta": true,
+      "expected_edge_band": true,
+      "fingerprinted_into_stage_evidence": true
     }
   },
   "godot_lab": {
@@ -87,18 +95,35 @@
     "reference_tier_cycle": true,
     "shared_tile_and_lighting_state": true
   },
-  "next_real_execution": "Run restored_smoke_1 on a development machine with the pinned Pillow baseline, restored Classic/Enhanced corpus, pinned Real-ESRGAN v0.3.0 source and verified RealESRGAN_x4plus checkpoint. Review CORIROCK outputs before approving restored_smoke_4.",
+  "next_real_execution": "Run restored_smoke_1 on a development machine with the pinned Python 3.11 / torch 2.1.2 / torchvision 0.16.2 / BasicSR 1.4.2 / Real-ESRGAN v0.3.0 runtime and verified RealESRGAN_x4plus checkpoint. Review CORIROCK outputs before approving restored_smoke_4.",
   "launchpad": {
     "entrypoint": "tools/texture_lab/oa_tex_first_run.py",
     "commands": [
       "status",
       "prepare-baseline",
       "bootstrap-realesrgan",
-      "restored-smoke-1"
+      "check-restored-smoke-1",
+      "restored-smoke-1",
+      "check-recreated-smoke-1",
+      "recreated-smoke-1"
     ],
     "poc_source_identity_check": "12_CANONICAL_IDS_PLUS_EXPECTED_DIMENSIONS",
     "torch_installation_policy": "EXPLICIT_MACHINE_SPECIFIC_PREREQUISITE",
-    "dependency_install_guard": "TORCH_AND_TORCHVISION_MUST_IMPORT_BEFORE_REALESRGAN_DEPS"
+    "dependency_install_guard": "TORCH_AND_TORCHVISION_MUST_IMPORT_BEFORE_REALESRGAN_DEPS",
+    "transparency_audit": {
+      "tool": "tools/texture_lab/oa_tex_transparency_audit.py",
+      "classic_texture_count": 86,
+      "real_corpus_evidence_status": "PASS",
+      "mode_counts": {
+        "opaque": 76,
+        "palette_colorkey": 10,
+        "true_alpha": 0,
+        "ambiguous": 0
+      },
+      "manual_review_required_count": 0,
+      "policy_violation_count": 0,
+      "ready_for_corpus_expansion": true
+    }
   },
   "production_selection": {
     "registry": "data/texture_lab/production_selection.json",
@@ -356,7 +381,17 @@
       "approval_evidence": false,
       "stale_evidence_policy": "REFUSE_ON_REFERENCE_OR_AI_FILE_FINGERPRINT_CHANGE",
       "materialization_policy": "Classic + configured Enhanced are required; AI variants appear only from current PASS named-stage evidence.",
-      "authoritative_boundary": "Stage-specific review packs, seam/tile evidence, structured manual reviews and approval receipts remain authoritative."
+      "authoritative_boundary": "Stage-specific review packs, seam/tile evidence, structured manual reviews and approval receipts remain authoritative.",
+      "alpha_evidence": "ONE_SHEET_PER_MATERIALIZED_ENHANCED_OR_AI_VARIANT"
     }
+  },
+  "baseline_reproducibility": {
+    "evidence": "data/texture_lab/rt_poc_01_stabilization_evidence.json",
+    "real_corpus_rebuild_status": "PASS_MATCHES_TRACKED_BASELINE_METRICS",
+    "canonical_texture_count": 12,
+    "deterministic_variant_count": 36,
+    "pillow_version": "12.3.0",
+    "tracked_metric_statistics_exact_match_to_6_decimals": true,
+    "note": "Local rebuild used Python 3.13.5 for source-side evidence only; the pinned Real-ESRGAN runtime contract remains Python 3.11."
   }
 }
