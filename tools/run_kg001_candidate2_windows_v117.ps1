@@ -262,6 +262,87 @@ if (-not $SkipExport) {
     $receipt |
         ConvertTo-Json -Depth 8 |
         Set-Content -Encoding utf8 "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json"
+
+    $testingText = @"
+OpenAzrael KG-001 Candidate 2
+=============================
+
+Checkpoint: v116-context-v31
+Commit: $currentHead
+Status: READY_FOR_G10_MANUAL_TEST
+Godot: $($buildManifest.godot.version)
+
+Executable SHA-256:
+$($exportEvidence.executable_sha256)
+
+PCK SHA-256:
+$($exportEvidence.pck_sha256)
+
+IMPORTANT
+---------
+This is a TEST BUILD, not a known-good release.
+Issues #6, #9 and #11 remain open until manual G10 passes.
+Do not create or treat demo-known-good-001 as approved from this package alone.
+
+MANUAL G10 CHECKLIST
+--------------------
+1. R1 / R7 / R8 floor collision:
+   - verify the player does not fall through floors;
+   - verify normal walking/standing at the canonical test locations.
+
+2. Audio:
+   - verify ambient audio is actually audible;
+   - verify expected event audio is audible and not obviously distorted/silent.
+
+3. Legacy cutout transparency:
+   - inspect KEYHOLE#, rusty tongs/MINETON# and other # cutouts;
+   - there must be no visible pink/magenta background;
+   - there must be no obvious black fringe around the mask edge.
+
+4. Demo route:
+   - complete the intended KG-001 demo route;
+   - confirm zero reproducible softlocks.
+
+DIAGNOSTIC KEYS
+---------------
+F6  Trigger volume visualization
+F7  Candidate diagnostic HUD
+F8  Audio debug
+F9  Audio parity capture
+F10 Canonical state dump
+F11 Source-safe bug-report ZIP
+
+BUG REPORTING
+-------------
+If you find a reproducible defect:
+1. reproduce it once;
+2. press F11 as close to the failure as possible;
+3. keep the generated ZIP from the Candidate run directory;
+4. report the issue through the OpenAzrael GitHub bug template;
+5. include exact reproduction steps and severity.
+
+The F11 package contains source-safe telemetry/state/system evidence and does not
+embed the excluded commercial room/audio/texture payloads.
+
+BUILD IDENTITY
+--------------
+Runtime source aggregate:
+$($buildManifest.runtime_source_identity.aggregate_sha256)
+
+Source contracts aggregate:
+$($buildManifest.source_contracts.aggregate_sha256)
+
+Rooms aggregate:
+$($buildManifest.assets.rooms.aggregate_sha256)
+
+Audio aggregate:
+$($buildManifest.assets.audio.aggregate_sha256)
+
+Classic textures aggregate:
+$($buildManifest.assets.classic_textures.aggregate_sha256)
+"@
+    $testingText | Set-Content -Encoding utf8 "exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt"
+
     $receipt | ConvertTo-Json -Depth 8
 }
 
