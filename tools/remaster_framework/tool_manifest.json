@@ -420,6 +420,40 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "known_good_gate_aggregator",
+      "family": "project_release",
+      "description": "Aggregate the existing OpenAzrael KG acceptance contract and evidence-bound gate results into BLOCKED or ELIGIBLE_FOR_KNOWN_GOOD without creating tags automatically.",
+      "entrypoint": "tools/remaster_framework/release.py",
+      "inputs": [
+        "kg_acceptance_contract",
+        "gate_results"
+      ],
+      "outputs": [
+        "release_gate_summary"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "build_provenance_manifest",
+      "family": "project_release",
+      "description": "Create a deterministic manifest binding candidate commit, project/engine version, source fingerprints, tool registry, and other release inputs by SHA-256.",
+      "entrypoint": "tools/remaster_framework/build_provenance.py",
+      "inputs": [
+        "candidate_identity",
+        "release_inputs"
+      ],
+      "outputs": [
+        "build_provenance"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "project_context_validator",
       "family": "project_release",
       "description": "Validate the persistent project-context documentation set.",
