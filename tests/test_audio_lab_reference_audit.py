@@ -82,6 +82,15 @@ class AudioLabReferenceAuditTests(unittest.TestCase):
         self.assertEqual(report["summary"]["mapped_assets"], 0)
         self.assertEqual(report["assets"][0]["diagnostic_references"], ["tools/prepare_candidate_audio.py"])
 
+    def test_event_graph_reference_is_not_double_counted_as_direct_literal(self):
+        manifest = {"assets":[asset("A.wav", refs=["data/gameplay_event_graph_v87.json"])]}
+        ir = {"audio":{"sounds":[{"filename":"A.wav"}],"ambient_emitters":[]}}
+        graph = {"graphs":{"G":{"actions":[{"op":"play_sound","asset":"A.wav"}]}}}
+        report = build_audit(manifest, ir, graph)
+        self.assertEqual(report["summary"]["mapped_assets"], 1)
+        self.assertEqual(report["assets"][0]["mapping_types"], ["EVENT_GRAPH"])
+        self.assertNotIn("DIRECT_RUNTIME_LITERAL", report["summary"]["mapped_assets_by_type"])
+
     def test_production_script_literal_counts_as_direct_mapping(self):
         manifest = {"assets":[asset("A.wav", refs=["scripts/player.gd"])]}
         ir = {"audio":{"sounds":[{"filename":"A.wav"}],"ambient_emitters":[]}}
