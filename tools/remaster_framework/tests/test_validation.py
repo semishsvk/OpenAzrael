@@ -5,11 +5,13 @@ import unittest
 from tools.remaster_framework.validation import (
     ActionKind,
     EvidenceRequirement,
+    EvidenceSequence,
     ExecutionMode,
     PlayerAction,
     RuntimeEvidence,
     StateExpectation,
     ValidationScenario,
+    build_evaluation_report,
     canonical_state_hash,
     evaluate_scenario,
 )
@@ -32,7 +34,7 @@ class ValidationLabTests(unittest.TestCase):
             any("interaction_probe" in error for error in action.validate())
         )
 
-    def test_scenario_requires_player_action_and_effect_evidence(self) -> None:
+    def test_scenario_requires_player_action_effect_and_sequence_evidence(self) -> None:
         scenario = ValidationScenario(
             scenario_id="well_tongs",
             room="R7",
@@ -70,6 +72,19 @@ class ValidationLabTests(unittest.TestCase):
                     requirement_id="no_invented_tween",
                     kind="animation",
                     match={"kind": "invented_transform_tween"},
+                ),
+            ),
+            sequences=(
+                EvidenceSequence(
+                    sequence_id="demo_steps",
+                    kind="demo_action_step",
+                    field="step",
+                    expected=(
+                        "remove_room:R7Key",
+                        "play_sound:979TONGS.WAV",
+                        "add_room:R7Key",
+                    ),
+                    exact=True,
                 ),
             ),
             state_expectations=(
@@ -111,8 +126,26 @@ class ValidationLabTests(unittest.TestCase):
             RuntimeEvidence(
                 event_id="e4",
                 frame=33,
+                kind="demo_action_step",
+                payload={"step": "remove_room:R7Key"},
+            ),
+            RuntimeEvidence(
+                event_id="e5",
+                frame=34,
+                kind="demo_action_step",
+                payload={"step": "play_sound:979TONGS.WAV"},
+            ),
+            RuntimeEvidence(
+                event_id="e6",
+                frame=34,
                 kind="audio",
                 payload={"asset": "979TONGS.WAV"},
+            ),
+            RuntimeEvidence(
+                event_id="e7",
+                frame=35,
+                kind="demo_action_step",
+                payload={"step": "add_room:R7Key"},
             ),
         ]
 
@@ -126,6 +159,59 @@ class ValidationLabTests(unittest.TestCase):
             evaluate_scenario(scenario, evidence, before, after),
             [],
         )
+        report = build_evaluation_report(scenario, evidence, before, after)
+        self.assertEqual(report["status"], "PASS")
+        self.assertEqual(len(report["before_state_sha256"]), 64)
+        self.assertEqual(len(report["after_state_sha256"]), 64)
+
+    def test_exact_sequence_order_is_enforced(self) -> None:
+        scenario = ValidationScenario(
+            scenario_id="sequence",
+            room="R7",
+            setup={},
+            actions=(
+                PlayerAction(
+                    action_id="interact",
+                    kind=ActionKind.INTERACT,
+                    execution_mode=ExecutionMode.INTERACTION_PROBE,
+                    target="target",
+                ),
+            ),
+            requirements=(),
+            sequences=(
+                EvidenceSequence(
+                    sequence_id="steps",
+                    kind="step",
+                    field="name",
+                    expected=("a", "b"),
+                ),
+            ),
+        )
+        evidence = [
+            RuntimeEvidence(
+                event_id="action",
+                frame=1,
+                kind="player_action",
+                payload={
+                    "action_id": "interact",
+                    "execution_mode": "interaction_probe",
+                },
+            ),
+            RuntimeEvidence(
+                event_id="b",
+                frame=2,
+                kind="step",
+                payload={"name": "b"},
+            ),
+            RuntimeEvidence(
+                event_id="a",
+                frame=3,
+                kind="step",
+                payload={"name": "a"},
+            ),
+        ]
+        errors = evaluate_scenario(scenario, evidence, {}, {})
+        self.assertTrue(any("sequence mismatch" in item for item in errors))
 
     def test_missing_player_evidence_fails(self) -> None:
         scenario = ValidationScenario(
