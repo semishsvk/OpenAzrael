@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import sys
 
+from promote_kg001_candidate_results_v118 import promote_results
+
 ROOT=Path(__file__).resolve().parents[1]
 TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
@@ -330,19 +332,8 @@ def main():
     write_json(TMP/"kg001_candidate_v112.json",overall)
 
     if args.promote_results:
-        mapping={
-            TMP/"kg001_v109_runtime.json":ROOT/"data/tests/kg001_headless_runtime_v109.json",
-            TMP/"kg001_v110_runtime.json":ROOT/"data/tests/kg001_room_trigger_runtime_v110.json",
-            TMP/"kg001_v111_runtime.json":ROOT/"data/tests/kg001_full_demo_runtime_v111.json",
-            TMP/"kg001_audio_v116_runtime.json":ROOT/"data/tests/kg001_audio_runtime_v116.json",
-            TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
-            TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
-            TMP/"kg001_visual_capture_v117.json":ROOT/"data/tests/kg001_visual_capture_runtime_v117.json",
-        }
-        for src,dst in mapping.items():
-            if src.is_file():
-                dst.parent.mkdir(parents=True,exist_ok=True)
-                shutil.copyfile(src,dst)
+        promotion=promote_results(TMP)
+        write_json(TMP/"kg001_evidence_promotion_v118.json",promotion)
 
     print(json.dumps(overall,indent=2))
     sys.exit(0 if exit_pass else 1)
