@@ -44,7 +44,7 @@ checks={
  "all_rooms_two_sided_runtime_check": all(
      token in runner for token in [
          'room_id + "_concave_world_collision_present"',
-         '"_concave_backface_%d"',
+         "_concave_backface_%d",
          "_collect_concave_shapes",
      ]
  ),
