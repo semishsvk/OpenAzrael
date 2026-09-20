@@ -13,9 +13,9 @@
 
 ### Immediate priority
 1. Restore the ignored Candidate room/audio/texture assets with `tools/restore_candidate_assets.py`; the restore derives `#` transparency from used indexed AZF palette keys and rebuilds GLB `MASK` materials.
-2. Generate the per-build fingerprint manifest, then run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
-3. Require all blocker regressions to PASS: canonical R1/R7/R8 floor support (#6), PCM + Master-bus physical audio readiness (#9), and indexed color-key source/asset validation (#11).
-4. Run the canonical R1/R7/R8 graphical capture contract, export/launch `Windows Candidate 2`, and manually verify floor stability, actually audible audio, and no pink/magenta cutout background.
+2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --visual-capture --promote-results`; the runner generates the per-build fingerprint manifest and now optionally includes canonical R1/R7/R8 graphical capture in the same evidence cycle.
+3. Require all blocker regressions to PASS: canonical R1/R7/R8 floor support (#6), PCM + Master-bus physical audio readiness (#9), indexed color-key source/asset validation (#11), and the requested graphical capture contract.
+4. Export/launch `Windows Candidate 2` and manually verify floor stability, actually audible audio, and no pink/magenta cutout background.
 5. Continue the full R1 -> R7 -> R1 -> R8 -> Shield route only after those blocker retests pass; `demo-known-good-001` remains blocked while any release blocker is recorded.
 
 ### Current architectural decisions
