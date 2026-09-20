@@ -8,7 +8,8 @@
   "known_release_blockers": [
     "kg001_release_blocked_by_issue_11",
     "kg001_release_blocked_by_issue_6",
-    "kg001_release_blocked_by_issue_9"
+    "kg001_release_blocked_by_issue_9",
+    "kg001_release_blocked_by_stair_traversal"
   ],
   "gates": {
     "G00": {
@@ -28,8 +29,8 @@
       "status": "PASS"
     },
     "G04": {
-      "name": "room_transition_state",
-      "status": "PASS"
+      "name": "room_transition_and_physical_traversal",
+      "status": "RUNTIME_PENDING"
     },
     "G05": {
       "name": "trigger_semantics",
@@ -56,5 +57,5 @@
       "status": "PENDING_MANUAL_USER"
     }
   },
-  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains."
+  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS, G04 includes current v117 physical traversal PASS, and no recorded KG-001 release blocker remains."
 }
