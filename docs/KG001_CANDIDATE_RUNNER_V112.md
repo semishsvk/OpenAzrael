@@ -27,6 +27,7 @@ Fresh-checkout PASS requires all of the following simultaneously:
 - Godot room-asset import PASS;
 - v109, v110, v111 and audio-v116 runtime status all PASS;
 - complete Candidate 2 asset-set v118 PASS: 3 room GLBs with expected room-manifest counts, all 8 runtime WAVs including `797TAP.WAV`, exactly 86 Classic PNGs, all 10 expected `#` textures, and exactly 10 indexed color-key restore records;
+- each runtime WAV is bound to the tracked canonical source fingerprint through restore evidence and its current runtime SHA-256; S137/797TAP preparation must preserve PCM bytes;
 - all restored runtime assets are local/Git-ignored.
 
 A missing Godot binary, partial restore, missing tapestry audio, incomplete Classic corpus or stale/invalid indexed color-key restore evidence cannot accidentally become PASS.
@@ -61,7 +62,7 @@ The wrapper:
 4. verifies the generated build-manifest commit/source/asset identity against current HEAD;
 5. exports the tracked `Windows Candidate 2` debug preset from the still-clean checkout;
 6. launches the exported EXE headlessly for a bounded startup smoke and rejects critical script/autoload/resource-load errors;
-7. writes EXE/PCK/build-manifest SHA-256 metadata and a `READY_FOR_G10_MANUAL_TEST` JSON receipt;
+7. binds Candidate/fresh/visual evidence to the same current Git HEAD, requires a non-empty visual run ID plus exactly R1/spaview, R7/view and R8/Object14 1280x720 capture SHA-256 records, then writes EXE/PCK/build-manifest SHA-256 metadata and a `READY_FOR_G10_MANUAL_TEST` JSON receipt;
 8. writes `OpenAzrael-KG001-Candidate2-v116.TESTING.txt` beside the package with the manual G10 checklist, F6-F11 diagnostic keys, F11 bug-report steps and build fingerprints;
 9. only after export/startup-smoke, optionally promotes compact runtime evidence into tracked `data/tests`.
 
@@ -93,6 +94,6 @@ Issue #11 is validated during the source phase. The validator exercises indexed 
 
 `data/tests/kg001_test_build_contract_v118.json` defines the automated boundary for a package to become `READY_FOR_G10_MANUAL_TEST`.
 
-That status requires complete restored assets, exact build/source identity, the canonical runtime suite, G09 fresh-checkout PASS, requested R1/R7/R8 graphical capture PASS, Windows export PASS and exported-EXE startup-smoke PASS with package hashes recorded.
+That status requires complete restored assets, canonical audio-source/runtime fingerprint binding, exact build/source/tool identity, the canonical runtime suite, G09 fresh-checkout PASS, requested R1/R7/R8 graphical capture PASS bound to the same commit/run, Windows export PASS and exported-EXE startup-smoke PASS with package hashes recorded.
 
 It is **not** a release approval. Issues #6/#9/#11 remain open, G10 remains manual, and `demo-known-good-001` remains forbidden until the manual floor/audio/transparency/full-route checks pass.
