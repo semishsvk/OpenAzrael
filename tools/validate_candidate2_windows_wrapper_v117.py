@@ -7,6 +7,9 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 path=ROOT/"tools/run_kg001_candidate2_windows_v117.ps1"
 text=path.read_text(encoding="utf-8") if path.is_file() else ""
+promotion_call=text.rfind('"tools/promote_kg001_candidate_results_v118.py"')
+receipt_write=text.find('"exports/OpenAzrael-KG001-Candidate2-v116.test-build.json"')
+export_call=text.find('"--export-debug"')
 
 checks={
     "wrapper_exists":path.is_file(),
@@ -15,6 +18,8 @@ checks={
     "canonical_restore":"restore_candidate_assets.py" in text,
     "canonical_runner":"run_kg001_candidate_v112.py" in text,
     "complete_asset_gate":"validate_kg001_candidate2_asset_set_v118.py" in text,
+    "promotion_helper_dependency":"tools/promote_kg001_candidate_results_v118.py" in text,
+    "test_build_contract_dependency":"data/tests/kg001_test_build_contract_v118.json" in text,
     "fresh_checkout":"--fresh-checkout" in text,
     "visual_capture":"--visual-capture" in text,
     "promotion_optional":"PromoteResults" in text and "promote_kg001_candidate_results_v118.py" in text,
