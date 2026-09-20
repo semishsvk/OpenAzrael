@@ -1,0 +1,61 @@
+{
+  "schema": "openazrael.audio_lab.al_poc_01_contract",
+  "version": 1,
+  "milestone": "AL-POC-01",
+  "title": "Source-Safe Audio Inventory & QA",
+  "scope": {
+    "source_mutation_allowed": false,
+    "runtime_mutation_allowed": false,
+    "audio_enhancement_allowed": false,
+    "ai_restoration_allowed": false
+  },
+  "canonical_demo_evidence": {
+    "source": "data/audio/legacy_world_ir.json",
+    "expected_audio_assets": 30,
+    "channels": [1],
+    "sample_width_bits": [8],
+    "sample_rates_hz": [11025, 22050, 22222]
+  },
+  "mapping_policy": {
+    "MAPPED": "production runtime mapping recovered",
+    "EXPECTED_UNMAPPED": "known source asset without recovered production mapping; review, never auto-delete",
+    "UNEXPECTED_ORPHAN": "unexpected asset without production mapping; high-priority review, never auto-delete",
+    "diagnostic_references_count_as_runtime": false
+  },
+  "review_priorities": {
+    "P0": "broken runtime reference or error-severity source/metadata finding",
+    "P1": "unexpected orphan or warning-severity audio finding",
+    "P2": "expected source asset without recovered production runtime mapping",
+    "P3": "informational QA finding",
+    "P4": "mapped and clean under current evidence"
+  },
+  "acceptance_gates": [
+    "scanner_pass",
+    "manifest_validation_pass",
+    "expected_corpus_complete",
+    "reference_integrity_pass",
+    "review_pack_not_blocked",
+    "source_digest_present",
+    "inventory_count_matches",
+    "audio_lab_ci_green"
+  ],
+  "required_outputs": [
+    "audio_manifest.json",
+    "audio_inventory.csv",
+    "audio_qa_report.json",
+    "audio_qa_report.html",
+    "audio_reference_report.json",
+    "audio_review_pack.json",
+    "audio_review_pack.html",
+    "al_poc_01_summary.json"
+  ],
+  "deferred": [
+    "spectrogram_analysis",
+    "perceptual_similarity",
+    "denoise",
+    "resampling",
+    "loudness_normalization",
+    "ai_restoration",
+    "runtime_asset_replacement"
+  ]
+}
