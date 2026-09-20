@@ -68,6 +68,23 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "openazrael_reference_graph",
+      "family": "data_lab",
+      "description": "Build a deterministic room/trigger/portal/gameplay/state/asset reference graph from current OpenAzrael IR without mutating runtime data.",
+      "entrypoint": "tools/openazrael_adapters/reference_graph.py",
+      "inputs": [
+        "xaf_trigger_evidence",
+        "gameplay_event_graph"
+      ],
+      "outputs": [
+        "reference_graph"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "demo_runtime_ir_validator",
       "family": "data_lab",
       "description": "Validate recovered demo runtime intermediate representation.",
