@@ -3779,12 +3779,23 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
                     hub["rows"][0]["detail_comparison"]["path"]
                 ).is_file()
             )
+            self.assertEqual(
+                [value["tier"] for value in hub["rows"][0]["alpha_evidence"]],
+                ["enhanced", "ai_restored"],
+            )
+            self.assertTrue(
+                all(
+                    Path(value["preview"]["path"]).is_file()
+                    for value in hub["rows"][0]["alpha_evidence"]
+                )
+            )
 
             html_path = out_dir / "hub.html"
             html_text = render_visual_hub_html(hub, html_path)
             html_path.write_text(html_text, encoding="utf-8")
             self.assertIn("OBSERVATIONAL HUB ONLY", html_text)
             self.assertIn("CORIROCK", html_text)
+            self.assertIn("Alpha evidence", html_text)
             self.assertIn(
                 "stage-specific review packs",
                 html_text.lower(),
