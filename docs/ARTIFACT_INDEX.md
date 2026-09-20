@@ -33,6 +33,18 @@
 - distribution sidecar: ignored `exports/OpenAzrael-KG001-Candidate2-v116.test-build.json`
 - `READY_FOR_G10_MANUAL_TEST` never closes Issues #6/#9/#11 and never authorizes `demo-known-good-001`
 
+## KG-001 Candidate 2 test-build hardening v118
+- `tools/validate_kg001_candidate2_asset_set_v118.py` — complete restored asset gate: 3 rooms / 8 runtime WAV / 86 Classic / 10 indexed-key # textures
+- `tools/write_kg001_build_manifest.py` — build manifest schema v2 with runtime-source and acceptance-contract fingerprints
+- `tools/validate_kg001_build_manifest_v118.py`
+- `data/tests/kg001_test_build_contract_v118.json`
+- `tools/validate_kg001_test_build_contract_v118.py`
+- `tools/promote_kg001_candidate_results_v118.py` — shared post-observation/post-export tracked evidence promotion
+- `tools/run_kg001_candidate2_windows_v117.ps1` — canonical Windows restore → fresh-checkout+visual → export → EXE startup smoke → receipt → optional promotion
+- runtime receipt: ignored `.tmp/kg001/kg001_test_build_receipt_v118.json`
+- distribution sidecar: ignored `exports/OpenAzrael-KG001-Candidate2-v116.test-build.json`
+- `READY_FOR_G10_MANUAL_TEST` never closes release blockers or authorizes `demo-known-good-001`
+
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
 - `.github/ISSUE_TEMPLATE/bug_report.yml`
