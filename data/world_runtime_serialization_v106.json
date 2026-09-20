@@ -1,0 +1,74 @@
+{
+  "schema": "openazrael.world_runtime_serialization_summary",
+  "version": 106,
+  "status": "PASS",
+  "source_safe_summary": true,
+  "raw_commercial_bytes_included": false,
+  "world": {
+    "filename": "WORLD.DAT",
+    "loader_object1": "0x36638",
+    "mode": "rb",
+    "header_bytes": 30,
+    "file_size_bytes": 96425,
+    "reconstructed_consumed_bytes": 96425,
+    "exact_eof": true,
+    "top_level_section_counts": [
+      1303,
+      12,
+      37,
+      3,
+      101,
+      8,
+      15
+    ],
+    "interpretation": "STRUCTURED_RUNTIME_SERIALIZATION_OBJECT_DATABASE",
+    "confidence": "HIGH"
+  },
+  "runtime_open_chain": {
+    "fopen_call": "0x36649 -> 0x26004",
+    "first_read": "0x3665E -> 0x260D7",
+    "close": "0x3662D -> 0x262A1"
+  },
+  "paired_serializers": [
+    [
+      "0x28FCC",
+      "0x28F20"
+    ],
+    [
+      "0x35C50",
+      "0x35CA0"
+    ],
+    [
+      "0x27E2C",
+      "0x27DFA"
+    ],
+    [
+      "0x35D88",
+      "0x35DC4"
+    ],
+    [
+      "0x29E98",
+      "0x29E40"
+    ],
+    [
+      "0x36058",
+      "0x36004"
+    ]
+  ],
+  "puzzles_adversarial_check": {
+    "unique_32_byte_action_blocks": 133,
+    "exact_world_matches": 0,
+    "conclusion": "SIMPLE_ACTION_BLOCK_COPY_OR_CONCATENATION_EXCLUDED"
+  },
+  "evidence_boundary": {
+    "world_runtime_loaded": "VERIFIED",
+    "world_structured_serialization": "HIGH",
+    "puzzles_rooms_to_world_compiler": "HOLD",
+    "producer_edge": "PROBABLE_HOLD_AT_V106"
+  },
+  "provenance": [
+    "WORLD_RUNTIME_SERIALIZATION_V106.md",
+    "docs/PROJECT_STATE.md",
+    "data/project_context.json"
+  ]
+}
