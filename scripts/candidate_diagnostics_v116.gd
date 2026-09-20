@@ -276,6 +276,8 @@ func dump_state(room_id: String, player_position: Vector3) -> String:
         "version": 116,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "room": room_id,
         "player_position": [player_position.x, player_position.y, player_position.z],
         "canonical_state_payload": DemoState.canonical_state_payload(),
@@ -399,6 +401,8 @@ func _state_snapshot(context: Dictionary, last_game_event: Dictionary) -> Dictio
         "version": 1,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "room": context.get("room_id", "UNKNOWN"),
         "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
         "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
@@ -422,6 +426,8 @@ func _bug_report_text(report: Dictionary) -> String:
         "",
         "Build: " + String(report.get("build_id", "")),
         "Checkpoint: " + String(report.get("checkpoint", "")),
+        "Run ID: " + String(report.get("run_id", "")),
+        "Commit: " + String(report.get("build_commit_sha", "")),
         "Room: " + String(report.get("room", "")),
         "Room ID: " + String(report.get("room_entity_id", "")),
         "Trigger ID: " + String(report.get("trigger_entity_id", "")),
@@ -459,7 +465,7 @@ func capture_bug_report() -> String:
 
     var stamp := int(Time.get_unix_time_from_system())
     var suffix := event_sequence % 10000
-    var base := "%s%d_%04d" % [BUG_REPORT_PREFIX, stamp, suffix]
+    var base := "%s/%s%d_%04d" % [run_dir, BUG_REPORT_BASENAME, stamp, suffix]
     var zip_path := base + ".zip"
     var screenshot_bytes := _capture_screenshot_png()
     var screenshot_ok := not screenshot_bytes.is_empty()
@@ -470,6 +476,8 @@ func capture_bug_report() -> String:
         "schema_version": BUG_REPORT_SCHEMA_VERSION,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "created_unix": stamp,
         "repository": "semishsvk/OpenAzrael",
         "room": context.get("room_id", "UNKNOWN"),
@@ -481,6 +489,8 @@ func capture_bug_report() -> String:
         "last_trigger": last_trigger,
         "last_audio": last_audio,
         "event_log_source": event_log_path,
+        "run_manifest_source": run_manifest_path,
+        "build_manifest_source": BUILD_MANIFEST_PATH,
         "event_log_tail_limit": BUG_REPORT_EVENT_TAIL_LINES,
         "screenshot_included": screenshot_ok,
         "severity": "UNCLASSIFIED",
@@ -505,6 +515,8 @@ func capture_bug_report() -> String:
         ["report.txt", _bug_report_text(report)],
         ["state.json", JSON.stringify(state, "  ") + "\n"],
         ["system_info.json", JSON.stringify(system_info, "  ") + "\n"],
+        ["run_manifest.json", FileAccess.get_file_as_string(run_manifest_path)],
+        ["build_manifest.json", JSON.stringify(build_manifest, "  ") + "\n"],
         ["events_tail.jsonl", _event_log_tail()]
     ]
     for entry in entries:
@@ -524,6 +536,8 @@ func capture_bug_report() -> String:
         "version": 1,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "files": included,
         "entry_errors": entry_errors,
         "source_safe": true,
