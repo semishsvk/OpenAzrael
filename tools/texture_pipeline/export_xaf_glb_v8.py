@@ -131,7 +131,9 @@ def parse(src,texture_dir):
         if tex_name and tex_path is None: missing.add(tex_name)
         if tex_path is not None:
             resolved.add(tex_path.name)
-            image=Image.open(tex_path); image.load()
+            with Image.open(tex_path) as source_image:
+                source_image.load()
+                image=source_image.copy()
             alpha_mode=image_alpha_mode(image, tex_path)
             material_alpha[mn]=alpha_mode
             if alpha_mode == 'MASK':

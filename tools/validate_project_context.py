@@ -188,6 +188,19 @@ try:
 except Exception as e:
     errors.append(f"KG-001 contract: {e}")
 
+try:
+    t=json.loads((ROOT/"data/tests/kg001_texture_colorkey_contract_v116.json").read_text(encoding="utf-8"))
+    expected=t.get("expected_demo_hash_textures",[])
+    if t.get("status")!="SOURCE_CONTRACT_PASS" or len(expected)!=10:
+        errors.append("KG-001 texture color-key contract drift")
+    policy=t.get("policy",{})
+    if policy.get("runtime_material")!="MASK" or policy.get("alpha_cutoff")!=0.5:
+        errors.append("KG-001 texture material policy drift")
+    if t.get("evidence_boundary","").find("HOLD")<0:
+        errors.append("KG-001 texture evidence boundary drift")
+except Exception as e:
+    errors.append(f"KG-001 texture contract: {e}")
+
 gitignore=(ROOT/".gitignore").read_text(encoding="utf-8")
 for marker in [
     "data/audio/original_audio/",
@@ -195,6 +208,9 @@ for marker in [
     "assets/audio/",
     "assets/rooms/",
     "assets/textures/classic/",
+    "data/*.textured.v44.manifest.json",
+    "data/audio/*.legacy.json",
+    "data/graphics_pipeline_validation_v44.json",
 ]:
     if marker not in gitignore:
         errors.append(f"gitignore safety missing: {marker}")

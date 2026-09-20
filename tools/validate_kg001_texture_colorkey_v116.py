@@ -95,10 +95,13 @@ object "quad" {
 
 # Optional asset-backed checks run automatically after local Candidate restore.
 texture_dir=ROOT/"assets/textures/classic"
-asset_backed=False
+room_dir=ROOT/"assets/rooms"
+restored_rooms_present=any((room_dir/name).is_file() for name in ("R1.glb","R7.glb","R8.glb"))
+asset_backed=texture_dir.is_dir() and any(texture_dir.glob("*.png"))
 asset_rows=[]
-if texture_dir.is_dir() and any(texture_dir.glob("*.png")):
-    asset_backed=True
+if restored_rooms_present:
+    check("asset_texture_corpus_present_with_rooms",asset_backed)
+if asset_backed:
     pngs=sorted(texture_dir.glob("*.png"))
     check("asset_texture_count_86",len(pngs)==86)
     actual_hash_names=sorted(p.name for p in pngs if "#" in p.stem)
@@ -136,6 +139,7 @@ if texture_dir.is_dir() and any(texture_dir.glob("*.png")):
         })
 
     manifest=ROOT/"data/R1.textured.v44.manifest.json"
+    check("asset_r1_manifest_present",manifest.is_file())
     if manifest.is_file():
         r1=json.loads(manifest.read_text(encoding="utf-8"))
         by_object={str(x.get("object")):x for x in r1.get("primitives",[])}
@@ -146,6 +150,24 @@ if texture_dir.is_dir() and any(texture_dir.glob("*.png")):
         if tong is not None:
             check("asset_r1_tongs_texture",tong.get("resolved_png")=="MINETON#.png")
             check("asset_r1_tongs_mask",tong.get("alpha_mode")=="MASK" and tong.get("legacy_colorkey") is True)
+
+    r1_glb=room_dir/"R1.glb"
+    check("asset_r1_glb_present",r1_glb.is_file())
+    if r1_glb.is_file():
+        loaded=__import__("trimesh").load(r1_glb,force="scene")
+        materials={}
+        for geom in loaded.geometry.values():
+            mat=getattr(getattr(geom,"visual",None),"material",None)
+            if mat is not None:
+                materials.setdefault(str(getattr(mat,"name","")),[]).append(mat)
+        for material_name in ("1KEYHOLE","1TONGS"):
+            rows=materials.get(material_name,[])
+            check("asset_glb_material_"+material_name,bool(rows))
+            if rows:
+                check(
+                    "asset_glb_mask_"+material_name,
+                    all(getattr(mat,"alphaMode",None)=="MASK" for mat in rows),
+                )
 
 result={
     "schema":"openazrael.kg001.texture_colorkey_validation",

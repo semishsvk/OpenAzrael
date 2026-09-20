@@ -30,8 +30,9 @@
   "automated_layers": [
     "synthetic mask semantics",
     "synthetic XAF->PBR MASK material",
-    "optional restored 86-texture corpus audit",
-    "optional R1 KEYHOLE#/TONG6 manifest audit"
+    "restored 86-texture corpus audit when room assets are present",
+    "R1 KEYHOLE#/TONG6 manifest audit",
+    "R1 exported GLB material alphaMode audit"
   ],
   "runtime_status": "NOT_EXECUTED",
   "manual_visual_status": "PENDING",
