@@ -854,6 +854,12 @@ def main() -> int:
     parser.add_argument("--cell", type=int, default=320)
     parser.add_argument("--out-json", type=Path, default=None)
     parser.add_argument("--out-md", type=Path, default=None)
+    parser.add_argument(
+        "--out-html",
+        type=Path,
+        default=None,
+        help="HTML output path for the hub command.",
+    )
     args = parser.parse_args()
 
     review = load_json(args.review)
@@ -935,7 +941,7 @@ def main() -> int:
             or args.out_dir / "review_pack_01_visual_hub.json"
         )
         html_path = (
-            args.out_md
+            args.out_html
             or args.out_dir / "review_pack_01_visual_hub.html"
         )
         write_json(manifest, hub)
