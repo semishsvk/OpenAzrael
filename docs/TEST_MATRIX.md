@@ -27,6 +27,7 @@
 | Windows Candidate 2 export preset | v117/v118 handoff | SOURCE_CONTRACT_PASS | Real export/relaunch pending |
 | Exported EXE startup smoke | v118 | SOURCE_CONTRACT_PASS | Windows execution NOT_EXECUTED |
 | Test-build receipt | v118 | SOURCE_CONTRACT_PASS | READY_FOR_G10_MANUAL_TEST receipt NOT_EXECUTED |
+| Evidence promotion ordering | v118 | SOURCE_CONTRACT_PASS | Windows package/exported-EXE smoke happens before optional tracked evidence promotion |
 | Pinned Godot source parse/import | v31 CI | PASS | Restored-asset gameplay runtime still pending |
 
 ## Current execution summary
@@ -82,7 +83,7 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | G04 room transitions | SOURCE_CONTRACT_PASS / runtime pending | Requires restored local R1/R7/R8 GLBs |
 | G05 trigger bounds/gates | SOURCE_CONTRACT_PASS / runtime pending | Uses real RoomManager path when executed |
 | Issue #6 legacy trimesh collision | SOURCE_CONTRACT_PASS / runtime pending | Generated concave collision is two-sided to tolerate legacy winding |
-| Issue #6 R1 floor-support regression | WIRED / runtime pending | Downward physics probe + real player capsule must settle `is_on_floor()` |
+| Issue #6 R1/R7/R8 floor-support regression | WIRED / runtime pending | Canonical portal/view downward probes + real player capsule must settle `is_on_floor()` in all three rooms |
 | Missing-asset handling | IMPLEMENTED | Reports BLOCKED_MISSING_ASSETS, not FAIL |
 | G08 full synthetic demo | PENDING | Build after v109/v110 runtime pass |
 
