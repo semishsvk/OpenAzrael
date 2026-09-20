@@ -88,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "CANDIDATE2_WINDOWS_EXPORTED_G10_MANUAL_PENDING",
+    "kg001_build_status": "CANDIDATE2_MANUAL_FAIL_CRITICAL_TRAVERSAL",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 5,
@@ -99,7 +99,7 @@
     "kg001_changed_edges": 123,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "G00_G09_PASS_G10_PENDING_MANUAL_USER",
+    "kg001_runtime_gate_status": "G04_MANUAL_FAIL_PHYSICAL_TRAVERSAL_G10_BLOCKED",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_headless_runtime": "PASS",
     "kg001_state_restore": "RUNTIME_ROUNDTRIP_PASS",
@@ -107,15 +107,15 @@
     "kg001_room_trigger_runtime": "PASS",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "PASS",
-    "kg001_overall_status": "BLOCKED_ISSUES_6_9_11_RETEST",
+    "kg001_overall_status": "BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "BLOCKED_ISSUES_6_9_11_RETEST_REQUIRED",
+    "kg001_manual_sanity": "FAIL_CRITICAL_FLOOR_AND_STAIRS",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V32_AUTOMATED_PASS_MANUAL_PENDING",
+    "kg001_candidate_build_runtime": "V32_MANUAL_FAIL",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -133,15 +133,16 @@
     "kg001_bug_report_source_safe": true,
     "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9_11",
     "kg001_known_critical_bugs": [
-      "#6 PLAYER_FALLS_THROUGH_FLOOR"
+      "#6 PLAYER_FALLS_THROUGH_FLOOR",
+      "STAIRS_UNTRAVERSABLE_UP_OR_DOWN"
     ],
-    "kg001_collision_issue_6": "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
+    "kg001_collision_issue_6": "MANUAL_FAIL_CANDIDATE2",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
       "#11 LEGACY_COLORKEY_MAGENTA_VISIBLE"
     ],
-    "kg001_audio_issue_9": "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
+    "kg001_audio_issue_9": "AMBIENT_AUDIBLE_TRIGGERED_EVENT_AUDIO_NOT_YET_MANUALLY_TESTED",
     "kg001_release_blocked_by_issue_9": true,
     "kg001_physical_audio_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_physical_audio_runtime": "PASS",
@@ -161,15 +162,19 @@
     ],
     "kg001_candidate_source_freeze": "REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT",
     "kg001_candidate_freeze_scope": [
-      "Issue #6 two-sided collision + R1/R7/R8 entry floor-support regression",
-      "Issue #9 physical audio readiness",
+      "Issue #6 floor collision must pass active Input-driven R1 traversal",
+      "Critical stair traversal must pass real imported R8 step011 ascent/descent",
+      "Issue #9 ambient is audible; triggered/event audio remains manual-test pending",
       "Issue #11 indexed AZF color-key transparency",
       "existing Candidate diagnostics and bug capture only"
     ],
     "kg001_legacy_colorkey_actual_corpus_audit": "PASS_86_AZF_10_HASH_ZERO_NONHASH_SENTINEL",
     "kg001_legacy_colorkey_bloos4_control": "KEY_INDEX_5_PLUS_NEAR_MAGENTA_NONKEY_INDEX_9_ONE_PIXEL",
     "kg001_runtime_evidence_commit": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70",
-    "documentation_runtime_claim_boundary_note": "The earlier documentation-only cleanup did not promote runtime. Candidate 2 promotion now rests on fresh runtime evidence at kg001_runtime_evidence_commit."
+    "documentation_runtime_claim_boundary_note": "The earlier documentation-only cleanup did not promote runtime. Candidate 2 promotion now rests on fresh runtime evidence at kg001_runtime_evidence_commit.",
+    "kg001_stair_traversal": "MANUAL_FAIL_CANDIDATE2",
+    "kg001_release_blocked_by_stair_traversal": true,
+    "kg001_physical_traversal_v117": "SOURCE_CONTRACT_READY_RUNTIME_PENDING"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -180,7 +185,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Run exported KG-001 Candidate 2 / v116-context-v32 for manual Issues #6/#9/#11 retest and full G10. G00-G09 automation passed at 89ccf775dfd6abc21e6bc69f344fe2d349b4dd70. Do not tag demo-known-good-001 until G10 and all release blockers are resolved.",
+  "next_target": "Fix Candidate 2 critical floor fall-through and stair traversal first. Run source validators plus the new v117 physical traversal gate against restored R1/R7/R8 assets; require active Input-driven R1 floor walking and real R8 step011 ascent/descent to PASS before producing the next Candidate. Triggered/event audio remains manual-test pending; ambient playback was heard.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
