@@ -105,6 +105,14 @@ for p in [
     "tools/promote_kg001_candidate_results_v118.py",
     "data/tests/kg001_test_build_contract_v118.json",
     "tools/validate_kg001_test_build_contract_v118.py",
+    "tools/record_kg001_g10_v118.py",
+    "tools/validate_kg001_manual_sanity_v118.py",
+    "tools/validate_kg001_g10_contract_v118.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/validate_kg001_build_manifest_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
     "tools/validate_kg001_candidate2_asset_set_v118.py",
     "tools/validate_kg001_build_manifest_v118.py",
     "tools/promote_kg001_candidate_results_v118.py",
@@ -204,6 +212,14 @@ try:
         errors.append("KG-001 visual-capture runtime boundary drift")
     if q.get("kg001_windows_export_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 Windows export contract drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 Candidate 2 asset-set contract drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 test-build contract drift")
+    if q.get("kg001_g10_receipt_bound_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 receipt-bound G10 contract drift")
+    if q.get("kg001_g10_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 G10 runtime boundary drift")
     if q.get("kg001_source_safe_ci_workflow")!=".github/workflows/kg001-source-safe.yml":
         errors.append("KG-001 source-safe CI workflow drift")
     if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
