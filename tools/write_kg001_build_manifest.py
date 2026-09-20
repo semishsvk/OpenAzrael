@@ -148,10 +148,16 @@ def main() -> int:
     )
     source_rows=existing_records(SOURCE_CONTRACTS)
     runtime_source_rows=existing_records(RUNTIME_SOURCE)
-    restore_evidence_path=ROOT/".tmp/kg001/legacy_colorkey_restore.json"
-    restore_evidence=(
-        file_record(restore_evidence_path)
-        if restore_evidence_path.is_file()
+    colorkey_restore_evidence_path=ROOT/".tmp/kg001/legacy_colorkey_restore.json"
+    colorkey_restore_evidence=(
+        file_record(colorkey_restore_evidence_path)
+        if colorkey_restore_evidence_path.is_file()
+        else None
+    )
+    audio_restore_evidence_path=ROOT/".tmp/kg001/audio_restore_v118.json"
+    audio_restore_evidence=(
+        file_record(audio_restore_evidence_path)
+        if audio_restore_evidence_path.is_file()
         else None
     )
     godot=godot_version(args.godot)
@@ -214,7 +220,10 @@ def main() -> int:
             "rows":runtime_source_rows,
             "aggregate_sha256":aggregate(runtime_source_rows),
         },
-        "restore_evidence":restore_evidence,
+        "restore_evidence":{
+            "legacy_colorkey":colorkey_restore_evidence,
+            "audio":audio_restore_evidence,
+        },
         "asset_counts_complete":asset_counts_complete,
         "source_identity_complete":source_identity_complete,
         "source_safe":True,
@@ -239,6 +248,8 @@ def main() -> int:
         "asset_counts_complete":asset_counts_complete,
         "source_identity_complete":source_identity_complete,
         "runtime_source_aggregate_sha256":aggregate(runtime_source_rows),
+        "colorkey_restore_evidence_present":colorkey_restore_evidence is not None,
+        "audio_restore_evidence_present":audio_restore_evidence is not None,
     },indent=2))
     return 0 if status=="PASS" else 1
 
