@@ -8,6 +8,7 @@ from PIL import Image, __version__ as PILLOW_VERSION
 
 from common import (
     ROOT,
+    classify_transparency,
     has_alpha,
     legacy_colorkey_stats,
     sha256_file,
@@ -22,6 +23,7 @@ def scan(input_dir: Path) -> dict:
         with Image.open(path) as im:
             im.load()
             key_stats = legacy_colorkey_stats(im)
+            transparency = classify_transparency(path, im)
             entries.append(
                 {
                     "id": path.stem,
@@ -34,6 +36,12 @@ def scan(input_dir: Path) -> dict:
                     "legacy_colorkey_candidate": should_apply_legacy_colorkey(path, im),
                     "legacy_magenta_pixels": key_stats["pixels"],
                     "legacy_magenta_fraction": key_stats["fraction"],
+                    "transparency_mode": transparency["mode"],
+                    "transparency_review_required": transparency["manual_review_required"],
+                    "transparency_reason": transparency["reason"],
+                    "transparent_pixels": transparency["transparent_pixels"],
+                    "partial_alpha_pixels": transparency["partial_alpha_pixels"],
+                    "opaque_pixels": transparency["opaque_pixels"],
                     "material_class": "unclassified",
                     "tileable": None,
                     "room_usage": [],
@@ -52,6 +60,13 @@ def scan(input_dir: Path) -> dict:
             "status": "POC_PRESENTATION_SAFETY_NOT_ORIGINAL_RENDERER_PROOF",
             "candidate_rule": "filename contains # AND quantized magenta pixels exist",
             "magenta_rule": "R>=248 AND B>=248 AND G<=12",
+            "transparency_modes": [
+                "opaque",
+                "palette_colorkey",
+                "true_alpha",
+                "ambiguous"
+            ],
+            "ambiguous_policy": "manual_review_no_automatic_colorkey",
         },
         "texture_count": len(entries),
         "textures": entries,
