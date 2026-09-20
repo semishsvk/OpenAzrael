@@ -1,0 +1,47 @@
+{
+  "schema": "openazrael.audio_lab.repo_mapping_baseline",
+  "version": 1,
+  "milestone": "AL-POC-01",
+  "evidence_mode": "REPOSITORY_ONLY_NO_SOURCE_BYTES",
+  "asset_count": 30,
+  "mapped_assets": 8,
+  "expected_unmapped_assets": 22,
+  "unexpected_orphan_assets": 0,
+  "broken_reference_count": 0,
+  "mapped_asset_names": [
+    "797TAP.WAV",
+    "799SECDR.WAV",
+    "S121.WAV",
+    "S137.WAV",
+    "S152V2.WAV",
+    "S174ELP1.WAV",
+    "S174ELP2.WAV",
+    "S186.WAV"
+  ],
+  "mapped_asset_names_by_type": {
+    "DIRECT_RUNTIME_LITERAL": [
+      "797TAP.WAV"
+    ],
+    "EVENT_GRAPH": [
+      "799SECDR.WAV",
+      "S121.WAV",
+      "S137.WAV",
+      "S152V2.WAV"
+    ],
+    "POSITIONAL_AMBIENT": [
+      "S174ELP1.WAV",
+      "S174ELP2.WAV",
+      "S186.WAV"
+    ]
+  },
+  "policy": {
+    "purpose": "detect repository-side audio mapping drift before canonical source-byte validation",
+    "update_rule": "change this baseline only after intentional mapping review",
+    "not_proven": [
+      "source audio presence",
+      "source hashes",
+      "human audibility",
+      "original Miles playback parity"
+    ]
+  }
+}
