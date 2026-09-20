@@ -223,6 +223,8 @@ try:
         errors.append("KG-001 v118 release-blocker automation drift")
     if q.get("kg001_test_build_known_good_tag_allowed") is not False:
         errors.append("KG-001 v118 test-build known-good boundary drift")
+    if q.get("kg001_exported_startup_ready_marker")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 startup-ready marker contract drift")
     audit=c.get("kg001_v117_audit",{})
     if audit.get("status")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 v117 audit status drift")
