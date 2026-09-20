@@ -61,6 +61,11 @@ jobs:
       - name: Validate export preset
         run: python tools/validate_kg001_export_preset_v117.py
 
+      - name: Parse and validate Windows Candidate wrapper
+        shell: pwsh
+        run: |
+          ./tools/run_kg001_candidate2_windows_v117.ps1 -ValidateOnly
+
       - name: Compile Python tools
         run: python -m compileall -q tools
 
