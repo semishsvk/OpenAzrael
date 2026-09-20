@@ -334,6 +334,17 @@
     "automatic_quality_verdict": false,
     "automatic_production_promotion": false,
     "real_ai_outputs": "STAGE_DEPENDENT_NOT_INFERRED",
-    "boundary": "Review Pack 01 prioritizes and structures human A/B/C review over the existing canonical POC; it does not create, approve, rank or promote AI pixels."
+    "boundary": "Review Pack 01 prioritizes and structures human A/B/C review over the existing canonical POC; it does not create, approve, rank or promote AI pixels.",
+    "availability_dashboard": {
+      "command": "python tools/texture_lab/oa_tex_review_pack_01.py status",
+      "schema": "openazrael.texture_lab.review_pack_01_availability.v1",
+      "status": "SOURCE_SAFE_READY",
+      "semantics": [
+        "Classic/Enhanced presence is reported observationally",
+        "AI availability requires current PASS named-stage evidence",
+        "missing AI is not treated as failure or quality verdict",
+        "dashboard never approves, ranks, selects or promotes a texture"
+      ]
+    }
   }
 }
