@@ -24,6 +24,7 @@ const REQUIRED_CORE_RESOURCES := [
 # Physical Candidate audio resources required for G06 readiness. Original
 # Miles pan/volume parity remains a separate forensic HOLD.
 const REQUIRED_CANDIDATE_AUDIO := [
+    "res://assets/audio/979TONGS.WAV",
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
