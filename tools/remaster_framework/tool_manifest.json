@@ -14,6 +14,30 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "artifact_catalog",
+      "family": "data_lab",
+      "description": "Catalog existing JSON artifacts with SHA-256 provenance and normalized IR descriptors without rewriting source artifacts.",
+      "entrypoint": "tools/remaster_framework/cli.py",
+      "inputs": ["artifact_directory"],
+      "outputs": ["artifact_manifest"],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "artifact_catalog_verifier",
+      "family": "data_lab",
+      "description": "Verify artifact catalog path containment, sizes, uniqueness, and SHA-256 content integrity.",
+      "entrypoint": "tools/remaster_framework/cli.py",
+      "inputs": ["artifact_directory", "artifact_manifest"],
+      "outputs": ["validation_report"],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "demo_runtime_ir_validator",
       "family": "data_lab",
       "description": "Validate recovered demo runtime intermediate representation.",
