@@ -484,6 +484,8 @@ def write_review_html(path: Path, manifest: dict, source_root: Path) -> None:
             f"<td>{rec['spectral_centroid_hz']:.1f} Hz</td>"
             f"<td>{rec['spectral_rolloff_85_hz']:.1f} Hz</td>"
             f"<td>{rec['spectral_flatness']:.6f}</td>"
+            f"<td>{rec['temporal_energy_centroid_ratio']:.3f}</td>"
+            f"<td>{rec['tail_energy_ratio_10pct']:.4f}</td>"
             f"<td>{html.escape(', '.join(x['metric'] for x in rec.get('spectral_outliers', [])) or '—')}</td>"
             f"<td><audio controls preload='none' src='{audio}'></audio></td>"
             "</tr>"
@@ -497,7 +499,7 @@ img{{image-rendering:auto;max-width:256px}} audio{{width:220px}}
 </style></head><body>
 <h1>OpenAzrael Audio Lab — AL-POC-02 Spectral Review</h1>
 <p>Status: <strong>{html.escape(str(manifest.get('status')))}</strong> · Assets: {len(manifest.get('assets', []))}</p>
-<table><thead><tr><th>Asset</th><th>Source</th><th>Spectrogram</th><th>Dominant</th><th>Centroid</th><th>Rolloff 85%</th><th>Flatness</th><th>Outlier review</th><th>Preview</th></tr></thead>
+<table><thead><tr><th>Asset</th><th>Source</th><th>Spectrogram</th><th>Dominant</th><th>Centroid</th><th>Rolloff 85%</th><th>Flatness</th><th>Temporal centroid</th><th>Tail energy 10%</th><th>Outlier review</th><th>Preview</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></body></html>"""
     path.write_text(doc, encoding="utf-8")
 
