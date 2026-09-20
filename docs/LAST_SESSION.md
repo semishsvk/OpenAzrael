@@ -1,6 +1,6 @@
 # OpenAzrael Last Session
 
-**Checkpoint prepared:** `v116-context-v30`  
+**Checkpoint prepared:** `v116-context-v31`  
 **Date:** 2026-09-19  
 **Technical base:** `openazrael_godot_poc_v116`
 
@@ -20,7 +20,7 @@
 ## Documentation consistency update
 - Refreshed README to lead with the current Candidate 2 / v29 stabilization status while preserving Candidate 1 failure evidence.
 - Replaced stale roadmap items that still targeted already completed v113-v115 work.
-- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v30`.
+- Aligned TEST_MATRIX, PROJECT_STATE, bootstrap context and artifact index on `v116-context-v31`.
 - Preserved historical milestone notes rather than rewriting project history.
 - Kept runtime/forensic boundaries explicit: documentation cleanup does not count as Godot execution and does not promote any evidence status.
 
