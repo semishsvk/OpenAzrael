@@ -56,9 +56,10 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 
 ## Immediate execution priority
 - Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, Major Issue #9 produced no audible audio, and Major Issue #11 left legacy color-key magenta visible on cutout textures.
-- Candidate 2 / v30 combines the two-sided legacy concave collision fix, physical-audio readiness, and the conservative legacy `# + quantized-magenta` binary color-key repair.
-- Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null ambient-position fallback, validates the seven required Event/ambient WAV resources, checks recovered R1/R7/R8 ambient counts (2/3/2), checks an unmuted Master bus, and verifies a real Event-IR `play_sound` creates a playing `AudioStreamPlayer`.
-- Restore corrected assets, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
+- Candidate 2 / v31 carries the independently audited source hardening: two-sided legacy concave collision plus canonical R1/R7/R8 floor probes; PCM and Master-bus audio non-silence checks; indexed-AZF color-key detection with exactly-one-used-key fail-closed semantics; and GLB MASK hidden-RGB edge bleed without changing alpha.
+- Candidate diagnostics are run-scoped under `user://openazrael_candidate2_runs/<run_id>/`; every event carries `run_id` and build commit provenance, with `run_manifest.json`, state dumps and F11 ZIPs bound to the same run.
+- The source-safe build manifest fingerprints local rooms/audio/Classic textures and source contracts without embedding commercial payloads. The pinned toolchain is Python 3.11.11 / NumPy 2.3.5 / Pillow 12.3.0 / trimesh 5.1.0 / Godot 4.7.2.stable.official.ed1daf0bf.
+- Restore corrected assets, generate the build manifest, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then execute canonical R1/R7/R8 graphical captures and manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
 - Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass.
 
 ## Source-safe runtime IR
@@ -79,7 +80,7 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 ## KG-001 v110 room/trigger layer
 - `scripts/kg001_room_trigger_runner_v110.gd` prepares asset-backed G04/G05 tests using the real RoomManager trigger implementation.
 - It covers all four tracked transitions, both R1 locked negative gates, trigger inside/outside bounds and persistence across room replacement.
-- v28 adds the Issue #6 regression: all generated legacy concave collision shapes must be two-sided, a real downward physics probe must find the R1 floor, and the real player capsule must settle with `is_on_floor()` instead of falling through.
+- v31 strengthens the Issue #6 regression: all generated legacy concave collision shapes must be two-sided and the real player capsule must pass a downward floor/support probe from canonical views in R1 `spaview`, R7 `view` and R8 `Object14`.
 - Missing local room assets are reported as BLOCKED_MISSING_ASSETS rather than FAIL.
 - Source contract: PASS. Godot asset-backed execution: NOT EXECUTED here.
 
@@ -101,12 +102,13 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - `scripts/legacy_ambient_audio.gd` falls back from a null `godot_position` to the preserved legacy position.
 - `LegacyEvents` tracks real physical Event-IR `AudioStreamPlayer` instances in addition to the logical golden stream.
 - `scripts/kg001_audio_runtime_runner_v116.gd` and `tools/validate_kg001_audio_runtime_v116.py` form the G06 physical-readiness layer.
-- Automated readiness does not prove speaker/headphone audibility and does not promote original Miles pan/volume parity. Human audibility is G10; Miles parity remains HOLD.
+- Asset-backed validation also audits non-empty/non-silent PCM and the Godot runner temporarily inserts `AudioEffectCapture` on Master, requiring captured frames and a nonzero peak during the known Event-IR playback probe.
+- Automated non-silence does not prove speaker/headphone audibility or quality and does not promote original Miles pan/volume parity. Human audibility is G10; Miles parity remains HOLD.
 
 ## KG-001 legacy color-key compatibility — v116 / Issue #11
-- The Classic AZF decoder applies a conservative shared rule: only texture names containing `#` and actually containing quantized magenta pixels are converted to binary alpha.
-- Magenta key threshold is `R>=248, B>=248, G<=12`; keyed RGB is zeroed and alpha becomes 0, all other pixels remain opaque.
-- The XAF->GLB exporter preserves RGBA and emits a PBR `MASK` material with alpha cutoff 0.5 instead of converting the image back to RGB.
+- The Classic AZF decoder now derives transparency from decoded indexed evidence: for `#` assets exactly one used palette index may match the engine-quantized magenta class; multiple used candidates fail closed.
+- Magenta class remains `R>=248, B>=248, G<=12` after optional engine-style component quantization; source PNG alpha is binary.
+- The XAF->GLB exporter preserves RGBA, fills hidden RGB below alpha=0 from nearest opaque texels without changing alpha, and emits PBR `MASK` with cutoff 0.5.
 - The demo source-safe contract tracks ten `#` texture names. R1 known regressions are `KEYHOLE#` and `TONG6 -> MINETON#`.
 - `tools/validate_kg001_texture_colorkey_v116.py` always runs source-safe synthetic checks and automatically audits the restored 86-texture corpus/R1 manifest when local assets are present.
 - This is a presentation compatibility rule, not proof of complete original renderer transparency/blending semantics; that broader claim remains HOLD.
@@ -115,10 +117,17 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Candidate 2 is the corrected diagnostic integration build after the first manual Candidate failure; unrelated forensic v117 work remains deferred.
 - `CandidateDiagnostics` remains observational and records state/event telemetry without changing puzzle semantics.
 - F6 toggles trigger volumes; F7 toggles the Candidate HUD; F8 shows ambient emitters plus Master-bus and physical Event-IR player state; F9 preserves parity capture; F10 writes canonical state; F11 captures a source-safe bug package.
-- Non-headless builds append JSONL events to `user://openazrael_candidate2_events.jsonl`.
+- Non-headless builds write per-run evidence under `user://openazrael_candidate2_runs/<run_id>/`, including `events.jsonl` and `run_manifest.json`; event rows include run/build identity.
 - Core room/IR resources include source-safe `data/audio/legacy_world_ir.json`. A graphical Candidate additionally requires four Event-IR WAVs plus three recovered ambient WAVs.
 - `scripts/kg001_audio_runtime_runner_v116.gd` checks resource loading, Master-bus state, ambient counts R1=2/R7=3/R8=2, ambient `playing` state and an Event-IR physical player.
 - Source contracts are PASS. Candidate 2 Godot runtime evidence remains NOT_EXECUTED until the corrected build is run.
+
+## KG-001 independent audit / reproducibility — context v31
+- `.github/workflows/kg001-source-safe.yml` executes the pinned source-safe toolchain, build-manifest generation, export-contract validation, Python compile, Godot parse/import, canonical candidate source suite and clean-tree check.
+- `Windows Candidate 2` is the tracked Windows export preset and includes the generated build manifest.
+- `scripts/kg001_visual_capture_v117.gd` defines R1/R7/R8 canonical 1280x720 captures. PNG hashes are run evidence only, not a cross-GPU pixel-perfect oracle.
+- Source/CI validation does not close Issues #6/#9/#11. Restored-asset runtime, graphical capture and G10 remain required.
+- Draft PR #12 is the integration surface for this hardening.
 
 ## Approved localization architecture
 - Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.
