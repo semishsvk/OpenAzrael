@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.audio_lab.al_poc_02_contract",
-  "version": 1,
+  "version": 2,
   "milestone": "AL-POC-02",
   "title": "Spectrogram & Perceptual QA",
   "prerequisite": {
@@ -25,7 +25,12 @@
     "spectral_flatness": true,
     "dc_offset": true,
     "crest_factor": true,
-    "zero_crossing_rate": true
+    "zero_crossing_rate": true,
+    "peak_position": true,
+    "temporal_energy_centroid": true,
+    "energy_percentiles_10_50_90": true,
+    "energy_span_10_90": true,
+    "head_tail_energy_ratio": true
   },
   "default_parameters": {
     "fft_size": 512,
@@ -57,5 +62,9 @@
     "enhanced_asset_generation",
     "runtime_asset_replacement",
     "subjective_quality_scoring"
-  ]
+  ],
+  "review_policy": {
+    "spectral_outliers": "review-only; never fail the milestone",
+    "temporal_distribution_extremes": "evidence/review context only; not currently part of outlier scoring"
+  }
 }
