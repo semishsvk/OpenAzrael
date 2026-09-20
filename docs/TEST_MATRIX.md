@@ -16,7 +16,15 @@
 | WORLD opcode-0x28 record fields | v113 | VERIFIED field identities / ordered 38-of-40 mapping | +17..+26 UNKNOWN/HOLD; full compiler HOLD |
 | Source-safe runtime IR | v116-context-v31 | VALIDATED metadata | Excluded binary assets still require local restore |
 | KG-001 acceptance contract | v116-context-v31 | ACCEPTED / contract validator | Build has not passed KG-001 yet |
-| Godot runtime launch | current analysis env | NOT RUN | Godot unavailable here |
+| Pinned Candidate toolchain | v117 contract | PASS source/CI | Exact Python packages + Godot 4.7.2 |
+| Candidate build fingerprint manifest | v31 | SOURCE_CONTRACT_PASS | Runtime/local asset SHA-256 generation pending per build |
+| Three-room floor regression | R1/R7/R8 | SOURCE_CONTRACT_PASS | Asset-backed physics execution pending |
+| PCM + Master-bus audio non-silence | v116/v31 | SOURCE_CONTRACT_PASS | Human audibility remains G10 |
+| Indexed AZF color-key policy | v116/v31 | SOURCE_CONTRACT_PASS | Restored 86-texture runtime/visual retest pending |
+| Run-scoped diagnostics provenance | v31 | SOURCE_CONTRACT_PASS | Runtime lifecycle pending |
+| Canonical visual captures | v117 | SOURCE_CONTRACT_PASS | Graphical execution NOT_EXECUTED |
+| Windows Candidate 2 export preset | v117 | SOURCE_CONTRACT_PASS | Real export/relaunch pending |
+| Pinned Godot source parse/import | v31 CI | PASS | Restored-asset gameplay runtime still pending |
 
 ## Current execution summary
 
@@ -30,9 +38,9 @@
 | v110 room/trigger runtime | NOT_EXECUTED |
 | v111 full-demo runtime | NOT_EXECUTED |
 | audio-v116 physical runtime | NOT_EXECUTED |
-| G09 fresh-checkout build | PENDING |
+| G09 restored-asset fresh-checkout build | PENDING |
 | Candidate 1 manual observation | **FAIL — Issue #6 floor collision; Issue #9 no audible audio; Issue #11 magenta color-key artifacts** |
-| Candidate 2 v30 blocker fixes | SOURCE_READY / restored-asset/runtime retest pending |
+| Candidate 2 v31 independent-audit hardening | SOURCE/CI READY / restored-asset runtime retest pending |
 | G10 manual sanity | **BLOCKED — Issues #6/#9/#11 retest required** |
 | Known-good tag | NOT ALLOWED |
 | Localization architecture | APPROVED / IMPLEMENTATION DEFERRED |
