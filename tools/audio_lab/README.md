@@ -22,3 +22,14 @@ See `docs/AUDIO_LAB_AL_POC_01.md` for the source-safety rules, mapping policy, r
 
 Canonical corpus evidence: `data/audio_lab/al_poc_01_canonical_source_evidence.json`.
 Repository mapping baseline: `data/audio_lab/al_poc_01_repo_mapping_baseline.json`.
+
+## AL-POC-02 spectral QA
+
+    python -m pip install -r tools/audio_lab/requirements-spectral.txt
+    python tools/audio_lab/oa_audio_spectral.py /path/to/source-audio --output-dir .tmp/audio_lab/al_poc_02
+    python tools/audio_lab/oa_audio_spectral_baseline.py .tmp/audio_lab/al_poc_02/spectral_manifest.json
+
+Contract: `data/audio_lab/al_poc_02_contract.json`
+Canonical spectral evidence: `data/audio_lab/al_poc_02_canonical_spectral_evidence.json`
+
+See `docs/AUDIO_LAB_AL_POC_02.md`.
