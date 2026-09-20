@@ -5,6 +5,7 @@ extends SceneTree
 # Miles pan/volume parity remain separate G10/forensic evidence.
 
 const REQUIRED_AUDIO := [
+    "res://assets/audio/979TONGS.WAV",
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
@@ -14,8 +15,10 @@ const REQUIRED_AUDIO := [
     "res://assets/audio/S186.WAV"
 ]
 const EXPECTED_AMBIENT_COUNTS := {"R1": 2, "R7": 3, "R8": 2}
-const EVENT_GRAPH := "R7_WATER_SWITCHBOARD_SOLVED"
-const EVENT_ASSET := "S152V2.WAV"
+const EVENT_PROBES := [
+    {"graph":"R7_WELL_TONGS_USE", "asset":"979TONGS.WAV"},
+    {"graph":"R7_WATER_SWITCHBOARD_SOLVED", "asset":"S152V2.WAV"}
+]
 
 var failures: Array[String] = []
 var checks := 0
@@ -40,7 +43,7 @@ func _finish(scene: Node = null) -> void:
         "checks": checks,
         "failed": failures,
         "ambient_counts": EXPECTED_AMBIENT_COUNTS,
-        "event_asset": EVENT_ASSET,
+        "event_assets": ["979TONGS.WAV", "S152V2.WAV"],
         "scope": "G06 physical audio resource/load/player readiness; human audibility and original Miles parity remain separate"
     }
     print("OPENAZRAEL_KG001_AUDIO_V116 " + JSON.stringify(result))
@@ -111,20 +114,23 @@ func _run() -> void:
             _check("%s_ambient_%d_forward_loop" % [room_id, i], int(snap.get("loop_mode", -1)) == AudioStreamWAV.LOOP_FORWARD)
 
     events.call("set_capture_only", false)
-    events.call("clear_capture")
-    events.call("clear_physical_audio")
-    _check("event_graph_exists", events.call("has_graph", EVENT_GRAPH))
-    if bool(events.call("has_graph", EVENT_GRAPH)):
-        events.call("run", EVENT_GRAPH)
-        await _settle(1)
-        var physical: Array = events.call("physical_audio_snapshot")
-        _check("event_logical_emitted", events.call("captured_audio") == [EVENT_ASSET])
-        _check("event_physical_player_created", physical.size() == 1)
-        if physical.size() == 1:
-            var snap: Dictionary = physical[0]
-            _check("event_asset_identity", String(snap.get("asset", "")) == EVENT_ASSET)
-            _check("event_stream_valid", bool(snap.get("stream_valid", false)))
-            _check("event_player_playing", bool(snap.get("playing", false)))
-            _check("event_master_bus", String(snap.get("bus", "")) == "Master")
+    for probe in EVENT_PROBES:
+        var graph_id := String(probe["graph"])
+        var asset := String(probe["asset"])
+        events.call("clear_capture")
+        events.call("clear_physical_audio")
+        _check("event_graph_exists_" + graph_id, events.call("has_graph", graph_id))
+        if bool(events.call("has_graph", graph_id)):
+            events.call("run", graph_id)
+            await _settle(1)
+            var physical: Array = events.call("physical_audio_snapshot")
+            _check("event_logical_emitted_" + asset, events.call("captured_audio") == [asset])
+            _check("event_physical_player_created_" + asset, physical.size() == 1)
+            if physical.size() == 1:
+                var snap: Dictionary = physical[0]
+                _check("event_asset_identity_" + asset, String(snap.get("asset", "")) == asset)
+                _check("event_stream_valid_" + asset, bool(snap.get("stream_valid", false)))
+                _check("event_player_playing_" + asset, bool(snap.get("playing", false)))
+                _check("event_master_bus_" + asset, String(snap.get("bus", "")) == "Master")
 
     _finish(scene)
