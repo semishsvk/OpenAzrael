@@ -116,10 +116,17 @@ if texture_dir.is_dir() and any(texture_dir.glob("*.png")):
             opaque=int((alpha==255).sum())
             residual=int(legacy_magenta_mask(rgba[...,:3]).sum())
             mode=im.mode
-        check("asset_rgba_"+name,mode=="RGBA")
-        check("asset_has_transparency_"+name,transparent>0)
-        check("asset_has_opaque_pixels_"+name,opaque>0)
+        # '#' is the candidate namespace; the mask is applied only when
+        # quantized magenta is actually observed. Known visible regressions
+        # KEYHOLE#/MINETON# must therefore be RGBA, while other '#' assets may
+        # remain RGB if they contain no key pixels.
+        if mode=="RGBA":
+            check("asset_has_transparency_"+name,transparent>0)
+            check("asset_has_opaque_pixels_"+name,opaque>0)
         check("asset_no_magenta_residue_"+name,residual==0)
+        if name in ("KEYHOLE#.png","MINETON#.png"):
+            check("asset_known_regression_rgba_"+name,mode=="RGBA")
+            check("asset_known_regression_transparency_"+name,transparent>0)
         asset_rows.append({
             "texture":name,
             "mode":mode,
@@ -145,7 +152,9 @@ result={
     "version":116,
     "issue":"#11",
     "status":"PASS" if not errors else "FAIL",
-    "source_safe_checks":"PASS" if not errors or asset_backed else "PASS",
+    "source_safe_checks":"FAIL" if any(
+        e.startswith(("synthetic_","non_hash_","hash_without_")) for e in errors
+    ) else "PASS",
     "expected_hash_texture_count":len(EXPECTED_HASH_TEXTURES),
     "expected_hash_textures":EXPECTED_HASH_TEXTURES,
     "asset_backed":asset_backed,
