@@ -32,24 +32,36 @@ def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
 def iter_files(
     root: Path,
     excluded_dirs: Iterable[str] = DEFAULT_EXCLUDED_DIRS,
+    excluded_paths: Iterable[Path] = (),
 ) -> list[Path]:
+    root = root.resolve()
     excluded = set(excluded_dirs)
+    excluded_abs = {path.resolve() for path in excluded_paths}
     files: list[Path] = []
+
     for path in root.rglob("*"):
         relative = path.relative_to(root)
         if any(part in excluded for part in relative.parts):
             continue
+        if path.is_symlink():
+            continue
+        if path.resolve() in excluded_abs:
+            continue
         if path.is_file():
             files.append(path)
+
     return sorted(files, key=lambda p: p.relative_to(root).as_posix().casefold())
 
 
-def build_inventory(root: Path) -> dict:
+def build_inventory(
+    root: Path,
+    excluded_paths: Iterable[Path] = (),
+) -> dict:
     root = root.resolve()
     records = []
     total_size = 0
 
-    for path in iter_files(root):
+    for path in iter_files(root, excluded_paths=excluded_paths):
         stat = path.stat()
         size = stat.st_size
         total_size += size
@@ -78,7 +90,9 @@ def build_inventory(root: Path) -> dict:
 
 
 def write_inventory(root: Path, output: Path) -> dict:
-    payload = build_inventory(root)
+    root = root.resolve()
+    output = output.resolve()
+    payload = build_inventory(root, excluded_paths=(output,))
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n",
