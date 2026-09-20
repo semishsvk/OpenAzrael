@@ -62,7 +62,7 @@
 ## Texture Lab Review Pack 01
 - `docs/TEXTURE_LAB_REVIEW_PACK_01.md`
 - `tools/texture_lab/config/review_pack_01.json`
-- `tools/texture_lab/oa_tex_review_pack_01.py`
+- `tools/texture_lab/oa_tex_review_pack_01.py` — validate/render/status plus local prioritized visual hub materialization
 - source plan covers all 12 canonical R1/R7/R8 POC textures
 - review order: P1=6, P2=5, P3=1
 - treatment classes: safe_upscale / ai_recreation_candidate / conservative
