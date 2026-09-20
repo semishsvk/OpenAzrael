@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from common import ROOT, sha256_file, write_json
-from oa_tex_compare import make_detail_sheet, make_sheet
+from oa_tex_compare import make_alpha_sheet, make_detail_sheet, make_sheet
 from oa_tex_tile import tile_preview
 
 
@@ -57,6 +57,7 @@ def markdown_report(mode: str, rows: list[dict]) -> str:
                 "",
                 f"- [Comparison sheet]({row['comparison']['path']})",
                 f"- [Detail comparison sheet]({row['detail_comparison']['path']})",
+                f"- [Alpha evidence sheet]({row['alpha_preview']['path']})",
             ]
         )
         if row.get("tile_preview"):
@@ -130,6 +131,14 @@ def build_review_pack(
             detail_comparison,
             cell,
         )
+        alpha_preview = out_dir / "alpha" / f"{texture_id}.png"
+        make_alpha_sheet(
+            texture_id,
+            source,
+            candidate,
+            alpha_preview,
+            cell,
+        )
 
         sampling_row = sampling_by_id.get(texture_id, {})
         repeated = bool(sampling_row.get("repeat_sampling_observed"))
@@ -148,6 +157,7 @@ def build_review_pack(
                 "candidate": file_record(candidate),
                 "comparison": file_record(comparison),
                 "detail_comparison": file_record(detail_comparison),
+                "alpha_preview": file_record(alpha_preview),
                 "tile_preview": file_record(tile) if tile else None,
                 "repeat_axes": list(sampling_row.get("repeat_axes", [])),
             }
