@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
 VISUAL_AUDIO=[
+    ROOT/"assets/audio/797TAP.WAV",
     ROOT/"assets/audio/S152V2.WAV",
     ROOT/"assets/audio/S137.WAV",
     ROOT/"assets/audio/S121.WAV",
@@ -43,6 +44,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_visual_capture_v117.py"],
     [sys.executable,"tools/validate_source_safe_asset_loading_v117.py"],
     [sys.executable,"tools/validate_candidate2_windows_wrapper_v117.py"],
+    [sys.executable,"tools/validate_kg001_candidate2_asset_set_v118.py"],
 ]
 
 RUNTIMES=[
@@ -177,6 +179,26 @@ def main():
             print(" - " + " ".join(item.get("command", [])), file=sys.stderr)
             print(item.get("output", ""), file=sys.stderr)
 
+    asset_gate={"status":"NOT_REQUIRED","local_asset_status":"UNOBSERVED"}
+    if args.fresh_checkout:
+        asset_gate_cmd=[
+            sys.executable,
+            "tools/validate_kg001_candidate2_asset_set_v118.py",
+            "--require-complete",
+            "--out",
+            str(TMP/"kg001_candidate2_asset_set_v118.json"),
+        ]
+        asset_gate_proc=run(asset_gate_cmd)
+        try:
+            asset_gate=json.loads(asset_gate_proc.stdout)
+        except json.JSONDecodeError:
+            asset_gate={
+                "status":"FAIL",
+                "local_asset_status":"PARSE_ERROR",
+                "output":asset_gate_proc.stdout[-12000:],
+            }
+        asset_gate["_process_returncode"]=asset_gate_proc.returncode
+
     godot_version=""
     import_status="NOT_RUN"
     runtimes={}
@@ -245,6 +267,8 @@ def main():
         args.fresh_checkout and clean_before and clean_after and not bad_tracked and source_ok
         and godot is not None and import_status=="PASS" and full_runtime_pass
         and all(asset_present.values()) and all(asset_ignored.values())
+        and asset_gate.get("status")=="PASS"
+        and asset_gate.get("local_asset_status")=="COMPLETE"
     )
 
     fresh={
@@ -263,6 +287,8 @@ def main():
         "source_validators_pass":source_ok,
         "room_assets_present":asset_present,
         "room_assets_git_ignored":asset_ignored,
+        "candidate2_asset_set_status":asset_gate.get("status"),
+        "candidate2_asset_local_status":asset_gate.get("local_asset_status"),
         "runtime_status":{k:v.get("status","") for k,v in runtimes.items()}
     }
     write_json(TMP/"kg001_source_validation_v112.json",{"status":"PASS" if source_ok else "FAIL","commands":source})
@@ -293,6 +319,8 @@ def main():
         "godot_import_status":import_status,
         "source_validators":"PASS" if source_ok else "FAIL",
         "runtimes":{k:v.get("status","") for k,v in runtimes.items()},
+        "candidate2_asset_set":asset_gate.get("status",""),
+        "candidate2_asset_local_status":asset_gate.get("local_asset_status",""),
         "visual_capture":visual_capture.get("status",""),
         "visual_capture_requested":args.visual_capture,
         "fresh_checkout":fresh["status"],
