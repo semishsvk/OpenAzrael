@@ -312,5 +312,28 @@
     "automatic_selection": false,
     "automatic_quality_verdict": false,
     "production_registry_mutated": false
+  },
+  "review_pack_01": {
+    "status": "SOURCE_PLAN_READY",
+    "schema": "openazrael.texture_lab.review_pack_01.v1",
+    "config": "tools/texture_lab/config/review_pack_01.json",
+    "planner": "tools/texture_lab/oa_tex_review_pack_01.py",
+    "texture_count": 12,
+    "priority_counts": {
+      "P1": 6,
+      "P2": 5,
+      "P3": 1
+    },
+    "treatment_classes": [
+      "safe_upscale",
+      "ai_recreation_candidate",
+      "conservative"
+    ],
+    "rubric_dimensions": 8,
+    "automatic_selection": false,
+    "automatic_quality_verdict": false,
+    "automatic_production_promotion": false,
+    "real_ai_outputs": "STAGE_DEPENDENT_NOT_INFERRED",
+    "boundary": "Review Pack 01 prioritizes and structures human A/B/C review over the existing canonical POC; it does not create, approve, rank or promote AI pixels."
   }
 }
