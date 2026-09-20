@@ -29,6 +29,12 @@ def main():
                 'texture': p.stem + '.png',
                 'applied': bool(decoded.get('legacy_colorkey_applied')),
                 'transparent_pixels': int(decoded.get('legacy_colorkey_pixels', 0)),
+                'key_index': decoded.get('legacy_colorkey_key_index'),
+                'key_candidates': decoded.get(
+                    'legacy_colorkey_key_candidates',
+                    [],
+                ),
+                'detection': decoded.get('legacy_colorkey_detection'),
             })
     expected = {'R1':(69,593,62), 'R7':(48,689,40), 'R8':(87,1050,74)}
     for room, counts in expected.items():
@@ -51,7 +57,12 @@ def main():
     subprocess.run([sys.executable, str(ROOT/'tools/legacy_export/export_legacy_world_v21.py'), str(src), str(ROOT/'data/audio')], check=True)
     (ROOT/'.tmp/kg001').mkdir(parents=True, exist_ok=True)
     (ROOT/'.tmp/kg001/legacy_colorkey_restore.json').write_text(
-        json.dumps({'schema':'openazrael.kg001.legacy_colorkey_restore','version':116,'textures':colorkey_rows}, indent=2) + '\n',
+        json.dumps({
+            'schema':'openazrael.kg001.legacy_colorkey_restore',
+            'version':117,
+            'policy':'EXACTLY_ONE_USED_INDEXED_MAGENTA_KEY_PER_HASH_TEXTURE',
+            'textures':colorkey_rows
+        }, indent=2) + '\n',
         encoding='utf-8'
     )
     subprocess.run([sys.executable, str(ROOT/'tools/validate_graphics_pipeline_v44.py')], check=True)
