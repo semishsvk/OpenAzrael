@@ -227,7 +227,15 @@ if (-not $SkipExport) {
         if ($match.Count -ne 1) {
             throw "Visual-capture evidence missing/duplicated canonical $room/$($expectedCaptures[$room]) capture."
         }
-        if ([string]$match[0].sha256 -notmatch '^[0-9a-f]{64}
+        if ([string]$match[0].sha256 -notmatch "^[0-9a-f]{64}$") {
+            throw "Visual-capture evidence has invalid SHA-256 for $room."
+        }
+        if ([int]$match[0].width -ne 1280 -or [int]$match[0].height -ne 720) {
+            throw "Visual-capture evidence has unexpected dimensions for $room."
+        }
+    }
+    $visualEvidenceSha256 = (Get-FileHash -Algorithm SHA256 $visualEvidencePath).Hash.ToLowerInvariant()
+
     $exportEvidence = [ordered]@{
         schema = "openazrael.kg001.windows_candidate2_export"
         version = 118
