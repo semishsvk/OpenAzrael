@@ -372,6 +372,54 @@
       "maturity": "legacy"
     },
     {
+      "tool_id": "localization_string_ir_validator",
+      "family": "localization_lab",
+      "description": "Validate stable semantic localization IDs, English fallback records, provenance shape, and duplicate-ID safety.",
+      "entrypoint": "tools/remaster_framework/localization.py",
+      "inputs": [
+        "string_ir"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "localization_pack_manifest_validator",
+      "family": "localization_lab",
+      "description": "Validate external language-pack manifests and prevent resources from escaping the locale namespace or replacing core gameplay resources.",
+      "entrypoint": "tools/remaster_framework/localization.py",
+      "inputs": [
+        "language_pack_manifest"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "localization_pseudolocale_builder",
+      "family": "localization_lab",
+      "description": "Generate deterministic pseudolocalized strings from String IR while preserving semantic IDs and common formatting placeholders.",
+      "entrypoint": "tools/remaster_framework/localization.py",
+      "inputs": [
+        "string_ir"
+      ],
+      "outputs": [
+        "pseudolocale"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "project_context_validator",
       "family": "project_release",
       "description": "Validate the persistent project-context documentation set.",
