@@ -308,28 +308,41 @@ def annotate_spectral_outliers(records: list[dict], threshold: float = OUTLIER_T
 
     vectors = [derived(rec) for rec in records]
     fields = list(vectors[0])
+    log_fields = {"spectral_flatness", "high_frequency_energy_ratio", "abs_dc_offset"}
+
+    def score_value(field: str, value: float) -> float:
+        if field in log_fields:
+            return math.log10(max(value, 1e-12))
+        return value
+
+    score_vectors = [
+        {field: score_value(field, vector[field]) for field in fields}
+        for vector in vectors
+    ]
     stats: dict[str, tuple[float, float]] = {}
     for field in fields:
-        values = np.asarray([v[field] for v in vectors], dtype=np.float64)
+        values = np.asarray([v[field] for v in score_vectors], dtype=np.float64)
         median = float(np.median(values))
         mad = float(np.median(np.abs(values - median)))
         stats[field] = (median, mad)
 
     flagged_metrics = 0
     flagged_assets = 0
-    for rec, vector in zip(records, vectors):
+    for rec, vector, score_vector in zip(records, vectors, score_vectors):
         outliers = []
         for field in fields:
             median, mad = stats[field]
             if mad <= 1e-12:
                 continue
-            robust_z = 0.67448975 * (vector[field] - median) / mad
+            robust_z = 0.67448975 * (score_vector[field] - median) / mad
+            # Very low absolute DC offset is desirable, not a review concern.
+            if field == "abs_dc_offset" and robust_z < 0:
+                continue
             if abs(robust_z) >= threshold:
                 outliers.append({
                     "metric": field,
                     "value": round(float(vector[field]), 9),
-                    "median": round(median, 9),
-                    "mad": round(mad, 9),
+                    "score_transform": "log10" if field in log_fields else "linear",
                     "robust_z": round(float(robust_z), 6),
                     "direction": "high" if robust_z > 0 else "low",
                 })
