@@ -1,6 +1,6 @@
 # OpenAzrael reusable remaster toolchain
 
-Status: Phase 0 complete; Phase 1 Data Lab POC implemented; Phase 2 Validation Lab/PPPV core POC implemented on\n`tooling/remaster-framework-poc-01`.
+Status: Phase 0 complete; Phase 1 Data Lab POC implemented; Phase 2 Validation Lab/PPPV runtime POC implemented on\n`tooling/remaster-framework-poc-01`.
 
 ## Architecture
 
@@ -155,13 +155,28 @@ The current Well+Tongs PPPV contract requires physical approach through gameplay
 input plus interaction-probe evidence. This is intentionally stricter than the
 existing v118 direct interaction call.
 
-Remaining runtime-facing work:
+Implemented runtime-facing POC:
 
-- Godot PlayerDriver/evidence bus implementation;
-- production InteractionProbe instrumentation;
-- trigger/audio/animation/state evidence emitters;
-- adapter from current v117/v118 runners to the generic evidence vocabulary;
-- full-demo scenario orchestration and persistence checks.
+- Godot Evidence Bus;
+- production-input Player Driver;
+- input-only interaction Navigator;
+- OpenAzrael state/audio/diagnostics Observer;
+- runtime capability preflight;
+- generic Godot Scenario Runner;
+- complete runtime-bundle evaluator;
+- PPPV Coverage Audit;
+- puzzle-by-puzzle Scenario Planner.
+
+The current main-derived runtime already exposes enough existing diagnostics that
+no new production trigger system was required.
+
+Remaining runtime-facing integration:
+
+- deliberately integrate the newer v117 physical traversal and v118 Well+Tongs
+  runtime changes;
+- refactor/bridge v117 collision and stair evidence into the generic vocabulary;
+- add full-demo scenario orchestration and persistence/save-load chains;
+- make complete gameplay coverage a future Known-Good gate.
 
 See `docs/VALIDATION_LAB_PPPV.md`.
 
