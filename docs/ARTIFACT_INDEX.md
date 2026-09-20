@@ -71,6 +71,17 @@
 - broader original transparency/blending semantics remain HOLD
 - GitHub Issue #11 remains open pending corrected asset/runtime/manual visual retest
 
+## Audio Lab AL-POC-01 — source-safe inventory / QA
+- `docs/AUDIO_LAB_AL_POC_01.md`
+- milestone contract: `data/audio_lab/al_poc_01_contract.json`
+- one-command runner: `tools/audio_lab/oa_audio_run_poc.py`
+- inventory/QA scanner: `tools/audio_lab/oa_audio_scan.py`
+- source/determinism validator: `tools/audio_lab/oa_audio_validate.py`
+- runtime mapping audit: `tools/audio_lab/oa_audio_reference_audit.py`
+- prioritized human review pack: `tools/audio_lab/oa_audio_review_pack.py`
+- CI: `.github/workflows/audio-lab.yml`
+- source/runtime mutation, enhancement and AI restoration remain locked for AL-POC-01
+
 ## Major physical-audio regression — Issue #9
 - `scripts/kg001_audio_runtime_runner_v116.gd`
 - `tools/validate_kg001_audio_runtime_v116.py`
