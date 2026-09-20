@@ -1,0 +1,34 @@
+name: Audio Lab source-safe tests
+
+on:
+  push:
+    branches:
+      - audio-lab-al-poc-01
+    paths:
+      - "tools/audio_lab/**"
+      - "tests/test_audio_lab_al_poc_01.py"
+      - "data/audio/legacy_world_ir.json"
+      - "data/backup/source_fingerprints.json"
+      - ".github/workflows/audio-lab.yml"
+  pull_request:
+    paths:
+      - "tools/audio_lab/**"
+      - "tests/test_audio_lab_al_poc_01.py"
+      - "data/audio/legacy_world_ir.json"
+      - "data/backup/source_fingerprints.json"
+      - ".github/workflows/audio-lab.yml"
+  workflow_dispatch:
+
+jobs:
+  source-safe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile Audio Lab
+        run: python -m compileall -q tools/audio_lab
+      - name: Run AL-POC-01 tests
+        run: python -m unittest discover -s tests -p "test_audio_lab_al_poc_01.py" -v
