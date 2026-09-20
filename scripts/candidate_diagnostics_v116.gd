@@ -26,6 +26,7 @@ const REQUIRED_CORE_RESOURCES := [
 # Physical Candidate audio resources required for G06 readiness. Original
 # Miles pan/volume parity remains a separate forensic HOLD.
 const REQUIRED_CANDIDATE_AUDIO := [
+    "res://assets/audio/797TAP.WAV",
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
@@ -74,6 +75,12 @@ func _ready() -> void:
         "checkpoint": BUILD_CHECKPOINT,
         "file_logging": file_logging_enabled
     })
+    print("OPENAZRAEL_CANDIDATE_STARTUP_READY " + JSON.stringify({
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", ""))
+    }))
 
 func _exit_tree() -> void:
     if run_id.is_empty():
