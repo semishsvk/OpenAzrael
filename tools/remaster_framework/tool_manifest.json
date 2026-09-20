@@ -305,6 +305,22 @@
       "maturity": "legacy"
     },
     {
+      "tool_id": "asset_lab_selection_validator",
+      "family": "project_release",
+      "description": "Validate source-safe, evidence-bound manual production selections shared across Texture, Audio, Localization, and future asset labs.",
+      "entrypoint": "tools/remaster_framework/asset_lab.py",
+      "inputs": [
+        "production_selection"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "world_puzzle_sound_bridge_audit",
       "family": "audio_lab",
       "description": "Analyze the recovered bridge between world actions, puzzle events, and sound records.",
