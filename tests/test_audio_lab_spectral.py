@@ -18,6 +18,7 @@ from tools.audio_lab.oa_audio_spectral import (
     spectral_metrics,
     spectrogram_preview,
     stft_power,
+    temporal_metrics,
     write_grayscale_png,
 )
 
@@ -29,6 +30,38 @@ def write_pcm16_wave(path: Path, samples: np.ndarray, sample_rate: int=8000) -> 
     path.write_bytes(b"RIFF"+struct.pack("<I",len(body))+body)
 
 class AudioLabSpectralTests(unittest.TestCase):
+    def test_temporal_metrics_for_impulse(self):
+        x=np.zeros(1000,dtype=np.float64)
+        x[800]=1.0
+        m=temporal_metrics(x,1000)
+        self.assertAlmostEqual(m["peak_position_seconds"],0.8,places=9)
+        self.assertAlmostEqual(m["temporal_energy_centroid_seconds"],0.8,places=9)
+        self.assertAlmostEqual(m["energy_p10_seconds"],0.8,places=9)
+        self.assertAlmostEqual(m["energy_p50_seconds"],0.8,places=9)
+        self.assertAlmostEqual(m["energy_p90_seconds"],0.8,places=9)
+        self.assertEqual(m["energy_span_10_90_seconds"],0.0)
+        self.assertEqual(m["head_energy_ratio_10pct"],0.0)
+        self.assertEqual(m["tail_energy_ratio_10pct"],0.0)
+
+    def test_temporal_metrics_for_uniform_energy(self):
+        x=np.ones(1000,dtype=np.float64)
+        m=temporal_metrics(x,1000)
+        self.assertAlmostEqual(m["temporal_energy_centroid_ratio"],0.5,delta=0.002)
+        self.assertAlmostEqual(m["energy_p10_ratio"],0.1,delta=0.002)
+        self.assertAlmostEqual(m["energy_p50_ratio"],0.5,delta=0.002)
+        self.assertAlmostEqual(m["energy_p90_ratio"],0.9,delta=0.002)
+        self.assertAlmostEqual(m["head_energy_ratio_10pct"],0.1,delta=0.002)
+        self.assertAlmostEqual(m["tail_energy_ratio_10pct"],0.1,delta=0.002)
+
+    def test_temporal_metrics_for_silence_are_finite_zero(self):
+        m=temporal_metrics(np.zeros(100,dtype=np.float64),8000)
+        self.assertEqual(m["peak_position_seconds"],0.0)
+        self.assertEqual(m["temporal_energy_centroid_seconds"],0.0)
+        self.assertEqual(m["energy_span_10_90_seconds"],0.0)
+        self.assertEqual(m["head_energy_ratio_10pct"],0.0)
+        self.assertEqual(m["tail_energy_ratio_10pct"],0.0)
+        self.assertTrue(all(math.isfinite(float(v)) for v in m.values()))
+
     def test_sine_frequency_metrics_are_close(self):
         sr=8000
         t=np.arange(sr,dtype=np.float64)/sr
