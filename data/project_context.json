@@ -179,7 +179,15 @@
     "kg001_source_safe_ci_workflow": ".github/workflows/kg001-source-safe.yml",
     "kg001_source_safe_ci_pre_v31_promotion": "PASS_RUN_28_COMMIT_ee6ff6560e673d5859f87cba668f4dc9bab06257",
     "kg001_source_safe_asset_preload_contract": "SOURCE_CONTRACT_PASS",
-    "kg001_windows_local_wrapper_contract": "SOURCE_CONTRACT_PASS"
+    "kg001_windows_local_wrapper_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_candidate2_asset_set_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_candidate2_asset_set_runtime": "NOT_EXECUTED",
+    "kg001_build_manifest_schema": "V2_RUNTIME_SOURCE_BOUND",
+    "kg001_exported_startup_smoke_contract": "SOURCE_CONTRACT_PASS",
+    "kg001_test_build_contract": "SOURCE_CONTRACT_PASS_V118",
+    "kg001_test_build_status": "NOT_EXECUTED",
+    "kg001_test_build_receipt_status": "NOT_EXECUTED",
+    "kg001_evidence_promotion_order": "AFTER_EXPORT_STARTUP_SMOKE_ON_WINDOWS_WRAPPER"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -190,7 +198,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "On Windows with an extracted ATDEMO corpus and pinned Godot 4.7.2, run tools/run_kg001_candidate2_windows_v117.ps1 (or the underlying canonical restore/runner commands). Require fresh-checkout + requested visual capture PASS, then export Windows Candidate 2 and complete G10 manually. Keep demo-known-good-001 blocked until Issues #6/#9/#11 are runtime/manual clean.",
+  "next_target": "On Windows with the extracted canonical ATDEMO corpus and pinned Godot 4.7.2, run tools/run_kg001_candidate2_windows_v117.ps1. Require complete asset-set PASS, canonical fresh-checkout + visual capture PASS, Windows export PASS, exported EXE startup-smoke PASS and a READY_FOR_G10_MANUAL_TEST receipt. Then perform G10 manually; keep Issues #6/#9/#11 and demo-known-good-001 blocked until manual/runtime evidence is clean.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -405,5 +413,26 @@
     "windows_local_wrapper": "tools/run_kg001_candidate2_windows_v117.ps1",
     "windows_local_wrapper_validator": "tools/validate_candidate2_windows_wrapper_v117.py",
     "windows_local_wrapper_runtime": "NOT_EXECUTED"
+  },
+  "kg001_v118": {
+    "status": "SOURCE_CONTRACT_PASS",
+    "asset_set_validator": "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "asset_requirements": {
+      "rooms": 3,
+      "runtime_audio": 8,
+      "classic_textures": 86,
+      "indexed_colorkey_textures": 10
+    },
+    "build_manifest_schema_version": 2,
+    "promotion_helper": "tools/promote_kg001_candidate_results_v118.py",
+    "test_build_contract": "data/tests/kg001_test_build_contract_v118.json",
+    "test_build_contract_validator": "tools/validate_kg001_test_build_contract_v118.py",
+    "windows_wrapper": "tools/run_kg001_candidate2_windows_v117.ps1",
+    "exported_startup_smoke": "SOURCE_CONTRACT_READY",
+    "test_build_receipt": ".tmp/kg001/kg001_test_build_receipt_v118.json",
+    "distribution_receipt": "exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
+    "ready_status": "READY_FOR_G10_MANUAL_TEST",
+    "runtime_status": "NOT_EXECUTED",
+    "boundary": "v118 source hardening defines when a Windows package is ready for G10 manual testing. It cannot close Issues #6/#9/#11 or authorize demo-known-good-001."
   }
 }
