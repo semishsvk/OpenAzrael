@@ -104,6 +104,10 @@ for p in [
     "tools/promote_kg001_candidate_results_v118.py",
     "data/tests/kg001_test_build_contract_v118.json",
     "tools/validate_kg001_test_build_contract_v118.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
 ]:
     req(p)
 
@@ -294,6 +298,19 @@ try:
         errors.append("KG-001 Godot toolchain pin drift")
 except Exception as e:
     errors.append(f"KG-001 toolchain contract: {e}")
+
+try:
+    tb=json.loads((ROOT/"data/tests/kg001_test_build_contract_v118.json").read_text(encoding="utf-8"))
+    if tb.get("status")!="SOURCE_CONTRACT_PASS" or tb.get("version")!=118:
+        errors.append("KG-001 v118 test-build contract drift")
+    if tb.get("ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 test-build ready-status drift")
+    if tb.get("release_blockers_close_automatically") is not False:
+        errors.append("KG-001 v118 release-blocker boundary drift")
+    if tb.get("demo_known_good_tag_allowed") is not False:
+        errors.append("KG-001 v118 known-good boundary drift")
+except Exception as e:
+    errors.append(f"KG-001 v118 test-build contract: {e}")
 
 try:
     vc=json.loads((ROOT/"data/tests/kg001_visual_capture_contract_v117.json").read_text(encoding="utf-8"))
