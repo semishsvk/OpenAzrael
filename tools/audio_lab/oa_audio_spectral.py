@@ -193,15 +193,15 @@ def spectral_metrics(samples: np.ndarray, sample_rate: int, power: np.ndarray, f
 
 def _max_pool_2d(matrix: np.ndarray, target_rows: int, target_cols: int) -> np.ndarray:
     rows, cols = matrix.shape
-    target_rows = max(1, min(target_rows, rows))
-    target_cols = max(1, min(target_cols, cols))
+    if rows <= 0 or cols <= 0 or target_rows <= 0 or target_cols <= 0:
+        raise ValueError("pooling dimensions must be positive")
     out = np.empty((target_rows, target_cols), dtype=np.float64)
     for r in range(target_rows):
-        r0 = (r * rows) // target_rows
-        r1 = max(r0 + 1, ((r + 1) * rows) // target_rows)
+        r0 = min(rows - 1, (r * rows) // target_rows)
+        r1 = min(rows, max(r0 + 1, ((r + 1) * rows + target_rows - 1) // target_rows))
         for c in range(target_cols):
-            c0 = (c * cols) // target_cols
-            c1 = max(c0 + 1, ((c + 1) * cols) // target_cols)
+            c0 = min(cols - 1, (c * cols) // target_cols)
+            c1 = min(cols, max(c0 + 1, ((c + 1) * cols + target_cols - 1) // target_cols))
             out[r, c] = float(np.max(matrix[r0:r1, c0:c1]))
     return out
 
