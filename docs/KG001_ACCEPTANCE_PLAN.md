@@ -33,8 +33,10 @@ Exercise deterministic gameplay-state primitives and Event IR operations indepen
 ### G03 — Puzzle state-space exploration
 Enumerate every reachable state for the demo puzzle subset and all supported actions from each state. Detect dead states, unintended cycles, unreachable required states and softlocks. The expected successful path must remain reachable from every intended precondition state.
 
-### G04 — Room and transition state
+### G04 — Room, transition and physical traversal state
 Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of persistent state across transitions. Re-entering a room must not accidentally reset one-shot or solved state unless explicitly specified.
+
+This gate also requires asset-backed physical traversal through the production `CharacterBody3D` path. The automated suite must drive the real gameplay input actions over the canonical R1 starting floor and prove that the player does not fall through while moving. It must also traverse the imported R8 `step011` staircase both upward and downward using the real player capsule, collision layers/masks, gravity and `player.gd`; a raycast-only floor check, stationary settle, synthetic proxy staircase, or teleport-to-result is not sufficient evidence.
 
 ### G05 — Trigger semantics
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
