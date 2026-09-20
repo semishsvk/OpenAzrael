@@ -4,6 +4,7 @@ class_name OpenAzraelPPPVObserver
 var evidence: PPPVEvidenceBus
 var state: Node
 var legacy_events: Node
+var diagnostics: Node
 
 var _inventory_snapshot: Dictionary = {}
 var _flags_snapshot: Dictionary = {}
@@ -12,11 +13,13 @@ var _puzzle_snapshot: Dictionary = {}
 func _init(
     evidence_bus: PPPVEvidenceBus,
     demo_state: Node,
-    legacy_event_runner: Node
+    legacy_event_runner: Node,
+    candidate_diagnostics: Node = null
 ) -> void:
     evidence = evidence_bus
     state = demo_state
     legacy_events = legacy_event_runner
+    diagnostics = candidate_diagnostics
 
 func _state_dict(property_name: String) -> Dictionary:
     var value = state.get(property_name)
@@ -44,6 +47,11 @@ func attach() -> void:
         legacy_events,
         "logical_audio_event",
         Callable(self, "_on_logical_audio")
+    )
+    _connect_once(
+        diagnostics,
+        "event_recorded",
+        Callable(self, "_on_candidate_event")
     )
 
 func attach_interaction(interaction: Node) -> void:
@@ -145,3 +153,35 @@ func _on_logical_audio(filename: String) -> void:
 
 func _on_demo_action_step(step: String) -> void:
     evidence.record_demo_action_step(step)
+
+func _on_candidate_event(entry: Dictionary) -> void:
+    var kind := String(entry.get("kind", ""))
+    var data = entry.get("data", {})
+    if not data is Dictionary:
+        data = {}
+
+    match kind:
+        "interaction":
+            evidence.record("trigger", {
+                "target": String(data.get("target", "")),
+                "activated": true,
+                "mechanism": "interaction_dispatch"
+            })
+        "trigger_enter":
+            evidence.record("trigger", {
+                "room": String(data.get("room", "")),
+                "target": String(data.get("trigger", "")),
+                "activated": true,
+                "edge": "ENTER",
+                "mechanism": "world_trigger"
+            })
+        "trigger_exit":
+            evidence.record("trigger", {
+                "room": String(data.get("room", "")),
+                "target": String(data.get("trigger", "")),
+                "activated": false,
+                "edge": "EXIT",
+                "mechanism": "world_trigger"
+            })
+        "room_transition":
+            evidence.record("room_transition", data.duplicate(true))
