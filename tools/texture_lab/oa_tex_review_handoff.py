@@ -70,6 +70,11 @@ def render_handoff(
                     pack.get("detail_comparison"),
                     output,
                 ),
+                image_block(
+                    "Alpha evidence",
+                    pack.get("alpha_preview"),
+                    output,
+                ),
                 image_block("Repeat tile preview", pack.get("tile_preview"), output),
             ]
         )
