@@ -40,6 +40,7 @@ from oa_tex_ai_bakeoff import (
     run_instance_id,
     validate_named_preset_contract,
 )
+from oa_tex_asset_status import build_asset_status
 from oa_tex_atlas import split_equal, stitch_equal
 from oa_tex_comfy_doctor import EXPECTED_INPUTS, evaluate_object_info
 from oa_tex_compare import _fit_preview
@@ -1904,6 +1905,133 @@ class TextureLabRTPOC01Tests(unittest.TestCase):
             "transparency_classification_ambiguous",
             rows[0]["attention"],
         )
+
+    def test_asset_status_dashboard_is_passive_and_evidence_based(self):
+        plan = {
+            "rows": [
+                {
+                    "id": "WEL_PUZ1",
+                    "review_order": 1,
+                    "priority": "P1",
+                    "room": "R7",
+                    "content_class": "mechanical_puzzle",
+                    "treatment_class": "conservative",
+                    "repeat_sampling_observed": False,
+                },
+                {
+                    "id": "CORIROCK",
+                    "review_order": 2,
+                    "priority": "P2",
+                    "room": "R1",
+                    "content_class": "rock_organic_surface",
+                    "treatment_class": "safe_upscale",
+                    "repeat_sampling_observed": True,
+                },
+            ]
+        }
+        availability = {
+            "rows": [
+                {
+                    "id": "WEL_PUZ1",
+                    "reference_ready": True,
+                    "visual_review_status": "READY_WITH_CURRENT_AI_EVIDENCE",
+                    "classic": {"status": "PRESENT"},
+                    "enhanced": {"status": "PRESENT"},
+                    "available_ai_candidate_count": 1,
+                    "ai": [
+                        {
+                            "tier": "ai_restored",
+                            "stage": "restored_smoke_4",
+                            "stage_evidence_status": "PASS",
+                            "candidate": {"sha256": "a" * 64},
+                            "available": True,
+                        },
+                        {
+                            "tier": "ai_recreated",
+                            "stage": "recreated_smoke_4",
+                            "stage_evidence_status": "MISSING",
+                            "candidate": None,
+                            "available": False,
+                        },
+                    ],
+                },
+                {
+                    "id": "CORIROCK",
+                    "reference_ready": False,
+                    "visual_review_status": "BLOCKED_REFERENCE_INPUTS",
+                    "classic": {"status": "PRESENT"},
+                    "enhanced": {"status": "MISSING"},
+                    "available_ai_candidate_count": 0,
+                    "ai": [],
+                },
+            ]
+        }
+        production = {
+            "status": "PASS",
+            "rows": [
+                {
+                    "texture_id": "WEL_PUZ1",
+                    "status": "PASS",
+                }
+            ],
+        }
+        classic_manifest = {
+            "textures": [
+                {
+                    "id": "WEL_PUZ1",
+                    "transparency_mode": "opaque",
+                    "transparency_review_required": False,
+                },
+                {
+                    "id": "CORIROCK",
+                    "transparency_mode": "true_alpha",
+                    "transparency_review_required": False,
+                },
+            ]
+        }
+
+        status = build_asset_status(
+            plan,
+            availability,
+            production,
+            classic_manifest,
+        )
+
+        self.assertEqual(
+            status["schema"],
+            "openazrael.texture_lab.asset_status.v1",
+        )
+        self.assertFalse(status["automatic_selection"])
+        self.assertFalse(status["automatic_quality_verdict"])
+        self.assertFalse(status["automatic_production_promotion"])
+        self.assertEqual(status["texture_count"], 2)
+
+        rows = {row["id"]: row for row in status["rows"]}
+        puzzle = rows["WEL_PUZ1"]
+        self.assertTrue(puzzle["puzzle_critical"])
+        self.assertEqual(puzzle["transparency_mode"], "opaque")
+        self.assertEqual(
+            puzzle["ai_restored"]["status"],
+            "CURRENT_EVIDENCE",
+        )
+        self.assertEqual(
+            puzzle["ai_recreated"]["status"],
+            "PENDING_STAGE",
+        )
+        self.assertEqual(
+            puzzle["production_selection"],
+            "EXPLICIT_CURRENT",
+        )
+        self.assertEqual(
+            puzzle["overall_status"],
+            "PRODUCTION_SELECTED_CURRENT",
+        )
+
+        rock = rows["CORIROCK"]
+        self.assertFalse(rock["puzzle_critical"])
+        self.assertEqual(rock["transparency_mode"], "true_alpha")
+        self.assertEqual(rock["ai_restored"]["status"], "NOT_ELIGIBLE")
+        self.assertEqual(rock["overall_status"], "REFERENCE_BLOCKED")
 
     def test_qwen_bootstrap_verifies_exact_file_identity(self):
         with tempfile.TemporaryDirectory() as td:
