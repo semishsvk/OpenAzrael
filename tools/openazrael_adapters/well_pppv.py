@@ -82,7 +82,12 @@ def adapt_well_tongs_contract(
     positive = ValidationScenario(
         scenario_id="openazrael.r7.well_tongs.positive",
         room=room,
-        setup={"inventory": {item: True}, "reset_room_state": True},
+        setup={
+            "inventory": {item: True},
+            "reset_room_state": True,
+            "spawn_view": "view",
+            "lock_room_transitions": True,
+        },
         actions=actions,
         requirements=(
             EvidenceRequirement(
@@ -131,7 +136,12 @@ def adapt_well_tongs_contract(
     negative = ValidationScenario(
         scenario_id="openazrael.r7.well_tongs.negative_without_tongs",
         room=room,
-        setup={"inventory": {item: False}, "reset_room_state": True},
+        setup={
+            "inventory": {item: False},
+            "reset_room_state": True,
+            "spawn_view": "view",
+            "lock_room_transitions": True,
+        },
         actions=actions,
         requirements=(
             EvidenceRequirement(
