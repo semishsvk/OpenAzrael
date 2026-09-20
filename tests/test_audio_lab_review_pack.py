@@ -61,6 +61,15 @@ class AudioLabReviewPackTests(unittest.TestCase):
         self.assertEqual(pack["assets"][0]["priority"], "P0")
         self.assertIn("BROKEN_RUNTIME_REFERENCE", pack["assets"][0]["reasons"])
 
+    def test_mapped_asset_suppresses_stale_no_runtime_info(self):
+        manifest = {"assets":[source_asset("A.wav", [
+            {"code":"AUD010_NO_RUNTIME_REFERENCE","severity":"info","message":"scanner did not recover mapping"}
+        ])]}
+        refs = {"assets":[mapping("A.wav","MAPPED",["EVENT_GRAPH"])],"broken_references":[]}
+        pack = build_review_pack(manifest, refs)
+        self.assertEqual(pack["assets"][0]["priority"], "P4")
+        self.assertEqual(pack["assets"][0]["reasons"], [])
+
     def test_expected_unmapped_is_review_not_blocker(self):
         manifest = {"assets":[source_asset("A.wav")]}
         refs = {"assets":[mapping("A.wav","EXPECTED_UNMAPPED")],"broken_references":[]}
