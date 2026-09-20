@@ -123,6 +123,31 @@ class AudioLabSpectralTests(unittest.TestCase):
         self.assertEqual(records[0]["spectral_outliers"],[])
         self.assertIn("review-only",summary["policy"])
 
+    def test_dc_outlier_policy_flags_high_not_unusually_low(self):
+        dc_values=[0.002,0.0025,0.003,0.0022,0.0028,0.000001,0.08]
+        records=[]
+        for i,dc in enumerate(dc_values):
+            records.append({
+                "filename":f"D{i}.wav","sample_rate":8000,
+                "dominant_frequency_hz":500.0,
+                "spectral_centroid_hz":1000.0,
+                "spectral_bandwidth_hz":500.0,
+                "spectral_rolloff_85_hz":1500.0,
+                "spectral_flatness":0.1,
+                "high_frequency_energy_ratio":0.01,
+                "dc_offset":dc,
+                "crest_factor":2.0,
+                "zero_crossing_rate":0.1,
+            })
+        summary=annotate_spectral_outliers(records,threshold=3.5)
+        low=[x for x in records[-2]["spectral_outliers"] if x["metric"]=="abs_dc_offset"]
+        high=[x for x in records[-1]["spectral_outliers"] if x["metric"]=="abs_dc_offset"]
+        self.assertEqual(low,[])
+        self.assertEqual(len(high),1)
+        self.assertEqual(high[0]["score_transform"],"log10")
+        self.assertEqual(high[0]["direction"],"high")
+        self.assertGreaterEqual(summary["flagged_assets"],1)
+
     def test_small_sets_do_not_invent_distribution_outliers(self):
         records=[{
             "filename":f"R{i}.wav","sample_rate":8000,
