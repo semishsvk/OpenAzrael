@@ -93,6 +93,92 @@ def should_apply_legacy_colorkey(path: Path, image: Image.Image) -> bool:
     return int(legacy_colorkey_stats(image)["pixels"]) > 0
 
 
+def alpha_coverage_stats(image: Image.Image) -> dict[str, float | int]:
+    alpha = image.convert("RGBA").getchannel("A")
+    histogram = alpha.histogram()
+    transparent = int(histogram[0])
+    opaque = int(histogram[255])
+    partial = int(sum(histogram[1:255]))
+    total = int(sum(histogram))
+    return {
+        "transparent_pixels": transparent,
+        "partial_alpha_pixels": partial,
+        "opaque_pixels": opaque,
+        "transparent_fraction": (float(transparent) / float(total)) if total else 0.0,
+        "partial_alpha_fraction": (float(partial) / float(total)) if total else 0.0,
+    }
+
+
+def classify_transparency(path: Path, image: Image.Image) -> dict[str, object]:
+    """Classify decoded PNG transparency without inventing legacy semantics.
+
+    The legacy '#' + quantized-magenta rule remains intentionally conservative.
+    Suspicious-but-unproven cases are marked ambiguous and must not be
+    destructively color-keyed automatically.
+    """
+    key_stats = legacy_colorkey_stats(image)
+    alpha_stats = alpha_coverage_stats(image)
+    named_colorkey = "#" in path.stem
+    observed_magenta = int(key_stats["pixels"]) > 0
+
+    if named_colorkey and observed_magenta:
+        mode = "palette_colorkey"
+        review_required = False
+        reason = "legacy_hash_name_plus_quantized_magenta"
+    elif named_colorkey or observed_magenta:
+        mode = "ambiguous"
+        review_required = True
+        reason = (
+            "legacy_hash_name_without_quantized_magenta"
+            if named_colorkey
+            else "quantized_magenta_without_legacy_hash_name"
+        )
+    elif (
+        int(alpha_stats["transparent_pixels"]) > 0
+        or int(alpha_stats["partial_alpha_pixels"]) > 0
+    ):
+        mode = "true_alpha"
+        review_required = False
+        reason = "decoded_png_contains_nonopaque_alpha"
+    else:
+        mode = "opaque"
+        review_required = False
+        reason = "no_transparency_evidence"
+
+    return {
+        "mode": mode,
+        "manual_review_required": review_required,
+        "reason": reason,
+        **alpha_stats,
+    }
+
+
+def alpha_mask_mismatch_pixels(
+    source_alpha: Image.Image,
+    candidate_alpha: Image.Image,
+) -> int:
+    expected = source_alpha.convert("L").resize(
+        candidate_alpha.size,
+        RESAMPLE["nearest"],
+    )
+    actual = candidate_alpha.convert("L")
+    diff = ImageChops.difference(expected, actual)
+    histogram = diff.histogram()
+    return int(sum(histogram[1:]))
+
+
+def transparent_rgb_nonzero_pixels(image: Image.Image) -> int:
+    rgba = image.convert("RGBA")
+    px = rgba.load()
+    count = 0
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            r, g, b, a = px[x, y]
+            if a == 0 and (r != 0 or g != 0 or b != 0):
+                count += 1
+    return count
+
+
 def apply_legacy_colorkey(image: Image.Image) -> Image.Image:
     rgba = image.convert("RGBA")
     px = rgba.load()
