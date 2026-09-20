@@ -177,7 +177,8 @@
     "kg001_visual_capture_runtime": "NOT_EXECUTED",
     "kg001_windows_export_contract": "SOURCE_CONTRACT_PASS",
     "kg001_source_safe_ci_workflow": ".github/workflows/kg001-source-safe.yml",
-    "kg001_source_safe_ci_pre_v31_promotion": "PASS_RUN_28_COMMIT_ee6ff6560e673d5859f87cba668f4dc9bab06257"
+    "kg001_source_safe_ci_pre_v31_promotion": "PASS_RUN_28_COMMIT_ee6ff6560e673d5859f87cba668f4dc9bab06257",
+    "kg001_source_safe_asset_preload_contract": "SOURCE_CONTRACT_PASS"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -397,6 +398,8 @@
       "conclusion": "SUCCESS"
     },
     "runtime_boundary": "Candidate 2 restored-asset runtime and G10 remain required; source/CI PASS does not close Issues #6/#9/#11.",
-    "visual_capture_orchestration": "tools/run_kg001_candidate_v112.py --visual-capture"
+    "visual_capture_orchestration": "tools/run_kg001_candidate_v112.py --visual-capture",
+    "source_safe_asset_loading_validator": "tools/validate_source_safe_asset_loading_v117.py",
+    "godot_parse_log_policy": "FAIL_ON_SCRIPT_OR_AUTOLOAD_ERRORS_EVEN_IF_GODOT_EXIT_ZERO"
   }
 }
