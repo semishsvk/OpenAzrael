@@ -141,26 +141,26 @@ func _execute_action(
                 if current_room == null:
                     failures.append(action_id + ":missing_current_room")
                     return false
-                var result: Dictionary = await navigator.approach_interactable(
+                var nav_result: Dictionary = await navigator.approach_interactable(
                     action_id,
                     goal_target,
                     current_room,
                     int(params.get("max_frames", 600)),
                     int(params.get("stuck_frames", 120))
                 )
-                if not bool(result.get("reached", false)):
+                if not bool(nav_result.get("reached", false)):
                     failures.append(action_id + ":navigation_failed")
                     return false
                 return true
 
             var input_action := StringName(String(action.get("input_action", "")))
-            var frames := int(action.get("frames", params.get("frames", 60)))
-            var result: Dictionary = await driver.walk_input(
+            var walk_frames := int(action.get("frames", params.get("frames", 60)))
+            var walk_result: Dictionary = await driver.walk_input(
                 action_id,
                 input_action,
-                frames
+                walk_frames
             )
-            if result.is_empty():
+            if walk_result.is_empty():
                 failures.append(action_id + ":movement_failed")
                 return false
             return true
@@ -189,8 +189,8 @@ func _execute_action(
             return true
 
         "wait":
-            var frames := int(action.get("frames", params.get("frames", 1)))
-            await _settle_physics(maxi(frames, 1))
+            var wait_frames := int(action.get("frames", params.get("frames", 1)))
+            await _settle_physics(maxi(wait_frames, 1))
             return true
 
         _:
