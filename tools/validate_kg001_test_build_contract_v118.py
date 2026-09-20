@@ -22,6 +22,8 @@ checks={
     "runtime_receipt_path":contract.get("runtime_receipt")==".tmp/kg001/kg001_test_build_receipt_v118.json",
     "distribution_receipt_path":contract.get("distribution_receipt")=="exports/OpenAzrael-KG001-Candidate2-v116.test-build.json",
     "distribution_testing_guide":contract.get("distribution_testing_guide")=="exports/OpenAzrael-KG001-Candidate2-v116.TESTING.txt",
+    "distribution_build_manifest":contract.get("distribution_build_manifest")=="exports/OpenAzrael-KG001-Candidate2-v116.build-manifest.json",
+    "distribution_checksum_manifest":contract.get("distribution_checksum_manifest")=="exports/OpenAzrael-KG001-Candidate2-v116.SHA256SUMS",
     "wrapper_receipt_schema":"openazrael.kg001.test_build_receipt" in wrapper,
     "wrapper_receipt_v118":"version = 118" in wrapper,
     "wrapper_ready_status":"READY_FOR_G10_MANUAL_TEST" in wrapper,
@@ -74,6 +76,16 @@ checks={
         "executable_sha256",
         "pck_sha256",
         "build_manifest_sha256",
+    ]),
+    "wrapper_distribution_manifest":all(token in wrapper for token in [
+        "OpenAzrael-KG001-Candidate2-v116.build-manifest.json",
+        "distributionBuildManifestSha256",
+        "Distributed build-manifest sidecar does not match",
+    ]),
+    "wrapper_sha256sums":all(token in wrapper for token in [
+        "OpenAzrael-KG001-Candidate2-v116.SHA256SUMS",
+        "checksumFiles",
+        "Get-FileHash -Algorithm SHA256",
     ]),
     "wrapper_manual_pending":"manual_pending" in wrapper,
     "wrapper_testing_guide":all(token in wrapper for token in [
