@@ -1,20 +1,32 @@
 {
   "schema": "openazrael.audio_lab.al_poc_01_contract",
-  "version": 1,
+  "version": 2,
   "milestone": "AL-POC-01",
   "title": "Source-Safe Audio Inventory & QA",
   "scope": {
     "source_mutation_allowed": false,
     "runtime_mutation_allowed": false,
     "audio_enhancement_allowed": false,
-    "ai_restoration_allowed": false
+    "ai_restoration_allowed": false,
+    "output_inside_source_allowed": false
   },
   "canonical_demo_evidence": {
     "source": "data/audio/legacy_world_ir.json",
     "expected_audio_assets": 30,
-    "channels": [1],
-    "sample_width_bits": [8],
-    "sample_rates_hz": [11025, 22050, 22222]
+    "channels": [
+      1
+    ],
+    "sample_width_bits": [
+      8
+    ],
+    "sample_rates_hz": [
+      11025,
+      22050,
+      22222
+    ],
+    "canonical_source_evidence": "data/audio_lab/al_poc_01_canonical_source_evidence.json",
+    "source_tree_sha256": "d7a283d07b948249827d026d932dd5716101f48e452112f1248c95dd5cb47cba",
+    "status": "PASS"
   },
   "mapping_policy": {
     "MAPPED": "production runtime mapping recovered",
@@ -37,9 +49,13 @@
     "review_pack_not_blocked",
     "source_digest_present",
     "inventory_count_matches",
-    "audio_lab_ci_green"
+    "audio_lab_ci_green",
+    "canonical_source_evidence_pass",
+    "repo_mapping_drift_pass",
+    "output_isolation_pass"
   ],
   "required_outputs": [
+    "canonical_source_report.json",
     "audio_manifest.json",
     "audio_inventory.csv",
     "audio_qa_report.json",
@@ -57,5 +73,9 @@
     "loudness_normalization",
     "ai_restoration",
     "runtime_asset_replacement"
+  ],
+  "required_committed_evidence": [
+    "data/audio_lab/al_poc_01_canonical_source_evidence.json",
+    "data/audio_lab/al_poc_01_repo_mapping_baseline.json"
   ]
 }
