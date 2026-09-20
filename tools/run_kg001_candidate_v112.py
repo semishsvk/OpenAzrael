@@ -30,6 +30,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
     [sys.executable,"tools/validate_kg001_audio_runtime_v116.py"],
     [sys.executable,"tools/validate_kg001_texture_colorkey_v116.py"],
+    [sys.executable,"tools/validate_kg001_export_preset_v117.py"],
 ]
 
 RUNTIMES=[
@@ -113,6 +114,23 @@ def main():
     godot=find_godot(args.godot)
     source=[]
     source_ok=True
+
+    toolchain_cmd=[
+        sys.executable,
+        "tools/validate_kg001_toolchain_v117.py",
+    ]
+    if godot:
+        toolchain_cmd += ["--godot",godot,"--require-godot"]
+    toolchain_proc=run(toolchain_cmd)
+    toolchain_item={
+        "command":toolchain_cmd,
+        "returncode":toolchain_proc.returncode,
+        "status":"PASS" if toolchain_proc.returncode==0 else "FAIL",
+        "output":toolchain_proc.stdout[-12000:],
+    }
+    source.append(toolchain_item)
+    if toolchain_proc.returncode!=0:
+        source_ok=False
 
     manifest_cmd=[
         sys.executable,
