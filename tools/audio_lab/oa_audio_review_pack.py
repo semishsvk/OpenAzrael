@@ -6,6 +6,12 @@ from pathlib import Path
 import argparse
 import html
 import json
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from tools.audio_lab.common import ensure_output_outside_source
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -173,7 +179,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--source-root", type=Path)
     args = ap.parse_args(argv)
 
-    out = (args.output_dir or args.manifest.parent).resolve()
+    out_candidate = args.output_dir or args.manifest.parent
+    if args.source_root is not None:
+        try:
+            out = ensure_output_outside_source(args.source_root, out_candidate)
+        except ValueError as exc:
+            ap.error(str(exc))
+    else:
+        out = out_candidate.resolve()
     out.mkdir(parents=True, exist_ok=True)
     pack = build_review_pack(load_json(args.manifest), load_json(args.reference_report))
     json_path = out / "audio_review_pack.json"
