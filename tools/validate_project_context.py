@@ -68,8 +68,11 @@ def validate_runtime_evidence(quality):
     runtime_status_ok=(
         isinstance(runtime_status,dict)
         and all(runtime_status.get(name)=="PASS" for name in base_runtime_names)
-        and set(runtime_status).issubset(base_runtime_names|{"physical_v117"})
+        and set(runtime_status).issubset(
+            base_runtime_names | {"physical_v117", "well_tongs_v118"}
+        )
         and runtime_status.get("physical_v117","PASS")=="PASS"
+        and runtime_status.get("well_tongs_v118","PASS")=="PASS"
     )
     if (fresh.get("status")!="PASS" or fresh.get("commit_sha")!=evidence_commit
             or fresh.get("schema")!="openazrael.kg001.fresh_checkout" or fresh.get("version")!=112
@@ -96,6 +99,21 @@ def validate_runtime_evidence(quality):
                            for line in physical.get("_output_tail","").splitlines())):
                 errors.append("physical traversal v117 PASS requires successful runtime evidence at the tested commit")
 
+    well_tongs_path=ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json"
+    well_tongs_required=isinstance(runtime_status,dict) and "well_tongs_v118" in runtime_status
+    if well_tongs_required:
+        if not well_tongs_path.is_file():
+            errors.append("well+tongs fresh-checkout PASS requires v118 runtime evidence")
+        else:
+            well_tongs=read_json("data/tests/kg001_well_tongs_animation_runtime_v118.json")
+            if (well_tongs.get("status")!="PASS" or well_tongs.get("failed")!=[]
+                    or well_tongs.get("schema")!="openazrael.kg001.well_tongs_animation"
+                    or well_tongs.get("version")!=118 or well_tongs.get("_commit_sha")!=evidence_commit
+                    or well_tongs.get("_process_returncode")!=0 or well_tongs.get("engine_errors",[])!=[]
+                    or any(line.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))
+                           for line in well_tongs.get("_output_tail","").splitlines())):
+                errors.append("well+tongs v118 PASS requires successful runtime evidence at the tested commit")
+
     source=read_json("data/tests/kg001_source_validation_v112.json")
     required={
         "validate_project_context.py","validate_demo_runtime_ir.py","audit_gameplay_event_graph_v87.py",
@@ -105,6 +123,8 @@ def validate_runtime_evidence(quality):
     }
     if physical_required:
         required.add("validate_kg001_physical_traversal_v117.py")
+    if well_tongs_required:
+        required.add("validate_kg001_well_tongs_animation_v118.py")
     commands=source.get("commands",[])
     passed={Path(arg).name for item in commands if item.get("status")=="PASS" and item.get("returncode")==0
             for arg in item.get("command",[])}
@@ -150,6 +170,9 @@ for p in [
     "scripts/kg001_physical_traversal_runner_v117.gd",
     "tools/validate_kg001_physical_traversal_v117.py",
     "data/tests/kg001_physical_traversal_contract_v117.json",
+    "scripts/kg001_well_tongs_animation_runner_v118.gd",
+    "tools/validate_kg001_well_tongs_animation_v118.py",
+    "data/tests/kg001_well_tongs_animation_contract_v118.json",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
