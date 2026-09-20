@@ -65,7 +65,15 @@ class AudioLabRunPOCTests(unittest.TestCase):
             self.assertTrue(all(summary["gates"].values()))
             self.assertEqual(summary["inventory"]["assets"], 2)
             self.assertEqual(summary["inventory"]["runtime_mapped"], 2)
-            self.assertTrue((out / "audio_reference_report.json").is_file())
+            self.assertEqual(summary["inventory"]["expected_unmapped"], 0)
+            self.assertEqual(summary["inventory"]["unexpected_orphans"], 0)
+            self.assertEqual(summary["review"]["priority_counts"]["P4"], 2)
+            for name in (
+                "audio_reference_report.json",
+                "audio_review_pack.json",
+                "audio_review_pack.html",
+            ):
+                self.assertTrue((out / name).is_file(), name)
 
 if __name__ == "__main__":
     unittest.main()
