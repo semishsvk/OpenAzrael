@@ -93,17 +93,20 @@ def adapt_well_tongs_contract(
             EvidenceRequirement(
                 requirement_id="well_target_reachable",
                 kind="interaction_probe",
+                action_id="approach_well",
                 match={"target": target, "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="well_trigger",
                 kind="trigger",
+                action_id="interact_well",
                 match={"target": target, "activated": True},
                 after_requirement="well_target_reachable",
             ),
             EvidenceRequirement(
                 requirement_id="well_audio",
                 kind="audio",
+                action_id="interact_well",
                 match={"asset": sound},
                 after_requirement="well_trigger",
             ),
@@ -147,11 +150,13 @@ def adapt_well_tongs_contract(
             EvidenceRequirement(
                 requirement_id="well_target_reachable",
                 kind="interaction_probe",
+                action_id="approach_well",
                 match={"target": target, "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="well_trigger_dispatched",
                 kind="trigger",
+                action_id="interact_well",
                 match={"target": target, "activated": True},
                 after_requirement="well_target_reachable",
             ),
