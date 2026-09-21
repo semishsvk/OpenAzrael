@@ -17,6 +17,7 @@ from tools.openazrael_adapters.reference_graph import (
 )
 from tools.openazrael_adapters.r1_pppv import build_r1_interaction_scenarios
 from tools.openazrael_adapters.r7_pppv import build_r7_switchboard_scenarios
+from tools.openazrael_adapters.r8_pppv import build_r8_interaction_scenarios
 from tools.openazrael_adapters.transition_pppv import build_transition_scenarios
 from tools.remaster_framework.build_provenance import (
     build_provenance,
@@ -55,6 +56,7 @@ def _optional_hash(path: Path, inputs: dict[str, str], key: str) -> None:
 def _default_scenario_bundle(root: Path) -> dict[str, Any]:
     scenarios = list(build_r1_interaction_scenarios())
     scenarios.extend(build_r7_switchboard_scenarios())
+    scenarios.extend(build_r8_interaction_scenarios())
     scenarios.extend(build_transition_scenarios())
     physical = root / "data/tests/kg001_physical_traversal_contract_v117.json"
     if physical.is_file():
