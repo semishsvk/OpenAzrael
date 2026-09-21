@@ -7,6 +7,20 @@ from tools.remaster_framework.evaluate_playthrough import (
 )
 
 
+def replay_snapshot(frame: int, room: str) -> dict:
+    return {
+        "physics_frame": frame,
+        "room": room,
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0],
+        "velocity": [0.0, 0.0, 0.0],
+        "is_on_floor": True,
+        "floor_normal": [0.0, 1.0, 0.0],
+        "state_sha256": "a" * 64,
+        "state_payload": [],
+    }
+
+
 HASH = "a" * 64
 
 
@@ -134,11 +148,11 @@ def bundle() -> dict:
                     "action_id": "forward",
                     "kind": "move",
                     "command": scenario_payload()["actions"][0],
-                    "before": {"physics_frame": 0, "room": "R1"},
+                    "before": replay_snapshot(0, "R1"),
                     "trajectory": [
-                        {"physics_frame": 1, "position": [0.0, 0.0, 0.0]}
+                        {"physics_frame": 1, "room": "R1", "position": [0.0, 0.0, 0.0], "rotation": [0.0, 0.0, 0.0], "velocity": [0.0, 0.0, 0.0], "is_on_floor": True, "room_changed": False, "delta_y": 0.0, "drop_from_action_start": 0.0}
                     ],
-                    "after": {"physics_frame": 2, "room": "R1"},
+                    "after": replay_snapshot(2, "R1"),
                     "result": {"success": True, "failures": []},
                 }
             ],
