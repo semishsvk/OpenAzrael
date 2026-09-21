@@ -8,8 +8,9 @@
   "date": "",
   "critical_bugs": [],
   "reproducible_softlocks": [],
-  "notes": "Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md after G00-G09 PASS. Change status to PASS only if every required manual check succeeds, including Issue #6 floor support, Issue #9 human audibility, and Issue #11 visual color-key transparency.",
+  "notes": "Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md after G00-G09 PASS. Change status to PASS only if every required manual check succeeds, including Issue #6 floor support, Issue #9 human audibility, Issue #11 visual color-key transparency, and correct R1 KEYHOLE orientation.",
   "texture_colorkey_visual_check": "PENDING",
   "audio_audibility_check": "PENDING",
-  "floor_collision_check": "PENDING"
+  "floor_collision_check": "PENDING",
+  "keyhole_orientation_check": "PENDING"
 }
