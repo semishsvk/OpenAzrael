@@ -50,7 +50,17 @@
     "exported_startup_ready_marker_commit_binding": true,
     "test_build_receipt_v118": true,
     "visual_capture_receipt_run_commit_hash_binding_v118": true,
-    "test_build_never_auto_closes_release_blockers": true
+    "test_build_never_auto_closes_release_blockers": true,
+    "physical_traversal_v117_source_validation": true,
+    "physical_traversal_v117_runtime_capture": true,
+    "physical_traversal_v117_result_promotion": true,
+    "well_tongs_v118_source_validation": true,
+    "well_tongs_v118_runtime_capture": true,
+    "well_tongs_v118_result_promotion": true,
+    "g04_requires_v110_and_v117": true,
+    "g05_requires_v110_and_v118": true,
+    "triggered_audio_dual_probe_979tongs_s152v2": true,
+    "candidate2_runtime_audio_asset_count_9": true
   },
-  "runtime_boundary": "Source-safe CI validates the complete v118 build/readiness contract without commercial assets. Actual complete restore, runtime, graphical capture, Windows export/startup smoke and G10 remain NOT_EXECUTED."
+  "runtime_boundary": "Source-safe CI validates the PR12-hardened v118 build/readiness contract plus v117 physical traversal and v118 exact-demo well+tongs contracts without commercial assets. Candidate 2 manual runtime remains FAILED; complete restored-asset runtime, Windows export/startup smoke and receipt-bound G10 must be rerun."
 }
