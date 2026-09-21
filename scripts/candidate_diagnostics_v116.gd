@@ -27,6 +27,7 @@ const REQUIRED_CORE_RESOURCES := [
 # Miles pan/volume parity remains a separate forensic HOLD.
 const REQUIRED_CANDIDATE_AUDIO := [
     "res://assets/audio/797TAP.WAV",
+    "res://assets/audio/979TONGS.WAV",
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
