@@ -290,6 +290,57 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "pppv_action_executor",
+      "family": "validation_lab",
+      "description": "Execute generic PPPV move/look/interact/wait actions through the production player driver, navigator and InteractionProbe without teleport or direct gameplay calls.",
+      "entrypoint": "scripts/validation/pppv_action_executor.gd",
+      "inputs": [
+        "validation_action",
+        "production_runtime"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "godot_pppv_playthrough_runner",
+      "family": "validation_lab",
+      "description": "Execute an authoring-ready PPPV playthrough in one Godot scene and one continuous world state, with physical-player actions and explicit canonical-state save/load checkpoints.",
+      "entrypoint": "scripts/validation/pppv_playthrough_runner.gd",
+      "inputs": [
+        "playthrough_plan",
+        "pppv_scenario_bundle",
+        "production_godot_runtime"
+      ],
+      "outputs": [
+        "runtime_playthrough_bundle"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_playthrough_evaluator",
+      "family": "validation_lab",
+      "description": "Deterministically evaluate every embedded PPPV scenario, checkpoint roundtrip, runtime no-shortcut boundary, step order and final state hash from a chained playthrough bundle.",
+      "entrypoint": "tools/remaster_framework/evaluate_playthrough.py",
+      "inputs": [
+        "runtime_playthrough_bundle"
+      ],
+      "outputs": [
+        "playthrough_evaluation"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "kg001_physical_traversal_v117_validator",
       "family": "validation_lab",
       "description": "Validate that the v117 physical traversal runner exercises the production CharacterBody3D/Input/collision path over R1 floor and both R8 stair meshes without fake geometry or horizontal velocity injection.",
