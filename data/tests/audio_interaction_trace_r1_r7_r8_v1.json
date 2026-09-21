@@ -1,0 +1,11 @@
+{
+ "schema_version":1,
+ "model":"real-player interaction chain",
+ "required_trace":["player_action","trigger","audio_event","emitter","asset_request","state_change"],
+ "cases":[
+  {"id":"audio.r8.lens_place","room":"R8","action":"place r8_lens","trigger":"R8_LENS_PLACE","sound_id":"r8.s137.font3","expected_state":{"R8LensPlace":true},"confidence":"HIGH"},
+  {"id":"audio.r8.optical_start","room":"R8","action":"activate optical puzzle","trigger":"R8_OPTICAL_START","sound_id":"r8.s121.door","expected_state":{"R8RaiseTimer":true},"confidence":"HIGH"},
+  {"id":"audio.r7.tongs_well","room":"R7","action":"use tongs on well","trigger":"HOLD","sound_id":"r7.979tongs.well","expected_state":"HOLD","confidence":"HOLD","note":"Do not fake PASS: exact action->trigger->state binding requires evidence/runtime observation."}
+ ],
+ "traversal":{"path":["R1","R7","R1","R8"],"assert":"deterministic ordered audio trace; no gameplay-state mutation from audio mode switch"}
+}
