@@ -30,6 +30,10 @@ class BugReportFrameworkContextSourceTests(unittest.TestCase):
             "res://data/runtime/pppv_coverage.json",
             self.helper,
         )
+        self.assertIn(
+            "res://data/runtime/pppv_playthrough_evaluation.json",
+            self.helper,
+        )
         for forbidden in (
             "res://assets/rooms/",
             "res://assets/audio/",
@@ -42,6 +46,7 @@ class BugReportFrameworkContextSourceTests(unittest.TestCase):
         self.assertIn('"remaster.build_provenance"', self.helper)
         self.assertIn('"remaster.release_gate_summary"', self.helper)
         self.assertIn('"remaster.validation_coverage"', self.helper)
+        self.assertIn('"remaster.playthrough_evaluation"', self.helper)
         self.assertIn("schema_mismatch", self.helper)
         self.assertIn("too_large", self.helper)
         self.assertIn("HashingContext.HASH_SHA256", self.helper)
