@@ -65,13 +65,18 @@ except Exception as e:
 with tempfile.TemporaryDirectory(prefix="oa_colorkey_") as td:
     td=Path(td); texdir=td/"textures"; texdir.mkdir()
     Image.fromarray(keyed,"RGBA").save(texdir/"MASK#.png")
+    Image.fromarray(keyed,"RGBA").save(texdir/"KEYHOLE#.png")
     xaf=td/"TEST.XAF"
-    xaf.write_text('''material "CUTOUT" {\n texture "mask#.gif"\n colour { 1 1 1 1 }\n}\nobject "quad" {\n matrix { 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 }\n mesh {\n  vertices { 0 0 0  1 0 0  1 1 0  0 1 0 }\n  normals { 0 0 1  0 0 1  0 0 1  0 0 1 }\n  texture_coordinates { 0 0  1 0  1 1  0 1 }\n  faces {\n   4 0 0 1 1 2 2 3 3\n  }\n  material "CUTOUT"\n }\n}\n''',encoding="latin1")
+    xaf.write_text('''material "CUTOUT" {\n texture "keyhole#.gif"\n colour { 1 1 1 1 }\n}\nobject "quad" {\n matrix { 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 }\n mesh {\n  vertices { 0 0 0  1 0 0  1 1 0  0 1 0 }\n  normals { 0 0 1  0 0 1  0 0 1  0 0 1 }\n  texture_coordinates { 0 0  1 0  1 1  0 1 }\n  faces {\n   4 0 0 1 1 2 2 3 3\n  }\n  material "CUTOUT"\n }\n}\n''',encoding="latin1")
     scene,objs,prims,mats,resolved,missing=parse(xaf,texdir)
     check("synthetic_export_no_missing",not missing)
     check("synthetic_export_mask",len(prims)==1 and prims[0].get("alpha_mode")=="MASK")
-    mat=list(scene.geometry.values())[0].visual.material if scene.geometry else None
+    geom=list(scene.geometry.values())[0] if scene.geometry else None
+    mat=geom.visual.material if geom is not None else None
     check("synthetic_pbr_mask",mat is not None and getattr(mat,"alphaMode",None)=="MASK" and float(getattr(mat,"alphaCutoff",0))==0.5)
+    expected_uv=np.array([[0.,1.],[1.,1.],[1.,0.],[0.,0.]],dtype=float)
+    check("synthetic_keyhole_flip_v",geom is not None and np.allclose(np.asarray(geom.visual.uv),expected_uv))
+    check("synthetic_keyhole_manifest_correction",len(prims)==1 and prims[0].get("uv_correction")=="FLIP_V_CANDIDATE3_KEYHOLE")
 
 # Asset-backed validation after restore.
 texture_dir=ROOT/"assets/textures/classic"; room_dir=ROOT/"assets/rooms"
@@ -114,12 +119,14 @@ if asset_backed:
         keys=[x for x in r1.get("primitives",[]) if str(x.get("resolved_png"))=="KEYHOLE#.png"]
         tong=by_obj.get("TONG6")
         check("asset_r1_keyhole_mask",bool(keys) and all(x.get("alpha_mode")=="MASK" for x in keys))
+        check("asset_r1_keyhole_orientation",bool(keys) and all(x.get("uv_correction")=="FLIP_V_CANDIDATE3_KEYHOLE" for x in keys))
         check("asset_r1_tongs_mask",tong is not None and tong.get("resolved_png")=="MINETON#.png" and tong.get("alpha_mode")=="MASK")
+        check("asset_r1_tongs_not_uv_flipped",tong is not None and tong.get("uv_correction")=="NONE")
 result={"schema":"openazrael.kg001.texture_colorkey_validation","version":116,"issue":"#11",
 "status":"PASS" if not errors else "FAIL","source_safe_checks":"PASS" if not errors else "FAIL",
 "selection_space":"ORIGINAL_INDEXED_AZF","selection_policy":"exactly one used source-palette sentinel R==255,B==255,G<=8 per # texture",
 "corpus_audit":"data/tests/kg001_colorkey_corpus_audit_v116.json","asset_backed":asset_backed,"asset_rows":asset_rows,"failed":errors,
-"boundary":"Indexed binary legacy color-key compatibility only; complete original renderer transparency/blending semantics remain HOLD."}
+"boundary":"Indexed binary legacy color-key compatibility plus the Candidate 3 KEYHOLE# vertical-orientation correction; complete original renderer transparency/blending semantics remain HOLD."}
 print("OPENAZRAEL_KG001_TEXTURE_COLORKEY_V116 "+json.dumps(result,separators=(",",":")))
 if errors:
     print("OpenAzrael KG-001 indexed color-key validation: FAIL")
