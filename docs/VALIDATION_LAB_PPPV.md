@@ -1,77 +1,97 @@
 # Validation Lab / PPPV
 
-Status: reusable contract, planning, Godot driver, evidence, and evaluation POC
-implemented on `tooling/remaster-framework-poc-01`.
+Status: the reusable PPPV authoring/runtime framework is implemented on
+`tooling/remaster-framework-poc-01`. The current KG-001 demo route is
+**authoring-complete**, but the chained runtime playthrough is still
+`NOT_EXECUTED`.
 
-PPPV means Physical Player Puzzle Validation. Its purpose is to prove that a
-puzzle can be solved through the same movement, targeting, interaction, trigger,
-audio/visual, and state paths used by a real player.
+PPPV means Physical Player Puzzle Validation. A puzzle is not considered proven
+merely because its function can be called or because a final flag has the
+expected value. Validation must follow the same movement, targeting,
+interaction, trigger, observable-effect, and state paths used by a real player.
 
-## Core rule
+## Current KG-001 status
 
-A puzzle test does not pass merely because a gameplay function can be called or
-because the final flag has the expected value.
+The default OpenAzrael bundle currently materializes **19 reusable PPPV
+scenarios** covering:
 
-A passing scenario must provide evidence for:
+- R1 TONG6 pickup;
+- R1 Door 1;
+- R1 Door 2 positive and negative-without-key paths;
+- physical R1 -> R7, R7 -> R1, and R1 -> R8 transition crossings;
+- R7 Well+Tongs positive and negative-without-tongs paths;
+- R7 water switchboard positive and wrong-sequence negative paths;
+- R8 lens pickup and submerged-lens negative path;
+- R8 lens placement;
+- R8 zxplate-gated optical/secret-door sequence;
+- R8 shield completion;
+- R1 physical floor traversal;
+- both audited R8 stair traversals.
+
+The reference graph currently exposes six gameplay-graph targets and the
+authored scenarios cover all six:
+
+- `R7_WELL_TONGS_USE`;
+- `R7_WATER_SWITCHBOARD_SOLVED`;
+- `R8_LENS_PLACE`;
+- `R8_OPTICAL_START`;
+- `R8_SECRET_DOOR_OPEN`;
+- `R8_TAKE_SHIELD`.
+
+Therefore scenario/graph coverage is authoring-complete. This does **not** mean
+the full physical playthrough has passed runtime validation.
+
+## Core runtime rule
+
+A passing scenario must provide evidence for the relevant subset of:
 
 1. player action through an approved execution mode;
-2. physical/interaction reachability when relevant;
-3. trigger or interaction activation;
-4. observable effects required by source evidence;
-5. exact ordered effects when original action order is known;
-6. expected logical state transition;
-7. absence of explicitly forbidden invented behavior.
+2. physical/interaction reachability;
+3. trigger or interaction dispatch;
+4. source-backed logical effects;
+5. source-backed audio;
+6. ordered effects when original order is known;
+7. expected before/after logical state;
+8. observable scene transform/visibility effects where gameplay visibly moves
+   something;
+9. absence of explicitly forbidden or invented behavior.
 
-Test setup is separate from gameplay actions. Setup may load a room, select an
-evidence-backed spawn view, or establish a required inventory precondition.
-After action execution starts, movement must use production player input and
-interactions must use the production InteractionProbe path.
+During gameplay actions the framework forbids teleporting the player, writing
+horizontal velocity directly, calling `move_and_slide()` itself, or calling a
+target's `interact()` directly.
 
-## Implemented reusable runtime components
+## Reusable runtime components
 
-- `PPVPEvidenceBus`: frame-indexed runtime evidence with stable event IDs;
-- `PPPVPlayerDriver`: real gameplay movement/look/interact input dispatch;
-- `PPPVNavigator`: mouse-input steering + move_forward toward interaction targets;
-- `OpenAzraelPPPVObserver`: state/audio/action/diagnostic evidence translation;
-- `pppv_scenario_runner.gd`: scenario setup, action execution, evidence capture,
-  and before/after state snapshots;
-- Python runtime-bundle evaluator producing deterministic PASS/FAIL reports.
-
-The navigator never sets the player's position, rotation, velocity, or calls
-`move_and_slide()`. If the target cannot be found, becomes unreachable, or
-movement stalls, it records a navigation failure instead of teleporting.
-
-The Player Driver never calls a target's `interact()` directly. It dispatches
-the production `interact` input event after the production InteractionProbe has
-identified the expected target.
-
-## Existing OpenAzrael evidence reused
-
-The framework does not add a new production trigger system merely for tests.
-`CandidateDiagnostics.event_recorded` already exposes:
-
-- interaction dispatch;
-- trigger enter/exit;
-- room transitions.
-
-The PPPV observer translates those existing diagnostics into the generic
-`trigger` / `room_transition` evidence vocabulary. DemoState signals provide
-inventory/flag/puzzle changes and LegacyEvents provides logical audio evidence.
+- `PPPVEvidenceBus` — frame-indexed evidence with stable event IDs;
+- `PPPVPlayerDriver` — production movement/look/interact input dispatch plus
+  evidence-aware physics waits;
+- `PPPVNavigator` — input-only steering to interactables/world points and
+  mouse-input aiming without direct transform writes;
+- `PPPVActionExecutor` — one action implementation shared by isolated and
+  chained runners;
+- `OpenAzraelPPPVObserver` — DemoState, LegacyEvents and CandidateDiagnostics
+  translation into generic evidence;
+- `PPPVSceneObserver` — read-only transform/visibility before/after evidence;
+- `pppv_scenario_runner.gd` — isolated scenario execution;
+- `pppv_playthrough_runner.gd` — continuous full-demo execution in one scene
+  and one world state;
+- `evaluate_validation.py` — deterministic isolated-scenario evaluator;
+- `evaluate_playthrough.py` — deterministic chained-playthrough evaluator.
 
 ## Player action modes
 
-Current reusable modes:
+- `input` — normal movement or mouse-look input;
+- `interaction_probe` — the production InteractionProbe path;
+- `physics_wait` — bounded physics-frame waiting without a gameplay shortcut.
 
-- `input`: gameplay input actions such as move_forward/move_back;
-- `interaction_probe`: production interaction targeting/probe path;
-- `physics_wait`: physics-frame waiting without a logical shortcut.
+Scenario setup is allowed only before an isolated scenario. In the chained
+full-demo runner, setup dictionaries are **checked as preconditions rather than
+applied**, so an item required later in the route must actually have been
+acquired by an earlier player action.
 
-Movement and look actions are invalid through a non-input mode. Interactions are
-invalid through a direct logical call instead of the interaction-probe mode.
+## Evidence vocabulary
 
-## Runtime evidence vocabulary
-
-OpenAzrael currently emits or can translate:
+The generic evidence stream currently includes:
 
 - `player_action`;
 - `movement` / `movement_sample`;
@@ -83,161 +103,160 @@ OpenAzrael currently emits or can translate:
 - `demo_action_step`;
 - `audio`;
 - `state_change`;
-- `animation`;
+- `scene_change`;
+- `aim`;
+- `physics_wait`;
+- `save_load_checkpoint`;
 - `navigation_failure`.
 
-Every evidence event has a unique event_id, physics frame, kind, optional room,
-and structured payload.
+OpenAzrael reuses the existing `CandidateDiagnostics.event_recorded` channel
+for interaction dispatch, trigger enter/exit and room-transition evidence rather
+than introducing a parallel production trigger system.
 
-## Runtime capability preflight
+## Well+Tongs evidence boundary
 
-`tools/openazrael_adapters/runtime_capabilities.py` checks whether a source tree
-has the hooks required by the generic PPPV runtime.
+The positive v118-derived scenario requires the recovered action order:
 
-The current tooling branch is expected to report:
+1. `remove_room:R7Key`
+2. `play_sound:979TONGS.WAV`
+3. `add_room:R7Key`
+4. `remove_room:RustyTongR6`
+5. `remove_inventory:TONG6`
+6. `default_take:R7Key`
 
-- generic PPPV runtime core: READY;
-- exact Well+Tongs v118 evidence: READY.
+The recovered action stream contains no transform/rotation opcode, so an
+`invented_transform_tween` is explicitly forbidden.
 
-The v117/v118 runtime changes were integrated deliberately as a minimal parity
-set rather than by merging the highly diverged physical-traversal branch. CI
-requires both the generic PPPV core and the v117/v118 source contracts to remain
-valid.
+## R8 optical evidence boundary
 
-## Coverage and planning
+The optical scenario requires a real player to:
 
-`PPPV Coverage Audit` compares the deterministic reference graph with the
-scenario bundle. Every gameplay graph must eventually have at least one declared
-PPPV scenario.
+1. physically enter the authored `zxplate` trigger;
+2. remain there while aiming the production InteractionProbe at
+   `Interact_R8Bible`;
+3. dispatch the normal interact input;
+4. wait a bounded physics interval for the asynchronous sequence.
 
-`PPPV Scenario Planner` turns the reference graph into a puzzle-by-puzzle
-authoring backlog containing:
+PASS requires:
 
-- owning room;
-- source evidence;
-- expected state effects;
-- expected audio effects;
-- other referenced assets;
-- scenario coverage status.
+- `R8LensLook` and `R8RaiseTimer` state changes;
+- `S121.WAV`;
+- `DoorR8` state change;
+- `799SECDR.WAV`;
+- lens transform movement;
+- secret-door rotation;
+- shield visibility transition.
 
-The current integrated IR contains six gameplay targets, including the verified
-`R7_WELL_TONGS_USE` graph. The candidate framework automatically materializes
-five reusable PPPV scenarios from the v117/v118 contracts: three physical
-traversal scenarios plus positive and negative Well+Tongs scenarios. Other
-gameplay targets remain visible as uncovered authoring work rather than being
-silently omitted.
+The unresolved `R8Counter` opcode semantics and reconstructed interpolation
+timings remain explicitly **non-gating reconstruction**.
 
-This mechanism is intended to scale to the full retail build: newly recovered
-puzzles automatically appear as uncovered targets rather than being silently
-omitted from the test suite.
+## Full-demo chained orchestration
 
-## Exact sequences: Well+Tongs
-
-The positive scenario generated from the v118 contract requires:
-
-1. remove_room:R7Key
-2. play_sound:979TONGS.WAV
-3. add_room:R7Key
-4. remove_room:RustyTongR6
-5. remove_inventory:TONG6
-6. default_take:R7Key
-
-The recovered demo action group has no transform or rotation opcode. The PPPV
-scenario therefore explicitly forbids an `invented_transform_tween` event.
-
-Positive path additionally requires real physical approach, InteractionProbe
-selection, interaction dispatch, 979TONGS audio, and the expected state changes.
-
-Negative path uses the same real approach and interaction dispatch without
-rusty_tongs, then proves that no demo action steps or 979TONGS audio occurred and
-that the puzzle state did not change.
-
-## State hashing
-
-Logical before/after state is canonicalized deterministically and hashed with
-SHA-256. The evaluator report includes:
-
-- PASS/FAIL;
-- validation errors;
-- runtime execution status/failures;
-- evidence event count;
-- before-state SHA-256;
-- after-state SHA-256.
-
-## Commands
-
-Adapt OpenAzrael contracts:
-
-    python -m tools.openazrael_adapters.pppv \
-      --physical-contract data/tests/kg001_physical_traversal_contract_v117.json \
-      --well-contract data/tests/kg001_well_tongs_animation_contract_v118.json \
-      --output pppv_scenarios.json
-
-Audit runtime capabilities:
-
-    python -m tools.openazrael_adapters.runtime_capabilities . --require-core
-
-Build a coverage report:
-
-    python -m tools.remaster_framework.coverage \
-      --reference-graph reference_graph.json \
-      --scenarios pppv_scenarios.json
-
-Build a puzzle-by-puzzle authoring plan:
-
-    python -m tools.remaster_framework.planning \
-      --reference-graph reference_graph.json \
-      --scenarios pppv_scenarios.json
-
-Run one scenario in Godot:
-
-    godot --headless --path . \
-      --script res://scripts/validation/pppv_scenario_runner.gd \
-      -- --pppv-scenario=scenario.json --pppv-output=runtime.json
-
-Evaluate its complete runtime bundle:
-
-    python -m tools.remaster_framework.evaluate_validation \
-      --runtime-bundle runtime.json \
-      --output evaluation.json
-
-## Remaining Validation Lab integration
-
-- bridge the proven v117 collision/support/stair measurements into the generic
-  `collision_support` and `stair_traversal` evidence vocabulary, preserving
-  the existing real-geometry assertions;
-- migrate the legacy v118 direct-call runner onto the generic Navigator /
-  InteractionProbe execution path for the final PPPV runtime oracle while
-  keeping the current v118 runner as parity evidence;
-- add full-demo orchestration where inventory must be acquired through earlier
-  real-player scenarios rather than setup;
-- add save/load continuity and room-transition chains to the full-demo runner;
-- require complete PPPV gameplay coverage before a future retail Known-Good gate.
-
-The reusable core must remain game-independent enough to be extracted later for
-OpenCadaver rather than becoming an OpenAzrael-only test harness.
-
-
-## Full-demo real-player orchestration
-
-The historical v111 full-demo runner remains a useful regression oracle for
-production interaction logic, final state hash and logical audio order, but it is
-not accepted as physical-player coverage because it calls interaction methods
-directly and places the player on trigger centroids.
-
-The new `openazrael_real_player_demo_plan` preserves the verified route and
-state/save-load invariants while requiring real-player segments:
+The real-player plan is:
 
 `R1 -> R7 -> R1 -> R8`
 
-The plan includes save/load hash checkpoints after the R7 solution, after the R8
-secret door, and at final demo completion. It reuses the v118 Well+Tongs positive
-PPPV scenario when available.
+All required scenario and transition segments are now authored, so the plan
+reports `READY` with no authoring-blocked steps.
 
-Missing physical segments are emitted as `AUTHORING_REQUIRED` rather than being
-silently satisfied by v110/v111 teleport/direct-call runners. Current expected
-authoring gaps include pickup/doors, physical transition crossings, R7
-switchboard, R8 lens/optical sequence and shield completion.
+`READY` means **ready to execute**, not runtime-validated.
 
-This keeps v109/v110/v111 as legacy regression oracles while raising the future
-KG full-demo requirement to genuine player-path evidence.
+The chained runner:
+
+- loads `main.tscn` once;
+- resets DemoState once at the beginning;
+- carries one continuous world state across all puzzle/transition segments;
+- checks isolated scenario setup values as preconditions rather than injecting
+  them;
+- executes every gameplay action through `PPPVActionExecutor`;
+- performs explicit canonical-state save/restore roundtrips at planned
+  checkpoints;
+- requires the final canonical state SHA-256 to match the established KG-001
+  success hash.
+
+The checkpoint implementation is a canonical DemoState roundtrip. It must not be
+described as proof of a future disk-save UI/system.
+
+The historical v111 full-demo runner remains useful as a legacy interaction,
+audio and final-hash regression oracle, but is not accepted as physical-player
+evidence because it directly calls interaction methods and places the player on
+trigger centroids.
+
+## Plan/runtime identity
+
+Every playthrough plan has a deterministic `plan_sha256`.
+
+Candidate release tooling always writes and hashes
+`pppv_playthrough_plan.json`. If a
+`kg001_pppv_playthrough.json` runtime bundle exists, its embedded
+`plan_sha256` must exactly match the current candidate plan before the runtime
+or evaluation can enter build provenance. This prevents a PASS from an older
+plan being attached to a newer candidate.
+
+The playthrough runtime/evaluation remain supplemental evidence for now. They do
+not silently alter the established G00-G10 Known-Good contract.
+
+## F11 diagnostics
+
+Source-safe candidate metadata can be staged into `data/runtime/`.
+F11 bug-report capture can include, when present and schema-valid:
+
+- build provenance;
+- release-gate summary;
+- PPPV coverage;
+- chained PPPV playthrough evaluation.
+
+Each included metadata file is SHA-256 bound in the bug-report manifest. Original
+commercial room/audio/texture assets are not included.
+
+## Commands
+
+Build the candidate framework evidence bundle:
+
+    python -m tools.openazrael_adapters.kg001_candidate_framework \
+      --repo-root . \
+      --evidence-root .tmp/kg001 \
+      --commit-sha <40-char-git-sha> \
+      --godot-version <version>
+
+This writes the reusable scenario bundle and
+`pppv_playthrough_plan.json` alongside release/provenance artifacts.
+
+Run the chained physical playthrough once local runtime assets are available:
+
+    godot --headless --path . \
+      --script res://scripts/validation/pppv_playthrough_runner.gd \
+      -- --pppv-plan=.tmp/kg001/pppv_playthrough_plan.json \
+         --pppv-scenarios=.tmp/kg001/pppv_scenarios.json \
+         --pppv-output=.tmp/kg001/kg001_pppv_playthrough.json
+
+Evaluate the resulting bundle independently:
+
+    python -m tools.remaster_framework.evaluate_playthrough \
+      --runtime-bundle .tmp/kg001/kg001_pppv_playthrough.json \
+      --output .tmp/kg001/kg001_pppv_playthrough_evaluation.json
+
+Re-run the candidate framework command afterwards to bind the matching runtime
+and evaluation hashes into build provenance.
+
+## Remaining Validation Lab work
+
+The remaining major gate is **execution**, not scenario authoring:
+
+- run the chained full-demo PPPV against a fresh candidate with the local
+  R1/R7/R8 assets;
+- inspect any navigation/interaction failures and fix production/runtime issues
+  rather than adding shortcuts;
+- confirm the visual/audio evidence for the R8 optical sequence;
+- confirm every canonical-state checkpoint and final hash;
+- only after stable repeated passes decide explicitly whether chained PPPV should
+  become a required future KG acceptance gate.
+
+GitHub-hosted Actions are currently infrastructure-blocked for this branch:
+diagnostic jobs fail before even a `python3 --version` step executes. Recent red
+runs therefore do not establish a source-code failure. Static registry checks on
+the current tooling branch have found no duplicate tool IDs or missing
+entrypoints; local/runtime execution remains the required next validation step.
+
+The shared interfaces are intentionally game-independent so the same validation
+framework can later be reused by OpenCadaver.
