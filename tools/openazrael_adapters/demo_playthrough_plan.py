@@ -13,7 +13,7 @@ from tools.remaster_framework.playthrough import (
 )
 
 
-COMPLETE_HASH = "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8"
+COMPLETE_HASH = "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902"
 
 
 def _scenario_ids(bundle: dict[str, Any]) -> set[str]:
