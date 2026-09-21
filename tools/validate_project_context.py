@@ -170,6 +170,7 @@ for p in [
     "scripts/kg001_physical_traversal_runner_v117.gd",
     "tools/validate_kg001_physical_traversal_v117.py",
     "data/tests/kg001_physical_traversal_contract_v117.json",
+    "data/tests/kg001_portal_spawn_geometry_v117.json",
     "scripts/kg001_well_tongs_animation_runner_v118.gd",
     "tools/validate_kg001_well_tongs_animation_v118.py",
     "data/tests/kg001_well_tongs_animation_contract_v118.json",
@@ -264,6 +265,7 @@ try:
         errors.append("KG-001 tag unexpectedly allowed")
     if c.get("quality",{}).get("kg001_collision_issue_6") not in (
             "SOURCE_FIX_READY_MULTIROOM_RUNTIME_RETEST_REQUIRED",
+            "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
             "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
             "MANUAL_FAIL_CANDIDATE2",
         ):
@@ -305,13 +307,18 @@ try:
             "V32_MANUAL_FAIL",
         ):
         errors.append("KG-001 Candidate 2 runtime boundary drift")
-    if c.get("quality",{}).get("kg001_stair_traversal") not in (None,"MANUAL_FAIL_CANDIDATE2"):
+    if c.get("quality",{}).get("kg001_stair_traversal") not in (
+            None,
+            "MANUAL_FAIL_CANDIDATE2",
+            "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+        ):
         errors.append("KG-001 stair traversal status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_stair_traversal") not in (None,True):
         errors.append("KG-001 stair traversal release blocker drift")
     if c.get("quality",{}).get("kg001_physical_traversal_v117") not in (
             None,
             "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+            "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
             "PASS",
         ):
         errors.append("KG-001 physical traversal v117 status drift")
@@ -326,6 +333,7 @@ try:
     if c.get("quality",{}).get("documentation_consistency") not in (
             "PASS_V32",
             "PASS_POST_CANDIDATE2_FIX_BRANCH",
+            "PASS_POST_CANDIDATE2_TRAVERSAL_FIX_BRANCH",
         ):
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
