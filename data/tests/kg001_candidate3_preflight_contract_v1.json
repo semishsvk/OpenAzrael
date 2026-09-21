@@ -32,9 +32,16 @@
       "Godot version",
       "fresh-checkout evidence SHA-256",
       "candidate result SHA-256",
-      "R1/R7/R8 GLB SHA-256",
-      "979TONGS.WAV SHA-256"
-    ]
+      "complete restored assets/rooms corpus SHA-256",
+      "complete restored assets/audio corpus SHA-256",
+      "complete restored assets/textures/classic corpus SHA-256"
+    ],
+    "runtime_asset_corpus": {
+      "classic_png_count": 86,
+      "room_glb_minimum": 3,
+      "audio_files_required": true,
+      "mutation_after_preflight": "FAIL_CLOSED"
+    }
   },
   "export": {
     "command": "python tools/export_candidate3.py --godot <Godot>",
