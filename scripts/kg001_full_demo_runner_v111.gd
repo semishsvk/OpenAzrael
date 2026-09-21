@@ -5,7 +5,7 @@ const REQUIRED_ROOMS := [
     "res://assets/rooms/R7.glb",
     "res://assets/rooms/R8.glb"
 ]
-const COMPLETE_HASH := "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902"
+const COMPLETE_HASH := "076a47e6c05ac3b48e9238011c7df655c7642f8d562881a6c962a992fbee9cd2"
 const EXPECTED_AUDIO := ["979TONGS.WAV", "S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
 
 var failures: Array[String] = []
