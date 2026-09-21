@@ -36,6 +36,8 @@ Enumerate every reachable state for the demo puzzle subset and all supported act
 ### G04 — Room and transition state
 Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of persistent state across transitions. Re-entering a room must not accidentally reset one-shot or solved state unless explicitly specified.
 
+G04 requires both the legacy transition-state oracle and the guarded real-input PPPV playthrough. Every authored demo transition must be crossed by the production avatar through normal gameplay input, must emit the expected trigger/room-transition evidence, and must land at the expected destination spawn and facing. A missing, broken, incorrect, one-way-when-reciprocal, or softlocking required room transition is a **critical bug** and blocks KG-001.
+
 ### G05 — Trigger semantics
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
 
@@ -47,6 +49,8 @@ At defined checkpoints serialize state, reload it and compare a canonical state 
 
 ### G08 — Headless synthetic full-demo playthrough
 Run a deterministic, no-human-input playthrough from clean state through the full R1->R7->R8 demo route. Exercise required interactions, transitions and puzzle completion. The run must terminate in the expected success state with no assertion, uncaught error, dead end or softlock.
+
+The final G08 oracle is the guarded chained PPPV runtime: actions are executed through production input paths, movement is sampled at physics-frame granularity, world state is snapshotted before/after each action, navigation has a softlock watchdog, and every action is retained in deterministic replay evidence. The legacy v111 playthrough remains a required compatibility oracle but is no longer sufficient by itself.
 
 ### G09 — Fresh-checkout build verification
 From a clean checkout of the candidate commit, restore only permitted/reproducible dependencies and local excluded assets through the documented workflow, then run source/context checks plus the automated KG-001 suite. No untracked local source edit may be required.
@@ -60,4 +64,4 @@ For the candidate commit record: Git commit SHA, Godot version, source-data fing
 
 ## Failure policy
 
-Any critical bug, reproducible softlock or required-gate failure blocks KG-001. A failure is fixed first, then the affected gate and all dependent gates are rerun. The tag is immutable evidence of the passing candidate; later fixes create a new known-good tag rather than rewriting KG-001.
+Any critical bug, reproducible softlock or required-gate failure blocks KG-001. In particular, any unresolved required room-to-room transition is classified as critical. A failure is fixed first, then the affected gate and all dependent gates are rerun. The tag is immutable evidence of the passing candidate; later fixes create a new known-good tag rather than rewriting KG-001.
