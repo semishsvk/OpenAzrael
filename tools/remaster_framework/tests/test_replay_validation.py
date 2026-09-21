@@ -3,7 +3,10 @@ from __future__ import annotations
 import math
 import unittest
 
-from tools.remaster_framework.replay_validation import validate_replay
+from tools.remaster_framework.replay_validation import (
+    semantic_replay_sha256,
+    validate_replay,
+)
 
 
 def snapshot(frame: int, room: str, *, x: float = 0.0) -> dict:
@@ -105,6 +108,30 @@ class ReplayValidationTests(unittest.TestCase):
         self.assertEqual(
             validate_replay([action], replay_for(action, "R1", "R7")),
             [],
+        )
+
+
+    def test_semantic_fingerprint_ignores_frame_numbers(self) -> None:
+        action = move_action()
+        first = replay_for(action, "R1", "R1")
+        second = replay_for(action, "R1", "R1")
+        second["actions"][0]["before"]["physics_frame"] = 100
+        second["actions"][0]["trajectory"][0]["physics_frame"] = 101
+        second["actions"][0]["trajectory"][1]["physics_frame"] = 102
+        second["actions"][0]["after"]["physics_frame"] = 103
+        self.assertEqual(
+            semantic_replay_sha256(first),
+            semantic_replay_sha256(second),
+        )
+
+    def test_semantic_fingerprint_changes_with_state_or_room(self) -> None:
+        action = move_action()
+        first = replay_for(action, "R1", "R1")
+        second = replay_for(action, "R1", "R1")
+        second["actions"][0]["after"]["state_sha256"] = "b" * 64
+        self.assertNotEqual(
+            semantic_replay_sha256(first),
+            semantic_replay_sha256(second),
         )
 
     def test_wrong_action_order_fails(self) -> None:
