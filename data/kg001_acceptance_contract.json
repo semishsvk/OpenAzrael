@@ -52,14 +52,18 @@
       "automation": "automated_guarded_real_input",
       "required_evidence": [
         "legacy_room_trigger_runtime",
-        "guarded_pppv_playthrough"
+        "guarded_pppv_scenario_suite"
       ]
     },
     {
       "id": "G05",
       "name": "trigger_semantics",
       "required": true,
-      "automation": "automated"
+      "automation": "automated_guarded_real_input",
+      "required_evidence": [
+        "legacy_room_trigger_runtime",
+        "guarded_pppv_scenario_suite"
+      ]
     },
     {
       "id": "G06",
