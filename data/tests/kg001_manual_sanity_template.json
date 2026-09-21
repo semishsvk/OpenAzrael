@@ -1,16 +1,64 @@
 {
   "schema": "openazrael.kg001.manual_sanity",
-  "version": 1,
+  "version": 2,
   "status": "PENDING",
   "candidate_commit": "",
   "godot_version": "",
+  "export_receipt_identity": "",
   "tester": "",
   "date": "",
   "critical_bugs": [],
   "reproducible_softlocks": [],
-  "notes": "Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md after G00-G09 PASS. Change status to PASS only if every required manual check succeeds, including Issue #6 floor support, Issue #9 human audibility, Issue #11 visual color-key transparency, and correct R1 KEYHOLE orientation.",
+  "stop_on_critical_failure": true,
+  "ordered_checks": [
+    {
+      "id": "launch_r1_physics",
+      "status": "PENDING"
+    },
+    {
+      "id": "r1_keyhole_tongs_presentation",
+      "status": "PENDING"
+    },
+    {
+      "id": "r7_well_tongs_979tongs_audibility",
+      "status": "PENDING"
+    },
+    {
+      "id": "r7_progression_and_return",
+      "status": "PENDING"
+    },
+    {
+      "id": "r8_step011_up_down",
+      "status": "PENDING"
+    },
+    {
+      "id": "r8_stairs_stair2_up_down",
+      "status": "PENDING"
+    },
+    {
+      "id": "r8_puzzle_route",
+      "status": "PENDING"
+    },
+    {
+      "id": "audio_and_cutout_sweep",
+      "status": "PENDING"
+    },
+    {
+      "id": "save_load_roundtrip",
+      "status": "PENDING"
+    },
+    {
+      "id": "f11_source_safe_bug_report",
+      "status": "PENDING"
+    }
+  ],
   "texture_colorkey_visual_check": "PENDING",
   "audio_audibility_check": "PENDING",
   "floor_collision_check": "PENDING",
-  "keyhole_orientation_check": "PENDING"
+  "stair_step011_check": "PENDING",
+  "stair_stair2_check": "PENDING",
+  "keyhole_orientation_check": "PENDING",
+  "well_tongs_event_check": "PENDING",
+  "f11_bug_report_check": "PENDING",
+  "notes": "Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md in the fixed order after exact-SHA G00-G09 PASS and guarded Candidate 3 export/startup smoke PASS. Change status to PASS only if every required check succeeds. A launch failure, floor-support failure, either R8 stair traversal failure, or reproducible softlock is an immediate G10 FAIL; capture F11 evidence when possible and stop the long-route checks."
 }
