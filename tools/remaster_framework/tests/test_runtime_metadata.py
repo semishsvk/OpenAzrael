@@ -64,6 +64,18 @@ class RuntimeMetadataTests(unittest.TestCase):
             "coverage_ratio": 0.2,
         }
 
+    def _playthrough_evaluation(self) -> dict:
+        return {
+            "schema": "remaster.playthrough_evaluation",
+            "version": 1,
+            "plan_id": "kg001_demo_real_player_v1",
+            "status": "PASS",
+            "errors": [],
+            "step_count": 14,
+            "final_state_sha256": "c" * 64,
+            "expected_final_state_sha256": "c" * 64,
+        }
+
     def test_stage_and_clean_source_safe_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -144,6 +156,40 @@ class RuntimeMetadataTests(unittest.TestCase):
                 framework_bundle=bundle,
             )
             self.assertEqual(result["staged_count"], 3)
+
+    def test_framework_bundle_optionally_stages_playthrough_evaluation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = root / "evidence"
+            self._write(evidence / "build_provenance.json", self._provenance())
+            self._write(evidence / "release_gate_summary.json", self._release())
+            self._write(evidence / "pppv_coverage.json", self._coverage())
+            self._write(
+                evidence / "pppv_playthrough_evaluation.json",
+                self._playthrough_evaluation(),
+            )
+            bundle = self._write(
+                evidence / "kg001_framework_bundle.json",
+                {
+                    "schema": "openazrael.kg001.framework_bundle",
+                    "version": 1,
+                    "artifacts": {
+                        "build_provenance": "build_provenance.json",
+                        "release_gate_summary": "release_gate_summary.json",
+                        "pppv_coverage": "pppv_coverage.json",
+                        "pppv_playthrough_evaluation": (
+                            "pppv_playthrough_evaluation.json"
+                        ),
+                    },
+                },
+            )
+
+            result = stage_runtime_metadata(root, framework_bundle=bundle)
+            self.assertEqual(result["staged_count"], 4)
+            runtime = root / "data" / "runtime"
+            self.assertTrue(
+                (runtime / "pppv_playthrough_evaluation.json").is_file()
+            )
 
     def test_framework_bundle_cannot_escape_its_directory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
