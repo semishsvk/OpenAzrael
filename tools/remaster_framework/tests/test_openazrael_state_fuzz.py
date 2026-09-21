@@ -42,10 +42,35 @@ class OpenAzraelStateFuzzTests(unittest.TestCase):
 
         state, audio = model.attempt(state, "retrieve_well_key")
         self.assertFalse(state.has("rusty_tongs"))
+        self.assertTrue(state.puzzle("PickupCollected:rusty_tongs"))
         self.assertTrue(state.has("well_key"))
         self.assertTrue(state.puzzle("R7KeyTake"))
         self.assertTrue(state.flag("R7key"))
         self.assertEqual(audio, ("979TONGS.WAV",))
+
+
+    def test_consumed_tongs_cannot_respawn_after_return_to_r1(self) -> None:
+        graph, triggers = self._inputs()
+        model = Model(graph, triggers)
+        state = DemoState()
+
+        for action in (
+            "pickup_rusty_tongs",
+            "open_r1_door1",
+            "transition_R1_R7",
+            "retrieve_well_key",
+            "transition_R7_R1",
+        ):
+            state, _ = model.attempt(state, action)
+
+        self.assertEqual(state.room, "R1")
+        self.assertFalse(state.has("rusty_tongs"))
+        self.assertTrue(state.puzzle("PickupCollected:rusty_tongs"))
+
+        before = state
+        after, audio = model.attempt(state, "pickup_rusty_tongs")
+        self.assertEqual(after, before)
+        self.assertEqual(audio, ())
 
     def test_small_deterministic_fuzz_run_passes(self) -> None:
         graph, triggers = self._inputs()
