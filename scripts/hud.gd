@@ -153,4 +153,4 @@ func _process(_delta: float) -> void:
             snaps = la.call("get_debug_snapshot")
             mode_name = "CLASSIC" if int(la.get("audio_mode")) == 0 else "ENHANCED"
             master = int(la.get("parity_master_volume"))
-        audio_debug_label.text = AudioDebugView.format_snapshot(room_manager.current_room_id, mode_name, snaps, master) + ("\n" + capture_notice if not capture_notice.is_empty() else "")
+        audio_debug_label.text = AudioDebugView.format_snapshot(room_manager.current_room_id, mode_name, snaps, master, LegacyEvents.captured_audio()) + ("\n" + capture_notice if not capture_notice.is_empty() else "")
