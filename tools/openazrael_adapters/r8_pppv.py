@@ -205,6 +205,203 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         },
     )
 
+    optical = ValidationScenario(
+        scenario_id="openazrael.r8.optical_sequence",
+        room="R8",
+        setup={
+            **base_setup,
+            "flags": {"R8BathDrain": True},
+            "inventory": {"r8_lens": False},
+            "puzzle": {
+                "R8LensPlace": True,
+                "R8LensLook": False,
+                "R8RaiseTimer": False,
+                "R8Counter": False,
+                "DoorR8": False,
+            },
+        },
+        actions=(
+            PlayerAction(
+                action_id="enter_zxplate",
+                kind=ActionKind.MOVE,
+                execution_mode=ExecutionMode.INPUT,
+                input_action="move_forward",
+                parameters={
+                    "goal_trigger": "zxplate",
+                    "source_room": "R8",
+                    "max_frames": 1200,
+                    "stuck_frames": 180,
+                    "reach_distance": 4.0,
+                    "driver_policy": "steer_to_trigger_via_gameplay_input",
+                },
+            ),
+            PlayerAction(
+                action_id="aim_bible_from_zxplate",
+                kind=ActionKind.LOOK,
+                execution_mode=ExecutionMode.INPUT,
+                input_action="mouse_motion",
+                parameters={
+                    "goal_target": "Interact_R8Bible",
+                    "max_frames": 240,
+                },
+            ),
+            PlayerAction(
+                action_id="activate_optical_sequence",
+                kind=ActionKind.INTERACT,
+                execution_mode=ExecutionMode.INTERACTION_PROBE,
+                target="Interact_R8Bible",
+            ),
+            PlayerAction(
+                action_id="wait_optical_sequence",
+                kind=ActionKind.WAIT,
+                execution_mode=ExecutionMode.PHYSICS_WAIT,
+                frames=600,
+            ),
+        ),
+        requirements=(
+            EvidenceRequirement(
+                requirement_id="zxplate_enter",
+                kind="trigger",
+                match={
+                    "room": "R8",
+                    "target": "zxplate",
+                    "activated": True,
+                    "edge": "ENTER",
+                    "mechanism": "world_trigger",
+                },
+            ),
+            EvidenceRequirement(
+                requirement_id="bible_probe_from_plate",
+                kind="interaction_probe",
+                match={
+                    "target": "Interact_R8Bible",
+                    "reachable": True,
+                },
+                after_requirement="zxplate_enter",
+            ),
+            EvidenceRequirement(
+                requirement_id="bible_optical_dispatch",
+                kind="trigger",
+                match={
+                    "target": "Interact_R8Bible",
+                    "activated": True,
+                    "mechanism": "interaction_dispatch",
+                },
+                after_requirement="bible_probe_from_plate",
+            ),
+            EvidenceRequirement(
+                requirement_id="lens_look_state",
+                kind="state_change",
+                match={
+                    "path": "puzzle.R8LensLook",
+                    "before": False,
+                    "after": True,
+                },
+                after_requirement="bible_optical_dispatch",
+            ),
+            EvidenceRequirement(
+                requirement_id="raise_timer_state",
+                kind="state_change",
+                match={
+                    "path": "puzzle.R8RaiseTimer",
+                    "before": False,
+                    "after": True,
+                },
+                after_requirement="lens_look_state",
+            ),
+            EvidenceRequirement(
+                requirement_id="optical_start_audio",
+                kind="audio",
+                match={"asset": "S121.WAV"},
+                after_requirement="raise_timer_state",
+            ),
+            EvidenceRequirement(
+                requirement_id="secret_door_state",
+                kind="state_change",
+                match={
+                    "path": "puzzle.DoorR8",
+                    "before": False,
+                    "after": True,
+                },
+                after_requirement="optical_start_audio",
+            ),
+            EvidenceRequirement(
+                requirement_id="secret_door_audio",
+                kind="audio",
+                match={"asset": "799SECDR.WAV"},
+                after_requirement="secret_door_state",
+            ),
+            EvidenceRequirement(
+                requirement_id="lens_visual_moved",
+                kind="scene_change",
+                match={
+                    "observation_id": "r8_lens_motion",
+                    "transform_changed": True,
+                },
+                after_requirement="bible_optical_dispatch",
+            ),
+            EvidenceRequirement(
+                requirement_id="secret_door_visual_rotated",
+                kind="scene_change",
+                match={
+                    "observation_id": "r8_secret_door_motion",
+                    "rotation_changed": True,
+                },
+                after_requirement="secret_door_state",
+            ),
+            EvidenceRequirement(
+                requirement_id="shield_became_visible",
+                kind="scene_change",
+                match={
+                    "observation_id": "r8_shield_visibility",
+                    "visibility_changed": True,
+                    "after_visible": True,
+                },
+                after_requirement="secret_door_state",
+            ),
+        ),
+        state_expectations=(
+            StateExpectation("flags.R8BathDrain", True, True),
+            StateExpectation("puzzle.R8LensPlace", True, True),
+            StateExpectation("puzzle.R8LensLook", False, True),
+            StateExpectation("puzzle.R8RaiseTimer", False, True),
+            StateExpectation("puzzle.DoorR8", False, True),
+        ),
+        metadata={
+            "coverage_targets": [
+                "gameplay:R8_OPTICAL_START",
+                "gameplay:R8_SECRET_DOOR_OPEN",
+            ],
+            "physical_approach_required": True,
+            "activation_trigger": "zxplate",
+            "direct_interact_call_allowed": False,
+            "scene_observations": [
+                {
+                    "observation_id": "r8_lens_motion",
+                    "node": "lenstop",
+                },
+                {
+                    "observation_id": "r8_secret_door_motion",
+                    "node": "door",
+                },
+                {
+                    "observation_id": "r8_shield_visibility",
+                    "node": "r8s1",
+                },
+            ],
+            "source_evidence": [
+                "gameplay:R8_OPTICAL_START",
+                "gameplay:R8_SECRET_DOOR_OPEN",
+                "r8_bible_interaction.gd activation-zone boundary",
+            ],
+            "non_gating_reconstruction": {
+                "puzzle.R8Counter": "UNKNOWN opcode semantics",
+                "lens_timing": "reconstructed",
+                "secret_door_timing": "reconstructed",
+            },
+        },
+    )
+
     shield = ValidationScenario(
         scenario_id="openazrael.r8.take_shield",
         room="R8",
@@ -270,7 +467,13 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         },
     )
 
-    scenarios = (lens_pickup, lens_blocked, lens_place, shield)
+    scenarios = (
+        lens_pickup,
+        lens_blocked,
+        lens_place,
+        optical,
+        shield,
+    )
     for scenario in scenarios:
         errors = scenario.validate()
         if errors:
