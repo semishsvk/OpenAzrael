@@ -37,6 +37,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_well_tongs_animation_v118.py"],
     [sys.executable,"tools/validate_kg001_r1_route_v119.py"],
     [sys.executable,"tools/validate_kg001_collision_parity_v120.py"],
+    [sys.executable,"tools/validate_kg001_surface_collision_v121.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -50,6 +51,7 @@ RUNTIMES=[
     ("well_tongs_v118","scripts/kg001_well_tongs_animation_runner_v118.gd","OPENAZRAEL_KG001_WELL_TONGS_V118"),
     ("r1_route_v119","scripts/kg001_r1_route_runner_v119.gd","OPENAZRAEL_KG001_R1_ROUTE_V119"),
     ("collision_v120","scripts/kg001_collision_parity_runner_v120.gd","OPENAZRAEL_KG001_COLLISION_PARITY_V120"),
+    ("surface_v121","scripts/kg001_surface_collision_runner_v121.gd","OPENAZRAEL_KG001_SURFACE_COLLISION_V121"),
 ]
 
 def run(cmd, check=False):
@@ -121,7 +123,7 @@ def write_json(path,data):
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-v117, well-tongs-v118 and R1-route-v119 and collision-parity-v120 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-v117, well-tongs-v118 and R1-route-v119, collision-parity-v120 and surface-coverage-v121 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
     ap.add_argument("--source-only",action="store_true",help="Run source-safe validators and repository tracking checks only; do not require Godot or local commercial assets.")
     args=ap.parse_args()
@@ -175,7 +177,7 @@ def main():
         else:
             import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
-            if name in ("v110","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120") and not all(asset_present.values()):
+            if name in ("v110","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
@@ -250,6 +252,7 @@ def main():
             TMP/"kg001_well_tongs_v118_runtime.json":ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json",
             TMP/"kg001_r1_route_v119_runtime.json":ROOT/"data/tests/kg001_r1_route_runtime_v119.json",
             TMP/"kg001_collision_v120_runtime.json":ROOT/"data/tests/kg001_collision_parity_runtime_v120.json",
+            TMP/"kg001_surface_v121_runtime.json":ROOT/"data/tests/kg001_surface_collision_runtime_v121.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }
