@@ -67,12 +67,22 @@
         "v110 room/transition/floor-support regression",
         "v117 natural spawn plus R8 stair traversal",
         "v119 Candidate 3 R1/Object02 exact bug-point collision regression",
-        "v119 Input-driven R1 route traversal across audited floor waypoints"
+        "v119 Input-driven R1 route traversal across audited floor waypoints",
+        "v120 generic visible floor-like mesh/runtime collision parity across R1/R7/R8"
       ],
       "candidate3_regression": {
         "bug_report": "openazrael_bugreport_1790007921_0054.zip",
         "root_cause": "R1/Object02 visible authored floor excluded from collision",
         "required_gate": "r1_route_v119"
+      },
+      "generic_collision_parity": {
+        "required_gate": "collision_v120",
+        "scope": [
+          "R1",
+          "R7",
+          "R8"
+        ],
+        "purpose": "catch additional authored walkable mesh omissions beyond route-specific regressions"
       }
     },
     {
