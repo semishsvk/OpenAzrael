@@ -63,7 +63,7 @@ checks={
     "checkpoint":m.get("checkpoint")=="v116-context-v31",
     "commit_matches_head":m.get("commit_sha")==git_head() and bool(git_head()),
     "room_expected_count":rooms.get("expected_count")==3,
-    "audio_expected_count":audio.get("expected_count")==8,
+    "audio_expected_count":audio.get("expected_count")==9,
     "classic_texture_expected_count":textures.get("expected_count")==86,
     "source_contracts_complete":source.get("complete") is True
         and source.get("present_count")==source.get("expected_count"),
@@ -79,7 +79,7 @@ checks={
     "source_identity_complete":m.get("source_identity_complete") is True,
     "asset_counts_complete_consistent":m.get("asset_counts_complete") is (
         rooms.get("present_count")==3
-        and audio.get("present_count")==8
+        and audio.get("present_count")==9
         and textures.get("present_count")==86
     ),
     "restore_evidence_shape":isinstance(restore,dict)
