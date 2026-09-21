@@ -627,8 +627,19 @@ def write_pppv_failure_reproducer(suite_summary, playthrough_summary):
                     "output_tail":row.get("output_tail",""),
                     "evaluator_output_tail":row.get("evaluator_output_tail",""),
                 }
+                execution_profile=row.get("execution_profile","")
+                failure["execution_profile"]=execution_profile
                 scenario_path=row.get("scenario","")
-                if scenario_path:
+                if execution_profile=="v117_real_geometry_input":
+                    failure["rerun"]=[
+                        "<godot>",
+                        "--headless",
+                        "--path",".",
+                        "--script",
+                        "res://scripts/kg001_physical_traversal_runner_v117.gd",
+                    ]
+                    failure["bridge_report"]=row.get("bridge_report",{})
+                elif scenario_path:
                     failure["rerun"]=[
                         "<godot>",
                         "--headless",
@@ -648,11 +659,22 @@ def write_pppv_failure_reproducer(suite_summary, playthrough_summary):
                 if isinstance(row,dict) and row.get("status")!="PASS":
                     failed_step=row
                     break
+        determinism=playthrough_summary.get("determinism",{})
+        determinism_failed=(
+            playthrough_summary.get("determinism_status")=="FAIL"
+        )
         failure={
-            "kind":"chained_playthrough",
+            "kind":(
+                "chained_playthrough_determinism"
+                if determinism_failed and failed_step is None
+                else "chained_playthrough"
+            ),
             "failed_step":failed_step,
             "runtime":playthrough_summary.get("runtime",""),
             "evaluation":evaluation if isinstance(evaluation,dict) else {},
+            "determinism":(
+                determinism if isinstance(determinism,dict) else {}
+            ),
             "godot_returncode":playthrough_summary.get("godot_returncode"),
             "evaluator_returncode":playthrough_summary.get("evaluator_returncode"),
             "output_tail":playthrough_summary.get("output_tail",""),
@@ -668,6 +690,11 @@ def write_pppv_failure_reproducer(suite_summary, playthrough_summary):
                 "--pppv-output=.tmp/kg001/reproducer_playthrough.json",
             ],
         }
+        if determinism_failed:
+            failure["rerun_note"]=(
+                "Run the chained playthrough at least twice and compare "
+                "semantic_replay_sha256 plus final_state_sha256."
+            )
 
     if failure is None:
         path.unlink(missing_ok=True)
