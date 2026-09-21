@@ -155,3 +155,14 @@ After the Issue #6 collision regression was widened to the canonical R1/R7/R8 en
 **Status:** ACCEPTED — 2026-09-20
 
 The v31 Candidate 2 freeze was deliberately broken by new empirical evidence from the actual ATDEMO 86-AZF corpus: `BLOOS4#.AZF` disproved the assumption that every `#` texture has exactly one used entry in the broad quantized-magenta range. The fix narrowed key selection to the raw source-palette sentinel family and added a hash-bound corpus audit. Candidate 2 is re-frozen at `v116-context-v32`. This is an allowed evidence-driven correction under ADR-028, not feature expansion.
+
+
+## ADR-030 — Candidate 3 supersedes Candidate 2 as the active KG-001 evidence target
+
+**Status:** ACCEPTED — 2026-09-21
+
+Candidate 2 Windows automation remains immutable historical evidence, but its later manual traversal failure and subsequent source changes make it stale for promotion. KG-001 Candidate 3 is the active integration target. This supersedes only the scheduling/current-target language in ADR-024/ADR-028/ADR-029; it does not rewrite their historical decisions. Candidate 3 may not inherit Candidate 2 runtime PASS claims. It requires source CI and asset-backed v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 PASS at the exact build SHA, then guarded export and G10.
+
+Candidate 3 export provenance is fail-closed: the preflight receipt binds exact Git HEAD, Godot version, evidence hashes, the exact runtime asset path set and per-asset hashes. Any runtime asset mutation, addition or removal invalidates export. A PASS export receipt additionally requires exported-EXE startup smoke.
+
+The manual upside-down R1 keyhole observation is fixed through a narrowly-scoped `KEYHOLE#` V-orientation compatibility correction with TONG6/MINETON# as a negative control. This correction is OpenAzrael presentation compatibility evidence, not recovery of a global original-renderer UV rule; final orientation remains a G10 visual check.
