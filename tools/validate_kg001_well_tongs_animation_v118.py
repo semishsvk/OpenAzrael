@@ -53,6 +53,21 @@ checks = {
         and demo_evidence.get("sources", {}).get("R.EXE", {}).get("sha256")
         == "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
     ),
+    "ranim1_proves_no_room_keyframe_payload": (
+        demo_evidence.get("sources", {}).get("RANIM1.ANM", {}).get("size") == 400
+        and demo_evidence.get("sources", {}).get("RANIM1.ANM", {}).get("sha256")
+        == "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5"
+        and demo_evidence.get("sources", {}).get("RANIM1.ANM", {}).get("all_bytes_zero") is True
+        and demo_evidence.get("interpretation", {}).get("ranim1_all_zero") is True
+    ),
+    "rooms_rusty_tongs_transient_object": (
+        demo_evidence.get("sources", {}).get("ROOMS.DAT", {}).get("sha256")
+        == "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b"
+        and demo_evidence.get("rooms_r7_object_record", {}).get("name") == "RustyTongR6"
+        and demo_evidence.get("rooms_r7_object_record", {}).get("offset_hex") == "0x1584c"
+        and demo_evidence.get("rooms_r7_object_record", {}).get("record_size_bytes") == 60
+        and demo_evidence.get("rooms_r7_object_record", {}).get("named_xaf_mesh_present") is False
+    ),
     "contract_schema": (
         contract.get("schema") == "openazrael.kg001.well_tongs_animation_contract"
         and contract.get("version") == 118
