@@ -43,7 +43,18 @@
       "S174ELP1.WAV",
       "S174ELP2.WAV",
       "S186.WAV"
-    ]
+    ],
+    "bug_report_schema_version": 2,
+    "bug_report_physics_context": true,
+    "bug_report_player_velocity": true,
+    "bug_report_is_on_floor": true,
+    "bug_report_floor_normal": true,
+    "bug_report_support_below_ray": true,
+    "bug_report_vertical_column_probe": true,
+    "bug_report_nearby_collision_bodies": true,
+    "bug_report_slide_collisions": true,
+    "bug_report_runtime_build_identity": true,
+    "runtime_build_identity_path": "res://data/runtime_build_identity.json"
   },
-  "runtime_boundary": "Candidate 3 diagnostics identity prepared for preflight; no runtime promotion until fresh-checkout v109/v110/v111/v116/v117/v118 and G10 execute."
+  "runtime_boundary": "Diagnostics v2 source contract prepared. Export wrappers embed exact source commit/Godot identity; runtime F11 verification remains required in the next Candidate."
 }
