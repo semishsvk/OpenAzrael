@@ -54,11 +54,13 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_reachable",
                 kind="interaction_probe",
+                action_id="approach_lens",
                 match={"target": "Interact_R8Lens", "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="lens_dispatch",
                 kind="trigger",
+                action_id="interact_lens",
                 match={
                     "target": "Interact_R8Lens",
                     "activated": True,
@@ -69,6 +71,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_inventory_change",
                 kind="state_change",
+                action_id="interact_lens",
                 match={
                     "path": "inventory.r8_lens",
                     "before": False,
@@ -79,6 +82,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_flag_change",
                 kind="state_change",
+                action_id="interact_lens",
                 match={
                     "path": "flags.R8Lens",
                     "before": False,
@@ -113,6 +117,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="submerged_lens_dispatch",
                 kind="trigger",
+                action_id="interact_submerged_lens",
                 match={
                     "target": "Interact_R8Lens",
                     "activated": True,
@@ -159,6 +164,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="bible_lens_dispatch",
                 kind="trigger",
+                action_id="interact_bible_place_lens",
                 match={
                     "target": "Interact_R8Bible",
                     "activated": True,
@@ -168,6 +174,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_removed_from_inventory",
                 kind="state_change",
+                action_id="interact_bible_place_lens",
                 match={
                     "path": "inventory.r8_lens",
                     "before": True,
@@ -178,6 +185,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_place_node",
                 kind="state_change",
+                action_id="interact_bible_place_lens",
                 match={
                     "path": "puzzle.R8LensPlace",
                     "before": False,
@@ -188,6 +196,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_place_audio",
                 kind="audio",
+                action_id="interact_bible_place_lens",
                 match={"asset": "S137.WAV"},
                 after_requirement="lens_place_node",
             ),
@@ -262,6 +271,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="zxplate_enter",
                 kind="trigger",
+                action_id="enter_zxplate",
                 match={
                     "room": "R8",
                     "target": "zxplate",
@@ -273,6 +283,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="bible_probe_from_plate",
                 kind="interaction_probe",
+                action_id="aim_bible_from_zxplate",
                 match={
                     "target": "Interact_R8Bible",
                     "reachable": True,
@@ -282,6 +293,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="bible_optical_dispatch",
                 kind="trigger",
+                action_id="activate_optical_sequence",
                 match={
                     "target": "Interact_R8Bible",
                     "activated": True,
@@ -292,6 +304,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="lens_look_state",
                 kind="state_change",
+                action_id="activate_optical_sequence",
                 match={
                     "path": "puzzle.R8LensLook",
                     "before": False,
@@ -302,6 +315,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="raise_timer_state",
                 kind="state_change",
+                action_id="activate_optical_sequence",
                 match={
                     "path": "puzzle.R8RaiseTimer",
                     "before": False,
@@ -312,12 +326,14 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="optical_start_audio",
                 kind="audio",
+                action_id="activate_optical_sequence",
                 match={"asset": "S121.WAV"},
                 after_requirement="raise_timer_state",
             ),
             EvidenceRequirement(
                 requirement_id="secret_door_state",
                 kind="state_change",
+                action_id="wait_optical_sequence",
                 match={
                     "path": "puzzle.DoorR8",
                     "before": False,
@@ -328,12 +344,14 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="secret_door_audio",
                 kind="audio",
+                action_id="wait_optical_sequence",
                 match={"asset": "799SECDR.WAV"},
                 after_requirement="secret_door_state",
             ),
             EvidenceRequirement(
                 requirement_id="lens_visual_moved",
                 kind="scene_change",
+                action_id="wait_optical_sequence",
                 match={
                     "observation_id": "r8_lens_motion",
                     "transform_changed": True,
@@ -343,6 +361,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="secret_door_visual_rotated",
                 kind="scene_change",
+                action_id="wait_optical_sequence",
                 match={
                     "observation_id": "r8_secret_door_motion",
                     "rotation_changed": True,
@@ -352,6 +371,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="shield_became_visible",
                 kind="scene_change",
+                action_id="wait_optical_sequence",
                 match={
                     "observation_id": "r8_shield_visibility",
                     "visibility_changed": True,
@@ -416,6 +436,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="shield_dispatch",
                 kind="trigger",
+                action_id="interact_shield",
                 match={
                     "target": "Interact_ShieldR8",
                     "activated": True,
@@ -425,6 +446,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="shield_inventory",
                 kind="state_change",
+                action_id="interact_shield",
                 match={
                     "path": "inventory.shield",
                     "before": False,
@@ -435,6 +457,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="shield_puzzle_node",
                 kind="state_change",
+                action_id="interact_shield",
                 match={
                     "path": "puzzle.R8TakeShield",
                     "before": False,
@@ -445,6 +468,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="demo_complete_flag",
                 kind="state_change",
+                action_id="interact_shield",
                 match={
                     "path": "flags.demo_complete",
                     "before": False,
