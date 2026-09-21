@@ -9,7 +9,8 @@ const EVENT_LOG_PATH := "user://openazrael_candidate3_events.jsonl"
 const STATE_DUMP_PREFIX := "user://openazrael_kg001_state_dump_"
 const BUG_REPORT_PREFIX := "user://openazrael_bugreport_"
 const BUG_REPORT_SCHEMA := "openazrael.bug_report"
-const BUG_REPORT_SCHEMA_VERSION := 1
+const BUG_REPORT_SCHEMA_VERSION := 2
+const RUNTIME_BUILD_IDENTITY_PATH := "res://data/runtime_build_identity.json"
 const BUG_REPORT_EVENT_TAIL_LINES := 500
 
 const REQUIRED_CORE_RESOURCES := [
@@ -243,9 +244,145 @@ func _active_entity_ids() -> Dictionary:
             puzzles.append(stable_puzzle_id(key))
     return {"items": items, "flags": flags, "puzzles": puzzles}
 
+func _vec3_payload(value: Vector3) -> Array:
+    return [value.x, value.y, value.z]
+
+func _ray_hit_payload(hit: Dictionary, player_y: float) -> Dictionary:
+    if hit.is_empty():
+        return {"hit": false}
+    var collider = hit.get("collider")
+    var position: Vector3 = hit.get("position", Vector3.ZERO)
+    var normal: Vector3 = hit.get("normal", Vector3.ZERO)
+    return {
+        "hit": true,
+        "collider_name": String(collider.name) if collider is Node else "",
+        "collider_path": String(collider.get_path()) if collider is Node else "",
+        "collider_type": collider.get_class() if collider is Object else "",
+        "position": _vec3_payload(position),
+        "normal": _vec3_payload(normal),
+        "vertical_delta_from_player": position.y - player_y,
+        "shape_index": int(hit.get("shape", -1))
+    }
+
+func _ray_probe(
+    scene: Node3D,
+    player: CharacterBody3D,
+    from: Vector3,
+    to: Vector3
+) -> Dictionary:
+    var query := PhysicsRayQueryParameters3D.create(from, to, 1)
+    query.exclude = [player.get_rid()]
+    query.hit_back_faces = true
+    return scene.get_world_3d().direct_space_state.intersect_ray(query)
+
+func _nearby_collision_bodies(
+    scene: Node3D,
+    player: CharacterBody3D,
+    radius: float = 96.0
+) -> Array:
+    var sphere := SphereShape3D.new()
+    sphere.radius = radius
+    var query := PhysicsShapeQueryParameters3D.new()
+    query.shape = sphere
+    query.transform = Transform3D(Basis.IDENTITY, player.global_position)
+    query.collision_mask = 1
+    query.exclude = [player.get_rid()]
+    var hits := scene.get_world_3d().direct_space_state.intersect_shape(query, 32)
+    var rows: Array = []
+    var seen: Dictionary = {}
+    for hit in hits:
+        if not (hit is Dictionary):
+            continue
+        var collider = hit.get("collider")
+        if not (collider is CollisionObject3D):
+            continue
+        var id := (collider as CollisionObject3D).get_instance_id()
+        if seen.has(id):
+            continue
+        seen[id] = true
+        var body := collider as CollisionObject3D
+        rows.append({
+            "name": String(body.name),
+            "path": String(body.get_path()),
+            "type": body.get_class(),
+            "collision_layer": int(body.collision_layer),
+            "collision_mask": int(body.collision_mask),
+            "transform_origin": _vec3_payload(body.global_position),
+            "origin_distance_to_player": body.global_position.distance_to(
+                player.global_position
+            )
+        })
+    rows.sort_custom(
+        func(a: Dictionary, b: Dictionary) -> bool:
+            return float(a["origin_distance_to_player"]) < float(b["origin_distance_to_player"])
+    )
+    if rows.size() > 12:
+        rows.resize(12)
+    return rows
+
+func _physics_context(
+    scene: Node3D,
+    player: CharacterBody3D
+) -> Dictionary:
+    var pos := player.global_position
+    var support_below := _ray_probe(
+        scene,
+        player,
+        pos + Vector3.UP * 2.0,
+        pos + Vector3.DOWN * 512.0
+    )
+    var column_probe := _ray_probe(
+        scene,
+        player,
+        Vector3(pos.x, pos.y + 128.0, pos.z),
+        Vector3(pos.x, pos.y - 512.0, pos.z)
+    )
+    var slide_colliders: Array = []
+    for index in range(player.get_slide_collision_count()):
+        var collision := player.get_slide_collision(index)
+        if collision == null:
+            continue
+        var collider = collision.get_collider()
+        slide_colliders.append({
+            "name": String(collider.name) if collider is Node else "",
+            "type": collider.get_class() if collider is Object else "",
+            "normal": _vec3_payload(collision.get_normal()),
+            "position": _vec3_payload(collision.get_position())
+        })
+    return {
+        "velocity": _vec3_payload(player.velocity),
+        "is_on_floor": player.is_on_floor(),
+        "floor_normal": _vec3_payload(player.get_floor_normal()),
+        "up_direction": _vec3_payload(player.up_direction),
+        "floor_snap_length": player.floor_snap_length,
+        "floor_max_angle": player.floor_max_angle,
+        "safe_margin": player.safe_margin,
+        "collision_layer": int(player.collision_layer),
+        "collision_mask": int(player.collision_mask),
+        "slide_collision_count": player.get_slide_collision_count(),
+        "slide_colliders": slide_colliders,
+        "support_below": _ray_hit_payload(support_below, pos.y),
+        "column_probe": _ray_hit_payload(column_probe, pos.y),
+        "nearby_collision_bodies_radius": 96.0,
+        "nearby_collision_bodies": _nearby_collision_bodies(
+            scene, player, 96.0
+        )
+    }
+
+func _runtime_build_identity() -> Dictionary:
+    if not FileAccess.file_exists(RUNTIME_BUILD_IDENTITY_PATH):
+        return {"status": "UNAVAILABLE"}
+    var parsed = JSON.parse_string(
+        FileAccess.get_file_as_string(RUNTIME_BUILD_IDENTITY_PATH)
+    )
+    if not (parsed is Dictionary):
+        return {"status": "INVALID"}
+    return parsed
+
 func _runtime_context() -> Dictionary:
     var room_id := "UNKNOWN"
     var player_position := Vector3.ZERO
+    var physics: Dictionary = {"status": "UNAVAILABLE"}
     var scene := get_tree().current_scene
     if scene != null:
         var room_manager := scene.get_node_or_null("RoomManager")
@@ -254,12 +391,19 @@ func _runtime_context() -> Dictionary:
             if value != null:
                 room_id = String(value)
         var player := scene.get_node_or_null("Player")
-        if player is Node3D:
+        if player is CharacterBody3D and scene is Node3D:
+            player_position = (player as CharacterBody3D).global_position
+            physics = _physics_context(
+                scene as Node3D,
+                player as CharacterBody3D
+            )
+        elif player is Node3D:
             player_position = (player as Node3D).global_position
     return {
         "room_id": room_id,
         "room_entity_id": stable_room_id(room_id),
-        "player_position": [player_position.x, player_position.y, player_position.z]
+        "player_position": [player_position.x, player_position.y, player_position.z],
+        "physics": physics
     }
 
 func _system_info() -> Dictionary:
@@ -270,7 +414,8 @@ func _system_info() -> Dictionary:
         "locale": OS.get_locale(),
         "godot": Engine.get_version_info(),
         "display_server": DisplayServer.get_name(),
-        "screen_size": [screen_size.x, screen_size.y]
+        "screen_size": [screen_size.x, screen_size.y],
+        "runtime_build_identity": _runtime_build_identity()
     }
 
 func _event_log_tail(max_lines: int = BUG_REPORT_EVENT_TAIL_LINES) -> String:
@@ -308,12 +453,13 @@ func _capture_screenshot_png() -> PackedByteArray:
 func _state_snapshot(context: Dictionary, last_game_event: Dictionary) -> Dictionary:
     return {
         "schema": "openazrael.kg001.runtime_state_snapshot",
-        "version": 1,
+        "version": 2,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
         "room": context.get("room_id", "UNKNOWN"),
         "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
         "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
+        "physics": context.get("physics", {"status":"UNAVAILABLE"}),
         "canonical_state_payload": DemoState.canonical_state_payload(),
         "canonical_state_hash": DemoState.canonical_state_hash(),
         "active_entity_ids": _active_entity_ids(),
@@ -338,6 +484,12 @@ func _bug_report_text(report: Dictionary) -> String:
         "Room ID: " + String(report.get("room_entity_id", "")),
         "Trigger ID: " + String(report.get("trigger_entity_id", "")),
         "State SHA-256: " + String(report.get("canonical_state_hash", "")),
+        "Source commit: " + String(report.get("source_commit", "UNAVAILABLE")),
+        "Support collider: " + String(
+            report.get("physics", {}).get("column_probe", {}).get(
+                "collider_name", "(none)"
+            )
+        ),
         "",
         "Fill these fields in the GitHub issue:",
         "Summary:",
@@ -388,6 +540,12 @@ func capture_bug_report() -> String:
         "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
         "trigger_entity_id": stable_trigger_id(last_trigger_room, last_trigger_name),
         "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
+        "physics": context.get("physics", {"status":"UNAVAILABLE"}),
+        "source_commit": String(
+            system_info.get("runtime_build_identity", {}).get(
+                "commit_sha", "UNAVAILABLE"
+            )
+        ),
         "canonical_state_hash": DemoState.canonical_state_hash(),
         "last_game_event": last_game_event,
         "last_trigger": last_trigger,
@@ -433,7 +591,7 @@ func capture_bug_report() -> String:
 
     var manifest := {
         "schema": "openazrael.bug_report_manifest",
-        "version": 1,
+        "version": 2,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
         "files": included,
