@@ -1,7 +1,7 @@
 {
   "checkpoint": "v116-context-v32",
   "technical_base": "openazrael_godot_poc_v116",
-  "date": "2026-09-20",
+  "date": "2026-09-21",
   "workflow": [
     "DEMO",
     "FAITHFUL_RECONSTRUCTION",
@@ -193,7 +193,21 @@
     "kg001_well_tongs_demo_evidence": "data/tests/kg001_well_tongs_demo_evidence_v118.json",
     "kg001_action_attempts": 1560,
     "kg001_invalid_or_idempotent_noops": 1346,
-    "kg001_success_states": 6
+    "kg001_success_states": 6,
+    "kg001_candidate3_preflight": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+    "kg001_candidate3_source_ci": "CONFIGURED_PY311_PY312",
+    "kg001_candidate3_export_guard": "FAIL_CLOSED_PRELIGHT_RECEIPT_REQUIRED",
+    "kg001_candidate3_export_allowed": false,
+    "kg001_candidate3_manual_gate": "G10_PENDING_USER",
+    "kg001_candidate3_required_runtime_pass": [
+      "v109",
+      "v110",
+      "v111",
+      "audio_v116",
+      "physical_v117",
+      "well_tongs_v118"
+    ],
+    "kg001_candidate3_preflight_contract": "data/tests/kg001_candidate3_preflight_contract_v1.json"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -204,7 +218,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Run source validators, then fix/validate floor and stair locomotion. Restore current Candidate assets including 979TONGS.WAV and require fresh v109/v110/v111/v116/v117/v118 runtime PASS before producing the next Candidate. Candidate 2 runtime evidence remains historical because canonical well+tongs state/audio changed.",
+  "next_target": "Run Candidate 3 source CI, then local asset-backed preflight at the exact build SHA. Export only through tools/export_candidate3.py after candidate3_preflight_receipt PASS. Then perform G10 manual checks starting with R1 floor spawn/traversal, both R8 stair profiles, R7 well+tongs + triggered audio, transparency and full demo route.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -394,6 +408,21 @@
     "export_preset": "Windows Candidate 2",
     "windows_asset_boundary": "Commercial demo assets only in local ignored files and private build/snapshot artifacts. No raw game payload in Git.",
     "g10": "PENDING_MANUAL_USER",
+    "known_good_tag_created": false
+  },
+  "candidate3_windows": {
+    "source_branch": "test/kg001-physical-traversal",
+    "status": "PREFLIGHT_RUNTIME_PENDING",
+    "source_ci": ".github/workflows/kg001-candidate3-source-gate.yml",
+    "preflight": "tools/run_candidate3_preflight.py",
+    "preflight_receipt": ".tmp/kg001/candidate3_preflight_receipt.json",
+    "exporter": "tools/export_candidate3.py",
+    "export_preset": "Windows Candidate 3",
+    "export_receipt": ".tmp/kg001/candidate3_export_receipt.json",
+    "exact_head_binding": true,
+    "godot_version_binding": true,
+    "runtime_asset_hash_binding": true,
+    "manual_gate": "G10_PENDING_USER",
     "known_good_tag_created": false
   }
 }
