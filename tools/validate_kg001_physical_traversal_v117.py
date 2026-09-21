@@ -40,6 +40,27 @@ checks = {
         and stair_contract.get("stairs__STAIR2", {}).get("audited_total_rise", 0) > 87.0
         and stair_contract.get("stairs__STAIR2", {}).get("approximate_rise_per_step", 0) > 12.0
     ),
+    "tracked_contract_spawn_regressions": (
+        len(contract.get("portal_spawn_regressions", [])) == 4
+        and sum(1 for row in contract.get("portal_spawn_regressions", [])
+                if row.get("pre_fix_penetration") is True) == 3
+        and all(row.get("clearance_added") == 4.0
+                for row in contract.get("portal_spawn_regressions", []))
+        and contract.get("floor_regression", {}).get(
+            "test_may_normalize_player_to_floor"
+        ) is False
+    ),
+    "tracked_contract_stair_assist": (
+        contract.get("production_path", {}).get("step_up", {}).get(
+            "max_step_height"
+        ) == 14.0
+        and contract.get("production_path", {}).get("step_up", {}).get(
+            "floor_snap_length"
+        ) == 16.0
+        and contract.get("production_path", {}).get("step_up", {}).get(
+            "safe_margin"
+        ) == 0.25
+    ),
     "runner_version_marker": (
         '"version": 117' in runner
         and "OPENAZRAEL_KG001_PHYSICAL_V117" in runner
@@ -53,6 +74,29 @@ checks = {
     "production_player_is_character_body": "extends CharacterBody3D" in player,
     "production_player_uses_real_input": 'Input.get_vector("move_left", "move_right", "move_forward", "move_back")' in player,
     "production_player_uses_move_and_slide": "move_and_slide()" in player,
+    "production_player_has_collision_tested_step_up": all(
+        value in player
+        for value in (
+            "@export var max_step_height := 14.0",
+            "@export var step_probe_distance := 14.0",
+            "@export var step_clearance := 0.35",
+            "@export var traversal_safe_margin := 0.25",
+            "floor_snap_length = max_step_height + 2.0",
+            "safe_margin = traversal_safe_margin",
+            "if not test_move(",
+            "var floor_hit := _step_floor_probe",
+            "if test_move(",
+            "var raised := global_transform",
+            "raised.origin += lift",
+            "global_position += lift",
+        )
+    ),
+    "production_step_up_only_when_blocked": (
+        "Only engage stair assist when normal horizontal movement is actually"
+        in player
+        and "horizontal_motion.length_squared() < 0.000001" in player
+        and "if not is_on_floor()" in player
+    ),
     "production_capsule_contract": (
         '[sub_resource type="CapsuleShape3D" id="Capsule_player"]' in main
         and "radius = 11.0" in main
@@ -70,6 +114,25 @@ checks = {
         and "Input.action_release" in runner
     ),
     "runtime_advances_physics_frames": "await physics_frame" in runner,
+    "natural_portal_spawn_regression": all(
+        value in runner
+        for value in (
+            "_observe_portal_spawn",
+            '"R1", "spaview", "R1_spaview"',
+            '"R1", "entcori", "R1_entcori"',
+            '"R7", "view", "R7_view"',
+            '"R8", "Object14", "R8_Object14"',
+            "_natural_spawn_no_fall_through",
+            "_natural_spawn_reaches_floor",
+            "_natural_spawn_floor_height",
+            "_natural_spawn_floor_contact",
+        )
+    ),
+    "runner_does_not_normalize_spawn_to_floor": (
+        "Candidate 2 failed immediately after the real portal spawn" in runner
+        and "floor_y + 4.0" not in runner
+        and "player.global_position = Vector3(" in runner
+    ),
     "r1_canonical_spawn_floor_walk": all(
         value in runner
         for value in (
