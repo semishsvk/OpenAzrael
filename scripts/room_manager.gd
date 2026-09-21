@@ -12,6 +12,8 @@ const ROOM_NAMES := {
     "R7":"Well Room (R7)",
     "R8":"Baptistery (R8)"
 }
+const PORTAL_SPAWN_CLEARANCE := 4.0
+
 const PICKUPS := {
     "R1": {
         "TONG6": ["rusty_tongs", "Tongs"],
@@ -402,7 +404,15 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
         return
     var c := _v3(v["centroid"])
     var n := _v3(v["normal"]).normalized()
-    player.teleport_eye_to(c + n * 120.0, n)
+    # The portal-view centroid is an eye-space reconstruction, but the R1/R7
+    # source floors sit slightly above centroid-eye_height. Candidate 2 could
+    # therefore spawn the capsule already penetrating the floor and fall
+    # through before collision recovery. A small vertical clearance preserves
+    # the authored X/Z/heading and lets gravity settle onto the real floor.
+    player.teleport_eye_to(
+        c + n * 120.0 + Vector3.UP * PORTAL_SPAWN_CLEARANCE,
+        n
+    )
 
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
