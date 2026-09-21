@@ -3,7 +3,7 @@
   "version": 112,
   "status": "PASS",
   "commit_sha": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70",
-  "godot_executable": "C:\\Users\\msemj\\Documents\\Codex\\2026-09-13\\referenced-chatgpt-conversation-this-is-an\\work\\godot\\Godot_v4.7.2-stable_win64_console.exe",
+  "godot_executable": "Godot_v4.7.2-stable_win64_console.exe",
   "godot_version": "4.7.2.stable.official.ed1daf0bf",
   "godot_import_status": "PASS",
   "clean_before": true,
