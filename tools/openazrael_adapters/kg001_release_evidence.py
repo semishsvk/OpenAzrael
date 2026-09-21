@@ -349,7 +349,7 @@ def build_gate_results(
     evidence_root: Path,
     *,
     commit_sha: str | None = None,
-    build_id: str = "KG-001 Candidate 1",
+    build_id: str = "KG-001 Candidate 3",
     manual_path: Path | None = None,
 ) -> dict[str, Any]:
     repo_root = repo_root.resolve()
@@ -450,7 +450,7 @@ def main() -> int:
         help="Usually .tmp/kg001 or data/tests.",
     )
     parser.add_argument("--commit-sha")
-    parser.add_argument("--build-id", default="KG-001 Candidate 1")
+    parser.add_argument("--build-id", default="KG-001 Candidate 3")
     parser.add_argument("--manual", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
