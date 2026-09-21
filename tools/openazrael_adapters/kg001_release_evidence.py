@@ -32,6 +32,9 @@ EVIDENCE_CANDIDATES = {
         "kg001_v118_runtime.json",
         "kg001_well_tongs_animation_runtime_v118.json",
     ),
+    "well_pppv": (
+        "kg001_well_tongs_pppv.json",
+    ),
     "fresh": ("kg001_fresh_checkout.json",),
     "manual": (
         "kg001_manual_sanity.json",
@@ -306,6 +309,14 @@ def build_gate_results(
                 _load(paths["v118"]) if paths["v118"] else None
             ),
             "evidence": _merge_evidence(repo_root, paths["v118"]),
+        },
+        {
+            "id": "PPPV_WELL_REAL_INPUT",
+            "status": _combined_status(
+                _load(paths["well_pppv"]) if paths["well_pppv"] else None
+            ),
+            "evidence": _merge_evidence(repo_root, paths["well_pppv"]),
+            "required_for_g09": False,
         },
     ]
 
