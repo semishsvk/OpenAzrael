@@ -3,9 +3,9 @@ extends Node
 signal event_recorded(entry: Dictionary)
 signal bug_report_created(path: String)
 
-const BUILD_ID := "KG-001 Candidate 2"
+const BUILD_ID := "KG-001 Candidate 3"
 const BUILD_CHECKPOINT := "v116-context-v32"
-const EVENT_LOG_PATH := "user://openazrael_candidate2_events.jsonl"
+const EVENT_LOG_PATH := "user://openazrael_candidate3_events.jsonl"
 const STATE_DUMP_PREFIX := "user://openazrael_kg001_state_dump_"
 const BUG_REPORT_PREFIX := "user://openazrael_bugreport_"
 const BUG_REPORT_SCHEMA := "openazrael.bug_report"
@@ -168,7 +168,7 @@ func fail_fast_if_required_resources_missing(require_audio: bool) -> bool:
         })
         return true
     for path in startup_errors:
-        push_error("OpenAzrael KG-001 Candidate 2 missing required resource: " + path)
+        push_error("OpenAzrael KG-001 Candidate 3 missing required resource: " + path)
     record_event("candidate_asset_validation", {
         "status": "FAIL",
         "audio_required": require_audio,
