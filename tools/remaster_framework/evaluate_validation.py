@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .replay_validation import validate_replay
+from .replay_validation import semantic_replay_sha256, validate_replay
 from .validation import (
     RuntimeEvidence,
     ValidationScenario,
@@ -91,6 +91,7 @@ def evaluate_runtime_bundle(payload: dict[str, Any]) -> dict[str, Any]:
             report["replay_integrity_status"] = (
                 "PASS" if not replay_errors else "FAIL"
             )
+            report["semantic_replay_sha256"] = semantic_replay_sha256(replay)
 
     if "runtime_boundary" in payload:
         boundary = payload.get("runtime_boundary", {})
