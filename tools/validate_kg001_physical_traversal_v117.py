@@ -160,6 +160,17 @@ checks = {
         "player.velocity.x =" not in runner
         and "player.velocity.z =" not in runner
     ),
+    "generic_pppv_evidence_bridge": all(
+        value in runner
+        for value in (
+            "pppv_evidence_bus.gd",
+            "record_player_action",
+            '"collision_support"',
+            '"movement"',
+            '"stair_traversal"',
+            '"pppv_evidence": pppv_evidence.bundle()',
+        )
+    ),
 }
 
 failed = [name for name, ok in checks.items() if not ok]
@@ -172,8 +183,10 @@ out = {
     "checks": checks,
     "failed": failed,
     "boundary": (
-        "Source validation proves the runner uses the production Player/Input/collision path. "
-        "Only a Godot runtime PASS with restored R1/R7/R8 assets proves physical traversal."
+        "Source validation proves the runner uses the production Player/Input/collision path "
+        "and emits generic PPPV-compatible evidence. Only a Godot runtime PASS with restored "
+        "R1/R7/R8 assets proves physical traversal. The v117 runner still uses direct test-setup "
+        "placement/orientation and is therefore bridge evidence, not the final generic real-player oracle."
     ),
 }
 print(json.dumps(out, indent=2))
