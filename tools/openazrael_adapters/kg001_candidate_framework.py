@@ -229,6 +229,9 @@ def build_candidate_framework_bundle(
     well_pppv_path = evidence / "kg001_well_tongs_pppv.json"
     if well_pppv_path.is_file():
         inputs["well_tongs_real_input_pppv"] = sha256_file(well_pppv_path)
+    pppv_suite_path = evidence / "kg001_pppv_scenario_suite.json"
+    if pppv_suite_path.is_file():
+        inputs["pppv_scenario_suite"] = sha256_file(pppv_suite_path)
 
     provenance = build_provenance(
         project="OpenAzrael",
@@ -247,6 +250,11 @@ def build_candidate_framework_bundle(
             "pppv_playthrough_plan_status": playthrough_plan["status"],
             "pppv_playthrough_consistency_status": (
                 playthrough_consistency["status"]
+            ),
+            "pppv_scenario_suite_status": (
+                str(_load(pppv_suite_path).get("status", "UNKNOWN"))
+                if pppv_suite_path.is_file()
+                else "NOT_AVAILABLE"
             ),
             "pppv_playthrough_runtime_status": playthrough_runtime_status,
             "pppv_playthrough_evaluation_status": (
@@ -276,6 +284,8 @@ def build_candidate_framework_bundle(
         artifacts["v117_pppv_bridge"] = v117_bridge_path.name
     if well_pppv_path.is_file():
         artifacts["well_tongs_real_input_pppv"] = well_pppv_path.name
+    if pppv_suite_path.is_file():
+        artifacts["pppv_scenario_suite"] = pppv_suite_path.name
 
     bundle = {
         "schema": "openazrael.kg001.framework_bundle",
@@ -286,6 +296,11 @@ def build_candidate_framework_bundle(
         "pppv_playthrough_plan_status": playthrough_plan["status"],
         "pppv_playthrough_consistency_status": (
             playthrough_consistency["status"]
+        ),
+        "pppv_scenario_suite_status": (
+            str(_load(pppv_suite_path).get("status", "UNKNOWN"))
+            if pppv_suite_path.is_file()
+            else "NOT_AVAILABLE"
         ),
         "pppv_playthrough_runtime_status": playthrough_runtime_status,
         "pppv_playthrough_evaluation_status": (
