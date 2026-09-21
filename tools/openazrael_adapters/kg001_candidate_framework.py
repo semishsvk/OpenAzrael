@@ -157,6 +157,9 @@ def build_candidate_framework_bundle(
     inputs["pppv_coverage"] = sha256_file(pppv_coverage_path)
     if v117_bridge_path is not None:
         inputs["v117_pppv_bridge"] = sha256_file(v117_bridge_path)
+    well_pppv_path = evidence / "kg001_well_tongs_pppv.json"
+    if well_pppv_path.is_file():
+        inputs["well_tongs_real_input_pppv"] = sha256_file(well_pppv_path)
 
     provenance = build_provenance(
         project="OpenAzrael",
@@ -186,6 +189,8 @@ def build_candidate_framework_bundle(
     }
     if v117_bridge_path is not None:
         artifacts["v117_pppv_bridge"] = v117_bridge_path.name
+    if well_pppv_path.is_file():
+        artifacts["well_tongs_real_input_pppv"] = well_pppv_path.name
 
     bundle = {
         "schema": "openazrael.kg001.framework_bundle",
@@ -193,6 +198,11 @@ def build_candidate_framework_bundle(
         "commit_sha": commit_sha,
         "release_status": release_summary["status"],
         "pppv_coverage_status": pppv_coverage["status"],
+        "well_tongs_real_input_pppv_status": (
+            str(_load(well_pppv_path).get("status", ""))
+            if well_pppv_path.is_file()
+            else "NOT_AVAILABLE"
+        ),
         "artifacts": artifacts,
         "known_good_eligible": (
             release_summary["status"] == "ELIGIBLE_FOR_KNOWN_GOOD"
