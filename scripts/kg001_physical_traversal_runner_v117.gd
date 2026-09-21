@@ -57,6 +57,63 @@ func _floor_at(
     query.exclude = [player.get_rid()]
     return scene.get_world_3d().direct_space_state.intersect_ray(query)
 
+func _observe_portal_spawn(
+    scene: Node3D,
+    manager,
+    player: CharacterBody3D,
+    room_id: String,
+    view_name: String,
+    prefix: String
+) -> Dictionary:
+    manager.transition_cooldown = 999.0
+    manager.load_room(room_id, false)
+    await _settle(2)
+    manager.call("_spawn_at_portal", room_id, view_name)
+
+    var spawn_position := player.global_position
+    await physics_frame
+    var floor_hit := _floor_at(
+        scene, player, spawn_position, spawn_position.y
+    )
+    _check(prefix + "_floor_support_present", not floor_hit.is_empty())
+    if floor_hit.is_empty():
+        return {
+            "status": "NO_SUPPORT",
+            "spawn_position": spawn_position,
+            "floor_y": spawn_position.y
+        }
+
+    var floor_y := float((floor_hit["position"] as Vector3).y)
+    var min_y := player.global_position.y
+    var floor_frames := 0
+    var fell_through := false
+    for _i in range(45):
+        await physics_frame
+        min_y = minf(min_y, player.global_position.y)
+        if player.is_on_floor():
+            floor_frames += 1
+        if player.global_position.y < floor_y - 4.0:
+            fell_through = true
+            break
+
+    _check(prefix + "_natural_spawn_no_fall_through", not fell_through)
+    _check(prefix + "_natural_spawn_reaches_floor", player.is_on_floor())
+    _check(
+        prefix + "_natural_spawn_floor_height",
+        absf(player.global_position.y - floor_y) < 2.0
+    )
+    _check(
+        prefix + "_natural_spawn_floor_contact",
+        floor_frames >= 8
+    )
+    return {
+        "status": "PASS" if not fell_through else "FAIL",
+        "spawn_position": spawn_position,
+        "floor_y": floor_y,
+        "min_y": min_y,
+        "floor_contact_frames": floor_frames
+    }
+
 func _exercise_input_walk(
     scene: Node3D,
     player: CharacterBody3D,
@@ -236,27 +293,15 @@ func _walk_toward_progress(
     }
 
 func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void:
-    manager.transition_cooldown = 999.0
-    manager.load_room("R1", false)
-    await _settle(2)
-    manager.call("_spawn_at_portal", "R1", "spaview")
-    await _settle_physics(2)
-
-    var floor_hit: Dictionary = await _floor_probe(scene, player)
-    _check("R1_floor_probe_hit", not floor_hit.is_empty())
-    if floor_hit.is_empty():
-        return
-
-    var floor_y := float((floor_hit["position"] as Vector3).y)
-    player.global_position = Vector3(
-        player.global_position.x,
-        floor_y + 4.0,
-        player.global_position.z
+    # Candidate 2 failed immediately after the real portal spawn. Do not
+    # normalize the player onto a raycasted floor here: the spawn itself is now
+    # part of the regression contract.
+    var spawn_result := await _observe_portal_spawn(
+        scene, manager, player, "R1", "spaview", "R1_spaview"
     )
-    player.velocity = Vector3.ZERO
-    await _settle_physics(30)
-    _check("R1_initial_floor_contact", player.is_on_floor())
-    _check("R1_initial_floor_height", absf(player.global_position.y - floor_y) < 2.0)
+    if String(spawn_result.get("status", "")) == "NO_SUPPORT":
+        return
+    var floor_y := float(spawn_result["floor_y"])
 
     # Preserve the canonical portal heading and exercise the same Input actions
     # used during manual gameplay. No teleport occurs while either walk runs.
@@ -421,7 +466,7 @@ func _finish(scene: Node = null, status_override: String = "") -> void:
         "status": status,
         "checks": check_count,
         "failed": failures,
-        "scope": "real production CharacterBody3D traversal using gameplay Input actions over the canonical R1 floor plus both imported R8 tread sequences (step011 and stairs__STAIR2), including ascent and descent; no movement-result teleport shortcut"
+        "scope": "natural portal-spawn support in R1/R7/R8 plus real production CharacterBody3D traversal using gameplay Input actions over the canonical R1 floor and both imported R8 tread sequences (step011 and stairs__STAIR2), including ascent and descent; no floor-normalizing test teleport"
     }
     print("OPENAZRAEL_KG001_PHYSICAL_V117 " + JSON.stringify(result))
     if scene != null:
@@ -461,6 +506,20 @@ func _run() -> void:
         _finish(scene)
         return
 
+    # Validate every portal-view spawn used by the demo loop before active
+    # traversal. R1/spaview is also the manual Candidate start.
+    await _observe_portal_spawn(
+        scene, manager, player as CharacterBody3D,
+        "R1", "entcori", "R1_entcori"
+    )
+    await _observe_portal_spawn(
+        scene, manager, player as CharacterBody3D,
+        "R7", "view", "R7_view"
+    )
+    await _observe_portal_spawn(
+        scene, manager, player as CharacterBody3D,
+        "R8", "Object14", "R8_Object14"
+    )
     await _exercise_r1_floor(scene, manager, player as CharacterBody3D)
     await _exercise_r8_stairs(scene, manager, player as CharacterBody3D)
     _finish(scene)
