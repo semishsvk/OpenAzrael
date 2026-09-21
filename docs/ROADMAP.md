@@ -26,30 +26,27 @@ transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 **Canonical checkpoint:** `v116-context-v32`  
 **Technical base:** `openazrael_godot_poc_v116`
 
-## Now — source-frozen Candidate 2 blocker retest
+## Now — Candidate 3 source and runtime gate
 
-1. Restore Candidate 2 room/audio/texture assets with the v32 refrozen source pipeline.
-2. Require the v110 real-player floor-support regression for Issue #6 to PASS at the canonical R1/R7/R8 entry views.
-3. Require the audio-v116 regression for Issue #9 to PASS: physical WAV loading, R1/R7/R8 ambient counts 2/3/2, playing players and a non-muted Master bus.
-4. Require the Issue #11 indexed color-key validator to PASS: every one of the ten demo `#` textures must resolve to exactly one used qualifying palette index, with R1 KEYHOLE#/TONG6 exported as MASK materials.
-5. Export and launch the graphical Candidate 2 build.
-6. Manually confirm stable floor collision, actually audible R1 ambient audio, and correct transparent keyhole/tongs with no pink/magenta color-key background before attempting the full route.
-7. Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until automated and human retests pass.
+1. Require the Candidate 3 source workflow to PASS on Python 3.11 and 3.12 at the exact intended build SHA.
+2. Restore the local R1/R7/R8, audio and 86-texture Classic corpus and run `tools/run_candidate3_preflight.py`.
+3. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 literal PASS. For traversal, require natural R1/R7/R8 support plus both real R8 stair profiles up/down; retain the v117 step-debug trace on failure.
+4. Require Issue #11 color-key validation plus the KEYHOLE# vertical-orientation regression; TONG6/MINETON# is the negative control and must not receive the keyhole-only UV correction.
+5. Export only through `tools/export_candidate3.py`. Reject changed HEAD, dirty Git, changed evidence/Godot, any runtime asset mutation/addition/removal, or failed exported startup smoke.
+6. Perform receipt-bound G10 on the exact EXE/PCK pair: floor, stairs, well+tongs, audible triggered/ambient audio, transparency, upright keyhole, full route, save/load and F11.
+7. Keep `demo-known-good-001` forbidden until all G00-G10 gates are literal PASS with zero release blockers and zero reproducible softlocks.
 
-## Then — resume Candidate 2 runtime cycle
+## Then — freeze the first known-good demo baseline
 
-1. Restore the locally ignored R1/R7/R8 GLBs, Classic textures and required Candidate 2 audio assets on a Godot-capable checkout.
-2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
-3. Review G00-G09 evidence using the v112 status tooling.
-4. If G00-G09 are literal PASS, launch the normal graphical **KG-001 Candidate 2** build.
-5. Manually traverse the full demo route with the v116 diagnostics: F6 trigger volumes, F7 Candidate HUD, F8 audio debug, F9 audio parity capture, F10 canonical state dump, and F11 source-safe bug capture when a defect is observed.
-6. Complete G10 only after the interactive route is clean.
-7. Keep `demo-known-good-001` forbidden until all G00-G10 are PASS, with zero known critical bugs and zero reproducible softlocks.
+1. Record the passing Candidate 3 commit, Godot version, preflight/export receipts and artifact hashes.
+2. Close only blockers actually demonstrated fixed by exact-candidate automated + manual evidence.
+3. Create `demo-known-good-001` only if the accepted KG-001 release rule is satisfied; never rewrite the tag later.
+4. Preserve Candidate 2 Windows evidence as historical, not current, runtime evidence.
 
-## Next — after Candidate 2 validation
+## Next — after Candidate 3 validation
 
 ### Localization implementation
-Architecture is approved in `docs/LOCALIZATION_ARCHITECTURE.md`, but runtime implementation waits until after the first clean Candidate 2 runtime/manual cycle.
+Architecture is approved in `docs/LOCALIZATION_ARCHITECTURE.md`, but runtime implementation waits until after the first clean Candidate 3 runtime/manual cycle.
 
 1. Define String IR and immutable semantic-ID conventions.
 2. Generate the built-in English fallback catalog and `openazrael.pot`.
