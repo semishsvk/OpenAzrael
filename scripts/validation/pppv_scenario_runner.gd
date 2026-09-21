@@ -120,6 +120,20 @@ func _apply_setup(
 
     return true
 
+func _room_is(manager: Node, expected_room: String) -> bool:
+    return String(manager.get("current_room_id")) == expected_room
+
+func _trigger_centroid(manager: Node, room: String, trigger: String):
+    if not manager.has_method("_trigger_record"):
+        return null
+    var record = manager.call("_trigger_record", room, trigger)
+    if not record is Dictionary or record.is_empty():
+        return null
+    var value = record.get("centroid", [])
+    if not value is Array or value.size() < 3:
+        return null
+    return Vector3(float(value[0]), float(value[1]), float(value[2]))
+
 func _execute_action(
     action: Dictionary,
     manager: Node,
@@ -135,6 +149,43 @@ func _execute_action(
 
     match kind:
         "move":
+            var goal_trigger := String(params.get("goal_trigger", ""))
+            if not goal_trigger.is_empty():
+                var source_room := String(
+                    params.get("source_room", manager.get("current_room_id"))
+                )
+                var destination_room := String(
+                    params.get("destination_room", "")
+                )
+                var centroid = _trigger_centroid(
+                    manager,
+                    source_room,
+                    goal_trigger
+                )
+                if centroid == null or destination_room.is_empty():
+                    failures.append(action_id + ":invalid_trigger_goal")
+                    return false
+
+                manager.set("transition_cooldown", 0.0)
+                var transition_result: Dictionary = await navigator.approach_world_point(
+                    action_id,
+                    centroid,
+                    Callable(self, "_room_is").bind(
+                        manager,
+                        destination_room
+                    ),
+                    int(params.get("max_frames", 1200)),
+                    int(params.get("stuck_frames", 180)),
+                    float(params.get("reach_distance", 8.0))
+                )
+                if (
+                    not bool(transition_result.get("stopped_by_condition", false))
+                    or String(manager.get("current_room_id")) != destination_room
+                ):
+                    failures.append(action_id + ":transition_not_observed")
+                    return false
+                return true
+
             var goal_target := String(params.get("goal_target", ""))
             if not goal_target.is_empty():
                 var current_room = manager.get("current_room")
