@@ -73,7 +73,12 @@ checks = {
         and '"godot_import": "PASS"' in preflight
     ),
     "preflight_binds_runtime_assets": (
-        "REQUIRED_ASSETS" in preflight
+        "RUNTIME_ASSET_ROOTS" in preflight
+        and '"assets/rooms"' in preflight
+        and '"assets/audio"' in preflight
+        and '"assets/textures/classic"' in preflight
+        and "len(classic_pngs) != 86" in preflight
+        and '"runtime_asset_summary": {' in preflight
         and '"runtime_assets": {' in preflight
         and '"sha256": sha256(p)' in preflight
     ),
