@@ -30,6 +30,9 @@ from tools.remaster_framework.coverage import audit_validation_coverage
 from tools.remaster_framework.evaluate_playthrough import (
     evaluate_playthrough_bundle,
 )
+from tools.remaster_framework.playthrough_consistency import (
+    audit_playthrough_consistency,
+)
 from tools.remaster_framework.release import aggregate_release
 
 
@@ -128,6 +131,14 @@ def build_candidate_framework_bundle(
     playthrough_plan = build_openazrael_demo_playthrough_plan(scenarios)
     playthrough_plan_path = evidence / "pppv_playthrough_plan.json"
     _write(playthrough_plan_path, playthrough_plan)
+    playthrough_consistency = audit_playthrough_consistency(
+        playthrough_plan,
+        scenarios,
+    )
+    playthrough_consistency_path = (
+        evidence / "pppv_playthrough_consistency.json"
+    )
+    _write(playthrough_consistency_path, playthrough_consistency)
 
     playthrough_runtime_path = evidence / "kg001_pppv_playthrough.json"
     playthrough_evaluation_path: Path | None = None
@@ -202,6 +213,9 @@ def build_candidate_framework_bundle(
     inputs["pppv_scenarios"] = sha256_file(scenario_bundle_output)
     inputs["pppv_coverage"] = sha256_file(pppv_coverage_path)
     inputs["pppv_playthrough_plan"] = sha256_file(playthrough_plan_path)
+    inputs["pppv_playthrough_consistency"] = sha256_file(
+        playthrough_consistency_path
+    )
     if playthrough_runtime_path.is_file():
         inputs["pppv_playthrough_runtime"] = sha256_file(
             playthrough_runtime_path
@@ -231,6 +245,9 @@ def build_candidate_framework_bundle(
             "release_status": release_summary["status"],
             "pppv_coverage_status": pppv_coverage["status"],
             "pppv_playthrough_plan_status": playthrough_plan["status"],
+            "pppv_playthrough_consistency_status": (
+                playthrough_consistency["status"]
+            ),
             "pppv_playthrough_runtime_status": playthrough_runtime_status,
             "pppv_playthrough_evaluation_status": (
                 playthrough_evaluation_status
@@ -246,6 +263,7 @@ def build_candidate_framework_bundle(
         "pppv_scenarios": scenario_bundle_output.name,
         "pppv_coverage": pppv_coverage_path.name,
         "pppv_playthrough_plan": playthrough_plan_path.name,
+        "pppv_playthrough_consistency": playthrough_consistency_path.name,
         "build_provenance": provenance_path.name,
     }
     if playthrough_runtime_path.is_file():
@@ -266,6 +284,9 @@ def build_candidate_framework_bundle(
         "release_status": release_summary["status"],
         "pppv_coverage_status": pppv_coverage["status"],
         "pppv_playthrough_plan_status": playthrough_plan["status"],
+        "pppv_playthrough_consistency_status": (
+            playthrough_consistency["status"]
+        ),
         "pppv_playthrough_runtime_status": playthrough_runtime_status,
         "pppv_playthrough_evaluation_status": (
             playthrough_evaluation_status
