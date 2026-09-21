@@ -12,12 +12,20 @@ from tools.openazrael_adapters.kg001_candidate_framework import (
 
 
 class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
-    def test_current_scenario_bundle_does_not_fake_full_demo_readiness(self) -> None:
+    def test_current_scenario_bundle_is_authoring_complete_not_runtime_validated(self) -> None:
         root = Path(__file__).resolve().parents[3]
         scenarios = _default_scenario_bundle(root)
         plan = build_openazrael_demo_playthrough_plan(scenarios)
 
-        self.assertEqual(plan["status"], "AUTHORING_REQUIRED")
+        self.assertEqual(plan["status"], "READY")
+        self.assertEqual(plan["blocked_steps"], [])
+        self.assertEqual(
+            plan["metadata"]["runtime_validation_status"],
+            "NOT_EXECUTED",
+        )
+        self.assertFalse(
+            plan["metadata"]["chained_execution_implemented"]
+        )
         self.assertNotIn("S01_PICKUP_TONGS", plan["blocked_steps"])
         self.assertNotIn("S02_OPEN_DOOR1", plan["blocked_steps"])
         self.assertNotIn("S08_OPEN_DOOR2", plan["blocked_steps"])
@@ -27,7 +35,7 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertNotIn("S05_SWITCHBOARD", plan["blocked_steps"])
         self.assertNotIn("S10_TAKE_LENS", plan["blocked_steps"])
         self.assertNotIn("S11_PLACE_LENS", plan["blocked_steps"])
-        self.assertIn("S11_OPTICAL_SEQUENCE", plan["blocked_steps"])
+        self.assertNotIn("S11_OPTICAL_SEQUENCE", plan["blocked_steps"])
         self.assertNotIn("S13_TAKE_SHIELD", plan["blocked_steps"])
 
     def test_r1_interactions_are_reused_as_ready_segments(self) -> None:
@@ -78,7 +86,7 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
             "openazrael.r7.well_tongs.positive",
         )
 
-    def test_r8_non_optical_segments_are_ready(self) -> None:
+    def test_all_r8_segments_are_authored_ready(self) -> None:
         root = Path(__file__).resolve().parents[3]
         plan = build_openazrael_demo_playthrough_plan(
             _default_scenario_bundle(root)
@@ -87,9 +95,10 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertEqual(rows["S10_TAKE_LENS"]["status"], "READY")
         self.assertEqual(rows["S11_PLACE_LENS"]["status"], "READY")
         self.assertEqual(rows["S13_TAKE_SHIELD"]["status"], "READY")
+        self.assertEqual(rows["S11_OPTICAL_SEQUENCE"]["status"], "READY")
         self.assertEqual(
-            rows["S11_OPTICAL_SEQUENCE"]["status"],
-            "AUTHORING_REQUIRED",
+            rows["S11_OPTICAL_SEQUENCE"]["scenario_id"],
+            "openazrael.r8.optical_sequence",
         )
 
     def test_save_load_checkpoints_preserve_v109_oracle(self) -> None:
