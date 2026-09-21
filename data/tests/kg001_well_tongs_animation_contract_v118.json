@@ -1,0 +1,79 @@
+{
+  "schema": "openazrael.kg001.well_tongs_animation_contract",
+  "version": 118,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "source": "official ATDEMO PUZZLES.DAT + compiled WORLD.DAT",
+  "room": "R7",
+  "interaction": "Interact_WellKey",
+  "key_visual": "nibdyky01",
+  "sound_origin": "wel_well",
+  "inventory_precondition": "rusty_tongs",
+  "exact_compiled_action_sequence": [
+    {
+      "opcode": "0x08",
+      "semantic": "remove_room_object",
+      "object": "R7Key",
+      "section0_index": 1149,
+      "world_offset": "0x15700"
+    },
+    {
+      "opcode": "0x28",
+      "semantic": "play_sound",
+      "asset": "979TONGS.WAV",
+      "source_object": "wel_well",
+      "section0_index": 1153,
+      "world_offset": "0x1571B"
+    },
+    {
+      "opcode": "0x07",
+      "semantic": "add_room_object",
+      "object": "R7Key",
+      "section0_index": 1149,
+      "world_offset": "0x15736"
+    },
+    {
+      "opcode": "0x08",
+      "semantic": "remove_room_object",
+      "object": "RustyTongR6",
+      "section0_index": 1245,
+      "world_offset": "0x15751"
+    },
+    {
+      "opcode": "0x09",
+      "semantic": "remove_inventory",
+      "object": "TONG6",
+      "section0_index": 1265,
+      "world_offset": "0x1576C"
+    }
+  ],
+  "sound": {
+    "filename": "979TONGS.WAV",
+    "sha256": "46f19b82e3c85ce5c4a198d745fe9ab5789a3d1a32d552748bb5b8585e0c8469",
+    "sample_rate": 22050,
+    "frames": 20950,
+    "duration_seconds": 0.9501133786848073
+  },
+  "dispatch_observation": {
+    "action_records_in_same_pending_group": 5,
+    "transform_or_rotation_opcode_present": false,
+    "continuous_tween_required": false,
+    "note": "R.EXE action dispatcher processes the five records in one group pass; no recovered action encodes a multi-frame transform for this event."
+  },
+  "negative_precondition": {
+    "without_tongs_must_not_change_state": true,
+    "without_tongs_must_not_emit_demo_action_steps": true
+  },
+  "completion": {
+    "tongs_consumed": true,
+    "well_key_acquired": true,
+    "R7KeyTake": true,
+    "R7key": true,
+    "key_finally_absent_from_room": true
+  },
+  "evidence_boundary": {
+    "generic_inventory_use_hud_motion": "UNOBSERVED_HOLD",
+    "original_miles_pan_volume_parity": "HOLD_SEPARATE_ORACLE",
+    "no_invented_transform_animation": true
+  },
+  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH"
+}
