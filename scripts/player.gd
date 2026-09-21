@@ -19,6 +19,29 @@ extends CharacterBody3D
 @onready var camera: Camera3D = $Camera3D
 var pitch := 0.0
 
+const STEP_DEBUG_LIMIT := 96
+var step_debug_events: Array[Dictionary] = []
+
+func _vec3_payload(value: Vector3) -> Array[float]:
+    return [value.x, value.y, value.z]
+
+func _record_step_debug(kind: String, payload: Dictionary = {}) -> void:
+    var row := payload.duplicate(true)
+    row["kind"] = kind
+    row["player_position"] = _vec3_payload(global_position)
+    step_debug_events.append(row)
+    while step_debug_events.size() > STEP_DEBUG_LIMIT:
+        step_debug_events.pop_front()
+
+func clear_step_debug() -> void:
+    step_debug_events.clear()
+
+func step_debug_snapshot() -> Array[Dictionary]:
+    var out: Array[Dictionary] = []
+    for row in step_debug_events:
+        out.append(row.duplicate(true))
+    return out
+
 func _ready() -> void:
     Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
     # Keep support while descending the same discrete stair profiles that the
@@ -49,25 +72,73 @@ func _unhandled_input(event: InputEvent) -> void:
         Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
 
 func _step_floor_probe(direction: Vector3, horizontal_motion: Vector3) -> Dictionary:
-    var probe_distance := step_probe_distance + horizontal_motion.length()
-    var probe_xz := global_position + direction * probe_distance
-    var ray_from := Vector3(
-        probe_xz.x,
-        global_position.y + max_step_height + 2.0,
-        probe_xz.z
-    )
-    var ray_to := Vector3(
-        probe_xz.x,
-        global_position.y - 2.0,
-        probe_xz.z
-    )
-    var query := PhysicsRayQueryParameters3D.create(
-        ray_from,
-        ray_to,
-        collision_mask
-    )
-    query.exclude = [get_rid()]
-    return get_world_3d().direct_space_state.intersect_ray(query)
+    # Legacy tread winding is inconsistent and the two R8 stair profiles have
+    # very different tread depths. Probe near-to-far and select the smallest
+    # valid positive rise instead of trusting one long ray 14+ units ahead.
+    var motion_distance := horizontal_motion.length()
+    var probe_distances: Array[float] = [
+        maxf(2.0, motion_distance + 1.0),
+        maxf(4.0, motion_distance + 4.0),
+        maxf(8.0, motion_distance + 8.0),
+        maxf(step_probe_distance, motion_distance + 2.0),
+    ]
+    var best_hit: Dictionary = {}
+    var best_step_height := 1.0e20
+
+    for probe_distance in probe_distances:
+        var probe_xz := global_position + direction * probe_distance
+        var ray_from := Vector3(
+            probe_xz.x,
+            global_position.y + max_step_height + 2.0,
+            probe_xz.z
+        )
+        var ray_to := Vector3(
+            probe_xz.x,
+            global_position.y - 2.0,
+            probe_xz.z
+        )
+        var query := PhysicsRayQueryParameters3D.create(
+            ray_from,
+            ray_to,
+            collision_mask
+        )
+        query.exclude = [get_rid()]
+        query.hit_back_faces = true
+        var hit := get_world_3d().direct_space_state.intersect_ray(query)
+        if hit.is_empty():
+            _record_step_debug("probe_miss", {
+                "probe_distance": probe_distance,
+                "ray_from": _vec3_payload(ray_from),
+                "ray_to": _vec3_payload(ray_to),
+            })
+            continue
+
+        var normal := hit.get("normal", Vector3.ZERO) as Vector3
+        var hit_position := hit.get("position", global_position) as Vector3
+        var step_height := hit_position.y - global_position.y
+        var collider = hit.get("collider")
+        _record_step_debug("probe_hit", {
+            "probe_distance": probe_distance,
+            "hit_position": _vec3_payload(hit_position),
+            "normal": _vec3_payload(normal),
+            "face_index": int(hit.get("face_index", -1)),
+            "collider": String(collider.name) if collider is Node else "",
+            "step_height": step_height,
+        })
+
+        # create_trimesh_shape(backface_collision=true) deliberately accepts
+        # either legacy winding. The production tread oracle must do the same.
+        if absf(normal.y) < cos(floor_max_angle):
+            continue
+        if step_height <= 0.05 or step_height > max_step_height + 0.05:
+            continue
+        if step_height < best_step_height:
+            best_step_height = step_height
+            best_hit = hit.duplicate(true)
+            best_hit["_step_height"] = step_height
+            best_hit["_probe_distance"] = probe_distance
+
+    return best_hit
 
 func _try_step_up(horizontal_motion: Vector3) -> bool:
     if not is_on_floor() or horizontal_motion.length_squared() < 0.000001:
@@ -88,15 +159,23 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
     var direction := horizontal_motion.normalized()
     var floor_hit := _step_floor_probe(direction, horizontal_motion)
     if floor_hit.is_empty():
+        _record_step_debug("step_reject_no_tread", {
+            "horizontal_motion": _vec3_payload(horizontal_motion),
+        })
         return false
 
     var normal := floor_hit.get("normal", Vector3.ZERO) as Vector3
-    if normal.dot(Vector3.UP) < cos(floor_max_angle):
+    if absf(normal.y) < cos(floor_max_angle):
+        _record_step_debug("step_reject_normal", {
+            "normal": _vec3_payload(normal),
+        })
         return false
 
-    var floor_y := float((floor_hit["position"] as Vector3).y)
-    var step_height := floor_y - global_position.y
+    var step_height := float(floor_hit.get("_step_height", 0.0))
     if step_height <= 0.05 or step_height > max_step_height + 0.05:
+        _record_step_debug("step_reject_height", {
+            "step_height": step_height,
+        })
         return false
 
     var lift := Vector3.UP * (step_height + step_clearance)
@@ -111,6 +190,10 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
         traversal_safe_margin,
         false
     ):
+        _record_step_debug("step_reject_lift_blocked", {
+            "step_height": step_height,
+            "probe_distance": float(floor_hit.get("_probe_distance", 0.0)),
+        })
         return false
 
     var raised := global_transform
@@ -122,10 +205,19 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
         traversal_safe_margin,
         false
     ):
+        _record_step_debug("step_reject_forward_blocked", {
+            "step_height": step_height,
+            "probe_distance": float(floor_hit.get("_probe_distance", 0.0)),
+        })
         return false
 
     global_position += lift
     velocity.y = 0.0
+    _record_step_debug("step_success", {
+        "step_height": step_height,
+        "probe_distance": float(floor_hit.get("_probe_distance", 0.0)),
+        "normal": _vec3_payload(normal),
+    })
     return true
 
 func _physics_process(delta: float) -> void:
