@@ -94,6 +94,12 @@ checks = {
     "export_rejects_dirty_git": "DIRTY_GIT_AFTER_PREFLIGHT" in exporter,
     "export_rechecks_evidence": "PREFLIGHT_EVIDENCE_CHANGED" in exporter,
     "export_rechecks_runtime_assets": "RUNTIME_ASSET_CHANGED_SINCE_PREFLIGHT" in exporter,
+    "export_rejects_asset_set_drift": (
+        "RUNTIME_ASSET_SET_CHANGED_SINCE_PREFLIGHT" in exporter
+        and "current_asset_paths != receipt_asset_paths" in exporter
+        and '"added": sorted(current_asset_paths - receipt_asset_paths)' in exporter
+        and '"removed": sorted(receipt_asset_paths - current_asset_paths)' in exporter
+    ),
     "export_rechecks_godot": "GODOT_VERSION_CHANGED_SINCE_PREFLIGHT" in exporter,
     "export_uses_release_preset": (
         '"--export-release"' in exporter
@@ -102,6 +108,12 @@ checks = {
     "export_requires_exe_pck_pair": (
         '"PCK_MISSING"' in exporter
         and 'binary_format/embed_pck=false' in presets
+    ),
+    "export_requires_post_export_startup_smoke": (
+        "EXPORTED_STARTUP_SMOKE_FAILED" in exporter
+        and '"--headless"' in exporter
+        and '"--quit-after"' in exporter
+        and '"export_smoke": {' in exporter
     ),
     "export_hashes_artifacts": (
         '"candidate3_export_receipt.json"' in exporter
