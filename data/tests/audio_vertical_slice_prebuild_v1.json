@@ -1,0 +1,13 @@
+{
+  "schema_version":1,
+  "name":"R1-R7-R8 audio interaction pre-build suite",
+  "policy":"Never promote an audio binding above its forensic evidence.",
+  "tests":[
+    {"id":"T01","case":"R7 tongs/well gameplay","assert":["rusty_tongs prerequisite","well_key acquired","R7KeyTake true","R7key true"],"audio_assertion":"979tongs playback HOLD"},
+    {"id":"T02","case":"R8 lens place","assert":["R8LensPlace true","S137.WAV logical event requested"]},
+    {"id":"T03","case":"R8 optical start","assert":["R8RaiseTimer true","S121.WAV logical event requested"]},
+    {"id":"T04","case":"vertical traversal","assert":["R1->R7->R1->R8","ordered trace deterministic"]},
+    {"id":"T05","case":"mode invariance","assert":["Classic default","mode switch cannot alter inventory/flags/puzzle_nodes/values"]}
+  ],
+  "promotion_gate":{"requires_real_build":true,"requires_audio_debug_view":true,"requires_non_capture_playback":true}
+}
