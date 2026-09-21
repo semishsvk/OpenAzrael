@@ -17,6 +17,9 @@ status = read("tools/kg001_status_v112.py")
 room_manager = read("scripts/room_manager.gd")
 r1_runner = read("scripts/kg001_r1_route_runner_v119.gd")
 collision_runner = read("scripts/kg001_collision_parity_runner_v120.gd")
+surface_runner = read("scripts/kg001_surface_collision_runner_v121.gd")
+physical_runner = read("scripts/kg001_physical_traversal_runner_v117.gd")
+transition_adapter = read("tools/openazrael_adapters/transition_pppv.py")
 
 gates = {row.get("id"): row for row in acceptance.get("gates", []) if isinstance(row, dict)}
 
@@ -32,7 +35,27 @@ checks = {
         and "R1/Object02" in room_manager
         and "Collision_Object02" in r1_runner
         and "R1_Object02_not_exempt" in collision_runner
+        and "OPENAZRAEL_KG001_SURFACE_COLLISION_V121" in surface_runner
     ),
+    "candidate4_all_stair_directions_covered": all(token in physical_runner for token in (
+        '"step011__mesh"',
+        '"stairs__STAIR2"',
+        "_up_progress",
+        "_up_height",
+        "_up_no_fall_through",
+        "_down_progress",
+        "_down_height",
+        "_down_no_fall_through",
+    )),
+    "candidate4_all_room_transitions_authored": all(token in transition_adapter for token in (
+        '"openazrael.transition.r1_to_r7"',
+        '"openazrael.transition.r7_to_r1"',
+        '"openazrael.transition.r1_to_r8"',
+        '"openazrael.transition.r8_to_r1"',
+        '"teleport_allowed_during_action": False',
+        '"verify_destination_spawn": True',
+        '"critical_if_transition_broken": True',
+    )),
     "pppv_runner_isolated": (
         'TMP=ROOT/".tmp/kg001_pppv_v2"' in pppv_runner
         and "run_pppv_scenario_suite" in pppv_runner
