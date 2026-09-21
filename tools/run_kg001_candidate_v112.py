@@ -185,6 +185,167 @@ def run_well_pppv(godot):
     return summary
 
 
+
+def run_pppv_scenario_suite(godot):
+    bundle_path=TMP/"pppv_scenarios.json"
+    suite_root=TMP/"pppv_suite"
+    scenario_root=suite_root/"scenarios"
+    runtime_root=suite_root/"runtime"
+    evaluation_root=suite_root/"evaluation"
+    summary_path=TMP/"kg001_pppv_scenario_suite.json"
+
+    if suite_root.exists():
+        shutil.rmtree(suite_root)
+    scenario_root.mkdir(parents=True,exist_ok=True)
+    runtime_root.mkdir(parents=True,exist_ok=True)
+    evaluation_root.mkdir(parents=True,exist_ok=True)
+
+    if not bundle_path.is_file():
+        summary={
+            "schema":"openazrael.kg001.pppv_scenario_suite",
+            "version":1,
+            "status":"FAIL",
+            "reason":"MISSING_PPPV_SCENARIO_BUNDLE",
+            "scenario_count":0,
+            "passed":0,
+            "scenarios":{},
+        }
+        write_json(summary_path,summary)
+        return summary
+
+    try:
+        bundle=json.loads(bundle_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError,OSError) as exc:
+        summary={
+            "schema":"openazrael.kg001.pppv_scenario_suite",
+            "version":1,
+            "status":"FAIL",
+            "reason":"INVALID_PPPV_SCENARIO_BUNDLE",
+            "error":str(exc),
+            "scenario_count":0,
+            "passed":0,
+            "scenarios":{},
+        }
+        write_json(summary_path,summary)
+        return summary
+
+    rows=bundle.get("scenarios",[]) if isinstance(bundle,dict) else []
+    if not isinstance(rows,list) or not rows:
+        summary={
+            "schema":"openazrael.kg001.pppv_scenario_suite",
+            "version":1,
+            "status":"FAIL",
+            "reason":"EMPTY_PPPV_SCENARIO_BUNDLE",
+            "scenario_count":0,
+            "passed":0,
+            "scenarios":{},
+        }
+        write_json(summary_path,summary)
+        return summary
+
+    results={}
+    passed=0
+    transition_ids=[]
+    for index,scenario in enumerate(rows):
+        if not isinstance(scenario,dict):
+            scenario_id=f"invalid_{index:03d}"
+            results[scenario_id]={
+                "status":"FAIL",
+                "reason":"INVALID_SCENARIO_ROW",
+            }
+            continue
+
+        scenario_id=str(scenario.get("scenario_id","")).strip()
+        if not scenario_id:
+            scenario_id=f"unnamed_{index:03d}"
+        safe_id="".join(
+            ch if ch.isalnum() or ch in "-_" else "_"
+            for ch in scenario_id
+        )
+        scenario_path=scenario_root/f"{index:03d}_{safe_id}.json"
+        runtime_path=runtime_root/f"{index:03d}_{safe_id}.json"
+        evaluation_path=evaluation_root/f"{index:03d}_{safe_id}.json"
+        write_json(scenario_path,scenario)
+
+        if scenario_id.startswith("openazrael.transition."):
+            transition_ids.append(scenario_id)
+
+        proc=run([
+            godot,
+            "--headless",
+            "--path",str(ROOT),
+            "--script","res://scripts/validation/pppv_scenario_runner.gd",
+            "--",
+            f"--pppv-scenario={scenario_path}",
+            f"--pppv-output={runtime_path}",
+        ])
+
+        evaluation=None
+        evaluator_returncode=None
+        evaluator_output=""
+        if runtime_path.is_file():
+            evaluator=run([
+                sys.executable,
+                "-m",
+                "tools.remaster_framework.evaluate_validation",
+                "--runtime-bundle",str(runtime_path),
+                "--output",str(evaluation_path),
+            ])
+            evaluator_returncode=evaluator.returncode
+            evaluator_output=evaluator.stdout[-12000:]
+            if evaluation_path.is_file():
+                try:
+                    evaluation=json.loads(
+                        evaluation_path.read_text(encoding="utf-8")
+                    )
+                except (json.JSONDecodeError,OSError):
+                    evaluation=None
+
+        status=(
+            "PASS"
+            if proc.returncode==0
+            and evaluator_returncode==0
+            and isinstance(evaluation,dict)
+            and evaluation.get("status")=="PASS"
+            else "FAIL"
+        )
+        if status=="PASS":
+            passed+=1
+        results[scenario_id]={
+            "status":status,
+            "godot_returncode":proc.returncode,
+            "evaluator_returncode":evaluator_returncode,
+            "runtime":(
+                str(runtime_path.relative_to(ROOT))
+                if runtime_path.is_file()
+                else ""
+            ),
+            "evaluation":evaluation or {},
+            "output_tail":proc.stdout[-12000:],
+            "evaluator_output_tail":evaluator_output,
+        }
+
+    scenario_count=len(rows)
+    all_pass=passed==scenario_count
+    summary={
+        "schema":"openazrael.kg001.pppv_scenario_suite",
+        "version":1,
+        "status":"PASS" if all_pass else "FAIL",
+        "scenario_count":scenario_count,
+        "passed":passed,
+        "failed":scenario_count-passed,
+        "transition_scenario_count":len(transition_ids),
+        "transition_scenario_ids":sorted(transition_ids),
+        "all_authored_scenarios_executed":len(results)==scenario_count,
+        "final_pppv_oracle":True,
+        "required_for_g04":True,
+        "required_for_g05":True,
+        "required_for_g09":True,
+        "scenarios":results,
+    }
+    write_json(summary_path,summary)
+    return summary
+
 def run_full_pppv(godot):
     plan_path=TMP/"pppv_playthrough_plan.json"
     scenarios_path=TMP/"pppv_scenarios.json"
@@ -265,17 +426,19 @@ def run_full_pppv(godot):
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109/v110/v111/v117/v118 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state plus v109/v110/v111/v117/v118, full guarded PPPV scenario suite, and chained PPPV playthrough PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout/framework summaries into data/tests for review/commit.")
     ap.add_argument("--stage-framework-metadata",action="store_true",help="After G09 observation, stage ignored source-safe provenance/release/PPPV metadata under data/runtime for a subsequent manual Candidate/F11 run.")
     args=ap.parse_args()
 
     TMP.mkdir(parents=True,exist_ok=True)
     for stale_name in (
+        "kg001_pppv_scenario_suite.json",
         "kg001_pppv_playthrough.json",
         "kg001_pppv_playthrough_evaluation.json",
     ):
         (TMP/stale_name).unlink(missing_ok=True)
+    shutil.rmtree(TMP/"pppv_suite",ignore_errors=True)
     clean_before=git_clean()
     head=git_head()
     bad_tracked=repository_safety()
@@ -416,45 +579,54 @@ def main():
         and import_status=="PASS"
         and all(asset_present.values())
     ):
+        pppv_scenario_suite=run_pppv_scenario_suite(godot)
         pppv_playthrough=run_full_pppv(godot)
-    elif godot is None:
-        pppv_playthrough={
-            "status":"BLOCKED_GODOT_NOT_FOUND",
-            "final_pppv_oracle":True,
-            "required_for_g04":True,
-            "required_for_g08":True,
-            "required_for_g09":True,
-        }
-    elif not all(asset_present.values()):
-        pppv_playthrough={
-            "status":"BLOCKED_MISSING_ASSETS",
-            "missing":[p for p,v in asset_present.items() if not v],
-            "final_pppv_oracle":True,
-            "required_for_g04":True,
-            "required_for_g08":True,
-            "required_for_g09":True,
-        }
-    elif import_status!="PASS":
-        pppv_playthrough={
-            "status":"BLOCKED_GODOT_IMPORT",
-            "import_status":import_status,
-            "final_pppv_oracle":True,
-            "required_for_g04":True,
-            "required_for_g08":True,
-            "required_for_g09":True,
-        }
     else:
-        pppv_playthrough={
-            "status":"BLOCKED_FRAMEWORK_PREFLIGHT",
-            "framework_status":framework_status,
+        if godot is None:
+            block_status="BLOCKED_GODOT_NOT_FOUND"
+            block_details={}
+        elif not all(asset_present.values()):
+            block_status="BLOCKED_MISSING_ASSETS"
+            block_details={
+                "missing":[p for p,v in asset_present.items() if not v]
+            }
+        elif import_status!="PASS":
+            block_status="BLOCKED_GODOT_IMPORT"
+            block_details={"import_status":import_status}
+        else:
+            block_status="BLOCKED_FRAMEWORK_PREFLIGHT"
+            block_details={"framework_status":framework_status}
+
+        pppv_scenario_suite={
+            "status":block_status,
+            **block_details,
             "final_pppv_oracle":True,
             "required_for_g04":True,
+            "required_for_g05":True,
+            "required_for_g09":True,
+            "scenarios":{},
+        }
+        write_json(
+            TMP/"kg001_pppv_scenario_suite.json",
+            pppv_scenario_suite,
+        )
+        pppv_playthrough={
+            "status":block_status,
+            **block_details,
+            "final_pppv_oracle":True,
             "required_for_g08":True,
             "required_for_g09":True,
         }
 
+    pppv_scenario_suite_pass=(
+        pppv_scenario_suite.get("status")=="PASS"
+    )
     pppv_playthrough_pass=pppv_playthrough.get("status")=="PASS"
-    full_runtime_pass=legacy_runtime_pass and pppv_playthrough_pass
+    full_runtime_pass=(
+        legacy_runtime_pass
+        and pppv_scenario_suite_pass
+        and pppv_playthrough_pass
+    )
 
     clean_after=git_clean()
     fresh_pass=(
@@ -475,9 +647,13 @@ def main():
         else ("NOT_REQUESTED" if not args.fresh_checkout else "FAIL")
     )
     fresh["clean_after"]=clean_after
+    fresh["runtime_status"]["pppv_scenario_suite"]=pppv_scenario_suite.get(
+        "status",""
+    )
     fresh["runtime_status"]["pppv_playthrough"]=pppv_playthrough.get(
         "status",""
     )
+    fresh["required_pppv_scenario_suite"]=pppv_scenario_suite
     fresh["required_pppv_playthrough"]=pppv_playthrough
     write_json(TMP/"kg001_fresh_checkout.json",fresh)
 
@@ -488,7 +664,11 @@ def main():
         and (not args.fresh_checkout or fresh_pass)
         else "INCOMPLETE_OR_FAIL"
     )
+    overall["runtimes"]["pppv_scenario_suite"]=pppv_scenario_suite.get(
+        "status",""
+    )
     overall["runtimes"]["pppv_playthrough"]=pppv_playthrough.get("status","")
+    overall["required_pppv_scenario_suite"]=pppv_scenario_suite
     overall["required_pppv_playthrough"]=pppv_playthrough
     write_json(TMP/"kg001_candidate_v112.json",overall)
 
@@ -525,6 +705,7 @@ def main():
             TMP/"kg001_v117_runtime.json":ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json",
             TMP/"kg001_v118_runtime.json":ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json",
             TMP/"kg001_well_tongs_pppv.json":ROOT/"data/tests/kg001_well_tongs_pppv.json",
+            TMP/"kg001_pppv_scenario_suite.json":ROOT/"data/tests/kg001_pppv_scenario_suite.json",
             TMP/"kg001_pppv_playthrough.json":ROOT/"data/tests/kg001_pppv_playthrough.json",
             TMP/"kg001_pppv_playthrough_evaluation.json":ROOT/"data/tests/kg001_pppv_playthrough_evaluation.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
