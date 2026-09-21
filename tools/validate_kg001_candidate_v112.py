@@ -20,6 +20,7 @@ checks={
  "well_real_input_pppv":all(x in source for x in ("run_well_pppv","pppv_scenario_runner.gd","evaluate_validation","kg001_well_tongs_pppv.json")),
  "all_scenario_real_input_pppv":all(x in source for x in ("run_pppv_scenario_suite","pppv_scenario_runner.gd","evaluate_validation","kg001_pppv_scenario_suite.json")),
  "full_real_input_pppv":all(x in source for x in ("run_full_pppv","pppv_playthrough_runner.gd","evaluate_playthrough","kg001_pppv_playthrough_evaluation.json")),
+ "repeated_full_pppv":all(x in source for x in ("repeat_count=2","kg001_pppv_playthrough_repeat2.json","kg001_pppv_determinism.json","semantic_replay_sha256","final_state_match")),
  "fresh_requires_full_pppv":all(x in source for x in ('"pppv_scenario_suite"','"pppv_playthrough"',"pppv_scenario_suite_pass","pppv_playthrough_pass","full_runtime_pass=(")),
  "git_clean_before_after":"clean_before=git_clean()" in source and "clean_after=git_clean()" in source,
  "forbidden_tracking_check":"repository_safety()" in source and "FORBIDDEN_TRACKED_PREFIXES" in source,
