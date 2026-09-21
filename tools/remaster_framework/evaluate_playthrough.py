@@ -41,6 +41,28 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
             for item in runtime_failures
         )
 
+    guard_failures = payload.get("runtime_guard_failures", [])
+    if not isinstance(guard_failures, list):
+        errors.append("runtime_guard_failures must be a list")
+        guard_failures = []
+    errors.extend(
+        f"runtime guard failure: {item}"
+        for item in guard_failures
+    )
+
+    replay = payload.get("replay", {})
+    if not isinstance(replay, dict):
+        errors.append("replay must be an object")
+        replay = {}
+    if replay.get("schema") != "remaster.synthetic_player_replay":
+        errors.append("synthetic-player replay schema missing or invalid")
+    if replay.get("frame_level_avatar_trajectory") is not True:
+        errors.append("frame-level avatar trajectory is not enabled")
+    replay_actions = replay.get("actions", [])
+    if not isinstance(replay_actions, list):
+        errors.append("replay actions must be a list")
+        replay_actions = []
+
     if len(actual_steps) != len(planned_steps):
         errors.append(
             "playthrough step count mismatch: "
@@ -164,6 +186,10 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         "state_reset_between_scenarios": False,
         "direct_interact_calls": False,
         "gameplay_teleport_during_actions": False,
+        "frame_level_avatar_trajectory": True,
+        "world_state_snapshots": True,
+        "softlock_watchdog": True,
+        "transition_spawn_validation": True,
     }
     for key, expected in required_boundary.items():
         if boundary.get(key) is not expected:
@@ -171,6 +197,37 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
                 f"runtime boundary mismatch {key}: "
                 f"{boundary.get(key)!r} != {expected!r}"
             )
+
+    expected_replay_actions = 0
+    for actual in actual_steps:
+        if not isinstance(actual, dict):
+            continue
+        scenario = actual.get("scenario")
+        if not isinstance(scenario, dict):
+            continue
+        actions = scenario.get("actions", [])
+        if isinstance(actions, list):
+            expected_replay_actions += len(actions)
+    if len(replay_actions) != expected_replay_actions:
+        errors.append(
+            "replay action count mismatch: "
+            f"{len(replay_actions)} != {expected_replay_actions}"
+        )
+
+    for index, replay_action in enumerate(replay_actions):
+        if not isinstance(replay_action, dict):
+            errors.append(f"replay action {index} is not an object")
+            continue
+        if not isinstance(replay_action.get("before"), dict):
+            errors.append(f"replay action {index} missing before snapshot")
+        if not isinstance(replay_action.get("after"), dict):
+            errors.append(f"replay action {index} missing after snapshot")
+        trajectory = replay_action.get("trajectory")
+        if not isinstance(trajectory, list):
+            errors.append(f"replay action {index} trajectory must be a list")
+        result = replay_action.get("result")
+        if not isinstance(result, dict) or result.get("success") is not True:
+            errors.append(f"replay action {index} did not complete successfully")
 
     return {
         "schema": EVALUATION_SCHEMA,
@@ -185,6 +242,9 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         "final_state_sha256": final_hash,
         "expected_final_state_sha256": expected_final,
         "runtime_boundary": boundary,
+        "runtime_guard_failures": guard_failures,
+        "replay_action_count": len(replay_actions),
+        "expected_replay_action_count": expected_replay_actions,
     }
 
 
