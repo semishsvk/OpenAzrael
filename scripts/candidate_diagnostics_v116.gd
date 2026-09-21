@@ -48,6 +48,7 @@ func _ready() -> void:
     DemoState.flag_changed.connect(_on_flag_changed)
     DemoState.puzzle_node_changed.connect(_on_puzzle_node_changed)
     LegacyEvents.logical_audio_event.connect(_on_logical_audio_event)
+    LegacyEvents.logical_audio_event_detail.connect(_on_logical_audio_event_detail)
     record_event("diagnostics_ready", {
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
@@ -103,6 +104,9 @@ func _on_puzzle_node_changed(node_name: String, value: bool) -> void:
 func _on_logical_audio_event(filename: String) -> void:
     last_audio = filename
     record_event("logical_audio", {"asset": filename})
+
+func _on_logical_audio_event_detail(detail: Dictionary) -> void:
+    record_event("logical_audio_detail", detail)
 
 func record_interaction(target_name: String) -> void:
     record_event("interaction", {"target": target_name})
