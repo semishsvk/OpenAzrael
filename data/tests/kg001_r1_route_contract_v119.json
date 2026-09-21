@@ -194,5 +194,20 @@
     "no fall recovery teleport or synthetic floor is used",
     "no engine/script errors"
   ],
-  "evidence_boundary": "v119 supersedes the Candidate 3 blind spot without rewriting historical v117 evidence. Runtime PASS requires restored R1.glb and Godot execution at the tested commit."
+  "evidence_boundary": "v119 supersedes the Candidate 3 blind spot without rewriting historical v117 evidence. Runtime PASS requires restored R1.glb and Godot execution at the tested commit.",
+  "geometry_audit": {
+    "bug_point_containing_mesh": "Object02__mesh",
+    "bug_point_containing_face_index": 2,
+    "bug_floor_triangle_center": [
+      -269.290556086068,
+      -83.8609560278553,
+      384.701144495062
+    ],
+    "tunnel03_spawn_floor_face_index": 0,
+    "tunnel03_object02_projected_gap": 0.09813844622236,
+    "canonical_route_graph_nodes": 15,
+    "canonical_route_segments": 14,
+    "all_main_segments_covered_by_walkable_floor_union_with_0_5_buffer": true,
+    "derivation": "shortest connected floor-triangle-center path from natural spaview-side tunnel03 support to entcori-side tunnel07 support in restored R1.glb, with Object02 Candidate-3 detour added explicitly"
+  }
 }
