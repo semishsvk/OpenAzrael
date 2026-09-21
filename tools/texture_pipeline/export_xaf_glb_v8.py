@@ -90,6 +90,22 @@ def resolve_texture(tex_name,idx):
     return idx.get(Path(tex_name).stem.upper()) if tex_name else None
 
 
+def corrected_uvs(tex_name, uvs):
+    """Apply narrowly-scoped legacy presentation corrections.
+
+    Candidate 3 manual evidence showed KEYHOLE# vertically inverted while the
+    rest of the audited cutout corpus retained the expected orientation. Keep
+    the correction texture-specific rather than changing the global XAF UV
+    convention and record it in the export manifest for regression auditing.
+    """
+    corrected=np.array(uvs,float,copy=True)
+    correction='NONE'
+    if tex_name and Path(tex_name).stem.upper()=='KEYHOLE#' and len(corrected):
+        corrected[:,1]=1.0-corrected[:,1]
+        correction='FLIP_V_CANDIDATE3_KEYHOLE'
+    return corrected,correction
+
+
 def face_records(fs):
     out=[]
     for line in fs.splitlines():
@@ -202,7 +218,8 @@ def parse(src,texture_dir):
             if not of: continue
             tex=mats.get(mn,{}).get('texture')
             material=get_material(mn)
-            visual=trimesh.visual.TextureVisuals(uv=np.array(ouv,float),material=material)
+            corrected_uv,uv_correction=corrected_uvs(tex,ouv)
+            visual=trimesh.visual.TextureVisuals(uv=corrected_uv,material=material)
             mesh=trimesh.Trimesh(vertices=np.array(ov),faces=np.array(of),vertex_normals=np.array(on),visual=visual,process=False)
             mesh.metadata.update({'xaf_object':nod['name'],'xaf_material':mn,'xaf_texture':tex})
             # Object transform lives on parent object node; geometry is identity child.
@@ -212,6 +229,7 @@ def parse(src,texture_dir):
             primitive_stats.append({'object':nod['name'],'object_node':name,'node':child,'parent_object':objrec['parent'],
                                     'material':mn,'texture':tex,'resolved_png':resolve_texture(tex,tex_idx).name if resolve_texture(tex,tex_idx) else None,
                                     'legacy_colorkey':material_alpha.get(mn)=='MASK','alpha_mode':material_alpha.get(mn,'OPAQUE'),
+                                    'uv_correction':uv_correction,
                                     'corner_vertices':len(ov),'triangles':len(of),'bad_uv_corners':bad_uv,'bad_normal_corners':bad_normal})
             objrec['primitive_count']+=1; objrec['corner_vertices']+=len(ov); objrec['triangles']+=len(of)
             objrec['bad_uv_corners']+=bad_uv; objrec['bad_normal_corners']+=bad_normal
