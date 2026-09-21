@@ -89,9 +89,10 @@ class ValidationPlanningTests(unittest.TestCase):
         plan = build_validation_plan(graph)
         target_ids = {row["target_id"] for row in plan["targets"]}
 
-        self.assertEqual(plan["target_count"], 5)
-        self.assertEqual(plan["unmapped_count"], 5)
+        self.assertEqual(plan["target_count"], 6)
+        self.assertEqual(plan["unmapped_count"], 6)
         self.assertEqual(plan["status"], "AUTHORING_REQUIRED")
+        self.assertIn("gameplay:R7_WELL_TONGS_USE", target_ids)
         self.assertIn("gameplay:R7_WATER_SWITCHBOARD_SOLVED", target_ids)
         self.assertIn("gameplay:R8_LENS_PLACE", target_ids)
         self.assertIn("gameplay:R8_OPTICAL_START", target_ids)
