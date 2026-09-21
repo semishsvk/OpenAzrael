@@ -16,11 +16,11 @@ The optical sequence uses the production `r8_bible_interaction.gd` coroutine and
 
 The runner verifies the final canonical persistent hash against the v108 exhaustive-model shortest-success hash:
 
-`69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8`
+`e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902`
 
 and the logical Event IR audio stream:
 
-`S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
+`979TONGS.WAV -> S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
 
 The source-contract validator also rejects direct `state.set_flag(...)` or `state.set_puzzle_node(...)` injection in the runner.
 
