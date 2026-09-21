@@ -43,13 +43,17 @@ Always required:
 - `data/xaf_trigger_evidence.json`;
 - `data/gameplay_event_graph_v87.json`.
 
-For a normal non-headless Candidate 1 run, the four golden Event-IR sounds used by the accepted demo route are also required:
+For a normal non-headless Candidate 1 run, the Event-IR sounds required by the
+accepted demo route plus the integrated Well+Tongs regression are also required:
+- `979TONGS.WAV`
 - `S152V2.WAV`
 - `S137.WAV`
 - `S121.WAV`
 - `799SECDR.WAV`
 
-The v109-v111 headless tests retain capture-only logical-audio behavior and therefore do not make physical WAV presence a prerequisite.
+The older capture-only headless layers do not make physical WAV presence a
+prerequisite, while the v118 runtime regression explicitly requires and loads
+`979TONGS.WAV`.
 
 ## Trigger visualization
 
@@ -61,7 +65,9 @@ F6 renders translucent boxes from the authored XAF trigger bounds already used b
 
 ## F11 bug-report capture
 
-F11 creates `user://openazrael_bugreport_<unix>_<sequence>.zip` without changing gameplay state. The package contains a screenshot when available, canonical DemoState snapshot/hash, the last 500 JSONL telemetry events, system metadata, a human-readable worksheet, `framework_context.json`, and a manifest declaring that excluded commercial assets are not included.\n\nCandidate-build tooling may stage `build_provenance.json`, `release_gate_summary.json`, and `pppv_coverage.json` under `data/runtime/`. F11 reads only these metadata files, enforces a 2 MiB per-file cap and expected schemas, and records SHA-256 for every included framework artifact. Missing or invalid optional metadata is reported in `framework_context.json` and does not disable bug capture.
+F11 creates `user://openazrael_bugreport_<unix>_<sequence>.zip` without changing gameplay state. The package contains a screenshot when available, canonical DemoState snapshot/hash, the last 500 JSONL telemetry events, system metadata, a human-readable worksheet, `framework_context.json`, and a manifest declaring that excluded commercial assets are not included.
+
+Candidate-build tooling may stage `build_provenance.json`, `release_gate_summary.json`, and `pppv_coverage.json` under `data/runtime/`. F11 reads only these metadata files, enforces a 2 MiB per-file cap and expected schemas, and records SHA-256 for every included framework artifact. Missing or invalid optional metadata is reported in `framework_context.json` and does not disable bug capture.
 
 Stable diagnostic identifiers are source-preserving: `ROOM:<room>`, `TRG:<room>:<trigger>`, `PUZ:<node>`, `FLAG:<flag>`, and `ITEM:<item>`.
 
