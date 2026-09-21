@@ -91,6 +91,7 @@ checks = {
             '"well_tongs_v118"',
             '"r1_route_v119"',
             '"collision_v120"',
+            '"surface_v121"',
         )
     ),
     "preflight_binds_git_sha": (
