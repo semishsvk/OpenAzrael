@@ -307,7 +307,7 @@
     "tail_origin": "UPSTREAM_UNKNOWN_HOLD"
   },
   "kg001_v116": {
-    "build_id": "KG-001 Candidate 2",
+    "build_id": "KG-001 Candidate 3",
     "diagnostics_script": "scripts/candidate_diagnostics_v116.gd",
     "trigger_debug": "scripts/kg001_trigger_debug_v116.gd",
     "validator": "tools/validate_candidate_diagnostics_v116.py",
@@ -323,7 +323,7 @@
       "F10": "state dump",
       "F11": "bug report ZIP"
     },
-    "event_log": "user://openazrael_candidate2_events.jsonl",
+    "event_log": "user://openazrael_candidate3_events.jsonl",
     "state_dump_prefix": "user://openazrael_kg001_state_dump_",
     "bug_report_prefix": "user://openazrael_bugreport_",
     "bug_report_doc": "docs/BUG_REPORTING.md",
