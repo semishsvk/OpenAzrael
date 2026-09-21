@@ -5,6 +5,20 @@ import unittest
 from tools.remaster_framework.evaluate_validation import evaluate_runtime_bundle
 
 
+def replay_snapshot(frame: int, room: str) -> dict:
+    return {
+        "physics_frame": frame,
+        "room": room,
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0],
+        "velocity": [0.0, 0.0, 0.0],
+        "is_on_floor": True,
+        "floor_normal": [0.0, 1.0, 0.0],
+        "state_sha256": "a" * 64,
+        "state_payload": [],
+    }
+
+
 class RuntimeBundleEvaluationTests(unittest.TestCase):
     def _bundle(self, execution_status: str = "EXECUTION_PASS") -> dict:
         return {
@@ -84,14 +98,14 @@ class RuntimeBundleEvaluationTests(unittest.TestCase):
                             "input_action": "move_forward",
                             "frames": 1,
                         },
-                        "before": {"physics_frame": 0, "room": "R1"},
+                        "before": replay_snapshot(0, "R1"),
                         "trajectory": [
                             {
                                 "physics_frame": 1,
                                 "position": [0.0, 0.0, 0.0],
                             }
                         ],
-                        "after": {"physics_frame": 2, "room": "R1"},
+                        "after": replay_snapshot(2, "R1"),
                         "result": {"success": True, "failures": []},
                     }
                 ],
