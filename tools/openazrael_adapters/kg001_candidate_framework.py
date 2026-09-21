@@ -219,6 +219,49 @@ def build_candidate_framework_bundle(
             integrity_errors.append(
                 "not all transition scenarios used guarded replay"
             )
+        if suite_payload.get("all_authored_scenarios_executed") is not True:
+            integrity_errors.append(
+                "suite did not execute every authored scenario"
+            )
+        if int(suite_payload.get("passed", -1)) != len(expected_ids):
+            integrity_errors.append(
+                "suite passed count does not match current scenario count"
+            )
+        if int(suite_payload.get("failed", -1)) != 0:
+            integrity_errors.append(
+                "suite reports one or more failed scenarios"
+            )
+        if int(suite_payload.get("guarded_scenario_count", -1)) != len(
+            expected_guarded_ids
+        ):
+            integrity_errors.append(
+                "guarded scenario count does not match declared profiles"
+            )
+        if int(suite_payload.get("v117_bridge_scenario_count", -1)) != len(
+            expected_bridge_ids
+        ):
+            integrity_errors.append(
+                "v117 bridge scenario count does not match declared profiles"
+            )
+        if int(suite_payload.get("transition_scenario_count", -1)) != len(
+            expected_transition_ids
+        ):
+            integrity_errors.append(
+                "transition scenario count does not match current bundle"
+            )
+        if isinstance(suite_rows, dict):
+            non_passing_ids = sorted(
+                str(scenario_id)
+                for scenario_id, row in suite_rows.items()
+                if not isinstance(row, dict) or row.get("status") != "PASS"
+            )
+        else:
+            non_passing_ids = expected_ids
+        if non_passing_ids:
+            integrity_errors.append(
+                "suite contains non-PASS scenario rows: "
+                + ", ".join(non_passing_ids)
+            )
 
         suite_integrity = {
             "schema": "openazrael.kg001.pppv_scenario_suite_integrity",
@@ -236,6 +279,7 @@ def build_candidate_framework_bundle(
             "executed_v117_bridge_scenario_ids": actual_bridge_ids,
             "expected_guarded_scenario_ids": expected_guarded_ids,
             "executed_guarded_scenario_ids": actual_guarded_ids,
+            "non_passing_scenario_ids": non_passing_ids,
             "errors": integrity_errors,
         }
         _write(pppv_suite_integrity_path, suite_integrity)
