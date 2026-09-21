@@ -601,7 +601,7 @@ def build_candidate_framework_bundle(
         },
         inputs=inputs,
         metadata={
-            "candidate": "KG-001 Candidate 1",
+            "candidate": "KG-001 Candidate 3",
             "target_tag": "demo-known-good-001",
             "release_status": release_summary["status"],
             "pppv_coverage_status": pppv_coverage["status"],
