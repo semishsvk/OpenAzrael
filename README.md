@@ -52,3 +52,12 @@ For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md
 
 ---
 
+## Source and asset policy
+
+OpenAzrael is an unofficial fan-remaster/reconstruction project. This repository is intended to contain OpenAzrael-authored source code, tooling, metadata, tests and documentation only.
+
+Original Azrael's Tear commercial game payloads are **not distributed in Git**. Original audio, room geometry, textures, executables and data files must remain outside the repository and are restored locally only for validation/import workflows where the user is entitled to use them.
+
+The project is not affiliated with or endorsed by the original game's rights holders. Existing forensic confidence/HOLD labels describe reconstruction evidence only; they do not transfer ownership of the original game's content.
+
+Public-release safety details are tracked in `docs/PUBLIC_RELEASE_AUDIT.md`.
