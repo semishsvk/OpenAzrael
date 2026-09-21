@@ -79,8 +79,11 @@ def _transition_step(
 
 def build_openazrael_demo_playthrough_plan(
     scenario_bundle: dict[str, Any],
+    *,
+    success_state_sha256: str | None = None,
 ) -> dict[str, Any]:
     available = _scenario_ids(scenario_bundle)
+    expected_success_hash = success_state_sha256 or COMPLETE_HASH
     steps: list[PlaythroughStep] = [
         _scenario_step(
             "S01_PICKUP_TONGS",
@@ -221,7 +224,7 @@ def build_openazrael_demo_playthrough_plan(
             checkpoint_id="demo_complete",
             required_state_paths=("inventory.shield", "flags.demo_complete"),
             metadata={
-                "expected_state_sha256": COMPLETE_HASH,
+                "expected_state_sha256": expected_success_hash,
                 "require_save_restore_hash_identity": True,
             },
         ),
@@ -231,8 +234,13 @@ def build_openazrael_demo_playthrough_plan(
         project="OpenAzrael",
         plan_id="kg001_demo_real_player_v1",
         steps=steps,
-        success_state_sha256=COMPLETE_HASH,
+        success_state_sha256=expected_success_hash,
         metadata={
+            "success_hash_source": (
+                "candidate_state_space"
+                if success_state_sha256 is not None
+                else "authoring_fallback"
+            ),
             "route": ["R1", "R7", "R1", "R8"],
             "legacy_oracles": ["v109", "v110", "v111", "v117", "v118"],
             "v111_role": (
@@ -253,11 +261,28 @@ def main() -> int:
     )
     parser.add_argument("--scenarios", type=Path, required=True)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--state-space", type=Path)
     args = parser.parse_args()
     bundle = json.loads(args.scenarios.read_text(encoding="utf-8"))
     if not isinstance(bundle, dict):
         raise ValueError("scenario bundle must be an object")
-    plan = build_openazrael_demo_playthrough_plan(bundle)
+    success_hash = None
+    if args.state_space is not None:
+        state_space = json.loads(
+            args.state_space.read_text(encoding="utf-8")
+        )
+        if not isinstance(state_space, dict):
+            raise ValueError("state-space report must be an object")
+        success_hash = str(
+            state_space.get(
+                "shortest_success_persistent_state_sha256",
+                "",
+            )
+        ) or None
+    plan = build_openazrael_demo_playthrough_plan(
+        bundle,
+        success_state_sha256=success_hash,
+    )
     rendered = json.dumps(plan, indent=2, sort_keys=True) + "\n"
     if args.output is not None:
         args.output.parent.mkdir(parents=True, exist_ok=True)
