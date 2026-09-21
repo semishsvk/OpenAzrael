@@ -308,6 +308,23 @@
       "maturity": "stable"
     },
     {
+      "tool_id": "openazrael_v117_pppv_bridge",
+      "family": "validation_lab",
+      "description": "Evaluate v117 real-geometry traversal measurements against generic PPPV scenarios while explicitly preserving the boundary that direct test setup placement/orientation prevents promotion to the final real-player oracle.",
+      "entrypoint": "tools/openazrael_adapters/v117_pppv_bridge.py",
+      "inputs": [
+        "v117_runtime_evidence",
+        "v117_contract"
+      ],
+      "outputs": [
+        "v117_pppv_bridge_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "openazrael_r1_pppv_scenarios",
       "family": "validation_lab",
       "description": "Generate real-player R1 PPPV scenarios for TONG6 pickup, Door 1, Door 2 positive path, and Door 2 negative-without-key precondition using production input and InteractionProbe.",
