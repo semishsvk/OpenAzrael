@@ -32,6 +32,10 @@ class CandidateRunnerFrameworkSourceTests(unittest.TestCase):
         self.assertIn("runtime_capabilities", self.source)
         self.assertIn("validate_candidate_diagnostics_v116.py", self.source)
         self.assertIn("validate_kg001_contract.py", self.source)
+        self.assertIn("validate_kg001_physical_traversal_v117.py", self.source)
+        self.assertIn("validate_kg001_well_tongs_animation_v118.py", self.source)
+        self.assertIn("kg001_physical_traversal_runner_v117.gd", self.source)
+        self.assertIn("kg001_well_tongs_animation_runner_v118.gd", self.source)
 
     def test_framework_failure_affects_process_exit_but_not_recorded_g09(self) -> None:
         self.assertIn('framework_ok = framework_status == "PASS"', self.source)
