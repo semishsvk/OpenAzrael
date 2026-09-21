@@ -52,6 +52,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         setup={
             **common_setup,
             "inventory": {"rusty_tongs": False},
+            "puzzle": {"PickupCollected:rusty_tongs": False},
         },
         actions=_approach_and_interact(
             target="Interact_TONG6",
@@ -83,9 +84,25 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
                 },
                 after_requirement="tongs_interaction_dispatched",
             ),
+            EvidenceRequirement(
+                requirement_id="tongs_pickup_marker_change",
+                kind="state_change",
+                action_id="take_tongs",
+                match={
+                    "path": "puzzle.PickupCollected:rusty_tongs",
+                    "before": False,
+                    "after": True,
+                },
+                after_requirement="tongs_interaction_dispatched",
+            ),
         ),
         state_expectations=(
             StateExpectation("inventory.rusty_tongs", False, True),
+            StateExpectation(
+                "puzzle.PickupCollected:rusty_tongs",
+                False,
+                True,
+            ),
         ),
         metadata={
             "coverage_targets": ["interaction:R1:TONG6"],
