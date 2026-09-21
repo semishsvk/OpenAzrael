@@ -52,6 +52,7 @@ def _transition_scenario(
             EvidenceRequirement(
                 requirement_id="trigger_enter_" + trigger,
                 kind="trigger",
+                action_id="cross_" + trigger,
                 match={
                     "room": source_room,
                     "target": trigger,
@@ -63,6 +64,7 @@ def _transition_scenario(
             EvidenceRequirement(
                 requirement_id="room_transition_" + trigger,
                 kind="room_transition",
+                action_id="cross_" + trigger,
                 match={
                     "source_room": source_room,
                     "trigger": trigger,
