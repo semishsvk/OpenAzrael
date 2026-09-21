@@ -41,8 +41,26 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             {"status": "PASS"},
         )
         self._write(
+            evidence / "kg001_v117_runtime.json",
+            {"status": "PASS"},
+        )
+        self._write(
+            evidence / "kg001_v118_runtime.json",
+            {"status": "PASS"},
+        )
+        self._write(
             evidence / "kg001_fresh_checkout.json",
-            {"status": "PASS", "commit_sha": "a" * 40},
+            {
+                "status": "PASS",
+                "commit_sha": "a" * 40,
+                "runtime_status": {
+                    "v109": "PASS",
+                    "v110": "PASS",
+                    "v111": "PASS",
+                    "v117": "PASS",
+                    "v118": "PASS",
+                },
+            },
         )
         self._write(
             evidence / "kg001_manual_sanity.json",
@@ -76,6 +94,41 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                     for item in row["evidence"]
                 )
             )
+
+    def test_supplemental_v117_v118_checks_are_evidence_bound(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            result = build_gate_results(root, evidence)
+
+            checks = {row["id"]: row for row in result["supplemental_checks"]}
+            self.assertEqual(checks["V117_PHYSICAL_TRAVERSAL"]["status"], "PASS")
+            self.assertEqual(checks["V118_WELL_TONGS"]["status"], "PASS")
+            self.assertEqual(
+                len(checks["V117_PHYSICAL_TRAVERSAL"]["evidence"][0]["sha256"]),
+                64,
+            )
+
+    def test_stale_fresh_checkout_without_v117_v118_is_pending(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_fresh_checkout.json",
+                {
+                    "status": "PASS",
+                    "commit_sha": "a" * 40,
+                    "runtime_status": {
+                        "v109": "PASS",
+                        "v110": "PASS",
+                        "v111": "PASS",
+                    },
+                },
+            )
+
+            result = build_gate_results(root, evidence)
+            g09 = next(row for row in result["gates"] if row["id"] == "G09")
+            self.assertEqual(g09["status"], "PENDING")
 
     def test_missing_manual_keeps_g10_pending_and_defects_incomplete(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
