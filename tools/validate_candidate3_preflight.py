@@ -88,6 +88,15 @@ checks = {
         '"candidate_result_sha256": sha256(CANDIDATE_RESULT)' in preflight
         and '"fresh_checkout_sha256": sha256(FRESH_RESULT)' in preflight
     ),
+    "runtime_build_identity_generated": (
+        'RUNTIME_BUILD_IDENTITY = ROOT / "data/runtime_build_identity.json"' in exporter
+        and '"schema": "openazrael.runtime_build_identity"' in exporter
+        and '"commit_sha": head' in exporter
+        and '"godot_version": godot_version' in exporter
+        and "RUNTIME_BUILD_IDENTITY.write_text" in exporter
+        and "RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)" in exporter
+        and "data/runtime_build_identity.json" in presets
+    ),
     "export_requires_preflight_pass": (
         'receipt.get("status") != "PASS"' in exporter
         and 'receipt.get("export_allowed") is not True' in exporter
@@ -121,6 +130,10 @@ checks = {
         '"candidate3_export_receipt.json"' in exporter
         and '"sha256": sha256(out)' in exporter
         and '"sha256": sha256(pck)' in exporter
+    ),
+    "export_receipt_records_runtime_identity": (
+        '"runtime_build_identity_embedded": true' in exporter
+        and '"runtime_build_identity": runtime_identity' in exporter
     ),
     "manual_gate_stays_pending": '"manual_gate": "G10_PENDING_USER"' in exporter,
 }
