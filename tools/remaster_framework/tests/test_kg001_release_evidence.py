@@ -208,6 +208,33 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             statuses = {row["id"]: row["status"] for row in result["gates"]}
             self.assertEqual(statuses["G03"], "FAIL")
 
+
+    def test_malformed_green_state_space_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_state_space_v108.json",
+                {"status": "PASS"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "FAIL")
+
+    def test_malformed_green_state_fuzz_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_state_fuzz_v119.json",
+                {"status": "PASS"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "FAIL")
+
     def test_guarded_scenario_suite_is_required_for_g04_and_g05(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
