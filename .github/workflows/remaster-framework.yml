@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "tooling/**"
+      - "test/**"
   pull_request:
 
 jobs:
