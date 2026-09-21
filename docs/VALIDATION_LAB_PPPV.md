@@ -216,3 +216,28 @@ Evaluate its complete runtime bundle:
 
 The reusable core must remain game-independent enough to be extracted later for
 OpenCadaver rather than becoming an OpenAzrael-only test harness.
+
+
+## Full-demo real-player orchestration
+
+The historical v111 full-demo runner remains a useful regression oracle for
+production interaction logic, final state hash and logical audio order, but it is
+not accepted as physical-player coverage because it calls interaction methods
+directly and places the player on trigger centroids.
+
+The new `openazrael_real_player_demo_plan` preserves the verified route and
+state/save-load invariants while requiring real-player segments:
+
+`R1 -> R7 -> R1 -> R8`
+
+The plan includes save/load hash checkpoints after the R7 solution, after the R8
+secret door, and at final demo completion. It reuses the v118 Well+Tongs positive
+PPPV scenario when available.
+
+Missing physical segments are emitted as `AUTHORING_REQUIRED` rather than being
+silently satisfied by v110/v111 teleport/direct-call runners. Current expected
+authoring gaps include pickup/doors, physical transition crossings, R7
+switchboard, R8 lens/optical sequence and shield completion.
+
+This keeps v109/v110/v111 as legacy regression oracles while raising the future
+KG full-demo requirement to genuine player-path evidence.
