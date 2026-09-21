@@ -88,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "CANDIDATE2_MANUAL_FAIL_CRITICAL_TRAVERSAL",
+    "kg001_build_status": "CANDIDATE3_SOURCE_HARDENED_RUNTIME_PENDING",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 6,
@@ -99,7 +99,7 @@
     "kg001_changed_edges": 214,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "G04_G05_RUNTIME_RETEST_REQUIRED_AFTER_SOURCE_FIXES",
+    "kg001_runtime_gate_status": "CANDIDATE3_G04_G05_G06_RUNTIME_RETEST_REQUIRED",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_headless_runtime": "NOT_EXECUTED",
     "kg001_state_restore": "RUNTIME_ROUNDTRIP_PASS",
@@ -107,15 +107,15 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL",
+    "kg001_overall_status": "BLOCKED_CANDIDATE3_RUNTIME_RETEST",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "FAIL_CRITICAL_FLOOR_AND_STAIRS",
+    "kg001_manual_sanity": "BLOCKED_CANDIDATE3_PREFLIGHT_AND_G10",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 3",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V32_MANUAL_FAIL",
+    "kg001_candidate_build_runtime": "CANDIDATE3_NOT_EXECUTED",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -126,7 +126,7 @@
     },
     "kg001_candidate_event_log": "user://openazrael_candidate3_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
-    "documentation_consistency": "PASS_POST_CANDIDATE2_FIX_BRANCH",
+    "documentation_consistency": "PASS_CANDIDATE3_HARDENED",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_bugreport_",
@@ -136,7 +136,7 @@
       "#6 PLAYER_FALLS_THROUGH_FLOOR",
       "STAIRS_UNTRAVERSABLE_UP_OR_DOWN"
     ],
-    "kg001_collision_issue_6": "MANUAL_FAIL_CANDIDATE2",
+    "kg001_collision_issue_6": "SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
@@ -160,19 +160,20 @@
       "KEYHOLE#",
       "TONG6 -> MINETON#"
     ],
-    "kg001_candidate_source_freeze": "POST_CANDIDATE2_FIX_BRANCH_RUNTIME_RETEST_REQUIRED",
+    "kg001_candidate_source_freeze": "CANDIDATE3_SOURCE_HARDENED_RUNTIME_RETEST_REQUIRED",
     "kg001_candidate_freeze_scope": [
       "Issue #6 floor collision must pass active Input-driven R1 traversal",
       "Critical stair traversal must pass both real R8 stair profiles up/down",
       "R7 well+tongs must reproduce the recovered official-demo action stream and consume TONG6",
       "G06 must physically load/start both 979TONGS and S152V2 triggered-event audio",
       "Issue #11 indexed AZF color-key transparency",
-      "existing Candidate diagnostics and bug capture only"
+      "existing Candidate diagnostics and bug capture only",
+      "R1 KEYHOLE# must render upright; texture-specific V correction only, with TONG6/MINETON# negative control"
     ],
     "kg001_legacy_colorkey_actual_corpus_audit": "PASS_86_AZF_10_HASH_ZERO_NONHASH_SENTINEL",
     "kg001_legacy_colorkey_bloos4_control": "KEY_INDEX_5_PLUS_NEAR_MAGENTA_NONKEY_INDEX_9_ONE_PIXEL",
-    "documentation_runtime_claim_boundary_note": "The earlier documentation-only cleanup did not promote runtime. Candidate 2 promotion now rests on fresh runtime evidence at kg001_runtime_evidence_commit.",
-    "kg001_stair_traversal": "MANUAL_FAIL_CANDIDATE2",
+    "documentation_runtime_claim_boundary_note": "Candidate 2 Windows evidence is historical and stale for current source. Candidate 3 remains unpromoted until exact-HEAD source CI, asset-backed preflight, guarded export/startup smoke and G10 pass.",
+    "kg001_stair_traversal": "SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_stair_traversal": true,
     "kg001_physical_traversal_v117": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
     "kg001_well_tongs_animation_v118": "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
@@ -196,7 +197,7 @@
     "kg001_success_states": 6,
     "kg001_candidate3_preflight": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
     "kg001_candidate3_source_ci": "CONFIGURED_PY311_PY312",
-    "kg001_candidate3_export_guard": "FAIL_CLOSED_PREFLIGHT_RECEIPT_REQUIRED",
+    "kg001_candidate3_export_guard": "FAIL_CLOSED_EXACT_ASSET_SET_AND_STARTUP_SMOKE_REQUIRED",
     "kg001_candidate3_export_allowed": false,
     "kg001_candidate3_manual_gate": "G10_PENDING_USER",
     "kg001_candidate3_required_runtime_pass": [
@@ -208,8 +209,10 @@
       "well_tongs_v118"
     ],
     "kg001_candidate3_preflight_contract": "data/tests/kg001_candidate3_preflight_contract_v1.json",
-    "kg001_candidate3_runtime_asset_binding": "FULL_ROOMS_AUDIO_CLASSIC_CORPUS_SHA256",
-    "kg001_candidate3_export_pair": "EXE_PLUS_PCK_REQUIRED"
+    "kg001_candidate3_runtime_asset_binding": "EXACT_PATH_SET_PLUS_FULL_ROOMS_AUDIO_CLASSIC_CORPUS_SHA256",
+    "kg001_candidate3_export_pair": "EXE_PLUS_PCK_REQUIRED",
+    "kg001_candidate3_export_startup_smoke": "REQUIRED_BEFORE_PASS_RECEIPT",
+    "kg001_keyhole_orientation": "SOURCE_FIX_READY_FLIP_V_CANDIDATE3_KEYHOLE_RUNTIME_MANUAL_RETEST_REQUIRED"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -220,7 +223,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Run Candidate 3 source CI, then local asset-backed preflight at the exact build SHA. Export only through tools/export_candidate3.py after candidate3_preflight_receipt PASS. Then perform G10 manual checks starting with R1 floor spawn/traversal, both R8 stair profiles, R7 well+tongs + triggered audio, transparency and full demo route.",
+  "next_target": "Require Candidate 3 source CI PASS at the exact head, then run the asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118. Export only through tools/export_candidate3.py with exact runtime asset path-set/hash binding and exported startup smoke. Then run receipt-bound G10 starting with R1 floor, both R8 stair profiles, well+tongs/triggered audio, transparency plus upright KEYHOLE orientation, full route and save/load.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -333,7 +336,7 @@
   },
   "localization": {
     "status": "ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED",
-    "runtime_boundary": "AFTER_FIRST_CLEAN_KG001_CANDIDATE2_RUNTIME_MANUAL_CYCLE",
+    "runtime_boundary": "AFTER_FIRST_CLEAN_KG001_CANDIDATE3_RUNTIME_MANUAL_CYCLE",
     "key_strategy": "STABLE_SEMANTIC_IDS",
     "forensic_source_strategy": "ORIGINAL_STRINGS_SEPARATE_FROM_RUNTIME_KEYS",
     "authoring_format": "GETTEXT_POT_PO",
@@ -414,7 +417,7 @@
   },
   "candidate3_windows": {
     "source_branch": "test/kg001-physical-traversal",
-    "status": "PREFLIGHT_RUNTIME_PENDING",
+    "status": "SOURCE_HARDENED_PREFLIGHT_RUNTIME_PENDING",
     "source_ci": ".github/workflows/kg001-candidate3-source-gate.yml",
     "preflight": "tools/run_candidate3_preflight.py",
     "preflight_receipt": ".tmp/kg001/candidate3_preflight_receipt.json",
@@ -429,6 +432,8 @@
     "artifacts": [
       "exports/OpenAzrael-KG001-Candidate3.exe",
       "exports/OpenAzrael-KG001-Candidate3.pck"
-    ]
+    ],
+    "runtime_asset_path_set_binding": true,
+    "exported_startup_smoke_required": true
   }
 }
