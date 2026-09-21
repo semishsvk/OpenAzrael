@@ -18,7 +18,9 @@
     "fresh_checkout_required": true,
     "manual_sanity_required": true,
     "immutable_tag": true,
-    "broken_required_room_transition_is_critical": true
+    "broken_required_room_transition_is_critical": true,
+    "synthetic_playthrough_deterministic": true,
+    "runtime_evidence_bound_to_current_candidate": true
   },
   "gates": [
     {
@@ -52,7 +54,8 @@
       "automation": "automated_guarded_real_input",
       "required_evidence": [
         "legacy_room_trigger_runtime",
-        "guarded_pppv_scenario_suite"
+        "pppv_scenario_suite",
+        "pppv_scenario_suite_integrity"
       ]
     },
     {
@@ -62,7 +65,8 @@
       "automation": "automated_guarded_real_input",
       "required_evidence": [
         "legacy_room_trigger_runtime",
-        "guarded_pppv_scenario_suite"
+        "pppv_scenario_suite",
+        "pppv_scenario_suite_integrity"
       ]
     },
     {
@@ -81,17 +85,26 @@
       "id": "G08",
       "name": "synthetic_full_demo_playthrough",
       "required": true,
-      "automation": "headless_guarded_real_input",
+      "automation": "headless_guarded_real_input_repeated",
       "required_evidence": [
         "legacy_full_demo_runtime",
-        "guarded_pppv_playthrough"
-      ]
+        "guarded_pppv_playthrough",
+        "pppv_determinism",
+        "pppv_determinism_integrity"
+      ],
+      "minimum_identical_runs": 2
     },
     {
       "id": "G09",
       "name": "fresh_checkout_build",
       "required": true,
-      "automation": "clean_environment"
+      "automation": "clean_environment",
+      "required_evidence": [
+        "fresh_checkout",
+        "pppv_scenario_suite_integrity",
+        "pppv_determinism",
+        "pppv_determinism_integrity"
+      ]
     },
     {
       "id": "G10",
