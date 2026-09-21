@@ -35,6 +35,9 @@ EVIDENCE_CANDIDATES = {
     "well_pppv": (
         "kg001_well_tongs_pppv.json",
     ),
+    "pppv_suite": (
+        "kg001_pppv_scenario_suite.json",
+    ),
     "pppv_playthrough": (
         "kg001_pppv_playthrough_evaluation.json",
     ),
@@ -103,6 +106,7 @@ def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
         "v111",
         "v117",
         "v118",
+        "pppv_scenario_suite",
         "pppv_playthrough",
     )
     if all(str(runtime.get(key, "")).upper() == "PASS" for key in required):
@@ -147,6 +151,7 @@ def derive_gate_rows(
     v109_path: Path | None,
     v110_path: Path | None,
     v111_path: Path | None,
+    pppv_suite_path: Path | None,
     pppv_playthrough_path: Path | None,
     fresh_path: Path | None,
     manual_path: Path | None,
@@ -157,6 +162,7 @@ def derive_gate_rows(
         "v109": _load(v109_path) if v109_path else None,
         "v110": _load(v110_path) if v110_path else None,
         "v111": _load(v111_path) if v111_path else None,
+        "pppv_suite": _load(pppv_suite_path) if pppv_suite_path else None,
         "pppv_playthrough": (
             _load(pppv_playthrough_path)
             if pppv_playthrough_path
@@ -212,18 +218,25 @@ def derive_gate_rows(
             "id": "G04",
             "status": _combined_status(
                 payloads["v110"],
-                payloads["pppv_playthrough"],
+                payloads["pppv_suite"],
             ),
             "evidence": _merge_evidence(
                 repo_root,
                 v110_path,
-                pppv_playthrough_path,
+                pppv_suite_path,
             ),
         },
         {
             "id": "G05",
-            "status": _combined_status(payloads["v110"]),
-            "evidence": _merge_evidence(repo_root, v110_path),
+            "status": _combined_status(
+                payloads["v110"],
+                payloads["pppv_suite"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                v110_path,
+                pppv_suite_path,
+            ),
         },
         {
             "id": "G06",
@@ -321,6 +334,7 @@ def build_gate_results(
         v109_path=paths["v109"],
         v110_path=paths["v110"],
         v111_path=paths["v111"],
+        pppv_suite_path=paths["pppv_suite"],
         pppv_playthrough_path=paths["pppv_playthrough"],
         fresh_path=paths["fresh"],
         manual_path=paths["manual"],
