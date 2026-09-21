@@ -129,7 +129,8 @@ def main():
     source_ok=True
     for cmd in SOURCE_COMMANDS:
         proc=run(cmd)
-        item={"command":cmd,"returncode":proc.returncode,"status":"PASS" if proc.returncode==0 else "FAIL","output":proc.stdout[-12000:]}
+        display_cmd=[Path(arg).name if index==0 else arg for index,arg in enumerate(cmd)]
+        item={"command":display_cmd,"returncode":proc.returncode,"status":"PASS" if proc.returncode==0 else "FAIL","output":proc.stdout[-12000:]}
         source.append(item)
         if proc.returncode!=0:
             source_ok=False
@@ -204,7 +205,7 @@ def main():
         "version":112,
         "status":"PASS" if fresh_pass else ("NOT_REQUESTED" if not args.fresh_checkout else "FAIL"),
         "commit_sha":head,
-        "godot_executable":godot or "",
+        "godot_executable":Path(godot).name if godot else "",
         "godot_version":godot_version,
         "godot_import_status":import_status,
         "clean_before":clean_before,
