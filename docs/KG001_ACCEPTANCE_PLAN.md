@@ -38,6 +38,19 @@ Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of pe
 
 This gate also requires asset-backed physical traversal through the production `CharacterBody3D` path. The automated suite must drive the real gameplay input actions over the canonical R1 starting floor and prove that the player does not fall through while moving. It must also traverse both imported R8 tread sequences (`step011__mesh` and the main `stairs__STAIR2`) upward and downward using the real player capsule, collision layers/masks, gravity and `player.gd`; a raycast-only floor check, stationary settle, synthetic proxy staircase, or teleport-to-result is not sufficient evidence.
 
+
+Candidate 3 manual G10 exposed a second R1 floor-collision blind spot at
+`R1/Object02` under `zxcoriR5` (bug report
+`openazrael_bugreport_1790007921_0054.zip`). That visible authored floor had
+been globally excluded from collision. The fix is room-aware: `R1/Object02`
+must collide while same-named helper objects in other rooms remain excluded.
+
+G04 therefore also requires **v119**. v119 must use the production
+`CharacterBody3D` and gameplay input to cross the exact bug-report X/Z,
+traverse both Object02 floor triangles, return to tunnel03 support, and follow
+the audited R1 floor route toward tunnel07 with continuous support. Historical
+v117/Candidate 3 evidence is insufficient for this regression.
+
 ### G05 — Trigger semantics and recovered interaction effects
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
 
