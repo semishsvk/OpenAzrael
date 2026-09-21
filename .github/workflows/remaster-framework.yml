@@ -8,8 +8,30 @@ on:
   pull_request:
 
 jobs:
+  python-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python smoke
+        run: python -c "import sys; print(sys.version)"
+
+  package-import:
+    runs-on: ubuntu-latest
+    needs: python-smoke
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Import remaster framework
+        run: python -c "import tools.remaster_framework; print('framework import OK')"
+
   registry:
     runs-on: ubuntu-latest
+    needs: package-import
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
