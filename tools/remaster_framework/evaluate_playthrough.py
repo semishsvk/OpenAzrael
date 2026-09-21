@@ -7,7 +7,7 @@ from typing import Any
 
 from .evaluate_validation import evaluate_runtime_bundle
 from .playthrough import validate_checkpoint_roundtrip
-from .replay_validation import validate_replay
+from .replay_validation import semantic_replay_sha256, validate_replay
 
 
 RUNTIME_SCHEMA = "remaster.runtime_playthrough_bundle"
@@ -228,6 +228,7 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         "replay_action_count": len(replay_actions),
         "expected_replay_action_count": len(expected_replay_actions),
         "replay_integrity_status": "PASS" if not replay_errors else "FAIL",
+        "semantic_replay_sha256": semantic_replay_sha256(replay),
     }
 
 
