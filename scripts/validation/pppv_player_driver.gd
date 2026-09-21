@@ -120,3 +120,24 @@ func interact_via_probe(
         "actual_target": actual_name
     })
     return true
+
+
+func wait_physics(action_id: String, frames: int) -> bool:
+    if frames <= 0:
+        evidence.record("driver_error", {
+            "action_id": action_id,
+            "reason": "invalid_wait_frames",
+            "frames": frames
+        })
+        return false
+    evidence.record_player_action(action_id, "physics_wait", {
+        "frames": frames
+    })
+    for _i in range(frames):
+        await player.get_tree().physics_frame
+    evidence.record("physics_wait", {
+        "action_id": action_id,
+        "frames": frames,
+        "completed": true
+    })
+    return true
