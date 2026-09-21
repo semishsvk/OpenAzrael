@@ -228,7 +228,7 @@ try:
         errors.append("KG-001 v118 asset-set runtime boundary drift")
     if q.get("kg001_candidate2_expected_room_assets")!=3:
         errors.append("KG-001 v118 room-asset count drift")
-    if q.get("kg001_candidate2_expected_runtime_audio_assets")!=8:
+    if q.get("kg001_candidate2_expected_runtime_audio_assets")!=9:
         errors.append("KG-001 v118 runtime-audio count drift")
     if q.get("kg001_candidate2_expected_classic_textures")!=86:
         errors.append("KG-001 v118 Classic texture count drift")
