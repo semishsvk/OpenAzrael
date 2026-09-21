@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 preflight = (ROOT / "tools/run_candidate3_preflight.py").read_text(encoding="utf-8")
 exporter = (ROOT / "tools/export_candidate3.py").read_text(encoding="utf-8")
 runner = (ROOT / "tools/run_kg001_candidate_v112.py").read_text(encoding="utf-8")
+pppv_runner = (ROOT / "tools/run_candidate3_pppv_v2.py").read_text(encoding="utf-8")
 presets = (ROOT / "export_presets.cfg").read_text(encoding="utf-8")
 project = (ROOT / "project.godot").read_text(encoding="utf-8")
 workflow = (ROOT / ".github/workflows/kg001-candidate3-source-gate.yml").read_text(encoding="utf-8")
@@ -52,6 +53,33 @@ checks = {
         '"tools/run_kg001_candidate_v112.py"' in preflight
         and '"--fresh-checkout"' in preflight
     ),
+    "preflight_requires_pppv_v2": (
+        '"tools/run_candidate3_pppv_v2.py"' in preflight
+        and '"PPPV_V2_RUNTIME_FAILED"' in preflight
+        and '"PPPV_V2_EVIDENCE_MISSING"' in preflight
+        and '"PPPV_V2_INVARIANT_FAILED"' in preflight
+        and "PPPV_REQUIRED_EVIDENCE" in preflight
+        and all(name in preflight for name in (
+            "scenario_suite",
+            "scenario_suite_integrity",
+            "playthrough_evaluation",
+            "determinism",
+            "determinism_integrity",
+        ))
+    ),
+    "pppv_v2_runner_is_isolated": (
+        'TMP=ROOT/".tmp/kg001_pppv_v2"' in pppv_runner
+        and "run_pppv_scenario_suite" in pppv_runner
+        and "run_full_pppv" in pppv_runner
+        and "kg001_pppv_determinism.json" in pppv_runner
+        and "pppv_scenario_suite_integrity.json" in pppv_runner
+        and "pppv_determinism_integrity.json" in pppv_runner
+    ),
+    "source_gate_runs_remaster_framework": (
+        "tools.remaster_framework.cli" in runner
+        and "tools/remaster_framework/tests" in runner
+        and "runtime_capabilities" in runner
+    ),
     "preflight_requires_runtime_matrix": all(
         name in preflight
         for name in (
@@ -87,6 +115,8 @@ checks = {
     "preflight_binds_evidence_hashes": (
         '"candidate_result_sha256": sha256(CANDIDATE_RESULT)' in preflight
         and '"fresh_checkout_sha256": sha256(FRESH_RESULT)' in preflight
+        and '"pppv_v2": {' in preflight
+        and '"sha256": sha256(path)' in preflight
     ),
     "runtime_build_identity_generated": (
         'RUNTIME_BUILD_IDENTITY = ROOT / "data/runtime_build_identity.json"' in exporter
