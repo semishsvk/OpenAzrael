@@ -334,6 +334,26 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 bundle["artifacts"]["pppv_playthrough_plan"],
                 "pppv_playthrough_plan.json",
             )
+            plan = json.loads(
+                (evidence / "pppv_playthrough_plan.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            state_report = json.loads(
+                (evidence / "kg001_state_space_v108.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(
+                plan["success_state_sha256"],
+                state_report[
+                    "shortest_success_persistent_state_sha256"
+                ],
+            )
+            self.assertEqual(
+                plan["metadata"]["success_hash_source"],
+                "candidate_state_space",
+            )
             provenance = json.loads(
                 (evidence / "build_provenance.json").read_text(
                     encoding="utf-8"
