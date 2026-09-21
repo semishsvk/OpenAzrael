@@ -475,6 +475,13 @@ func _state_snapshot(context: Dictionary, last_game_event: Dictionary) -> Dictio
     }
 
 func _bug_report_text(report: Dictionary) -> String:
+    var physics = report.get("physics", {})
+    var column_probe: Dictionary = {}
+    if physics is Dictionary:
+        var column_value = physics.get("column_probe", {})
+        if column_value is Dictionary:
+            column_probe = column_value
+    var support_collider := String(column_probe.get("collider_name", "(none)"))
     var lines := [
         "OpenAzrael Bug Report",
         "",
@@ -485,11 +492,7 @@ func _bug_report_text(report: Dictionary) -> String:
         "Trigger ID: " + String(report.get("trigger_entity_id", "")),
         "State SHA-256: " + String(report.get("canonical_state_hash", "")),
         "Source commit: " + String(report.get("source_commit", "UNAVAILABLE")),
-        "Support collider: " + String(
-            report.get("physics", {}).get("column_probe", {}).get(
-                "collider_name", "(none)"
-            )
-        ),
+        "Support collider: " + support_collider,
         "",
         "Fill these fields in the GitHub issue:",
         "Summary:",
@@ -529,6 +532,10 @@ func capture_bug_report() -> String:
     var screenshot_ok := not screenshot_bytes.is_empty()
     var system_info := _system_info()
     var state := _state_snapshot(context, last_game_event)
+    var build_identity: Dictionary = {}
+    var identity_value = system_info.get("runtime_build_identity", {})
+    if identity_value is Dictionary:
+        build_identity = identity_value
     var report := {
         "schema": BUG_REPORT_SCHEMA,
         "schema_version": BUG_REPORT_SCHEMA_VERSION,
@@ -542,9 +549,7 @@ func capture_bug_report() -> String:
         "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
         "physics": context.get("physics", {"status":"UNAVAILABLE"}),
         "source_commit": String(
-            system_info.get("runtime_build_identity", {}).get(
-                "commit_sha", "UNAVAILABLE"
-            )
+            build_identity.get("commit_sha", "UNAVAILABLE")
         ),
         "canonical_state_hash": DemoState.canonical_state_hash(),
         "last_game_event": last_game_event,
