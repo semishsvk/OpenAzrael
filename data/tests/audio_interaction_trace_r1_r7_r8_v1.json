@@ -5,7 +5,7 @@
  "cases":[
   {"id":"audio.r8.lens_place","room":"R8","action":"place r8_lens","trigger":"R8_LENS_PLACE","sound_id":"r8.s137.font3","expected_state":{"R8LensPlace":true},"confidence":"HIGH"},
   {"id":"audio.r8.optical_start","room":"R8","action":"activate optical puzzle","trigger":"R8_OPTICAL_START","sound_id":"r8.s121.door","expected_state":{"R8RaiseTimer":true},"confidence":"HIGH"},
-  {"id":"audio.r7.tongs_well","room":"R7","action":"use tongs on well","trigger":"HOLD","sound_id":"r7.979tongs.well","expected_state":"HOLD","confidence":"HOLD","note":"Do not fake PASS: exact action->trigger->state binding requires evidence/runtime observation."}
+  {"id":"audio.r7.tongs_well","room":"R7","action":"use rusty_tongs through Interact_WellKey","runtime_action_chain":["DemoState.has(rusty_tongs)","DemoState.retrieve_well_key()","acquire(well_key)","set_puzzle_node(R7KeyTake)","set_flag(R7key)"],"sound_id":"r7.979tongs.well","emitter":"r7.well.tongs","expected_state":{"inventory.well_key":true,"puzzle.R7KeyTake":true,"flag.R7key":true},"audio_binding":"HOLD","confidence":"HOLD","evidence":["scripts/well_key_interaction.gd proves current gameplay action/state chain","data/world_sound_record_fields_v113.json proves 979tongs -> room 1/R7 -> object 1153/wel_well","exact original action-to-opcode-0x28 binding is not yet recovered"],"note":"Runtime test must assert the gameplay state chain now; it must not assert 979tongs playback until original binding or empirical runtime evidence closes HOLD."}
  ],
  "traversal":{"path":["R1","R7","R1","R8"],"assert":"deterministic ordered audio trace; no gameplay-state mutation from audio mode switch"}
 }
