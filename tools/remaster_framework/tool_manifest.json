@@ -526,6 +526,44 @@
       "maturity": "legacy"
     },
     {
+      "tool_id": "state_fuzz_engine",
+      "family": "validation_lab",
+      "description": "Run deterministic adversarial random walks over a game-independent state transition model, checking determinism, no-op purity, invariants, exhaustive-graph membership, liveness and success monotonicity.",
+      "entrypoint": "tools/remaster_framework/state_fuzz.py",
+      "inputs": [
+        "initial_state",
+        "action_set",
+        "transition_model",
+        "state_invariants",
+        "optional_reachability_oracle"
+      ],
+      "outputs": [
+        "state_fuzz_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_kg001_state_fuzz",
+      "family": "validation_lab",
+      "description": "Apply the reusable deterministic state-fuzz engine to the KG-001 logical model and cross-check every fuzzed state against the exhaustive state-space liveness oracle.",
+      "entrypoint": "tools/openazrael_adapters/kg001_state_fuzz.py",
+      "inputs": [
+        "gameplay_event_graph",
+        "xaf_trigger_evidence",
+        "kg001_state_model"
+      ],
+      "outputs": [
+        "kg001_state_fuzz_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "asset_lab_selection_validator",
       "family": "project_release",
       "description": "Validate source-safe, evidence-bound manual production selections shared across Texture, Audio, Localization, and future asset labs.",
