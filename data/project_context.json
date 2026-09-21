@@ -126,7 +126,7 @@
     },
     "kg001_candidate_event_log": "user://openazrael_candidate2_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
-    "documentation_consistency": "PASS_POST_CANDIDATE2_FIX_BRANCH",
+    "documentation_consistency": "PASS_POST_CANDIDATE2_TRAVERSAL_FIX_BRANCH",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_bugreport_",
@@ -136,7 +136,7 @@
       "#6 PLAYER_FALLS_THROUGH_FLOOR",
       "STAIRS_UNTRAVERSABLE_UP_OR_DOWN"
     ],
-    "kg001_collision_issue_6": "MANUAL_FAIL_CANDIDATE2",
+    "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
@@ -160,7 +160,7 @@
       "KEYHOLE#",
       "TONG6 -> MINETON#"
     ],
-    "kg001_candidate_source_freeze": "POST_CANDIDATE2_FIX_BRANCH_RUNTIME_RETEST_REQUIRED",
+    "kg001_candidate_source_freeze": "POST_CANDIDATE2_TRAVERSAL_AND_WELL_TONGS_FIX_RUNTIME_RETEST_REQUIRED",
     "kg001_candidate_freeze_scope": [
       "Issue #6 floor collision must pass active Input-driven R1 traversal",
       "Critical stair traversal must pass both real R8 stair profiles up/down",
@@ -172,9 +172,9 @@
     "kg001_legacy_colorkey_actual_corpus_audit": "PASS_86_AZF_10_HASH_ZERO_NONHASH_SENTINEL",
     "kg001_legacy_colorkey_bloos4_control": "KEY_INDEX_5_PLUS_NEAR_MAGENTA_NONKEY_INDEX_9_ONE_PIXEL",
     "documentation_runtime_claim_boundary_note": "The earlier documentation-only cleanup did not promote runtime. Candidate 2 promotion now rests on fresh runtime evidence at kg001_runtime_evidence_commit.",
-    "kg001_stair_traversal": "MANUAL_FAIL_CANDIDATE2",
+    "kg001_stair_traversal": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_stair_traversal": true,
-    "kg001_physical_traversal_v117": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+    "kg001_physical_traversal_v117": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "kg001_well_tongs_animation_v118": "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
     "kg001_well_tongs_animation_source_observation": "OFFICIAL_DEMO_RECOVERED_5_ACTION_GROUP: R7KEY_REMOVE__979TONGS__R7KEY_ADD__RUSTYTONGR6_REMOVE__TONG6_CONSUME; NO_TRANSFORM_ROTATION_OPCODE",
     "kg001_release_blocked_by_well_tongs_animation": true,
@@ -193,7 +193,12 @@
     "kg001_well_tongs_demo_evidence": "data/tests/kg001_well_tongs_demo_evidence_v118.json",
     "kg001_action_attempts": 1560,
     "kg001_invalid_or_idempotent_noops": 1346,
-    "kg001_success_states": 6
+    "kg001_success_states": 6,
+    "kg001_portal_spawn_root_cause": "PRE_FIX_PORTAL_EYE_FORMULA_PLACED_CAPSULE_FEET_BELOW_AUTHORED_SUPPORT_IN_R1_SPAVIEW_R1_ENTCORI_R7_VIEW",
+    "kg001_portal_spawn_geometry_evidence": "data/tests/kg001_portal_spawn_geometry_v117.json",
+    "kg001_portal_spawn_fix": "PLUS_4_VERTICAL_CLEARANCE_PRESERVE_XZ_HEADING_THEN_NATURAL_PHYSICS_SETTLE",
+    "kg001_stair_root_cause": "CHARACTERBODY_MOVE_AND_SLIDE_HAS_NO_AUTOMATIC_DISCRETE_VERTICAL_RISER_STEP_UP",
+    "kg001_stair_fix": "COLLISION_TESTED_STEP_UP_MAX_14_PLUS_FLOOR_SNAP_16_NO_SYNTHETIC_RAMP"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -204,7 +209,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Run source validators, then fix/validate floor and stair locomotion. Restore current Candidate assets including 979TONGS.WAV and require fresh v109/v110/v111/v116/v117/v118 runtime PASS before producing the next Candidate. Candidate 2 runtime evidence remains historical because canonical well+tongs state/audio changed.",
+  "next_target": "Run source validators, then execute Godot v117 physical traversal and v118 exact-demo well+tongs runtime gates with restored assets. Require natural R1/R7/R8 portal-spawn support, active R1 floor traversal, both real R8 stair profiles up/down, and v118 exact action/audio trace to PASS before producing the next Candidate.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
