@@ -77,33 +77,6 @@ def _transition_step(
         },
     )
 
-def _transition_step(
-    step_id: str,
-    source_room: str,
-    destination_room: str,
-    trigger: str,
-    desired_scenario_id: str,
-    available: set[str],
-    *,
-    purpose: str,
-) -> PlaythroughStep:
-    ready = desired_scenario_id in available
-    return PlaythroughStep(
-        step_id=step_id,
-        kind=StepKind.TRANSITION,
-        status=StepStatus.READY if ready else StepStatus.AUTHORING_REQUIRED,
-        source_room=source_room,
-        destination_room=destination_room,
-        trigger=trigger,
-        scenario_id=desired_scenario_id if ready else None,
-        metadata={
-            "desired_scenario_id": desired_scenario_id,
-            "purpose": purpose,
-            "forbid_trigger_centroid_teleport": True,
-        },
-    )
-
-
 def build_openazrael_demo_playthrough_plan(
     scenario_bundle: dict[str, Any],
 ) -> dict[str, Any]:
