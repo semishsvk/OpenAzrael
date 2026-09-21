@@ -179,12 +179,57 @@ class ReplayValidationTests(unittest.TestCase):
             any("returned to source room" in item for item in errors)
         )
 
+
+    def test_transition_requires_exactly_one_room_change_sample(self) -> None:
+        action = transition_action()
+        replay = replay_for(action, "R1", "R7")
+        replay["actions"][0]["trajectory"][1]["room_changed"] = False
+        errors = validate_replay([action], replay)
+        self.assertTrue(
+            any(
+                "exactly one room_changed sample" in item
+                for item in errors
+            )
+        )
+
+    def test_room_change_sample_must_name_destination(self) -> None:
+        action = transition_action()
+        replay = replay_for(action, "R1", "R7")
+        replay["actions"][0]["trajectory"][1]["room"] = "R8"
+        errors = validate_replay([action], replay)
+        self.assertTrue(
+            any(
+                "room_changed sample destination mismatch" in item
+                for item in errors
+            )
+        )
+
+    def test_non_transition_rejects_room_changed_marker(self) -> None:
+        action = move_action()
+        replay = replay_for(action, "R1", "R1")
+        replay["actions"][0]["trajectory"][0]["room_changed"] = True
+        errors = validate_replay([action], replay)
+        self.assertTrue(
+            any("non-transition action emitted room_changed" in item for item in errors)
+        )
+
+    def test_duplicate_trajectory_frame_fails(self) -> None:
+        action = move_action()
+        replay = replay_for(action, "R1", "R1")
+        replay["actions"][0]["trajectory"][1]["physics_frame"] = 11
+        errors = validate_replay([action], replay)
+        self.assertTrue(
+            any("physics_frame is not strictly increasing" in item for item in errors)
+        )
+
     def test_regressing_physics_frame_fails(self) -> None:
         action = move_action()
         replay = replay_for(action, "R1", "R1")
         replay["actions"][0]["trajectory"][1]["physics_frame"] = 9
         errors = validate_replay([action], replay)
-        self.assertTrue(any("physics_frame regressed" in item for item in errors))
+        self.assertTrue(
+            any("physics_frame is not strictly increasing" in item for item in errors)
+        )
 
     def test_nan_avatar_coordinate_fails(self) -> None:
         action = move_action()
