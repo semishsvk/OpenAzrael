@@ -17,6 +17,7 @@ Thumbs.db
 *.suo
 
 # Build/export output
+data/runtime_build_identity.json
 build/
 dist/
 exports/
