@@ -149,7 +149,18 @@ func _create_world_collision(room_id: String) -> void:
                 continue
         if pickup_names.has(obj_name):
             continue
-        if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
+        # Collision exclusions are room-aware. Candidate 3 bug report
+        # openazrael_bugreport_1790007921_0054 proved that R1/Object02 is a
+        # visible authored floor segment under zxcoriR5 (player X/Z
+        # -264.159/381.168) and must collide. Other rooms may contain helper
+        # objects with the same generic Object02 name, so do not globally
+        # re-enable every Object02.
+        var exclude_collision := (
+            obj_name.begins_with("ZQ")
+            or obj_name in ["Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]
+            or (obj_name == "Object02" and room_id != "R1")
+        )
+        if exclude_collision:
             continue
         if mi.mesh == null:
             continue
