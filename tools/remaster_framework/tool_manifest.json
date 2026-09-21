@@ -472,6 +472,46 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "openazrael_kg001_release_evidence_adapter",
+      "family": "project_release",
+      "description": "Convert existing KG-001 v108-v112 source/runtime/fresh-checkout/manual evidence into generic SHA-256-bound G00-G10 release gate results.",
+      "entrypoint": "tools/openazrael_adapters/kg001_release_evidence.py",
+      "inputs": [
+        "kg001_evidence_root",
+        "manual_sanity"
+      ],
+      "outputs": [
+        "release_gate_results"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_kg001_framework_bundle",
+      "family": "project_release",
+      "description": "Build a unified KG-001 release evidence bundle containing generic gate results, release summary, PPPV coverage and deterministic build provenance.",
+      "entrypoint": "tools/openazrael_adapters/kg001_candidate_framework.py",
+      "inputs": [
+        "kg001_evidence_root",
+        "candidate_commit",
+        "godot_version",
+        "optional_pppv_scenarios"
+      ],
+      "outputs": [
+        "kg001_framework_bundle",
+        "release_gate_results",
+        "release_gate_summary",
+        "pppv_coverage",
+        "build_provenance"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "project_context_validator",
       "family": "project_release",
       "description": "Validate the persistent project-context documentation set.",
