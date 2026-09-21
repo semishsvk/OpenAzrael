@@ -113,7 +113,27 @@ def build_candidate_framework_bundle(
     pppv_coverage_path = evidence / "pppv_coverage.json"
     _write(pppv_coverage_path, pppv_coverage)
 
-    playthrough_plan = build_openazrael_demo_playthrough_plan(scenarios)
+    state_space_candidate_path = evidence / "kg001_state_space_v108.json"
+    state_space_candidate = (
+        _load(state_space_candidate_path)
+        if state_space_candidate_path.is_file()
+        else None
+    )
+    candidate_success_hash = (
+        str(
+            state_space_candidate.get(
+                "shortest_success_persistent_state_sha256",
+                "",
+            )
+        )
+        if isinstance(state_space_candidate, dict)
+        and state_space_candidate.get("status") == "PASS"
+        else ""
+    )
+    playthrough_plan = build_openazrael_demo_playthrough_plan(
+        scenarios,
+        success_state_sha256=candidate_success_hash or None,
+    )
     playthrough_plan_path = evidence / "pppv_playthrough_plan.json"
     _write(playthrough_plan_path, playthrough_plan)
     playthrough_consistency = audit_playthrough_consistency(
