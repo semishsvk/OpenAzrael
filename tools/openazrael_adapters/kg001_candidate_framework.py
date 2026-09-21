@@ -549,6 +549,16 @@ def build_candidate_framework_bundle(
         inputs,
         "candidate_run",
     )
+    _optional_hash(
+        evidence / "kg001_state_space_v108.json",
+        inputs,
+        "kg001_state_space",
+    )
+    _optional_hash(
+        evidence / "kg001_state_fuzz_v119.json",
+        inputs,
+        "kg001_state_fuzz",
+    )
     inputs["release_gate_results"] = sha256_file(gate_results_path)
     inputs["release_gate_summary"] = sha256_file(release_summary_path)
     inputs["pppv_scenarios"] = sha256_file(scenario_bundle_output)
@@ -645,6 +655,12 @@ def build_candidate_framework_bundle(
         "pppv_playthrough_consistency": playthrough_consistency_path.name,
         "build_provenance": provenance_path.name,
     }
+    state_space_evidence_path = evidence / "kg001_state_space_v108.json"
+    state_fuzz_evidence_path = evidence / "kg001_state_fuzz_v119.json"
+    if state_space_evidence_path.is_file():
+        artifacts["kg001_state_space"] = state_space_evidence_path.name
+    if state_fuzz_evidence_path.is_file():
+        artifacts["kg001_state_fuzz"] = state_fuzz_evidence_path.name
     if playthrough_runtime_path.is_file():
         artifacts["pppv_playthrough_runtime"] = playthrough_runtime_path.name
     if playthrough_evaluation_path is not None:
