@@ -25,6 +25,14 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             {"status": "PASS"},
         )
         self._write(
+            evidence / "kg001_state_space_v108.json",
+            {"status": "PASS"},
+        )
+        self._write(
+            evidence / "kg001_state_fuzz_v119.json",
+            {"status": "PASS"},
+        )
+        self._write(
             evidence / "kg001_source_validation_v112.json",
             {"status": "PASS"},
         )
@@ -143,6 +151,30 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                 )
             )
 
+
+
+    def test_missing_state_fuzz_keeps_g03_pending(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_state_fuzz_v119.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "PENDING")
+
+    def test_failed_state_fuzz_blocks_g03(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_state_fuzz_v119.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "FAIL")
 
     def test_guarded_scenario_suite_is_required_for_g04_and_g05(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
