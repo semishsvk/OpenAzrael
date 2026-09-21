@@ -166,3 +166,11 @@ Candidate 2 Windows automation remains immutable historical evidence, but its la
 Candidate 3 export provenance is fail-closed: the preflight receipt binds exact Git HEAD, Godot version, evidence hashes, the exact runtime asset path set and per-asset hashes. Any runtime asset mutation, addition or removal invalidates export. A PASS export receipt additionally requires exported-EXE startup smoke.
 
 The manual upside-down R1 keyhole observation is fixed through a narrowly-scoped `KEYHOLE#` V-orientation compatibility correction with TONG6/MINETON# as a negative control. This correction is OpenAzrael presentation compatibility evidence, not recovery of a global original-renderer UV rule; final orientation remains a G10 visual check.
+
+## ADR-031 — Candidate 3 requires PPPV v2 as a release oracle
+
+Candidate 3 remains the authoritative runtime tree for KG-001 traversal, collision, audio, transparency, well+tongs and export hardening. Remaster Framework / PPPV v2 is layered on top as a mandatory validation oracle rather than replacing Candidate 3 runtime code. Exact-head preflight must require the current-bundle PPPV scenario suite plus integrity, a guarded chained playthrough, repeated deterministic semantic replay and determinism integrity. G04/G05/G08/G09 cannot pass from legacy v110/v111/v117/v118/v119/v120 evidence alone. Any required broken room transition is critical and blocks KG-001.
+
+## ADR-032 — Separate project versions from internal evidence revisions
+
+Project versions use the approved pre-1.0 semantic form `0.MAJOR.MINOR-dev`, `0.MAJOR.MINOR-rc.N`, and `0.MAJOR.MINOR`. KG-001 Candidate numbers are integration labels, while `v109`…`v120` and historical `v116-context-v32` are internal test/context/evidence revisions only. `demo-known-good-001` remains a separate immutable acceptance checkpoint. The exact Git SHA and receipts are authoritative build identity. See `docs/VERSIONING.md`.
