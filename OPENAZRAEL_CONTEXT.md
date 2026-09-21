@@ -137,14 +137,14 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - `tools/validate_kg001_texture_colorkey_v116.py` always runs source-safe synthetic checks and automatically audits the restored 86-texture corpus/R1 manifest when local assets are present.
 - This is a presentation compatibility rule, not proof of complete original renderer transparency/blending semantics; that broader claim remains HOLD.
 
-## KG-001 Candidate 2 diagnostics — v116
-- Candidate 2 is the corrected diagnostic integration build after the first manual Candidate failure; unrelated forensic v117 work remains deferred.
+## KG-001 Candidate 3 diagnostics — v116
+- Candidate 3 is the active diagnostic integration target; Candidate 2 Windows automation remains historical evidence only.
 - `CandidateDiagnostics` remains observational and records state/event telemetry without changing puzzle semantics.
 - F6 toggles trigger volumes; F7 toggles the Candidate HUD; F8 shows ambient emitters plus Master-bus and physical Event-IR player state; F9 preserves parity capture; F10 writes canonical state; F11 captures a source-safe bug package.
-- Non-headless builds append JSONL events to `user://openazrael_candidate2_events.jsonl`.
+- Non-headless builds append JSONL events to `user://openazrael_candidate3_events.jsonl`.
 - Core room/IR resources include source-safe `data/audio/legacy_world_ir.json`. A graphical Candidate additionally requires four Event-IR WAVs plus three recovered ambient WAVs.
 - `scripts/kg001_audio_runtime_runner_v116.gd` checks resource loading, Master-bus state, ambient counts R1=2/R7=3/R8=2, ambient `playing` state and an Event-IR physical player.
-- Source contracts and Candidate 2 Godot automated runtime evidence are PASS. Manual confirmation remains pending.
+- Source contracts are wired for Candidate 3; current-head runtime/preflight and manual confirmation remain pending.
 
 ## Approved localization architecture
 - Localization uses stable semantic IDs over a separate String IR; editable English text is not the identifier.
