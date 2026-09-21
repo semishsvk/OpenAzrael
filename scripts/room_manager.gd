@@ -193,7 +193,11 @@ func _setup_pickups(room_id: String) -> void:
         if obj == null:
             push_warning("OpenAzrael pickup object not found: " + object_name)
             continue
-        if DemoState.has(item_id):
+        # Inventory presence alone cannot represent world-pickup history:
+        # consumables such as TONG6 leave inventory after use but must not respawn.
+        # Keep DemoState.has() as a backwards-compatible hide condition for older
+        # restored states that predate PickupCollected markers.
+        if DemoState.pickup_collected(item_id) or DemoState.has(item_id):
             obj.visible = false
             continue
         var area := _add_area_for_object(obj)
