@@ -93,10 +93,10 @@ def _trajectory_errors(
         if not isinstance(frame, int) or isinstance(frame, bool) or frame < 0:
             errors.append(f"{label}.physics_frame must be a non-negative integer")
         else:
-            if previous_frame is not None and frame < previous_frame:
+            if previous_frame is not None and frame <= previous_frame:
                 errors.append(
-                    f"{label}.physics_frame regressed: "
-                    f"{frame} < {previous_frame}"
+                    f"{label}.physics_frame is not strictly increasing: "
+                    f"{frame} <= {previous_frame}"
                 )
             if after_frame is not None and frame > after_frame:
                 errors.append(
@@ -211,10 +211,29 @@ def validate_replay_action(
             if isinstance(sample, dict) and sample.get("room")
         ]
 
+    room_change_samples = [
+        sample
+        for sample in trajectory
+        if isinstance(sample, dict)
+        and sample.get("room_changed") is True
+    ] if isinstance(trajectory, list) else []
+
     if _is_transition_action(expected_action):
         params = _parameters(expected_action)
         source_room = str(params.get("source_room", before_room))
         destination_room = str(params.get("destination_room", ""))
+
+        if len(room_change_samples) != 1:
+            errors.append(
+                f"{label}: transition must contain exactly one room_changed "
+                f"sample, got {len(room_change_samples)}"
+            )
+        elif str(room_change_samples[0].get("room", "")) != destination_room:
+            errors.append(
+                f"{label}: room_changed sample destination mismatch: "
+                f"{room_change_samples[0].get('room')!r} "
+                f"!= {destination_room!r}"
+            )
 
         if before_room != source_room:
             errors.append(
@@ -251,6 +270,11 @@ def validate_replay_action(
             )
     else:
         expected_room = before_room
+        if room_change_samples:
+            errors.append(
+                f"{label}: non-transition action emitted room_changed "
+                f"{len(room_change_samples)} time(s)"
+            )
         if after_room != expected_room:
             errors.append(
                 f"{label}: unexpected room change: "
