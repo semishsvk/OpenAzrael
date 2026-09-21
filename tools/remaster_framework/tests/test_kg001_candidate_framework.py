@@ -149,6 +149,30 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             self.assertFalse(bundle["known_good_eligible"])
             self.assertTrue((evidence / "build_provenance.json").is_file())
             self.assertTrue((evidence / "pppv_coverage.json").is_file())
+            self.assertTrue(
+                (evidence / "pppv_playthrough_plan.json").is_file()
+            )
+            self.assertEqual(
+                bundle["pppv_playthrough_runtime_status"],
+                "NOT_AVAILABLE",
+            )
+            self.assertEqual(
+                bundle["pppv_playthrough_evaluation_status"],
+                "NOT_AVAILABLE",
+            )
+            self.assertEqual(
+                bundle["artifacts"]["pppv_playthrough_plan"],
+                "pppv_playthrough_plan.json",
+            )
+            provenance = json.loads(
+                (evidence / "build_provenance.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertIn(
+                "pppv_playthrough_plan",
+                provenance["inputs"],
+            )
             self.assertEqual(
                 bundle["well_tongs_real_input_pppv_status"],
                 "NOT_AVAILABLE",
@@ -211,6 +235,14 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 "ELIGIBLE_FOR_KNOWN_GOOD",
             )
             self.assertTrue(bundle["known_good_eligible"])
+            self.assertEqual(
+                bundle["pppv_playthrough_runtime_status"],
+                "NOT_AVAILABLE",
+            )
+            self.assertEqual(
+                bundle["pppv_playthrough_evaluation_status"],
+                "NOT_AVAILABLE",
+            )
 
 
 if __name__ == "__main__":
