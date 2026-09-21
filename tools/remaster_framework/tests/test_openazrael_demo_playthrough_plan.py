@@ -24,7 +24,7 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertNotIn("T03_R1_TO_R7", plan["blocked_steps"])
         self.assertNotIn("T07_R7_TO_R1", plan["blocked_steps"])
         self.assertNotIn("T09_R1_TO_R8", plan["blocked_steps"])
-        self.assertIn("S05_SWITCHBOARD", plan["blocked_steps"])
+        self.assertNotIn("S05_SWITCHBOARD", plan["blocked_steps"])
         self.assertNotIn("T07_R7_TO_R1", plan["blocked_steps"])
         self.assertNotIn("T09_R1_TO_R8", plan["blocked_steps"])
         self.assertIn("S10_TAKE_LENS", plan["blocked_steps"])
@@ -67,6 +67,18 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertEqual(
             rows["T03_R1_TO_R7"]["scenario_id"],
             "openazrael.transition.r1_to_r7",
+        )
+
+    def test_r7_switchboard_is_reused_as_ready_segment(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root)
+        )
+        rows = {row["step_id"]: row for row in plan["steps"]}
+        self.assertEqual(rows["S05_SWITCHBOARD"]["status"], "READY")
+        self.assertEqual(
+            rows["S05_SWITCHBOARD"]["scenario_id"],
+            "openazrael.r7.water_switchboard",
         )
 
     def test_v118_well_positive_is_reused_as_ready_segment(self) -> None:
