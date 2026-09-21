@@ -247,3 +247,90 @@ func approach_world_point(
         "horizontal_distance": horizontal_distance,
         "used_frames": used_frames
     }
+
+
+func aim_at_interactable(
+    action_id: String,
+    target_name: String,
+    search_root: Node,
+    max_frames: int = 180
+) -> Dictionary:
+    var target := _find_named(search_root, target_name)
+    evidence.record_player_action(action_id, "input", {
+        "strategy": "aim_at_interactable",
+        "input_action": "mouse_motion",
+        "target": target_name,
+        "max_frames": max_frames
+    })
+    if target == null:
+        evidence.record("navigation_failure", {
+            "action_id": action_id,
+            "target": target_name,
+            "reason": "aim_target_not_found"
+        })
+        return {"acquired": false, "reason": "aim_target_not_found"}
+
+    var camera := interaction_probe.get_parent() as Camera3D
+    if camera == null:
+        evidence.record("navigation_failure", {
+            "action_id": action_id,
+            "target": target_name,
+            "reason": "aim_camera_unavailable"
+        })
+        return {"acquired": false, "reason": "aim_camera_unavailable"}
+
+    var acquired := false
+    var used_frames := 0
+    for frame in range(max_frames):
+        used_frames = frame + 1
+        if _probe_target_name() == target_name:
+            acquired = true
+            break
+
+        _turn_toward(target.global_position, 70.0)
+
+        var delta := target.global_position - camera.global_position
+        if delta.length_squared() > 0.0001:
+            var desired_pitch := asin(
+                clampf(delta.normalized().y, -1.0, 1.0)
+            )
+            var pitch_value = player.get("pitch")
+            var current_pitch := (
+                float(pitch_value)
+                if typeof(pitch_value) in [TYPE_FLOAT, TYPE_INT]
+                else camera.rotation.x
+            )
+            var pitch_error := desired_pitch - current_pitch
+            var vertical_pixels := clampf(
+                -pitch_error / _mouse_sensitivity(),
+                -70.0,
+                70.0
+            )
+            var event := InputEventMouseMotion.new()
+            event.relative = Vector2(0.0, vertical_pixels)
+            Input.parse_input_event(event)
+
+        await player.get_tree().process_frame
+
+    evidence.record_interaction_probe(
+        target_name,
+        acquired,
+        _probe_target_name()
+    )
+    evidence.record("aim", {
+        "action_id": action_id,
+        "target": target_name,
+        "acquired": acquired,
+        "used_frames": used_frames
+    })
+    if not acquired:
+        evidence.record("navigation_failure", {
+            "action_id": action_id,
+            "target": target_name,
+            "reason": "aim_target_not_acquired",
+            "used_frames": used_frames
+        })
+    return {
+        "acquired": acquired,
+        "used_frames": used_frames
+    }
