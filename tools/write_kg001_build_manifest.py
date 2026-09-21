@@ -51,6 +51,8 @@ RUNTIME_SOURCE=[
     ROOT/"tools/validate_kg001_build_manifest_v118.py",
     ROOT/"tools/validate_kg001_toolchain_v117.py",
     ROOT/"tools/validate_kg001_export_preset_v117.py",
+    ROOT/"tools/validate_kg001_physical_traversal_v117.py",
+    ROOT/"tools/validate_kg001_well_tongs_animation_v118.py",
     ROOT/"tools/run_kg001_candidate_v112.py",
     ROOT/"tools/run_kg001_candidate2_windows_v117.ps1",
     ROOT/"tools/promote_kg001_candidate_results_v118.py",
