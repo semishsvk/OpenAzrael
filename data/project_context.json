@@ -115,7 +115,7 @@
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 3",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "CANDIDATE3_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "CANDIDATE3_G10_FAIL_R1_OBJECT02",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
