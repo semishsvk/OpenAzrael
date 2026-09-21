@@ -240,6 +240,9 @@ def build_openazrael_demo_playthrough_plan(
                 "not accepted as real-player traversal evidence"
             ),
             "full_demo_real_player_required": True,
+            "runtime_validation_status": "NOT_EXECUTED",
+            "chained_execution_implemented": False,
+            "status_meaning": "scenario_authoring_readiness_only",
         },
     )
 
