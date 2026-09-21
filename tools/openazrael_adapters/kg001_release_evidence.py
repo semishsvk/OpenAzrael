@@ -35,6 +35,9 @@ EVIDENCE_CANDIDATES = {
     "well_pppv": (
         "kg001_well_tongs_pppv.json",
     ),
+    "pppv_playthrough": (
+        "kg001_pppv_playthrough_evaluation.json",
+    ),
     "fresh": ("kg001_fresh_checkout.json",),
     "manual": (
         "kg001_manual_sanity.json",
@@ -94,7 +97,14 @@ def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
     runtime = payload.get("runtime_status")
     if not isinstance(runtime, dict):
         return "PENDING"
-    required = ("v109", "v110", "v111", "v117", "v118")
+    required = (
+        "v109",
+        "v110",
+        "v111",
+        "v117",
+        "v118",
+        "pppv_playthrough",
+    )
     if all(str(runtime.get(key, "")).upper() == "PASS" for key in required):
         return "PASS"
     return "PENDING"
@@ -137,6 +147,7 @@ def derive_gate_rows(
     v109_path: Path | None,
     v110_path: Path | None,
     v111_path: Path | None,
+    pppv_playthrough_path: Path | None,
     fresh_path: Path | None,
     manual_path: Path | None,
 ) -> list[dict[str, Any]]:
@@ -146,6 +157,11 @@ def derive_gate_rows(
         "v109": _load(v109_path) if v109_path else None,
         "v110": _load(v110_path) if v110_path else None,
         "v111": _load(v111_path) if v111_path else None,
+        "pppv_playthrough": (
+            _load(pppv_playthrough_path)
+            if pppv_playthrough_path
+            else None
+        ),
         "fresh": _load(fresh_path) if fresh_path else None,
         "manual": _load(manual_path) if manual_path else None,
     }
@@ -194,8 +210,15 @@ def derive_gate_rows(
         },
         {
             "id": "G04",
-            "status": _combined_status(payloads["v110"]),
-            "evidence": _merge_evidence(repo_root, v110_path),
+            "status": _combined_status(
+                payloads["v110"],
+                payloads["pppv_playthrough"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                v110_path,
+                pppv_playthrough_path,
+            ),
         },
         {
             "id": "G05",
@@ -214,8 +237,15 @@ def derive_gate_rows(
         },
         {
             "id": "G08",
-            "status": _combined_status(payloads["v111"]),
-            "evidence": _merge_evidence(repo_root, v111_path),
+            "status": _combined_status(
+                payloads["v111"],
+                payloads["pppv_playthrough"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                v111_path,
+                pppv_playthrough_path,
+            ),
         },
         {
             "id": "G09",
@@ -291,6 +321,7 @@ def build_gate_results(
         v109_path=paths["v109"],
         v110_path=paths["v110"],
         v111_path=paths["v111"],
+        pppv_playthrough_path=paths["pppv_playthrough"],
         fresh_path=paths["fresh"],
         manual_path=paths["manual"],
     )
