@@ -67,3 +67,32 @@ The v118 runner closes the Candidate 2 blind spot using the official demo binari
 
 The group contains no transform/rotation opcode. Therefore v118 asserts the exact action trace, original sample identity/duration, tongs consumption and final key state. It deliberately rejects an invented Tween as a claim of demo fidelity. Any generic HUD/inventory-hand motion outside this recovered WORLD/PUZZLES action stream remains unobserved/HOLD.
 
+
+
+## Candidate 3 guarded preflight
+
+Candidate 3 adds a fail-closed layer above v112.
+
+Source-safe CI runs:
+
+    python tools/run_kg001_candidate_v112.py --source-only
+
+The local asset-backed pre-build gate is:
+
+    python tools/run_candidate3_preflight.py --godot <Godot>
+
+or, when the ignored assets need restoration:
+
+    python tools/run_candidate3_preflight.py --demo-dir <ATDEMO> --godot <Godot>
+
+A successful preflight writes a Git-ignored receipt bound to the exact Git SHA,
+Godot version, v109/v110/v111/v116/v117/v118 PASS set, fresh-checkout evidence
+hashes and restored R1/R7/R8 plus 979TONGS asset hashes.
+
+Candidate 3 export must then use:
+
+    python tools/export_candidate3.py --godot <Godot>
+
+The export wrapper fails closed when the receipt is missing/stale, HEAD changes,
+the tracked checkout becomes dirty, Godot changes, evidence changes or a bound
+runtime asset changes. G10 remains a separate manual gate.
