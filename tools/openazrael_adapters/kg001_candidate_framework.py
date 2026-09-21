@@ -121,10 +121,11 @@ def build_candidate_framework_bundle(
     if v117_runtime_path.is_file():
         v117_runtime = _load(v117_runtime_path)
         runtime_evidence = v117_runtime.get("pppv_evidence")
-        if isinstance(runtime_evidence, dict):
-            v117_contract = _load(
-                root / "data/tests/kg001_physical_traversal_contract_v117.json"
-            )
+        v117_contract_path = (
+            root / "data/tests/kg001_physical_traversal_contract_v117.json"
+        )
+        if isinstance(runtime_evidence, dict) and v117_contract_path.is_file():
+            v117_contract = _load(v117_contract_path)
             v117_bridge = evaluate_v117_bridge(
                 v117_runtime,
                 v117_contract,
