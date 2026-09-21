@@ -83,14 +83,24 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             evidence / "kg001_source_validation_v112.json",
             {"status": "PASS"},
         )
-        for version in (109, 110, 111):
+        for version in (109, 110, 111, 117, 118):
             self._write(
                 evidence / f"kg001_v{version}_runtime.json",
                 {"status": "PASS"},
             )
         self._write(
             evidence / "kg001_fresh_checkout.json",
-            {"status": "PASS", "commit_sha": "a" * 40},
+            {
+                "status": "PASS",
+                "commit_sha": "a" * 40,
+                "runtime_status": {
+                    "v109": "PASS",
+                    "v110": "PASS",
+                    "v111": "PASS",
+                    "v117": "PASS",
+                    "v118": "PASS",
+                },
+            },
         )
         self._write(
             evidence / "kg001_candidate_v112.json",
