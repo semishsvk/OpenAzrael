@@ -73,7 +73,7 @@
     },
     {
       "check": "F11_creates_zip",
-      "details": "C:/Users/msemj/Documents/Codex/2026-09-19/referenced-chatgpt-conversation-this-is-an/work/runtime-user-c2/Godot/app_userdata/OpenAzrael KG-001 Candidate 2/openazrael_bugreport_1789917888_0005.zip",
+      "details": "user://openazrael_bugreport_1789917888_0005.zip",
       "passed": true
     },
     {
