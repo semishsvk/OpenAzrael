@@ -48,6 +48,7 @@ def adapt_physical_traversal_contract(
                 EvidenceRequirement(
                     requirement_id="r1_forward_support",
                     kind="collision_support",
+                    action_id="r1_forward",
                     match={
                         "action_id": "r1_forward",
                         "continuous": True,
@@ -57,6 +58,7 @@ def adapt_physical_traversal_contract(
                 EvidenceRequirement(
                     requirement_id="r1_back_support",
                     kind="collision_support",
+                    action_id="r1_back",
                     match={
                         "action_id": "r1_back",
                         "continuous": True,
@@ -66,11 +68,13 @@ def adapt_physical_traversal_contract(
                 EvidenceRequirement(
                     requirement_id="r1_forward_progress",
                     kind="movement",
+                    action_id="r1_forward",
                     match={"action_id": "r1_forward", "progress_ok": True},
                 ),
                 EvidenceRequirement(
                     requirement_id="r1_back_progress",
                     kind="movement",
+                    action_id="r1_back",
                     match={"action_id": "r1_back", "progress_ok": True},
                 ),
             ),
@@ -123,6 +127,7 @@ def adapt_physical_traversal_contract(
                     EvidenceRequirement(
                         requirement_id="ascent",
                         kind="stair_traversal",
+                        action_id="ascend",
                         match={
                             "mesh": mesh,
                             "direction": "ascending",
@@ -134,6 +139,7 @@ def adapt_physical_traversal_contract(
                     EvidenceRequirement(
                         requirement_id="descent",
                         kind="stair_traversal",
+                        action_id="descend",
                         match={
                             "mesh": mesh,
                             "direction": "descending",
