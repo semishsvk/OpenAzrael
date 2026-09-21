@@ -17,14 +17,14 @@ class OpenAzraelRuntimeCapabilityTests(unittest.TestCase):
             report["capabilities"]["generic_pppv_runtime_core"]
         )
 
-    def test_current_tooling_branch_reports_missing_exact_well_hook(self) -> None:
+    def test_current_tooling_branch_has_exact_well_hook_after_v118_integration(self) -> None:
         root = Path(__file__).resolve().parents[3]
         report = audit_runtime_capabilities(root)
-        self.assertFalse(
+        self.assertTrue(
             report["capabilities"]["well_tongs_exact_demo_evidence"]
         )
-        self.assertEqual(report["status"], "PARTIAL")
-        self.assertIn(
+        self.assertEqual(report["status"], "READY")
+        self.assertNotIn(
             "well_tongs_exact_demo_evidence",
             report["blocked"],
         )
