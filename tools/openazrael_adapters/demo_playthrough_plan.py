@@ -1,0 +1,243 @@
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+from typing import Any
+
+from tools.remaster_framework.playthrough import (
+    PlaythroughStep,
+    StepKind,
+    StepStatus,
+    build_playthrough_plan,
+)
+
+
+COMPLETE_HASH = "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8"
+
+
+def _scenario_ids(bundle: dict[str, Any]) -> set[str]:
+    rows = bundle.get("scenarios", [])
+    if not isinstance(rows, list):
+        return set()
+    return {
+        str(row.get("scenario_id"))
+        for row in rows
+        if isinstance(row, dict) and row.get("scenario_id")
+    }
+
+
+def _scenario_step(
+    step_id: str,
+    room: str,
+    desired_scenario_id: str,
+    available: set[str],
+    *,
+    required_state_paths: tuple[str, ...] = (),
+    purpose: str,
+) -> PlaythroughStep:
+    ready = desired_scenario_id in available
+    return PlaythroughStep(
+        step_id=step_id,
+        kind=StepKind.SCENARIO,
+        status=StepStatus.READY if ready else StepStatus.AUTHORING_REQUIRED,
+        room=room,
+        scenario_id=desired_scenario_id if ready else None,
+        required_state_paths=required_state_paths,
+        metadata={
+            "desired_scenario_id": desired_scenario_id,
+            "purpose": purpose,
+        },
+    )
+
+
+def build_openazrael_demo_playthrough_plan(
+    scenario_bundle: dict[str, Any],
+) -> dict[str, Any]:
+    available = _scenario_ids(scenario_bundle)
+    steps: list[PlaythroughStep] = [
+        _scenario_step(
+            "S01_PICKUP_TONGS",
+            "R1",
+            "openazrael.r1.pickup_tongs",
+            available,
+            required_state_paths=("inventory.rusty_tongs",),
+            purpose="Acquire TONG6 through production pickup interaction.",
+        ),
+        _scenario_step(
+            "S02_OPEN_DOOR1",
+            "R1",
+            "openazrael.r1.open_door1",
+            available,
+            required_state_paths=("flags.R1Door1Open",),
+            purpose="Open the R1 door that gates the R7 transition.",
+        ),
+        PlaythroughStep(
+            step_id="T03_R1_TO_R7",
+            kind=StepKind.TRANSITION,
+            status=StepStatus.AUTHORING_REQUIRED,
+            source_room="R1",
+            destination_room="R7",
+            trigger="zxcoriR5",
+            metadata={
+                "purpose": "Cross the live transition by physical player movement.",
+                "forbid_trigger_centroid_teleport": True,
+            },
+        ),
+        _scenario_step(
+            "S04_WELL_TONGS",
+            "R7",
+            "openazrael.r7.well_tongs.positive",
+            available,
+            required_state_paths=(
+                "inventory.rusty_tongs",
+                "inventory.well_key",
+                "puzzle.R7KeyTake",
+                "flags.R7key",
+            ),
+            purpose="Retrieve the Well Key with the recovered TONG6 action stream.",
+        ),
+        _scenario_step(
+            "S05_SWITCHBOARD",
+            "R7",
+            "openazrael.r7.water_switchboard",
+            available,
+            required_state_paths=("flags.R8BathDrain",),
+            purpose="Solve the R7 water switchboard through physical interactions.",
+        ),
+        PlaythroughStep(
+            step_id="C06_POST_R7_SAVELOAD",
+            kind=StepKind.CHECKPOINT,
+            status=StepStatus.READY,
+            room="R7",
+            checkpoint_id="post_r7_solved",
+            required_state_paths=(
+                "inventory.well_key",
+                "flags.R8BathDrain",
+            ),
+            metadata={
+                "require_save_restore_hash_identity": True,
+                "source_oracle": "KG-001 v109 canonical state roundtrip",
+            },
+        ),
+        PlaythroughStep(
+            step_id="T07_R7_TO_R1",
+            kind=StepKind.TRANSITION,
+            status=StepStatus.AUTHORING_REQUIRED,
+            source_room="R7",
+            destination_room="R1",
+            trigger="zxwell2R6",
+            metadata={
+                "purpose": "Return to R1 by physically crossing the authored trigger.",
+                "forbid_trigger_centroid_teleport": True,
+            },
+        ),
+        _scenario_step(
+            "S08_OPEN_DOOR2",
+            "R1",
+            "openazrael.r1.open_door2",
+            available,
+            required_state_paths=("flags.R1Door2Open", "flags.FR1DoorUnlocked"),
+            purpose="Unlock/open the R8 route using the Well Key.",
+        ),
+        PlaythroughStep(
+            step_id="T09_R1_TO_R8",
+            kind=StepKind.TRANSITION,
+            status=StepStatus.AUTHORING_REQUIRED,
+            source_room="R1",
+            destination_room="R8",
+            trigger="zxcoriR2",
+            metadata={
+                "purpose": "Enter R8 through the live production transition.",
+                "forbid_trigger_centroid_teleport": True,
+            },
+        ),
+        _scenario_step(
+            "S10_TAKE_LENS",
+            "R8",
+            "openazrael.r8.take_lens",
+            available,
+            required_state_paths=("inventory.r8_lens", "flags.R8Lens"),
+            purpose="Acquire the lens through production interaction.",
+        ),
+        _scenario_step(
+            "S11_OPTICAL_SEQUENCE",
+            "R8",
+            "openazrael.r8.optical_sequence",
+            available,
+            required_state_paths=("puzzle.R8LensPlace", "puzzle.DoorR8"),
+            purpose="Place the lens, trigger the optical sequence and open DoorR8.",
+        ),
+        PlaythroughStep(
+            step_id="C12_POST_DOOR_R8_SAVELOAD",
+            kind=StepKind.CHECKPOINT,
+            status=StepStatus.READY,
+            room="R8",
+            checkpoint_id="post_r8_secret_door",
+            required_state_paths=("puzzle.R8LensPlace", "puzzle.DoorR8"),
+            metadata={
+                "require_save_restore_hash_identity": True,
+                "source_oracle": "KG-001 v109 canonical state roundtrip",
+            },
+        ),
+        _scenario_step(
+            "S13_TAKE_SHIELD",
+            "R8",
+            "openazrael.r8.take_shield",
+            available,
+            required_state_paths=("inventory.shield", "flags.demo_complete"),
+            purpose="Take the shield and reach demo completion.",
+        ),
+        PlaythroughStep(
+            step_id="C14_FINAL_STATE",
+            kind=StepKind.CHECKPOINT,
+            status=StepStatus.READY,
+            room="R8",
+            checkpoint_id="demo_complete",
+            required_state_paths=("inventory.shield", "flags.demo_complete"),
+            metadata={
+                "expected_state_sha256": COMPLETE_HASH,
+                "require_save_restore_hash_identity": True,
+            },
+        ),
+    ]
+
+    return build_playthrough_plan(
+        project="OpenAzrael",
+        plan_id="kg001_demo_real_player_v1",
+        steps=steps,
+        success_state_sha256=COMPLETE_HASH,
+        metadata={
+            "route": ["R1", "R7", "R1", "R8"],
+            "legacy_oracles": ["v109", "v110", "v111", "v117", "v118"],
+            "v111_role": (
+                "historical production-interaction regression oracle only; "
+                "not accepted as real-player traversal evidence"
+            ),
+            "full_demo_real_player_required": True,
+        },
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Build the OpenAzrael real-player KG-001 demo orchestration plan."
+    )
+    parser.add_argument("--scenarios", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    bundle = json.loads(args.scenarios.read_text(encoding="utf-8"))
+    if not isinstance(bundle, dict):
+        raise ValueError("scenario bundle must be an object")
+    plan = build_openazrael_demo_playthrough_plan(bundle)
+    rendered = json.dumps(plan, indent=2, sort_keys=True) + "\n"
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(rendered, encoding="utf-8")
+    else:
+        print(rendered, end="")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
