@@ -29,7 +29,7 @@ checks={
  "bible_path":all(x in runner for x in ("Interact_R8Bible","lens_placed","optical_started","secret_door_open")),
  "shield_path":all(x in runner for x in ("Interact_ShieldR8","demo_complete")),
  "capture_only_audio":"events.set_capture_only(true)" in runner,
- "audio_oracle":all(x in runner for x in ("S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV")),
+ "audio_oracle":all(x in runner for x in ("979TONGS.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV")),
  "hash_oracle":result108["shortest_success_persistent_state_sha256"] in runner,
  "no_direct_gameplay_flag_injection":'state.set_flag(' not in runner and 'state.set_puzzle_node(' not in runner,
  "bounded_optical_wait":"range(600)" in runner and "Engine.time_scale = 100.0" in runner,
