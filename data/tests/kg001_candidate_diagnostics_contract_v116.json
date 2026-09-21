@@ -39,7 +39,14 @@
     "bug_report_optional_pppv_coverage": "res://data/runtime/pppv_coverage.json",
     "bug_report_framework_artifact_sha256": true,
     "bug_report_framework_artifact_max_bytes": 2097152,
-    "bug_report_missing_framework_metadata_nonfatal": true
+    "bug_report_missing_framework_metadata_nonfatal": true,
+    "required_candidate_audio": [
+      "979TONGS.WAV",
+      "S152V2.WAV",
+      "S137.WAV",
+      "S121.WAV",
+      "799SECDR.WAV"
+    ]
   },
   "runtime_boundary": "Source contract only until executed in a Godot-capable checkout. F11 bug capture is observational and must not mutate gameplay state or include excluded commercial assets. Optional build-level framework metadata is schema-validated, size-limited and hash-bound when staged into a candidate build; its absence must not disable F11."
 }
