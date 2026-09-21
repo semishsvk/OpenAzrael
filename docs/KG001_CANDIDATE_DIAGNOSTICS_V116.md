@@ -1,6 +1,6 @@
-# KG-001 Candidate 2 diagnostics
+# KG-001 Candidate 3 diagnostics
 
-Candidate 2 is source-refrozen at `v116-context-v32` after the empirical 86-AZF color-key audit; diagnostics remain observational and no new Candidate feature work is allowed before the runtime/manual blocker cycle. — v116
+Candidate 3 is the active KG-001 integration target at `v116-context-v32`; diagnostics remain observational. Candidate 2 automated Windows evidence is historical and stale for current-source promotion. — v116
 
 v116 adds a diagnostic-only layer for the first real Godot integration build. It does not intentionally change puzzle or transition semantics.
 
@@ -22,7 +22,7 @@ The F7 HUD displays the exact build/checkpoint watermark, current room, player X
 
 Non-headless builds append structured events to:
 
-`user://openazrael_candidate2_events.jsonl`
+`user://openazrael_candidate3_events.jsonl`
 
 The log includes state hashes and covers inventory changes, flags, puzzle nodes, logical audio, interactions, trigger enter/exit edges, room transitions, room loads, debug room jumps and state dumps.
 
@@ -46,7 +46,7 @@ Always required:
 - `data/gameplay_event_graph_v87.json`;
 - source-safe `data/audio/legacy_world_ir.json`.
 
-For a normal non-headless Candidate 2 run, physical Event/ambient audio resources are also required:
+For a normal non-headless Candidate 3 run, physical Event/ambient audio resources are also required:
 - `S152V2.WAV`
 - `S137.WAV`
 - `S121.WAV`
@@ -69,7 +69,7 @@ F6 renders translucent boxes from the authored XAF trigger bounds already used b
 
 ## Evidence boundary
 
-`tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. Actual Godot execution remains **NOT_EXECUTED** until the candidate workflow is run in a Godot-capable checkout with locally restored ignored assets.
+`tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. Source wiring does not promote runtime evidence. Candidate 3 remains **NOT EXECUTED AT CURRENT HEAD** until the exact-SHA source gate and asset-backed Candidate 3 preflight pass.
 
 ## F11 bug-report capture
 
