@@ -26,6 +26,7 @@ checks={
  "well_key_path":all(x in runner for x in ("Interact_WellKey","well_key_acquired")),
  "switchboard_path":all(x in runner for x in ("Interact_well_lev02","Interact_well_weel3","switchboard_solved")),
  "return_r1_path":all(x in runner for x in ("zxwell2R6","returned_R1")),
+ "consumed_tongs_no_respawn":all(x in runner for x in ("consumed_tongs_do_not_respawn","Interact_TONG6","PickupCollected:rusty_tongs")),
  "door2_path":all(x in runner for x in ("Interact_doorcor2","door2_open")),
  "r8_transition_path":all(x in runner for x in ("zxcoriR2","entered_R8")),
  "lens_path":all(x in runner for x in ("Interact_R8Lens","lens_acquired")),
