@@ -16,7 +16,7 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[3]
         bundle = _default_scenario_bundle(root)
         ids = {row["scenario_id"] for row in bundle["scenarios"]}
-        self.assertEqual(bundle["scenario_count"], 18)
+        self.assertEqual(bundle["scenario_count"], 19)
         self.assertIn("openazrael.r1.pickup_tongs", ids)
         self.assertIn("openazrael.r1.open_door1", ids)
         self.assertIn("openazrael.r1.open_door2", ids)
@@ -28,6 +28,7 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
         )
         self.assertIn("openazrael.r8.take_lens", ids)
         self.assertIn("openazrael.r8.place_lens", ids)
+        self.assertIn("openazrael.r8.optical_sequence", ids)
         self.assertIn("openazrael.r8.take_shield", ids)
         self.assertIn("openazrael.transition.r1_to_r7", ids)
         self.assertIn("openazrael.transition.r7_to_r1", ids)
