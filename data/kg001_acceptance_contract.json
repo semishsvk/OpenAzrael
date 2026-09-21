@@ -65,10 +65,15 @@
       "automation": "automated_asset_backed",
       "runtime_evidence": [
         "v110 room/transition/floor-support regression",
-        "v117 real Input-driven R1 floor walk with per-frame local support tracking",
-        "v117 imported R8 step011__mesh ascent/descent",
-        "v117 imported R8 stairs__STAIR2 ascent/descent"
-      ]
+        "v117 natural spawn plus R8 stair traversal",
+        "v119 Candidate 3 R1/Object02 exact bug-point collision regression",
+        "v119 Input-driven R1 route traversal across audited floor waypoints"
+      ],
+      "candidate3_regression": {
+        "bug_report": "openazrael_bugreport_1790007921_0054.zip",
+        "root_cause": "R1/Object02 visible authored floor excluded from collision",
+        "required_gate": "r1_route_v119"
+      }
     },
     {
       "id": "G05",
