@@ -72,8 +72,8 @@ try:
         errors.append("contract checkpoint drift")
     if contract.get("build_id")!="KG-001 Candidate 3":
         errors.append("contract Candidate 3 build identity drift")
-    outputs=contract.get("outputs",{})
-    if outputs.get("event_jsonl_log", contract.get("event_jsonl_log"))!="user://openazrael_candidate3_events.jsonl":
+    features=contract.get("features",{})
+    if features.get("event_jsonl_log")!="user://openazrael_candidate3_events.jsonl":
         errors.append("contract Candidate 3 event log drift")
 except Exception as e:
     errors.append("contract parse: "+str(e))
