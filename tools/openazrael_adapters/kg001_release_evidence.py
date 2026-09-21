@@ -38,6 +38,9 @@ EVIDENCE_CANDIDATES = {
     "pppv_suite": (
         "kg001_pppv_scenario_suite.json",
     ),
+    "pppv_suite_integrity": (
+        "pppv_scenario_suite_integrity.json",
+    ),
     "pppv_playthrough": (
         "kg001_pppv_playthrough_evaluation.json",
     ),
@@ -152,6 +155,7 @@ def derive_gate_rows(
     v110_path: Path | None,
     v111_path: Path | None,
     pppv_suite_path: Path | None,
+    pppv_suite_integrity_path: Path | None,
     pppv_playthrough_path: Path | None,
     fresh_path: Path | None,
     manual_path: Path | None,
@@ -163,6 +167,11 @@ def derive_gate_rows(
         "v110": _load(v110_path) if v110_path else None,
         "v111": _load(v111_path) if v111_path else None,
         "pppv_suite": _load(pppv_suite_path) if pppv_suite_path else None,
+        "pppv_suite_integrity": (
+            _load(pppv_suite_integrity_path)
+            if pppv_suite_integrity_path
+            else None
+        ),
         "pppv_playthrough": (
             _load(pppv_playthrough_path)
             if pppv_playthrough_path
@@ -219,11 +228,13 @@ def derive_gate_rows(
             "status": _combined_status(
                 payloads["v110"],
                 payloads["pppv_suite"],
+                payloads["pppv_suite_integrity"],
             ),
             "evidence": _merge_evidence(
                 repo_root,
                 v110_path,
                 pppv_suite_path,
+                pppv_suite_integrity_path,
             ),
         },
         {
@@ -231,11 +242,13 @@ def derive_gate_rows(
             "status": _combined_status(
                 payloads["v110"],
                 payloads["pppv_suite"],
+                payloads["pppv_suite_integrity"],
             ),
             "evidence": _merge_evidence(
                 repo_root,
                 v110_path,
                 pppv_suite_path,
+                pppv_suite_integrity_path,
             ),
         },
         {
@@ -262,8 +275,15 @@ def derive_gate_rows(
         },
         {
             "id": "G09",
-            "status": _fresh_checkout_status(payloads["fresh"]),
-            "evidence": _merge_evidence(repo_root, fresh_path),
+            "status": _combined_status(
+                {"status": _fresh_checkout_status(payloads["fresh"])},
+                payloads["pppv_suite_integrity"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                fresh_path,
+                pppv_suite_integrity_path,
+            ),
         },
         {
             "id": "G10",
@@ -335,6 +355,7 @@ def build_gate_results(
         v110_path=paths["v110"],
         v111_path=paths["v111"],
         pppv_suite_path=paths["pppv_suite"],
+        pppv_suite_integrity_path=paths["pppv_suite_integrity"],
         pppv_playthrough_path=paths["pppv_playthrough"],
         fresh_path=paths["fresh"],
         manual_path=paths["manual"],
