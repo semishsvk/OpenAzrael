@@ -45,7 +45,11 @@
       "id": "G03",
       "name": "puzzle_state_space",
       "required": true,
-      "automation": "automated_exhaustive"
+      "automation": "automated_exhaustive_plus_adversarial_fuzz",
+      "required_evidence": [
+        "current_candidate_state_space",
+        "deterministic_state_fuzz"
+      ]
     },
     {
       "id": "G04",
