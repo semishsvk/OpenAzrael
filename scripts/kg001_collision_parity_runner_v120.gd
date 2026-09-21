@@ -200,11 +200,13 @@ func _audit_room(manager, room_id: String) -> void:
 func _finish(scene: Node = null) -> void:
     var non_exempt_failures: Array = []
     for row in rows:
-        if (
-            row is Dictionary
-            and not bool(row.get("explicit_exempt", false))
-            and not (row.get("fail_reasons", []) as Array).is_empty()
-        ):
+        if not (row is Dictionary):
+            continue
+        var reasons_value = row.get("fail_reasons", [])
+        var row_failed := (
+            reasons_value is Array and not reasons_value.is_empty()
+        )
+        if not bool(row.get("explicit_exempt", false)) and row_failed:
             non_exempt_failures.append(row)
 
     var result := {
