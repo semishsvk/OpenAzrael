@@ -435,6 +435,8 @@ func _exercise_r8_stair_mesh(
     _check(check_prefix + "_down_floor_contact", float(descent["floor_contact_ratio"]) >= 0.40)
 
 func _exercise_r8_stairs(scene: Node3D, manager, player: CharacterBody3D) -> void:
+    if player.has_method("clear_step_debug"):
+        player.call("clear_step_debug")
     manager.transition_cooldown = 999.0
     manager.load_room("R8", false)
     await _settle(2)
@@ -460,12 +462,18 @@ func _finish(scene: Node = null, status_override: String = "") -> void:
     var status := status_override
     if status.is_empty():
         status = "PASS" if failures.is_empty() else "FAIL"
+    var step_debug: Array = []
+    if scene != null:
+        var debug_player := scene.get_node_or_null("Player")
+        if debug_player != null and debug_player.has_method("step_debug_snapshot"):
+            step_debug = debug_player.call("step_debug_snapshot")
     var result := {
         "schema": "openazrael.kg001.physical_traversal",
         "version": 117,
         "status": status,
         "checks": check_count,
         "failed": failures,
+        "step_debug": step_debug,
         "scope": "natural portal-spawn support in R1/R7/R8 plus real production CharacterBody3D traversal using gameplay Input actions over the canonical R1 floor and both imported R8 tread sequences (step011 and stairs__STAIR2), including ascent and descent; no floor-normalizing test teleport"
     }
     print("OPENAZRAEL_KG001_PHYSICAL_V117 " + JSON.stringify(result))
