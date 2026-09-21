@@ -892,7 +892,8 @@ def main():
         pppv_scenario_suite={
             "status":block_status,
             **block_details,
-            "final_pppv_oracle":True,
+            "aggregate_validation_oracle":False,
+            "final_pppv_oracle":False,
             "required_for_g04":True,
             "required_for_g05":True,
             "required_for_g09":True,
@@ -905,7 +906,7 @@ def main():
         pppv_playthrough={
             "status":block_status,
             **block_details,
-            "final_pppv_oracle":True,
+            "final_pppv_oracle":False,
             "required_for_g08":True,
             "required_for_g09":True,
         }
@@ -1009,6 +1010,8 @@ def main():
             TMP/"kg001_pppv_playthrough_repeat2.json":ROOT/"data/tests/kg001_pppv_playthrough_repeat2.json",
             TMP/"kg001_pppv_playthrough_repeat2_evaluation.json":ROOT/"data/tests/kg001_pppv_playthrough_repeat2_evaluation.json",
             TMP/"kg001_pppv_determinism.json":ROOT/"data/tests/kg001_pppv_determinism.json",
+            TMP/"pppv_scenario_suite_integrity.json":ROOT/"data/tests/pppv_scenario_suite_integrity.json",
+            TMP/"pppv_determinism_integrity.json":ROOT/"data/tests/pppv_determinism_integrity.json",
             TMP/"kg001_pppv_failure_reproducer.json":ROOT/"data/tests/kg001_pppv_failure_reproducer.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
