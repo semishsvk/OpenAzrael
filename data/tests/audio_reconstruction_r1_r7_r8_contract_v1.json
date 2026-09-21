@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "name": "Audio Reconstruction R1-R7-R8 pre-build contract",
+  "gates": [
+    {"id":"A01","check":"sound database schema parses and confidence vocabulary is closed"},
+    {"id":"A02","check":"every imported original audio payload has provenance and digest"},
+    {"id":"A03","check":"every mapped R1/R7/R8 sound has room/object/trigger evidence or explicit HOLD"},
+    {"id":"A04","check":"Original Audio Map has no dangling sound_id references"},
+    {"id":"A05","check":"Acoustic graph contains R1,R7,R8 and verified transition-linked portals"},
+    {"id":"A06","check":"emitters reference existing sound_id and room"},
+    {"id":"A07","check":"classic/enhanced switch preserves sound_id, trigger and gameplay state"},
+    {"id":"A08","check":"reverb/occlusion guesses cannot be promoted above evidence confidence"},
+    {"id":"A09","check":"Audio Debug View exposes room, emitter, sound_id, provenance/confidence and active mode"},
+    {"id":"A10","check":"synthetic puzzle path asserts action -> trigger -> audio event -> expected state change"},
+    {"id":"A11","check":"R1 -> R7 -> R1 -> R8 traversal has deterministic audio-event trace"},
+    {"id":"A12","check":"Classic remains default; Enhanced Spatial remains feature-flagged until runtime validation"}
+  ],
+  "runtime_required_before_promotion": true
+}
