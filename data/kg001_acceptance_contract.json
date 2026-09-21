@@ -12,8 +12,10 @@
     ],
     "candidate_stabilization_blockers": [
       "#6 floor collision",
-      "#9 physical audio",
-      "#11 legacy color-key transparency"
+      "critical stair traversal",
+      "#9 physical/triggered audio",
+      "#11 legacy color-key transparency",
+      "R7 well+tongs recovered interaction effect"
     ]
   },
   "release_policy": {
@@ -52,15 +54,26 @@
     },
     {
       "id": "G04",
-      "name": "room_transition_state",
+      "name": "room_transition_and_physical_traversal",
       "required": true,
-      "automation": "automated"
+      "automation": "automated_asset_backed",
+      "runtime_evidence": [
+        "v110 room/transition semantics",
+        "v117 natural R1/R7/R8 portal-spawn floor support",
+        "v117 active R1 floor walking",
+        "v117 real R8 step011__mesh and stairs__STAIR2 ascent/descent"
+      ]
     },
     {
       "id": "G05",
-      "name": "trigger_semantics",
+      "name": "trigger_semantics_and_recovered_interaction_effects",
       "required": true,
-      "automation": "automated"
+      "automation": "automated_asset_backed",
+      "runtime_evidence": [
+        "v110 trigger boundary/precondition regression",
+        "v118 exact official-demo R7 well+tongs action order and state result"
+      ],
+      "fidelity_policy": "no synthetic transform animation when recovered demo action stream contains no transform/rotation opcode"
     },
     {
       "id": "G06",
@@ -69,7 +82,9 @@
       "automation": "logical_golden_plus_physical_playback_readiness",
       "runtime_evidence": [
         "v109/v111 logical golden event stream",
-        "v116 physical audio resource/load/player readiness"
+        "v116 ambient playback readiness and Master-bus capture",
+        "v116 R7_WELL_TONGS_USE -> 979TONGS.WAV physical playback",
+        "v116 R7_WATER_SWITCHBOARD_SOLVED -> S152V2.WAV physical playback"
       ],
       "manual_audibility_remains_in_g10": true
     },
