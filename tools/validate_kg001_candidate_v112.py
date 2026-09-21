@@ -18,6 +18,8 @@ checks={
  "framework_bundle":"kg001_candidate_framework" in source and "kg001_framework_bundle.json" in source,
  "framework_metadata_staging":"--stage-framework-metadata" in source and "runtime_metadata" in source,
  "well_real_input_pppv":all(x in source for x in ("run_well_pppv","pppv_scenario_runner.gd","evaluate_validation","kg001_well_tongs_pppv.json")),
+ "full_real_input_pppv":all(x in source for x in ("run_full_pppv","pppv_playthrough_runner.gd","evaluate_playthrough","kg001_pppv_playthrough_evaluation.json")),
+ "fresh_requires_full_pppv":'"pppv_playthrough"' in source and "full_runtime_pass=legacy_runtime_pass and pppv_playthrough_pass" in source,
  "git_clean_before_after":"clean_before=git_clean()" in source and "clean_after=git_clean()" in source,
  "forbidden_tracking_check":"repository_safety()" in source and "FORBIDDEN_TRACKED_PREFIXES" in source,
  "asset_ignore_check":'"check-ignore"' in source,
