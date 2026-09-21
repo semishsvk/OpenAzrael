@@ -34,11 +34,11 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                       "non_success_dead_end_states": 0,
                       "shortest_success_persistent_state_sha256": "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902",
                       "exploration_checks": {
-                                "all_reachable_states_can_reach_success": true,
-                                "no_non_success_dead_ends": true,
-                                "success_reachable": true,
-                                "shortest_path_ends_in_demo_complete": true,
-                                "canonical_hash_is_order_invariant": true
+                                "all_reachable_states_can_reach_success": True,
+                                "no_non_success_dead_ends": True,
+                                "success_reachable": True,
+                                "shortest_path_ends_in_demo_complete": True,
+                                "canonical_hash_is_order_invariant": True
                       }
             },
         )
@@ -54,13 +54,13 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                                 "attempts": 512
                       },
                       "properties": {
-                                "transition_determinism": true,
-                                "noop_purity": true,
-                                "state_invariants": true,
-                                "transition_invariants": true,
-                                "reachable_graph_membership": true,
-                                "liveness_to_success": true,
-                                "success_monotonicity": true
+                                "transition_determinism": True,
+                                "noop_purity": True,
+                                "state_invariants": True,
+                                "transition_invariants": True,
+                                "reachable_graph_membership": True,
+                                "liveness_to_success": True,
+                                "success_monotonicity": True
                       }
             },
         )
