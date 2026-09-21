@@ -17,15 +17,24 @@
       "move_left",
       "move_right"
     ],
-    "movement_solver": "move_and_slide"
+    "movement_solver": "move_and_slide",
+    "step_up": {
+      "max_step_height": 14,
+      "step_probe_distance": 14,
+      "step_clearance": 0.35,
+      "safe_margin": 0.25,
+      "floor_snap_length": 16,
+      "strategy": "only when normal horizontal test_move is blocked; downward ray resolves candidate tread; vertical lift and raised forward path must both pass collision tests"
+    }
   },
   "floor_regression": {
     "room": "R1",
     "spawn_view": "spaview",
-    "behavior": "active Input-driven movement in both canonical forward/back directions",
+    "behavior": "natural portal spawn settle followed by active Input-driven movement in both canonical forward/back directions",
     "support_tracking": "per-physics-frame local collision support",
     "stationary_only_evidence_accepted": false,
-    "direct_horizontal_velocity_injection_accepted": false
+    "direct_horizontal_velocity_injection_accepted": false,
+    "test_may_normalize_player_to_floor": false
   },
   "stair_regressions": [
     {
@@ -59,15 +68,50 @@
     "stairs__BAPSTAIR"
   ],
   "pass_requires": [
+    "R1/R7/R8 portal-view spawns naturally settle on real collision without crossing below support",
     "R1 active floor traversal does not cross below locally tracked support",
     "R1 active traversal makes real horizontal progress",
     "R1 maintains meaningful floor contact",
-    "R8 step011 lower-to-upper traversal passes",
-    "R8 step011 upper-to-lower traversal passes",
-    "R8 stairs__STAIR2 lower-to-upper traversal passes",
-    "R8 stairs__STAIR2 upper-to-lower traversal passes",
+    "R8 step011 lower-to-upper traversal passes with production stair assist",
+    "R8 step011 upper-to-lower traversal passes with production floor snap",
+    "R8 stairs__STAIR2 lower-to-upper traversal passes with production stair assist",
+    "R8 stairs__STAIR2 upper-to-lower traversal passes with production floor snap",
     "no engine/script errors"
   ],
   "evidence_boundary": "This tracked contract and asset-derived geometry metadata do not prove runtime traversal. A current Godot v117 result from restored room assets is required.",
-  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH"
+  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH",
+  "portal_spawn_regressions": [
+    {
+      "room": "R1",
+      "view": "spaview",
+      "pre_fix_feet_y": -84.316051,
+      "audited_support_y": -83.868143,
+      "pre_fix_penetration": true,
+      "clearance_added": 4
+    },
+    {
+      "room": "R1",
+      "view": "entcori",
+      "pre_fix_feet_y": -86.750095,
+      "audited_support_y": -84.2055,
+      "pre_fix_penetration": true,
+      "clearance_added": 4
+    },
+    {
+      "room": "R7",
+      "view": "view",
+      "pre_fix_feet_y": -43.220201,
+      "audited_support_y": -41.56402,
+      "pre_fix_penetration": true,
+      "clearance_added": 4
+    },
+    {
+      "room": "R8",
+      "view": "Object14",
+      "pre_fix_feet_y": -79.858878,
+      "audited_support_y": -87.124025,
+      "pre_fix_penetration": false,
+      "clearance_added": 4
+    }
+  ]
 }
