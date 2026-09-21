@@ -14,6 +14,12 @@
     "local_asset_ignore_check": true,
     "fresh_checkout_gate": true,
     "optional_result_promotion": true,
-    "godot_asset_import": true
+    "godot_asset_import": true,
+    "v117_physical_traversal_runtime_capture": true,
+    "v118_well_tongs_runtime_capture": true,
+    "remaster_framework_source_suite": true,
+    "kg001_framework_bundle": true,
+    "runtime_framework_metadata_staging": true,
+    "known_good_fail_closed_defect_inventory": true
   }
 }
