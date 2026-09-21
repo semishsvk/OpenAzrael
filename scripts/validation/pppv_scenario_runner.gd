@@ -162,9 +162,23 @@ func _execute_action(
                     source_room,
                     goal_trigger
                 )
-                if centroid == null or destination_room.is_empty():
+                if centroid == null:
                     failures.append(action_id + ":invalid_trigger_goal")
                     return false
+
+                if destination_room.is_empty():
+                    var trigger_result: Dictionary = await navigator.approach_world_point(
+                        action_id,
+                        centroid,
+                        Callable(),
+                        int(params.get("max_frames", 1200)),
+                        int(params.get("stuck_frames", 180)),
+                        float(params.get("reach_distance", 4.0))
+                    )
+                    if not bool(trigger_result.get("reached", false)):
+                        failures.append(action_id + ":trigger_goal_not_reached")
+                        return false
+                    return true
 
                 manager.set("transition_cooldown", 0.0)
                 var transition_result: Dictionary = await navigator.approach_world_point(
@@ -217,6 +231,23 @@ func _execute_action(
             return true
 
         "look":
+            var look_target := String(params.get("goal_target", ""))
+            if not look_target.is_empty():
+                var look_room = manager.get("current_room")
+                if look_room == null:
+                    failures.append(action_id + ":missing_current_room")
+                    return false
+                var aim_result: Dictionary = await navigator.aim_at_interactable(
+                    action_id,
+                    look_target,
+                    look_room,
+                    int(params.get("max_frames", 180))
+                )
+                if not bool(aim_result.get("acquired", false)):
+                    failures.append(action_id + ":aim_target_not_acquired")
+                    return false
+                return true
+
             var relative = params.get("relative", [0.0, 0.0])
             if not relative is Array or relative.size() < 2:
                 failures.append(action_id + ":invalid_look")
@@ -241,7 +272,13 @@ func _execute_action(
 
         "wait":
             var wait_frames := int(action.get("frames", params.get("frames", 1)))
-            await _settle_physics(maxi(wait_frames, 1))
+            var wait_ok: bool = await driver.wait_physics(
+                action_id,
+                maxi(wait_frames, 1)
+            )
+            if not wait_ok:
+                failures.append(action_id + ":wait_failed")
+                return false
             return true
 
         _:
