@@ -148,6 +148,15 @@ def main() -> int:
                 "output_tail": proc.stdout[-20000:],
             },
         )
+    if not pck.is_file():
+        return fail(
+            "PCK_MISSING",
+            {
+                "note": "Windows Candidate 3 uses binary_format/embed_pck=false; EXE and PCK must ship together.",
+                "exe": str(out.relative_to(ROOT)),
+                "expected_pck": str(pck.relative_to(ROOT)),
+            },
+        )
 
     artifacts = {
         str(out.relative_to(ROOT)): {
