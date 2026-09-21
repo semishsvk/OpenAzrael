@@ -16,6 +16,19 @@ TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 EXPORT_RECEIPT = TMP / "candidate3_export_receipt.json"
 DEFAULT_OUT = ROOT / "exports/OpenAzrael-KG001-Candidate3.exe"
+RUNTIME_ASSET_ROOTS = (
+    ROOT / "assets/rooms",
+    ROOT / "assets/audio",
+    ROOT / "assets/textures/classic",
+)
+
+
+def runtime_asset_files() -> list[Path]:
+    files: list[Path] = []
+    for root in RUNTIME_ASSET_ROOTS:
+        if root.is_dir():
+            files.extend(p for p in root.rglob("*") if p.is_file())
+    return sorted(set(files), key=lambda p: str(p.relative_to(ROOT)).lower())
 
 def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -100,7 +113,21 @@ def main() -> int:
         if not p.is_file() or sha256(p) != expected:
             return fail("PREFLIGHT_EVIDENCE_CHANGED", {"evidence": key})
 
-    for rel, meta in receipt.get("runtime_assets", {}).items():
+    receipt_assets = receipt.get("runtime_assets", {})
+    current_asset_paths = {
+        str(p.relative_to(ROOT)) for p in runtime_asset_files()
+    }
+    receipt_asset_paths = set(receipt_assets)
+    if current_asset_paths != receipt_asset_paths:
+        return fail(
+            "RUNTIME_ASSET_SET_CHANGED_SINCE_PREFLIGHT",
+            {
+                "added": sorted(current_asset_paths - receipt_asset_paths),
+                "removed": sorted(receipt_asset_paths - current_asset_paths),
+            },
+        )
+
+    for rel, meta in receipt_assets.items():
         p = ROOT / rel
         if not p.is_file() or p.stat().st_size != int(meta.get("bytes", -1)) or sha256(p) != meta.get("sha256"):
             return fail("RUNTIME_ASSET_CHANGED_SINCE_PREFLIGHT", {"asset": rel})
@@ -158,6 +185,26 @@ def main() -> int:
             },
         )
 
+    smoke = run([
+        str(out),
+        "--headless",
+        "--quit-after",
+        "120",
+    ])
+    smoke_errors = [
+        line for line in smoke.stdout.splitlines()
+        if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))
+    ]
+    if smoke.returncode != 0 or smoke_errors:
+        return fail(
+            "EXPORTED_STARTUP_SMOKE_FAILED",
+            {
+                "returncode": smoke.returncode,
+                "engine_errors": smoke_errors,
+                "output_tail": smoke.stdout[-20000:],
+            },
+        )
+
     artifacts = {
         str(out.relative_to(ROOT)): {
             "bytes": out.stat().st_size,
@@ -180,6 +227,13 @@ def main() -> int:
         "preflight_receipt_sha256": sha256(RECEIPT),
         "preset": args.preset,
         "artifacts": artifacts,
+        "export_smoke": {
+            "status": "PASS",
+            "mode": "headless",
+            "quit_after": 120,
+            "returncode": smoke.returncode,
+            "engine_errors": smoke_errors,
+        },
         "manual_gate": "G10_PENDING_USER",
     }
     EXPORT_RECEIPT.write_text(
