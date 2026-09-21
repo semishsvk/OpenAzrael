@@ -24,6 +24,15 @@ checks={
  "asset_ignore_check":'"check-ignore"' in source,
  "fresh_requires_import":'import_status=="PASS"' in source,
  "fresh_requires_all_runtime":"full_runtime_pass" in source and "all(asset_present.values())" in source,
+ "fresh_runtime_set_includes_v117_v118":(
+     '("physical_v117","scripts/kg001_physical_traversal_runner_v117.gd","OPENAZRAEL_KG001_PHYSICAL_V117")' in source
+     and '("well_tongs_v118","scripts/kg001_well_tongs_animation_runner_v118.gd","OPENAZRAEL_KG001_WELL_TONGS_V118")' in source
+     and 'full_runtime_pass=all(runtimes.get(name,{}).get("status")=="PASS" for name,_,_ in RUNTIMES)' in source
+ ),
+ "promotion_maps_v117_v118":(
+     'kg001_physical_v117_runtime.json":ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json"' in source
+     and 'kg001_well_tongs_v118_runtime.json":ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json"' in source
+ ),
  "promotion_is_optional":"--promote-results" in source,
  "fresh_is_optional":"--fresh-checkout" in source,
 }
