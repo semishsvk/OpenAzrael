@@ -1,12 +1,15 @@
 class_name AudioDebugViewV69
 extends RefCounted
 
-static func format_snapshot(room_id: String, mode_name: String, snapshots: Array[Dictionary], master_volume: int) -> String:
+static func format_snapshot(room_id: String, mode_name: String, snapshots: Array[Dictionary], master_volume: int, logical_events: Array = []) -> String:
     var lines: Array[String] = []
     lines.append("AUDIO DEBUG v69  [F8 close]")
     lines.append("Room %s | mode %s | parity master %d" % [room_id, mode_name, master_volume])
     lines.append("Classic shadow: V65 heading HIGH | caller constants PROVISIONAL")
     lines.append("Demo coordinates: identity HIGH | playback remains Godot approximate")
+    lines.append("Runtime mode: %s | gameplay-state invariant required" % mode_name)
+    if not logical_events.is_empty():
+        lines.append("Logical event trace: " + ", ".join(logical_events))
     if snapshots.is_empty():
         lines.append("No legacy ambient emitters in current room")
         return "\n".join(lines)
@@ -22,6 +25,7 @@ static func format_snapshot(room_id: String, mode_name: String, snapshots: Array
             lines.append("S%d %-18s xyz=%s d=%.2f  HOLD zero horizontal" % [int(s.get("legacy_3d_slot", -1)), String(s.get("node", "?")), xyz, float(p.get("distance", 0.0))])
             continue
         lines.append("S%d %-18s xyz=%s" % [int(s.get("legacy_3d_slot", -1)), String(s.get("node", "?")), xyz])
+        lines.append("   emitter=%s sound_id=%s asset=%s provenance=%s confidence=%s" % [String(s.get("emitter_id", "?")), String(s.get("sound_id", "?")), String(s.get("asset", "?")), String(s.get("provenance", s.get("source", "?"))), String(s.get("confidence", "?"))])
         lines.append("   d=%7.2f  L=%6.1f° S=%6.1f° fold=%6.1f°  pan=%3d rear=/ %d  vol=%3d" % [
             float(p.get("distance", 0.0)), float(p.get("listener_heading_deg", 0.0)), float(p.get("source_heading_deg", 0.0)),
             float(p.get("folded_angle_deg", 0.0)), int(p.get("pan", -1)), int(p.get("rear_mode_divisor", -1)), int(p.get("volume", -1))])
