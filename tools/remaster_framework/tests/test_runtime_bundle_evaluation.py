@@ -102,7 +102,14 @@ class RuntimeBundleEvaluationTests(unittest.TestCase):
                         "trajectory": [
                             {
                                 "physics_frame": 1,
+                                "room": "R1",
                                 "position": [0.0, 0.0, 0.0],
+                                "rotation": [0.0, 0.0, 0.0],
+                                "velocity": [0.0, 0.0, 0.0],
+                                "is_on_floor": True,
+                                "room_changed": False,
+                                "delta_y": 0.0,
+                                "drop_from_action_start": 0.0,
                             }
                         ],
                         "after": replay_snapshot(2, "R1"),
