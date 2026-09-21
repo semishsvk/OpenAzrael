@@ -341,6 +341,23 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "openazrael_r7_pppv_scenarios",
+      "family": "validation_lab",
+      "description": "Generate real-player positive and wrong-sequence-negative R7 water switchboard PPPV scenarios with exact interaction order, source-backed flag/puzzle effects and S152V2.WAV evidence.",
+      "entrypoint": "tools/openazrael_adapters/r7_pppv.py",
+      "inputs": [
+        "production_runtime",
+        "gameplay_event_graph"
+      ],
+      "outputs": [
+        "pppv_scenarios"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "openazrael_transition_pppv_scenarios",
       "family": "validation_lab",
       "description": "Generate physical room-transition PPPV scenarios that steer the production player toward evidence-backed trigger geometry using gameplay input and require actual CandidateDiagnostics trigger/room-transition evidence.",
