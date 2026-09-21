@@ -11,6 +11,7 @@ from tools.openazrael_adapters.physical_pppv import (
     adapt_physical_traversal_contract,
 )
 from tools.openazrael_adapters.well_pppv import adapt_well_tongs_contract
+from tools.openazrael_adapters.v117_pppv_bridge import evaluate_v117_bridge
 from tools.openazrael_adapters.reference_graph import (
     build_openazrael_reference_graph,
 )
@@ -111,6 +112,26 @@ def build_candidate_framework_bundle(
     pppv_coverage_path = evidence / "pppv_coverage.json"
     _write(pppv_coverage_path, pppv_coverage)
 
+    v117_bridge_path: Path | None = None
+    v117_runtime_path = evidence / "kg001_v117_runtime.json"
+    if not v117_runtime_path.is_file():
+        alternate = evidence / "kg001_physical_traversal_runtime_v117.json"
+        if alternate.is_file():
+            v117_runtime_path = alternate
+    if v117_runtime_path.is_file():
+        v117_runtime = _load(v117_runtime_path)
+        runtime_evidence = v117_runtime.get("pppv_evidence")
+        if isinstance(runtime_evidence, dict):
+            v117_contract = _load(
+                root / "data/tests/kg001_physical_traversal_contract_v117.json"
+            )
+            v117_bridge = evaluate_v117_bridge(
+                v117_runtime,
+                v117_contract,
+            )
+            v117_bridge_path = evidence / "v117_pppv_bridge.json"
+            _write(v117_bridge_path, v117_bridge)
+
     inputs: dict[str, str] = {}
     _optional_hash(
         root / "data/backup/source_fingerprints.json",
@@ -132,6 +153,8 @@ def build_candidate_framework_bundle(
     inputs["release_gate_summary"] = sha256_file(release_summary_path)
     inputs["pppv_scenarios"] = sha256_file(scenario_bundle_output)
     inputs["pppv_coverage"] = sha256_file(pppv_coverage_path)
+    if v117_bridge_path is not None:
+        inputs["v117_pppv_bridge"] = sha256_file(v117_bridge_path)
 
     provenance = build_provenance(
         project="OpenAzrael",
@@ -152,19 +175,23 @@ def build_candidate_framework_bundle(
     provenance_path = evidence / "build_provenance.json"
     _write(provenance_path, provenance)
 
+    artifacts = {
+        "gate_results": gate_results_path.name,
+        "release_gate_summary": release_summary_path.name,
+        "pppv_scenarios": scenario_bundle_output.name,
+        "pppv_coverage": pppv_coverage_path.name,
+        "build_provenance": provenance_path.name,
+    }
+    if v117_bridge_path is not None:
+        artifacts["v117_pppv_bridge"] = v117_bridge_path.name
+
     bundle = {
         "schema": "openazrael.kg001.framework_bundle",
         "version": 1,
         "commit_sha": commit_sha,
         "release_status": release_summary["status"],
         "pppv_coverage_status": pppv_coverage["status"],
-        "artifacts": {
-            "gate_results": gate_results_path.name,
-            "release_gate_summary": release_summary_path.name,
-            "pppv_scenarios": scenario_bundle_output.name,
-            "pppv_coverage": pppv_coverage_path.name,
-            "build_provenance": provenance_path.name,
-        },
+        "artifacts": artifacts,
         "known_good_eligible": (
             release_summary["status"] == "ELIGIBLE_FOR_KNOWN_GOOD"
         ),
