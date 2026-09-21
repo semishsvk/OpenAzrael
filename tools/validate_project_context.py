@@ -224,6 +224,7 @@ for p in [
     "tools/restore_candidate_assets.py",
     "tools/prepare_candidate_audio.py",
     "docs/BUG_REPORTING.md",
+    "docs/PUBLIC_RELEASE_AUDIT.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
 ]:
     req(p)
