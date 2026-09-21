@@ -24,6 +24,14 @@ EVIDENCE_CANDIDATES = {
         "kg001_v111_runtime.json",
         "kg001_full_demo_runtime_v111.json",
     ),
+    "v117": (
+        "kg001_v117_runtime.json",
+        "kg001_physical_traversal_runtime_v117.json",
+    ),
+    "v118": (
+        "kg001_v118_runtime.json",
+        "kg001_well_tongs_animation_runtime_v118.json",
+    ),
     "fresh": ("kg001_fresh_checkout.json",),
     "manual": (
         "kg001_manual_sanity.json",
@@ -268,6 +276,23 @@ def build_gate_results(
         manual_path=paths["manual"],
     )
 
+    supplemental_checks = [
+        {
+            "id": "V117_PHYSICAL_TRAVERSAL",
+            "status": _combined_status(
+                _load(paths["v117"]) if paths["v117"] else None
+            ),
+            "evidence": _merge_evidence(repo_root, paths["v117"]),
+        },
+        {
+            "id": "V118_WELL_TONGS",
+            "status": _combined_status(
+                _load(paths["v118"]) if paths["v118"] else None
+            ),
+            "evidence": _merge_evidence(repo_root, paths["v118"]),
+        },
+    ]
+
     return {
         "schema": RESULTS_SCHEMA,
         "version": RESULTS_VERSION,
@@ -277,6 +302,7 @@ def build_gate_results(
         },
         "defects": _defects(manual),
         "gates": gates,
+        "supplemental_checks": supplemental_checks,
         "holds": [],
         "source": {
             "evidence_root": str(evidence_root),
