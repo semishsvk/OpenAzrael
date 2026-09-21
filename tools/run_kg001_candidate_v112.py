@@ -246,9 +246,14 @@ def main():
     console_summary["framework_bundle"]=framework_status
     console_summary["framework_metadata_stage"]=metadata_stage_status
     print(json.dumps(console_summary,indent=2))
+    framework_ok = framework_status == "PASS"
+    metadata_ok = (
+        not args.stage_framework_metadata
+        or metadata_stage_status == "PASS"
+    )
     if args.fresh_checkout:
-        sys.exit(0 if fresh_pass else 1)
-    sys.exit(0 if source_ok else 1)
+        sys.exit(0 if fresh_pass and framework_ok and metadata_ok else 1)
+    sys.exit(0 if source_ok and framework_ok and metadata_ok else 1)
 
 if __name__=="__main__":
     main()
