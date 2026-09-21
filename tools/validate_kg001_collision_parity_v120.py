@@ -29,7 +29,7 @@ checks = {
         "GLOBAL_EXEMPT" in runner
         and "ROOM_EXEMPT" in runner
         and "_is_explicit_exempt" in runner
-        and "room_manager" not in contract.get(
+        and "explicit and audited" in contract.get(
             "explicit_non_solid_exemptions", {}
         ).get("rationale", "").lower()
     ),
