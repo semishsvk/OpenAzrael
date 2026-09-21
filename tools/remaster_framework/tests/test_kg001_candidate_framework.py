@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 import unittest
@@ -134,6 +135,65 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             )
         return evidence
 
+    def _materialize_passing_pppv_evidence(
+        self,
+        root: Path,
+        evidence: Path,
+    ) -> None:
+        build_candidate_framework_bundle(
+            root,
+            evidence,
+            commit_sha="a" * 40,
+            godot_version="4.x",
+        )
+        scenario_path = evidence / "pppv_scenarios.json"
+        scenario_bundle = json.loads(
+            scenario_path.read_text(encoding="utf-8")
+        )
+        scenario_ids = sorted(
+            row["scenario_id"]
+            for row in scenario_bundle["scenarios"]
+        )
+        transition_ids = sorted(
+            value
+            for value in scenario_ids
+            if value.startswith("openazrael.transition.")
+        )
+        bundle_sha = hashlib.sha256(scenario_path.read_bytes()).hexdigest()
+        self._write(
+            evidence / "kg001_pppv_scenario_suite.json",
+            {
+                "schema": "openazrael.kg001.pppv_scenario_suite",
+                "version": 1,
+                "status": "PASS",
+                "scenario_bundle": ".tmp/kg001/pppv_scenarios.json",
+                "scenario_bundle_sha256": bundle_sha,
+                "scenario_count": len(scenario_ids),
+                "passed": len(scenario_ids),
+                "failed": 0,
+                "transition_scenario_count": len(transition_ids),
+                "transition_scenario_ids": transition_ids,
+                "all_authored_scenarios_executed": True,
+                "scenarios": {
+                    scenario_id: {"status": "PASS"}
+                    for scenario_id in scenario_ids
+                },
+            },
+        )
+        self._write(
+            evidence / "kg001_pppv_playthrough_evaluation.json",
+            {
+                "schema": "remaster.playthrough_evaluation",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        fresh_path = evidence / "kg001_fresh_checkout.json"
+        fresh = json.loads(fresh_path.read_text(encoding="utf-8"))
+        fresh["runtime_status"]["pppv_scenario_suite"] = "PASS"
+        fresh["runtime_status"]["pppv_playthrough"] = "PASS"
+        self._write(fresh_path, fresh)
+
     def test_bundle_is_blocked_without_manual_sanity(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -253,11 +313,49 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                     godot_version="4.x",
                 )
 
+
+    def test_stale_pppv_suite_hash_is_blocked_by_integrity_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            suite_path = evidence / "kg001_pppv_scenario_suite.json"
+            suite = json.loads(suite_path.read_text(encoding="utf-8"))
+            suite["scenario_bundle_sha256"] = "f" * 64
+            self._write(suite_path, suite)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(
+                bundle["pppv_scenario_suite_integrity_status"],
+                "FAIL",
+            )
+            self.assertEqual(bundle["release_status"], "BLOCKED")
+            self.assertFalse(bundle["known_good_eligible"])
+
+            integrity = json.loads(
+                (evidence / "pppv_scenario_suite_integrity.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(integrity["status"], "FAIL")
+            self.assertTrue(
+                any("SHA-256 mismatch" in item for item in integrity["errors"])
+            )
+
     def test_complete_evidence_can_be_known_good_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._repo(root)
             evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
 
             bundle = build_candidate_framework_bundle(
                 root,
