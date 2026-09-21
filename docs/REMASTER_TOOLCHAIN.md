@@ -171,10 +171,14 @@ Implemented runtime-facing POC:
 The current main-derived runtime already exposes enough existing diagnostics that
 no new production trigger system was required.
 
+Integrated runtime parity set:
+
+- v117 floor/stair collision fixes and physical traversal source/runtime contract;
+- v118 exact Well+Tongs action stream, original 979TONGS edge and source evidence;
+- Candidate fresh-checkout runtime suite now requires v109/v110/v111/v117/v118.
+
 Remaining runtime-facing integration:
 
-- deliberately integrate the newer v117 physical traversal and v118 Well+Tongs
-  runtime changes;
 - refactor/bridge v117 collision and stair evidence into the generic vocabulary;
 - add full-demo scenario orchestration and persistence/save-load chains;
 - make complete gameplay coverage a future Known-Good gate.
@@ -207,12 +211,19 @@ Localization Lab:
 
 ## Phase 4 - Project and release tooling
 
-- context/document consistency validator;
-- build provenance manifest;
-- fresh-checkout verification;
-- KG gate aggregator;
-- bug-report evidence bundle integration;
-- version/build/KG metadata unification.
+Implemented POC:
+
+- context/document consistency validation;
+- deterministic build provenance manifest;
+- existing G00-G10 contract adapter and fail-closed KG gate aggregator;
+- fresh-checkout evidence bound to v109/v110/v111/v117/v118;
+- optional runtime metadata staging for candidate builds;
+- F11 bug-report integration with schema/size/SHA-256 guarded build context;
+- unified KG-001 framework bundle.
+
+Remaining hardening includes full clean-machine execution with restored local
+assets, final G10/manual defect inventory, snapshot/release evidence linkage and
+later promotion of complete PPPV coverage into a Known-Good gate.
 
 ## Phase 5 - extraction into a generic framework
 
