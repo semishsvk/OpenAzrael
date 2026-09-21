@@ -26,7 +26,8 @@
       "audio_v116",
       "physical_v117",
       "well_tongs_v118",
-      "r1_route_v119"
+      "r1_route_v119",
+      "collision_v120"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
@@ -83,11 +84,15 @@
       "complete demo route"
     ]
   },
-  "evidence_boundary": "Historical Candidate 3 failed manual G10 on R1/Object02. Any guarded rebuild must additionally pass v119; no historical Candidate 3 PASS evidence may be reused.",
+  "evidence_boundary": "Historical Candidate 3 failed manual G10 on R1/Object02. Any guarded rebuild must additionally pass v119 and generic collision-parity v120; no historical Candidate 3 PASS evidence may be reused.",
   "historical_candidate3_result": {
     "status": "G10_FAIL",
     "blocker": "R1/Object02 missing collision under zxcoriR5",
     "bug_report": "openazrael_bugreport_1790007921_0054.zip",
-    "superseding_gate": "r1_route_v119"
+    "superseding_gate": "r1_route_v119",
+    "superseding_gates": [
+      "r1_route_v119",
+      "collision_v120"
+    ]
   }
 }
