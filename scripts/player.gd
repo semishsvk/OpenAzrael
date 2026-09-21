@@ -90,7 +90,7 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
     if floor_hit.is_empty():
         return false
 
-    var normal := floor_hit.get("normal", Vector3.ZERO) as Vector3
+    var normal: Vector3 = floor_hit.get("normal", Vector3.ZERO)
     if normal.dot(Vector3.UP) < cos(floor_max_angle):
         return false
 
