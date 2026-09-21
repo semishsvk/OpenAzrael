@@ -68,12 +68,15 @@ def validate_runtime_evidence(quality):
     runtime_status_ok=(
         isinstance(runtime_status,dict)
         and all(runtime_status.get(name)=="PASS" for name in base_runtime_names)
+        and {"physical_v117","well_tongs_v118","r1_route_v119"}.issubset(
+            set(runtime_status)
+        )
         and set(runtime_status).issubset(
             base_runtime_names | {"physical_v117", "well_tongs_v118", "r1_route_v119"}
         )
-        and runtime_status.get("physical_v117","PASS")=="PASS"
-        and runtime_status.get("well_tongs_v118","PASS")=="PASS"
-        and runtime_status.get("r1_route_v119","PASS")=="PASS"
+        and runtime_status.get("physical_v117")=="PASS"
+        and runtime_status.get("well_tongs_v118")=="PASS"
+        and runtime_status.get("r1_route_v119")=="PASS"
     )
     if (fresh.get("status")!="PASS" or fresh.get("commit_sha")!=evidence_commit
             or fresh.get("schema")!="openazrael.kg001.fresh_checkout" or fresh.get("version")!=112
