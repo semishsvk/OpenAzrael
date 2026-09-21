@@ -47,7 +47,8 @@
     "room_transition_gate_parity": true,
     "lens_precondition_parity": true,
     "optical_event_parity": true,
-    "shield_event_parity": true
+    "shield_event_parity": true,
+    "pickup_persistence_parity": true
   },
   "exploration_checks": {
     "all_reachable_states_can_reach_success": true,
