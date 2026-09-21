@@ -62,17 +62,20 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="tongs_reachable",
                 kind="interaction_probe",
+                action_id="approach_tongs",
                 match={"target": "Interact_TONG6", "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="tongs_interaction_dispatched",
                 kind="trigger",
+                action_id="take_tongs",
                 match={"target": "Interact_TONG6", "activated": True},
                 after_requirement="tongs_reachable",
             ),
             EvidenceRequirement(
                 requirement_id="tongs_inventory_change",
                 kind="state_change",
+                action_id="take_tongs",
                 match={
                     "path": "inventory.rusty_tongs",
                     "before": False,
@@ -105,17 +108,20 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="door1_reachable",
                 kind="interaction_probe",
+                action_id="approach_door1",
                 match={"target": "Interact_doorcor01", "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="door1_interaction_dispatched",
                 kind="trigger",
+                action_id="open_door1",
                 match={"target": "Interact_doorcor01", "activated": True},
                 after_requirement="door1_reachable",
             ),
             EvidenceRequirement(
                 requirement_id="door1_flag_change",
                 kind="state_change",
+                action_id="open_door1",
                 match={
                     "path": "flags.R1Door1Open",
                     "before": False,
@@ -151,17 +157,20 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="door2_reachable",
                 kind="interaction_probe",
+                action_id="approach_door2",
                 match={"target": "Interact_doorcor2", "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="door2_interaction_dispatched",
                 kind="trigger",
+                action_id="open_door2",
                 match={"target": "Interact_doorcor2", "activated": True},
                 after_requirement="door2_reachable",
             ),
             EvidenceRequirement(
                 requirement_id="door2_unlock_flag",
                 kind="state_change",
+                action_id="open_door2",
                 match={
                     "path": "flags.FR1DoorUnlocked",
                     "before": False,
@@ -172,6 +181,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="door2_open_flag",
                 kind="state_change",
+                action_id="open_door2",
                 match={
                     "path": "flags.R1Door2Open",
                     "before": False,
@@ -210,11 +220,13 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="locked_door2_reachable",
                 kind="interaction_probe",
+                action_id="approach_locked_door2",
                 match={"target": "Interact_doorcor2", "reachable": True},
             ),
             EvidenceRequirement(
                 requirement_id="locked_door2_dispatch",
                 kind="trigger",
+                action_id="try_locked_door2",
                 match={"target": "Interact_doorcor2", "activated": True},
                 after_requirement="locked_door2_reachable",
             ),
