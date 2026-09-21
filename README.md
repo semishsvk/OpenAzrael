@@ -23,29 +23,29 @@ is allowed or created. Original Miles parity and complete original renderer
 transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 `data/tests/kg001_candidate2_windows.json` for details.
 
-## Current status — v116-context-v32
+## Current status — v116-context-v32 / Candidate 3 hardening
 
 **Technical base:** `openazrael_godot_poc_v116`  
 **Runtime:** Godot 4  
 **Active slice:** R1 -> R7 -> R8  
-**Current candidate:** KG-001 Candidate 2  
-**Candidate source status:** SOURCE_REFROZEN_V32 / Windows exported / manual retest required  
-**Observed Candidate 1 status:** manual FAIL — Issue #6 floor collision, Issue #9 no audible audio, Issue #11 magenta color-key textures  
-**Candidate 2 v32 runtime status:** AUTOMATED_PASS_MANUAL_PENDING  
+**Current candidate:** KG-001 Candidate 3  
+**Candidate source status:** HARDENED_SOURCE / source CI + exact-SHA asset-backed preflight required  
+**Historical Candidate 2 status:** automated Windows evidence PASS, subsequent manual traversal FAIL; evidence retained but stale for current source  
+**Candidate 3 runtime status:** NOT EXECUTED AT CURRENT HEAD  
 **Known-good tag:** `demo-known-good-001` — NOT ALLOWED until G00-G10 all pass
 
 ### Immediate priority
-1. Restore the ignored Candidate room/audio/texture assets with `tools/restore_candidate_assets.py`; the restore now rebuilds legacy indexed `#` color-key masks as binary alpha.
-2. Run `python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results`.
-3. Require all three blocker regressions to PASS: v110 R1/R7/R8 floor support (#6), audio-v116 physical readiness (#9), and audited source-palette color-key source/asset validation (#11).
-4. Export/launch Candidate 2 and manually verify stable R1 floor collision, audible R1 ambient audio, and no pink/magenta background on the keyhole/tongs or other `#` cutout textures.
-5. Continue the full R1 -> R7 -> R1 -> R8 -> Shield route only after those blocker retests pass; `demo-known-good-001` remains blocked while any release blocker is recorded.
+1. Require the Candidate 3 Python 3.11/3.12 source gate to PASS at the exact build SHA.
+2. Restore the ignored Candidate room/audio/texture assets and run `python tools/run_candidate3_preflight.py --godot <Godot> [--demo-dir <ATDEMO>]`.
+3. Require literal PASS for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118. v117 now exercises winding-safe near-to-far stair probing and preserves a bounded step-debug trace.
+4. Export only with `tools/export_candidate3.py`; the exporter rejects changed HEAD/evidence/Godot, mutations **or additions/removals** in the bound runtime asset set, and requires exported-EXE startup smoke before writing a PASS receipt.
+5. Complete G10 on that exact EXE/PCK pair: R1 floor, both R8 stair profiles, well+tongs + triggered audio, ambient audio, color-key transparency, upright KEYHOLE orientation, full route and save/load. `demo-known-good-001` remains blocked until then.
 
 ### Current architectural decisions
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
 - Candidate diagnostics are observational only; they do not directly mutate gameplay state.
 - F11 captures a source-safe diagnostic ZIP for GitHub Issues; see `docs/BUG_REPORTING.md`.
-- Localization architecture is approved: stable semantic IDs, POT/PO authoring, built-in English fallback, external versioned PCK language packs, no core-resource replacement. Runtime implementation is deliberately deferred until after the first clean Candidate 2 runtime/manual validation.
+- Localization architecture is approved: stable semantic IDs, POT/PO authoring, built-in English fallback, external versioned PCK language packs, no core-resource replacement. Runtime implementation is deliberately deferred until after the first clean Candidate 3 runtime/manual validation.
 - Existing forensic HOLDs remain HOLD; documentation cleanup does not promote any unresolved claim.
 
 For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md`, `docs/LAST_SESSION.md`, and `data/project_context.json`.
