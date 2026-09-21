@@ -51,6 +51,32 @@ def _scenario_step(
     )
 
 
+def _transition_step(
+    step_id: str,
+    source_room: str,
+    destination_room: str,
+    trigger: str,
+    desired_scenario_id: str,
+    available: set[str],
+    *,
+    purpose: str,
+) -> PlaythroughStep:
+    ready = desired_scenario_id in available
+    return PlaythroughStep(
+        step_id=step_id,
+        kind=StepKind.TRANSITION,
+        status=StepStatus.READY if ready else StepStatus.AUTHORING_REQUIRED,
+        scenario_id=desired_scenario_id if ready else None,
+        source_room=source_room,
+        destination_room=destination_room,
+        trigger=trigger,
+        metadata={
+            "desired_scenario_id": desired_scenario_id,
+            "purpose": purpose,
+            "forbid_trigger_centroid_teleport": True,
+        },
+    )
+
 def build_openazrael_demo_playthrough_plan(
     scenario_bundle: dict[str, Any],
 ) -> dict[str, Any]:
@@ -72,17 +98,14 @@ def build_openazrael_demo_playthrough_plan(
             required_state_paths=("flags.R1Door1Open",),
             purpose="Open the R1 door that gates the R7 transition.",
         ),
-        PlaythroughStep(
-            step_id="T03_R1_TO_R7",
-            kind=StepKind.TRANSITION,
-            status=StepStatus.AUTHORING_REQUIRED,
-            source_room="R1",
-            destination_room="R7",
-            trigger="zxcoriR5",
-            metadata={
-                "purpose": "Cross the live transition by physical player movement.",
-                "forbid_trigger_centroid_teleport": True,
-            },
+        _transition_step(
+            "T03_R1_TO_R7",
+            "R1",
+            "R7",
+            "zxcoriR5",
+            "openazrael.transition.r1_to_r7",
+            available,
+            purpose="Cross the live transition by physical player movement.",
         ),
         _scenario_step(
             "S04_WELL_TONGS",
@@ -120,17 +143,14 @@ def build_openazrael_demo_playthrough_plan(
                 "source_oracle": "KG-001 v109 canonical state roundtrip",
             },
         ),
-        PlaythroughStep(
-            step_id="T07_R7_TO_R1",
-            kind=StepKind.TRANSITION,
-            status=StepStatus.AUTHORING_REQUIRED,
-            source_room="R7",
-            destination_room="R1",
-            trigger="zxwell2R6",
-            metadata={
-                "purpose": "Return to R1 by physically crossing the authored trigger.",
-                "forbid_trigger_centroid_teleport": True,
-            },
+        _transition_step(
+            "T07_R7_TO_R1",
+            "R7",
+            "R1",
+            "zxwell2R6",
+            "openazrael.transition.r7_to_r1",
+            available,
+            purpose="Return to R1 by physically crossing the authored trigger.",
         ),
         _scenario_step(
             "S08_OPEN_DOOR2",
@@ -140,17 +160,14 @@ def build_openazrael_demo_playthrough_plan(
             required_state_paths=("flags.R1Door2Open", "flags.FR1DoorUnlocked"),
             purpose="Unlock/open the R8 route using the Well Key.",
         ),
-        PlaythroughStep(
-            step_id="T09_R1_TO_R8",
-            kind=StepKind.TRANSITION,
-            status=StepStatus.AUTHORING_REQUIRED,
-            source_room="R1",
-            destination_room="R8",
-            trigger="zxcoriR2",
-            metadata={
-                "purpose": "Enter R8 through the live production transition.",
-                "forbid_trigger_centroid_teleport": True,
-            },
+        _transition_step(
+            "T09_R1_TO_R8",
+            "R1",
+            "R8",
+            "zxcoriR2",
+            "openazrael.transition.r1_to_r8",
+            available,
+            purpose="Enter R8 through the live production transition.",
         ),
         _scenario_step(
             "S10_TAKE_LENS",
