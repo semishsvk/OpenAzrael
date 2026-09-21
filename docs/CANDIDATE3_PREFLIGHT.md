@@ -62,9 +62,16 @@ Export only through:
 using preset `Windows Candidate 3`.
 
 The exporter refuses to run if the source HEAD changed, Git became dirty,
-the Godot version changed, the preflight evidence changed, or any bound runtime
-asset changed. Because Candidate 3 uses `embed_pck=false`, both the EXE and PCK
-must be produced and shipped together. On success it hashes both artifacts and writes:
+the Godot version changed, the preflight evidence changed, any bound runtime
+asset changed, **or the runtime asset path set changes at all**. Adding a new
+Git-ignored room/audio/texture after preflight is therefore just as invalid as
+mutating an existing file. Because Candidate 3 uses `embed_pck=false`, both the
+EXE and PCK must be produced and shipped together.
+
+After export, the wrapper launches the exported EXE in headless startup-smoke
+mode and rejects non-zero exit status or Godot `ERROR:` / `SCRIPT ERROR:`
+output. The export receipt is written only after this smoke passes. On success
+it hashes both artifacts and writes:
 
     .tmp/kg001/candidate3_export_receipt.json
 
@@ -79,7 +86,7 @@ The export is still **not KG-001**. G10 remains manual. Test in this order:
 2. both R8 stair profiles up and down;
 3. R7 well+tongs interaction and audible 979TONGS event;
 4. ambient and other triggered audio;
-5. KEYHOLE#/TONG6 transparency;
+5. KEYHOLE#/TONG6 transparency **and correct upright KEYHOLE orientation**;
 6. complete demo route and save/load sanity.
 
 Only after G10 is recorded PASS and no release blocker remains may the
