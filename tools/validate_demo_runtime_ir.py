@@ -11,7 +11,8 @@ EXPECTED_TRANSITIONS = {
     ("R8", "zxorrery", "R1", "Object14", "entcori"),
 }
 EXPECTED_GRAPHS = {
-    "R7_WATER_SWITCHBOARD_SOLVED", "R8_LENS_PLACE", "R8_OPTICAL_START",
+    "R7_WATER_SWITCHBOARD_SOLVED", "R7_WELL_TONGS_USE",
+    "R8_LENS_PLACE", "R8_OPTICAL_START",
     "R8_SECRET_DOOR_OPEN", "R8_TAKE_SHIELD",
 }
 ALLOWED_OPS = {"set_flag", "set_puzzle_node", "add_inventory", "remove_inventory", "play_sound"}
