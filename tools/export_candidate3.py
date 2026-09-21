@@ -16,6 +16,7 @@ TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 EXPORT_RECEIPT = TMP / "candidate3_export_receipt.json"
 DEFAULT_OUT = ROOT / "exports/OpenAzrael-KG001-Candidate3.exe"
+RUNTIME_BUILD_IDENTITY = ROOT / "data/runtime_build_identity.json"
 RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/rooms",
     ROOT / "assets/audio",
@@ -74,6 +75,7 @@ def find_godot(explicit: str | None) -> str | None:
 
 def fail(reason: str, details: dict | None = None) -> int:
     EXPORT_RECEIPT.unlink(missing_ok=True)
+    RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)
     out = {
         "schema": "openazrael.kg001.candidate3_export",
         "version": 1,
@@ -93,6 +95,7 @@ def main() -> int:
     args = ap.parse_args()
 
     EXPORT_RECEIPT.unlink(missing_ok=True)
+    RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)
     if not RECEIPT.is_file():
         return fail("PREFLIGHT_RECEIPT_MISSING")
 
@@ -153,6 +156,20 @@ def main() -> int:
     out.unlink(missing_ok=True)
     pck.unlink(missing_ok=True)
 
+    runtime_identity = {
+        "schema": "openazrael.runtime_build_identity",
+        "version": 1,
+        "candidate": "KG-001 Candidate 3",
+        "commit_sha": head,
+        "godot_version": godot_version,
+        "preset": args.preset,
+        "preflight_receipt_sha256": sha256(RECEIPT),
+    }
+    RUNTIME_BUILD_IDENTITY.write_text(
+        json.dumps(runtime_identity, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     proc = run([
         godot,
         "--headless",
@@ -205,6 +222,8 @@ def main() -> int:
             },
         )
 
+    RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)
+
     artifacts = {
         str(out.relative_to(ROOT)): {
             "bytes": out.stat().st_size,
@@ -225,6 +244,8 @@ def main() -> int:
         "commit_sha": head,
         "godot_version": godot_version,
         "preflight_receipt_sha256": sha256(RECEIPT),
+        "runtime_build_identity_embedded": true,
+        "runtime_build_identity": runtime_identity,
         "preset": args.preset,
         "artifacts": artifacts,
         "export_smoke": {
