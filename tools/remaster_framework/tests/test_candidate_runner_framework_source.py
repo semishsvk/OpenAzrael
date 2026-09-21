@@ -7,9 +7,10 @@ from pathlib import Path
 class CandidateRunnerFrameworkSourceTests(unittest.TestCase):
     def setUp(self) -> None:
         root = Path(__file__).resolve().parents[3]
-        self.source = (
-            root / "tools" / "run_kg001_candidate_v112.py"
-        ).read_text(encoding="utf-8")
+        supplemental = root / "tools" / "run_candidate3_pppv_v2.py"
+        canonical = root / "tools" / "run_kg001_candidate_v112.py"
+        self.runner_path = supplemental if supplemental.is_file() else canonical
+        self.source = self.runner_path.read_text(encoding="utf-8")
 
     def test_framework_generation_occurs_after_g09_clean_observation(self) -> None:
         clean_after = self.source.index("clean_after=git_clean()")
