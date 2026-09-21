@@ -2,7 +2,7 @@
   "schema": "openazrael.kg001.well_tongs_animation_contract",
   "version": 118,
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
-  "source": "official ATDEMO PUZZLES.DAT + compiled WORLD.DAT",
+  "source": "official ATDEMO PUZZLES.DAT + compiled WORLD.DAT + ROOMS.DAT + RANIM1.ANM",
   "room": "R7",
   "interaction": "Interact_WellKey",
   "key_visual": "nibdyky01",
@@ -73,7 +73,23 @@
   "evidence_boundary": {
     "generic_inventory_use_hud_motion": "UNOBSERVED_HOLD",
     "original_miles_pan_volume_parity": "HOLD_SEPARATE_ORACLE",
-    "no_invented_transform_animation": true
+    "no_invented_transform_animation": true,
+    "ranim1_room_keyframes": "NONE_ALL_ZERO",
+    "rusty_tongs_visual_mesh": "NO_NAMED_R7_XAF_MESH_RECOVERED"
   },
-  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH"
+  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH",
+  "demo_animation_oracle": {
+    "ranim1": {
+      "size": 400,
+      "sha256": "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5",
+      "all_bytes_zero": true
+    },
+    "rusty_tongs_room_object": {
+      "name": "RustyTongR6",
+      "rooms_dat_offset_hex": "0x1584c",
+      "record_size_bytes": 60,
+      "named_r7_xaf_mesh_present": false
+    },
+    "fidelity_conclusion": "classic implementation must reproduce the compiled object/action swap and original sound; a synthetic transform Tween/AnimationPlayer sequence would be less faithful"
+  }
 }
