@@ -1,6 +1,10 @@
 extends Node
 
 signal logical_audio_event(filename: String)
+signal logical_audio_event_detail(detail: Dictionary)
+
+var current_graph_id := ""
+var current_action: Dictionary = {}
 
 const GRAPH_PATH := "res://data/gameplay_event_graph_v87.json"
 var graphs: Dictionary = {}
@@ -28,10 +32,12 @@ func has_graph(graph_id: String) -> bool:
 
 func run(graph_id: String) -> Array:
     var applied: Array = []
+    current_graph_id = graph_id
     if not graphs.has(graph_id):
         push_warning("OpenAzrael v87: unknown event graph " + graph_id)
         return applied
     for action in graphs[graph_id].get("actions", []):
+        current_action = action
         var op := String(action.get("op", ""))
         var key := String(action.get("key", ""))
         match op:
@@ -49,6 +55,8 @@ func run(graph_id: String) -> Array:
                 push_warning("OpenAzrael v87: unsupported event op " + op)
                 continue
         applied.append(action)
+    current_action = {}
+    current_graph_id = ""
     return applied
 
 func _play_sound(filename: String) -> void:
@@ -56,6 +64,15 @@ func _play_sound(filename: String) -> void:
         return
     captured_audio_events.append(filename)
     logical_audio_event.emit(filename)
+    logical_audio_event_detail.emit({
+        "graph_id": current_graph_id,
+        "asset": filename,
+        "semantic": String(current_action.get("semantic", "")),
+        "confidence": String(current_action.get("confidence", "HOLD")),
+        "provenance": graphs.get(current_graph_id, {}).get("source", []),
+        "emitter_id": "dynamic." + current_graph_id.to_lower(),
+        "sound_id": "event." + filename.get_basename().to_lower()
+    })
     if capture_only:
         return
     var path := "res://assets/audio/" + filename
