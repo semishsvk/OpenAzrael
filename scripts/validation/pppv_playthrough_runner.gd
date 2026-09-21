@@ -6,6 +6,7 @@ const NavigatorScript = preload("res://scripts/validation/pppv_navigator.gd")
 const ObserverScript = preload("res://scripts/validation/openazrael_pppv_observer.gd")
 const SceneObserverScript = preload("res://scripts/validation/pppv_scene_observer.gd")
 const ActionExecutorScript = preload("res://scripts/validation/pppv_action_executor.gd")
+const RuntimeGuardScript = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
 var failures: Array[String] = []
 
@@ -129,7 +130,8 @@ func _run_scenario_step(
     evidence,
     observer,
     driver,
-    navigator
+    navigator,
+    runtime_guard
 ) -> Dictionary:
     var step_id := String(step.get("step_id", ""))
     var step_failures: Array[String] = []
@@ -168,7 +170,8 @@ func _run_scenario_step(
         manager,
         driver,
         navigator,
-        observer
+        observer,
+        runtime_guard
     )
 
     if step_failures.is_empty():
@@ -275,8 +278,13 @@ func _finish(
     step_results: Array,
     state: Node,
     evidence,
-    scene: Node
+    scene: Node,
+    runtime_guard = null
 ) -> void:
+    if runtime_guard != null:
+        for failure in runtime_guard.failure_list():
+            if not failures.has(String(failure)):
+                failures.append(String(failure))
     var final_hash := String(state.call("canonical_state_hash"))
     var expected_hash := String(plan.get("success_state_sha256", ""))
     if not expected_hash.is_empty() and final_hash != expected_hash:
@@ -305,12 +313,22 @@ func _finish(
         "final_state_sha256": final_hash,
         "expected_final_state_sha256": expected_hash,
         "evidence": evidence.bundle(),
+        "runtime_guard_failures": (
+            runtime_guard.failure_list() if runtime_guard != null else []
+        ),
+        "replay": (
+            runtime_guard.replay_bundle() if runtime_guard != null else {}
+        ),
         "runtime_boundary": {
             "single_scene_instance": true,
             "state_reset_between_scenarios": false,
             "direct_interact_calls": false,
             "gameplay_teleport_during_actions": false,
-            "checkpoint_persistence": "canonical_state_roundtrip"
+            "checkpoint_persistence": "canonical_state_roundtrip",
+            "frame_level_avatar_trajectory": true,
+            "world_state_snapshots": true,
+            "softlock_watchdog": true,
+            "transition_spawn_validation": true
         }
     }
     var wrote := _write_json(output_path, payload)
@@ -393,8 +411,24 @@ func _run() -> void:
         diagnostics
     )
     observer.attach()
-    var driver = PlayerDriverScript.new(player, probe, evidence)
-    var navigator = NavigatorScript.new(player, probe, evidence)
+    var runtime_guard = RuntimeGuardScript.new(
+        player,
+        manager,
+        state,
+        evidence
+    )
+    var driver = PlayerDriverScript.new(
+        player,
+        probe,
+        evidence,
+        runtime_guard
+    )
+    var navigator = NavigatorScript.new(
+        player,
+        probe,
+        evidence,
+        runtime_guard
+    )
 
     var step_results: Array = []
     for raw_step in plan.get("steps", []):
@@ -424,7 +458,8 @@ func _run() -> void:
             evidence,
             observer,
             driver,
-            navigator
+            navigator,
+            runtime_guard
         )
         step_results.append(result)
         if String(result.get("status", "")) != "EXECUTION_PASS":
@@ -437,5 +472,6 @@ func _run() -> void:
         step_results,
         state,
         evidence,
-        scene
+        scene,
+        runtime_guard
     )
