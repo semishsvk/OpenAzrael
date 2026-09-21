@@ -2,7 +2,7 @@
   "schema": "openazrael.kg001.candidate_diagnostics_contract",
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
-  "build_id": "KG-001 Candidate 2",
+  "build_id": "KG-001 Candidate 3",
   "checkpoint": "v116-context-v32",
   "features": {
     "build_watermark": true,
@@ -45,5 +45,5 @@
       "S186.WAV"
     ]
   },
-  "runtime_boundary": "Candidate 2 re-frozen at v116-context-v32 after empirical color-key corpus correction; no runtime promotion until fresh-checkout suite and manual blocker smoke execute."
+  "runtime_boundary": "Candidate 3 diagnostics identity prepared for preflight; no runtime promotion until fresh-checkout v109/v110/v111/v116/v117/v118 and G10 execute."
 }
