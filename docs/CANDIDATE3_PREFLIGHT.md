@@ -50,7 +50,8 @@ A successful run writes:
     .tmp/kg001/candidate3_preflight_receipt.json
 
 The receipt is bound to the exact Git HEAD, Godot version, candidate/fresh
-evidence hashes, R1/R7/R8 GLB hashes and 979TONGS.WAV hash.
+evidence hashes and the complete restored runtime corpus under `assets/rooms`,
+`assets/audio` and `assets/textures/classic` (including the canonical 86 Classic PNGs).
 
 ## 4. Guarded export
 
@@ -62,7 +63,8 @@ using preset `Windows Candidate 3`.
 
 The exporter refuses to run if the source HEAD changed, Git became dirty,
 the Godot version changed, the preflight evidence changed, or any bound runtime
-asset changed. On success it hashes the exported artifacts and writes:
+asset changed. Because Candidate 3 uses `embed_pck=false`, both the EXE and PCK
+must be produced and shipped together. On success it hashes both artifacts and writes:
 
     .tmp/kg001/candidate3_export_receipt.json
 
