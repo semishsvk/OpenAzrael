@@ -113,6 +113,7 @@ def main():
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
     ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-traversal-v117 and well-tongs-v118 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
+    ap.add_argument("--source-only",action="store_true",help="Run source-safe validators and repository tracking checks only; do not require Godot or local commercial assets.")
     args=ap.parse_args()
 
     TMP.mkdir(parents=True,exist_ok=True)
@@ -130,6 +131,20 @@ def main():
         source.append(item)
         if proc.returncode!=0:
             source_ok=False
+
+    source_receipt={
+        "schema":"openazrael.kg001.source_gate",
+        "version":112,
+        "status":"PASS" if source_ok and not bad_tracked else "FAIL",
+        "commit_sha":head,
+        "source_validators_pass":source_ok,
+        "forbidden_tracked_files":bad_tracked,
+        "commands":source,
+    }
+    write_json(TMP/"kg001_source_validation_v112.json",source_receipt)
+    if args.source_only:
+        print(json.dumps(source_receipt,indent=2))
+        sys.exit(0 if source_receipt["status"]=="PASS" else 1)
 
     godot=find_godot(args.godot)
     godot_version=""
@@ -198,7 +213,6 @@ def main():
         "room_assets_git_ignored":asset_ignored,
         "runtime_status":{k:v.get("status","") for k,v in runtimes.items()}
     }
-    write_json(TMP/"kg001_source_validation_v112.json",{"status":"PASS" if source_ok else "FAIL","commit_sha":head,"commands":source})
     write_json(TMP/"kg001_fresh_checkout.json",fresh)
 
     overall={
