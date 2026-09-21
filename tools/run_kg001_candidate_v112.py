@@ -38,6 +38,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_r1_route_v119.py"],
     [sys.executable,"tools/validate_kg001_collision_parity_v120.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
+    [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
 
 RUNTIMES=[
