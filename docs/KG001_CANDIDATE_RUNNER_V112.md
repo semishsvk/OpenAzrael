@@ -127,3 +127,18 @@ toward the opposite portal side.
 
 Any subsequent candidate/fresh-checkout PASS requires
 `r1_route_v119 == PASS` at the exact tested Git SHA.
+
+## Generic collision parity v120
+
+v120 complements route-specific v117/v119 traversal. It scans every visible
+R1/R7/R8 mesh surface at runtime, derives floor-like projected area without
+trusting legacy triangle winding, and requires a matching generated
+`Collision_<object>` ConcavePolygonShape3D (layer 1 / mask 4 / backface
+collision) unless the object has an explicit semantic non-solid exemption.
+
+This gate is intentionally independent of the room-manager exclusion list:
+the purpose is to catch a future visible floor object that was accidentally
+placed on that list, exactly as happened with R1/Object02.
+
+Any subsequent fresh-checkout/candidate PASS requires `collision_v120 == PASS`
+at the exact tested source SHA.
