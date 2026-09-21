@@ -164,15 +164,15 @@ Localization runtime work and unrelated forensic expansion follow the first clea
 - Runtime implementation is **DEFERRED until after the first KG-001 Candidate 3 runtime/manual cycle**, so this approval does not perturb the current test candidate.
 - Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
-### KG-001 Candidate 2 diagnostics — v116
-- The Windows integration build is exported and automatically verified as **KG-001 Candidate 2**.
+### KG-001 Candidate 3 diagnostics — v116
+- Candidate 3 reuses the v116 observational diagnostics with Candidate 3 build identity; current-head runtime evidence is still pending.
 - Added `CandidateDiagnostics` autoload with structured JSONL event logging, canonical state hashes and F10 state dumps.
 - Added F6 authored trigger-volume visualization and an F7 diagnostic HUD showing room, player XYZ, flags, puzzle nodes, value keys, last trigger, last event and last logical audio.
 - Existing F8 audio debug and F9 parity capture are deliberately preserved.
 - Room GLBs are runtime-loaded after explicit resource preflight rather than preloaded at script parse time, giving deterministic missing-asset diagnostics.
 - Non-headless preflight also requires the four golden Event-IR WAV assets used by the accepted demo route; headless capture-only tests do not.
 - `tools/validate_candidate_diagnostics_v116.py` is included in the v112 one-command candidate source suite.
-- Source contract: **PASS**. Godot runtime execution: **NOT EXECUTED** in the current environment.
+- Source contract: **PASS**. Candidate 3 current-head Godot runtime execution remains **NOT EXECUTED** until exact-SHA preflight.
 - The earlier uncommitted static producer/copy experiment is deferred and renumbered to v117.
 
 ### KG-001 known-good demo gate — context v24
