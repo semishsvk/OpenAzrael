@@ -42,6 +42,9 @@ def _transition_scenario(
                     "stuck_frames": 180,
                     "reach_distance": 8.0,
                     "driver_policy": "steer_to_trigger_via_gameplay_input",
+                    "verify_destination_spawn": True,
+                    "spawn_position_tolerance": 14.0,
+                    "spawn_yaw_tolerance": 0.35,
                 },
             ),
         ),
@@ -76,6 +79,8 @@ def _transition_scenario(
             "physical_crossing_required": True,
             "trigger_centroid_role": "steering_target_only",
             "teleport_allowed_during_action": False,
+            "destination_spawn_validation_required": True,
+            "critical_if_transition_broken": True,
             "source_evidence": "data/xaf_trigger_evidence.json",
         },
     )
@@ -117,5 +122,13 @@ def build_transition_scenarios() -> tuple[ValidationScenario, ...]:
                 StateExpectation("flags.R1Door2Open", True, True),
                 StateExpectation("flags.FR1DoorUnlocked", True, True),
             ),
+        ),
+        _transition_scenario(
+            scenario_id="openazrael.transition.r8_to_r1",
+            source_room="R8",
+            spawn_view="Object14",
+            trigger="zxorrery",
+            destination_room="R1",
+            setup_flags={},
         ),
     )
