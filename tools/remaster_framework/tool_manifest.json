@@ -308,6 +308,22 @@
       "maturity": "stable"
     },
     {
+      "tool_id": "openazrael_r1_pppv_scenarios",
+      "family": "validation_lab",
+      "description": "Generate real-player R1 PPPV scenarios for TONG6 pickup, Door 1, Door 2 positive path, and Door 2 negative-without-key precondition using production input and InteractionProbe.",
+      "entrypoint": "tools/openazrael_adapters/r1_pppv.py",
+      "inputs": [
+        "production_runtime_contract"
+      ],
+      "outputs": [
+        "pppv_scenarios"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "openazrael_real_player_demo_plan",
       "family": "validation_lab",
       "description": "Build the KG-001 R1-R7-R1-R8 real-player orchestration plan, reusing ready PPPV scenarios, preserving v109 save/load hash oracles, and marking missing physical segments AUTHORING_REQUIRED instead of treating legacy teleport/direct-call coverage as sufficient.",
