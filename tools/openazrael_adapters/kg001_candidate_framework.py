@@ -316,6 +316,182 @@ def build_candidate_framework_bundle(
             playthrough_evaluation.get("status", "UNKNOWN")
         )
 
+    determinism_path = evidence / "kg001_pppv_determinism.json"
+    determinism_integrity_path = evidence / "pppv_determinism_integrity.json"
+    repeat2_evaluation_path = (
+        evidence / "kg001_pppv_playthrough_repeat2_evaluation.json"
+    )
+    determinism_integrity_status = "NOT_AVAILABLE"
+
+    if determinism_path.is_file():
+        determinism_payload = _load(determinism_path)
+        determinism_errors: list[str] = []
+        expected_plan_sha256 = str(playthrough_plan.get("plan_sha256", ""))
+        expected_plan_document_sha256 = sha256_file(playthrough_plan_path)
+        expected_scenario_bundle_sha256 = sha256_file(
+            scenario_bundle_output
+        )
+
+        if str(determinism_payload.get("status", "")) != "PASS":
+            determinism_errors.append(
+                "determinism summary status is not PASS"
+            )
+        if int(determinism_payload.get("repeat_count", 0)) < 2:
+            determinism_errors.append(
+                "determinism summary requires at least two runs"
+            )
+        if determinism_payload.get("all_runs_pass") is not True:
+            determinism_errors.append(
+                "not all determinism runs passed"
+            )
+        if determinism_payload.get("semantic_replay_match") is not True:
+            determinism_errors.append(
+                "semantic replay fingerprints do not match"
+            )
+        if determinism_payload.get("final_state_match") is not True:
+            determinism_errors.append(
+                "final state hashes do not match"
+            )
+        if (
+            str(determinism_payload.get("plan_sha256", ""))
+            != expected_plan_sha256
+        ):
+            determinism_errors.append(
+                "determinism plan SHA-256 does not match current plan"
+            )
+        if (
+            str(determinism_payload.get("plan_document_sha256", ""))
+            != expected_plan_document_sha256
+        ):
+            determinism_errors.append(
+                "determinism plan document SHA-256 mismatch"
+            )
+        if (
+            str(determinism_payload.get("scenario_bundle_sha256", ""))
+            != expected_scenario_bundle_sha256
+        ):
+            determinism_errors.append(
+                "determinism scenario bundle SHA-256 mismatch"
+            )
+
+        canonical_evaluation_file = (
+            evidence / "kg001_pppv_playthrough_evaluation.json"
+        )
+        evaluation_rows: list[dict[str, Any]] = []
+        for label, evaluation_file in (
+            ("run1", canonical_evaluation_file),
+            ("run2", repeat2_evaluation_path),
+        ):
+            if not evaluation_file.is_file():
+                determinism_errors.append(
+                    f"{label} playthrough evaluation is missing"
+                )
+                continue
+            evaluation_payload = _load(evaluation_file)
+            evaluation_rows.append({
+                "label": label,
+                "path": evaluation_file.name,
+                "status": str(evaluation_payload.get("status", "")),
+                "plan_sha256": str(
+                    evaluation_payload.get("plan_sha256", "")
+                ),
+                "semantic_replay_sha256": str(
+                    evaluation_payload.get("semantic_replay_sha256", "")
+                ),
+                "final_state_sha256": str(
+                    evaluation_payload.get("final_state_sha256", "")
+                ),
+            })
+            if str(evaluation_payload.get("status", "")) != "PASS":
+                determinism_errors.append(
+                    f"{label} playthrough evaluation is not PASS"
+                )
+            if (
+                str(evaluation_payload.get("plan_sha256", ""))
+                != expected_plan_sha256
+            ):
+                determinism_errors.append(
+                    f"{label} evaluation plan SHA-256 mismatch"
+                )
+
+        if len(evaluation_rows) == 2:
+            semantic_hashes = [
+                row["semantic_replay_sha256"] for row in evaluation_rows
+            ]
+            final_hashes = [
+                row["final_state_sha256"] for row in evaluation_rows
+            ]
+            if not all(semantic_hashes):
+                determinism_errors.append(
+                    "evaluation semantic replay SHA-256 is missing"
+                )
+            elif len(set(semantic_hashes)) != 1:
+                determinism_errors.append(
+                    "independent evaluation semantic replay hashes differ"
+                )
+            if not all(final_hashes):
+                determinism_errors.append(
+                    "evaluation final state SHA-256 is missing"
+                )
+            elif len(set(final_hashes)) != 1:
+                determinism_errors.append(
+                    "independent evaluation final state hashes differ"
+                )
+
+            summary_semantic = determinism_payload.get(
+                "semantic_replay_sha256", []
+            )
+            if (
+                not isinstance(summary_semantic, list)
+                or summary_semantic != semantic_hashes
+            ):
+                determinism_errors.append(
+                    "determinism summary semantic replay hashes "
+                    "do not match evaluation artifacts"
+                )
+
+            summary_final = determinism_payload.get(
+                "final_state_sha256", []
+            )
+            if (
+                not isinstance(summary_final, list)
+                or summary_final != final_hashes
+            ):
+                determinism_errors.append(
+                    "determinism summary final state hashes "
+                    "do not match evaluation artifacts"
+                )
+
+        determinism_integrity_status = (
+            "PASS" if not determinism_errors else "FAIL"
+        )
+        determinism_integrity = {
+            "schema": "openazrael.kg001.pppv_determinism_integrity",
+            "version": 1,
+            "status": determinism_integrity_status,
+            "expected_plan_sha256": expected_plan_sha256,
+            "expected_plan_document_sha256": (
+                expected_plan_document_sha256
+            ),
+            "expected_scenario_bundle_sha256": (
+                expected_scenario_bundle_sha256
+            ),
+            "summary_plan_sha256": str(
+                determinism_payload.get("plan_sha256", "")
+            ),
+            "summary_plan_document_sha256": str(
+                determinism_payload.get("plan_document_sha256", "")
+            ),
+            "summary_scenario_bundle_sha256": str(
+                determinism_payload.get("scenario_bundle_sha256", "")
+            ),
+            "evaluations": evaluation_rows,
+            "errors": determinism_errors,
+        }
+        _write(determinism_integrity_path, determinism_integrity)
+    else:
+        determinism_integrity_path.unlink(missing_ok=True)
+
     v117_bridge_path: Path | None = None
     v117_runtime_path = evidence / "kg001_v117_runtime.json"
     if not v117_runtime_path.is_file():
@@ -397,6 +573,16 @@ def build_candidate_framework_bundle(
         inputs["pppv_scenario_suite_integrity"] = sha256_file(
             pppv_suite_integrity_path
         )
+    if determinism_path.is_file():
+        inputs["pppv_determinism"] = sha256_file(determinism_path)
+    if determinism_integrity_path.is_file():
+        inputs["pppv_determinism_integrity"] = sha256_file(
+            determinism_integrity_path
+        )
+    if repeat2_evaluation_path.is_file():
+        inputs["pppv_playthrough_repeat2_evaluation"] = sha256_file(
+            repeat2_evaluation_path
+        )
 
     provenance = build_provenance(
         project="OpenAzrael",
@@ -430,6 +616,14 @@ def build_candidate_framework_bundle(
             "pppv_playthrough_evaluation_status": (
                 playthrough_evaluation_status
             ),
+            "pppv_determinism_status": (
+                str(_load(determinism_path).get("status", "UNKNOWN"))
+                if determinism_path.is_file()
+                else "NOT_AVAILABLE"
+            ),
+            "pppv_determinism_integrity_status": (
+                determinism_integrity_status
+            ),
         },
     )
     provenance_path = evidence / "build_provenance.json"
@@ -460,6 +654,16 @@ def build_candidate_framework_bundle(
         artifacts["pppv_scenario_suite_integrity"] = (
             pppv_suite_integrity_path.name
         )
+    if determinism_path.is_file():
+        artifacts["pppv_determinism"] = determinism_path.name
+    if determinism_integrity_path.is_file():
+        artifacts["pppv_determinism_integrity"] = (
+            determinism_integrity_path.name
+        )
+    if repeat2_evaluation_path.is_file():
+        artifacts["pppv_playthrough_repeat2_evaluation"] = (
+            repeat2_evaluation_path.name
+        )
 
     bundle = {
         "schema": "openazrael.kg001.framework_bundle",
@@ -484,6 +688,14 @@ def build_candidate_framework_bundle(
         "pppv_playthrough_runtime_status": playthrough_runtime_status,
         "pppv_playthrough_evaluation_status": (
             playthrough_evaluation_status
+        ),
+        "pppv_determinism_status": (
+            str(_load(determinism_path).get("status", "UNKNOWN"))
+            if determinism_path.is_file()
+            else "NOT_AVAILABLE"
+        ),
+        "pppv_determinism_integrity_status": (
+            determinism_integrity_status
         ),
         "well_tongs_real_input_pppv_status": (
             str(_load(well_pppv_path).get("status", ""))
