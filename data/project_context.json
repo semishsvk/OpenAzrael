@@ -113,7 +113,7 @@
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
     "kg001_manual_sanity": "FAIL_CRITICAL_FLOOR_AND_STAIRS",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
-    "kg001_candidate_build_id": "KG-001 Candidate 2",
+    "kg001_candidate_build_id": "KG-001 Candidate 3",
     "kg001_candidate_build_source_ready": true,
     "kg001_candidate_build_runtime": "V32_MANUAL_FAIL",
     "kg001_candidate_debug_keys": {
@@ -124,7 +124,7 @@
       "F10": "canonical_state_dump",
       "F11": "bug_report_capture"
     },
-    "kg001_candidate_event_log": "user://openazrael_candidate2_events.jsonl",
+    "kg001_candidate_event_log": "user://openazrael_candidate3_events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
     "documentation_consistency": "PASS_POST_CANDIDATE2_FIX_BRANCH",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
@@ -207,7 +207,9 @@
       "physical_v117",
       "well_tongs_v118"
     ],
-    "kg001_candidate3_preflight_contract": "data/tests/kg001_candidate3_preflight_contract_v1.json"
+    "kg001_candidate3_preflight_contract": "data/tests/kg001_candidate3_preflight_contract_v1.json",
+    "kg001_candidate3_runtime_asset_binding": "FULL_ROOMS_AUDIO_CLASSIC_CORPUS_SHA256",
+    "kg001_candidate3_export_pair": "EXE_PLUS_PCK_REQUIRED"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -423,6 +425,10 @@
     "godot_version_binding": true,
     "runtime_asset_hash_binding": true,
     "manual_gate": "G10_PENDING_USER",
-    "known_good_tag_created": false
+    "known_good_tag_created": false,
+    "artifacts": [
+      "exports/OpenAzrael-KG001-Candidate3.exe",
+      "exports/OpenAzrael-KG001-Candidate3.pck"
+    ]
   }
 }
