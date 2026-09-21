@@ -65,4 +65,4 @@ theme_override_styles/panel = SubResource("HudPanel")
 [node name="Label" type="Label" parent="HUD/Panel"]
 theme_override_colors/font_color = Color(0.92, 0.92, 0.92, 1)
 theme_override_font_sizes/font_size = 15
-text = "OpenAzrael KG-001 Candidate 2 — diagnostic build"
+text = "OpenAzrael KG-001 Candidate 3 — diagnostic build"
