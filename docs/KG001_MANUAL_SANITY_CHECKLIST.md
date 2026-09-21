@@ -7,6 +7,7 @@ Record the Godot version, candidate commit SHA, date and tester. If any defect a
 - project launches without a blocking error;
 - mouse/look and movement controls behave normally;
 - R1 keyhole and rusty-tongs cutout textures show transparent background with no visible pink/magenta key color;
+- R1 keyhole is upright and matches the intended source orientation (not vertically inverted/upside down);
 - R1 tongs can be picked up;
 - Door 1 opens and R1 -> R7 traversal works;
 - Well Key requires/uses the tongs and is acquired;
