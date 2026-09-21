@@ -100,3 +100,30 @@ runtime asset changes, **or any runtime asset is added/removed** after preflight
 After export it runs the exported EXE in headless startup-smoke mode and writes
 a PASS export receipt only if the process exits cleanly with no Godot ERROR or
 SCRIPT ERROR output. G10 remains a separate manual gate on that exact EXE/PCK pair.
+
+
+## Candidate 3 R1/Object02 regression
+
+Candidate 3 failed manual G10 in R1 at the floor segment `Object02__mesh`
+under `zxcoriR5`. F11 evidence recorded player position
+`[-264.159088, -114.801208, 381.168427]`; the expected authored floor is
+approximately y=-83.861.
+
+The production root cause was a global collision exclusion for the generic
+object name `Object02`. The source fix is deliberately room-aware:
+`R1/Object02` receives normal two-sided trimesh collision, while same-named
+helper objects in other rooms remain excluded.
+
+The Candidate suite now includes:
+
+    validate_kg001_r1_route_v119.py
+    kg001_r1_route_runner_v119.gd
+
+v119 is a new gate rather than a silent rewrite of v117, so historical
+Candidate 3/v117 evidence cannot satisfy the new regression. It verifies the
+exact bug-report point, crosses both Object02 floor triangles with the real
+CharacterBody3D and gameplay input, then follows audited R1 floor waypoints
+toward the opposite portal side.
+
+Any subsequent candidate/fresh-checkout PASS requires
+`r1_route_v119 == PASS` at the exact tested Git SHA.
