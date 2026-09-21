@@ -454,6 +454,24 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "runtime_framework_metadata_stager",
+      "family": "project_release",
+      "description": "Stage schema-validated source-safe build provenance, release-gate summary and PPPV coverage JSON into the generated Godot runtime metadata directory for F11 diagnostics.",
+      "entrypoint": "tools/remaster_framework/runtime_metadata.py",
+      "inputs": [
+        "build_provenance",
+        "release_gate_summary",
+        "pppv_coverage"
+      ],
+      "outputs": [
+        "runtime_metadata_stage"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "project_context_validator",
       "family": "project_release",
       "description": "Validate the persistent project-context documentation set.",
