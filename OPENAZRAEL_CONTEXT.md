@@ -78,11 +78,11 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Therefore the v114 +17..+26 residue is already serialized upstream and survives unchanged into dispatch. Its authoring origin remains UNKNOWN/HOLD.
 
 ## Immediate execution priority
-- Candidate 1 manual testing is recorded as FAIL: Critical Issue #6 made the player fall through the R1 floor, Major Issue #9 produced no audible audio, and Major Issue #11 left legacy color-key magenta visible on cutout textures.
-- Candidate 2 / v32 is source-frozen with two-sided legacy concave collision plus R1/R7/R8 entry probes, physical-audio readiness, and indexed-AZF color-key selection before RGB expansion using the empirically audited raw source-palette sentinel family R=255/B=255/G<=8.
-- Issue #9 repair restores the source-safe legacy ambient IR dependency, fixes null ambient-position fallback, validates the seven required Event/ambient WAV resources, checks recovered R1/R7/R8 ambient counts (2/3/2), checks an unmuted Master bus, and verifies a real Event-IR `play_sound` creates a playing `AudioStreamPlayer`.
-- Restore corrected assets, run the v112 fresh-checkout workflow and require v109/v110/v111/audio-v116 plus the texture color-key validator to PASS. Then manually verify stable floor collision, actually audible ambient/event audio, and absence of visible magenta color-key backgrounds before continuing the full demo route.
-- Keep Issues #6/#9/#11 and `demo-known-good-001` blocked until all automated and human blocker retests pass. Do not add Candidate features before this evidence exists.
+- Candidate 2 automated Windows evidence is retained as historical evidence, but its later manual traversal failure makes it non-promotable and stale for current source.
+- Candidate 3 is the active integration target. Its source hardening includes natural portal-spawn clearance, two-sided legacy collision, winding-safe near-to-far stair step-up with diagnostic trace, exact-demo well+tongs ordering, physical triggered-audio probes, indexed color-key masking, and a KEYHOLE#-only vertical UV compatibility correction.
+- Candidate 3 export is fail-closed: exact Git HEAD, Godot version, candidate/fresh evidence hashes, **exact runtime asset path set**, per-asset hashes and exported-EXE startup smoke must all match before a PASS export receipt may exist.
+- First require source CI PASS, then run the asset-backed Candidate 3 preflight and require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 literal PASS at the exact build SHA.
+- G10 must then confirm R1 floor traversal, both R8 stair profiles, audible ambient/triggered audio, well+tongs, cutout transparency, upright KEYHOLE orientation, full demo route and save/load. Keep all release blockers and `demo-known-good-001` blocked until that evidence exists.
 
 ## Source-safe runtime IR
 - `data/gameplay_event_graph_v87.json` and `data/xaf_trigger_evidence.json` are compact runtime IR/evidence metadata and are tracked in Git. Binary rooms, textures and audio remain excluded.
@@ -153,7 +153,7 @@ Keep lifecycle, confidence, provenance and artifact existence separate. Never pr
 - Distributable language packs are external versioned PCKs with manifests and dedicated namespaces.
 - External PCKs must not replace core resources.
 - Optional future payloads include fonts, subtitle metadata and localized voice.
-- Runtime implementation is deferred until after the first clean KG-001 Candidate 2 runtime/manual cycle.
+- Runtime implementation is deferred until after the first clean KG-001 Candidate 3 runtime/manual cycle.
 - See `docs/LOCALIZATION_ARCHITECTURE.md` and ADR-024.
 
 ## KG-001 quality gate
