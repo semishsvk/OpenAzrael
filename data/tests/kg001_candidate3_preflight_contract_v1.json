@@ -27,7 +27,8 @@
       "physical_v117",
       "well_tongs_v118",
       "r1_route_v119",
-      "collision_v120"
+      "collision_v120",
+      "surface_v121"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
@@ -85,8 +86,10 @@
     "manual_gate": "G10_PENDING_USER",
     "known_good_tag_allowed": false,
     "first_manual_checks": [
-      "R1 natural spawn and floor traversal",
+      "R1 natural spawn and full floor traversal including former Object02 hole",
+      "R7/R8 floor support sanity",
       "R8 stairs up/down on both real stair profiles",
+      "all four required room transitions R1<->R7 and R1<->R8",
       "R7 well+tongs exact interaction plus audible 979TONGS",
       "ambient plus triggered audio",
       "KEYHOLE#/TONG6 transparency and correct KEYHOLE orientation",
