@@ -196,7 +196,7 @@
     "kg001_invalid_or_idempotent_noops": 1346,
     "kg001_success_states": 6,
     "kg001_candidate3_preflight": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
-    "kg001_candidate3_source_ci": "CONFIGURED_PY311_PY312",
+    "kg001_candidate3_source_ci": "BLOCKED_BEFORE_RUNNER_NO_STEPS",
     "kg001_candidate3_export_guard": "FAIL_CLOSED_EXACT_ASSET_SET_AND_STARTUP_SMOKE_REQUIRED",
     "kg001_candidate3_export_allowed": false,
     "kg001_candidate3_manual_gate": "G10_PENDING_USER",
@@ -212,7 +212,14 @@
     "kg001_candidate3_runtime_asset_binding": "EXACT_PATH_SET_PLUS_FULL_ROOMS_AUDIO_CLASSIC_CORPUS_SHA256",
     "kg001_candidate3_export_pair": "EXE_PLUS_PCK_REQUIRED",
     "kg001_candidate3_export_startup_smoke": "REQUIRED_BEFORE_PASS_RECEIPT",
-    "kg001_keyhole_orientation": "SOURCE_FIX_READY_FLIP_V_CANDIDATE3_KEYHOLE_RUNTIME_MANUAL_RETEST_REQUIRED"
+    "kg001_keyhole_orientation": "SOURCE_FIX_READY_FLIP_V_CANDIDATE3_KEYHOLE_RUNTIME_MANUAL_RETEST_REQUIRED",
+    "kg001_candidate3_source_ci_run_id": 35628120275,
+    "kg001_candidate3_source_ci_jobs": [
+      "Python 3.11",
+      "Python 3.12"
+    ],
+    "kg001_candidate3_source_ci_observation": "Both jobs conclude failure with zero recorded steps, including after rerun; no source validator or checkout step executed. Treat as GitHub Actions execution/account/runner blocker, not Candidate 3 test evidence.",
+    "kg001_candidate3_source_ci_code_result": "UNOBSERVED"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -223,7 +230,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Require Candidate 3 source CI PASS at the exact head, then run the asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118. Export only through tools/export_candidate3.py with exact runtime asset path-set/hash binding and exported startup smoke. Then run receipt-bound G10 starting with R1 floor, both R8 stair profiles, well+tongs/triggered audio, transparency plus upright KEYHOLE orientation, full route and save/load.",
+  "next_target": "Resolve the GitHub Actions pre-runner execution blocker (current run 35628120275 has zero job steps), then require Candidate 3 source CI PASS at the exact head. After that run the asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118, guarded export with exact asset-set/hash binding and startup smoke, then receipt-bound G10.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
