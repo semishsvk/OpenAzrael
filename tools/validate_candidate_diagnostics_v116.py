@@ -26,7 +26,7 @@ issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
 
 checks={
     "autoload": 'CandidateDiagnostics="*res://scripts/candidate_diagnostics_v116.gd"' in project,
-    "candidate_version": 'config/version="KG001-Candidate-2-v116"' in project,
+    "candidate_version": 'config/version="KG001-Candidate-3"' in project,
     "trigger_node": 'path="res://scripts/kg001_trigger_debug_v116.gd"' in main and 'name="TriggerDebugV116"' in main,
     "no_room_glb_preload": 'preload("res://assets/rooms/' not in room,
     "dynamic_room_paths": 'const ROOM_SCENE_PATHS' in room and 'load(String(ROOM_SCENE_PATHS[id]))' in room,
@@ -37,7 +37,7 @@ checks={
     "quiet_initial_trigger_state": 'if not _trigger_states.has(key)' in diag and 'if not inside:' in diag,
     "room_transition_log": 'CandidateDiagnostics.record_transition' in room,
     "interaction_log": 'CandidateDiagnostics.record_interaction' in probe and 'interaction_miss' in probe,
-    "event_log": 'user://openazrael_candidate2_events.jsonl' in diag and '_append_event_log' in diag,
+    "event_log": 'user://openazrael_candidate3_events.jsonl' in diag and '_append_event_log' in diag,
     "state_dump": 'canonical_state_hash' in diag and 'openazrael_kg001_state_dump_' in diag,
     "golden_audio_assets": all(x in diag for x in ["S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV","S174ELP1.WAV","S174ELP2.WAV","S186.WAV"]) and "data/audio/legacy_world_ir.json" in diag,
     "headless_audio_boundary": 'DisplayServer.get_name() != "headless"' in room,
