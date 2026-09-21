@@ -51,6 +51,13 @@ traverse both Object02 floor triangles, return to tunnel03 support, and follow
 the audited R1 floor route toward tunnel07 with continuous support. Historical
 v117/Candidate 3 evidence is insufficient for this regression.
 
+Generic **v120 Collision Parity** complements route traversal. For R1/R7/R8 it
+derives floor-like geometry directly from visible mesh triangles using
+orientation-independent projected area, then requires a matching runtime
+`StaticBody3D` trimesh collider unless the object has an explicit audited
+non-solid semantic exemption. This gate exists specifically to catch additional
+`Object02`-class omissions outside the hand-authored traversal route.
+
 ### G05 — Trigger semantics and recovered interaction effects
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
 
