@@ -44,6 +44,8 @@ class GodotPPPVRuntimeGuardSourceTests(unittest.TestCase):
         self.assertIn('"unsupported_fall"', self.guard)
         self.assertIn('"softlock_watchdog"', self.guard)
         self.assertIn('"critical_runtime_violation"', self.guard)
+        self.assertIn('"room_change_sample"', self.guard)
+        self.assertIn('"continuity_reset": true', self.guard)
 
     def test_transition_spawn_is_verified_against_source_view(self) -> None:
         self.assertIn("verify_transition_spawn", self.guard)
