@@ -38,6 +38,24 @@ checks = {
         == "8a35e60b3f26d1fa656653cc7d3d5875c0927c77882189a6f073bf7ed16a3a6c"
         and contract.get("r1_asset", {}).get("bytes") == 535916
     ),
+    "route_geometry_audit_bound": (
+        contract.get("geometry_audit", {}).get("bug_point_containing_mesh")
+        == "Object02__mesh"
+        and contract.get("geometry_audit", {}).get("bug_point_containing_face_index")
+        == 2
+        and abs(
+            float(contract.get("geometry_audit", {}).get(
+                "tunnel03_object02_projected_gap", 999.0
+            )) - 0.09813844622236
+        ) < 1.0e-9
+        and contract.get("geometry_audit", {}).get("canonical_route_graph_nodes")
+        == 15
+        and contract.get("geometry_audit", {}).get("canonical_route_segments")
+        == 14
+        and contract.get("geometry_audit", {}).get(
+            "all_main_segments_covered_by_walkable_floor_union_with_0_5_buffer"
+        ) is True
+    ),
     "room_aware_object02_fix": all(
         value in room
         for value in (
