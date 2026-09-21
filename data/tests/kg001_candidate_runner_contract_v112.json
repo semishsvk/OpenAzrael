@@ -26,6 +26,14 @@
     "well_tongs_v118_source_validation": true,
     "well_tongs_v118_runtime_capture": true,
     "well_tongs_result_promotion": true,
-    "g05_requires_v110_and_v118": true
+    "g05_requires_v110_and_v118": true,
+    "source_only_ci_mode": true,
+    "candidate3_preflight_receipt": true,
+    "candidate3_export_guard": true,
+    "candidate3_exact_head_binding": true,
+    "candidate3_godot_version_binding": true,
+    "candidate3_runtime_asset_hash_binding": true,
+    "candidate3_evidence_hash_binding": true,
+    "candidate3_manual_g10_separate": true
   }
 }
