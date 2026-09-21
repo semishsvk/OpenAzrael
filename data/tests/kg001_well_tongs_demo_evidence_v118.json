@@ -29,6 +29,16 @@
       "sample_rate": 22050,
       "frames": 20950,
       "duration_seconds": 0.9501133786848073
+    },
+    "RANIM1.ANM": {
+      "size": 400,
+      "sha256": "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5",
+      "all_bytes_zero": true,
+      "implication": "no authored room-keyframe animation payload for R7 in the official demo"
+    },
+    "ROOMS.DAT": {
+      "size": 90968,
+      "sha256": "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b"
     }
   },
   "puzzles_actions": [
@@ -122,7 +132,33 @@
     "invented_tween_prohibited": true,
     "continuous_visual_animation_claim": "NOT_SUPPORTED_BY_RECOVERED_ACTION_STREAM",
     "generic_inventory_hud_motion": "UNOBSERVED_HOLD",
-    "original_miles_spatial_pan_volume": "HOLD_SEPARATE_ORACLE"
+    "original_miles_spatial_pan_volume": "HOLD_SEPARATE_ORACLE",
+    "ranim1_all_zero": true,
+    "classic_fidelity_rule": "reproduce compiled object/action swap and original sound; do not synthesize transform motion absent from recovered demo data"
   },
-  "source_safe": true
+  "source_safe": true,
+  "rooms_r7_object_record": {
+    "name": "RustyTongR6",
+    "offset_hex": "0x1584c",
+    "record_size_bytes": 60,
+    "sequence_context": [
+      "R7Key",
+      "R7Pipes",
+      "R7Well",
+      "R7Well1",
+      "R7Well2",
+      "HotInsertLever",
+      "HotMoveWheel",
+      "HotPipe",
+      "HotRotateWheel",
+      "ColdInsertLever",
+      "ColdMoveWheel",
+      "ColdPipe",
+      "ColdRotateWheel",
+      "RustyTongR6",
+      "WellRoomdoor"
+    ],
+    "named_xaf_mesh_present": false,
+    "interpretation": "transient room-state object exists in ROOMS.DAT but has no named mesh in recovered R7.XAF"
+  }
 }
