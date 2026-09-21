@@ -19,6 +19,13 @@ stair_contract = {
     if isinstance(row, dict) and row.get("mesh")
 }
 
+portal_spawn_section = runner.split("func _observe_portal_spawn", 1)[1].split(
+    "func _exercise_input_walk", 1
+)[0]
+r1_floor_section = runner.split("func _exercise_r1_floor", 1)[1].split(
+    "func _exercise_r8_stair_mesh", 1
+)[0]
+
 checks = {
     "tracked_contract": (
         contract.get("schema") == "openazrael.kg001.physical_traversal_contract"
@@ -149,9 +156,10 @@ checks = {
         )
     ),
     "runner_does_not_normalize_spawn_to_floor": (
-        "Candidate 2 failed immediately after the real portal spawn" in runner
-        and "floor_y + 4.0" not in runner
-        and "player.global_position = Vector3(" in runner
+        "Candidate 2 failed immediately after the real portal spawn" in r1_floor_section
+        and "player.global_position = Vector3(" not in portal_spawn_section
+        and "player.global_position = Vector3(" not in r1_floor_section
+        and "player.global_position = origin" in r1_floor_section
     ),
     "r1_canonical_spawn_floor_walk": all(
         value in runner
