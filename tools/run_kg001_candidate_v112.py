@@ -21,6 +21,9 @@ FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_public_release_safety.py"],
     [sys.executable,"tools/validate_project_context.py"],
+    [sys.executable,"-m","tools.remaster_framework.cli","validate"],
+    [sys.executable,"-m","unittest","discover","-s","tools/remaster_framework/tests","-v"],
+    [sys.executable,"-m","tools.openazrael_adapters.runtime_capabilities",".","--require-core"],
     [sys.executable,"tools/validate_demo_runtime_ir.py"],
     [sys.executable,"tools/audit_gameplay_event_graph_v87.py","--source-only"],
     [sys.executable,"tools/kg001_state_space_v108.py"],
