@@ -8,34 +8,51 @@ on:
   pull_request:
 
 jobs:
-  foundation-tests:
+  registry:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Validate tool registry
         run: python -m tools.remaster_framework.cli validate
 
+  framework-unit-tests:
+    runs-on: ubuntu-latest
+    needs: registry
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Run framework unit tests
         run: python -m unittest discover -s tools/remaster_framework/tests -v
 
+  runtime-preflight:
+    runs-on: ubuntu-latest
+    needs: registry
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Require generic PPPV runtime hooks
         run: python -m tools.openazrael_adapters.runtime_capabilities . --require-core
 
+  candidate-contracts:
+    runs-on: ubuntu-latest
+    needs: registry
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Validate Candidate Diagnostics F11 contract
         run: python tools/validate_candidate_diagnostics_v116.py
-
       - name: Validate v112 candidate runner contract
         run: python tools/validate_kg001_candidate_v112.py
-
       - name: Validate v117 physical traversal source contract
         run: python tools/validate_kg001_physical_traversal_v117.py
-
       - name: Validate v118 Well+Tongs source contract
         run: python tools/validate_kg001_well_tongs_animation_v118.py
