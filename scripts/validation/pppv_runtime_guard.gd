@@ -141,9 +141,14 @@ func sample(action_id: String = "") -> bool:
             "position": current["position"],
             "previous_position": _v3(_last_position)
         })
-    if total_drop > MAX_ACTION_VERTICAL_DROP:
+    if (
+        total_drop > MAX_ACTION_VERTICAL_DROP
+        and _unsupported_fall_frames >= 6
+        and player.velocity.y < -0.1
+    ):
         _critical("action_vertical_drop", {
             "drop": total_drop,
+            "unsupported_frames": _unsupported_fall_frames,
             "position": current["position"],
             "start_position": _start_snapshot.get("position", [])
         })
