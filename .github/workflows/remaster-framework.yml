@@ -8,8 +8,23 @@ on:
   pull_request:
 
 jobs:
+  runner-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runner Python
+        run: python3 --version
+
+  checkout-smoke:
+    runs-on: ubuntu-latest
+    needs: runner-smoke
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout confirmed
+        run: test -f project.godot
+
   python-smoke:
     runs-on: ubuntu-latest
+    needs: checkout-smoke
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
