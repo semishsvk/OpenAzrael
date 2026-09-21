@@ -49,14 +49,14 @@ The audio-v116 runner checks that the Candidate can physically load and start it
 
 ## Legacy color-key boundary
 
-Issue #11 is validated during the source phase. The validator binds the real 86-AZF metadata audit and always exercises a synthetic raw source-sentinel mask and a synthetic XAF->GLB MASK material. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs, the complete ten-name `#` candidate class with single-sentinel evidence, and the R1 KEYHOLE#/TONG6 mappings and exact single-key-index evidence. Final visual acceptance remains manual in G10; complete original transparency/blending semantics remain HOLD.
+Issue #11 is validated during the source phase. The validator binds the real 86-AZF metadata audit and always exercises a synthetic raw source-sentinel mask and a synthetic XAF->GLB MASK material. Candidate 3 also carries a narrowly-scoped `KEYHOLE#` vertical UV correction based on the manual upside-down-keyhole observation; the validator proves that correction is present for KEYHOLE# and absent for the TONG6/MINETON# negative control. When the local Candidate corpus has been restored, the same command audits all 86 Classic PNGs and R1 manifest mappings. Final transparency and upright keyhole orientation remain manual G10 checks; complete original renderer UV/transparency semantics remain HOLD.
 
 
 ## Physical traversal boundary
 
 The v117 runner closes a false-positive gap discovered during Candidate 2 manual testing. Earlier automation could PASS by raycasting a floor, placing the player slightly above that point, and waiting while stationary; the full-demo runner also teleported directly to trigger centroids.
 
-v117 instead loads the real main scene and production Player, drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor, and measures fall-through, horizontal progress and floor-contact ratio. It then derives tread levels directly from the imported R8 `step011__mesh` and `stairs__STAIR2` meshes and drives the same CharacterBody3D up and down both real stair profiles. The first covers the lower ~5-unit risers; the main staircase covers ~12.6-unit risers and is the stronger step-up regression. No synthetic proxy stairs are accepted.
+v117 instead loads the real main scene and production Player, drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor, and measures fall-through, horizontal progress and floor-contact ratio. It then derives tread levels directly from the imported R8 `step011__mesh` and `stairs__STAIR2` meshes and drives the same CharacterBody3D up and down both real stair profiles. The production step-up helper probes near-to-far, accepts horizontal tread hits independent of inconsistent legacy triangle winding, and chooses the smallest valid positive rise. A bounded `step_debug` trace records probe distance, hit normal/face/height, rejection reason and successful lifts. The first stair mesh covers lower ~5-unit risers; the main staircase covers ~12.6-unit risers. No synthetic proxy stairs are accepted.
 
 A v110 PASS from Candidate 2 predates this traversal contract and is therefore insufficient for a new G04 PASS without a current v117 runtime result.
 
@@ -87,12 +87,16 @@ or, when the ignored assets need restoration:
 
 A successful preflight writes a Git-ignored receipt bound to the exact Git SHA,
 Godot version, v109/v110/v111/v116/v117/v118 PASS set, fresh-checkout evidence
-hashes and restored R1/R7/R8 plus 979TONGS asset hashes.
+hashes, the exact runtime asset path set, and per-asset SHA-256 for the complete
+restored rooms/audio/Classic-texture corpus.
 
 Candidate 3 export must then use:
 
     python tools/export_candidate3.py --godot <Godot>
 
 The export wrapper fails closed when the receipt is missing/stale, HEAD changes,
-the tracked checkout becomes dirty, Godot changes, evidence changes or a bound
-runtime asset changes. G10 remains a separate manual gate.
+the tracked checkout becomes dirty, Godot changes, evidence changes, a bound
+runtime asset changes, **or any runtime asset is added/removed** after preflight.
+After export it runs the exported EXE in headless startup-smoke mode and writes
+a PASS export receipt only if the process exits cleanly with no Godot ERROR or
+SCRIPT ERROR output. G10 remains a separate manual gate on that exact EXE/PCK pair.
