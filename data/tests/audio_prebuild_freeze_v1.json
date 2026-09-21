@@ -1,0 +1,20 @@
+{
+ "schema_version":1,
+ "freeze":"R1-R7-R8 audio reconstruction pre-build",
+ "status":"READY_FOR_RUNTIME_VALIDATION",
+ "frozen_invariants":[
+  "Classic is default",
+  "v86 Classic renderer remains safety-gated",
+  "Enhanced Spatial cannot mutate gameplay state",
+  "HOLD evidence cannot be promoted by synthetic assumptions",
+  "tongs/well gameplay chain is asserted independently from 979tongs audio binding"
+ ],
+ "runtime_required":[
+  "F8 structured dynamic event provenance visible/logged",
+  "non-capture audio playback",
+  "post-run validator PASS",
+  "manual auditory check for triggered events",
+  "candidate physics gates for floor and stairs PASS"
+ ],
+ "promotion_blockers":["critical floor collision","critical stair traversal","unverified tongs->979tongs original trigger binding"]
+}
