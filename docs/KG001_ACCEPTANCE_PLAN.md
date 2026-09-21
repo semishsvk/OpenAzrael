@@ -33,6 +33,8 @@ Exercise deterministic gameplay-state primitives and Event IR operations indepen
 ### G03 — Puzzle state-space exploration
 Enumerate every reachable state for the demo puzzle subset and all supported actions from each state. Detect dead states, unintended cycles, unreachable required states and softlocks. The expected successful path must remain reachable from every intended precondition state.
 
+The exhaustive graph is complemented by deterministic adversarial state fuzzing. Seeded random walks deliberately repeat actions, issue actions under invalid preconditions, restart from the initial state, and verify transition determinism, no-op purity, logical invariants, monotonic progress facts, membership in the exhaustive reachable graph, and continued reachability of a success state. Both reports must be generated for the current candidate; a previously committed state-space PASS is not sufficient.
+
 ### G04 — Room and transition state
 Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of persistent state across transitions. Re-entering a room must not accidentally reset one-shot or solved state unless explicitly specified.
 
