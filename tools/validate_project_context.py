@@ -258,6 +258,7 @@ try:
     if c.get("quality",{}).get("kg001_overall_status") not in (
             "BLOCKED_ISSUES_6_9_11_RETEST",
             "BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL",
+            "BLOCKED_CANDIDATE3_RUNTIME_RETEST",
         ):
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
@@ -266,6 +267,7 @@ try:
             "SOURCE_FIX_READY_MULTIROOM_RUNTIME_RETEST_REQUIRED",
             "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
             "MANUAL_FAIL_CANDIDATE2",
+            "SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED",
         ):
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
@@ -291,6 +293,7 @@ try:
     if c.get("quality",{}).get("kg001_candidate_source_freeze") not in (
             "REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT",
             "POST_CANDIDATE2_FIX_BRANCH_RUNTIME_RETEST_REQUIRED",
+            "CANDIDATE3_SOURCE_HARDENED_RUNTIME_RETEST_REQUIRED",
         ):
         errors.append("KG-001 Candidate/source-freeze drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_runtime") not in ("NOT_EXECUTED","ASSET_VALIDATION_PASS_MANUAL_PENDING"):
@@ -303,9 +306,10 @@ try:
             "V32_NOT_EXECUTED",
             "V32_AUTOMATED_PASS_MANUAL_PENDING",
             "V32_MANUAL_FAIL",
+            "CANDIDATE3_NOT_EXECUTED",
         ):
-        errors.append("KG-001 Candidate 2 runtime boundary drift")
-    if c.get("quality",{}).get("kg001_stair_traversal") not in (None,"MANUAL_FAIL_CANDIDATE2"):
+        errors.append("KG-001 candidate runtime boundary drift")
+    if c.get("quality",{}).get("kg001_stair_traversal") not in (None,"MANUAL_FAIL_CANDIDATE2","SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED"):
         errors.append("KG-001 stair traversal status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_stair_traversal") not in (None,True):
         errors.append("KG-001 stair traversal release blocker drift")
@@ -326,6 +330,7 @@ try:
     if c.get("quality",{}).get("documentation_consistency") not in (
             "PASS_V32",
             "PASS_POST_CANDIDATE2_FIX_BRANCH",
+            "PASS_CANDIDATE3_HARDENED",
         ):
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
