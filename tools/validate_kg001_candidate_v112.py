@@ -7,7 +7,7 @@ source=(ROOT/"tools/run_kg001_candidate_v112.py").read_text(encoding="utf-8")
 checks={
  "tmp_evidence":'ROOT/".tmp/kg001"' in source,
  "godot_discovery":all(x in source for x in ("GODOT_BIN","godot4","godot")),
- "source_validators":all(x in source for x in ("validate_project_context.py","validate_demo_runtime_ir.py","kg001_state_space_v108.py","validate_kg001_full_demo_v111.py")),
+ "source_validators":all(x in source for x in ("validate_public_release_safety.py","validate_project_context.py","validate_demo_runtime_ir.py","kg001_state_space_v108.py","validate_kg001_full_demo_v111.py")),
  "godot_import_step":'"--import"' in source and "import_status" in source,
  "runtime_v109":"kg001_headless_runner_v109.gd" in source,
  "runtime_v110":"kg001_room_trigger_runner_v110.gd" in source,
@@ -28,6 +28,7 @@ checks={
  "fresh_is_optional":"--fresh-checkout" in source,
  "source_only_mode":"--source-only" in source and "openazrael.kg001.source_gate" in source,
  "candidate3_guard_validator":"validate_candidate3_preflight.py" in source,
+ "public_release_safety_validator":"validate_public_release_safety.py" in source,
 }
 failed=[k for k,v in checks.items() if not v]
 print("OpenAzrael v112 candidate runner source contract:","PASS" if not failed else "FAIL")
