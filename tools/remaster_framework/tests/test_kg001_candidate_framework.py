@@ -211,12 +211,50 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 },
             },
         )
+        plan_path = evidence / "pppv_playthrough_plan.json"
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        plan_sha = str(plan.get("plan_sha256", ""))
+        final_hash = str(plan.get("success_state_sha256", ""))
+        semantic_hash = "d" * 64
+        evaluation = {
+            "schema": "remaster.playthrough_evaluation",
+            "version": 1,
+            "status": "PASS",
+            "plan_sha256": plan_sha,
+            "semantic_replay_sha256": semantic_hash,
+            "final_state_sha256": final_hash,
+        }
         self._write(
             evidence / "kg001_pppv_playthrough_evaluation.json",
+            evaluation,
+        )
+        self._write(
+            evidence / "kg001_pppv_playthrough_repeat2_evaluation.json",
+            evaluation,
+        )
+        self._write(
+            evidence / "kg001_pppv_determinism.json",
             {
-                "schema": "remaster.playthrough_evaluation",
+                "schema": "openazrael.kg001.pppv_determinism",
                 "version": 1,
                 "status": "PASS",
+                "plan_sha256": plan_sha,
+                "plan_document_sha256": hashlib.sha256(
+                    plan_path.read_bytes()
+                ).hexdigest(),
+                "scenario_bundle_sha256": bundle_sha,
+                "repeat_count": 2,
+                "all_runs_pass": True,
+                "semantic_replay_sha256": [
+                    semantic_hash,
+                    semantic_hash,
+                ],
+                "final_state_sha256": [
+                    final_hash,
+                    final_hash,
+                ],
+                "semantic_replay_match": True,
+                "final_state_match": True,
             },
         )
         fresh_path = evidence / "kg001_fresh_checkout.json"
@@ -379,6 +417,72 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             self.assertEqual(integrity["status"], "FAIL")
             self.assertTrue(
                 any("SHA-256 mismatch" in item for item in integrity["errors"])
+            )
+
+
+    def test_stale_determinism_scenario_hash_is_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            determinism_path = evidence / "kg001_pppv_determinism.json"
+            determinism = json.loads(
+                determinism_path.read_text(encoding="utf-8")
+            )
+            determinism["scenario_bundle_sha256"] = "f" * 64
+            self._write(determinism_path, determinism)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(
+                bundle["pppv_determinism_integrity_status"],
+                "FAIL",
+            )
+            self.assertEqual(bundle["release_status"], "BLOCKED")
+            self.assertFalse(bundle["known_good_eligible"])
+
+    def test_mismatched_repeat_evaluation_is_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            repeat_path = (
+                evidence / "kg001_pppv_playthrough_repeat2_evaluation.json"
+            )
+            repeat = json.loads(repeat_path.read_text(encoding="utf-8"))
+            repeat["semantic_replay_sha256"] = "e" * 64
+            self._write(repeat_path, repeat)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(
+                bundle["pppv_determinism_integrity_status"],
+                "FAIL",
+            )
+            integrity = json.loads(
+                (evidence / "pppv_determinism_integrity.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertTrue(
+                any(
+                    "semantic replay hashes differ" in item
+                    for item in integrity["errors"]
+                )
             )
 
     def test_complete_evidence_can_be_known_good_eligible(self) -> None:
