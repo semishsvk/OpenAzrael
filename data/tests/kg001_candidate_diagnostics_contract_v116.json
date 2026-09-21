@@ -8,7 +8,7 @@
     "build_watermark": true,
     "fail_fast_core_assets": true,
     "fail_fast_golden_audio_non_headless": true,
-    "event_jsonl_log": "user://openazrael_candidate2_events.jsonl",
+    "event_jsonl_log": "user://openazrael_candidate3_events.jsonl",
     "state_dump_key": "F10",
     "trigger_visualization_key": "F6",
     "candidate_hud_key": "F7",
