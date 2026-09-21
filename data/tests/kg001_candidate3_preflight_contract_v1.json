@@ -53,7 +53,12 @@
     "dirty_git_policy": "FAIL_CLOSED",
     "changed_asset_policy": "FAIL_CLOSED",
     "changed_godot_policy": "FAIL_CLOSED",
-    "export_receipt": ".tmp/kg001/candidate3_export_receipt.json"
+    "export_receipt": ".tmp/kg001/candidate3_export_receipt.json",
+    "outputs": [
+      "exports/OpenAzrael-KG001-Candidate3.exe",
+      "exports/OpenAzrael-KG001-Candidate3.pck"
+    ],
+    "exe_pck_pair_required": true
   },
   "post_export": {
     "manual_gate": "G10_PENDING_USER",
