@@ -69,10 +69,11 @@ def validate_runtime_evidence(quality):
         isinstance(runtime_status,dict)
         and all(runtime_status.get(name)=="PASS" for name in base_runtime_names)
         and set(runtime_status).issubset(
-            base_runtime_names | {"physical_v117", "well_tongs_v118"}
+            base_runtime_names | {"physical_v117", "well_tongs_v118", "r1_route_v119"}
         )
         and runtime_status.get("physical_v117","PASS")=="PASS"
         and runtime_status.get("well_tongs_v118","PASS")=="PASS"
+        and runtime_status.get("r1_route_v119","PASS")=="PASS"
     )
     if (fresh.get("status")!="PASS" or fresh.get("commit_sha")!=evidence_commit
             or fresh.get("schema")!="openazrael.kg001.fresh_checkout" or fresh.get("version")!=112
@@ -114,6 +115,21 @@ def validate_runtime_evidence(quality):
                            for line in well_tongs.get("_output_tail","").splitlines())):
                 errors.append("well+tongs v118 PASS requires successful runtime evidence at the tested commit")
 
+    r1_route_path=ROOT/"data/tests/kg001_r1_route_runtime_v119.json"
+    r1_route_required=isinstance(runtime_status,dict) and "r1_route_v119" in runtime_status
+    if r1_route_required:
+        if not r1_route_path.is_file():
+            errors.append("R1 route fresh-checkout PASS requires v119 runtime evidence")
+        else:
+            r1_route=read_json("data/tests/kg001_r1_route_runtime_v119.json")
+            if (r1_route.get("status")!="PASS" or r1_route.get("failed")!=[]
+                    or r1_route.get("schema")!="openazrael.kg001.r1_route"
+                    or r1_route.get("version")!=119 or r1_route.get("_commit_sha")!=evidence_commit
+                    or r1_route.get("_process_returncode")!=0 or r1_route.get("engine_errors",[])!=[]
+                    or any(line.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))
+                           for line in r1_route.get("_output_tail","").splitlines())):
+                errors.append("R1 route v119 PASS requires successful runtime evidence at the tested commit")
+
     source=read_json("data/tests/kg001_source_validation_v112.json")
     required={
         "validate_project_context.py","validate_demo_runtime_ir.py","audit_gameplay_event_graph_v87.py",
@@ -125,6 +141,8 @@ def validate_runtime_evidence(quality):
         required.add("validate_kg001_physical_traversal_v117.py")
     if well_tongs_required:
         required.add("validate_kg001_well_tongs_animation_v118.py")
+    if r1_route_required:
+        required.add("validate_kg001_r1_route_v119.py")
     commands=source.get("commands",[])
     passed={Path(arg).name for item in commands if item.get("status")=="PASS" and item.get("returncode")==0
             for arg in item.get("command",[])}
@@ -174,6 +192,9 @@ for p in [
     "tools/validate_kg001_well_tongs_animation_v118.py",
     "data/tests/kg001_well_tongs_animation_contract_v118.json",
     "data/tests/kg001_well_tongs_demo_evidence_v118.json",
+    "scripts/kg001_r1_route_runner_v119.gd",
+    "tools/validate_kg001_r1_route_v119.py",
+    "data/tests/kg001_r1_route_contract_v119.json",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
@@ -261,6 +282,7 @@ try:
             "BLOCKED_ISSUES_6_9_11_RETEST",
             "BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL",
             "BLOCKED_CANDIDATE3_RUNTIME_RETEST",
+            "BLOCKED_CANDIDATE3_CRITICAL_R1_OBJECT02",
         ):
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
@@ -270,6 +292,7 @@ try:
             "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED",
             "MANUAL_FAIL_CANDIDATE2",
             "SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED",
+            "SOURCE_FIX_READY_R1_OBJECT02_V119_RUNTIME_RETEST_REQUIRED",
         ):
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
@@ -296,6 +319,7 @@ try:
             "REFROZEN_V32_AFTER_EMPIRICAL_COLORKEY_AUDIT",
             "POST_CANDIDATE2_FIX_BRANCH_RUNTIME_RETEST_REQUIRED",
             "CANDIDATE3_SOURCE_HARDENED_RUNTIME_RETEST_REQUIRED",
+            "POST_CANDIDATE3_OBJECT02_FIX_V119_RUNTIME_RETEST_REQUIRED",
         ):
         errors.append("KG-001 Candidate/source-freeze drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_runtime") not in ("NOT_EXECUTED","ASSET_VALIDATION_PASS_MANUAL_PENDING"):
@@ -309,6 +333,7 @@ try:
             "V32_AUTOMATED_PASS_MANUAL_PENDING",
             "V32_MANUAL_FAIL",
             "CANDIDATE3_NOT_EXECUTED",
+            "CANDIDATE3_G10_FAIL_R1_OBJECT02",
         ):
         errors.append("KG-001 candidate runtime boundary drift")
     if c.get("quality",{}).get("kg001_stair_traversal") not in (None,"MANUAL_FAIL_CANDIDATE2","SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED"):
@@ -321,6 +346,12 @@ try:
             "PASS",
         ):
         errors.append("KG-001 physical traversal v117 status drift")
+    if c.get("quality",{}).get("kg001_r1_route_v119") not in (
+            None,
+            "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+            "PASS",
+        ):
+        errors.append("KG-001 R1 route v119 status drift")
     if c.get("quality",{}).get("kg001_well_tongs_animation_v118") not in (
             None,
             "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
