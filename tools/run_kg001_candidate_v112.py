@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -99,6 +100,13 @@ def ignored(path):
 def write_json(path,data):
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8")
+
+def sha256_file(path):
+    digest=hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda:handle.read(1024*1024),b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 def run_well_pppv(godot):
     scenario_root=TMP/"pppv_scenarios"
@@ -230,6 +238,7 @@ def run_pppv_scenario_suite(godot):
         return summary
 
     rows=bundle.get("scenarios",[]) if isinstance(bundle,dict) else []
+    bundle_sha256=sha256_file(bundle_path)
     if not isinstance(rows,list) or not rows:
         summary={
             "schema":"openazrael.kg001.pppv_scenario_suite",
@@ -313,6 +322,7 @@ def run_pppv_scenario_suite(godot):
             passed+=1
         results[scenario_id]={
             "status":status,
+            "scenario":str(scenario_path.relative_to(ROOT)),
             "godot_returncode":proc.returncode,
             "evaluator_returncode":evaluator_returncode,
             "runtime":(
@@ -331,6 +341,8 @@ def run_pppv_scenario_suite(godot):
         "schema":"openazrael.kg001.pppv_scenario_suite",
         "version":1,
         "status":"PASS" if all_pass else "FAIL",
+        "scenario_bundle":str(bundle_path.relative_to(ROOT)),
+        "scenario_bundle_sha256":bundle_sha256,
         "scenario_count":scenario_count,
         "passed":passed,
         "failed":scenario_count-passed,
@@ -422,6 +434,85 @@ def run_full_pppv(godot):
         "required_for_g08":True,
         "required_for_g09":True,
     }
+
+
+def write_pppv_failure_reproducer(suite_summary, playthrough_summary):
+    path=TMP/"kg001_pppv_failure_reproducer.json"
+    failure=None
+
+    if isinstance(suite_summary,dict) and suite_summary.get("status")=="FAIL":
+        scenarios=suite_summary.get("scenarios",{})
+        if isinstance(scenarios,dict):
+            for scenario_id,row in scenarios.items():
+                if not isinstance(row,dict) or row.get("status")=="PASS":
+                    continue
+                failure={
+                    "kind":"isolated_scenario",
+                    "scenario_id":scenario_id,
+                    "scenario":row.get("scenario",""),
+                    "runtime":row.get("runtime",""),
+                    "evaluation":row.get("evaluation",{}),
+                    "godot_returncode":row.get("godot_returncode"),
+                    "evaluator_returncode":row.get("evaluator_returncode"),
+                    "output_tail":row.get("output_tail",""),
+                    "evaluator_output_tail":row.get("evaluator_output_tail",""),
+                }
+                scenario_path=row.get("scenario","")
+                if scenario_path:
+                    failure["rerun"]=[
+                        "<godot>",
+                        "--headless",
+                        "--path",".",
+                        "--script","res://scripts/validation/pppv_scenario_runner.gd",
+                        "--",
+                        f"--pppv-scenario={scenario_path}",
+                        "--pppv-output=.tmp/kg001/reproducer_runtime.json",
+                    ]
+                break
+
+    if failure is None and isinstance(playthrough_summary,dict) and playthrough_summary.get("status")=="FAIL":
+        evaluation=playthrough_summary.get("evaluation",{})
+        failed_step=None
+        if isinstance(evaluation,dict):
+            for row in evaluation.get("steps",[]):
+                if isinstance(row,dict) and row.get("status")!="PASS":
+                    failed_step=row
+                    break
+        failure={
+            "kind":"chained_playthrough",
+            "failed_step":failed_step,
+            "runtime":playthrough_summary.get("runtime",""),
+            "evaluation":evaluation if isinstance(evaluation,dict) else {},
+            "godot_returncode":playthrough_summary.get("godot_returncode"),
+            "evaluator_returncode":playthrough_summary.get("evaluator_returncode"),
+            "output_tail":playthrough_summary.get("output_tail",""),
+            "evaluator_output_tail":playthrough_summary.get("evaluator_output_tail",""),
+            "rerun":[
+                "<godot>",
+                "--headless",
+                "--path",".",
+                "--script","res://scripts/validation/pppv_playthrough_runner.gd",
+                "--",
+                "--pppv-plan=.tmp/kg001/pppv_playthrough_plan.json",
+                "--pppv-scenarios=.tmp/kg001/pppv_scenarios.json",
+                "--pppv-output=.tmp/kg001/reproducer_playthrough.json",
+            ],
+        }
+
+    if failure is None:
+        path.unlink(missing_ok=True)
+        return None
+
+    payload={
+        "schema":"openazrael.kg001.pppv_failure_reproducer",
+        "version":1,
+        "status":"READY",
+        "commit_sha":git_head(),
+        "failure":failure,
+    }
+    write_json(path,payload)
+    return payload
+
 
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
@@ -622,6 +713,10 @@ def main():
         pppv_scenario_suite.get("status")=="PASS"
     )
     pppv_playthrough_pass=pppv_playthrough.get("status")=="PASS"
+    pppv_failure_reproducer=write_pppv_failure_reproducer(
+        pppv_scenario_suite,
+        pppv_playthrough,
+    )
     full_runtime_pass=(
         legacy_runtime_pass
         and pppv_scenario_suite_pass
@@ -670,6 +765,8 @@ def main():
     overall["runtimes"]["pppv_playthrough"]=pppv_playthrough.get("status","")
     overall["required_pppv_scenario_suite"]=pppv_scenario_suite
     overall["required_pppv_playthrough"]=pppv_playthrough
+    if pppv_failure_reproducer is not None:
+        overall["pppv_failure_reproducer"]="kg001_pppv_failure_reproducer.json"
     write_json(TMP/"kg001_candidate_v112.json",overall)
 
     # Rebuild the framework bundle after the real-input chained PPPV runtime
@@ -708,6 +805,7 @@ def main():
             TMP/"kg001_pppv_scenario_suite.json":ROOT/"data/tests/kg001_pppv_scenario_suite.json",
             TMP/"kg001_pppv_playthrough.json":ROOT/"data/tests/kg001_pppv_playthrough.json",
             TMP/"kg001_pppv_playthrough_evaluation.json":ROOT/"data/tests/kg001_pppv_playthrough_evaluation.json",
+            TMP/"kg001_pppv_failure_reproducer.json":ROOT/"data/tests/kg001_pppv_failure_reproducer.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
             TMP/"kg001_release_gate_results.json":ROOT/"data/tests/kg001_release_gate_results.json",
