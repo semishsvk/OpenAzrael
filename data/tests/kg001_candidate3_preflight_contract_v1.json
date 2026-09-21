@@ -3,7 +3,7 @@
   "version": 1,
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "candidate": "KG-001 Candidate 3",
-  "source_branch": "test/kg001-physical-traversal",
+  "source_branch": "integration/kg001-candidate3-pppv-v2",
   "source_ci": {
     "workflow": ".github/workflows/kg001-candidate3-source-gate.yml",
     "python_versions": [
@@ -34,6 +34,7 @@
       "Godot version",
       "fresh-checkout evidence SHA-256",
       "candidate result SHA-256",
+      "PPPV v2 evidence SHA-256 set",
       "complete restored assets/rooms corpus SHA-256",
       "complete restored assets/audio corpus SHA-256",
       "complete restored assets/textures/classic corpus SHA-256",
@@ -44,7 +45,15 @@
       "room_glb_minimum": 3,
       "audio_files_required": true,
       "mutation_after_preflight": "FAIL_CLOSED"
-    }
+    },
+    "required_pppv_v2_pass": [
+      "scenario_suite",
+      "scenario_suite_integrity",
+      "playthrough_evaluation",
+      "determinism",
+      "determinism_integrity"
+    ],
+    "pppv_v2_runner": "python tools/run_candidate3_pppv_v2.py --fresh-checkout --godot <Godot>"
   },
   "export": {
     "command": "python tools/export_candidate3.py --godot <Godot>",
@@ -84,7 +93,7 @@
       "complete demo route"
     ]
   },
-  "evidence_boundary": "Historical Candidate 3 failed manual G10 on R1/Object02. Any guarded rebuild must additionally pass v119 and generic collision-parity v120; no historical Candidate 3 PASS evidence may be reused.",
+  "evidence_boundary": "Historical Candidate 3 G10 evidence is stale for this integration. Any new build must pass v119, generic v120 collision parity, the mandatory PPPV v2 scenario suite, repeated chained playthrough determinism/integrity, guarded export startup smoke, and then fresh G10.",
   "historical_candidate3_result": {
     "status": "G10_FAIL",
     "blocker": "R1/Object02 missing collision under zxcoriR5",
