@@ -8,6 +8,8 @@ The production stair solver now uses winding-safe near-to-far tread probes inste
 
 Next evidence order: Candidate 3 source CI -> exact-SHA asset-backed preflight (v109/v110/v111/audio-v116/physical-v117/well-tongs-v118) -> guarded EXE/PCK export + startup smoke -> G10 manual route. Historical Candidate 2 Windows evidence remains below for provenance only.
 
+Current GitHub Actions observation: Candidate 3 source-gate run `35628120275` and its rerun fail before runner setup; both Python 3.11/3.12 jobs expose zero steps and no downloadable job log. No checkout or source validator executed, so this is recorded as an external/pre-runner execution blocker and **not** as Candidate 3 source-test failure. Source CI remains UNOBSERVED until a job actually starts.
+
 ## Candidate 2 Windows execution — 2026-09-20
 
 **KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
