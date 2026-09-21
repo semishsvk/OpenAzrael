@@ -218,8 +218,10 @@ Candidate release tooling always writes and hashes
 or evaluation can enter build provenance. This prevents a PASS from an older
 plan being attached to a newer candidate.
 
-The playthrough runtime/evaluation remain supplemental evidence for now. They do
-not silently alter the established G00-G10 Known-Good contract.
+The guarded playthrough is now required evidence for G08, and candidate-bound
+suite/determinism integrity is required for G09. A successful chained
+playthrough is executed at least twice; both evaluations must share the same
+semantic replay fingerprint and final canonical state hash.
 
 ## F11 diagnostics
 
@@ -268,14 +270,15 @@ and evaluation hashes into build provenance.
 
 The remaining major gate is **execution**, not scenario authoring:
 
-- run the chained full-demo PPPV against a fresh candidate with the local
+- run the chained full-demo PPPV twice against a fresh candidate with the local
   R1/R7/R8 assets;
+- require matching semantic replay fingerprints and final state hashes;
 - inspect any navigation/interaction failures and fix production/runtime issues
   rather than adding shortcuts;
 - confirm the visual/audio evidence for the R8 optical sequence;
 - confirm every canonical-state checkpoint and final hash;
-- only after stable repeated passes decide explicitly whether chained PPPV should
-  become a required future KG acceptance gate.
+- run the current-candidate exhaustive state-space and deterministic adversarial
+  fuzz reports before G03 can pass.
 
 GitHub-hosted Actions are currently infrastructure-blocked for this branch:
 diagnostic jobs fail before even a `python3 --version` step executes. Recent red
