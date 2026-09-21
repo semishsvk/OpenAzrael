@@ -68,15 +68,16 @@ def validate_runtime_evidence(quality):
     runtime_status_ok=(
         isinstance(runtime_status,dict)
         and all(runtime_status.get(name)=="PASS" for name in base_runtime_names)
-        and {"physical_v117","well_tongs_v118","r1_route_v119"}.issubset(
+        and {"physical_v117","well_tongs_v118","r1_route_v119","collision_v120"}.issubset(
             set(runtime_status)
         )
         and set(runtime_status).issubset(
-            base_runtime_names | {"physical_v117", "well_tongs_v118", "r1_route_v119"}
+            base_runtime_names | {"physical_v117", "well_tongs_v118", "r1_route_v119", "collision_v120"}
         )
         and runtime_status.get("physical_v117")=="PASS"
         and runtime_status.get("well_tongs_v118")=="PASS"
         and runtime_status.get("r1_route_v119")=="PASS"
+        and runtime_status.get("collision_v120")=="PASS"
     )
     if (fresh.get("status")!="PASS" or fresh.get("commit_sha")!=evidence_commit
             or fresh.get("schema")!="openazrael.kg001.fresh_checkout" or fresh.get("version")!=112
@@ -133,6 +134,22 @@ def validate_runtime_evidence(quality):
                            for line in r1_route.get("_output_tail","").splitlines())):
                 errors.append("R1 route v119 PASS requires successful runtime evidence at the tested commit")
 
+    collision_path=ROOT/"data/tests/kg001_collision_parity_runtime_v120.json"
+    collision_required=isinstance(runtime_status,dict) and "collision_v120" in runtime_status
+    if collision_required:
+        if not collision_path.is_file():
+            errors.append("collision parity fresh-checkout PASS requires v120 runtime evidence")
+        else:
+            collision=read_json("data/tests/kg001_collision_parity_runtime_v120.json")
+            if (collision.get("status")!="PASS" or collision.get("failed")!=[]
+                    or collision.get("schema")!="openazrael.kg001.collision_parity"
+                    or collision.get("version")!=120 or collision.get("_commit_sha")!=evidence_commit
+                    or collision.get("_process_returncode")!=0 or collision.get("engine_errors",[])!=[]
+                    or collision.get("non_exempt_failures")!=[]
+                    or any(line.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))
+                           for line in collision.get("_output_tail","").splitlines())):
+                errors.append("collision parity v120 PASS requires successful runtime evidence at the tested commit")
+
     source=read_json("data/tests/kg001_source_validation_v112.json")
     required={
         "validate_project_context.py","validate_demo_runtime_ir.py","audit_gameplay_event_graph_v87.py",
@@ -146,6 +163,8 @@ def validate_runtime_evidence(quality):
         required.add("validate_kg001_well_tongs_animation_v118.py")
     if r1_route_required:
         required.add("validate_kg001_r1_route_v119.py")
+    if collision_required:
+        required.add("validate_kg001_collision_parity_v120.py")
     commands=source.get("commands",[])
     passed={Path(arg).name for item in commands if item.get("status")=="PASS" and item.get("returncode")==0
             for arg in item.get("command",[])}
@@ -198,6 +217,9 @@ for p in [
     "scripts/kg001_r1_route_runner_v119.gd",
     "tools/validate_kg001_r1_route_v119.py",
     "data/tests/kg001_r1_route_contract_v119.json",
+    "scripts/kg001_collision_parity_runner_v120.gd",
+    "tools/validate_kg001_collision_parity_v120.py",
+    "data/tests/kg001_collision_parity_contract_v120.json",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
@@ -355,6 +377,12 @@ try:
             "PASS",
         ):
         errors.append("KG-001 R1 route v119 status drift")
+    if c.get("quality",{}).get("kg001_collision_parity_v120") not in (
+            None,
+            "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+            "PASS",
+        ):
+        errors.append("KG-001 collision parity v120 status drift")
     if c.get("quality",{}).get("kg001_well_tongs_animation_v118") not in (
             None,
             "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
