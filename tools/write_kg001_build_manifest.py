@@ -26,7 +26,7 @@ ROOMS=[
     ROOT/"assets/rooms/R8.glb",
 ]
 AUDIO_NAMES=[
-    "797TAP.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV",
+    "797TAP.WAV","979TONGS.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV",
     "S174ELP1.WAV","S174ELP2.WAV","S186.WAV",
 ]
 RUNTIME_SOURCE=[
@@ -39,6 +39,8 @@ RUNTIME_SOURCE=[
     ROOT/"scripts/legacy_event_runner_v87.gd",
     ROOT/"scripts/legacy_ambient_audio.gd",
     ROOT/"scripts/kg001_room_trigger_runner_v110.gd",
+    ROOT/"scripts/kg001_physical_traversal_runner_v117.gd",
+    ROOT/"scripts/kg001_well_tongs_animation_runner_v118.gd",
     ROOT/"scripts/kg001_audio_runtime_runner_v116.gd",
     ROOT/"scripts/kg001_full_demo_runner_v111.gd",
     ROOT/"scripts/kg001_visual_capture_v117.gd",
