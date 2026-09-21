@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import re
 from typing import Any, Iterable
@@ -268,6 +270,141 @@ def validate_replay_action(
 
     return errors
 
+
+
+def _rounded_vector(value: Any, places: int = 3) -> list[float] | None:
+    if not isinstance(value, list) or len(value) != 3:
+        return None
+    result: list[float] = []
+    for raw in value:
+        if not isinstance(raw, (int, float)) or isinstance(raw, bool):
+            return None
+        number = float(raw)
+        if not math.isfinite(number):
+            return None
+        rounded = round(number, places)
+        result.append(0.0 if rounded == -0.0 else rounded)
+    return result
+
+
+def _compressed_room_sequence(
+    before: Any,
+    trajectory: Any,
+    after: Any,
+) -> list[str]:
+    values: list[str] = []
+    if isinstance(before, dict) and before.get("room"):
+        values.append(str(before["room"]))
+    if isinstance(trajectory, list):
+        values.extend(
+            str(sample.get("room"))
+            for sample in trajectory
+            if isinstance(sample, dict) and sample.get("room")
+        )
+    if isinstance(after, dict) and after.get("room"):
+        values.append(str(after["room"]))
+
+    compressed: list[str] = []
+    for room in values:
+        if not compressed or compressed[-1] != room:
+            compressed.append(room)
+    return compressed
+
+
+def semantic_replay_payload(replay: Any) -> dict[str, Any]:
+    if not isinstance(replay, dict):
+        return {
+            "schema": "remaster.semantic_replay",
+            "version": 1,
+            "actions": [],
+        }
+
+    semantic_actions: list[dict[str, Any]] = []
+    actions = replay.get("actions", [])
+    if not isinstance(actions, list):
+        actions = []
+
+    for row in actions:
+        if not isinstance(row, dict):
+            continue
+        before = row.get("before", {})
+        after = row.get("after", {})
+        result = row.get("result", {})
+        trajectory = row.get("trajectory", [])
+        semantic_actions.append({
+            "action_id": str(row.get("action_id", "")),
+            "kind": str(row.get("kind", "")),
+            "command": row.get("command", {}),
+            "before": {
+                "room": (
+                    str(before.get("room", ""))
+                    if isinstance(before, dict)
+                    else ""
+                ),
+                "state_sha256": (
+                    str(before.get("state_sha256", ""))
+                    if isinstance(before, dict)
+                    else ""
+                ),
+                "position": (
+                    _rounded_vector(before.get("position"))
+                    if isinstance(before, dict)
+                    else None
+                ),
+            },
+            "after": {
+                "room": (
+                    str(after.get("room", ""))
+                    if isinstance(after, dict)
+                    else ""
+                ),
+                "state_sha256": (
+                    str(after.get("state_sha256", ""))
+                    if isinstance(after, dict)
+                    else ""
+                ),
+                "position": (
+                    _rounded_vector(after.get("position"))
+                    if isinstance(after, dict)
+                    else None
+                ),
+            },
+            "room_sequence": _compressed_room_sequence(
+                before,
+                trajectory,
+                after,
+            ),
+            "result": {
+                "success": (
+                    result.get("success")
+                    if isinstance(result, dict)
+                    else None
+                ),
+                "failures": (
+                    list(result.get("failures", []))
+                    if isinstance(result, dict)
+                    and isinstance(result.get("failures", []), list)
+                    else []
+                ),
+            },
+        })
+
+    return {
+        "schema": "remaster.semantic_replay",
+        "version": 1,
+        "actions": semantic_actions,
+    }
+
+
+def semantic_replay_sha256(replay: Any) -> str:
+    payload = semantic_replay_payload(replay)
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 def validate_replay(
     expected_actions: Iterable[dict[str, Any]],
