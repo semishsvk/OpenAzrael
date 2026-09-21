@@ -101,6 +101,60 @@ def _combined_status(*payloads: dict[str, Any] | None) -> str:
     return "PENDING"
 
 
+def _valid_sha256(value: Any) -> bool:
+    if not isinstance(value, str) or len(value) != 64:
+        return False
+    return all(char in "0123456789abcdef" for char in value)
+
+
+def _state_space_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    checks = payload.get("exploration_checks")
+    if (
+        payload.get("schema") != "openazrael.kg001.state_space"
+        or payload.get("version") != 108
+        or int(payload.get("softlock_states", -1)) != 0
+        or int(payload.get("non_success_dead_end_states", -1)) != 0
+        or not _valid_sha256(
+            payload.get("shortest_success_persistent_state_sha256")
+        )
+        or not isinstance(checks, dict)
+        or not checks
+        or not all(value is True for value in checks.values())
+    ):
+        return "FAIL"
+    return "PASS"
+
+
+def _state_fuzz_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    fuzz = payload.get("fuzz")
+    properties = payload.get("properties")
+    if (
+        payload.get("schema") != "openazrael.kg001.state_fuzz"
+        or payload.get("version") != 119
+        or not isinstance(fuzz, dict)
+        or fuzz.get("status") != "PASS"
+        or int(fuzz.get("failure_count", -1)) != 0
+        or int(fuzz.get("attempts", 0)) <= 0
+        or not isinstance(properties, dict)
+        or not properties
+        or not all(value is True for value in properties.values())
+    ):
+        return "FAIL"
+    return "PASS"
+
+
 def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
     status = _status(payload)
     if status == "FAIL":
@@ -203,9 +257,16 @@ def derive_gate_rows(
         "manual": _load(manual_path) if manual_path else None,
     }
 
-    state_status = _combined_status(
-        payloads["state"],
-        payloads["state_fuzz"],
+    state_space_status = _state_space_status(payloads["state"])
+    state_fuzz_status = _state_fuzz_status(payloads["state_fuzz"])
+    state_status = (
+        "PASS"
+        if state_space_status == "PASS" and state_fuzz_status == "PASS"
+        else (
+            "FAIL"
+            if "FAIL" in (state_space_status, state_fuzz_status)
+            else "PENDING"
+        )
     )
 
     rows = [
@@ -366,9 +427,6 @@ def build_gate_results(
         paths["manual"] = manual_path.resolve()
 
     state_path = paths["state_space"]
-    if state_path is None:
-        fallback_state = repo_root / "data/tests/kg001_state_space_v108.json"
-        state_path = fallback_state if fallback_state.is_file() else None
 
     fresh = _load(paths["fresh"]) if paths["fresh"] else None
     manual = _load(paths["manual"]) if paths["manual"] else None
