@@ -6,6 +6,7 @@ const NavigatorScript = preload("res://scripts/validation/pppv_navigator.gd")
 const ObserverScript = preload("res://scripts/validation/openazrael_pppv_observer.gd")
 const SceneObserverScript = preload("res://scripts/validation/pppv_scene_observer.gd")
 const ActionExecutorScript = preload("res://scripts/validation/pppv_action_executor.gd")
+const RuntimeGuardScript = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
 var failures: Array[String] = []
 
@@ -301,8 +302,13 @@ func _finish(
     evidence,
     before_state: Dictionary,
     after_state: Dictionary,
-    scene: Node
+    scene: Node,
+    runtime_guard = null
 ) -> void:
+    if runtime_guard != null:
+        for failure in runtime_guard.failure_list():
+            if not failures.has(String(failure)):
+                failures.append(String(failure))
     var status := "EXECUTION_PASS" if failures.is_empty() else "EXECUTION_FAIL"
     var payload := {
         "schema": "remaster.runtime_validation_bundle",
@@ -313,7 +319,21 @@ func _finish(
         "scenario": scenario,
         "evidence": evidence.bundle(),
         "before_state": before_state,
-        "after_state": after_state
+        "after_state": after_state,
+        "runtime_guard_failures": (
+            runtime_guard.failure_list() if runtime_guard != null else []
+        ),
+        "replay": (
+            runtime_guard.replay_bundle() if runtime_guard != null else {}
+        ),
+        "runtime_boundary": {
+            "direct_interact_calls": false,
+            "gameplay_teleport_during_actions": false,
+            "frame_level_avatar_trajectory": true,
+            "world_state_snapshots": true,
+            "softlock_watchdog": true,
+            "transition_spawn_validation": true
+        }
     }
     var wrote := _write_bundle(output_path, payload)
     if not wrote:
@@ -372,20 +392,37 @@ func _run() -> void:
     var setup_ok: bool = await _apply_setup(scenario, manager, state)
     if not setup_ok:
         var empty_bus = EvidenceBusScript.new()
-        _finish(output_path, scenario, empty_bus, {}, {}, scene)
+        _finish(output_path, scenario, empty_bus, {}, {}, scene, null)
         return
 
     var evidence = EvidenceBusScript.new()
     var observer = ObserverScript.new(evidence, state, events, diagnostics)
     observer.attach()
-    var driver = PlayerDriverScript.new(player, probe, evidence)
-    var navigator = NavigatorScript.new(player, probe, evidence)
+    var runtime_guard = RuntimeGuardScript.new(
+        player,
+        manager,
+        state,
+        evidence
+    )
+    var driver = PlayerDriverScript.new(
+        player,
+        probe,
+        evidence,
+        runtime_guard
+    )
+    var navigator = NavigatorScript.new(
+        player,
+        probe,
+        evidence,
+        runtime_guard
+    )
     var scene_observer = SceneObserverScript.new(evidence)
     var action_executor = ActionExecutorScript.new(
         manager,
         driver,
         navigator,
-        observer
+        observer,
+        runtime_guard
     )
     var scene_specs = scenario.get("metadata", {}).get("scene_observations", [])
     if not scene_specs is Array:
@@ -430,5 +467,6 @@ func _run() -> void:
         evidence,
         before_state,
         after_state,
-        scene
+        scene,
+        runtime_guard
     )
