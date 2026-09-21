@@ -20,6 +20,8 @@
     "remaster_framework_source_suite": true,
     "kg001_framework_bundle": true,
     "runtime_framework_metadata_staging": true,
-    "known_good_fail_closed_defect_inventory": true
+    "known_good_fail_closed_defect_inventory": true,
+    "well_tongs_real_input_pppv_supplemental": true,
+    "well_tongs_real_input_pppv_g09_required": false
   }
 }
