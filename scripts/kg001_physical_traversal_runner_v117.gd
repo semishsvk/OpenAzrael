@@ -1,5 +1,7 @@
 extends SceneTree
 
+const EvidenceBusScript = preload("res://scripts/validation/pppv_evidence_bus.gd")
+
 const REQUIRED_ROOMS := [
     "res://assets/rooms/R1.glb",
     "res://assets/rooms/R7.glb",
@@ -8,6 +10,7 @@ const REQUIRED_ROOMS := [
 
 var failures: Array[String] = []
 var check_count := 0
+var pppv_evidence = EvidenceBusScript.new()
 
 func _initialize() -> void:
     call_deferred("_run")
@@ -60,6 +63,7 @@ func _floor_at(
 func _exercise_input_walk(
     scene: Node3D,
     player: CharacterBody3D,
+    action_id: String,
     action: StringName,
     frames: int,
     reference_floor_y: float
@@ -73,6 +77,10 @@ func _exercise_input_walk(
     var max_below_support := 0.0
     var fell_through := false
 
+    pppv_evidence.record_player_action(action_id, "input", {
+        "input_action": String(action),
+        "frames": frames
+    })
     Input.action_press(action, 1.0)
     for _i in range(frames):
         await physics_frame
@@ -98,7 +106,7 @@ func _exercise_input_walk(
 
     Input.action_release(action)
     await physics_frame
-    return {
+    var result := {
         "distance": _horizontal_distance(start, player.global_position),
         "min_y": min_y,
         "floor_contact_ratio": float(on_floor_frames) / float(maxi(frames, 1)),
@@ -106,6 +114,20 @@ func _exercise_input_walk(
         "max_below_support": max_below_support,
         "fell_through": fell_through
     }
+    pppv_evidence.record("collision_support", {
+        "action_id": action_id,
+        "continuous": support_missing_frames <= 3,
+        "fell_through": fell_through,
+        "support_missing_frames": support_missing_frames,
+        "max_below_support": max_below_support,
+        "floor_contact_ratio": result["floor_contact_ratio"]
+    }, "R1")
+    pppv_evidence.record("movement", {
+        "action_id": action_id,
+        "progress_ok": float(result["distance"]) >= 12.0,
+        "horizontal_distance": result["distance"]
+    }, "R1")
+    return result
 
 func _find_named(node: Node, wanted: String) -> Node:
     if String(node.name) == wanted:
@@ -189,8 +211,16 @@ func _walk_toward_progress(
     direction: Vector3,
     target_progress: float,
     max_frames: int,
-    lower_bound_y: float
+    lower_bound_y: float,
+    action_id: String,
+    mesh_name: String,
+    direction_name: String
 ) -> Dictionary:
+    pppv_evidence.record_player_action(action_id, "input", {
+        "input_action": "move_forward",
+        "mesh": mesh_name,
+        "direction": direction_name
+    })
     var flat := Vector3(direction.x, 0.0, direction.z).normalized()
     if flat.length_squared() < 0.001:
         return {
@@ -232,7 +262,8 @@ func _walk_toward_progress(
         "progress": Vector3(moved.x, 0.0, moved.z).dot(flat),
         "min_y": min_y,
         "max_y": max_y,
-        "floor_contact_ratio": float(on_floor_frames) / float(maxi(used_frames, 1))
+        "floor_contact_ratio": float(on_floor_frames) / float(maxi(used_frames, 1)),
+        "used_frames": used_frames
     }
 
 func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void:
@@ -263,7 +294,7 @@ func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void
     var origin := player.global_position
     var rotation_before := player.rotation
     var forward_walk := await _exercise_input_walk(
-        scene, player, &"move_forward", 90, floor_y
+        scene, player, "r1_forward", &"move_forward", 90, floor_y
     )
 
     player.global_position = origin
@@ -271,7 +302,7 @@ func _exercise_r1_floor(scene: Node3D, manager, player: CharacterBody3D) -> void
     player.velocity = Vector3.ZERO
     await _settle_physics(8)
     var back_walk := await _exercise_input_walk(
-        scene, player, &"move_back", 90, floor_y
+        scene, player, "r1_back", &"move_back", 90, floor_y
     )
 
     _check("R1_forward_walk_no_fall_through", not bool(forward_walk["fell_through"]))
@@ -362,12 +393,25 @@ func _exercise_r8_stair_mesh(
         up_dir,
         ascent_distance * 0.98,
         240,
-        lower_floor_y - 6.0
+        lower_floor_y - 6.0,
+        "ascend",
+        mesh_name,
+        "ascending"
     )
     _check(check_prefix + "_up_progress", float(ascent["progress"]) >= ascent_distance * 0.94)
     _check(check_prefix + "_up_height", float(ascent["max_y"]) >= upper_floor_y - 3.0)
     _check(check_prefix + "_up_no_fall_through", float(ascent["min_y"]) >= lower_floor_y - 6.0)
     _check(check_prefix + "_up_floor_contact", float(ascent["floor_contact_ratio"]) >= 0.40)
+    pppv_evidence.record("stair_traversal", {
+        "mesh": mesh_name,
+        "direction": "ascending",
+        "progress_ok": float(ascent["progress"]) >= ascent_distance * 0.94,
+        "height_ok": float(ascent["max_y"]) >= upper_floor_y - 3.0,
+        "fell_through": float(ascent["min_y"]) < lower_floor_y - 6.0,
+        "floor_contact_ratio": ascent["floor_contact_ratio"],
+        "progress": ascent["progress"],
+        "target_progress": ascent_distance
+    }, "R8")
 
     # Descending is independently required: floor snap/support may fail on the
     # way down even when step-up has been fixed.
@@ -382,12 +426,25 @@ func _exercise_r8_stair_mesh(
         -up_dir,
         ascent_distance * 0.98,
         240,
-        lower_floor_y - 6.0
+        lower_floor_y - 6.0,
+        "descend",
+        mesh_name,
+        "descending"
     )
     _check(check_prefix + "_down_progress", float(descent["progress"]) >= ascent_distance * 0.94)
     _check(check_prefix + "_down_height", float(descent["min_y"]) <= lower_floor_y + 3.0)
     _check(check_prefix + "_down_no_fall_through", float(descent["min_y"]) >= lower_floor_y - 6.0)
     _check(check_prefix + "_down_floor_contact", float(descent["floor_contact_ratio"]) >= 0.40)
+    pppv_evidence.record("stair_traversal", {
+        "mesh": mesh_name,
+        "direction": "descending",
+        "progress_ok": float(descent["progress"]) >= ascent_distance * 0.94,
+        "height_ok": float(descent["min_y"]) <= lower_floor_y + 3.0,
+        "fell_through": float(descent["min_y"]) < lower_floor_y - 6.0,
+        "floor_contact_ratio": descent["floor_contact_ratio"],
+        "progress": descent["progress"],
+        "target_progress": ascent_distance
+    }, "R8")
 
 func _exercise_r8_stairs(scene: Node3D, manager, player: CharacterBody3D) -> void:
     manager.transition_cooldown = 999.0
@@ -421,6 +478,7 @@ func _finish(scene: Node = null, status_override: String = "") -> void:
         "status": status,
         "checks": check_count,
         "failed": failures,
+        "pppv_evidence": pppv_evidence.bundle(),
         "scope": "real production CharacterBody3D traversal using gameplay Input actions over the canonical R1 floor plus both imported R8 tread sequences (step011 and stairs__STAIR2), including ascent and descent; no movement-result teleport shortcut"
     }
     print("OPENAZRAEL_KG001_PHYSICAL_V117 " + JSON.stringify(result))
@@ -438,7 +496,8 @@ func _run() -> void:
             "schema": "openazrael.kg001.physical_traversal",
             "version": 117,
             "status": "BLOCKED_MISSING_ASSETS",
-            "missing": missing
+            "missing": missing,
+            "pppv_evidence": pppv_evidence.bundle()
         }))
         quit(2)
         return
