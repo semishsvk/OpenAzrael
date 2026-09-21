@@ -60,6 +60,86 @@ def evaluate_runtime_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         before_state,
         after_state,
     )
+
+    extra_errors: list[str] = []
+    if "runtime_guard_failures" in payload:
+        guard_failures = payload.get("runtime_guard_failures", [])
+        if not isinstance(guard_failures, list):
+            extra_errors.append("runtime_guard_failures must be a list")
+            guard_failures = []
+        extra_errors.extend(
+            f"runtime guard failure: {item}"
+            for item in guard_failures
+        )
+        report["runtime_guard_failures"] = list(guard_failures)
+
+    if "replay" in payload:
+        replay = payload.get("replay", {})
+        if not isinstance(replay, dict):
+            extra_errors.append("replay must be an object")
+            replay = {}
+        if replay.get("schema") != "remaster.synthetic_player_replay":
+            extra_errors.append("synthetic-player replay schema missing or invalid")
+        if replay.get("frame_level_avatar_trajectory") is not True:
+            extra_errors.append("frame-level avatar trajectory is not enabled")
+        replay_actions = replay.get("actions", [])
+        if not isinstance(replay_actions, list):
+            extra_errors.append("replay actions must be a list")
+            replay_actions = []
+        if len(replay_actions) != len(scenario.actions):
+            extra_errors.append(
+                "replay action count mismatch: "
+                f"{len(replay_actions)} != {len(scenario.actions)}"
+            )
+        for index, replay_action in enumerate(replay_actions):
+            if not isinstance(replay_action, dict):
+                extra_errors.append(f"replay action {index} is not an object")
+                continue
+            if not isinstance(replay_action.get("before"), dict):
+                extra_errors.append(
+                    f"replay action {index} missing before snapshot"
+                )
+            if not isinstance(replay_action.get("after"), dict):
+                extra_errors.append(
+                    f"replay action {index} missing after snapshot"
+                )
+            trajectory = replay_action.get("trajectory")
+            if not isinstance(trajectory, list):
+                extra_errors.append(
+                    f"replay action {index} trajectory must be a list"
+                )
+            result = replay_action.get("result")
+            if not isinstance(result, dict) or result.get("success") is not True:
+                extra_errors.append(
+                    f"replay action {index} did not complete successfully"
+                )
+        report["replay_action_count"] = len(replay_actions)
+
+    if "runtime_boundary" in payload:
+        boundary = payload.get("runtime_boundary", {})
+        if not isinstance(boundary, dict):
+            extra_errors.append("runtime_boundary must be an object")
+            boundary = {}
+        required_boundary = {
+            "direct_interact_calls": False,
+            "gameplay_teleport_during_actions": False,
+            "frame_level_avatar_trajectory": True,
+            "world_state_snapshots": True,
+            "softlock_watchdog": True,
+            "transition_spawn_validation": True,
+        }
+        for key, expected in required_boundary.items():
+            if boundary.get(key) is not expected:
+                extra_errors.append(
+                    f"runtime boundary mismatch {key}: "
+                    f"{boundary.get(key)!r} != {expected!r}"
+                )
+        report["runtime_boundary"] = boundary
+
+    if extra_errors:
+        report["errors"] = list(report["errors"]) + extra_errors
+        report["status"] = "FAIL"
+
     execution_status = str(payload.get("status", ""))
     execution_failures = payload.get("failures", [])
     if execution_status != "EXECUTION_PASS":
