@@ -1,14 +1,14 @@
 # OpenAzrael Last Session
 
-## Candidate 3 hardening — 2026-09-21
+## Candidate 3 + PPPV v2 integration — 2026-09-21
 
-Candidate 3 is now the active integration target on `test/kg001-physical-traversal`. This session hardened the export provenance contract to reject runtime asset additions/removals after preflight, added required exported-EXE startup smoke, corrected the stale Candidate 2 HUD watermark, and extended G10 to verify upright KEYHOLE orientation.
+Candidate 3 remains the authoritative runtime target; active integration is now `integration/kg001-candidate3-pppv-v2`, based on `test/kg001-physical-traversal`. This session hardened the export provenance contract to reject runtime asset additions/removals after preflight, added required exported-EXE startup smoke, corrected the stale Candidate 2 HUD watermark, and extended G10 to verify upright KEYHOLE orientation.
 
 The production stair solver now uses winding-safe near-to-far tread probes instead of one long signed-normal probe and exposes a bounded v117 step-debug trace with hit normal/face/height and rejection reason. `KEYHOLE#` receives a narrow vertical UV compatibility correction with synthetic and asset-backed regression; TONG6/MINETON# is an explicit negative control. None of these source changes are promoted as runtime PASS yet.
 
-Next evidence order: Candidate 3 source CI -> exact-SHA asset-backed preflight (v109/v110/v111/audio-v116/physical-v117/well-tongs-v118) -> guarded EXE/PCK export + startup smoke -> G10 manual route. Historical Candidate 2 Windows evidence remains below for provenance only.
+Next evidence order: Candidate 3 source CI including Remaster Framework tests -> exact-SHA asset-backed preflight (v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119/collision-parity-v120 + PPPV v2 suite/integrity + repeated chained playthrough determinism) -> guarded EXE/PCK export + startup smoke -> G10 manual route. Historical Candidate 2 Windows evidence remains below for provenance only.
 
-Current GitHub Actions observation: Candidate 3 source-gate run `35628120275` and its rerun fail before runner setup; both Python 3.11/3.12 jobs expose zero steps and no downloadable job log. No checkout or source validator executed, so this is recorded as an external/pre-runner execution blocker and **not** as Candidate 3 source-test failure. Source CI remains UNOBSERVED until a job actually starts.
+PPPV v2 is mandatory but remains NOT_EXECUTED on the integration HEAD; no PPPV PASS is inferred from authoring/source presence. Current GitHub Actions observation: Candidate 3 source-gate run `35628120275` and its rerun fail before runner setup; both Python 3.11/3.12 jobs expose zero steps and no downloadable job log. No checkout or source validator executed, so this is recorded as an external/pre-runner execution blocker and **not** as Candidate 3 source-test failure. Source CI remains UNOBSERVED until a job actually starts.
 
 ## Candidate 2 Windows execution — 2026-09-20
 
