@@ -551,10 +551,14 @@ def run_full_pppv(godot, repeat_count=2):
         if deterministic
         else ("NOT_RUN" if repeats<2 and all_runs_pass else "FAIL")
     )
+    plan_payload=json.loads(plan_path.read_text(encoding="utf-8"))
     determinism={
         "schema":"openazrael.kg001.pppv_determinism",
         "version":1,
         "status":determinism_status,
+        "plan_sha256":str(plan_payload.get("plan_sha256","")),
+        "plan_document_sha256":sha256_file(plan_path),
+        "scenario_bundle_sha256":sha256_file(scenarios_path),
         "repeat_count":repeats,
         "all_runs_pass":all_runs_pass,
         "semantic_replay_sha256":fingerprints,
@@ -693,6 +697,10 @@ def main():
         "kg001_pppv_scenario_suite.json",
         "kg001_pppv_playthrough.json",
         "kg001_pppv_playthrough_evaluation.json",
+        "kg001_pppv_playthrough_repeat2.json",
+        "kg001_pppv_playthrough_repeat2_evaluation.json",
+        "kg001_pppv_determinism.json",
+        "kg001_pppv_failure_reproducer.json",
     ):
         (TMP/stale_name).unlink(missing_ok=True)
     shutil.rmtree(TMP/"pppv_suite",ignore_errors=True)
@@ -971,6 +979,9 @@ def main():
             TMP/"kg001_pppv_scenario_suite.json":ROOT/"data/tests/kg001_pppv_scenario_suite.json",
             TMP/"kg001_pppv_playthrough.json":ROOT/"data/tests/kg001_pppv_playthrough.json",
             TMP/"kg001_pppv_playthrough_evaluation.json":ROOT/"data/tests/kg001_pppv_playthrough_evaluation.json",
+            TMP/"kg001_pppv_playthrough_repeat2.json":ROOT/"data/tests/kg001_pppv_playthrough_repeat2.json",
+            TMP/"kg001_pppv_playthrough_repeat2_evaluation.json":ROOT/"data/tests/kg001_pppv_playthrough_repeat2_evaluation.json",
+            TMP/"kg001_pppv_determinism.json":ROOT/"data/tests/kg001_pppv_determinism.json",
             TMP/"kg001_pppv_failure_reproducer.json":ROOT/"data/tests/kg001_pppv_failure_reproducer.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
