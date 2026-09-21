@@ -21,6 +21,14 @@ TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
 FRESH_RESULT = TMP / "kg001_fresh_checkout.json"
+PPPV_TMP = ROOT / ".tmp/kg001_pppv_v2"
+PPPV_REQUIRED_EVIDENCE = {
+    "scenario_suite": PPPV_TMP / "kg001_pppv_scenario_suite.json",
+    "scenario_suite_integrity": PPPV_TMP / "pppv_scenario_suite_integrity.json",
+    "playthrough_evaluation": PPPV_TMP / "kg001_pppv_playthrough_evaluation.json",
+    "determinism": PPPV_TMP / "kg001_pppv_determinism.json",
+    "determinism_integrity": PPPV_TMP / "pppv_determinism_integrity.json",
+}
 REQUIRED_RUNTIME = (
     "v109",
     "v110",
@@ -191,6 +199,39 @@ def main() -> int:
     if not CANDIDATE_RESULT.is_file() or not FRESH_RESULT.is_file():
         return fail("PREFLIGHT_EVIDENCE_MISSING")
 
+    pppv_cmd = [
+        sys.executable,
+        "tools/run_candidate3_pppv_v2.py",
+        "--fresh-checkout",
+        "--godot",
+        godot,
+    ]
+    pppv_run = run(pppv_cmd)
+    if pppv_run.returncode != 0:
+        return fail(
+            "PPPV_V2_RUNTIME_FAILED",
+            {"returncode": pppv_run.returncode, "output_tail": pppv_run.stdout[-20000:]},
+        )
+
+    missing_pppv = [
+        str(p.relative_to(ROOT))
+        for p in PPPV_REQUIRED_EVIDENCE.values()
+        if not p.is_file()
+    ]
+    if missing_pppv:
+        return fail("PPPV_V2_EVIDENCE_MISSING", {"missing": missing_pppv})
+
+    pppv_evidence = {
+        name: json.loads(p.read_text(encoding="utf-8"))
+        for name, p in PPPV_REQUIRED_EVIDENCE.items()
+    }
+    pppv_status = {
+        name: str(payload.get("status", "UNKNOWN"))
+        for name, payload in pppv_evidence.items()
+    }
+    if not all(status == "PASS" for status in pppv_status.values()):
+        return fail("PPPV_V2_INVARIANT_FAILED", {"status": pppv_status})
+
     candidate = json.loads(CANDIDATE_RESULT.read_text(encoding="utf-8"))
     fresh = json.loads(FRESH_RESULT.read_text(encoding="utf-8"))
     head_after = git_head()
@@ -232,7 +273,7 @@ def main() -> int:
 
     receipt = {
         "schema": "openazrael.kg001.candidate3_preflight",
-        "version": 1,
+        "version": 2,
         "status": "PASS",
         "candidate": "KG-001 Candidate 3",
         "export_allowed": True,
@@ -243,11 +284,19 @@ def main() -> int:
         "source_validators": "PASS",
         "godot_import": "PASS",
         "runtime_status": {name: runtime_status[name] for name in REQUIRED_RUNTIME},
+        "pppv_v2_status": pppv_status,
         "evidence": {
             "candidate_result": str(CANDIDATE_RESULT.relative_to(ROOT)),
             "candidate_result_sha256": sha256(CANDIDATE_RESULT),
             "fresh_checkout": str(FRESH_RESULT.relative_to(ROOT)),
             "fresh_checkout_sha256": sha256(FRESH_RESULT),
+            "pppv_v2": {
+                name: {
+                    "path": str(path.relative_to(ROOT)),
+                    "sha256": sha256(path),
+                }
+                for name, path in PPPV_REQUIRED_EVIDENCE.items()
+            },
         },
         "runtime_asset_summary": {
             "total_files": len(asset_files),
@@ -264,7 +313,7 @@ def main() -> int:
         },
         "build_rule": (
             "Export is permitted only while Git HEAD, clean worktree, Godot version, "
-            "candidate/fresh evidence and restored runtime asset hashes still match this receipt."
+            "candidate/fresh evidence, PPPV v2 evidence and restored runtime asset hashes still match this receipt."
         ),
     }
     RECEIPT.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
