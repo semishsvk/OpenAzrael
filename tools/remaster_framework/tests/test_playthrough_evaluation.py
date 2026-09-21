@@ -124,12 +124,35 @@ def bundle() -> dict:
         ],
         "final_state_sha256": HASH,
         "expected_final_state_sha256": HASH,
+        "runtime_guard_failures": [],
+        "replay": {
+            "schema": "remaster.synthetic_player_replay",
+            "version": 1,
+            "frame_level_avatar_trajectory": True,
+            "actions": [
+                {
+                    "action_id": "forward",
+                    "kind": "move",
+                    "command": scenario_payload()["actions"][0],
+                    "before": {"physics_frame": 0, "room": "R1"},
+                    "trajectory": [
+                        {"physics_frame": 1, "position": [0.0, 0.0, 0.0]}
+                    ],
+                    "after": {"physics_frame": 2, "room": "R1"},
+                    "result": {"success": True, "failures": []},
+                }
+            ],
+        },
         "runtime_boundary": {
             "single_scene_instance": True,
             "state_reset_between_scenarios": False,
             "direct_interact_calls": False,
             "gameplay_teleport_during_actions": False,
             "checkpoint_persistence": "canonical_state_roundtrip",
+            "frame_level_avatar_trajectory": True,
+            "world_state_snapshots": True,
+            "softlock_watchdog": True,
+            "transition_spawn_validation": True,
         },
     }
 
@@ -155,6 +178,25 @@ class PlaythroughEvaluationTests(unittest.TestCase):
         self.assertEqual(report["status"], "FAIL")
         self.assertTrue(
             any("roundtrip hash mismatch" in item for item in report["errors"])
+        )
+
+
+    def test_runtime_guard_failure_blocks_playthrough(self) -> None:
+        payload = bundle()
+        payload["runtime_guard_failures"] = ["walk:unsupported_fall"]
+        report = evaluate_playthrough_bundle(payload)
+        self.assertEqual(report["status"], "FAIL")
+        self.assertTrue(
+            any("runtime guard failure" in item for item in report["errors"])
+        )
+
+    def test_missing_replay_action_blocks_playthrough(self) -> None:
+        payload = bundle()
+        payload["replay"]["actions"] = []
+        report = evaluate_playthrough_bundle(payload)
+        self.assertEqual(report["status"], "FAIL")
+        self.assertTrue(
+            any("replay action count mismatch" in item for item in report["errors"])
         )
 
     def test_runtime_boundary_shortcut_blocks_playthrough(self) -> None:
