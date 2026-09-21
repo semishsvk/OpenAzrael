@@ -26,6 +26,7 @@ const REQUIRED_CORE_RESOURCES := [
 # Golden Event-IR stream used by the KG-001 demo route. Ambient/classic parity
 # has its own evidence track and is intentionally not promoted here.
 const REQUIRED_CANDIDATE_AUDIO := [
+    "res://assets/audio/979TONGS.WAV",
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
