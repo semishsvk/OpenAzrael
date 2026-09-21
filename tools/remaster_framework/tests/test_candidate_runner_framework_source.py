@@ -37,6 +37,22 @@ class CandidateRunnerFrameworkSourceTests(unittest.TestCase):
         self.assertIn("kg001_physical_traversal_runner_v117.gd", self.source)
         self.assertIn("kg001_well_tongs_animation_runner_v118.gd", self.source)
 
+    def test_real_input_well_pppv_is_supplemental_not_silent_g09_gate(self) -> None:
+        self.assertIn("def run_well_pppv(godot):", self.source)
+        self.assertIn("pppv_scenario_runner.gd", self.source)
+        self.assertIn("tools.remaster_framework.evaluate_validation", self.source)
+        self.assertIn("kg001_well_tongs_pppv.json", self.source)
+        self.assertIn('"final_pppv_oracle":True', self.source)
+
+        fresh_expression = self.source.split("fresh_pass=(", 1)[1].split(
+            ")\n\n    fresh=", 1
+        )[0]
+        self.assertNotIn("well_pppv", fresh_expression)
+        self.assertIn(
+            '"well_tongs_real_input_pppv":well_pppv.get("status","")',
+            self.source,
+        )
+
     def test_framework_failure_affects_process_exit_but_not_recorded_g09(self) -> None:
         self.assertIn('framework_ok = framework_status == "PASS"', self.source)
         self.assertIn("fresh_pass and framework_ok and metadata_ok", self.source)
