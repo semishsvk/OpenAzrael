@@ -25,6 +25,8 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertNotIn("T07_R7_TO_R1", plan["blocked_steps"])
         self.assertNotIn("T09_R1_TO_R8", plan["blocked_steps"])
         self.assertIn("S05_SWITCHBOARD", plan["blocked_steps"])
+        self.assertNotIn("T07_R7_TO_R1", plan["blocked_steps"])
+        self.assertNotIn("T09_R1_TO_R8", plan["blocked_steps"])
         self.assertIn("S10_TAKE_LENS", plan["blocked_steps"])
         self.assertIn("S11_OPTICAL_SEQUENCE", plan["blocked_steps"])
         self.assertIn("S13_TAKE_SHIELD", plan["blocked_steps"])
@@ -40,6 +42,20 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertEqual(rows["S08_OPEN_DOOR2"]["status"], "READY")
 
     def test_transition_scenarios_are_reused_as_ready_segments(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root)
+        )
+        rows = {row["step_id"]: row for row in plan["steps"]}
+        self.assertEqual(rows["T03_R1_TO_R7"]["status"], "READY")
+        self.assertEqual(rows["T07_R7_TO_R1"]["status"], "READY")
+        self.assertEqual(rows["T09_R1_TO_R8"]["status"], "READY")
+        self.assertEqual(
+            rows["T03_R1_TO_R7"]["scenario_id"],
+            "openazrael.transition.r1_to_r7",
+        )
+
+    def test_physical_transitions_are_reused_as_ready_segments(self) -> None:
         root = Path(__file__).resolve().parents[3]
         plan = build_openazrael_demo_playthrough_plan(
             _default_scenario_bundle(root)
