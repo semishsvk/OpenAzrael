@@ -13,7 +13,7 @@ body:
     id: build
     attributes:
       label: Build / checkpoint
-      placeholder: KG-001 Candidate 1 / v116-context-v27
+      placeholder: KG-001 Candidate 1 / v116-context-v28
     validations:
       required: true
   - type: input
@@ -70,7 +70,7 @@ body:
     id: package
     attributes:
       label: Diagnostic package
-      description: Drag the F11 ZIP here. Screenshot/video may also be attached separately.
+      description: Drag the F11 ZIP here. When staged in the build, it already contains provenance, release-gate and PPPV-coverage metadata. Screenshot/video may also be attached separately.
   - type: textarea
     id: notes
     attributes:
