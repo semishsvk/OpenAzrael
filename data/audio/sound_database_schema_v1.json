@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scope": "R1-R7-R8 vertical slice",
+  "policy": {
+    "source_of_truth": "original demo WORLD/PUZZLES/audio evidence",
+    "unknown_fields": "HOLD",
+    "runtime_default": "classic",
+    "enhanced_spatial": "feature_flagged"
+  },
+  "confidence_levels": ["VERIFIED","HIGH","MEDIUM","LOW","HOLD"],
+  "sound_record": {
+    "required": ["sound_id","stem","asset","provenance","confidence","usage"],
+    "fields": {
+      "sound_id": "stable OpenAzrael identifier",
+      "stem": "original sound stem",
+      "asset": "resolved WAV/import path or null",
+      "sha256": "source payload digest when locally available",
+      "provenance": "WORLD/PUZZLES/AMB/runtime-capture/manual evidence references",
+      "confidence": "VERIFIED|HIGH|MEDIUM|LOW|HOLD",
+      "usage": "ambient|event|object|unknown",
+      "room": "R1|R7|R8|null",
+      "object_index": "WORLD section-0 object index or null",
+      "position": "original XYZ or null",
+      "loop": "true|false|null",
+      "classic": "original parameters/evidence only",
+      "enhanced": "derived spatial parameters; never overwrite classic evidence"
+    }
+  }
+}
