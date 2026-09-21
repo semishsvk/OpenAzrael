@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "slice": ["R1","R7","R8"],
+  "coordinate_transform": {"mode":"identity_xyz","confidence":"HIGH","evidence":"v67"},
+  "rooms": [
+    {"id":"R1","legacy_context_id":0,"acoustic_profile":"HOLD","portals":["R1_R7","R1_R8"]},
+    {"id":"R7","legacy_context_id":1,"acoustic_profile":"HOLD","portals":["R1_R7"]},
+    {"id":"R8","legacy_context_id":2,"acoustic_profile":"HOLD","portals":["R1_R8"]}
+  ],
+  "portals": [
+    {"id":"R1_R7","rooms":["R1","R7"],"geometry":"derive_from_verified_transition","occlusion":"HOLD"},
+    {"id":"R1_R8","rooms":["R1","R8"],"geometry":"derive_from_verified_transition","occlusion":"HOLD"}
+  ],
+  "runtime_modes": {
+    "classic":{"authoritative_inputs":"original evidence only","enhancements":false},
+    "enhanced_spatial":{"authoritative_identity":"same sound_id/trigger/state","spatialization":true,"reverb":"profile-driven","occlusion":"portal/geometry-driven"}
+  },
+  "invariants": [
+    "classic and enhanced use identical sound identity and gameplay trigger semantics",
+    "enhanced metadata never mutates original provenance",
+    "unknown original parameters remain HOLD",
+    "mode switch must not mutate puzzle/game state"
+  ]
+}
