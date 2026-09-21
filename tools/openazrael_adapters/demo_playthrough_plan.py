@@ -178,6 +178,14 @@ def build_openazrael_demo_playthrough_plan(
             purpose="Acquire the lens through production interaction.",
         ),
         _scenario_step(
+            "S11_PLACE_LENS",
+            "R8",
+            "openazrael.r8.place_lens",
+            available,
+            required_state_paths=("puzzle.R8LensPlace",),
+            purpose="Place the recovered lens on the stone Bible.",
+        ),
+        _scenario_step(
             "S11_OPTICAL_SEQUENCE",
             "R8",
             "openazrael.r8.optical_sequence",
