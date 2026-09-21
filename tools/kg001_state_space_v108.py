@@ -70,7 +70,9 @@ class Model:
         elif a=="transition_R8_R1":
             if s.room=="R8" and self.edge("R8","zxorrery","R1"): return replace(s,room="R1",sequence_running=False),audio
         elif a=="retrieve_well_key":
-            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"):\n                s,audio=apply_event_graph(s,self.event_graph,"R7_WELL_TONGS_USE")\n                return s.add_inventory("well_key").remove_inventory("rusty_tongs").set_puzzle("R7KeyTake").set_flag("R7key"),audio
+            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"):
+                s,audio=apply_event_graph(s,self.event_graph,"R7_WELL_TONGS_USE")
+                return s.add_inventory("well_key").remove_inventory("rusty_tongs").set_puzzle("R7KeyTake").set_flag("R7key"),audio
         elif a in ("switch_well_lev02","switch_well_weel3"):
             if s.room=="R7" and not s.flag("R8BathDrain"):
                 control=a.removeprefix("switch_"); step=int(s.value("R7SwitchStep",0))
