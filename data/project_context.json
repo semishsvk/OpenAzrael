@@ -213,13 +213,13 @@
     "kg001_candidate3_export_pair": "EXE_PLUS_PCK_REQUIRED",
     "kg001_candidate3_export_startup_smoke": "REQUIRED_BEFORE_PASS_RECEIPT",
     "kg001_keyhole_orientation": "SOURCE_FIX_READY_FLIP_V_CANDIDATE3_KEYHOLE_RUNTIME_MANUAL_RETEST_REQUIRED",
-    "kg001_candidate3_source_ci_run_id": 35628120275,
     "kg001_candidate3_source_ci_jobs": [
       "Python 3.11",
       "Python 3.12"
     ],
-    "kg001_candidate3_source_ci_observation": "Both jobs conclude failure with zero recorded steps, including after rerun; no source validator or checkout step executed. Treat as GitHub Actions execution/account/runner blocker, not Candidate 3 test evidence.",
-    "kg001_candidate3_source_ci_code_result": "UNOBSERVED"
+    "kg001_candidate3_source_ci_observation": "Repeated Candidate 3 source-gate attempts, including same-SHA reruns, conclude failure with zero recorded steps for both Python 3.11 and 3.12. No checkout or source validator has executed in those attempts. Treat as a GitHub Actions execution/account/runner blocker, not Candidate 3 source-test evidence.",
+    "kg001_candidate3_source_ci_code_result": "UNOBSERVED",
+    "kg001_candidate3_source_ci_observation_class": "REPEATED_ZERO_STEP_PRE_RUNNER_FAILURE"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -230,7 +230,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Resolve the GitHub Actions pre-runner execution blocker (current run 35628120275 has zero job steps), then require Candidate 3 source CI PASS at the exact head. After that run the asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118, guarded export with exact asset-set/hash binding and startup smoke, then receipt-bound G10.",
+  "next_target": "Resolve the repeated GitHub Actions pre-runner zero-step execution blocker, then require Candidate 3 source CI PASS at the exact head. After that run the asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118, guarded export with exact asset-set/hash binding and startup smoke, then fixed-order fail-fast receipt-bound G10.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
