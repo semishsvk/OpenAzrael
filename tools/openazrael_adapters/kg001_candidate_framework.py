@@ -135,6 +135,18 @@ def build_candidate_framework_bundle(
     playthrough_evaluation_status = "NOT_AVAILABLE"
     if playthrough_runtime_path.is_file():
         runtime_payload = _load(playthrough_runtime_path)
+        runtime_plan = runtime_payload.get("plan")
+        if not isinstance(runtime_plan, dict):
+            raise ValueError(
+                "PPPV playthrough runtime is missing embedded plan"
+            )
+        runtime_plan_sha256 = str(runtime_plan.get("plan_sha256", ""))
+        expected_plan_sha256 = str(playthrough_plan.get("plan_sha256", ""))
+        if runtime_plan_sha256 != expected_plan_sha256:
+            raise ValueError(
+                "PPPV playthrough runtime plan hash does not match "
+                "the current candidate plan"
+            )
         playthrough_runtime_status = str(
             runtime_payload.get("status", "UNKNOWN")
         )
