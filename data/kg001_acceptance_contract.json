@@ -74,7 +74,8 @@
         "v119 Input-driven R1 route traversal across audited floor waypoints",
         "v120 generic visible floor-like mesh/runtime collision parity across R1/R7/R8",
         "PPPV v2 current-bundle guarded scenario suite PASS",
-        "PPPV v2 scenario-suite integrity PASS"
+        "PPPV v2 scenario-suite integrity PASS",
+        "v121 four-sample-per-triangle physics support coverage across non-exempt floor-like geometry in R1/R7/R8"
       ],
       "candidate3_regression": {
         "bug_report": "openazrael_bugreport_1790007921_0054.zip",
@@ -167,7 +168,8 @@
         "R1 floor-support failure",
         "R8 step011__mesh traversal failure",
         "R8 stairs__STAIR2 traversal failure",
-        "reproducible softlock"
+        "reproducible softlock",
+        "required room transition failure"
       ]
     }
   ],
