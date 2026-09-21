@@ -136,8 +136,11 @@ def aggregate_release(
         defects = {}
         blockers.append("defects must be an object")
 
+    inventory_complete = defects.get("inventory_complete") is True
     critical = int(defects.get("known_critical_bugs", 0))
     softlocks = int(defects.get("reproducible_softlocks", 0))
+    if not inventory_complete:
+        blockers.append("defect inventory is incomplete")
     if critical != 0:
         blockers.append(f"known critical bugs: {critical}")
     if softlocks != 0:
@@ -168,6 +171,7 @@ def aggregate_release(
         "candidate": candidate,
         "status": status,
         "defects": {
+            "inventory_complete": inventory_complete,
             "known_critical_bugs": critical,
             "reproducible_softlocks": softlocks,
         },
