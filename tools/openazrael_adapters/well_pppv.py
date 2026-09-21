@@ -84,6 +84,7 @@ def adapt_well_tongs_contract(
         room=room,
         setup={
             "inventory": {item: True},
+            "puzzle": {"PickupCollected:rusty_tongs": True},
             "reset_room_state": True,
             "spawn_view": "view",
             "lock_room_transitions": True,
@@ -123,6 +124,11 @@ def adapt_well_tongs_contract(
         ),
         state_expectations=(
             StateExpectation(f"inventory.{item}", True, False),
+            StateExpectation(
+                "puzzle.PickupCollected:rusty_tongs",
+                True,
+                True,
+            ),
             StateExpectation("inventory.well_key", False, True),
             StateExpectation("puzzle.R7KeyTake", False, True),
             StateExpectation("flags.R7key", False, True),
@@ -141,6 +147,7 @@ def adapt_well_tongs_contract(
         room=room,
         setup={
             "inventory": {item: False},
+            "puzzle": {"PickupCollected:rusty_tongs": False},
             "reset_room_state": True,
             "spawn_view": "view",
             "lock_room_transitions": True,
@@ -174,6 +181,11 @@ def adapt_well_tongs_contract(
         ),
         state_expectations=(
             StateExpectation(f"inventory.{item}", False, False),
+            StateExpectation(
+                "puzzle.PickupCollected:rusty_tongs",
+                False,
+                False,
+            ),
             StateExpectation("inventory.well_key", False, False),
             StateExpectation("puzzle.R7KeyTake", False, False),
             StateExpectation("flags.R7key", False, False),
