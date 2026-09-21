@@ -170,6 +170,10 @@ func get_debug_snapshot() -> Array[Dictionary]:
         if not is_instance_valid(p): continue
         out.append({
             "node": p.name,
+            "emitter_id": p.name,
+            "sound_id": "ambient." + String(p.name).to_lower(),
+            "asset": String(p.name).trim_prefix("LegacyAmbient_") + ".WAV",
+            "provenance": p.get_meta("openazrael_provenance", "ORIGINAL_EXPLICIT"),
             "position": [p.position.x,p.position.y,p.position.z],
             "legacy_position": p.get_meta("legacy_position", []),
             "source": p.get_meta("legacy_source", ""),
