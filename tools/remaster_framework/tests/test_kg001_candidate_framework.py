@@ -16,11 +16,14 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[3]
         bundle = _default_scenario_bundle(root)
         ids = {row["scenario_id"] for row in bundle["scenarios"]}
-        self.assertEqual(bundle["scenario_count"], 9)
+        self.assertEqual(bundle["scenario_count"], 12)
         self.assertIn("openazrael.r1.pickup_tongs", ids)
         self.assertIn("openazrael.r1.open_door1", ids)
         self.assertIn("openazrael.r1.open_door2", ids)
         self.assertIn("openazrael.r1.open_door2.negative_without_key", ids)
+        self.assertIn("openazrael.transition.r1_to_r7", ids)
+        self.assertIn("openazrael.transition.r7_to_r1", ids)
+        self.assertIn("openazrael.transition.r1_to_r8", ids)
         self.assertIn("openazrael.r1.floor_traversal", ids)
         self.assertIn("openazrael.r7.well_tongs.positive", ids)
         self.assertIn(
