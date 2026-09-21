@@ -21,6 +21,10 @@ KNOWN_ARTIFACTS = {
         "pppv_coverage.json",
         "remaster.validation_coverage",
     ),
+    "pppv_playthrough_evaluation": (
+        "pppv_playthrough_evaluation.json",
+        "remaster.playthrough_evaluation",
+    ),
 }
 MAX_ARTIFACT_BYTES = 2 * 1024 * 1024
 
@@ -104,6 +108,19 @@ def _artifact_sources_from_bundle(bundle_path: Path) -> dict[str, Path]:
                 f"KG framework artifact escapes bundle directory: {raw}"
             ) from exc
         resolved[artifact_id] = candidate
+
+    optional_name = artifacts.get("pppv_playthrough_evaluation")
+    if isinstance(optional_name, str) and optional_name:
+        optional_path = (base / optional_name).resolve()
+        try:
+            optional_path.relative_to(base)
+        except ValueError as exc:
+            raise ValueError(
+                "KG framework artifact escapes bundle directory: "
+                f"{optional_name}"
+            ) from exc
+        resolved["pppv_playthrough_evaluation"] = optional_path
+
     return resolved
 
 
@@ -113,6 +130,7 @@ def stage_runtime_metadata(
     build_provenance: Path | None = None,
     release_gate_summary: Path | None = None,
     pppv_coverage: Path | None = None,
+    pppv_playthrough_evaluation: Path | None = None,
     framework_bundle: Path | None = None,
 ) -> dict[str, Any]:
     root = project_root.resolve()
@@ -123,6 +141,7 @@ def stage_runtime_metadata(
         "build_provenance": build_provenance,
         "release_gate_summary": release_gate_summary,
         "pppv_coverage": pppv_coverage,
+        "pppv_playthrough_evaluation": pppv_playthrough_evaluation,
     }
     if framework_bundle is not None:
         explicit = [key for key, value in supplied.items() if value is not None]
@@ -189,6 +208,7 @@ def main() -> int:
     stage.add_argument("--build-provenance", type=Path)
     stage.add_argument("--release-gate-summary", type=Path)
     stage.add_argument("--pppv-coverage", type=Path)
+    stage.add_argument("--pppv-playthrough-evaluation", type=Path)
     stage.add_argument("--framework-bundle", type=Path)
     stage.add_argument("--output", type=Path)
 
@@ -206,6 +226,7 @@ def main() -> int:
         build_provenance=args.build_provenance,
         release_gate_summary=args.release_gate_summary,
         pppv_coverage=args.pppv_coverage,
+        pppv_playthrough_evaluation=args.pppv_playthrough_evaluation,
         framework_bundle=args.framework_bundle,
     )
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
