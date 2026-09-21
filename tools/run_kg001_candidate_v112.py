@@ -100,10 +100,94 @@ def write_json(path,data):
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8")
 
+def run_well_pppv(godot):
+    scenario_root=TMP/"pppv_scenarios"
+    bundle_path=TMP/"pppv_scenarios_preflight.json"
+    materialize=run([
+        sys.executable,
+        "-m",
+        "tools.openazrael_adapters.pppv",
+        "--well-contract",str(ROOT/"data/tests/kg001_well_tongs_animation_contract_v118.json"),
+        "--output",str(bundle_path),
+        "--split-dir",str(scenario_root),
+    ])
+    if materialize.returncode!=0:
+        return {
+            "status":"FAIL",
+            "materialization":"FAIL",
+            "output":materialize.stdout[-12000:],
+            "scenarios":{}
+        }
+
+    cases={
+        "positive":scenario_root/"openazrael_r7_well_tongs_positive.json",
+        "negative":scenario_root/"openazrael_r7_well_tongs_negative_without_tongs.json",
+    }
+    results={}
+    all_pass=True
+    for name,scenario_path in cases.items():
+        runtime_path=TMP/f"pppv_well_{name}_runtime.json"
+        evaluation_path=TMP/f"pppv_well_{name}_evaluation.json"
+        proc=run([
+            godot,
+            "--headless",
+            "--path",str(ROOT),
+            "--script","res://scripts/validation/pppv_scenario_runner.gd",
+            "--",
+            f"--pppv-scenario={scenario_path}",
+            f"--pppv-output={runtime_path}",
+        ])
+        evaluation=None
+        evaluator_returncode=None
+        if runtime_path.is_file():
+            evaluator=run([
+                sys.executable,
+                "-m",
+                "tools.remaster_framework.evaluate_validation",
+                "--runtime-bundle",str(runtime_path),
+                "--output",str(evaluation_path),
+            ])
+            evaluator_returncode=evaluator.returncode
+            if evaluation_path.is_file():
+                try:
+                    evaluation=json.loads(evaluation_path.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError,OSError):
+                    evaluation=None
+        status=(
+            "PASS"
+            if proc.returncode==0
+            and evaluator_returncode==0
+            and isinstance(evaluation,dict)
+            and evaluation.get("status")=="PASS"
+            else "FAIL"
+        )
+        if status!="PASS":
+            all_pass=False
+        results[name]={
+            "status":status,
+            "godot_returncode":proc.returncode,
+            "evaluator_returncode":evaluator_returncode,
+            "scenario":str(scenario_path.relative_to(ROOT)),
+            "runtime":str(runtime_path.relative_to(ROOT)) if runtime_path.is_file() else "",
+            "evaluation":evaluation or {},
+            "output_tail":proc.stdout[-12000:],
+        }
+
+    summary={
+        "schema":"openazrael.kg001.well_tongs_pppv",
+        "version":1,
+        "status":"PASS" if all_pass else "FAIL",
+        "materialization":"PASS",
+        "final_pppv_oracle":True,
+        "scenarios":results,
+    }
+    write_json(TMP/"kg001_well_tongs_pppv.json",summary)
+    return summary
+
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109-v111 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109/v110/v111/v117/v118 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout/framework summaries into data/tests for review/commit.")
     ap.add_argument("--stage-framework-metadata",action="store_true",help="After G09 observation, stage ignored source-safe provenance/release/PPPV metadata under data/runtime for a subsequent manual Candidate/F11 run.")
     args=ap.parse_args()
@@ -151,9 +235,31 @@ def main():
             parsed["_output_tail"]=proc.stdout[-12000:]
             runtimes[name]=parsed
             write_json(TMP/f"kg001_{name}_runtime.json",parsed)
+        well_pppv_audio=ROOT/"assets/audio/979TONGS.WAV"
+        if all(asset_present.values()) and well_pppv_audio.is_file():
+            well_pppv=run_well_pppv(godot)
+        else:
+            missing=[
+                path for path,present in asset_present.items() if not present
+            ]
+            if not well_pppv_audio.is_file():
+                missing.append("assets/audio/979TONGS.WAV")
+            well_pppv={
+                "status":"BLOCKED_MISSING_ASSETS",
+                "missing":missing,
+                "final_pppv_oracle":True,
+                "scenarios":{}
+            }
+            write_json(TMP/"kg001_well_tongs_pppv.json",well_pppv)
     else:
         for name,_,_ in RUNTIMES:
             runtimes[name]={"status":"BLOCKED_GODOT_NOT_FOUND"}
+        well_pppv={
+            "status":"BLOCKED_GODOT_NOT_FOUND",
+            "final_pppv_oracle":True,
+            "scenarios":{}
+        }
+        write_json(TMP/"kg001_well_tongs_pppv.json",well_pppv)
 
     clean_after=git_clean()
     full_runtime_pass=all(runtimes.get(name,{}).get("status")=="PASS" for name,_,_ in RUNTIMES)
@@ -177,7 +283,10 @@ def main():
         "source_validators_pass":source_ok,
         "room_assets_present":asset_present,
         "room_assets_git_ignored":asset_ignored,
-        "runtime_status":{k:v.get("status","") for k,v in runtimes.items()}
+        "runtime_status":{k:v.get("status","") for k,v in runtimes.items()},
+        "supplemental_runtime_status":{
+            "well_tongs_real_input_pppv":well_pppv.get("status","")
+        }
     }
     write_json(TMP/"kg001_source_validation_v112.json",{"status":"PASS" if source_ok else "FAIL","commands":source})
     write_json(TMP/"kg001_fresh_checkout.json",fresh)
@@ -191,6 +300,9 @@ def main():
         "godot_import_status":import_status,
         "source_validators":"PASS" if source_ok else "FAIL",
         "runtimes":{k:v.get("status","") for k,v in runtimes.items()},
+        "supplemental_runtimes":{
+            "well_tongs_real_input_pppv":well_pppv.get("status","")
+        },
         "fresh_checkout":fresh["status"],
         "evidence_dir":str(TMP.relative_to(ROOT))
     }
@@ -235,6 +347,7 @@ def main():
             TMP/"kg001_v111_runtime.json":ROOT/"data/tests/kg001_full_demo_runtime_v111.json",
             TMP/"kg001_v117_runtime.json":ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json",
             TMP/"kg001_v118_runtime.json":ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json",
+            TMP/"kg001_well_tongs_pppv.json":ROOT/"data/tests/kg001_well_tongs_pppv.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
             TMP/"kg001_release_gate_results.json":ROOT/"data/tests/kg001_release_gate_results.json",
