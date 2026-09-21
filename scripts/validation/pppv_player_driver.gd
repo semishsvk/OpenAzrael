@@ -11,19 +11,27 @@ const MOVEMENT_ACTIONS := [
 var player: CharacterBody3D
 var interaction_probe: Node
 var evidence: PPPVEvidenceBus
+var runtime_guard = null
 
 func _init(
     production_player: CharacterBody3D,
     production_interaction_probe: Node,
-    evidence_bus: PPPVEvidenceBus
+    evidence_bus: PPPVEvidenceBus,
+    guard = null
 ) -> void:
     player = production_player
     interaction_probe = production_interaction_probe
     evidence = evidence_bus
+    runtime_guard = guard
 
 func _release_movement() -> void:
     for action in MOVEMENT_ACTIONS:
         Input.action_release(action)
+
+func _guard_sample(action_id: String) -> bool:
+    if runtime_guard == null:
+        return true
+    return bool(runtime_guard.sample(action_id))
 
 func walk_input(
     action_id: String,
@@ -49,8 +57,21 @@ func walk_input(
     Input.action_press(input_action, 1.0)
     for _i in range(frames):
         await player.get_tree().physics_frame
+        if not _guard_sample(action_id):
+            Input.action_release(input_action)
+            evidence.record("driver_error", {
+                "action_id": action_id,
+                "reason": "runtime_guard_failure"
+            })
+            return {}
     Input.action_release(input_action)
     await player.get_tree().physics_frame
+    if not _guard_sample(action_id):
+        evidence.record("driver_error", {
+            "action_id": action_id,
+            "reason": "runtime_guard_failure"
+        })
+        return {}
 
     var finish := player.global_position
     var horizontal_distance := Vector2(
@@ -135,6 +156,12 @@ func wait_physics(action_id: String, frames: int) -> bool:
     })
     for _i in range(frames):
         await player.get_tree().physics_frame
+        if not _guard_sample(action_id):
+            evidence.record("driver_error", {
+                "action_id": action_id,
+                "reason": "runtime_guard_failure"
+            })
+            return false
     evidence.record("physics_wait", {
         "action_id": action_id,
         "frames": frames,
