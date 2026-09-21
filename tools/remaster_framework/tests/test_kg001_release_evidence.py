@@ -26,11 +26,43 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
         )
         self._write(
             evidence / "kg001_state_space_v108.json",
-            {"status": "PASS"},
+            {
+                      "schema": "openazrael.kg001.state_space",
+                      "version": 108,
+                      "status": "PASS",
+                      "softlock_states": 0,
+                      "non_success_dead_end_states": 0,
+                      "shortest_success_persistent_state_sha256": "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902",
+                      "exploration_checks": {
+                                "all_reachable_states_can_reach_success": true,
+                                "no_non_success_dead_ends": true,
+                                "success_reachable": true,
+                                "shortest_path_ends_in_demo_complete": true,
+                                "canonical_hash_is_order_invariant": true
+                      }
+            },
         )
         self._write(
             evidence / "kg001_state_fuzz_v119.json",
-            {"status": "PASS"},
+            {
+                      "schema": "openazrael.kg001.state_fuzz",
+                      "version": 119,
+                      "status": "PASS",
+                      "fuzz": {
+                                "status": "PASS",
+                                "failure_count": 0,
+                                "attempts": 512
+                      },
+                      "properties": {
+                                "transition_determinism": true,
+                                "noop_purity": true,
+                                "state_invariants": true,
+                                "transition_invariants": true,
+                                "reachable_graph_membership": true,
+                                "liveness_to_success": true,
+                                "success_monotonicity": true
+                      }
+            },
         )
         self._write(
             evidence / "kg001_source_validation_v112.json",
