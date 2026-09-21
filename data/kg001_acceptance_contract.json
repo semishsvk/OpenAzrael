@@ -25,6 +25,8 @@
     "zero_failed_required_gates": true,
     "fresh_checkout_required": true,
     "manual_sanity_required": true,
+    "manual_sanity_fixed_order_required": true,
+    "manual_sanity_stop_on_critical_failure": true,
     "immutable_tag": true,
     "zero_recorded_release_blockers": true,
     "candidate3_exact_head_preflight_required": true,
@@ -122,10 +124,19 @@
       "name": "manual_sanity",
       "required": true,
       "automation": "manual_user",
+      "fixed_order_required": true,
+      "stop_on_critical_failure": true,
       "manual_visual_colorkey_required": true,
       "manual_audio_audibility_required": true,
       "manual_stair_traversal_required": true,
-      "manual_keyhole_orientation_required": true
+      "manual_keyhole_orientation_required": true,
+      "critical_early_failures": [
+        "launch failure",
+        "R1 floor-support failure",
+        "R8 step011__mesh traversal failure",
+        "R8 stairs__STAIR2 traversal failure",
+        "reproducible softlock"
+      ]
     }
   ],
   "forensic_boundary": {
