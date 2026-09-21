@@ -1,0 +1,772 @@
+{
+  "schema_version": 1,
+  "tools": [
+    {
+      "tool_id": "source_safe_inventory",
+      "family": "data_lab",
+      "description": "Deterministic SHA-256 inventory for source-safe asset and project corpus auditing.",
+      "entrypoint": "tools/remaster_framework/inventory.py",
+      "inputs": [
+        "directory"
+      ],
+      "outputs": [
+        "json_manifest"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "artifact_catalog",
+      "family": "data_lab",
+      "description": "Catalog existing JSON artifacts with SHA-256 provenance and normalized IR descriptors without rewriting source artifacts.",
+      "entrypoint": "tools/remaster_framework/cli.py",
+      "inputs": [
+        "artifact_directory"
+      ],
+      "outputs": [
+        "artifact_manifest"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "artifact_catalog_verifier",
+      "family": "data_lab",
+      "description": "Verify artifact catalog path containment, sizes, uniqueness, and SHA-256 content integrity.",
+      "entrypoint": "tools/remaster_framework/cli.py",
+      "inputs": [
+        "artifact_directory",
+        "artifact_manifest"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "corpus_discovery",
+      "family": "data_lab",
+      "description": "Identify legacy game corpora using evidence-backed filename/count profiles without modifying source files.",
+      "entrypoint": "tools/remaster_framework/cli.py",
+      "inputs": [
+        "legacy_corpus_directory",
+        "corpus_profiles"
+      ],
+      "outputs": [
+        "corpus_discovery_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_reference_graph",
+      "family": "data_lab",
+      "description": "Build a deterministic room/trigger/portal/gameplay/state/asset reference graph from current OpenAzrael IR without mutating runtime data.",
+      "entrypoint": "tools/openazrael_adapters/reference_graph.py",
+      "inputs": [
+        "xaf_trigger_evidence",
+        "gameplay_event_graph"
+      ],
+      "outputs": [
+        "reference_graph"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "demo_runtime_ir_validator",
+      "family": "data_lab",
+      "description": "Validate recovered demo runtime intermediate representation.",
+      "entrypoint": "tools/validate_demo_runtime_ir.py",
+      "inputs": [
+        "runtime_ir"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "stable"
+    },
+    {
+      "tool_id": "pppv_evidence_evaluator",
+      "family": "validation_lab",
+      "description": "Evaluate physical-player validation scenarios against runtime evidence and deterministic before/after state hashes.",
+      "entrypoint": "tools/remaster_framework/evaluate_validation.py",
+      "inputs": [
+        "validation_scenario",
+        "runtime_evidence",
+        "before_state",
+        "after_state"
+      ],
+      "outputs": [
+        "validation_evaluation"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_pppv_adapter",
+      "family": "validation_lab",
+      "description": "Adapt OpenAzrael physical-traversal and puzzle contracts into reusable real-player PPPV scenarios.",
+      "entrypoint": "tools/openazrael_adapters/pppv.py",
+      "inputs": [
+        "openazrael_validation_contracts"
+      ],
+      "outputs": [
+        "pppv_scenario_bundle"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "godot_pppv_player_driver",
+      "family": "validation_lab",
+      "description": "Drive the production Godot player through real gameplay input and interaction-probe paths while emitting generic PPPV runtime evidence.",
+      "entrypoint": "scripts/validation/pppv_player_driver.gd",
+      "inputs": [
+        "production_player",
+        "interaction_probe",
+        "validation_scenario"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_evidence_bus",
+      "family": "validation_lab",
+      "description": "Collect frame-indexed runtime validation evidence with deterministic event identifiers and JSON serialization.",
+      "entrypoint": "scripts/validation/pppv_evidence_bus.gd",
+      "inputs": [
+        "runtime_events"
+      ],
+      "outputs": [
+        "runtime_evidence_bundle"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_pppv_observer",
+      "family": "validation_lab",
+      "description": "Observe OpenAzrael inventory, flag, puzzle, logical-audio, and demo-action signals and translate them into generic PPPV evidence without mutating game state.",
+      "entrypoint": "scripts/validation/openazrael_pppv_observer.gd",
+      "inputs": [
+        "demo_state",
+        "legacy_events",
+        "interaction_node"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_pppv_runtime_preflight",
+      "family": "validation_lab",
+      "description": "Audit whether a given OpenAzrael source tree exposes the production movement, interaction, state, audio, and exact puzzle observability hooks required by PPPV.",
+      "entrypoint": "tools/openazrael_adapters/runtime_capabilities.py",
+      "inputs": [
+        "openazrael_source_tree"
+      ],
+      "outputs": [
+        "runtime_capability_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_coverage_audit",
+      "family": "validation_lab",
+      "description": "Audit whether every gameplay target in a reference graph has at least one declared physical-player validation scenario.",
+      "entrypoint": "tools/remaster_framework/coverage.py",
+      "inputs": [
+        "reference_graph",
+        "pppv_scenario_bundle"
+      ],
+      "outputs": [
+        "validation_coverage_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_scenario_planner",
+      "family": "validation_lab",
+      "description": "Build a deterministic puzzle-by-puzzle validation authoring backlog from the reference graph, including rooms, source evidence, expected state/audio effects, and scenario coverage.",
+      "entrypoint": "tools/remaster_framework/planning.py",
+      "inputs": [
+        "reference_graph",
+        "optional_pppv_scenario_bundle"
+      ],
+      "outputs": [
+        "validation_authoring_plan"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "godot_pppv_navigator",
+      "family": "validation_lab",
+      "description": "Steer the production Godot player toward an interaction target using only mouse-motion and movement input, failing rather than teleporting when the route is blocked.",
+      "entrypoint": "scripts/validation/pppv_navigator.gd",
+      "inputs": [
+        "production_player",
+        "interaction_probe",
+        "target_node"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_scene_observer",
+      "family": "validation_lab",
+      "description": "Capture read-only before/after Node3D transform and visibility observations and emit generic scene_change runtime evidence.",
+      "entrypoint": "scripts/validation/pppv_scene_observer.gd",
+      "inputs": [
+        "scene_nodes",
+        "scene_observation_specs"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "godot_pppv_scenario_runner",
+      "family": "validation_lab",
+      "description": "Execute a reusable validation scenario in the production Godot scene using the PPPV driver, navigator, observer, and evidence bus, and emit a complete runtime validation bundle.",
+      "entrypoint": "scripts/validation/pppv_scenario_runner.gd",
+      "inputs": [
+        "validation_scenario",
+        "production_godot_runtime"
+      ],
+      "outputs": [
+        "runtime_validation_bundle"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_action_executor",
+      "family": "validation_lab",
+      "description": "Execute generic PPPV move/look/interact/wait actions through the production player driver, navigator and InteractionProbe without teleport or direct gameplay calls.",
+      "entrypoint": "scripts/validation/pppv_action_executor.gd",
+      "inputs": [
+        "validation_action",
+        "production_runtime"
+      ],
+      "outputs": [
+        "runtime_evidence"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "godot_pppv_playthrough_runner",
+      "family": "validation_lab",
+      "description": "Execute an authoring-ready PPPV playthrough in one Godot scene and one continuous world state, with physical-player actions and explicit canonical-state save/load checkpoints.",
+      "entrypoint": "scripts/validation/pppv_playthrough_runner.gd",
+      "inputs": [
+        "playthrough_plan",
+        "pppv_scenario_bundle",
+        "production_godot_runtime"
+      ],
+      "outputs": [
+        "runtime_playthrough_bundle"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": true,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_playthrough_consistency_audit",
+      "family": "validation_lab",
+      "description": "Statically prove chained room continuity and inventory/flag/puzzle preconditions across a playthrough plan without treating the result as runtime navigation or interaction evidence.",
+      "entrypoint": "tools/remaster_framework/playthrough_consistency.py",
+      "inputs": [
+        "playthrough_plan",
+        "pppv_scenario_bundle"
+      ],
+      "outputs": [
+        "playthrough_consistency_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "pppv_playthrough_evaluator",
+      "family": "validation_lab",
+      "description": "Deterministically evaluate every embedded PPPV scenario, checkpoint roundtrip, runtime no-shortcut boundary, step order and final state hash from a chained playthrough bundle.",
+      "entrypoint": "tools/remaster_framework/evaluate_playthrough.py",
+      "inputs": [
+        "runtime_playthrough_bundle"
+      ],
+      "outputs": [
+        "playthrough_evaluation"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "kg001_physical_traversal_v117_validator",
+      "family": "validation_lab",
+      "description": "Validate that the v117 physical traversal runner exercises the production CharacterBody3D/Input/collision path over R1 floor and both R8 stair meshes without fake geometry or horizontal velocity injection.",
+      "entrypoint": "tools/validate_kg001_physical_traversal_v117.py",
+      "inputs": [
+        "v117_contract",
+        "production_runtime_source"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "stable"
+    },
+    {
+      "tool_id": "kg001_well_tongs_v118_validator",
+      "family": "validation_lab",
+      "description": "Bind the production Well+Tongs interaction to recovered demo evidence, exact action order, original 979TONGS audio identity and no-invented-animation boundary.",
+      "entrypoint": "tools/validate_kg001_well_tongs_animation_v118.py",
+      "inputs": [
+        "v118_contract",
+        "demo_evidence",
+        "production_runtime_source"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "stable"
+    },
+    {
+      "tool_id": "openazrael_v117_pppv_bridge",
+      "family": "validation_lab",
+      "description": "Evaluate v117 real-geometry traversal measurements against generic PPPV scenarios while explicitly preserving the boundary that direct test setup placement/orientation prevents promotion to the final real-player oracle.",
+      "entrypoint": "tools/openazrael_adapters/v117_pppv_bridge.py",
+      "inputs": [
+        "v117_runtime_evidence",
+        "v117_contract"
+      ],
+      "outputs": [
+        "v117_pppv_bridge_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_r1_pppv_scenarios",
+      "family": "validation_lab",
+      "description": "Generate real-player R1 PPPV scenarios for TONG6 pickup, Door 1, Door 2 positive path, and Door 2 negative-without-key precondition using production input and InteractionProbe.",
+      "entrypoint": "tools/openazrael_adapters/r1_pppv.py",
+      "inputs": [
+        "production_runtime_contract"
+      ],
+      "outputs": [
+        "pppv_scenarios"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_r7_pppv_scenarios",
+      "family": "validation_lab",
+      "description": "Generate real-player positive and wrong-sequence-negative R7 water switchboard PPPV scenarios with exact interaction order, source-backed flag/puzzle effects and S152V2.WAV evidence.",
+      "entrypoint": "tools/openazrael_adapters/r7_pppv.py",
+      "inputs": [
+        "production_runtime",
+        "gameplay_event_graph"
+      ],
+      "outputs": [
+        "pppv_scenarios"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_r8_pppv_scenarios",
+      "family": "validation_lab",
+      "description": "Generate real-player R8 PPPV scenarios for lens pickup/placement, zxplate-gated optical activation with transform/visibility evidence, and shield completion.",
+      "entrypoint": "tools/openazrael_adapters/r8_pppv.py",
+      "inputs": [
+        "production_runtime",
+        "gameplay_event_graph",
+        "xaf_trigger_evidence"
+      ],
+      "outputs": [
+        "pppv_scenarios"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_transition_pppv_scenarios",
+      "family": "validation_lab",
+      "description": "Generate physical room-transition PPPV scenarios that steer the production player toward evidence-backed trigger geometry using gameplay input and require actual CandidateDiagnostics trigger/room-transition evidence.",
+      "entrypoint": "tools/openazrael_adapters/transition_pppv.py",
+      "inputs": [
+        "xaf_trigger_evidence",
+        "production_room_manager"
+      ],
+      "outputs": [
+        "pppv_scenarios"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_real_player_demo_plan",
+      "family": "validation_lab",
+      "description": "Build the KG-001 R1-R7-R1-R8 real-player orchestration plan, reusing ready PPPV scenarios, preserving v109 save/load hash oracles, and marking missing physical segments AUTHORING_REQUIRED instead of treating legacy teleport/direct-call coverage as sufficient.",
+      "entrypoint": "tools/openazrael_adapters/demo_playthrough_plan.py",
+      "inputs": [
+        "pppv_scenario_bundle"
+      ],
+      "outputs": [
+        "playthrough_plan"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "puzzle_event_ir_audit",
+      "family": "validation_lab",
+      "description": "Audit recovered puzzle event IR and its structural assumptions.",
+      "entrypoint": "tools/audit_puzzles_event_ir_v88.py",
+      "inputs": [
+        "puzzle_event_ir"
+      ],
+      "outputs": [
+        "audit_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "legacy"
+    },
+    {
+      "tool_id": "kg001_state_space",
+      "family": "validation_lab",
+      "description": "Analyze KG-001 state-space coverage for deterministic demo validation.",
+      "entrypoint": "tools/kg001_state_space_v108.py",
+      "inputs": [
+        "runtime_ir"
+      ],
+      "outputs": [
+        "state_space_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "legacy"
+    },
+    {
+      "tool_id": "asset_lab_selection_validator",
+      "family": "project_release",
+      "description": "Validate source-safe, evidence-bound manual production selections shared across Texture, Audio, Localization, and future asset labs.",
+      "entrypoint": "tools/remaster_framework/asset_lab.py",
+      "inputs": [
+        "production_selection"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_lab_compatibility_audit",
+      "family": "project_release",
+      "description": "Check existing OpenAzrael Texture and Audio Lab contracts against shared source-safety, evidence binding, and manual-selection invariants without issuing subjective quality rankings.",
+      "entrypoint": "tools/openazrael_adapters/lab_compatibility.py",
+      "inputs": [
+        "audio_lab_contracts",
+        "texture_lab_source_status",
+        "texture_production_selection"
+      ],
+      "outputs": [
+        "lab_compatibility_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "world_puzzle_sound_bridge_audit",
+      "family": "audio_lab",
+      "description": "Analyze the recovered bridge between world actions, puzzle events, and sound records.",
+      "entrypoint": "tools/analyze_world_puzzle_sound_bridge_v107.py",
+      "inputs": [
+        "world_ir",
+        "puzzle_ir"
+      ],
+      "outputs": [
+        "bridge_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "legacy"
+    },
+    {
+      "tool_id": "azf_texture_decoder",
+      "family": "texture_lab",
+      "description": "Decode recovered AZF texture data for the texture pipeline.",
+      "entrypoint": "tools/texture_pipeline/azf_decode_v14.py",
+      "inputs": [
+        "azf_texture"
+      ],
+      "outputs": [
+        "decoded_texture"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "legacy"
+    },
+    {
+      "tool_id": "localization_string_ir_validator",
+      "family": "localization_lab",
+      "description": "Validate stable semantic localization IDs, English fallback records, provenance shape, and duplicate-ID safety.",
+      "entrypoint": "tools/remaster_framework/localization.py",
+      "inputs": [
+        "string_ir"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "localization_pack_manifest_validator",
+      "family": "localization_lab",
+      "description": "Validate external language-pack manifests and prevent resources from escaping the locale namespace or replacing core gameplay resources.",
+      "entrypoint": "tools/remaster_framework/localization.py",
+      "inputs": [
+        "language_pack_manifest"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "localization_pseudolocale_builder",
+      "family": "localization_lab",
+      "description": "Generate deterministic pseudolocalized strings from String IR while preserving semantic IDs and common formatting placeholders.",
+      "entrypoint": "tools/remaster_framework/localization.py",
+      "inputs": [
+        "string_ir"
+      ],
+      "outputs": [
+        "pseudolocale"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "known_good_gate_aggregator",
+      "family": "project_release",
+      "description": "Aggregate the existing OpenAzrael KG acceptance contract and evidence-bound gate results into BLOCKED or ELIGIBLE_FOR_KNOWN_GOOD without creating tags automatically.",
+      "entrypoint": "tools/remaster_framework/release.py",
+      "inputs": [
+        "kg_acceptance_contract",
+        "gate_results"
+      ],
+      "outputs": [
+        "release_gate_summary"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "build_provenance_manifest",
+      "family": "project_release",
+      "description": "Create a deterministic manifest binding candidate commit, project/engine version, source fingerprints, tool registry, and other release inputs by SHA-256.",
+      "entrypoint": "tools/remaster_framework/build_provenance.py",
+      "inputs": [
+        "candidate_identity",
+        "release_inputs"
+      ],
+      "outputs": [
+        "build_provenance"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "runtime_framework_metadata_stager",
+      "family": "project_release",
+      "description": "Stage schema-validated source-safe build provenance, release-gate summary, PPPV coverage and optional chained-playthrough evaluation metadata into the Godot runtime metadata directory for F11 diagnostics.",
+      "entrypoint": "tools/remaster_framework/runtime_metadata.py",
+      "inputs": [
+        "build_provenance",
+        "release_gate_summary",
+        "pppv_coverage",
+        "optional_pppv_playthrough_evaluation"
+      ],
+      "outputs": [
+        "runtime_metadata_stage"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_kg001_release_evidence_adapter",
+      "family": "project_release",
+      "description": "Convert existing KG-001 v108-v112 source/runtime/fresh-checkout/manual evidence into generic SHA-256-bound G00-G10 release gate results.",
+      "entrypoint": "tools/openazrael_adapters/kg001_release_evidence.py",
+      "inputs": [
+        "kg001_evidence_root",
+        "manual_sanity"
+      ],
+      "outputs": [
+        "release_gate_results"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_kg001_framework_bundle",
+      "family": "project_release",
+      "description": "Build a unified KG-001 evidence bundle containing G00-G10 results, release summary, reusable PPPV scenarios, deterministic full-demo playthrough plan, coverage, optional matching runtime/evaluation evidence, and build provenance.",
+      "entrypoint": "tools/openazrael_adapters/kg001_candidate_framework.py",
+      "inputs": [
+        "kg001_evidence_root",
+        "candidate_commit",
+        "godot_version",
+        "optional_pppv_scenarios"
+      ],
+      "outputs": [
+        "kg001_framework_bundle",
+        "release_gate_results",
+        "release_gate_summary",
+        "pppv_scenarios",
+        "pppv_playthrough_plan",
+        "pppv_coverage",
+        "optional_pppv_playthrough_evaluation",
+        "build_provenance"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "project_context_validator",
+      "family": "project_release",
+      "description": "Validate the persistent project-context documentation set.",
+      "entrypoint": "tools/validate_project_context.py",
+      "inputs": [
+        "project_context"
+      ],
+      "outputs": [
+        "validation_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "stable"
+    },
+    {
+      "tool_id": "snapshot_creator",
+      "family": "project_release",
+      "description": "Create integrity-oriented project snapshots under the established backup policy.",
+      "entrypoint": "tools/backup/create_snapshot.py",
+      "inputs": [
+        "project_tree"
+      ],
+      "outputs": [
+        "snapshot"
+      ],
+      "source_safe": true,
+      "deterministic": false,
+      "mutates_runtime": false,
+      "maturity": "stable"
+    }
+  ]
+}
