@@ -6,7 +6,7 @@ v108 adds the first executable source-safe KG-001 state/puzzle harness. It consu
 - **104 reachable states**
 - **214 changed transition edges**
 - **1560 action attempts**
-- **822 invalid/idempotent no-op attempts**
+- **1346 invalid/idempotent no-op attempts**
 - **6 success states**
 - **0 softlock states**
 - **0 non-success dead-end states**
