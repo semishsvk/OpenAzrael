@@ -246,7 +246,11 @@
       "regression": "v119 exact bug point + Object02 two-triangle crossing + audited R1 route"
     },
     "kg001_collision_parity_v120": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
-    "kg001_collision_parity_policy": "VISIBLE_FLOOR_LIKE_MESH_VS_RUNTIME_COLLISION_R1_R7_R8"
+    "kg001_collision_parity_policy": "VISIBLE_FLOOR_LIKE_MESH_VS_RUNTIME_COLLISION_R1_R7_R8",
+    "kg001_bug_report_schema": 2,
+    "kg001_bug_report_physics_context": "SOURCE_CONTRACT_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_bug_report_runtime_build_identity": "EXPORT_EMBEDDED_EXACT_GIT_SHA_AND_GODOT_VERSION",
+    "kg001_bug_report_nearby_collision_probe": "RADIUS_96_LAYER1_OBSERVATIONAL"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -257,7 +261,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Run source validation, asset-backed v119 R1 route and v120 generic collision parity. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119/collision-v120 fresh-checkout PASS before preparing Candidate 4. Upgrade F11 diagnostics to capture physical support/collider context before that build.",
+  "next_target": "Run source validation for F11 v2 + v119 + v120. Then execute asset-backed v119 R1 route and v120 generic collision parity. Require the full current runtime matrix before Candidate 4; verify F11 v2 once in the exported build.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
