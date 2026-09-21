@@ -134,6 +134,12 @@ checks = {
     "export_rejects_changed_head": "HEAD_CHANGED_SINCE_PREFLIGHT" in exporter,
     "export_rejects_dirty_git": "DIRTY_GIT_AFTER_PREFLIGHT" in exporter,
     "export_rechecks_evidence": "PREFLIGHT_EVIDENCE_CHANGED" in exporter,
+    "export_rechecks_pppv_evidence": (
+        "PPPV_PREFLIGHT_EVIDENCE_MISSING" in exporter
+        and "PPPV_PREFLIGHT_EVIDENCE_INVALID" in exporter
+        and "PPPV_EVIDENCE_CHANGED_SINCE_PREFLIGHT" in exporter
+        and '"pppv_v2_evidence": receipt.get("evidence", {}).get("pppv_v2", {})' in exporter
+    ),
     "export_rechecks_runtime_assets": "RUNTIME_ASSET_CHANGED_SINCE_PREFLIGHT" in exporter,
     "export_rejects_asset_set_drift": (
         "RUNTIME_ASSET_SET_CHANGED_SINCE_PREFLIGHT" in exporter
