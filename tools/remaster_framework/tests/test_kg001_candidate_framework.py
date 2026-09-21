@@ -137,6 +137,49 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             self.assertFalse(bundle["known_good_eligible"])
             self.assertTrue((evidence / "build_provenance.json").is_file())
             self.assertTrue((evidence / "pppv_coverage.json").is_file())
+            self.assertEqual(
+                bundle["well_tongs_real_input_pppv_status"],
+                "NOT_AVAILABLE",
+            )
+
+    def test_real_input_well_pppv_is_bound_into_provenance_when_present(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=False)
+            self._write(
+                evidence / "kg001_well_tongs_pppv.json",
+                {
+                    "schema": "openazrael.kg001.well_tongs_pppv",
+                    "version": 1,
+                    "status": "PASS",
+                    "final_pppv_oracle": True,
+                },
+            )
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+            )
+            self.assertEqual(
+                bundle["well_tongs_real_input_pppv_status"],
+                "PASS",
+            )
+            self.assertEqual(
+                bundle["artifacts"]["well_tongs_real_input_pppv"],
+                "kg001_well_tongs_pppv.json",
+            )
+            provenance = json.loads(
+                (evidence / "build_provenance.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertIn(
+                "well_tongs_real_input_pppv",
+                provenance["inputs"],
+            )
 
     def test_complete_evidence_can_be_known_good_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
