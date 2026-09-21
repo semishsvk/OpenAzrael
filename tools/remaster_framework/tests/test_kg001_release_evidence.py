@@ -75,6 +75,26 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             },
         )
         self._write(
+            evidence / "kg001_pppv_determinism.json",
+            {
+                "schema": "openazrael.kg001.pppv_determinism",
+                "version": 1,
+                "status": "PASS",
+                "repeat_count": 2,
+                "all_runs_pass": True,
+                "semantic_replay_match": True,
+                "final_state_match": True,
+            },
+        )
+        self._write(
+            evidence / "pppv_determinism_integrity.json",
+            {
+                "schema": "openazrael.kg001.pppv_determinism_integrity",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        self._write(
             evidence / "kg001_fresh_checkout.json",
             {
                 "status": "PASS",
@@ -202,6 +222,57 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             result = build_gate_results(root, evidence)
             statuses = {row["id"]: row["status"] for row in result["gates"]}
             self.assertEqual(statuses["G08"], "FAIL")
+
+
+    def test_missing_determinism_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_pppv_determinism.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "PENDING")
+            self.assertEqual(statuses["G09"], "PENDING")
+
+    def test_failed_determinism_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_pppv_determinism.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "FAIL")
+            self.assertEqual(statuses["G09"], "FAIL")
+
+    def test_missing_determinism_integrity_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "pppv_determinism_integrity.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "PENDING")
+            self.assertEqual(statuses["G09"], "PENDING")
+
+    def test_failed_determinism_integrity_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "pppv_determinism_integrity.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "FAIL")
+            self.assertEqual(statuses["G09"], "FAIL")
 
     def test_supplemental_v117_v118_checks_are_evidence_bound(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
