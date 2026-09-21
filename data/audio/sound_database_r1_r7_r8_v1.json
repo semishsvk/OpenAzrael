@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "scope": "R1-R7-R8 source-safe evidence database",
+  "source": "data/world_sound_record_fields_v113.json ordered_alignment + gameplay_event_graph_v87",
+  "records": [
+    {"sound_id":"r1.995.doorcor01","stem":"995","asset":"995.WAV","provenance":["WORLD v113","+13 object=1282","+15 room=0"],"confidence":"VERIFIED","usage":"event","room":"R1","object_index":1282,"object":"doorcor01"},
+    {"sound_id":"r1.995.doorcor2","stem":"995","asset":"995.WAV","provenance":["WORLD v113","+13 object=1283","+15 room=0"],"confidence":"VERIFIED","usage":"event","room":"R1","object_index":1283,"object":"doorcor2"},
+    {"sound_id":"r7.979tongs.well","stem":"979tongs","asset":"979tongs.WAV","provenance":["WORLD v113","+13 object=1153","+15 room=1","direct XAF manifest match"],"confidence":"VERIFIED","usage":"event","room":"R7","object_index":1153,"object":"wel_well"},
+    {"sound_id":"r7.977turn.wheel","stem":"977turn","asset":"977turn.WAV","provenance":["WORLD v113","PUZZLES/WORLD ordered bridge"],"confidence":"VERIFIED","usage":"event","room":"R7","object_index":225,"object":"well_weel1"},
+    {"sound_id":"r7.982push.pipe","stem":"982push","asset":"982push.WAV","provenance":["WORLD v113","PUZZLES/WORLD ordered bridge"],"confidence":"VERIFIED","usage":"event","room":"R7","object_index":224,"object":"well_pzpi2"},
+    {"sound_id":"r7.981pull.pipe","stem":"981pull","asset":"981pull.WAV","provenance":["WORLD v113","PUZZLES/WORLD ordered bridge"],"confidence":"VERIFIED","usage":"event","room":"R7","object_index":224,"object":"well_pzpi2"},
+    {"sound_id":"r8.s137.font3","stem":"s137","asset":"S137.WAV","provenance":["WORLD v113","gameplay event R8_LENS_PLACE"],"confidence":"HIGH","usage":"event","room":"R8","object_index":1164,"object":"font3"},
+    {"sound_id":"r8.s121.door","stem":"s121","asset":"S121.WAV","provenance":["WORLD v113","gameplay event R8_OPTICAL_START"],"confidence":"HIGH","usage":"event","room":"R8","object_index":140,"object":"door"},
+    {"sound_id":"r8.990wdspa.zxsound","stem":"990wdspa","asset":"990wdspa.WAV","provenance":["WORLD v113","direct XAF manifest match"],"confidence":"VERIFIED","usage":"event","room":"R8","object_index":1159,"object":"zxsound"},
+    {"sound_id":"r8.990wdspa.zxsound1","stem":"990wdspa","asset":"990wdspa.WAV","provenance":["WORLD v113","direct XAF manifest match"],"confidence":"VERIFIED","usage":"event","room":"R8","object_index":1160,"object":"zxsound1"},
+    {"sound_id":"r8.990wdspa.zxsound2","stem":"990wdspa","asset":"990wdspa.WAV","provenance":["WORLD v113","direct XAF manifest match"],"confidence":"VERIFIED","usage":"event","room":"R8","object_index":1161,"object":"zxsound2"}
+  ],
+  "note":"Compact source-safe subset. Full original payload inventory/digests are generated locally and are not committed."
+}
