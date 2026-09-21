@@ -21,6 +21,8 @@ MAPPING={
     "kg001_v110_runtime.json":"data/tests/kg001_room_trigger_runtime_v110.json",
     "kg001_v111_runtime.json":"data/tests/kg001_full_demo_runtime_v111.json",
     "kg001_audio_v116_runtime.json":"data/tests/kg001_audio_runtime_v116.json",
+    "kg001_physical_v117_runtime.json":"data/tests/kg001_physical_traversal_runtime_v117.json",
+    "kg001_well_tongs_v118_runtime.json":"data/tests/kg001_well_tongs_animation_runtime_v118.json",
     "kg001_source_validation_v112.json":"data/tests/kg001_source_validation_v112.json",
     "kg001_fresh_checkout.json":"data/tests/kg001_fresh_checkout.json",
     "kg001_visual_capture_v117.json":"data/tests/kg001_visual_capture_runtime_v117.json",
