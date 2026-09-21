@@ -10,6 +10,9 @@ class GodotPPPVScenarioRunnerSourceTests(unittest.TestCase):
         self.source = (
             root / "scripts" / "validation" / "pppv_scenario_runner.gd"
         ).read_text(encoding="utf-8")
+        self.executor = (
+            root / "scripts" / "validation" / "pppv_action_executor.gd"
+        ).read_text(encoding="utf-8")
 
     def test_runner_composes_reusable_validation_helpers(self) -> None:
         self.assertIn("PPPV", self.source)
@@ -21,23 +24,24 @@ class GodotPPPVScenarioRunnerSourceTests(unittest.TestCase):
         self.assertIn("evidence.bundle()", self.source)
 
     def test_gameplay_actions_do_not_teleport_or_call_interact_directly(self) -> None:
-        execute_section = self.source.split("func _execute_action", 1)[1]
-        execute_section = execute_section.split("func _write_bundle", 1)[0]
+        execute_section = self.executor.split("func _execute_impl", 1)[1]
+        execute_section = execute_section.split("func failure_list", 1)[0]
         self.assertNotIn("global_position =", execute_section)
-        self.assertNotIn("position =", execute_section)
+        self.assertNotIn("player.position =", execute_section)
         self.assertNotIn(".interact()", execute_section)
         self.assertNotIn('call("interact")', execute_section)
         self.assertNotIn("move_and_slide()", execute_section)
+        self.assertNotIn("_spawn_at_portal", execute_section)
         self.assertIn("navigator.approach_interactable", execute_section)
         self.assertIn("driver.interact_via_probe", execute_section)
 
     def test_portal_spawn_is_confined_to_test_setup(self) -> None:
         setup_section = self.source.split("func _apply_setup", 1)[1]
-        setup_section = setup_section.split("func _execute_action", 1)[0]
+        setup_section = setup_section.split("func _write_bundle", 1)[0]
         self.assertIn('manager.call("_spawn_at_portal"', setup_section)
-        action_section = self.source.split("func _execute_action", 1)[1]
-        action_section = action_section.split("func _write_bundle", 1)[0]
-        self.assertNotIn("_spawn_at_portal", action_section)
+        execute_section = self.executor.split("func _execute_impl", 1)[1]
+        execute_section = execute_section.split("func failure_list", 1)[0]
+        self.assertNotIn("_spawn_at_portal", execute_section)
 
     def test_runtime_bundle_contains_evidence_and_before_after_state(self) -> None:
         self.assertIn('"remaster.runtime_validation_bundle"', self.source)
