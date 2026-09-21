@@ -6,6 +6,12 @@ const MAX_VERTICAL_DROP_PER_FRAME := 24.0
 const MAX_ACTION_VERTICAL_DROP := 96.0
 const DEFAULT_SPAWN_POSITION_TOLERANCE := 14.0
 const DEFAULT_SPAWN_YAW_TOLERANCE := 0.35
+const MOVEMENT_ACTIONS := [
+    &"move_forward",
+    &"move_back",
+    &"move_left",
+    &"move_right"
+]
 
 var player: CharacterBody3D
 var manager: Node
@@ -104,11 +110,64 @@ func _critical(code: String, details: Dictionary = {}) -> void:
     payload["critical"] = true
     evidence.record("critical_runtime_violation", payload)
 
+func _validate_live_invariants(action_id: String) -> void:
+    if player == null:
+        return
+    if not player.is_inside_tree():
+        _critical("player_left_scene_tree", {
+            "action_id": action_id
+        })
+        return
+
+    if (
+        not player.global_position.is_finite()
+        or not player.global_rotation.is_finite()
+        or not player.velocity.is_finite()
+    ):
+        _critical("non_finite_player_state", {
+            "action_id": action_id,
+            "position": _v3(player.global_position),
+            "rotation": _v3(player.global_rotation),
+            "velocity": _v3(player.velocity)
+        })
+
+    if manager == null:
+        _critical("room_manager_missing", {
+            "action_id": action_id
+        })
+        return
+
+    var room_id := String(manager.get("current_room_id"))
+    var room_node = manager.get("current_room")
+    if room_id.is_empty():
+        _critical("current_room_id_empty", {
+            "action_id": action_id
+        })
+    if room_node == null or not is_instance_valid(room_node):
+        _critical("current_room_node_invalid", {
+            "action_id": action_id,
+            "room": room_id
+        })
+
+
+func _validate_neutral_movement_input(action_id: String) -> void:
+    var stuck: Array[String] = []
+    for input_action in MOVEMENT_ACTIONS:
+        if Input.is_action_pressed(input_action):
+            stuck.append(String(input_action))
+    if not stuck.is_empty():
+        _critical("movement_input_stuck_after_action", {
+            "action_id": action_id,
+            "pressed_actions": stuck
+        })
+
+
 func sample(action_id: String = "") -> bool:
     if player == null:
         return true
 
     var effective_id := action_id if not action_id.is_empty() else _active_action_id
+    _validate_live_invariants(effective_id)
     var current := snapshot(effective_id, "sample")
     var position := player.global_position
     var current_room := String(current.get("room", ""))
@@ -302,6 +361,8 @@ func verify_transition_spawn(
     return ok
 
 func end_action(success: bool, details: Dictionary = {}) -> void:
+    _validate_live_invariants(_active_action_id)
+    _validate_neutral_movement_input(_active_action_id)
     var after := snapshot(_active_action_id, "after")
     evidence.record("world_snapshot", after.duplicate(true))
     var action_failures: Array[String] = []
