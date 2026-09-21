@@ -23,6 +23,8 @@ runner=read("tools/run_kg001_candidate_v112.py")
 bug_capture=diag.split("# v116-context-v28: observational one-key bug-report capture.",1)[-1]
 bugdoc=read("docs/BUG_REPORTING.md")
 issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
+framework_context=read("scripts/validation/bug_report_framework_context.gd")
+runtime_metadata=read("tools/remaster_framework/runtime_metadata.py")
 
 checks={
     "autoload": 'CandidateDiagnostics="*res://scripts/candidate_diagnostics_v116.gd"' in project,
@@ -53,8 +55,14 @@ checks={
     "bug_state_snapshot": 'state.json' in diag and 'canonical_state_payload' in diag,
     "stable_ids": all(x in diag for x in ['ROOM:','TRG:','PUZ:','FLAG:','ITEM:']),
     "bug_report_source_safe": '"commercial_assets_included": false' in diag and '"source_safe": true' in diag,
+    "bug_report_framework_context": 'BugReportFrameworkContextScript' in diag and 'framework_context.json' in diag and '"framework_artifacts"' in diag,
+    "bug_report_framework_hash_binding": 'HashingContext.HASH_SHA256' in framework_context and '"sha256"' in diag,
+    "bug_report_framework_schema_guard": all(x in framework_context for x in ["remaster.build_provenance","remaster.release_gate_summary","remaster.validation_coverage","schema_mismatch"]),
+    "bug_report_framework_size_guard": 'MAX_CONTEXT_BYTES' in framework_context and 'too_large' in framework_context,
+    "bug_report_framework_missing_nonfatal": 'if not FileAccess.file_exists(path):' in framework_context and 'return result' in framework_context,
+    "runtime_metadata_stager": 'stage_runtime_metadata' in runtime_metadata and 'clean_runtime_metadata' in runtime_metadata,
     "bug_report_observational": all(x not in bug_capture for x in ["DemoState.acquire(","DemoState.set_flag(","DemoState.set_puzzle_node(","DemoState.restore_canonical_state_payload(","LegacyEvents.run(","load_room("]),
-    "bug_report_no_commercial_asset_reads": all(x not in bug_capture for x in ["res://assets/rooms/","res://assets/audio/","res://assets/textures/classic/"]),
+    "bug_report_no_commercial_asset_reads": all(x not in bug_capture for x in ["res://assets/rooms/","res://assets/audio/","res://assets/textures/classic/"]) and all(x not in framework_context for x in ["res://assets/rooms/","res://assets/audio/","res://assets/textures/classic/"]),
     "bug_hud_surface": "F11 bug report" in hud and "CandidateDiagnostics.last_bug_report" in hud,
     "issue_template": 'name: OpenAzrael bug report' in issuetpl and 'Diagnostic package' in issuetpl,
     "bug_reporting_doc": 'F11' in bugdoc and 'Critical' in bugdoc and 'regression' in bugdoc.lower(),
