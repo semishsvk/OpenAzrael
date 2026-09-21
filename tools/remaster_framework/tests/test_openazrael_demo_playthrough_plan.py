@@ -25,9 +25,10 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertNotIn("T07_R7_TO_R1", plan["blocked_steps"])
         self.assertNotIn("T09_R1_TO_R8", plan["blocked_steps"])
         self.assertNotIn("S05_SWITCHBOARD", plan["blocked_steps"])
-        self.assertIn("S10_TAKE_LENS", plan["blocked_steps"])
+        self.assertNotIn("S10_TAKE_LENS", plan["blocked_steps"])
+        self.assertNotIn("S11_PLACE_LENS", plan["blocked_steps"])
         self.assertIn("S11_OPTICAL_SEQUENCE", plan["blocked_steps"])
-        self.assertIn("S13_TAKE_SHIELD", plan["blocked_steps"])
+        self.assertNotIn("S13_TAKE_SHIELD", plan["blocked_steps"])
 
     def test_r1_interactions_are_reused_as_ready_segments(self) -> None:
         root = Path(__file__).resolve().parents[3]
@@ -75,6 +76,20 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertEqual(
             rows["S04_WELL_TONGS"]["scenario_id"],
             "openazrael.r7.well_tongs.positive",
+        )
+
+    def test_r8_non_optical_segments_are_ready(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root)
+        )
+        rows = {row["step_id"]: row for row in plan["steps"]}
+        self.assertEqual(rows["S10_TAKE_LENS"]["status"], "READY")
+        self.assertEqual(rows["S11_PLACE_LENS"]["status"], "READY")
+        self.assertEqual(rows["S13_TAKE_SHIELD"]["status"], "READY")
+        self.assertEqual(
+            rows["S11_OPTICAL_SEQUENCE"]["status"],
+            "AUTHORING_REQUIRED",
         )
 
     def test_save_load_checkpoints_preserve_v109_oracle(self) -> None:
