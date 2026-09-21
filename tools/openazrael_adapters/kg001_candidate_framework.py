@@ -96,22 +96,7 @@ def build_candidate_framework_bundle(
     evidence = evidence_root.resolve()
     evidence.mkdir(parents=True, exist_ok=True)
 
-    gate_results = build_gate_results(
-        root,
-        evidence,
-        commit_sha=commit_sha,
-        manual_path=manual_path,
-    )
-    gate_results_path = evidence / "kg001_release_gate_results.json"
-    _write(gate_results_path, gate_results)
-
     contract_path = root / "data/kg001_acceptance_contract.json"
-    release_summary = aggregate_release(
-        _load(contract_path),
-        gate_results,
-    )
-    release_summary_path = evidence / "release_gate_summary.json"
-    _write(release_summary_path, release_summary)
 
     reference_graph = build_openazrael_reference_graph(
         root / "data/xaf_trigger_evidence.json",
@@ -139,6 +124,70 @@ def build_candidate_framework_bundle(
         evidence / "pppv_playthrough_consistency.json"
     )
     _write(playthrough_consistency_path, playthrough_consistency)
+
+    pppv_suite_path = evidence / "kg001_pppv_scenario_suite.json"
+    pppv_suite_integrity_path = evidence / "pppv_scenario_suite_integrity.json"
+    if pppv_suite_path.is_file():
+        suite_payload = _load(pppv_suite_path)
+        expected_bundle_sha256 = sha256_file(scenario_bundle_output)
+        actual_bundle_sha256 = str(
+            suite_payload.get("scenario_bundle_sha256", "")
+        )
+        expected_ids = sorted(
+            str(row.get("scenario_id", ""))
+            for row in scenarios.get("scenarios", [])
+            if isinstance(row, dict) and row.get("scenario_id")
+        )
+        suite_rows = suite_payload.get("scenarios", {})
+        actual_ids = (
+            sorted(str(value) for value in suite_rows.keys())
+            if isinstance(suite_rows, dict)
+            else []
+        )
+        expected_transition_ids = sorted(
+            value
+            for value in expected_ids
+            if value.startswith("openazrael.transition.")
+        )
+        actual_transition_ids = sorted(
+            str(value)
+            for value in suite_payload.get("transition_scenario_ids", [])
+        )
+        integrity_errors: list[str] = []
+        if actual_bundle_sha256 != expected_bundle_sha256:
+            integrity_errors.append(
+                "scenario bundle SHA-256 mismatch: "
+                f"{actual_bundle_sha256} != {expected_bundle_sha256}"
+            )
+        if actual_ids != expected_ids:
+            integrity_errors.append(
+                "executed scenario ID set does not match current bundle"
+            )
+        if int(suite_payload.get("scenario_count", -1)) != len(expected_ids):
+            integrity_errors.append(
+                "scenario_count does not match current bundle"
+            )
+        if actual_transition_ids != expected_transition_ids:
+            integrity_errors.append(
+                "executed transition scenario set does not match current bundle"
+            )
+        suite_integrity = {
+            "schema": "openazrael.kg001.pppv_scenario_suite_integrity",
+            "version": 1,
+            "status": "PASS" if not integrity_errors else "FAIL",
+            "scenario_bundle_sha256": expected_bundle_sha256,
+            "runtime_scenario_bundle_sha256": actual_bundle_sha256,
+            "expected_scenario_count": len(expected_ids),
+            "executed_scenario_count": len(actual_ids),
+            "expected_scenario_ids": expected_ids,
+            "executed_scenario_ids": actual_ids,
+            "expected_transition_scenario_ids": expected_transition_ids,
+            "executed_transition_scenario_ids": actual_transition_ids,
+            "errors": integrity_errors,
+        }
+        _write(pppv_suite_integrity_path, suite_integrity)
+    else:
+        pppv_suite_integrity_path.unlink(missing_ok=True)
 
     playthrough_runtime_path = evidence / "kg001_pppv_playthrough.json"
     playthrough_evaluation_path: Path | None = None
@@ -191,6 +240,22 @@ def build_candidate_framework_bundle(
             v117_bridge_path = evidence / "v117_pppv_bridge.json"
             _write(v117_bridge_path, v117_bridge)
 
+    gate_results = build_gate_results(
+        root,
+        evidence,
+        commit_sha=commit_sha,
+        manual_path=manual_path,
+    )
+    gate_results_path = evidence / "kg001_release_gate_results.json"
+    _write(gate_results_path, gate_results)
+
+    release_summary = aggregate_release(
+        _load(contract_path),
+        gate_results,
+    )
+    release_summary_path = evidence / "release_gate_summary.json"
+    _write(release_summary_path, release_summary)
+
     inputs: dict[str, str] = {}
     _optional_hash(
         root / "data/backup/source_fingerprints.json",
@@ -229,9 +294,12 @@ def build_candidate_framework_bundle(
     well_pppv_path = evidence / "kg001_well_tongs_pppv.json"
     if well_pppv_path.is_file():
         inputs["well_tongs_real_input_pppv"] = sha256_file(well_pppv_path)
-    pppv_suite_path = evidence / "kg001_pppv_scenario_suite.json"
     if pppv_suite_path.is_file():
         inputs["pppv_scenario_suite"] = sha256_file(pppv_suite_path)
+    if pppv_suite_integrity_path.is_file():
+        inputs["pppv_scenario_suite_integrity"] = sha256_file(
+            pppv_suite_integrity_path
+        )
 
     provenance = build_provenance(
         project="OpenAzrael",
@@ -254,6 +322,11 @@ def build_candidate_framework_bundle(
             "pppv_scenario_suite_status": (
                 str(_load(pppv_suite_path).get("status", "UNKNOWN"))
                 if pppv_suite_path.is_file()
+                else "NOT_AVAILABLE"
+            ),
+            "pppv_scenario_suite_integrity_status": (
+                str(_load(pppv_suite_integrity_path).get("status", "UNKNOWN"))
+                if pppv_suite_integrity_path.is_file()
                 else "NOT_AVAILABLE"
             ),
             "pppv_playthrough_runtime_status": playthrough_runtime_status,
@@ -286,6 +359,10 @@ def build_candidate_framework_bundle(
         artifacts["well_tongs_real_input_pppv"] = well_pppv_path.name
     if pppv_suite_path.is_file():
         artifacts["pppv_scenario_suite"] = pppv_suite_path.name
+    if pppv_suite_integrity_path.is_file():
+        artifacts["pppv_scenario_suite_integrity"] = (
+            pppv_suite_integrity_path.name
+        )
 
     bundle = {
         "schema": "openazrael.kg001.framework_bundle",
@@ -300,6 +377,11 @@ def build_candidate_framework_bundle(
         "pppv_scenario_suite_status": (
             str(_load(pppv_suite_path).get("status", "UNKNOWN"))
             if pppv_suite_path.is_file()
+            else "NOT_AVAILABLE"
+        ),
+        "pppv_scenario_suite_integrity_status": (
+            str(_load(pppv_suite_integrity_path).get("status", "UNKNOWN"))
+            if pppv_suite_integrity_path.is_file()
             else "NOT_AVAILABLE"
         ),
         "pppv_playthrough_runtime_status": playthrough_runtime_status,
