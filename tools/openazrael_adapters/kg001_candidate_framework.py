@@ -7,6 +7,10 @@ from pathlib import Path
 from typing import Any
 
 from tools.openazrael_adapters.kg001_release_evidence import build_gate_results
+from tools.openazrael_adapters.physical_pppv import (
+    adapt_physical_traversal_contract,
+)
+from tools.openazrael_adapters.well_pppv import adapt_well_tongs_contract
 from tools.openazrael_adapters.reference_graph import (
     build_openazrael_reference_graph,
 )
@@ -42,6 +46,24 @@ def _project_version(project_godot: Path) -> str:
 def _optional_hash(path: Path, inputs: dict[str, str], key: str) -> None:
     if path.is_file():
         inputs[key] = sha256_file(path)
+
+
+def _default_scenario_bundle(root: Path) -> dict[str, Any]:
+    scenarios = []
+    physical = root / "data/tests/kg001_physical_traversal_contract_v117.json"
+    if physical.is_file():
+        scenarios.extend(
+            adapt_physical_traversal_contract(_load(physical))
+        )
+    well = root / "data/tests/kg001_well_tongs_animation_contract_v118.json"
+    if well.is_file():
+        scenarios.extend(adapt_well_tongs_contract(_load(well)))
+    return {
+        "schema": "openazrael.pppv_scenario_bundle",
+        "version": 1,
+        "scenario_count": len(scenarios),
+        "scenarios": [scenario.to_dict() for scenario in scenarios],
+    }
 
 
 def build_candidate_framework_bundle(
@@ -81,8 +103,10 @@ def build_candidate_framework_bundle(
     scenarios = (
         _load(scenario_bundle_path)
         if scenario_bundle_path is not None and scenario_bundle_path.is_file()
-        else {"schema": "openazrael.pppv_scenario_bundle", "scenarios": []}
+        else _default_scenario_bundle(root)
     )
+    scenario_bundle_output = evidence / "pppv_scenarios.json"
+    _write(scenario_bundle_output, scenarios)
     pppv_coverage = audit_validation_coverage(reference_graph, scenarios)
     pppv_coverage_path = evidence / "pppv_coverage.json"
     _write(pppv_coverage_path, pppv_coverage)
@@ -106,6 +130,7 @@ def build_candidate_framework_bundle(
     )
     inputs["release_gate_results"] = sha256_file(gate_results_path)
     inputs["release_gate_summary"] = sha256_file(release_summary_path)
+    inputs["pppv_scenarios"] = sha256_file(scenario_bundle_output)
     inputs["pppv_coverage"] = sha256_file(pppv_coverage_path)
 
     provenance = build_provenance(
@@ -136,6 +161,7 @@ def build_candidate_framework_bundle(
         "artifacts": {
             "gate_results": gate_results_path.name,
             "release_gate_summary": release_summary_path.name,
+            "pppv_scenarios": scenario_bundle_output.name,
             "pppv_coverage": pppv_coverage_path.name,
             "build_provenance": provenance_path.name,
         },
