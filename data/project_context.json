@@ -88,7 +88,7 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "CANDIDATE3_SOURCE_HARDENED_RUNTIME_PENDING",
+    "kg001_build_status": "CANDIDATE3_G10_FAIL_R1_OBJECT02",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
     "runtime_ir_event_graphs": 6,
@@ -99,7 +99,7 @@
     "kg001_changed_edges": 214,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "CANDIDATE3_G04_G05_G06_RUNTIME_RETEST_REQUIRED",
+    "kg001_runtime_gate_status": "G04_FAIL_R1_OBJECT02_V119_RUNTIME_RETEST_REQUIRED",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_headless_runtime": "NOT_EXECUTED",
     "kg001_state_restore": "RUNTIME_ROUNDTRIP_PASS",
@@ -107,11 +107,11 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "BLOCKED_CANDIDATE3_RUNTIME_RETEST",
+    "kg001_overall_status": "BLOCKED_CANDIDATE3_CRITICAL_R1_OBJECT02",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "BLOCKED_CANDIDATE3_PREFLIGHT_AND_G10",
+    "kg001_manual_sanity": "FAIL_CRITICAL_R1_OBJECT02",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 3",
     "kg001_candidate_build_source_ready": true,
@@ -134,9 +134,10 @@
     "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9_11",
     "kg001_known_critical_bugs": [
       "#6 PLAYER_FALLS_THROUGH_FLOOR",
-      "STAIRS_UNTRAVERSABLE_UP_OR_DOWN"
+      "STAIRS_UNTRAVERSABLE_UP_OR_DOWN",
+      "C3-CRIT-R1-OBJECT02-MISSING-COLLISION"
     ],
-    "kg001_collision_issue_6": "SOURCE_FIX_READY_CANDIDATE3_RUNTIME_RETEST_REQUIRED",
+    "kg001_collision_issue_6": "SOURCE_FIX_READY_R1_OBJECT02_V119_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
     "kg001_known_major_bugs": [
       "#9 NO_AUDIBLE_AUDIO",
@@ -160,7 +161,7 @@
       "KEYHOLE#",
       "TONG6 -> MINETON#"
     ],
-    "kg001_candidate_source_freeze": "CANDIDATE3_SOURCE_HARDENED_RUNTIME_RETEST_REQUIRED",
+    "kg001_candidate_source_freeze": "POST_CANDIDATE3_OBJECT02_FIX_V119_RUNTIME_RETEST_REQUIRED",
     "kg001_candidate_freeze_scope": [
       "Issue #6 floor collision must pass active Input-driven R1 traversal",
       "Critical stair traversal must pass both real R8 stair profiles up/down",
@@ -199,14 +200,15 @@
     "kg001_candidate3_source_ci": "BLOCKED_BEFORE_RUNNER_NO_STEPS",
     "kg001_candidate3_export_guard": "FAIL_CLOSED_EXACT_ASSET_SET_AND_STARTUP_SMOKE_REQUIRED",
     "kg001_candidate3_export_allowed": false,
-    "kg001_candidate3_manual_gate": "G10_PENDING_USER",
+    "kg001_candidate3_manual_gate": "G10_FAIL_CRITICAL_R1_OBJECT02",
     "kg001_candidate3_required_runtime_pass": [
       "v109",
       "v110",
       "v111",
       "audio_v116",
       "physical_v117",
-      "well_tongs_v118"
+      "well_tongs_v118",
+      "r1_route_v119"
     ],
     "kg001_candidate3_preflight_contract": "data/tests/kg001_candidate3_preflight_contract_v1.json",
     "kg001_candidate3_runtime_asset_binding": "EXACT_PATH_SET_PLUS_FULL_ROOMS_AUDIO_CLASSIC_CORPUS_SHA256",
@@ -227,7 +229,21 @@
     "public_release_in_place_visibility_switch": "NOT_RECOMMENDED_WITHOUT_EXPLICIT_PRIVACY_ACCEPTANCE",
     "public_release_preferred_model": "PUBLIC_SOURCE_SAFE_MIRROR_FRESH_HISTORY",
     "public_release_safety_validator": "SOURCE_GATE_REQUIRED",
-    "public_release_license": "NOT_SELECTED"
+    "public_release_license": "NOT_SELECTED",
+    "kg001_r1_route_v119": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+    "kg001_candidate3_bug_report": "openazrael_bugreport_1790007921_0054.zip",
+    "kg001_candidate3_r1_object02": {
+      "room": "R1",
+      "trigger": "zxcoriR5",
+      "player_position": [
+        -264.159088134766,
+        -114.801208496094,
+        381.168426513672
+      ],
+      "root_cause": "R1/Object02 visible authored floor was globally excluded from collision",
+      "source_fix": "room-aware Object02 collision: enabled only in R1",
+      "regression": "v119 exact bug point + Object02 two-triangle crossing + audited R1 route"
+    }
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -238,7 +254,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Use a fresh-history public source-safe CI mirror (preferred) or explicitly accept canonical-history privacy exposure before an in-place visibility switch. Then require the Candidate 3 source gate to execute and PASS for the exact canonical source state; after that run the private/local asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118, guarded export/startup smoke, and fixed-order G10.",
+  "next_target": "Run source validation and asset-backed v119 against the room-aware R1/Object02 collision fix. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119 fresh-checkout PASS, then prepare a NEW Candidate 4 build; do not reuse Candidate 3 as a passing artifact. G10 must restart from R1 floor traversal.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -432,7 +448,7 @@
   },
   "candidate3_windows": {
     "source_branch": "test/kg001-physical-traversal",
-    "status": "SOURCE_HARDENED_PREFLIGHT_RUNTIME_PENDING",
+    "status": "REJECTED_G10_CRITICAL_R1_OBJECT02",
     "source_ci": ".github/workflows/kg001-candidate3-source-gate.yml",
     "preflight": "tools/run_candidate3_preflight.py",
     "preflight_receipt": ".tmp/kg001/candidate3_preflight_receipt.json",
@@ -442,7 +458,7 @@
     "exact_head_binding": true,
     "godot_version_binding": true,
     "runtime_asset_hash_binding": true,
-    "manual_gate": "G10_PENDING_USER",
+    "manual_gate": "G10_FAIL_CRITICAL_R1_OBJECT02",
     "known_good_tag_created": false,
     "artifacts": [
       "exports/OpenAzrael-KG001-Candidate3.exe",
