@@ -41,6 +41,8 @@ required_runtime_paths={
     "scripts/room_manager.gd",
     "scripts/candidate_diagnostics_v116.gd",
     "scripts/kg001_room_trigger_runner_v110.gd",
+    "scripts/kg001_physical_traversal_runner_v117.gd",
+    "scripts/kg001_well_tongs_animation_runner_v118.gd",
     "scripts/kg001_audio_runtime_runner_v116.gd",
     "scripts/kg001_full_demo_runner_v111.gd",
     "scripts/kg001_visual_capture_v117.gd",
