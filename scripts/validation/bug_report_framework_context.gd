@@ -63,6 +63,7 @@ func _summary_fields(artifact_id: String, payload: Dictionary) -> Dictionary:
             return {
                 "status": String(payload.get("status", "")),
                 "plan_id": String(payload.get("plan_id", "")),
+                "plan_sha256": String(payload.get("plan_sha256", "")),
                 "step_count": int(payload.get("step_count", 0)),
                 "final_state_sha256": String(
                     payload.get("final_state_sha256", "")
