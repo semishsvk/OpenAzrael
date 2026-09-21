@@ -67,6 +67,10 @@ SOURCE_CONTRACTS=[
     ROOT/"data/tests/kg001_audio_runtime_contract_v116.json",
     ROOT/"data/tests/kg001_texture_colorkey_contract_v116.json",
     ROOT/"data/tests/kg001_room_trigger_contract_v110.json",
+    ROOT/"data/tests/kg001_physical_traversal_contract_v117.json",
+    ROOT/"data/tests/kg001_portal_spawn_geometry_v117.json",
+    ROOT/"data/tests/kg001_well_tongs_animation_contract_v118.json",
+    ROOT/"data/tests/kg001_well_tongs_demo_evidence_v118.json",
     ROOT/"data/tests/kg001_test_build_contract_v118.json",
     ROOT/"data/backup/source_fingerprints.json",
 ]
