@@ -99,9 +99,14 @@ checks = {
         '"--export-release"' in exporter
         and 'default="Windows Candidate 3"' in exporter
     ),
+    "export_requires_exe_pck_pair": (
+        '"PCK_MISSING"' in exporter
+        and 'binary_format/embed_pck=false' in presets
+    ),
     "export_hashes_artifacts": (
         '"candidate3_export_receipt.json"' in exporter
         and '"sha256": sha256(out)' in exporter
+        and '"sha256": sha256(pck)' in exporter
     ),
     "manual_gate_stays_pending": '"manual_gate": "G10_PENDING_USER"' in exporter,
 }
