@@ -159,6 +159,27 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             for value in scenario_ids
             if value.startswith("openazrael.transition.")
         )
+        profiles = {}
+        for row in scenario_bundle["scenarios"]:
+            metadata = row.get("metadata", {})
+            profile = (
+                metadata.get("execution_profile")
+                if isinstance(metadata, dict)
+                else None
+            )
+            profiles[row["scenario_id"]] = (
+                profile or "guarded_generic_runtime"
+            )
+        bridge_ids = sorted(
+            scenario_id
+            for scenario_id, profile in profiles.items()
+            if profile == "v117_real_geometry_input"
+        )
+        guarded_ids = sorted(
+            scenario_id
+            for scenario_id, profile in profiles.items()
+            if profile == "guarded_generic_runtime"
+        )
         bundle_sha = hashlib.sha256(scenario_path.read_bytes()).hexdigest()
         self._write(
             evidence / "kg001_pppv_scenario_suite.json",
@@ -173,9 +194,19 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 "failed": 0,
                 "transition_scenario_count": len(transition_ids),
                 "transition_scenario_ids": transition_ids,
+                "guarded_scenario_count": len(guarded_ids),
+                "v117_bridge_scenario_count": len(bridge_ids),
                 "all_authored_scenarios_executed": True,
+                "all_transition_scenarios_guarded": True,
                 "scenarios": {
-                    scenario_id: {"status": "PASS"}
+                    scenario_id: {
+                        "status": "PASS",
+                        "execution_profile": profiles[scenario_id],
+                        "guarded_replay": (
+                            profiles[scenario_id]
+                            == "guarded_generic_runtime"
+                        ),
+                    }
                     for scenario_id in scenario_ids
                 },
             },
