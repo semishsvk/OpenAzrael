@@ -43,7 +43,8 @@ PASS for:
 - audio-v116;
 - physical-traversal-v117;
 - well-tongs-v118;
-- r1-route-v119 (Candidate 3 R1/Object02 regression and audited R1 route traversal).
+- r1-route-v119 (Candidate 3 R1/Object02 regression and audited R1 route traversal);
+- collision-parity-v120 (generic visible floor-like mesh/runtime collision parity across R1/R7/R8).
 
 It also requires a fresh Godot import, clean Git before/after, no forbidden
 commercial payload tracked by Git, and the restored room assets to remain
