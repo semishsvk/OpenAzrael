@@ -23,7 +23,7 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
             plan["metadata"]["runtime_validation_status"],
             "NOT_EXECUTED",
         )
-        self.assertFalse(
+        self.assertTrue(
             plan["metadata"]["chained_execution_implemented"]
         )
         self.assertNotIn("S01_PICKUP_TONGS", plan["blocked_steps"])
