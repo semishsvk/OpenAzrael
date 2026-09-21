@@ -6,11 +6,24 @@ import unittest
 from pathlib import Path
 
 from tools.openazrael_adapters.kg001_candidate_framework import (
+    _default_scenario_bundle,
     build_candidate_framework_bundle,
 )
 
 
 class KG001CandidateFrameworkTests(unittest.TestCase):
+    def test_current_repo_auto_builds_v117_v118_scenarios(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        bundle = _default_scenario_bundle(root)
+        ids = {row["scenario_id"] for row in bundle["scenarios"]}
+        self.assertEqual(bundle["scenario_count"], 5)
+        self.assertIn("openazrael.r1.floor_traversal", ids)
+        self.assertIn("openazrael.r7.well_tongs.positive", ids)
+        self.assertIn(
+            "openazrael.r7.well_tongs.negative_without_tongs",
+            ids,
+        )
+
     def _write(self, path: Path, payload: dict) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(payload), encoding="utf-8")
