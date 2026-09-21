@@ -325,6 +325,23 @@
       "maturity": "poc"
     },
     {
+      "tool_id": "pppv_playthrough_consistency_audit",
+      "family": "validation_lab",
+      "description": "Statically prove chained room continuity and inventory/flag/puzzle preconditions across a playthrough plan without treating the result as runtime navigation or interaction evidence.",
+      "entrypoint": "tools/remaster_framework/playthrough_consistency.py",
+      "inputs": [
+        "playthrough_plan",
+        "pppv_scenario_bundle"
+      ],
+      "outputs": [
+        "playthrough_consistency_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
       "tool_id": "pppv_playthrough_evaluator",
       "family": "validation_lab",
       "description": "Deterministically evaluate every embedded PPPV scenario, checkpoint roundtrip, runtime no-shortcut boundary, step order and final state hash from a chained playthrough bundle.",
