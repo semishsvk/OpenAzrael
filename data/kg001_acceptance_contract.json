@@ -14,7 +14,9 @@
       "#6 floor collision",
       "#9 physical audio",
       "#11 legacy color-key transparency",
-      "R7 well+tongs exact demo effect"
+      "R7 well+tongs exact demo effect",
+      "critical R8 stair traversal",
+      "R1 keyhole vertical orientation"
     ]
   },
   "release_policy": {
@@ -24,7 +26,10 @@
     "fresh_checkout_required": true,
     "manual_sanity_required": true,
     "immutable_tag": true,
-    "zero_recorded_release_blockers": true
+    "zero_recorded_release_blockers": true,
+    "candidate3_exact_head_preflight_required": true,
+    "candidate3_exact_runtime_asset_set_binding_required": true,
+    "candidate3_exported_startup_smoke_required": true
   },
   "gates": [
     {
@@ -103,7 +108,14 @@
       "id": "G09",
       "name": "fresh_checkout_build",
       "required": true,
-      "automation": "clean_environment"
+      "automation": "clean_environment",
+      "candidate3_requirements": [
+        "source CI PASS at exact build SHA",
+        "asset-backed preflight receipt bound to exact Git HEAD and Godot version",
+        "exact runtime asset path set plus per-asset SHA-256 binding",
+        "guarded EXE/PCK export",
+        "exported startup smoke PASS before export receipt"
+      ]
     },
     {
       "id": "G10",
@@ -111,7 +123,9 @@
       "required": true,
       "automation": "manual_user",
       "manual_visual_colorkey_required": true,
-      "manual_audio_audibility_required": true
+      "manual_audio_audibility_required": true,
+      "manual_stair_traversal_required": true,
+      "manual_keyhole_orientation_required": true
     }
   ],
   "forensic_boundary": {
