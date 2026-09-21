@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .replay_validation import validate_replay
 from .validation import (
     RuntimeEvidence,
     ValidationScenario,
@@ -75,45 +76,21 @@ def evaluate_runtime_bundle(payload: dict[str, Any]) -> dict[str, Any]:
 
     if "replay" in payload:
         replay = payload.get("replay", {})
-        if not isinstance(replay, dict):
-            extra_errors.append("replay must be an object")
-            replay = {}
-        if replay.get("schema") != "remaster.synthetic_player_replay":
-            extra_errors.append("synthetic-player replay schema missing or invalid")
-        if replay.get("frame_level_avatar_trajectory") is not True:
-            extra_errors.append("frame-level avatar trajectory is not enabled")
-        replay_actions = replay.get("actions", [])
-        if not isinstance(replay_actions, list):
-            extra_errors.append("replay actions must be a list")
-            replay_actions = []
-        if len(replay_actions) != len(scenario.actions):
-            extra_errors.append(
-                "replay action count mismatch: "
-                f"{len(replay_actions)} != {len(scenario.actions)}"
+        expected_actions = scenario_payload.get("actions", [])
+        if not isinstance(expected_actions, list):
+            expected_actions = []
+        replay_errors = validate_replay(expected_actions, replay)
+        extra_errors.extend(replay_errors)
+        if isinstance(replay, dict):
+            replay_actions = replay.get("actions", [])
+            report["replay_action_count"] = (
+                len(replay_actions)
+                if isinstance(replay_actions, list)
+                else 0
             )
-        for index, replay_action in enumerate(replay_actions):
-            if not isinstance(replay_action, dict):
-                extra_errors.append(f"replay action {index} is not an object")
-                continue
-            if not isinstance(replay_action.get("before"), dict):
-                extra_errors.append(
-                    f"replay action {index} missing before snapshot"
-                )
-            if not isinstance(replay_action.get("after"), dict):
-                extra_errors.append(
-                    f"replay action {index} missing after snapshot"
-                )
-            trajectory = replay_action.get("trajectory")
-            if not isinstance(trajectory, list):
-                extra_errors.append(
-                    f"replay action {index} trajectory must be a list"
-                )
-            result = replay_action.get("result")
-            if not isinstance(result, dict) or result.get("success") is not True:
-                extra_errors.append(
-                    f"replay action {index} did not complete successfully"
-                )
-        report["replay_action_count"] = len(replay_actions)
+            report["replay_integrity_status"] = (
+                "PASS" if not replay_errors else "FAIL"
+            )
 
     if "runtime_boundary" in payload:
         boundary = payload.get("runtime_boundary", {})
