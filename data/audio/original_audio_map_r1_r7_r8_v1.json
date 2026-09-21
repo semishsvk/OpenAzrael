@@ -1,0 +1,23 @@
+{
+ "schema_version":1,
+ "slice":["R1","R7","R8"],
+ "emitters":[
+  {"emitter_id":"r1.doorcor01","room":"R1","sound_id":"r1.995.doorcor01","object":"doorcor01","position":"resolve_from_original_object","confidence":"VERIFIED"},
+  {"emitter_id":"r1.doorcor2","room":"R1","sound_id":"r1.995.doorcor2","object":"doorcor2","position":"resolve_from_original_object","confidence":"VERIFIED"},
+  {"emitter_id":"r7.well.tongs","room":"R7","sound_id":"r7.979tongs.well","object":"wel_well","position":"resolve_from_original_object","confidence":"VERIFIED"},
+  {"emitter_id":"r7.wheel","room":"R7","sound_id":"r7.977turn.wheel","object":"well_weel1","position":"resolve_from_original_object","confidence":"VERIFIED"},
+  {"emitter_id":"r7.pipe","room":"R7","sound_ids":["r7.982push.pipe","r7.981pull.pipe"],"object":"well_pzpi2","position":"resolve_from_original_object","confidence":"VERIFIED"},
+  {"emitter_id":"r8.font3","room":"R8","sound_id":"r8.s137.font3","object":"font3","position":"resolve_from_original_object","confidence":"HIGH"},
+  {"emitter_id":"r8.door","room":"R8","sound_id":"r8.s121.door","object":"door","position":"resolve_from_original_object","confidence":"HIGH"},
+  {"emitter_id":"r8.zxsound","room":"R8","sound_id":"r8.990wdspa.zxsound","object":"zxsound","position":[60.511885,34.362801,125.179207],"confidence":"VERIFIED"},
+  {"emitter_id":"r8.zxsound1","room":"R8","sound_id":"r8.990wdspa.zxsound1","object":"zxsound1","position":[-141.306018,35.296532,125.17883],"confidence":"VERIFIED"},
+  {"emitter_id":"r8.zxsound2","room":"R8","sound_id":"r8.990wdspa.zxsound2","object":"zxsound2","position":[-44.117233,34.966629,99.014751],"confidence":"VERIFIED"}
+ ],
+ "event_bindings":[
+  {"event":"R8_LENS_PLACE","sound_id":"r8.s137.font3","expected_state":{"R8LensPlace":true}},
+  {"event":"R8_OPTICAL_START","sound_id":"r8.s121.door","expected_state":{"R8RaiseTimer":true}}
+ ],
+ "hold":[
+  {"event":"R7_TONGS_WELL_INTERACTION","candidate_sound_id":"r7.979tongs.well","reason":"sound/object/room bridge VERIFIED, but exact player-action trigger/state binding not yet evidenced in committed event graph"}
+ ]
+}
