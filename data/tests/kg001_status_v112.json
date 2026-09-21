@@ -58,6 +58,6 @@
       "status": "PENDING_MANUAL_USER"
     }
   },
-  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS for the current tested commit, G04 includes v117, G05 includes exact-demo v118, and no recorded release blocker remains.",
-  "evidence_note": "Candidate 2 PASS JSON remains historical; v112 status now requires evidence SHA == current Git HEAD."
+  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS for the current tested commit, G04 includes v110 + v117 + Candidate-3 regression v119, G05 includes exact-demo v118, and no recorded release blocker remains.",
+  "evidence_note": "Candidate 2 and Candidate 3 automation/manual evidence is historical for current source. Candidate 3 G10 exposed R1/Object02 missing collision; v119 is now mandatory and evidence SHA must equal current Git HEAD."
 }
