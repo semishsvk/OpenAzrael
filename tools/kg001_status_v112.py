@@ -58,7 +58,7 @@ gates={
  "G02":{"name":"unit_gameplay_logic","status":"PASS" if source_pass and v109_pass else "RUNTIME_PENDING"},
  "G03":{"name":"puzzle_state_space","status":"PASS" if source_pass and v108.get("status")=="PASS" else "PENDING"},
  "G04":{"name":"room_transition_and_physical_traversal","status":"PASS" if v110_pass and physical_pass else "RUNTIME_PENDING"},
- "G05":{"name":"trigger_semantics_and_well_tongs_animation","status":"PASS" if v110_pass and well_tongs_pass else "RUNTIME_PENDING"},
+ "G05":{"name":"trigger_semantics_and_recovered_interaction_effects","status":"PASS" if v110_pass and well_tongs_pass else "RUNTIME_PENDING"},
  "G06":{"name":"audio_event_stream","status":"PASS" if v109_pass and v111_pass and audio_pass else "RUNTIME_PENDING"},
  "G07":{"name":"save_load_state_hash","status":"PASS" if v109_pass else "RUNTIME_PENDING"},
  "G08":{"name":"synthetic_full_demo_playthrough","status":"PASS" if v111_pass else "RUNTIME_PENDING"},
