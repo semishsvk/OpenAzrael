@@ -6,10 +6,16 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 runner = (ROOT / "scripts/kg001_physical_traversal_runner_v117.gd").read_text(encoding="utf-8")
 player = (ROOT / "scripts/player.gd").read_text(encoding="utf-8")
+room_manager = (ROOT / "scripts/room_manager.gd").read_text(encoding="utf-8")
 main = (ROOT / "main.tscn").read_text(encoding="utf-8")
 project = (ROOT / "project.godot").read_text(encoding="utf-8")
 contract = json.loads(
     (ROOT / "data/tests/kg001_physical_traversal_contract_v117.json").read_text(
+        encoding="utf-8"
+    )
+)
+spawn_evidence = json.loads(
+    (ROOT / "data/tests/kg001_portal_spawn_geometry_v117.json").read_text(
         encoding="utf-8"
     )
 )
@@ -49,6 +55,22 @@ checks = {
         and contract.get("floor_regression", {}).get(
             "test_may_normalize_player_to_floor"
         ) is False
+    ),
+    "spawn_geometry_evidence": (
+        spawn_evidence.get("schema") == "openazrael.kg001.portal_spawn_geometry"
+        and spawn_evidence.get("version") == 117
+        and spawn_evidence.get("status") == "SOURCE_GEOMETRY_AUDIT_PASS"
+        and spawn_evidence.get("fix", {}).get("clearance") == 4.0
+        and len(spawn_evidence.get("observations", [])) == 4
+        and sum(1 for row in spawn_evidence.get("observations", [])
+                if row.get("pre_fix_clearance", 0) < 0) == 3
+        and all(row.get("post_fix_clearance", 0) > 1.0
+                for row in spawn_evidence.get("observations", []))
+    ),
+    "production_portal_spawn_clearance": (
+        "const PORTAL_SPAWN_CLEARANCE := 4.0" in room_manager
+        and "Vector3.UP * PORTAL_SPAWN_CLEARANCE" in room_manager
+        and "player.teleport_eye_to(" in room_manager
     ),
     "tracked_contract_stair_assist": (
         contract.get("production_path", {}).get("step_up", {}).get(
