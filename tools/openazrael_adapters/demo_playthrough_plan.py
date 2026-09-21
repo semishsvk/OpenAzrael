@@ -241,7 +241,7 @@ def build_openazrael_demo_playthrough_plan(
             ),
             "full_demo_real_player_required": True,
             "runtime_validation_status": "NOT_EXECUTED",
-            "chained_execution_implemented": False,
+            "chained_execution_implemented": True,
             "status_meaning": "scenario_authoring_readiness_only",
         },
     )
