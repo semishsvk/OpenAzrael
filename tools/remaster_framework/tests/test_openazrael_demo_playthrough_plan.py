@@ -18,12 +18,24 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         plan = build_openazrael_demo_playthrough_plan(scenarios)
 
         self.assertEqual(plan["status"], "AUTHORING_REQUIRED")
-        self.assertIn("S01_PICKUP_TONGS", plan["blocked_steps"])
+        self.assertNotIn("S01_PICKUP_TONGS", plan["blocked_steps"])
+        self.assertNotIn("S02_OPEN_DOOR1", plan["blocked_steps"])
+        self.assertNotIn("S08_OPEN_DOOR2", plan["blocked_steps"])
         self.assertIn("T03_R1_TO_R7", plan["blocked_steps"])
         self.assertIn("S05_SWITCHBOARD", plan["blocked_steps"])
         self.assertIn("S10_TAKE_LENS", plan["blocked_steps"])
         self.assertIn("S11_OPTICAL_SEQUENCE", plan["blocked_steps"])
         self.assertIn("S13_TAKE_SHIELD", plan["blocked_steps"])
+
+    def test_r1_interactions_are_reused_as_ready_segments(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root)
+        )
+        rows = {row["step_id"]: row for row in plan["steps"]}
+        self.assertEqual(rows["S01_PICKUP_TONGS"]["status"], "READY")
+        self.assertEqual(rows["S02_OPEN_DOOR1"]["status"], "READY")
+        self.assertEqual(rows["S08_OPEN_DOOR2"]["status"], "READY")
 
     def test_v118_well_positive_is_reused_as_ready_segment(self) -> None:
         root = Path(__file__).resolve().parents[3]
