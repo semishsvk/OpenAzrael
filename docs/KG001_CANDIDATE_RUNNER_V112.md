@@ -8,7 +8,7 @@ Run:
 
     python tools/run_kg001_candidate_v112.py
 
-The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111, the audio-v116 physical playback-readiness regression, the v117 physical traversal regression, and the v118 R7 well+tongs animation-trigger regression. Source validation also includes the Issue #11 indexed-palette legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
+The tool executes the source/context validators, discovers Godot from --godot / GODOT_BIN / godot4 / godot, executes v109, imports restored room assets with Godot when present, and then executes v110/v111, the audio-v116 physical playback-readiness regression, the v117 physical traversal regression, and the v118 R7 well+tongs recovered-effect regression. Source validation also includes the Issue #11 indexed-palette legacy color-key regression and automatically becomes asset-backed when restored Classic textures are present.
 
 All temporary evidence goes under .tmp/kg001/, which is ignored by Git.
 
@@ -37,7 +37,7 @@ After a successful candidate run, optionally use:
 
     python tools/run_kg001_candidate_v112.py --fresh-checkout --promote-results
 
-The tool records the clean-state G09 result first, then copies summarized v109/v110/v111/audio-v116/physical-v117 runtime/source/fresh-checkout JSON into data/tests for review and commit. The promotion intentionally makes the source checkout dirty after the G09 observation; that does not rewrite the already-recorded clean_before/clean_after evidence.
+The tool records the clean-state G09 result first, then copies summarized v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 runtime/source/fresh-checkout JSON into data/tests for review and commit. The promotion intentionally makes the source checkout dirty after the G09 observation; that does not rewrite the already-recorded clean_before/clean_after evidence.
 
 G10 manual sanity remains separate and cannot be auto-promoted by this tool.
 
@@ -56,7 +56,9 @@ Issue #11 is validated during the source phase. The validator binds the real 86-
 
 The v117 runner closes a false-positive gap discovered during Candidate 2 manual testing. Earlier automation could PASS by raycasting a floor, placing the player slightly above that point, and waiting while stationary; the full-demo runner also teleported directly to trigger centroids.
 
-v117 instead loads the real main scene and production Player, drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor, and measures fall-through, horizontal progress and floor-contact ratio. It then derives tread levels directly from the imported R8 `step011__mesh` and `stairs__STAIR2` meshes and drives the same CharacterBody3D up and down both real stair profiles. The first covers the lower ~5-unit risers; the main staircase covers ~12.6-unit risers and is the stronger step-up regression. No synthetic proxy stairs are accepted.
+v117 first validates the **natural** portal-view spawns used by R1/R7/R8. Candidate 2's old spawn formula placed the capsule feet below the authored floor at R1/spaview (~0.45 units), R1/entcori (~2.54) and R7/view (~1.66); the production fix adds 4 units of vertical spawn clearance while preserving X/Z and heading. The test is forbidden from normalizing the player back onto a raycast floor.
+
+It then drives `move_forward` / `move_back` through Godot Input actions across the canonical R1 starting floor and measures fall-through, horizontal progress and floor-contact ratio. For stairs, the production Player uses collision-tested discrete step-up (max 14 units) plus 16-unit downward floor snap; no synthetic ramp replaces the authored geometry. v117 derives tread levels directly from the imported R8 `step011__mesh` and `stairs__STAIR2` meshes and drives the same CharacterBody3D up and down both real stair profiles. The first covers ~5-unit risers; the main staircase covers ~12.6-unit risers and is the stronger step-up regression.
 
 A v110 PASS from Candidate 2 predates this traversal contract and is therefore insufficient for a new G04 PASS without a current v117 runtime result.
 
