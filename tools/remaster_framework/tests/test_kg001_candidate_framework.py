@@ -101,6 +101,14 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             evidence / "kg001_source_validation_v112.json",
             {"status": "PASS"},
         )
+        self._write(
+            evidence / "kg001_state_space_v108.json",
+            {"status": "PASS"},
+        )
+        self._write(
+            evidence / "kg001_state_fuzz_v119.json",
+            {"status": "PASS"},
+        )
         for version in (109, 110, 111, 117, 118):
             self._write(
                 evidence / f"kg001_v{version}_runtime.json",
@@ -303,6 +311,14 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 "pppv_playthrough_plan",
                 provenance["inputs"],
             )
+            self.assertIn(
+                "kg001_state_space",
+                provenance["inputs"],
+            )
+            self.assertIn(
+                "kg001_state_fuzz",
+                provenance["inputs"],
+            )
             self.assertEqual(
                 bundle["well_tongs_real_input_pppv_status"],
                 "NOT_AVAILABLE",
@@ -382,6 +398,25 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                     godot_version="4.x",
                 )
 
+
+
+    def test_missing_state_fuzz_prevents_known_good_eligibility(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            (evidence / "kg001_state_fuzz_v119.json").unlink()
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(bundle["release_status"], "BLOCKED")
+            self.assertFalse(bundle["known_good_eligible"])
 
     def test_stale_pppv_suite_hash_is_blocked_by_integrity_gate(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
