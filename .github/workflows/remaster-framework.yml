@@ -30,3 +30,12 @@ jobs:
 
       - name: Validate Candidate Diagnostics F11 contract
         run: python tools/validate_candidate_diagnostics_v116.py
+
+      - name: Validate v112 candidate runner contract
+        run: python tools/validate_kg001_candidate_v112.py
+
+      - name: Validate v117 physical traversal source contract
+        run: python tools/validate_kg001_physical_traversal_v117.py
+
+      - name: Validate v118 Well+Tongs source contract
+        run: python tools/validate_kg001_well_tongs_animation_v118.py
