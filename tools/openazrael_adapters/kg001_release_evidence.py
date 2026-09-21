@@ -12,6 +12,8 @@ RESULTS_VERSION = 1
 
 EVIDENCE_CANDIDATES = {
     "source": ("kg001_source_validation_v112.json",),
+    "state_space": ("kg001_state_space_v108.json",),
+    "state_fuzz": ("kg001_state_fuzz_v119.json",),
     "v109": (
         "kg001_v109_runtime.json",
         "kg001_headless_runtime_v109.json",
@@ -157,6 +159,7 @@ def derive_gate_rows(
     *,
     source_path: Path | None,
     state_space_path: Path | None,
+    state_fuzz_path: Path | None,
     v109_path: Path | None,
     v110_path: Path | None,
     v111_path: Path | None,
@@ -171,6 +174,7 @@ def derive_gate_rows(
     payloads = {
         "source": _load(source_path) if source_path else None,
         "state": _load(state_space_path) if state_space_path else None,
+        "state_fuzz": _load(state_fuzz_path) if state_fuzz_path else None,
         "v109": _load(v109_path) if v109_path else None,
         "v110": _load(v110_path) if v110_path else None,
         "v111": _load(v111_path) if v111_path else None,
@@ -199,11 +203,9 @@ def derive_gate_rows(
         "manual": _load(manual_path) if manual_path else None,
     }
 
-    state_status = (
-        "PASS"
-        if payloads["state"] is not None
-        and str(payloads["state"].get("status", "")).upper() == "PASS"
-        else ("FAIL" if _status(payloads["state"]) == "FAIL" else "PENDING")
+    state_status = _combined_status(
+        payloads["state"],
+        payloads["state_fuzz"],
     )
 
     rows = [
@@ -239,6 +241,7 @@ def derive_gate_rows(
                 repo_root,
                 source_path,
                 state_space_path,
+                state_fuzz_path,
             ),
         },
         {
@@ -362,9 +365,10 @@ def build_gate_results(
     if manual_path is not None:
         paths["manual"] = manual_path.resolve()
 
-    state_path = repo_root / "data/tests/kg001_state_space_v108.json"
-    if not state_path.is_file():
-        state_path = None
+    state_path = paths["state_space"]
+    if state_path is None:
+        fallback_state = repo_root / "data/tests/kg001_state_space_v108.json"
+        state_path = fallback_state if fallback_state.is_file() else None
 
     fresh = _load(paths["fresh"]) if paths["fresh"] else None
     manual = _load(paths["manual"]) if paths["manual"] else None
@@ -377,6 +381,7 @@ def build_gate_results(
         repo_root,
         source_path=paths["source"],
         state_space_path=state_path,
+        state_fuzz_path=paths["state_fuzz"],
         v109_path=paths["v109"],
         v110_path=paths["v110"],
         v111_path=paths["v111"],
