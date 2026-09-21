@@ -1,5 +1,13 @@
 # OpenAzrael Last Session
 
+## Candidate 3 hardening — 2026-09-21
+
+Candidate 3 is now the active integration target on `test/kg001-physical-traversal`. This session hardened the export provenance contract to reject runtime asset additions/removals after preflight, added required exported-EXE startup smoke, corrected the stale Candidate 2 HUD watermark, and extended G10 to verify upright KEYHOLE orientation.
+
+The production stair solver now uses winding-safe near-to-far tread probes instead of one long signed-normal probe and exposes a bounded v117 step-debug trace with hit normal/face/height and rejection reason. `KEYHOLE#` receives a narrow vertical UV compatibility correction with synthetic and asset-backed regression; TONG6/MINETON# is an explicit negative control. None of these source changes are promoted as runtime PASS yet.
+
+Next evidence order: Candidate 3 source CI -> exact-SHA asset-backed preflight (v109/v110/v111/audio-v116/physical-v117/well-tongs-v118) -> guarded EXE/PCK export + startup smoke -> G10 manual route. Historical Candidate 2 Windows evidence remains below for provenance only.
+
 ## Candidate 2 Windows execution — 2026-09-20
 
 **KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
