@@ -20,6 +20,10 @@ FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
 SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_project_context.py"],
+    [sys.executable,"tools/validate_kg001_contract.py"],
+    [sys.executable,"-m","tools.remaster_framework.cli","validate"],
+    [sys.executable,"-m","unittest","discover","-s","tools/remaster_framework/tests","-v"],
+    [sys.executable,"-m","tools.openazrael_adapters.runtime_capabilities",".","--require-core"],
     [sys.executable,"tools/validate_demo_runtime_ir.py"],
     [sys.executable,"tools/audit_gameplay_event_graph_v87.py","--source-only"],
     [sys.executable,"tools/kg001_state_space_v108.py"],
@@ -96,7 +100,8 @@ def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
     ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109-v111 runtime PASS.")
-    ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
+    ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout/framework summaries into data/tests for review/commit.")
+    ap.add_argument("--stage-framework-metadata",action="store_true",help="After G09 observation, stage ignored source-safe provenance/release/PPPV metadata under data/runtime for a subsequent manual Candidate/F11 run.")
     args=ap.parse_args()
 
     TMP.mkdir(parents=True,exist_ok=True)
@@ -187,6 +192,38 @@ def main():
     }
     write_json(TMP/"kg001_candidate_v112.json",overall)
 
+    framework_cmd=[
+        sys.executable,
+        "-m",
+        "tools.openazrael_adapters.kg001_candidate_framework",
+        "--repo-root",str(ROOT),
+        "--evidence-root",str(TMP),
+        "--commit-sha",head,
+        "--godot-version",godot_version,
+    ]
+    manual_path=ROOT/"data/tests/kg001_manual_sanity.json"
+    if manual_path.is_file():
+        framework_cmd += ["--manual",str(manual_path)]
+    framework_proc=run(framework_cmd)
+    framework_bundle_path=TMP/"kg001_framework_bundle.json"
+    framework_status="PASS" if framework_proc.returncode==0 and framework_bundle_path.is_file() else "FAIL"
+
+    metadata_stage_status="NOT_REQUESTED"
+    if args.stage_framework_metadata:
+        metadata_cmd=[
+            sys.executable,
+            "-m",
+            "tools.remaster_framework.runtime_metadata",
+            "stage",
+            "--project-root",str(ROOT),
+            "--build-provenance",str(TMP/"build_provenance.json"),
+            "--release-gate-summary",str(TMP/"release_gate_summary.json"),
+            "--pppv-coverage",str(TMP/"pppv_coverage.json"),
+            "--output",str(TMP/"runtime_metadata_stage.json"),
+        ]
+        metadata_proc=run(metadata_cmd)
+        metadata_stage_status="PASS" if metadata_proc.returncode==0 else "FAIL"
+
     if args.promote_results:
         mapping={
             TMP/"kg001_v109_runtime.json":ROOT/"data/tests/kg001_headless_runtime_v109.json",
@@ -194,13 +231,21 @@ def main():
             TMP/"kg001_v111_runtime.json":ROOT/"data/tests/kg001_full_demo_runtime_v111.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
+            TMP/"kg001_release_gate_results.json":ROOT/"data/tests/kg001_release_gate_results.json",
+            TMP/"release_gate_summary.json":ROOT/"data/tests/kg001_release_gate_summary.json",
+            TMP/"pppv_coverage.json":ROOT/"data/tests/kg001_pppv_coverage.json",
+            TMP/"build_provenance.json":ROOT/"data/tests/kg001_build_provenance.json",
+            TMP/"kg001_framework_bundle.json":ROOT/"data/tests/kg001_framework_bundle.json",
         }
         for src,dst in mapping.items():
             if src.is_file():
                 dst.parent.mkdir(parents=True,exist_ok=True)
                 shutil.copyfile(src,dst)
 
-    print(json.dumps(overall,indent=2))
+    console_summary=overall.copy()
+    console_summary["framework_bundle"]=framework_status
+    console_summary["framework_metadata_stage"]=metadata_stage_status
+    print(json.dumps(console_summary,indent=2))
     if args.fresh_checkout:
         sys.exit(0 if fresh_pass else 1)
     sys.exit(0 if source_ok else 1)
