@@ -92,6 +92,7 @@ def bundle() -> dict:
             "schema": "remaster.playthrough_plan",
             "version": 1,
             "plan_id": "test",
+            "plan_sha256": "d" * 64,
             "success_state_sha256": HASH,
             "steps": [
                 {
@@ -138,6 +139,7 @@ class PlaythroughEvaluationTests(unittest.TestCase):
         report = evaluate_playthrough_bundle(bundle())
         self.assertEqual(report["status"], "PASS")
         self.assertEqual(report["step_count"], 2)
+        self.assertEqual(report["plan_sha256"], "d" * 64)
 
     def test_failed_embedded_scenario_blocks_playthrough(self) -> None:
         payload = bundle()
