@@ -58,7 +58,7 @@ Run a deterministic, no-human-input playthrough from clean state through the ful
 From a clean checkout of the candidate commit, restore only permitted/reproducible dependencies and local excluded assets through the documented workflow, then run source/context checks plus the automated KG-001 suite. No untracked local source edit may be required.
 
 ### G10 — Manual sanity check
-After all automated gates pass, perform a short human run of the candidate build. Confirm launch, controls, room traversal, key interactions, puzzle completion, save/load behavior, that expected ambient/event audio is actually audible at usable levels, and that legacy cutout textures render with their intended binary mask rather than visible magenta key color. A logical event or a runtime player reporting `playing=true` is not a substitute for the listening check; source-level alpha metadata is likewise not a substitute for the graphical transparency check. Record any discrepancy before tagging.
+After all automated gates pass, perform a short human run of the candidate build. Confirm launch, controls, R1 floor traversal, ascent/descent of both real R8 stair profiles, room traversal, key interactions, puzzle completion, save/load behavior, that expected ambient/event audio is actually audible at usable levels, that legacy cutout textures render with their intended binary mask rather than visible magenta key color, and that the R1 KEYHOLE is upright rather than vertically inverted. A logical event or a runtime player reporting `playing=true` is not a substitute for the listening check; source-level alpha metadata is likewise not a substitute for the graphical transparency check. Record any discrepancy before tagging.
 
 ## Evidence to archive
 
