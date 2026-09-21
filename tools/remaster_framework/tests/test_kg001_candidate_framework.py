@@ -217,6 +217,41 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 provenance["inputs"],
             )
 
+    def test_stale_playthrough_runtime_plan_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=False)
+            self._write(
+                evidence / "kg001_pppv_playthrough.json",
+                {
+                    "schema": "remaster.runtime_playthrough_bundle",
+                    "version": 1,
+                    "status": "EXECUTION_PASS",
+                    "plan": {
+                        "schema": "remaster.playthrough_plan",
+                        "version": 1,
+                        "plan_id": "stale",
+                        "plan_sha256": "f" * 64,
+                        "steps": [],
+                    },
+                    "steps": [],
+                    "failures": [],
+                    "runtime_boundary": {},
+                },
+            )
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "runtime plan hash does not match",
+            ):
+                build_candidate_framework_bundle(
+                    root,
+                    evidence,
+                    commit_sha="a" * 40,
+                    godot_version="4.x",
+                )
+
     def test_complete_evidence_can_be_known_good_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
