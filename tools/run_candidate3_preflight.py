@@ -104,7 +104,7 @@ def fail(reason: str, details: dict | None = None) -> int:
     RECEIPT.unlink(missing_ok=True)
     payload = {
         "schema": "openazrael.kg001.candidate3_preflight",
-        "version": 1,
+        "version": 2,
         "status": "FAIL",
         "export_allowed": False,
         "reason": reason,
