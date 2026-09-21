@@ -23,16 +23,17 @@ is allowed or created. Original Miles parity and complete original renderer
 transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 `data/tests/kg001_candidate2_windows.json` for details.
 
-**Canonical checkpoint:** `v116-context-v32`  
-**Technical base:** `openazrael_godot_poc_v116`
+**Historical context checkpoint:** `v116-context-v32` (internal provenance, not project version)  
+**Active integration:** `integration/kg001-candidate3-pppv-v2`  
+**Versioning:** see `docs/VERSIONING.md`
 
 ## Now — Candidate 3 source and runtime gate
 
 1. Require the Candidate 3 source workflow to PASS on Python 3.11 and 3.12 at the exact intended build SHA.
 2. Restore the local R1/R7/R8, audio and 86-texture Classic corpus and run `tools/run_candidate3_preflight.py`.
-3. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 literal PASS. For traversal, require natural R1/R7/R8 support plus both real R8 stair profiles up/down; retain the v117 step-debug trace on failure.
-4. Require Issue #11 color-key validation plus the KEYHOLE# vertical-orientation regression; TONG6/MINETON# is the negative control and must not receive the keyhole-only UV correction.
-5. Export only through `tools/export_candidate3.py`. Reject changed HEAD, dirty Git, changed evidence/Godot, any runtime asset mutation/addition/removal, or failed exported startup smoke.
+3. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119/collision-parity-v120 literal PASS. For traversal, require natural R1/R7/R8 support plus both real R8 stair profiles up/down and the R1/Object02 route; retain step/collision evidence on failure.
+4. Require PPPV v2 current-bundle scenario-suite + integrity PASS and two matching guarded chained full-demo playthroughs with determinism integrity; broken required room transitions are critical. Then require Issue #11 color-key validation plus the KEYHOLE# vertical-orientation regression; TONG6/MINETON# remains the negative control.
+5. Export only after the mandatory PPPV v2 preflight has passed, through `tools/export_candidate3.py`. Reject changed HEAD, dirty Git, changed evidence/Godot, any runtime asset mutation/addition/removal, or failed exported startup smoke.
 6. Perform receipt-bound G10 on the exact EXE/PCK pair: floor, stairs, well+tongs, audible triggered/ambient audio, transparency, upright keyhole, full route, save/load and F11.
 7. Keep `demo-known-good-001` forbidden until all G00-G10 gates are literal PASS with zero release blockers and zero reproducible softlocks.
 
