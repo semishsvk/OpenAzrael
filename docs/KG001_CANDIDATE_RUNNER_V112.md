@@ -19,11 +19,14 @@ The source phase now executes:
 - generic PPPV runtime-capability preflight;
 - existing demo runtime IR / gameplay / state-space validators;
 - v109/v110/v111 source contracts;
-- v116 Candidate Diagnostics/F11 source contract.
+- v116 Candidate Diagnostics/F11 source contract;
+- v117 physical traversal source contract;
+- v118 Well+Tongs source/evidence contract.
 
 The runner then discovers Godot from `--godot`, `GODOT_BIN`, `godot4`, or
 `godot`, imports locally restored room assets when available, and executes the
-existing v109/v110/v111 runtime runners.
+existing v109/v110/v111 runtime runners plus the v117 physical traversal and
+v118 Well+Tongs runtime regressions.
 
 Temporary evidence remains under `.tmp/kg001/`.
 
@@ -41,7 +44,7 @@ Fresh-checkout PASS still requires all of the original conditions simultaneously
 - all source validators PASS;
 - Godot found;
 - Godot room-asset import PASS;
-- v109, v110 and v111 runtime status all PASS;
+- v109, v110, v111, v117 and v118 runtime status all PASS;
 - R1/R7/R8 room assets present locally;
 - those local room assets are ignored by Git.
 
@@ -92,8 +95,9 @@ After verification, optionally use:
       --fresh-checkout \
       --promote-results
 
-In addition to the historical v109-v112 summaries, promotion copies the reusable
-framework results into `data/tests/` for review/commit.
+In addition to the historical v109-v112 summaries, promotion copies v117/v118
+runtime evidence and the reusable framework results into `data/tests/` for
+review/commit.
 
 Promotion occurs after the G09 clean-state observation, so the intentional dirty
 state caused by committing evidence does not rewrite G09.
