@@ -59,6 +59,14 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             },
         )
         self._write(
+            evidence / "pppv_scenario_suite_integrity.json",
+            {
+                "schema": "openazrael.kg001.pppv_scenario_suite_integrity",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        self._write(
             evidence / "kg001_pppv_playthrough_evaluation.json",
             {
                 "schema": "remaster.playthrough_evaluation",
@@ -141,6 +149,34 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             statuses = {row["id"]: row["status"] for row in result["gates"]}
             self.assertEqual(statuses["G04"], "FAIL")
             self.assertEqual(statuses["G05"], "FAIL")
+
+
+    def test_missing_suite_integrity_blocks_transition_and_fresh_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "pppv_scenario_suite_integrity.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "PENDING")
+            self.assertEqual(statuses["G05"], "PENDING")
+            self.assertEqual(statuses["G09"], "PENDING")
+
+    def test_failed_suite_integrity_blocks_transition_and_fresh_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "pppv_scenario_suite_integrity.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "FAIL")
+            self.assertEqual(statuses["G05"], "FAIL")
+            self.assertEqual(statuses["G09"], "FAIL")
 
     def test_guarded_chained_playthrough_is_required_for_g08(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
