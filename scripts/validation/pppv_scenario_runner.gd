@@ -4,6 +4,7 @@ const EvidenceBusScript = preload("res://scripts/validation/pppv_evidence_bus.gd
 const PlayerDriverScript = preload("res://scripts/validation/pppv_player_driver.gd")
 const NavigatorScript = preload("res://scripts/validation/pppv_navigator.gd")
 const ObserverScript = preload("res://scripts/validation/openazrael_pppv_observer.gd")
+const SceneObserverScript = preload("res://scripts/validation/pppv_scene_observer.gd")
 
 var failures: Array[String] = []
 
@@ -378,6 +379,14 @@ func _run() -> void:
     observer.attach()
     var driver = PlayerDriverScript.new(player, probe, evidence)
     var navigator = NavigatorScript.new(player, probe, evidence)
+    var scene_observer = SceneObserverScript.new(evidence)
+    var scene_specs = scenario.get("metadata", {}).get("scene_observations", [])
+    if not scene_specs is Array:
+        scene_specs = []
+    var scene_before: Dictionary = scene_observer.capture(
+        manager.get("current_room"),
+        scene_specs
+    )
 
     var keys := _known_state_keys(scenario)
     var before_state: Dictionary = observer.snapshot_state(
@@ -401,6 +410,11 @@ func _run() -> void:
             break
 
     await _settle(2)
+    scene_observer.emit_changes(
+        manager.get("current_room"),
+        scene_specs,
+        scene_before
+    )
     var after_state: Dictionary = observer.snapshot_state(
         keys["inventory"],
         keys["flags"],
