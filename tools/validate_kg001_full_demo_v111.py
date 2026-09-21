@@ -12,7 +12,10 @@ scripts={
  "bible":(ROOT/"scripts/r8_bible_interaction.gd").read_text(encoding="utf-8"),
  "shield":(ROOT/"scripts/r8_shield_interaction.gd").read_text(encoding="utf-8"),
 }
-result108=json.loads((ROOT/"data/tests/kg001_state_space_v108.json").read_text(encoding="utf-8"))
+state_report_path=ROOT/".tmp/kg001/kg001_state_space_v108.json"
+if not state_report_path.is_file():
+    state_report_path=ROOT/"data/tests/kg001_state_space_v108.json"
+result108=json.loads(state_report_path.read_text(encoding="utf-8"))
 checks={
  "main_scene_loaded":'load("res://main.tscn")' in runner,
  "asset_preflight":all(x in runner for x in ("R1.glb","R7.glb","R8.glb","BLOCKED_MISSING_ASSETS")),
