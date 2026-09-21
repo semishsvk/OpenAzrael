@@ -140,6 +140,12 @@ func _run() -> void:
     _check("place_R7_R1_trigger", _place_on_trigger(manager, player, "R7", "zxwell2R6"))
     await _settle()
     _check("returned_R1", manager.current_room_id == "R1")
+    _check(
+        "consumed_tongs_do_not_respawn",
+        _find_named(manager.current_room, "Interact_TONG6") == null
+        and state.puzzle_node("PickupCollected:rusty_tongs")
+        and not state.has("rusty_tongs")
+    )
 
     _check("door2_interaction", _interact_named(manager, "Interact_doorcor2"))
     await _settle(1)
