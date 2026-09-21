@@ -51,6 +51,28 @@ checks={
     "bug_screenshot": 'screenshot.png' in diag and '_capture_screenshot_png' in diag and 'save_png_to_buffer()' in diag,
     "bug_event_tail": 'events_tail.jsonl' in diag and 'BUG_REPORT_EVENT_TAIL_LINES' in diag,
     "bug_state_snapshot": 'state.json' in diag and 'canonical_state_payload' in diag,
+    "bug_schema_v2": 'BUG_REPORT_SCHEMA_VERSION := 2' in diag and '"version": 2' in bug_capture,
+    "bug_physics_context": all(x in diag for x in [
+        '_physics_context',
+        '"velocity"',
+        '"is_on_floor"',
+        '"floor_normal"',
+        '"support_below"',
+        '"column_probe"',
+        '"nearby_collision_bodies"',
+        '"slide_colliders"',
+    ]),
+    "bug_collision_queries_are_observational": (
+        "PhysicsRayQueryParameters3D.create" in diag
+        and "PhysicsShapeQueryParameters3D.new()" in diag
+        and "intersect_ray" in diag
+        and "intersect_shape" in diag
+    ),
+    "bug_runtime_build_identity": (
+        'RUNTIME_BUILD_IDENTITY_PATH := "res://data/runtime_build_identity.json"' in diag
+        and "_runtime_build_identity" in diag
+        and '"source_commit"' in diag
+    ),
     "stable_ids": all(x in diag for x in ['ROOM:','TRG:','PUZ:','FLAG:','ITEM:']),
     "bug_report_source_safe": '"commercial_assets_included": false' in diag and '"source_safe": true' in diag,
     "bug_report_observational": all(x not in bug_capture for x in ["DemoState.acquire(","DemoState.set_flag(","DemoState.set_puzzle_node(","DemoState.restore_canonical_state_payload(","LegacyEvents.run(","load_room("]),
@@ -75,6 +97,21 @@ try:
     features=contract.get("features",{})
     if features.get("event_jsonl_log")!="user://openazrael_candidate3_events.jsonl":
         errors.append("contract Candidate 3 event log drift")
+    if features.get("bug_report_schema_version")!=2:
+        errors.append("contract F11 schema v2 drift")
+    for key in (
+        "bug_report_physics_context",
+        "bug_report_player_velocity",
+        "bug_report_is_on_floor",
+        "bug_report_floor_normal",
+        "bug_report_support_below_ray",
+        "bug_report_vertical_column_probe",
+        "bug_report_nearby_collision_bodies",
+        "bug_report_slide_collisions",
+        "bug_report_runtime_build_identity",
+    ):
+        if features.get(key) is not True:
+            errors.append("contract F11 v2 feature drift: "+key)
 except Exception as e:
     errors.append("contract parse: "+str(e))
 
