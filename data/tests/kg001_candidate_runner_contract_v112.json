@@ -39,6 +39,10 @@
     "r1_route_v119_runtime_capture": true,
     "r1_route_v119_result_promotion": true,
     "g04_requires_v110_v117_v119": true,
-    "candidate3_historical_pass_not_reusable": true
+    "candidate3_historical_pass_not_reusable": true,
+    "collision_parity_v120_source_validation": true,
+    "collision_parity_v120_runtime_capture": true,
+    "collision_parity_v120_result_promotion": true,
+    "g04_requires_v110_v117_v119_v120": true
   }
 }
