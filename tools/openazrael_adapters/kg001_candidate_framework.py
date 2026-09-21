@@ -54,7 +54,6 @@ def _optional_hash(path: Path, inputs: dict[str, str], key: str) -> None:
 def _default_scenario_bundle(root: Path) -> dict[str, Any]:
     scenarios = list(build_r1_interaction_scenarios())
     scenarios.extend(build_transition_scenarios())
-    scenarios.extend(build_transition_scenarios())
     physical = root / "data/tests/kg001_physical_traversal_contract_v117.json"
     if physical.is_file():
         scenarios.extend(
