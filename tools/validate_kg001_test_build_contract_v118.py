@@ -16,7 +16,18 @@ checks={
     "contract_version":contract.get("version")==118,
     "contract_status":contract.get("status")=="SOURCE_CONTRACT_PASS",
     "ready_status":contract.get("ready_status")=="READY_FOR_G10_MANUAL_TEST",
-    "manual_requirements_four":len(contract.get("manual_requirements",[]))==4,
+    "manual_requirements_six":len(contract.get("manual_requirements",[]))==6,
+    "manual_requirements_cover_candidate2_failures":all(
+        any(token in row for row in contract.get("manual_requirements",[]))
+        for token in (
+            "natural floor support",
+            "stair profiles",
+            "ambient audio",
+            "979TONGS.WAV",
+            "cutout transparency",
+            "zero reproducible softlocks",
+        )
+    ),
     "release_blockers_not_auto_closed":contract.get("release_blockers_close_automatically") is False,
     "known_good_tag_not_auto_allowed":contract.get("demo_known_good_tag_allowed") is False,
     "runtime_receipt_path":contract.get("runtime_receipt")==".tmp/kg001/kg001_test_build_receipt_v118.json",
