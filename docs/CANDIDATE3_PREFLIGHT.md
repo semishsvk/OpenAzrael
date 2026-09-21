@@ -1,5 +1,8 @@
 # KG-001 Candidate 3 — pre-build and export gate
 
+**Candidate 3 historical result: REJECTED (G10 critical R1/Object02 floor collision).**  
+The original Candidate 3 artifact must not be promoted or reused as Known-Good. Post-fix builds must additionally pass `r1_route_v119` and should use a new Candidate identifier.
+
 Candidate 3 is fail-closed. A Windows export is allowed only after a complete
 asset-backed KG-001 fresh-checkout run passes at the exact Git commit that will
 be exported.
@@ -39,7 +42,8 @@ PASS for:
 - v111 full-demo synthetic playthrough;
 - audio-v116;
 - physical-traversal-v117;
-- well-tongs-v118.
+- well-tongs-v118;
+- r1-route-v119 (Candidate 3 R1/Object02 regression and audited R1 route traversal).
 
 It also requires a fresh Godot import, clean Git before/after, no forbidden
 commercial payload tracked by Git, and the restored room assets to remain
