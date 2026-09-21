@@ -15,6 +15,7 @@ from tools.openazrael_adapters.v117_pppv_bridge import evaluate_v117_bridge
 from tools.openazrael_adapters.reference_graph import (
     build_openazrael_reference_graph,
 )
+from tools.openazrael_adapters.r1_pppv import build_r1_interaction_scenarios
 from tools.remaster_framework.build_provenance import (
     build_provenance,
     sha256_file,
@@ -50,7 +51,7 @@ def _optional_hash(path: Path, inputs: dict[str, str], key: str) -> None:
 
 
 def _default_scenario_bundle(root: Path) -> dict[str, Any]:
-    scenarios = []
+    scenarios = list(build_r1_interaction_scenarios())
     physical = root / "data/tests/kg001_physical_traversal_contract_v117.json"
     if physical.is_file():
         scenarios.extend(
