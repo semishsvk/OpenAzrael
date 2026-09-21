@@ -1,0 +1,290 @@
+{
+  "schema": "openazrael.kg001.colorkey_corpus_audit",
+  "version": 116,
+  "date": "2026-09-20",
+  "source_corpus": {
+    "name": "atdemo.zip",
+    "size": 5243364,
+    "sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+    "scope": "ATDEMO/TEXTURES metadata-only audit"
+  },
+  "azf_count": 86,
+  "hash_texture_count": 10,
+  "policy": {
+    "selection_space": "original indexed AZF before RGB expansion",
+    "sentinel_rule": "source palette R==255 AND B==255 AND G<=8; entry must be used by image indices",
+    "hash_requirement": "exactly one used sentinel entry for each # texture",
+    "non_hash_requirement": "no non-# texture uses the sentinel",
+    "output_palette_quantization": "(component//4)*4"
+  },
+  "result": {
+    "hash_exactly_one_sentinel": true,
+    "non_hash_used_sentinel_count": 0,
+    "status": "PASS"
+  },
+  "entries": [
+    {
+      "texture": "BAPBROK#.AZF",
+      "size": 25984,
+      "sha256": "4c60b4fdb2ebda7a8b723af39db56388294b8d0dcd050d542e3524cc13982a17",
+      "width": 128,
+      "height": 256,
+      "selected_key_index": 225,
+      "selected_key_raw_rgba": [
+        255,
+        8,
+        255,
+        162
+      ],
+      "selected_key_output_rgb": [
+        252,
+        8,
+        252
+      ],
+      "selected_key_pixels": 6422,
+      "used_broad_magenta_indices": [
+        225
+      ],
+      "used_broad_magenta_counts": [
+        6422
+      ]
+    },
+    {
+      "texture": "BAPFLOR#.AZF",
+      "size": 52212,
+      "sha256": "ecbb9d9ab05a234e7b369676af92bed60413aacfb0cf2233e26ede999a3a61d5",
+      "width": 256,
+      "height": 256,
+      "selected_key_index": 254,
+      "selected_key_raw_rgba": [
+        255,
+        8,
+        255,
+        124
+      ],
+      "selected_key_output_rgb": [
+        252,
+        8,
+        252
+      ],
+      "selected_key_pixels": 1280,
+      "used_broad_magenta_indices": [
+        254
+      ],
+      "used_broad_magenta_counts": [
+        1280
+      ]
+    },
+    {
+      "texture": "BLOOD2#.AZF",
+      "size": 3640,
+      "sha256": "c1ab8a7835c67b1eb0a5087d384624debb881044bb9c5112137a6b9038d344ae",
+      "width": 64,
+      "height": 64,
+      "selected_key_index": 1,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        0
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 2999,
+      "used_broad_magenta_indices": [
+        1
+      ],
+      "used_broad_magenta_counts": [
+        2999
+      ]
+    },
+    {
+      "texture": "BLOOD5#.AZF",
+      "size": 3456,
+      "sha256": "70fd048319cc34d929322e21fbf71c3fc919fecad13fe67b812a0c7a87e0265c",
+      "width": 64,
+      "height": 64,
+      "selected_key_index": 65,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        138
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 3501,
+      "used_broad_magenta_indices": [
+        65
+      ],
+      "used_broad_magenta_counts": [
+        3501
+      ]
+    },
+    {
+      "texture": "BLOOD6#.AZF",
+      "size": 4792,
+      "sha256": "736a0fdaaa28466473e6aa034e1f30faed202b891aabc00691ad2ac4f40eeb03",
+      "width": 64,
+      "height": 64,
+      "selected_key_index": 7,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        140
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 2208,
+      "used_broad_magenta_indices": [
+        7
+      ],
+      "used_broad_magenta_counts": [
+        2208
+      ]
+    },
+    {
+      "texture": "BLOOS3#.AZF",
+      "size": 4224,
+      "sha256": "047021fbbad7d15f3a5e0f4e5b80bfed00a98f1a7de41cc7713d573a450398da",
+      "width": 64,
+      "height": 64,
+      "selected_key_index": 4,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        0
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 3296,
+      "used_broad_magenta_indices": [
+        4
+      ],
+      "used_broad_magenta_counts": [
+        3296
+      ]
+    },
+    {
+      "texture": "BLOOS4#.AZF",
+      "size": 3408,
+      "sha256": "61c0e6da88928728bb6fd158e8eed2e86fe1d5e87134534263efb080da49745d",
+      "width": 64,
+      "height": 64,
+      "selected_key_index": 5,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        1
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 3688,
+      "used_broad_magenta_indices": [
+        5,
+        9
+      ],
+      "used_broad_magenta_counts": [
+        3688,
+        1
+      ]
+    },
+    {
+      "texture": "BUBBLE#.AZF",
+      "size": 4828,
+      "sha256": "1447c28129b8befa16c964d1a09e05ba4bf3c277537cfe28bf34316084da5ec7",
+      "width": 64,
+      "height": 64,
+      "selected_key_index": 229,
+      "selected_key_raw_rgba": [
+        255,
+        8,
+        255,
+        107
+      ],
+      "selected_key_output_rgb": [
+        252,
+        8,
+        252
+      ],
+      "selected_key_pixels": 2708,
+      "used_broad_magenta_indices": [
+        229
+      ],
+      "used_broad_magenta_counts": [
+        2708
+      ]
+    },
+    {
+      "texture": "KEYHOLE#.AZF",
+      "size": 4180,
+      "sha256": "605868328da921c646a297ad13528e823176fd2d87201e0170dca68c5133cfd4",
+      "width": 128,
+      "height": 128,
+      "selected_key_index": 1,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        0
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 11184,
+      "used_broad_magenta_indices": [
+        1
+      ],
+      "used_broad_magenta_counts": [
+        11184
+      ]
+    },
+    {
+      "texture": "MINETON#.AZF",
+      "size": 7860,
+      "sha256": "efb3fca5e4c2fb43e26d61f166d050245eba15f0d7e8e95828bdc10f34620016",
+      "width": 128,
+      "height": 128,
+      "selected_key_index": 0,
+      "selected_key_raw_rgba": [
+        255,
+        0,
+        255,
+        0
+      ],
+      "selected_key_output_rgb": [
+        252,
+        0,
+        252
+      ],
+      "selected_key_pixels": 13627,
+      "used_broad_magenta_indices": [
+        0
+      ],
+      "used_broad_magenta_counts": [
+        13627
+      ]
+    }
+  ],
+  "observation": "BLOOS4#.AZF also uses one near-magenta non-sentinel entry at palette index 9 (raw [248,0,255,1]) for one pixel. This disproves the v31 assumption that each # texture has exactly one used entry in the broad quantized-magenta range and motivates source-palette sentinel selection."
+}

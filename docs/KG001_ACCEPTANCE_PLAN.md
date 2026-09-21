@@ -33,14 +33,40 @@ Exercise deterministic gameplay-state primitives and Event IR operations indepen
 ### G03 — Puzzle state-space exploration
 Enumerate every reachable state for the demo puzzle subset and all supported actions from each state. Detect dead states, unintended cycles, unreachable required states and softlocks. The expected successful path must remain reachable from every intended precondition state.
 
-### G04 — Room and transition state
+### G04 — Room, transition and physical traversal state
 Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of persistent state across transitions. Re-entering a room must not accidentally reset one-shot or solved state unless explicitly specified.
 
-### G05 — Trigger semantics
+This gate also requires asset-backed physical traversal through the production `CharacterBody3D` path. The automated suite must drive the real gameplay input actions over the canonical R1 starting floor and prove that the player does not fall through while moving. It must also traverse both imported R8 tread sequences (`step011__mesh` and the main `stairs__STAIR2`) upward and downward using the real player capsule, collision layers/masks, gravity and `player.gd`; a raycast-only floor check, stationary settle, synthetic proxy staircase, or teleport-to-result is not sufficient evidence.
+
+
+Candidate 3 manual G10 exposed a second R1 floor-collision blind spot at
+`R1/Object02` under `zxcoriR5` (bug report
+`openazrael_bugreport_1790007921_0054.zip`). That visible authored floor had
+been globally excluded from collision. The fix is room-aware: `R1/Object02`
+must collide while same-named helper objects in other rooms remain excluded.
+
+G04 therefore also requires **v119**. v119 must use the production
+`CharacterBody3D` and gameplay input to cross the exact bug-report X/Z,
+traverse both Object02 floor triangles, return to tunnel03 support, and follow
+the audited R1 floor route toward tunnel07 with continuous support. Historical
+v117/Candidate 3 evidence is insufficient for this regression.
+
+Generic **v120 Collision Parity** complements route traversal. For R1/R7/R8 it
+derives floor-like geometry directly from visible mesh triangles using
+orientation-independent projected area, then requires a matching runtime
+`StaticBody3D` trimesh collider unless the object has an explicit audited
+non-solid semantic exemption. This gate exists specifically to catch additional
+`Object02`-class omissions outside the hand-authored traversal route.
+
+### G05 — Trigger semantics and recovered interaction effects
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
 
-### G06 — Audio event stream
-Run gameplay with a deterministic mock audio backend and compare emitted logical events against golden streams: sound identity, start/stop/loop intent, emitter/reference id and event ordering. This gate does not claim original-runtime pan/volume parity; that remains a separate forensic oracle.
+The R7 well+tongs path is an explicit regression. Without `rusty_tongs`, `Interact_WellKey` must not change the key/tongs state. With tongs, v118 must reproduce the official-demo compiled action order: remove room-state `R7Key` -> play `979TONGS.WAV` -> add `R7Key` -> remove transient `RustyTongR6` -> consume inventory `TONG6`, followed by the default key take that yields `well_key`, `R7KeyTake` and `R7key`. The recovered action group contains no transform/rotation opcode, so a synthetic Tween is explicitly not accepted as Classic fidelity.
+
+### G06 — Logical audio plus physical playback readiness
+First run gameplay with the deterministic capture/mock path and compare emitted logical events against the accepted golden stream. Then run the asset-backed physical-audio readiness regression: required Event/ambient WAVs must exist and load as AudioStreams, the Master bus must exist and be unmuted/not effectively silent, recovered ambient emitters must instantiate as R1=2 / R7=3 / R8=2 with valid streams and `playing=true`, and a real Event-IR `play_sound` action must create a playing `AudioStreamPlayer`.
+
+This automated layer proves runtime readiness, not human audibility and not original Miles pan/volume fidelity. Human audibility remains part of G10; original-runtime pan/volume parity remains a separate forensic oracle.
 
 ### G07 — Save/load state hash
 At defined checkpoints serialize state, reload it and compare a canonical state hash plus explicit invariants. Save/load must preserve solved puzzles, inventory, room/transition state, trigger one-shots and active logical audio state where persistence is defined.
@@ -52,7 +78,7 @@ Run a deterministic, no-human-input playthrough from clean state through the ful
 From a clean checkout of the candidate commit, restore only permitted/reproducible dependencies and local excluded assets through the documented workflow, then run source/context checks plus the automated KG-001 suite. No untracked local source edit may be required.
 
 ### G10 — Manual sanity check
-After all automated gates pass, perform a short human run of the candidate build. Confirm launch, controls, room traversal, key interactions, puzzle completion, expected logical audio and save/load behavior. Record any discrepancy before tagging.
+After all automated gates pass, perform a short human run of the candidate build. Confirm launch, controls, R1 floor traversal, ascent/descent of both real R8 stair profiles, room traversal, key interactions, puzzle completion, save/load behavior, that expected ambient/event audio is actually audible at usable levels, that legacy cutout textures render with their intended binary mask rather than visible magenta key color, and that the R1 KEYHOLE is upright rather than vertically inverted. A logical event or a runtime player reporting `playing=true` is not a substitute for the listening check; source-level alpha metadata is likewise not a substitute for the graphical transparency check. Record any discrepancy before tagging.
 
 ## Evidence to archive
 
@@ -60,4 +86,4 @@ For the candidate commit record: Git commit SHA, Godot version, source-data fing
 
 ## Failure policy
 
-Any critical bug, reproducible softlock or required-gate failure blocks KG-001. A failure is fixed first, then the affected gate and all dependent gates are rerun. The tag is immutable evidence of the passing candidate; later fixes create a new known-good tag rather than rewriting KG-001.
+Any critical bug, reproducible softlock, required-gate failure, or explicitly recorded KG-001 release blocker blocks KG-001. A failure is fixed first, then the affected gate and all dependent gates are rerun. The tag is immutable evidence of the passing candidate; later fixes create a new known-good tag rather than rewriting KG-001.

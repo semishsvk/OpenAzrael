@@ -11,6 +11,11 @@ const TRANSITIONS := [
     ["R7", "zxwell2R6", "R1"],
     ["R8", "zxorrery", "R1"]
 ]
+const FLOOR_SUPPORT_PROBES := [
+    ["R1", "spaview"],
+    ["R7", "view"],
+    ["R8", "Object14"]
+]
 
 var failures: Array[String] = []
 
@@ -97,27 +102,50 @@ func _run() -> void:
     var player = scene.get_node("Player")
     _check("initial_room_R1", manager.current_room_id == "R1")
 
-    # Issue #6 regression: legacy room trimeshes must collide from either face.
-    # This catches reversed/inconsistent source triangle winding before gameplay.
-    var concave_shapes: Array[CollisionShape3D] = []
-    _collect_concave_shapes(manager.current_room, concave_shapes)
-    _check("R1_concave_world_collision_present", not concave_shapes.is_empty())
-    for i in range(concave_shapes.size()):
-        var concave := concave_shapes[i].shape as ConcavePolygonShape3D
-        _check("R1_concave_backface_%d" % i, concave.backface_collision)
+    # Issue #6 regression: the root cause is imported legacy trimesh winding,
+    # not an R1-only condition. Exercise the actual player capsule at the
+    # canonical entry view of every demo room before testing transitions.
+    for probe in FLOOR_SUPPORT_PROBES:
+        var probe_room := String(probe[0])
+        var probe_view := String(probe[1])
+        manager.transition_cooldown = 999.0
+        manager.load_room(probe_room, false)
+        await _settle(2)
+        manager.call("_spawn_at_portal", probe_room, probe_view)
+        await _settle_physics(2)
 
-    # Physical floor-support regression: locate the floor below the authored R1
-    # spawn, drop the real player capsule onto it, and require grounded support.
-    manager.transition_cooldown = 999.0
-    var floor_hit: Dictionary = await _floor_probe(scene, player)
-    _check("R1_floor_probe_hit", not floor_hit.is_empty())
-    if not floor_hit.is_empty():
-        var floor_position: Vector3 = floor_hit["position"]
-        player.global_position = Vector3(player.global_position.x, floor_position.y + 60.0, player.global_position.z)
-        player.velocity = Vector3.ZERO
-        await _settle_physics(120)
-        _check("R1_player_is_on_floor", player.is_on_floor())
-        _check("R1_player_did_not_fall_through", player.global_position.y >= floor_position.y - 2.0)
+        if probe_room == "R8":
+            var support = manager.call("_find_node", "Object01")
+            var support_mesh = manager.call("_first_mesh", support)
+            _check("R8_entrance_support_remains_hidden", support_mesh != null and not support_mesh.visible)
+            _check("R8_entrance_support_has_collision", support_mesh != null and support_mesh.has_node("Collision_Object01"))
+
+        var concave_shapes: Array[CollisionShape3D] = []
+        _collect_concave_shapes(manager.current_room, concave_shapes)
+        _check(probe_room + "_concave_world_collision_present", not concave_shapes.is_empty())
+        for i in range(concave_shapes.size()):
+            var concave := concave_shapes[i].shape as ConcavePolygonShape3D
+            _check("%s_concave_backface_%d" % [probe_room, i], concave.backface_collision)
+
+        var floor_hit: Dictionary = await _floor_probe(scene, player)
+        _check(probe_room + "_floor_probe_hit", not floor_hit.is_empty())
+        if not floor_hit.is_empty():
+            var floor_position: Vector3 = floor_hit["position"]
+            player.global_position = Vector3(
+                player.global_position.x,
+                # A small drop leaves the real capsule below the low tunnel
+                # ceiling; +60 could embed it in the roof or land on its top.
+                floor_position.y + 4.0,
+                player.global_position.z
+            )
+            player.velocity = Vector3.ZERO
+            await _settle_physics(120)
+            _check(probe_room + "_player_is_on_floor", player.is_on_floor())
+            _check(probe_room + "_player_reached_probed_floor", absf(player.global_position.y - floor_position.y) < 2.0)
+            _check(
+                probe_room + "_player_did_not_fall_through",
+                player.global_position.y >= floor_position.y - 2.0
+            )
 
     # Geometric boundary oracle: every transition trigger centroid is inside,
     # while a point beyond both X/Z maxima is outside.
@@ -172,7 +200,7 @@ func _run() -> void:
         "version":110,
         "status":"PASS" if failures.is_empty() else "FAIL",
         "failed":failures,
-        "scope":"G04/G05 room transitions, physical trigger bounds, and Issue #6 R1 floor-support regression with restored local R1/R7/R8 assets"
+        "scope":"G04/G05 room transitions, physical trigger bounds, and Issue #6 real-player floor-support regression at canonical R1/R7/R8 entry views with restored local assets"
     }
     print("OPENAZRAEL_KG001_V110 " + JSON.stringify(result))
     scene.queue_free()

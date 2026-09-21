@@ -1,0 +1,191 @@
+{
+  "schema": "openazrael.kg001.candidate2_windows",
+  "status": "PASS",
+  "tested_runtime_commit": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70",
+  "executable_sha256": "62c473ed58047af74a13304f0af40df4301a9f1b6802e992cbfe80ef15b3c1a6",
+  "pck_sha256": "26070dde5001727534ddc44ce86ed3aaf40e7a6d7bda72928237c1b660d86807",
+  "export": {
+    "test": "export",
+    "status": "PASS",
+    "returncode": 0,
+    "errors": [],
+    "seconds": 2.58
+  },
+  "windows_smoke": [
+    {
+      "test": "windows-headless-smoke",
+      "status": "PASS",
+      "returncode": 0,
+      "errors": [],
+      "seconds": 1.53
+    },
+    {
+      "test": "windows-graphical-smoke",
+      "status": "PASS",
+      "returncode": 0,
+      "errors": [],
+      "seconds": 1.73
+    }
+  ],
+  "graphical_checks": [
+    {
+      "check": "R1_graphical_floor_support",
+      "details": "(-227.0084, -83.86874, 328.7375)",
+      "passed": true
+    },
+    {
+      "check": "R1_master_audio_contains_signal",
+      "details": {
+        "frames": 65024,
+        "peak": 0.00378333800472319
+      },
+      "passed": true
+    },
+    {
+      "check": "doorcor2_exists",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "doorcor2_alpha_scissor",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "doorcor2_alpha_texture",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "TONG6_exists",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "TONG6_alpha_scissor",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "TONG6_alpha_texture",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "F11_creates_zip",
+      "details": "user://openazrael_bugreport_1789917888_0005.zip",
+      "passed": true
+    },
+    {
+      "check": "F11_preserves_gameplay_hash",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "R1_graphical_entry_grounded",
+      "details": "(-227.0084, -83.86874, 328.7375)",
+      "passed": true
+    },
+    {
+      "check": "R1_screenshot",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "R7_graphical_entry_grounded",
+      "details": "(64.07572, -41.56579, -76.07267)",
+      "passed": true
+    },
+    {
+      "check": "R7_screenshot",
+      "details": null,
+      "passed": true
+    },
+    {
+      "check": "R8_graphical_entry_grounded",
+      "details": "(-267.4427, -82.23237, 394.1182)",
+      "passed": true
+    },
+    {
+      "check": "R8_screenshot",
+      "details": null,
+      "passed": true
+    }
+  ],
+  "f11_zip": {
+    "status": "PASS",
+    "files": [
+      "report.json",
+      "report.txt",
+      "state.json",
+      "system_info.json",
+      "events_tail.jsonl",
+      "screenshot.png",
+      "manifest.json"
+    ],
+    "canonical_hash_verified": true,
+    "event_lines": 57,
+    "zip_sha256": "187e28f87d458ab96a37c173a6504c33ca503d9ba72456537f95ffe3a332c7b3",
+    "source_safe": true,
+    "commercial_assets_included": false
+  },
+  "icon": {
+    "executable_sha256": "62c473ed58047af74a13304f0af40df4301a9f1b6802e992cbfe80ef15b3c1a6",
+    "icon_entries": [
+      {
+        "width": 16,
+        "height": 16,
+        "sha256": "980a0e1d4ed428ee2f65c00144fc841407dd87ed4b2f507c8018935735bc2ed2",
+        "embedded_exactly": true
+      },
+      {
+        "width": 24,
+        "height": 24,
+        "sha256": "728854b540925d29588404e10ad7a1447bb3c71bc336ba8d3d43fd220821f189",
+        "embedded_exactly": false
+      },
+      {
+        "width": 32,
+        "height": 32,
+        "sha256": "89604885b50f226f5116097113f8425ffd06f88d62b48b5fef0b64300fa60a03",
+        "embedded_exactly": true
+      },
+      {
+        "width": 48,
+        "height": 48,
+        "sha256": "3c53e3b354d5c79bd02bd82989522144795dbf174948ee5463f9d42a797ccbe1",
+        "embedded_exactly": true
+      },
+      {
+        "width": 64,
+        "height": 64,
+        "sha256": "cf5c889035502d29c350dd6a8e94ebce43065f0fa67a157a4671381490b30b79",
+        "embedded_exactly": true
+      },
+      {
+        "width": 128,
+        "height": 128,
+        "sha256": "0b319015caa9319bbd1ba4243735f822a1d10c15472732f4d2d56b3bee4b0d30",
+        "embedded_exactly": true
+      },
+      {
+        "width": 256,
+        "height": 256,
+        "sha256": "816dd57772b06e5f00fe15be290ab5b123aecbd3e441cb884d9b0546205bfd78",
+        "embedded_exactly": true
+      }
+    ],
+    "required_windows_sizes": [
+      16,
+      32,
+      48,
+      64,
+      128,
+      256
+    ],
+    "note": "The exporter embeds six standard sizes; the extra 24px source entry is not required.",
+    "status": "PASS"
+  },
+  "g10": "PENDING_MANUAL_USER",
+  "issues_6_9_11": "AUTOMATED_PASS_MANUAL_RETEST_REQUIRED"
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "openazrael.kg001.collision_parity_contract",
+  "version": 120,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "scope": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "purpose": "detect visible floor-like authored mesh geometry that can support the player footprint but lacks corresponding runtime world collision",
+  "geometry_policy": {
+    "walkable_normal_abs_y_min": 0.65,
+    "minimum_total_projected_area": 150,
+    "player_capsule_radius": 11,
+    "require_visible_mesh": true,
+    "inspect_all_mesh_surfaces": true,
+    "legacy_winding_policy": "absolute normal Y; do not trust source winding",
+    "collision_body_name": "Collision_<legacy object name>",
+    "required_collision_layer": 1,
+    "required_collision_mask": 4,
+    "required_shape": "ConcavePolygonShape3D",
+    "required_backface_collision": true
+  },
+  "explicit_non_solid_exemptions": {
+    "all_rooms": [
+      "view",
+      "spaview",
+      "entcori",
+      "Object14",
+      "Object03",
+      "zxwater",
+      "tapestry1",
+      "tapestry3",
+      "tapestry4"
+    ],
+    "prefixes": [
+      "ZQ"
+    ],
+    "room_specific": {
+      "R7": [
+        "Object02"
+      ],
+      "R8": [
+        "Object02"
+      ]
+    },
+    "rationale": "known view/helper/water/decorative semantics; exemptions are explicit and audited rather than inherited from room_manager collision exclusions"
+  },
+  "candidate3_regression": {
+    "required_object": "R1/Object02",
+    "must_not_be_exempt": true,
+    "expected_collision_body": "Collision_Object02",
+    "bug_report": "openazrael_bugreport_1790007921_0054.zip"
+  },
+  "runtime_pass_requires": [
+    "all R1/R7/R8 assets load",
+    "every non-exempt visible floor-like mesh above threshold has Collision_<object>",
+    "each collision body is layer 1 / mask 4",
+    "each collision shape is ConcavePolygonShape3D with backface_collision=true",
+    "R1/Object02 is independently discovered by the generic geometry rule and has Collision_Object02",
+    "no engine/script errors"
+  ],
+  "evidence_boundary": "The source contract only proves the generic auditor and policy are present. Asset-backed Godot execution is required; no Candidate 4 preflight may pass without v120 runtime PASS."
+}

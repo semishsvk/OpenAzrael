@@ -9,7 +9,8 @@
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 1
 background_color = Color(0.018, 0.018, 0.023, 1)
-ambient_light_source = 3
+ambient_light_source = 2
+ambient_light_sky_contribution = 0.0
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.72
 
@@ -64,4 +65,4 @@ theme_override_styles/panel = SubResource("HudPanel")
 [node name="Label" type="Label" parent="HUD/Panel"]
 theme_override_colors/font_color = Color(0.92, 0.92, 0.92, 1)
 theme_override_font_sizes/font_size = 15
-text = "OpenAzrael KG-001 Candidate 1 — diagnostic build"
+text = "OpenAzrael KG-001 Candidate 3 — diagnostic build"

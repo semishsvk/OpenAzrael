@@ -12,6 +12,8 @@ const ROOM_NAMES := {
     "R7":"Well Room (R7)",
     "R8":"Baptistery (R8)"
 }
+const PORTAL_SPAWN_CLEARANCE := 4.0
+
 const PICKUPS := {
     "R1": {
         "TONG6": ["rusty_tongs", "Tongs"],
@@ -121,20 +123,44 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
 
 func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
-    var pickup_names := PICKUPS.get(room_id, {})
+    var pickup_names: Dictionary = PICKUPS.get(room_id, {})
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
     for n in nodes:
         if not (n is MeshInstance3D):
             continue
         var mi := n as MeshInstance3D
+        # Legacy XAF diffuse materials have no authored PBR metalness. The
+        # SimpleMaterial GLB conversion otherwise inherits glTF metallic=1,
+        # which can render the imported room nearly black.
+        if mi.mesh != null:
+            for surface in range(mi.mesh.get_surface_count()):
+                var imported := mi.get_active_material(surface) as BaseMaterial3D
+                if imported != null:
+                    imported.metallic = 0.0
         var obj_name := _object_name_for_mesh(mi)
         if hidden.has(obj_name):
             mi.visible = false
-            continue
+            # R8/Object01 is the authored horizontal entrance support quad
+            # (y=-87.124, between tunnel07 and step011). Hiding its TRANSPARANT
+            # material must not remove its collision: the portal spawn lies on
+            # this otherwise open gap. Its diagnostic trigger remains unchanged.
+            if not (room_id == "R8" and obj_name == "Object01"):
+                continue
         if pickup_names.has(obj_name):
             continue
-        if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
+        # Collision exclusions are room-aware. Candidate 3 bug report
+        # openazrael_bugreport_1790007921_0054 proved that R1/Object02 is a
+        # visible authored floor segment under zxcoriR5 (player X/Z
+        # -264.159/381.168) and must collide. Other rooms may contain helper
+        # objects with the same generic Object02 name, so do not globally
+        # re-enable every Object02.
+        var exclude_collision := (
+            obj_name.begins_with("ZQ")
+            or obj_name in ["Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]
+            or (obj_name == "Object02" and room_id != "R1")
+        )
+        if exclude_collision:
             continue
         if mi.mesh == null:
             continue
@@ -389,13 +415,21 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
         return
     var c := _v3(v["centroid"])
     var n := _v3(v["normal"]).normalized()
-    player.teleport_eye_to(c + n * 120.0, n)
+    # The portal-view centroid is an eye-space reconstruction, but the R1/R7
+    # source floors sit slightly above centroid-eye_height. Candidate 2 could
+    # therefore spawn the capsule already penetrating the floor and fall
+    # through before collision recovery. A small vertical clearance preserves
+    # the authored X/Z/heading and lets gravity settle onto the real floor.
+    player.teleport_eye_to(
+        c + n * 120.0 + Vector3.UP * PORTAL_SPAWN_CLEARANCE,
+        n
+    )
 
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
     var mx := _v3(t["bounds"][1])
-    var y0 := min(mn.y, mx.y) - 12.0
-    var y1 := max(mn.y, mx.y) + 70.0
+    var y0: float = min(mn.y, mx.y) - 12.0
+    var y1: float = max(mn.y, mx.y) + 70.0
     return p.x >= min(mn.x,mx.x) and p.x <= max(mn.x,mx.x) \
         and p.z >= min(mn.z,mx.z) and p.z <= max(mn.z,mx.z) \
         and p.y >= y0 and p.y <= y1

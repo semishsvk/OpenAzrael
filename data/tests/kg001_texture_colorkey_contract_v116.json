@@ -1,0 +1,54 @@
+{
+  "schema": "openazrael.kg001.texture_colorkey_contract",
+  "version": 116,
+  "status": "SOURCE_CONTRACT_PASS",
+  "issue": "#11",
+  "policy": {
+    "candidate_rule": "filename contains # AND exactly one used source-palette entry matches R==255,B==255,G<=8",
+    "selection_space": "ORIGINAL_INDEXED_AZF_BEFORE_RGB_EXPANSION",
+    "broad_magenta_rule": "R>=248 AND B>=248 AND G<=12 after engine-like quantization is diagnostic only",
+    "ambiguity_policy": "FAIL_CLOSED_IF_ZERO_OR_MULTIPLE_USED_SOURCE_SENTINELS",
+    "alpha": "binary 0/255 on exact selected index only",
+    "transparent_rgb": "zeroed after indexed selection",
+    "runtime_material": "MASK",
+    "alpha_cutoff": 0.5
+  },
+  "expected_demo_hash_textures": [
+    "BAPBROK#.png",
+    "BAPFLOR#.png",
+    "BLOOD2#.png",
+    "BLOOD5#.png",
+    "BLOOD6#.png",
+    "BLOOS3#.png",
+    "BLOOS4#.png",
+    "BUBBLE#.png",
+    "KEYHOLE#.png",
+    "MINETON#.png"
+  ],
+  "confirmed_r1_examples": {
+    "keyhole": "KEYHOLE#.png",
+    "rusty_tongs": "TONG6 -> MINETON#.png"
+  },
+  "automated_layers": [
+    "actual 86-AZF metadata audit bound by archive/file SHA-256",
+    "synthetic exact source-sentinel semantics",
+    "synthetic near-magenta non-key control",
+    "synthetic zero/multi-sentinel fail-closed checks",
+    "synthetic XAF->PBR MASK material",
+    "restored 86-texture corpus audit",
+    "per-# exact key-index restore evidence",
+    "R1 KEYHOLE#/TONG6 manifest audit"
+  ],
+  "runtime_status": "NOT_EXECUTED",
+  "manual_visual_status": "PENDING",
+  "evidence_boundary": "Indexed source-palette binary color-key compatibility only; complete original renderer transparency/blending semantics remain HOLD. KEYHOLE# orientation is an OpenAzrael presentation compatibility correction pending runtime/manual confirmation; it is not promoted as recovered global renderer UV semantics.",
+  "actual_demo_corpus_audit": "data/tests/kg001_colorkey_corpus_audit_v116.json",
+  "r1_keyhole_orientation": {
+    "status": "SOURCE_FIX_READY_RUNTIME_MANUAL_RETEST_REQUIRED",
+    "texture": "KEYHOLE#",
+    "correction": "FLIP_V_CANDIDATE3_KEYHOLE",
+    "scope": "texture-specific only; do not change global XAF UV convention",
+    "negative_control": "TONG6 -> MINETON# must retain uv_correction NONE",
+    "evidence": "Candidate 3 manual observation: keyhole rendered vertically inverted/upside down"
+  }
+}

@@ -1,0 +1,1026 @@
+{
+  "schema": "openazrael.legacy_world_ir",
+  "version": 1,
+  "exporter": "export_legacy_world_v21.py",
+  "coordinate_model": {
+    "source": "AZRAEL_WORLD_XYZ",
+    "y_axis": "VERTICAL_VERIFIED_FROM_NPC_DIRECTION_CORPUS",
+    "godot_transform": {
+      "status": "PENDING_CALIBRATION",
+      "policy": "PRESERVE_SOURCE_COORDINATES; DO_NOT_GUESS"
+    }
+  },
+  "rooms": {
+    "0": {
+      "openazrael_room": "R1",
+      "name": "Entry Corridor"
+    },
+    "1": {
+      "openazrael_room": "R7",
+      "name": "WellRoom"
+    },
+    "2": {
+      "openazrael_room": "R8",
+      "name": "Baptistry"
+    }
+  },
+  "audio": {
+    "sounds": [
+      {
+        "sound_id": "OA_SND_797TAP",
+        "filename": "797TAP.WAV",
+        "sha256": "b307df0a07c48da7968b949e776f3143ba8a4c8a9fe0d9289b34432c5f1456e9",
+        "channels": 1,
+        "sample_rate": 11025,
+        "sample_width_bits": 8,
+        "frames": 5079,
+        "duration_seconds": 0.46068027210884355,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "797TAP.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_799SECDR",
+        "filename": "799SECDR.WAV",
+        "sha256": "e2d6b9477680dd008ec52ec71305a5e3965449edc20dd50aeb66e78e292a7416",
+        "channels": 1,
+        "sample_rate": 11025,
+        "sample_width_bits": 8,
+        "frames": 39588,
+        "duration_seconds": 3.5907482993197277,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "799SECDR.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_977TURN",
+        "filename": "977TURN.WAV",
+        "sha256": "c00a6a45073a2d5832e341a4615dff7d9bac649132b61a30da9de6c5c16067a2",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 22120,
+        "duration_seconds": 1.0031746031746032,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "977TURN.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_979TONGS",
+        "filename": "979TONGS.WAV",
+        "sha256": "46f19b82e3c85ce5c4a198d745fe9ab5789a3d1a32d552748bb5b8585e0c8469",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 20950,
+        "duration_seconds": 0.9501133786848073,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "979TONGS.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_981PULL",
+        "filename": "981PULL.WAV",
+        "sha256": "1a326d9aec289a5c8ea2fe22cc08b312e3e4ea0d4fadf95807346208795ef3bd",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 19759,
+        "duration_seconds": 0.8960997732426303,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "981PULL.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_982PUSH",
+        "filename": "982PUSH.WAV",
+        "sha256": "663eec89befa92ee67984da4e4e979db1031890f9849931fd52faedcb0537e23",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 20456,
+        "duration_seconds": 0.9277097505668934,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "982PUSH.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_983TUNK",
+        "filename": "983TUNK.WAV",
+        "sha256": "d0ef95756cd0bd25348ca5bbbd597fadc14560564375f9f0830cc77ceb84748c",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 17232,
+        "duration_seconds": 0.7814965986394558,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "983TUNK.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_990WDSPA",
+        "filename": "990WDSPA.WAV",
+        "sha256": "f2fa50a4c9f359b798b3461d16ca9fd330a34ec023021a0851a69cb5e15384c1",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 59912,
+        "duration_seconds": 2.717097505668934,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "990WDSPA.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_995",
+        "filename": "995.WAV",
+        "sha256": "30f0e39db79c2caef754f7ae421af324e11c500cfd13b9b1d82936ee6fce0399",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 34636,
+        "duration_seconds": 1.5707936507936509,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "995.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_996",
+        "filename": "996.WAV",
+        "sha256": "da25ae5da8d6aaa85047fc6285436aba5767b29a0f4bd13b8e8814c07019d650",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 12374,
+        "duration_seconds": 0.5611791383219955,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "996.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_EUGROAR",
+        "filename": "EUGROAR.WAV",
+        "sha256": "031b0282fba55d9a5446c6ea51e2328e8586ffa3b14042105ef663e56a443cb1",
+        "channels": 1,
+        "sample_rate": 22222,
+        "sample_width_bits": 8,
+        "frames": 20736,
+        "duration_seconds": 0.9331293312933129,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "EUGROAR.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_HUD3",
+        "filename": "HUD3.WAV",
+        "sha256": "ee560595c5c67d4d6aeb902bb2b681533e314e6d08f2047e5d9f9e173c131dcb",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 46928,
+        "duration_seconds": 2.128253968253968,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "HUD3.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_HUDLOCKR",
+        "filename": "HUDLOCKR.WAV",
+        "sha256": "a24e274bc866899e0dd83cce3f9612aa28544d159fd552ab10bc7a17af77043f",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 3798,
+        "duration_seconds": 0.17224489795918368,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "HUDLOCKR.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S121",
+        "filename": "S121.WAV",
+        "sha256": "7f1a054b31f79514ac46bd5706329311c486af38c2e0ef7be5b963cafbf65a47",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 74928,
+        "duration_seconds": 3.3980952380952383,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S121.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S134",
+        "filename": "S134.WAV",
+        "sha256": "2e08bf53477617afef0124a507c5e244c4e131a6a53090fd52857eb2d4f93d99",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 79151,
+        "duration_seconds": 3.5896145124716554,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S134.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S137",
+        "filename": "S137.WAV",
+        "sha256": "dc4526516cfa13540522abaa8258ac834d0abc3ee3e5a72e27445249d88644c6",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 40917,
+        "duration_seconds": 1.8556462585034013,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S137.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S152V2",
+        "filename": "S152V2.WAV",
+        "sha256": "60c7ef92b679e3ab061bad31138a601b5a388ff0696904116886d5179fcc3be0",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 134026,
+        "duration_seconds": 6.07827664399093,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S152V2.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S16",
+        "filename": "S16.WAV",
+        "sha256": "84abbd4c5b13682e9df49dfc83c50535bdcbb3b380e2176d74116c6deea37a5c",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 72576,
+        "duration_seconds": 3.2914285714285714,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S16.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S174ELP1",
+        "filename": "S174ELP1.WAV",
+        "sha256": "95a8fe0f62d90ffe14ba90e5603023e40b584a1be076c59dfa5d74e7010c6233",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 60946,
+        "duration_seconds": 2.763990929705215,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S174ELP1.WAV",
+        "positional_ambient_references": [
+          "OA_AMB_R0_001",
+          "OA_AMB_R1_002",
+          "OA_AMB_R2_001"
+        ]
+      },
+      {
+        "sound_id": "OA_SND_S174ELP2",
+        "filename": "S174ELP2.WAV",
+        "sha256": "8bd434f501907db9c7e8b5c2c3c1e6ee8e25a2a262f0af22d893d1be8fd7cea7",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 83946,
+        "duration_seconds": 3.807074829931973,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S174ELP2.WAV",
+        "positional_ambient_references": [
+          "OA_AMB_R0_002",
+          "OA_AMB_R1_003",
+          "OA_AMB_R2_002"
+        ]
+      },
+      {
+        "sound_id": "OA_SND_S182",
+        "filename": "S182.WAV",
+        "sha256": "9d931d3b3a3af1acf0980be606b0b1df0ccba005c683ae275117786f20649fb2",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 6640,
+        "duration_seconds": 0.30113378684807257,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S182.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S186",
+        "filename": "S186.WAV",
+        "sha256": "afee3ee8f629e8bd31aa9768e01fb27247cfa9abe71a4d7c04fb6058c11ae587",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 88060,
+        "duration_seconds": 3.9936507936507937,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S186.WAV",
+        "positional_ambient_references": [
+          "OA_AMB_R1_001"
+        ]
+      },
+      {
+        "sound_id": "OA_SND_S188",
+        "filename": "S188.WAV",
+        "sha256": "7319e2183e28c281d51c8e166beba2c66d1e3dd28a040b322c274435efabee07",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 127120,
+        "duration_seconds": 5.765079365079365,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S188.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S199A_9",
+        "filename": "S199A_9.WAV",
+        "sha256": "cea23272e800f01964aeb3aa6f3d76004da67568805fb8033b50caca51e29649",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 7264,
+        "duration_seconds": 0.3294331065759637,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S199A_9.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_S25",
+        "filename": "S25.WAV",
+        "sha256": "5a732e22d9ca4126d077df6388ce2c9fe87c30ad293d87c554efa3f7695a2059",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 49920,
+        "duration_seconds": 2.2639455782312927,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "S25.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_SCAN",
+        "filename": "SCAN.WAV",
+        "sha256": "daad59672c9788b06b551cbadf32380ff9d8e85d8be243ad218f5157c2741667",
+        "channels": 1,
+        "sample_rate": 22222,
+        "sample_width_bits": 8,
+        "frames": 25466,
+        "duration_seconds": 1.145981459814598,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "SCAN.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_SHOT",
+        "filename": "SHOT.WAV",
+        "sha256": "121c3731cc3cdf33d474b3a002c59acef67a727d1413033d92ec39a91c33d523",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 18426,
+        "duration_seconds": 0.8356462585034014,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "SHOT.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_SPAPER",
+        "filename": "SPAPER.WAV",
+        "sha256": "028ac28fa3ce9f24fe4a06e412f5cbe2b5d7c294a14772bb954a1fae53a0efbf",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 9088,
+        "duration_seconds": 0.4121541950113379,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "SPAPER.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_SPICK",
+        "filename": "SPICK.WAV",
+        "sha256": "5d9e4c915649741dc66760e388d67072c262809b29ae40c9e7ffea221a124381",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 11614,
+        "duration_seconds": 0.5267120181405895,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "SPICK.WAV",
+        "positional_ambient_references": []
+      },
+      {
+        "sound_id": "OA_SND_SR27KEYS",
+        "filename": "SR27KEYS.WAV",
+        "sha256": "bb99fc8f6e2614fbf3bebbf4531d2a5c363a43737f0c1e7a6d8456a777430105",
+        "channels": 1,
+        "sample_rate": 22050,
+        "sample_width_bits": 8,
+        "frames": 18756,
+        "duration_seconds": 0.8506122448979592,
+        "provenance": "ORIGINAL_DEMO",
+        "source_path": "SR27KEYS.WAV",
+        "positional_ambient_references": []
+      }
+    ],
+    "ambient_emitters": [
+      {
+        "emitter_id": "OA_AMB_R0_001",
+        "room_id": 0,
+        "room": {
+          "openazrael_room": "R1",
+          "name": "Entry Corridor"
+        },
+        "sample": "S174ELP1.WAV",
+        "legacy_position": [
+          -374.0,
+          92.0,
+          -127.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB0.SND",
+          "line": 1,
+          "record": "SAMPLE -374,92,-127 s174elp1.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      },
+      {
+        "emitter_id": "OA_AMB_R0_002",
+        "room_id": 0,
+        "room": {
+          "openazrael_room": "R1",
+          "name": "Entry Corridor"
+        },
+        "sample": "S174ELP2.WAV",
+        "legacy_position": [
+          444.0,
+          92.0,
+          287.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB0.SND",
+          "line": 2,
+          "record": "SAMPLE 444,92,287 s174elp2.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      },
+      {
+        "emitter_id": "OA_AMB_R1_001",
+        "room_id": 1,
+        "room": {
+          "openazrael_room": "R7",
+          "name": "WellRoom"
+        },
+        "sample": "S186.WAV",
+        "legacy_position": [
+          42.0,
+          -35.0,
+          67.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB1.SND",
+          "line": 1,
+          "record": "SAMPLE 42,-35,67 s186.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      },
+      {
+        "emitter_id": "OA_AMB_R1_002",
+        "room_id": 1,
+        "room": {
+          "openazrael_room": "R7",
+          "name": "WellRoom"
+        },
+        "sample": "S174ELP1.WAV",
+        "legacy_position": [
+          53.0,
+          -50.0,
+          -139.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB1.SND",
+          "line": 2,
+          "record": "SAMPLE 53,-50,-139 s174elp1.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      },
+      {
+        "emitter_id": "OA_AMB_R1_003",
+        "room_id": 1,
+        "room": {
+          "openazrael_room": "R7",
+          "name": "WellRoom"
+        },
+        "sample": "S174ELP2.WAV",
+        "legacy_position": [
+          -155.0,
+          -50.0,
+          27.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB1.SND",
+          "line": 3,
+          "record": "SAMPLE -155,-50,27 s174elp2.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      },
+      {
+        "emitter_id": "OA_AMB_R2_001",
+        "room_id": 2,
+        "room": {
+          "openazrael_room": "R8",
+          "name": "Baptistry"
+        },
+        "sample": "S174ELP1.WAV",
+        "legacy_position": [
+          65.0,
+          -38.0,
+          188.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB2.SND",
+          "line": 1,
+          "record": "SAMPLE 65,-38,188 s174elp1.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      },
+      {
+        "emitter_id": "OA_AMB_R2_002",
+        "room_id": 2,
+        "room": {
+          "openazrael_room": "R8",
+          "name": "Baptistry"
+        },
+        "sample": "S174ELP2.WAV",
+        "legacy_position": [
+          65.0,
+          -38.0,
+          110.0
+        ],
+        "coordinate_space": "AZRAEL_WORLD_XYZ",
+        "playback_class": "POSITIONAL_AMBIENT",
+        "source": {
+          "file": "AMB2.SND",
+          "line": 2,
+          "record": "SAMPLE 65,-38,110 s174elp2.wav"
+        },
+        "provenance": "ORIGINAL_EXPLICIT",
+        "confidence": "VERIFIED",
+        "godot_position": null,
+        "transform_status": "PENDING_CALIBRATION"
+      }
+    ],
+    "music_assets": [
+      {
+        "filename": "AWE_FM.XMI",
+        "sha256": "4b8b8d96cfd8e082d194c906b5c3662a2d164851f986f000577dc91703f11836",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "AWEMYST.XMI",
+        "sha256": "5fc0a74f866240a3034fcab7d89cfdae3eb9726899ffce34dec4801428b18700",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "BLANK.XMI",
+        "sha256": "2f2b429cca283c62065bba2c36077dba502a72955c5cfc74dd938856732d11bc",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "CATH_FM.XMI",
+        "sha256": "6b5d9d152bd2bf226a3d2bec036b69782aa36c76a9b3c5a6b84ca2e1a7b6469e",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "CATHEDRL.XMI",
+        "sha256": "3ca932f78041e63d3ed7248202917fa9c88a7a14a1150966af9452061d281301",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "DEATH.XMI",
+        "sha256": "630753ef713d29f9bf6d5714920b7400b760c66ff1754bf15864c242ccb4ca6f",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "EGYPT_FM.XMI",
+        "sha256": "65db7fe78654ca96064386f68bc2a510924842e827b41f0764ef2cf37e404605",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "EGYPTIAN.XMI",
+        "sha256": "5d6c6c2942d41582bae51e0a73682085dfc3c45dd8573525b32a5bf0f3b0d6d9",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "FIGHT2.XMI",
+        "sha256": "00a8943a9171d6d05627f65a907cf8c66321db258a5d473f07614da8e65c546a",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "FITE2_FM.XMI",
+        "sha256": "9fe4914c3a2f17e72aebf0c45c0214a4d38d1af7477f7162118a0a5a30ad1972",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "GAME1_FM.XMI",
+        "sha256": "cb563865fe0225bc7e116dc244baea8431f9ffd48981f4de7c54812abae71ddf",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "GAME2_FM.XMI",
+        "sha256": "2425ea0abc8547fccea54dfb93a479885cc5e5fac756c4a970040e8a5c3f1613",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "GHOST_FM.XMI",
+        "sha256": "17bd301ad4a10f8bc94862e4fa13a38a1e74e6b776f5d8b9ccaea779f87d8d5c",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "GHOSTS.XMI",
+        "sha256": "2767182b2cdd9613c3bfc8f8e1fb6c309f4ab772efc6c33b3b0da73649c2d617",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "GRAIL.XMI",
+        "sha256": "99add615561d421e79a1c317308e83675c896ab4cf678d7743b0b6f44cce1089",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "GRAIL_FM.XMI",
+        "sha256": "b8c9079de64216860fbab7e6442eac90f8cc94bd44fe0bf870516c30abfc9692",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "INGAME.XMI",
+        "sha256": "d0a2c725509d8b5bd7a20de096b2f00a6e9f75cfb21a16a27fcb3757261c160b",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "INGAME2.XMI",
+        "sha256": "6abbabaa7407b162b701d853e970e0035c1863a847425359b98d66aac5d0a761",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "KREEPY2.XMI",
+        "sha256": "a2b884b081a1aaccddca3698d07254e230948d94ddb1e45588556f78f38419bf",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "KREEPY3.XMI",
+        "sha256": "f56130c12092911d55eb6a2fe6e0bff1cb10c1b89b3d02d02b93cf31083b8e3a",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "KREP2_FM.XMI",
+        "sha256": "4f48e42a98176d31231612c439ec0b8fae1a599f38e2312a46c101047d724c11",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "KREP3_FM.XMI",
+        "sha256": "40d1fb11ff2f71a37cf027401d9f5e5111874632174cfdd79f872c71d10c489e",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "PEACE_FM.XMI",
+        "sha256": "eeb09b3eab287c278c9a513a0bed25b79173170491a25468529d91b042338564",
+        "provenance": "ORIGINAL_DEMO"
+      },
+      {
+        "filename": "PEACEFUL.XMI",
+        "sha256": "0301e68ae3d9262849475363aa33e8055dab28e360b116e32a1a4b0d0b16403e",
+        "provenance": "ORIGINAL_DEMO"
+      }
+    ]
+  },
+  "npc_state_instances": [
+    {
+      "name": "EugenB",
+      "legacy_position": [
+        362.298431,
+        -90.386177,
+        -533.626587
+      ],
+      "legacy_direction": [
+        0.573576,
+        0.0,
+        -0.819152
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC0.DAT",
+        "line": 2
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 0
+    },
+    {
+      "name": "Eugene",
+      "legacy_position": [
+        387.180725,
+        -93.206253,
+        -472.210327
+      ],
+      "legacy_direction": [
+        0.77322,
+        0.0,
+        -0.634137
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC0.DAT",
+        "line": 10
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 0
+    },
+    {
+      "name": "EugenB",
+      "legacy_position": [
+        251.331711,
+        -98.499641,
+        -473.974579
+      ],
+      "legacy_direction": [
+        -0.246794,
+        0.0,
+        0.969068
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC1.DAT",
+        "line": 2
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 1
+    },
+    {
+      "name": "Eugene",
+      "legacy_position": [
+        329.898193,
+        -90.092545,
+        -543.169983
+      ],
+      "legacy_direction": [
+        -0.605819,
+        0.0,
+        0.795602
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC1.DAT",
+        "line": 10
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 1
+    },
+    {
+      "name": "EugenB",
+      "legacy_position": [
+        173.421799,
+        -99.496147,
+        -407.106018
+      ],
+      "legacy_direction": [
+        0.241922,
+        0.0,
+        -0.970296
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC2.DAT",
+        "line": 2
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 2
+    },
+    {
+      "name": "Eugene",
+      "legacy_position": [
+        306.84137,
+        -93.108376,
+        -527.318542
+      ],
+      "legacy_direction": [
+        0.978147,
+        0.0,
+        0.207913
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC2.DAT",
+        "line": 10
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 2
+    },
+    {
+      "name": "EugenB",
+      "legacy_position": [
+        163.682343,
+        -99.275459,
+        -370.345764
+      ],
+      "legacy_direction": [
+        -0.529918,
+        0.0,
+        -0.848049
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC3.DAT",
+        "line": 2
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 3
+    },
+    {
+      "name": "Eugene",
+      "legacy_position": [
+        247.341034,
+        -99.24157,
+        -463.577209
+      ],
+      "legacy_direction": [
+        -0.913546,
+        0.0,
+        0.406735
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC3.DAT",
+        "line": 10
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 3
+    },
+    {
+      "name": "EugenB",
+      "legacy_position": [
+        175.130859,
+        -90.25795,
+        -311.448059
+      ],
+      "legacy_direction": [
+        -0.91853,
+        0.0,
+        -0.395351
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC4.DAT",
+        "line": 2
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 4
+    },
+    {
+      "name": "Eugene",
+      "legacy_position": [
+        246.263901,
+        -96.434982,
+        -394.414612
+      ],
+      "legacy_direction": [
+        -0.999848,
+        0.0,
+        0.017453
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC4.DAT",
+        "line": 10
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 4
+    },
+    {
+      "name": "EugenB",
+      "legacy_position": [
+        362.298431,
+        -90.386177,
+        -533.626587
+      ],
+      "legacy_direction": [
+        0.573576,
+        0.0,
+        -0.819152
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC6.DAT",
+        "line": 2
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 6
+    },
+    {
+      "name": "Eugene",
+      "legacy_position": [
+        387.180725,
+        -93.206253,
+        -472.210327
+      ],
+      "legacy_direction": [
+        0.77322,
+        0.0,
+        -0.634137
+      ],
+      "coordinate_space": "AZRAEL_WORLD_XYZ",
+      "source": {
+        "file": "NPC6.DAT",
+        "line": 10
+      },
+      "provenance": "ORIGINAL_EXPLICIT",
+      "confidence": "VERIFIED",
+      "godot_position": null,
+      "godot_direction": null,
+      "transform_status": "PENDING_CALIBRATION",
+      "state_file_index": 6
+    }
+  ],
+  "counts": {
+    "wav": 30,
+    "ambient_emitters": 7,
+    "xmi": 24,
+    "npc_instances": 12
+  }
+}

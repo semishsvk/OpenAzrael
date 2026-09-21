@@ -5,8 +5,8 @@ const REQUIRED_ROOMS := [
     "res://assets/rooms/R7.glb",
     "res://assets/rooms/R8.glb"
 ]
-const COMPLETE_HASH := "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8"
-const EXPECTED_AUDIO := ["S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
+const COMPLETE_HASH := "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902"
+const EXPECTED_AUDIO := ["979TONGS.WAV", "S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
 
 var failures: Array[String] = []
 var check_count := 0
@@ -125,7 +125,7 @@ func _run() -> void:
 
     _check("well_key_interaction", _interact_named(manager, "Interact_WellKey"))
     await _settle(1)
-    _check("well_key_acquired", state.has("well_key"))
+    _check("well_key_acquired", state.has("well_key"))\n    _check("well_tongs_consumed", not state.has("rusty_tongs"))
 
     _check("switch_lever_exists", _find_named(manager.current_room, "Interact_well_lev02") != null)
     _check("switch_wheel_exists", _find_named(manager.current_room, "Interact_well_weel3") != null)

@@ -1,0 +1,98 @@
+{
+  "schema": "openazrael.kg001.candidate3_preflight_contract",
+  "version": 1,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate": "KG-001 Candidate 3",
+  "source_branch": "test/kg001-physical-traversal",
+  "source_ci": {
+    "workflow": ".github/workflows/kg001-candidate3-source-gate.yml",
+    "python_versions": [
+      "3.11",
+      "3.12"
+    ],
+    "command": "python tools/run_kg001_candidate_v112.py --source-only",
+    "commercial_assets_required": false
+  },
+  "local_preflight": {
+    "command": "python tools/run_candidate3_preflight.py --godot <Godot> [--demo-dir <ATDEMO>]",
+    "receipt": ".tmp/kg001/candidate3_preflight_receipt.json",
+    "git_clean_before": true,
+    "git_clean_after": true,
+    "fresh_godot_import_required": true,
+    "required_runtime_pass": [
+      "v109",
+      "v110",
+      "v111",
+      "audio_v116",
+      "physical_v117",
+      "well_tongs_v118",
+      "r1_route_v119",
+      "collision_v120"
+    ],
+    "bind_receipt_to": [
+      "exact Git HEAD",
+      "Godot version",
+      "fresh-checkout evidence SHA-256",
+      "candidate result SHA-256",
+      "complete restored assets/rooms corpus SHA-256",
+      "complete restored assets/audio corpus SHA-256",
+      "complete restored assets/textures/classic corpus SHA-256",
+      "exact runtime asset path set; additions/removals after preflight are forbidden"
+    ],
+    "runtime_asset_corpus": {
+      "classic_png_count": 86,
+      "room_glb_minimum": 3,
+      "audio_files_required": true,
+      "mutation_after_preflight": "FAIL_CLOSED"
+    }
+  },
+  "export": {
+    "command": "python tools/export_candidate3.py --godot <Godot>",
+    "preset": "Windows Candidate 3",
+    "output": "exports/OpenAzrael-KG001-Candidate3.exe",
+    "requires_current_preflight_receipt": true,
+    "stale_receipt_policy": "FAIL_CLOSED",
+    "changed_head_policy": "FAIL_CLOSED",
+    "dirty_git_policy": "FAIL_CLOSED",
+    "changed_asset_policy": "FAIL_CLOSED",
+    "changed_godot_policy": "FAIL_CLOSED",
+    "export_receipt": ".tmp/kg001/candidate3_export_receipt.json",
+    "outputs": [
+      "exports/OpenAzrael-KG001-Candidate3.exe",
+      "exports/OpenAzrael-KG001-Candidate3.pck"
+    ],
+    "exe_pck_pair_required": true,
+    "exact_asset_path_set_required": true,
+    "added_or_removed_asset_policy": "FAIL_CLOSED",
+    "post_export_startup_smoke": {
+      "required": true,
+      "mode": "headless",
+      "quit_after": 120,
+      "engine_errors_allowed": false,
+      "pass_required_before_export_receipt": true
+    }
+  },
+  "post_export": {
+    "manual_gate": "G10_PENDING_USER",
+    "known_good_tag_allowed": false,
+    "first_manual_checks": [
+      "R1 natural spawn and floor traversal",
+      "R8 stairs up/down on both real stair profiles",
+      "R7 well+tongs exact interaction plus audible 979TONGS",
+      "ambient plus triggered audio",
+      "KEYHOLE#/TONG6 transparency and correct KEYHOLE orientation",
+      "complete demo route"
+    ]
+  },
+  "evidence_boundary": "Historical Candidate 3 failed manual G10 on R1/Object02. Any guarded rebuild must additionally pass v119 and generic collision-parity v120; no historical Candidate 3 PASS evidence may be reused.",
+  "historical_candidate3_result": {
+    "status": "G10_FAIL",
+    "blocker": "R1/Object02 missing collision under zxcoriR5",
+    "bug_report": "openazrael_bugreport_1790007921_0054.zip",
+    "superseding_gate": "r1_route_v119",
+    "superseding_gates": [
+      "r1_route_v119",
+      "collision_v120"
+    ]
+  }
+}

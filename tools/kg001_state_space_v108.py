@@ -5,7 +5,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 import argparse, hashlib, json, sys
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_EVENT_GRAPHS={"R7_WATER_SWITCHBOARD_SOLVED","R8_LENS_PLACE","R8_OPTICAL_START","R8_SECRET_DOOR_OPEN","R8_TAKE_SHIELD"}
+EXPECTED_EVENT_GRAPHS={"R7_WELL_TONGS_USE","R7_WATER_SWITCHBOARD_SOLVED","R8_LENS_PLACE","R8_OPTICAL_START","R8_SECRET_DOOR_OPEN","R8_TAKE_SHIELD"}
 ALLOWED_EVENT_OPS={"set_flag","set_puzzle_node","add_inventory","remove_inventory","play_sound"}
 SWITCH_SOLUTION=("well_lev02","well_weel3","well_lev02")
 EXPECTED_ROOM_EDGES={("R1","zxcoriR5","R7"),("R1","zxcoriR2","R8"),("R7","zxwell2R6","R1"),("R8","zxorrery","R1")}
@@ -70,7 +70,7 @@ class Model:
         elif a=="transition_R8_R1":
             if s.room=="R8" and self.edge("R8","zxorrery","R1"): return replace(s,room="R1",sequence_running=False),audio
         elif a=="retrieve_well_key":
-            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"): return s.add_inventory("well_key").set_puzzle("R7KeyTake").set_flag("R7key"),audio
+            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"):\n                s,audio=apply_event_graph(s,self.event_graph,"R7_WELL_TONGS_USE")\n                return s.add_inventory("well_key").remove_inventory("rusty_tongs").set_puzzle("R7KeyTake").set_flag("R7key"),audio
         elif a in ("switch_well_lev02","switch_well_weel3"):
             if s.room=="R7" and not s.flag("R8BathDrain"):
                 control=a.removeprefix("switch_"); step=int(s.value("R7SwitchStep",0))
@@ -112,7 +112,7 @@ def validate_source_contract():
       "godot_codec_payload":"func canonical_state_payload()" in t["demo"],
       "godot_codec_hash":"func canonical_state_hash()" in t["demo"] and "HASH_SHA256" in t["demo"],
       "switch_solution_parity":'["well_lev02", "well_weel3", "well_lev02"]' in t["demo"],
-      "well_key_parity":all(x in t["demo"] for x in ('"R7KeyTake"','"R7key"','"well_key"')),
+      "well_key_parity":all(x in t["demo"] for x in ('"R7KeyTake"','"R7key"','"well_key"','remove("rusty_tongs")')),
       "door2_parity":all(x in t["demo"] for x in ('"FR1DoorUnlocked"','"R1Door2Open"')),
       "tongs_pickup_parity":all(x in t["room"] for x in ('"TONG6"','"rusty_tongs"')),
       "room_transition_gate_parity":all(x in t["room"] for x in ('"zxcoriR5"','"R1Door1Open"','"zxcoriR2"','"R1Door2Open"')),

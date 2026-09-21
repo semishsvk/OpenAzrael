@@ -1,7 +1,30 @@
 # OpenAzrael Artifact Index
 
+## Candidate 2 Windows execution — 2026-09-20
+
+**KG-001 Candidate 2 / v116-context-v32: G00-G09 PASS; G10 PENDING_MANUAL_USER.**
+Tested source `89ccf775dfd6abc21e6bc69f344fe2d349b4dd70`, Godot `4.7.2.stable.official.ed1daf0bf`.
+The clean-checkout suite passed source validation, asset import, v109, v110,
+v111 and audio-v116 (62 checks). The exported Windows EXE passed headless and
+graphical smoke tests. Instrumented exported-PCK checks passed real floor
+support in R1/R7/R8, nonzero Master audio output, cutout materials and F11 ZIP
+capture without a gameplay-state hash change. Supplied Sigil icons are verified
+inside the executable. Some headless scene tests report non-fatal ObjectDB
+cleanup warnings; there are no ERROR or SCRIPT ERROR lines in the passing runs.
+
+Additional integration fixes preserve the authored invisible R8/Object01
+entrance support collision, repair empty ambient WAV loop ranges, and retain
+Godot numeric typing and runner error handling. The v32 indexed palette rule
+preserves the single near-magenta non-key pixel in BLOOS4#.
+
+Candidate 1 manual failure remains historical evidence. Issues #6, #9 and #11
+await human retest and remain release blockers. No `demo-known-good-001` tag
+is allowed or created. Original Miles parity and complete original renderer
+transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
+`data/tests/kg001_candidate2_windows.json` for details.
+
 ## Current canonical checkpoint
-- `v116-context-v28` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v32` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
@@ -12,15 +35,25 @@
 ## Localization architecture
 - `docs/LOCALIZATION_ARCHITECTURE.md`
 - `docs/DECISIONS.md` ADR-024
-- implementation deliberately deferred until after Candidate 1 runtime/manual validation
+- implementation deliberately deferred until after the first clean Candidate 3 runtime/manual validation
 
-## KG-001 Candidate 1 diagnostics v116
+## KG-001 Candidate 3 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
 - `scripts/candidate_diagnostics_v116.gd`
 - `scripts/kg001_trigger_debug_v116.gd`
 - `tools/validate_candidate_diagnostics_v116.py`
 - `data/tests/kg001_candidate_diagnostics_contract_v116.json`
 - integrated into `tools/run_kg001_candidate_v112.py`
+
+
+## KG-001 Candidate 3 guarded build evidence
+- source workflow: `.github/workflows/kg001-candidate3-source-gate.yml`
+- preflight: `tools/run_candidate3_preflight.py`
+- preflight contract: `data/tests/kg001_candidate3_preflight_contract_v1.json`
+- guarded export: `tools/export_candidate3.py`
+- preflight binds exact Git HEAD, Godot version, runtime evidence hashes, exact runtime asset path set and per-asset SHA-256
+- PASS export receipt additionally requires exported-EXE startup smoke
+- Candidate 2 Windows evidence remains historical and is not current-source promotion evidence
 
 ## WORLD action-record lifecycle v115
 - `WORLD_ACTION_RECORD_LIFECYCLE_V115.md`
@@ -59,11 +92,32 @@
 - `data/tests/kg001_status_v111.json`
 - `docs/KG001_STATUS_V111.md`
 
+## Major legacy color-key regression — Issue #11
+- `tools/texture_pipeline/legacy_colorkey.py` — audited raw source-palette sentinel selection; zero/multiple used sentinels fail closed
+- `tools/texture_pipeline/azf_decode_v14.py`
+- `tools/texture_pipeline/export_xaf_glb_v8.py`
+- `tools/validate_kg001_texture_colorkey_v116.py`
+- `data/tests/kg001_texture_colorkey_contract_v116.json`
+- `data/tests/kg001_colorkey_corpus_audit_v116.json` — real 86-AZF metadata audit bound to demo/archive and per-texture SHA-256
+- Candidate restore integration in `tools/restore_candidate_assets.py`
+- known R1 regressions: KEYHOLE# and TONG6 -> MINETON#; KEYHOLE# additionally carries the Candidate 3 texture-specific FLIP_V orientation correction with TONG6 as negative control
+- broader original transparency/blending semantics remain HOLD
+- GitHub Issue #11 remains open pending manual visual retest after automated asset/runtime PASS
+
+## Major physical-audio regression — Issue #9
+- `scripts/kg001_audio_runtime_runner_v116.gd`
+- `tools/validate_kg001_audio_runtime_v116.py`
+- `data/tests/kg001_audio_runtime_contract_v116.json`
+- source-safe `data/audio/legacy_world_ir.json`
+- reproducible local restore: `tools/restore_candidate_assets.py` and `tools/prepare_candidate_audio.py`
+- recovered ambient count contract: R1=2, R7=3, R8=2
+- GitHub Issue #9 remains open pending Candidate 3 exact-build automated/runtime evidence plus manual audibility retest
+
 ## Critical collision regression — Issue #6
 - source fix in `scripts/room_manager.gd`: two-sided legacy `ConcavePolygonShape3D` collision
 - physical regression in `scripts/kg001_room_trigger_runner_v110.gd`
 - source validator coverage in `tools/validate_kg001_room_trigger_v110.py`
-- GitHub Issue #6 remains open pending corrected-build runtime/manual retest
+- GitHub Issue #6 remains open pending corrected-build manual retest after automated runtime PASS
 
 ## KG-001 v110 room/trigger
 - `docs/KG001_ROOM_TRIGGER_V110.md`

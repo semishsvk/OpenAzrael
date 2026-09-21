@@ -1,4 +1,6 @@
-# KG-001 Candidate 1 diagnostics — v116
+# KG-001 Candidate 3 diagnostics
+
+Candidate 3 is the active KG-001 integration target at `v116-context-v32`; diagnostics remain observational. Candidate 2 automated Windows evidence is historical and stale for current-source promotion. — v116
 
 v116 adds a diagnostic-only layer for the first real Godot integration build. It does not intentionally change puzzle or transition semantics.
 
@@ -20,7 +22,7 @@ The F7 HUD displays the exact build/checkpoint watermark, current room, player X
 
 Non-headless builds append structured events to:
 
-`user://openazrael_candidate1_events.jsonl`
+`user://openazrael_candidate3_events.jsonl`
 
 The log includes state hashes and covers inventory changes, flags, puzzle nodes, logical audio, interactions, trigger enter/exit edges, room transitions, room loads, debug room jumps and state dumps.
 
@@ -36,20 +38,30 @@ It includes room, player XYZ, canonical persistent payload/hash, last event, las
 
 ## Fail-fast asset validation
 
-The RoomManager no longer preloads R1/R7/R8 GLBs at script-parse time. It uses runtime resource paths so Candidate Diagnostics can report a precise missing-resource list before attempting to load the first room.
+The RoomManager runtime-loads R1/R7/R8 after an explicit preflight.
 
 Always required:
 - R1/R7/R8 room GLBs;
 - `data/xaf_trigger_evidence.json`;
-- `data/gameplay_event_graph_v87.json`.
+- `data/gameplay_event_graph_v87.json`;
+- source-safe `data/audio/legacy_world_ir.json`.
 
-For a normal non-headless Candidate 1 run, the four golden Event-IR sounds used by the accepted demo route are also required:
+For a normal non-headless Candidate 3 run, physical Event/ambient audio resources are also required:
 - `S152V2.WAV`
 - `S137.WAV`
 - `S121.WAV`
 - `799SECDR.WAV`
+- `S174ELP1.WAV`
+- `S174ELP2.WAV`
+- `S186.WAV`
 
-The v109-v111 headless tests retain capture-only logical-audio behavior and therefore do not make physical WAV presence a prerequisite.
+The v109/v111 logical tests keep capture-only semantics. A separate audio-v116 runner provides asset-backed physical readiness without claiming human audibility.
+
+## Physical audio diagnostics
+
+F8 combines the Classic/Enhanced ambient snapshot with Master-bus state and currently active physical Event-IR players. The automated regression is `scripts/kg001_audio_runtime_runner_v116.gd`, source-checked by `tools/validate_kg001_audio_runtime_v116.py` with contract `data/tests/kg001_audio_runtime_contract_v116.json`.
+
+It requires the recovered ambient topology R1=2, R7=3, R8=2 and a real physical Event-IR player probe. Actual listening remains G10; original Miles pan/volume parity remains HOLD.
 
 ## Trigger visualization
 
@@ -57,7 +69,7 @@ F6 renders translucent boxes from the authored XAF trigger bounds already used b
 
 ## Evidence boundary
 
-`tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. Actual Godot execution remains **NOT_EXECUTED** until the candidate workflow is run in a Godot-capable checkout with locally restored ignored assets.
+`tools/validate_candidate_diagnostics_v116.py` verifies the source wiring. Source wiring does not promote runtime evidence. Candidate 3 remains **NOT EXECUTED AT CURRENT HEAD** until the exact-SHA source gate and asset-backed Candidate 3 preflight pass.
 
 ## F11 bug-report capture
 

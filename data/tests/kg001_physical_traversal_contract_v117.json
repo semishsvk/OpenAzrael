@@ -1,0 +1,122 @@
+{
+  "schema": "openazrael.kg001.physical_traversal_contract",
+  "version": 117,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "requires_local_room_assets": true,
+  "production_path": {
+    "scene": "res://main.tscn",
+    "player": "res://scripts/player.gd",
+    "body": "CharacterBody3D",
+    "collision_layer": 4,
+    "collision_mask": 1,
+    "capsule_radius": 11,
+    "capsule_height": 52,
+    "movement_input": [
+      "move_forward",
+      "move_back",
+      "move_left",
+      "move_right"
+    ],
+    "movement_solver": "move_and_slide",
+    "step_up": {
+      "max_step_height": 14,
+      "step_probe_distance": 14,
+      "step_clearance": 0.35,
+      "safe_margin": 0.25,
+      "floor_snap_length": 16,
+      "strategy": "only when normal horizontal test_move is blocked; near-to-far downward rays resolve the nearest valid tread independent of legacy winding; vertical lift and raised forward path must both pass collision tests",
+      "probe_strategy": "near-to-far multi-probe; choose smallest valid positive rise",
+      "probe_distances": "dynamic motion+1, motion+4, motion+8, then configured max probe",
+      "backface_policy": "explicit hit_back_faces=true; horizontal tread acceptance uses abs(normal.y) because legacy winding is not semantic",
+      "runtime_diagnostics": "bounded step_debug trace with probe hit/miss, face index, normal, height, rejection reason and success"
+    }
+  },
+  "floor_regression": {
+    "room": "R1",
+    "spawn_view": "spaview",
+    "behavior": "natural portal spawn settle followed by active Input-driven movement in both canonical forward/back directions",
+    "support_tracking": "per-physics-frame local collision support",
+    "stationary_only_evidence_accepted": false,
+    "direct_horizontal_velocity_injection_accepted": false,
+    "test_may_normalize_player_to_floor": false
+  },
+  "stair_regressions": [
+    {
+      "room": "R8",
+      "mesh": "step011__mesh",
+      "minimum_tread_levels": 4,
+      "audited_tread_levels": 4,
+      "audited_total_rise": 15.18616,
+      "audited_horizontal_run": 31.200357,
+      "approximate_rise_per_step": 5.062053,
+      "direction": "approximately +X",
+      "requires_ascent": true,
+      "requires_descent": true
+    },
+    {
+      "room": "R8",
+      "mesh": "stairs__STAIR2",
+      "minimum_tread_levels": 8,
+      "audited_tread_levels": 8,
+      "audited_total_rise": 87.954292,
+      "audited_horizontal_run": 133.443661,
+      "approximate_rise_per_step": 12.565,
+      "direction": "approximately +Z",
+      "requires_ascent": true,
+      "requires_descent": true
+    }
+  ],
+  "excluded_non_tread_candidates": [
+    "step04__mesh",
+    "step05__mesh",
+    "stairs__BAPSTAIR"
+  ],
+  "pass_requires": [
+    "R1/R7/R8 portal-view spawns naturally settle on real collision without crossing below support",
+    "R1 active floor traversal does not cross below locally tracked support",
+    "R1 active traversal makes real horizontal progress",
+    "R1 maintains meaningful floor contact",
+    "R8 step011 lower-to-upper traversal passes with production stair assist",
+    "R8 step011 upper-to-lower traversal passes with production floor snap",
+    "R8 stairs__STAIR2 lower-to-upper traversal passes with production stair assist",
+    "R8 stairs__STAIR2 upper-to-lower traversal passes with production floor snap",
+    "no engine/script errors",
+    "v117 result preserves production step-debug trace so a failed stair gate identifies probe/rejection cause"
+  ],
+  "evidence_boundary": "This tracked contract and asset-derived geometry metadata do not prove runtime traversal. A current Godot v117 result from restored room assets is required.",
+  "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH",
+  "portal_spawn_regressions": [
+    {
+      "room": "R1",
+      "view": "spaview",
+      "pre_fix_feet_y": -84.316051,
+      "audited_support_y": -83.868143,
+      "pre_fix_penetration": true,
+      "clearance_added": 4
+    },
+    {
+      "room": "R1",
+      "view": "entcori",
+      "pre_fix_feet_y": -86.750095,
+      "audited_support_y": -84.2055,
+      "pre_fix_penetration": true,
+      "clearance_added": 4
+    },
+    {
+      "room": "R7",
+      "view": "view",
+      "pre_fix_feet_y": -43.220201,
+      "audited_support_y": -41.56402,
+      "pre_fix_penetration": true,
+      "clearance_added": 4
+    },
+    {
+      "room": "R8",
+      "view": "Object14",
+      "pre_fix_feet_y": -79.858878,
+      "audited_support_y": -87.124025,
+      "pre_fix_penetration": false,
+      "clearance_added": 4
+    }
+  ]
+}

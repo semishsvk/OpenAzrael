@@ -2,13 +2,13 @@
   "schema": "openazrael.kg001.candidate_diagnostics_contract",
   "version": 116,
   "status": "SOURCE_CONTRACT_PASS",
-  "build_id": "KG-001 Candidate 1",
-  "checkpoint": "v116-context-v28",
+  "build_id": "KG-001 Candidate 3",
+  "checkpoint": "v116-context-v32",
   "features": {
     "build_watermark": true,
     "fail_fast_core_assets": true,
     "fail_fast_golden_audio_non_headless": true,
-    "event_jsonl_log": "user://openazrael_candidate1_events.jsonl",
+    "event_jsonl_log": "user://openazrael_candidate3_events.jsonl",
     "state_dump_key": "F10",
     "trigger_visualization_key": "F6",
     "candidate_hud_key": "F7",
@@ -32,7 +32,29 @@
       "ITEM:<item>"
     ],
     "github_issue_template": ".github/ISSUE_TEMPLATE/bug_report.yml",
-    "bug_report_source_safe": true
+    "bug_report_source_safe": true,
+    "fail_fast_physical_audio_non_headless": true,
+    "ambient_ir_required": "res://data/audio/legacy_world_ir.json",
+    "required_physical_audio": [
+      "S152V2.WAV",
+      "S137.WAV",
+      "S121.WAV",
+      "799SECDR.WAV",
+      "S174ELP1.WAV",
+      "S174ELP2.WAV",
+      "S186.WAV"
+    ],
+    "bug_report_schema_version": 2,
+    "bug_report_physics_context": true,
+    "bug_report_player_velocity": true,
+    "bug_report_is_on_floor": true,
+    "bug_report_floor_normal": true,
+    "bug_report_support_below_ray": true,
+    "bug_report_vertical_column_probe": true,
+    "bug_report_nearby_collision_bodies": true,
+    "bug_report_slide_collisions": true,
+    "bug_report_runtime_build_identity": true,
+    "runtime_build_identity_path": "res://data/runtime_build_identity.json"
   },
-  "runtime_boundary": "Source contract only until executed in a Godot-capable checkout. F11 bug capture is observational and must not mutate gameplay state or include excluded commercial assets."
+  "runtime_boundary": "Diagnostics v2 source contract prepared. Export wrappers embed exact source commit/Godot identity; runtime F11 verification remains required in the next Candidate."
 }

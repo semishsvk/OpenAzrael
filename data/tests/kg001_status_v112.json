@@ -1,22 +1,63 @@
 {
-  "schema":"openazrael.kg001.gate_status",
-  "version":112,
-  "target_tag":"demo-known-good-001",
-  "overall_status":"AWAITING_RUNTIME_OR_MANUAL",
-  "final_tag_allowed":false,
-  "failed_inputs":[],
-  "gates":{
-    "G00":{"name":"context_integrity","status":"PENDING_RECORDED_SOURCE_VALIDATION"},
-    "G01":{"name":"data_validation","status":"PENDING_RECORDED_SOURCE_VALIDATION"},
-    "G02":{"name":"unit_gameplay_logic","status":"RUNTIME_PENDING"},
-    "G03":{"name":"puzzle_state_space","status":"PENDING"},
-    "G04":{"name":"room_transition_state","status":"RUNTIME_PENDING"},
-    "G05":{"name":"trigger_semantics","status":"RUNTIME_PENDING"},
-    "G06":{"name":"audio_event_stream","status":"RUNTIME_PENDING"},
-    "G07":{"name":"save_load_state_hash","status":"RUNTIME_PENDING"},
-    "G08":{"name":"synthetic_full_demo_playthrough","status":"RUNTIME_PENDING"},
-    "G09":{"name":"fresh_checkout_build","status":"PENDING"},
-    "G10":{"name":"manual_sanity","status":"PENDING_MANUAL_USER"}
+  "schema": "openazrael.kg001.gate_status",
+  "version": 112,
+  "target_tag": "demo-known-good-001",
+  "overall_status": "BLOCKED_KNOWN_BUGS",
+  "final_tag_allowed": false,
+  "failed_inputs": [],
+  "known_release_blockers": [
+    "kg001_release_blocked_by_issue_11",
+    "kg001_release_blocked_by_issue_6",
+    "kg001_release_blocked_by_issue_9",
+    "kg001_release_blocked_by_stair_traversal",
+    "kg001_release_blocked_by_well_tongs_animation"
+  ],
+  "gates": {
+    "G00": {
+      "name": "context_integrity",
+      "status": "PENDING_RECORDED_SOURCE_VALIDATION"
+    },
+    "G01": {
+      "name": "data_validation",
+      "status": "PENDING_RECORDED_SOURCE_VALIDATION"
+    },
+    "G02": {
+      "name": "unit_gameplay_logic",
+      "status": "RUNTIME_PENDING"
+    },
+    "G03": {
+      "name": "puzzle_state_space",
+      "status": "PASS"
+    },
+    "G04": {
+      "name": "room_transition_and_physical_traversal",
+      "status": "RUNTIME_PENDING"
+    },
+    "G05": {
+      "name": "trigger_semantics_and_recovered_interaction_effects",
+      "status": "RUNTIME_PENDING"
+    },
+    "G06": {
+      "name": "audio_event_stream",
+      "status": "RUNTIME_PENDING"
+    },
+    "G07": {
+      "name": "save_load_state_hash",
+      "status": "RUNTIME_PENDING"
+    },
+    "G08": {
+      "name": "synthetic_full_demo_playthrough",
+      "status": "RUNTIME_PENDING"
+    },
+    "G09": {
+      "name": "fresh_checkout_build",
+      "status": "PENDING"
+    },
+    "G10": {
+      "name": "manual_sanity",
+      "status": "PENDING_MANUAL_USER"
+    }
   },
-  "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS."
+  "release_boundary": "demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS for the current tested commit, G04 includes v110 + v117 + Candidate-3 regression v119 + generic collision parity v120, G05 includes exact-demo v118, and no recorded release blocker remains.",
+  "evidence_note": "Candidate 2 and Candidate 3 evidence is historical for current source. Candidate 3 G10 exposed R1/Object02 missing collision; v119 and generic v120 collision parity are mandatory and evidence SHA must equal current Git HEAD."
 }

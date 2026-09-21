@@ -1,0 +1,10 @@
+{
+  "failed": [],
+  "schema": "openazrael.kg001.room_trigger",
+  "scope": "G04/G05 room transitions, physical trigger bounds, and Issue #6 real-player floor-support regression at canonical R1/R7/R8 entry views with restored local assets",
+  "status": "PASS",
+  "version": 110,
+  "_process_returncode": 0,
+  "_output_tail": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nOpenAzrael acquired: well_key\nOpenAzrael flag: R1Door1Open = true\nOpenAzrael room: Well Room (R7)\nOpenAzrael room: Entry Corridor (R1)\nOpenAzrael flag: R1Door2Open = true\nOpenAzrael room: Baptistery (R8)\nOpenAzrael room: Entry Corridor (R1)\nOPENAZRAEL_KG001_V110 {\"failed\":[],\"schema\":\"openazrael.kg001.room_trigger\",\"scope\":\"G04/G05 room transitions, physical trigger bounds, and Issue #6 real-player floor-support regression at canonical R1/R7/R8 entry views with restored local assets\",\"status\":\"PASS\",\"version\":110}\nWARNING: 12 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)\n",
+  "_commit_sha": "89ccf775dfd6abc21e6bc69f344fe2d349b4dd70"
+}

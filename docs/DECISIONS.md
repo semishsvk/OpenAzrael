@@ -115,16 +115,54 @@ The KG-001 Candidate 1 diagnostic layer may observe and record runtime state, vi
 ## ADR-024 — External localization packs and stable semantic IDs
 **Status:** ACCEPTED — 2026-09-19
 
-OpenAzrael localization is an external presentation-data layer over stable semantic string IDs. Runtime/gameplay code must not use editable English sentences as localization keys. Translator-facing canonical sources use POT/PO, English ships as the mandatory fallback, and distributable community/local language packs use versioned external PCK packages. External packs are mounted with core-resource replacement disabled and are restricted to a validated localization namespace. The architecture is defined in `docs/LOCALIZATION_ARCHITECTURE.md`. Runtime implementation is deliberately deferred until after the first KG-001 Candidate 1 runtime/manual cycle.
+OpenAzrael localization is an external presentation-data layer over stable semantic string IDs. Runtime/gameplay code must not use editable English sentences as localization keys. Translator-facing canonical sources use POT/PO, English ships as the mandatory fallback, and distributable community/local language packs use versioned external PCK packages. External packs are mounted with core-resource replacement disabled and are restricted to a validated localization namespace. The architecture is defined in `docs/LOCALIZATION_ARCHITECTURE.md`. Runtime implementation is deliberately deferred until after the first clean KG-001 Candidate 2 runtime/manual cycle.
 
 ## ADR-025 — Candidate bug reporting is source-safe and observational
 
 **Status:** accepted — 2026-09-19
 
 - GitHub Issues is the canonical human bug tracker for OpenAzrael.
-- F11 captures a diagnostic ZIP from KG-001 Candidate 1 without invoking gameplay mutators.
+- F11 captures a diagnostic ZIP from KG-001 Candidate 2 without invoking gameplay mutators.
 - Existing F6/F7/F8/F9/F10 meanings remain unchanged.
 - Stable diagnostic IDs preserve authored/source names: ROOM, TRG, PUZ, FLAG and ITEM namespaces.
 - Captures may contain screenshot, canonical state, bounded telemetry tail and system metadata, but never excluded commercial room/audio/texture payloads.
 - Every reproducible fixed bug should gain regression evidence at the lowest useful automated layer.
 - Critical bugs and reproducible softlocks continue to block `demo-known-good-001`.
+
+
+## ADR-026 — KG-001 audio acceptance includes physical readiness
+
+**Status:** ACCEPTED — 2026-09-19
+
+G06 is no longer satisfied by the logical golden event stream alone. KG-001 requires an additional asset-backed Godot readiness regression proving that required Event/ambient WAV resources load, the Master bus is routable, recovered ambient emitters instantiate and report active playback, and a real Event-IR sound action creates a physical AudioStreamPlayer. Human audibility is accepted only in G10, while original Miles pan/volume parity remains a separate forensic HOLD.
+
+
+## ADR-027 — Legacy # texture color-key is selected from the audited source palette
+
+**Status:** ACCEPTED — 2026-09-20
+
+A real audit of the 86-texture ATDEMO corpus supersedes the broader quantized-magenta uniqueness rule. Every one of the ten `#` textures has exactly one *used* raw source-palette sentinel with R=255, B=255 and G<=8, and no non-`#` texture uses that sentinel. `BLOOS4#.AZF` additionally contains a one-pixel near-magenta entry at palette index 9 (raw 248,0,255), while the actual key is index 5 (255,0,255); therefore broad post-quantization thresholding must not select transparency. Only pixels carrying the exact selected source-palette index receive alpha 0. XAF->GLB preserves the result as MASK. Complete original renderer transparency/blending semantics remain HOLD.
+
+## ADR-028 — Candidate 2 source freezes before the second graphical run
+
+**Status:** ACCEPTED — 2026-09-20
+
+After the Issue #6 collision regression was widened to the canonical R1/R7/R8 entry views and Issue #11 was tightened to exact indexed-palette color-key selection, KG-001 Candidate 2 is source-frozen at `v116-context-v32`. No feature work, localization runtime, Generic Runtime refactor, remaster integration or unrelated forensic change may enter the Candidate branch before the complete fresh-checkout runtime suite and the short human blocker smoke test execute. Only fixes for failures discovered by that evidence may break the freeze.
+
+
+## ADR-029 — Empirical corpus evidence may break a source freeze
+
+**Status:** ACCEPTED — 2026-09-20
+
+The v31 Candidate 2 freeze was deliberately broken by new empirical evidence from the actual ATDEMO 86-AZF corpus: `BLOOS4#.AZF` disproved the assumption that every `#` texture has exactly one used entry in the broad quantized-magenta range. The fix narrowed key selection to the raw source-palette sentinel family and added a hash-bound corpus audit. Candidate 2 is re-frozen at `v116-context-v32`. This is an allowed evidence-driven correction under ADR-028, not feature expansion.
+
+
+## ADR-030 — Candidate 3 supersedes Candidate 2 as the active KG-001 evidence target
+
+**Status:** ACCEPTED — 2026-09-21
+
+Candidate 2 Windows automation remains immutable historical evidence, but its later manual traversal failure and subsequent source changes make it stale for promotion. KG-001 Candidate 3 is the active integration target. This supersedes only the scheduling/current-target language in ADR-024/ADR-028/ADR-029; it does not rewrite their historical decisions. Candidate 3 may not inherit Candidate 2 runtime PASS claims. It requires source CI and asset-backed v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 PASS at the exact build SHA, then guarded export and G10.
+
+Candidate 3 export provenance is fail-closed: the preflight receipt binds exact Git HEAD, Godot version, evidence hashes, the exact runtime asset path set and per-asset hashes. Any runtime asset mutation, addition or removal invalidates export. A PASS export receipt additionally requires exported-EXE startup smoke.
+
+The manual upside-down R1 keyhole observation is fixed through a narrowly-scoped `KEYHOLE#` V-orientation compatibility correction with TONG6/MINETON# as a negative control. This correction is OpenAzrael presentation compatibility evidence, not recovery of a global original-renderer UV rule; final orientation remains a G10 visual check.
