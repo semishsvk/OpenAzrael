@@ -29,12 +29,24 @@ REQUIRED_RUNTIME = (
     "physical_v117",
     "well_tongs_v118",
 )
-REQUIRED_ASSETS = (
+REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
     ROOT / "assets/rooms/R7.glb",
     ROOT / "assets/rooms/R8.glb",
     ROOT / "assets/audio/979TONGS.WAV",
 )
+RUNTIME_ASSET_ROOTS = (
+    ROOT / "assets/rooms",
+    ROOT / "assets/audio",
+    ROOT / "assets/textures/classic",
+)
+
+def runtime_asset_files() -> list[Path]:
+    files: list[Path] = []
+    for root in RUNTIME_ASSET_ROOTS:
+        if root.is_dir():
+            files.extend(p for p in root.rglob("*") if p.is_file())
+    return sorted(set(files), key=lambda p: str(p.relative_to(ROOT)).lower())
 
 def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -129,9 +141,32 @@ def main() -> int:
                 {"note": "Restoration may create ignored runtime assets, but tracked source must remain byte-stable."},
             )
 
-    missing = [str(p.relative_to(ROOT)) for p in REQUIRED_ASSETS if not p.is_file()]
+    missing = [str(p.relative_to(ROOT)) for p in REQUIRED_SENTINELS if not p.is_file()]
     if missing:
         return fail("REQUIRED_RUNTIME_ASSETS_MISSING", {"missing": missing})
+
+    asset_files = runtime_asset_files()
+    classic_pngs = [
+        p for p in asset_files
+        if p.parent == ROOT / "assets/textures/classic" and p.suffix.lower() == ".png"
+    ]
+    room_glbs = [
+        p for p in asset_files
+        if p.parent == ROOT / "assets/rooms" and p.suffix.lower() == ".glb"
+    ]
+    audio_files = [
+        p for p in asset_files
+        if p.parent == ROOT / "assets/audio"
+    ]
+    if len(classic_pngs) != 86 or len(room_glbs) < 3 or not audio_files:
+        return fail(
+            "RUNTIME_ASSET_CORPUS_INCOMPLETE",
+            {
+                "classic_png_count": len(classic_pngs),
+                "room_glb_count": len(room_glbs),
+                "audio_file_count": len(audio_files),
+            },
+        )
 
     godot = find_godot(args.godot)
     if not godot:
@@ -212,12 +247,18 @@ def main() -> int:
             "fresh_checkout": str(FRESH_RESULT.relative_to(ROOT)),
             "fresh_checkout_sha256": sha256(FRESH_RESULT),
         },
+        "runtime_asset_summary": {
+            "total_files": len(asset_files),
+            "classic_png_count": len(classic_pngs),
+            "room_glb_count": len(room_glbs),
+            "audio_file_count": len(audio_files),
+        },
         "runtime_assets": {
             str(p.relative_to(ROOT)): {
                 "bytes": p.stat().st_size,
                 "sha256": sha256(p),
             }
-            for p in REQUIRED_ASSETS
+            for p in asset_files
         },
         "build_rule": (
             "Export is permitted only while Git HEAD, clean worktree, Godot version, "
