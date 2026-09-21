@@ -8,8 +8,27 @@ exporter = (ROOT / "tools/export_candidate3.py").read_text(encoding="utf-8")
 runner = (ROOT / "tools/run_kg001_candidate_v112.py").read_text(encoding="utf-8")
 presets = (ROOT / "export_presets.cfg").read_text(encoding="utf-8")
 project = (ROOT / "project.godot").read_text(encoding="utf-8")
+workflow = (ROOT / ".github/workflows/kg001-candidate3-source-gate.yml").read_text(encoding="utf-8")
+contract = __import__("json").loads(
+    (ROOT / "data/tests/kg001_candidate3_preflight_contract_v1.json").read_text(
+        encoding="utf-8"
+    )
+)
 
 checks = {
+    "tracked_contract": (
+        contract.get("schema") == "openazrael.kg001.candidate3_preflight_contract"
+        and contract.get("version") == 1
+        and contract.get("status") == "SOURCE_CONTRACT_READY_RUNTIME_PENDING"
+        and contract.get("candidate") == "KG-001 Candidate 3"
+        and contract.get("export", {}).get("requires_current_preflight_receipt") is True
+        and contract.get("post_export", {}).get("manual_gate") == "G10_PENDING_USER"
+    ),
+    "source_ci_workflow": (
+        "python-version: [\"3.11\", \"3.12\"]" in workflow
+        and "python tools/run_kg001_candidate_v112.py --source-only" in workflow
+        and "git status --porcelain --untracked-files=normal" in workflow
+    ),
     "candidate3_branding": (
         'config/name="OpenAzrael KG-001 Candidate 3"' in project
         and 'config/version="KG001-Candidate-3"' in project
