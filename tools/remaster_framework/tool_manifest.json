@@ -660,12 +660,13 @@
     {
       "tool_id": "runtime_framework_metadata_stager",
       "family": "project_release",
-      "description": "Stage schema-validated source-safe build provenance, release-gate summary and PPPV coverage JSON into the generated Godot runtime metadata directory for F11 diagnostics.",
+      "description": "Stage schema-validated source-safe build provenance, release-gate summary, PPPV coverage and optional chained-playthrough evaluation metadata into the Godot runtime metadata directory for F11 diagnostics.",
       "entrypoint": "tools/remaster_framework/runtime_metadata.py",
       "inputs": [
         "build_provenance",
         "release_gate_summary",
-        "pppv_coverage"
+        "pppv_coverage",
+        "optional_pppv_playthrough_evaluation"
       ],
       "outputs": [
         "runtime_metadata_stage"
@@ -695,7 +696,7 @@
     {
       "tool_id": "openazrael_kg001_framework_bundle",
       "family": "project_release",
-      "description": "Build a unified KG-001 release evidence bundle containing generic gate results, release summary, PPPV coverage and deterministic build provenance.",
+      "description": "Build a unified KG-001 evidence bundle containing G00-G10 results, release summary, reusable PPPV scenarios, deterministic full-demo playthrough plan, coverage, optional matching runtime/evaluation evidence, and build provenance.",
       "entrypoint": "tools/openazrael_adapters/kg001_candidate_framework.py",
       "inputs": [
         "kg001_evidence_root",
@@ -707,7 +708,10 @@
         "kg001_framework_bundle",
         "release_gate_results",
         "release_gate_summary",
+        "pppv_scenarios",
+        "pppv_playthrough_plan",
         "pppv_coverage",
+        "optional_pppv_playthrough_evaluation",
         "build_provenance"
       ],
       "source_safe": true,
