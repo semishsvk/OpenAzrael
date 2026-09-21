@@ -1,0 +1,232 @@
+#!/usr/bin/env python3
+"""Candidate 3 pre-build gate.
+
+Runs the complete asset-backed KG-001 fresh-checkout suite and emits a local,
+Git-ignored PASS receipt bound to the exact Git SHA, Godot version and restored
+runtime asset fingerprints. A stale receipt is deleted before every attempt.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+TMP = ROOT / ".tmp/kg001"
+RECEIPT = TMP / "candidate3_preflight_receipt.json"
+CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
+FRESH_RESULT = TMP / "kg001_fresh_checkout.json"
+REQUIRED_RUNTIME = (
+    "v109",
+    "v110",
+    "v111",
+    "audio_v116",
+    "physical_v117",
+    "well_tongs_v118",
+)
+REQUIRED_ASSETS = (
+    ROOT / "assets/rooms/R1.glb",
+    ROOT / "assets/rooms/R7.glb",
+    ROOT / "assets/rooms/R8.glb",
+    ROOT / "assets/audio/979TONGS.WAV",
+)
+
+def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        cmd,
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def git_head() -> str:
+    p = run(["git", "rev-parse", "HEAD"])
+    return p.stdout.strip() if p.returncode == 0 else ""
+
+def git_clean() -> bool:
+    p = run(["git", "status", "--porcelain", "--untracked-files=normal"])
+    return p.returncode == 0 and p.stdout.strip() == ""
+
+def find_godot(explicit: str | None) -> str | None:
+    candidates: list[str] = []
+    if explicit:
+        candidates.append(explicit)
+    if os.environ.get("GODOT_BIN"):
+        candidates.append(os.environ["GODOT_BIN"])
+    candidates += ["godot4", "godot"]
+    for candidate in candidates:
+        p = Path(candidate)
+        if p.is_file():
+            return str(p.resolve())
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+    return None
+
+def fail(reason: str, details: dict | None = None) -> int:
+    RECEIPT.unlink(missing_ok=True)
+    payload = {
+        "schema": "openazrael.kg001.candidate3_preflight",
+        "version": 1,
+        "status": "FAIL",
+        "export_allowed": False,
+        "reason": reason,
+    }
+    if details:
+        payload["details"] = details
+    print(json.dumps(payload, indent=2))
+    return 1
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--godot", help="Godot executable; otherwise GODOT_BIN/godot4/godot are tried.")
+    ap.add_argument(
+        "--demo-dir",
+        type=Path,
+        help="Optional extracted official ATDEMO directory. If supplied, restore ignored Candidate assets first.",
+    )
+    args = ap.parse_args()
+
+    TMP.mkdir(parents=True, exist_ok=True)
+    RECEIPT.unlink(missing_ok=True)
+
+    if not git_clean():
+        return fail("DIRTY_GIT_BEFORE_PREFLIGHT")
+
+    head_before = git_head()
+    if not head_before:
+        return fail("GIT_HEAD_UNAVAILABLE")
+
+    if args.demo_dir is not None:
+        restore = run([
+            sys.executable,
+            "tools/restore_candidate_assets.py",
+            str(args.demo_dir.resolve()),
+        ])
+        if restore.returncode != 0:
+            return fail(
+                "ASSET_RESTORE_FAILED",
+                {"returncode": restore.returncode, "output_tail": restore.stdout[-12000:]},
+            )
+        if not git_clean():
+            return fail(
+                "ASSET_RESTORE_CHANGED_TRACKED_SOURCE",
+                {"note": "Restoration may create ignored runtime assets, but tracked source must remain byte-stable."},
+            )
+
+    missing = [str(p.relative_to(ROOT)) for p in REQUIRED_ASSETS if not p.is_file()]
+    if missing:
+        return fail("REQUIRED_RUNTIME_ASSETS_MISSING", {"missing": missing})
+
+    godot = find_godot(args.godot)
+    if not godot:
+        return fail("GODOT_NOT_FOUND")
+
+    cmd = [
+        sys.executable,
+        "tools/run_kg001_candidate_v112.py",
+        "--fresh-checkout",
+        "--godot",
+        godot,
+    ]
+    suite = run(cmd)
+    if suite.returncode != 0:
+        return fail(
+            "KG001_FRESH_CHECKOUT_FAILED",
+            {"returncode": suite.returncode, "output_tail": suite.stdout[-20000:]},
+        )
+
+    if not CANDIDATE_RESULT.is_file() or not FRESH_RESULT.is_file():
+        return fail("PREFLIGHT_EVIDENCE_MISSING")
+
+    candidate = json.loads(CANDIDATE_RESULT.read_text(encoding="utf-8"))
+    fresh = json.loads(FRESH_RESULT.read_text(encoding="utf-8"))
+    head_after = git_head()
+
+    runtime_status = fresh.get("runtime_status", {})
+    runtime_ok = (
+        isinstance(runtime_status, dict)
+        and all(runtime_status.get(name) == "PASS" for name in REQUIRED_RUNTIME)
+    )
+    if not (
+        head_after == head_before
+        and git_clean()
+        and candidate.get("status") == "PASS"
+        and candidate.get("commit_sha") == head_before
+        and fresh.get("status") == "PASS"
+        and fresh.get("commit_sha") == head_before
+        and fresh.get("source_validators_pass") is True
+        and fresh.get("godot_import_status") == "PASS"
+        and runtime_ok
+    ):
+        return fail(
+            "PREFLIGHT_INVARIANT_FAILED",
+            {
+                "head_before": head_before,
+                "head_after": head_after,
+                "git_clean": git_clean(),
+                "candidate_status": candidate.get("status"),
+                "fresh_status": fresh.get("status"),
+                "source_validators_pass": fresh.get("source_validators_pass"),
+                "godot_import_status": fresh.get("godot_import_status"),
+                "runtime_status": runtime_status,
+            },
+        )
+
+    ver = run([godot, "--version"])
+    godot_version = ver.stdout.strip()
+    if ver.returncode != 0 or not godot_version:
+        return fail("GODOT_VERSION_UNAVAILABLE")
+
+    receipt = {
+        "schema": "openazrael.kg001.candidate3_preflight",
+        "version": 1,
+        "status": "PASS",
+        "candidate": "KG-001 Candidate 3",
+        "export_allowed": True,
+        "commit_sha": head_before,
+        "git_clean_after": True,
+        "godot_executable": godot,
+        "godot_version": godot_version,
+        "source_validators": "PASS",
+        "godot_import": "PASS",
+        "runtime_status": {name: runtime_status[name] for name in REQUIRED_RUNTIME},
+        "evidence": {
+            "candidate_result": str(CANDIDATE_RESULT.relative_to(ROOT)),
+            "candidate_result_sha256": sha256(CANDIDATE_RESULT),
+            "fresh_checkout": str(FRESH_RESULT.relative_to(ROOT)),
+            "fresh_checkout_sha256": sha256(FRESH_RESULT),
+        },
+        "runtime_assets": {
+            str(p.relative_to(ROOT)): {
+                "bytes": p.stat().st_size,
+                "sha256": sha256(p),
+            }
+            for p in REQUIRED_ASSETS
+        },
+        "build_rule": (
+            "Export is permitted only while Git HEAD, clean worktree, Godot version, "
+            "candidate/fresh evidence and restored runtime asset hashes still match this receipt."
+        ),
+    }
+    RECEIPT.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(receipt, indent=2))
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
