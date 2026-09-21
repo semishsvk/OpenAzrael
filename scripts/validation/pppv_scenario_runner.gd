@@ -5,6 +5,7 @@ const PlayerDriverScript = preload("res://scripts/validation/pppv_player_driver.
 const NavigatorScript = preload("res://scripts/validation/pppv_navigator.gd")
 const ObserverScript = preload("res://scripts/validation/openazrael_pppv_observer.gd")
 const SceneObserverScript = preload("res://scripts/validation/pppv_scene_observer.gd")
+const ActionExecutorScript = preload("res://scripts/validation/pppv_action_executor.gd")
 
 var failures: Array[String] = []
 
@@ -380,6 +381,12 @@ func _run() -> void:
     var driver = PlayerDriverScript.new(player, probe, evidence)
     var navigator = NavigatorScript.new(player, probe, evidence)
     var scene_observer = SceneObserverScript.new(evidence)
+    var action_executor = ActionExecutorScript.new(
+        manager,
+        driver,
+        navigator,
+        observer
+    )
     var scene_specs = scenario.get("metadata", {}).get("scene_observations", [])
     if not scene_specs is Array:
         scene_specs = []
@@ -399,14 +406,11 @@ func _run() -> void:
         if not raw_action is Dictionary:
             failures.append("invalid_action_row")
             break
-        var ok: bool = await _execute_action(
-            raw_action,
-            manager,
-            driver,
-            navigator,
-            observer
-        )
+        var ok: bool = await action_executor.execute(raw_action)
         if not ok:
+            for failure in action_executor.failure_list():
+                if not failures.has(failure):
+                    failures.append(failure)
             break
 
     await _settle(2)
