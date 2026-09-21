@@ -26,6 +26,8 @@ checks={
  "fresh_requires_all_runtime":"full_runtime_pass" in source and "all(asset_present.values())" in source,
  "promotion_is_optional":"--promote-results" in source,
  "fresh_is_optional":"--fresh-checkout" in source,
+ "source_only_mode":"--source-only" in source and "openazrael.kg001.source_gate" in source,
+ "candidate3_guard_validator":"validate_candidate3_preflight.py" in source,
 }
 failed=[k for k,v in checks.items() if not v]
 print("OpenAzrael v112 candidate runner source contract:","PASS" if not failed else "FAIL")
