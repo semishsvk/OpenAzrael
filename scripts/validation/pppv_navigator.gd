@@ -147,3 +147,103 @@ func approach_interactable(
         "horizontal_distance": horizontal_distance,
         "used_frames": used_frames
     }
+
+
+func approach_world_point(
+    action_id: String,
+    target_position: Vector3,
+    stop_condition: Callable = Callable(),
+    max_frames: int = 900,
+    stuck_frames: int = 150,
+    reach_distance: float = 8.0
+) -> Dictionary:
+    evidence.record_player_action(action_id, "input", {
+        "strategy": "steer_to_world_point",
+        "target_position": [
+            target_position.x,
+            target_position.y,
+            target_position.z
+        ],
+        "max_frames": max_frames
+    })
+
+    var start := player.global_position
+    var previous := start
+    var best_distance := Vector2(
+        target_position.x - start.x,
+        target_position.z - start.z
+    ).length()
+    var last_progress_frame := 0
+    var used_frames := 0
+    var reached := false
+    var stopped_by_condition := false
+
+    Input.action_release(&"move_forward")
+    for frame in range(max_frames):
+        used_frames = frame + 1
+
+        if stop_condition.is_valid() and bool(stop_condition.call()):
+            stopped_by_condition = true
+            reached = true
+            break
+
+        var flat_delta := target_position - player.global_position
+        flat_delta.y = 0.0
+        var distance := flat_delta.length()
+        if distance <= reach_distance:
+            reached = true
+            break
+
+        var yaw_error := _turn_toward(target_position)
+        if absf(yaw_error) <= 0.45:
+            Input.action_press(&"move_forward", 1.0)
+        else:
+            Input.action_release(&"move_forward")
+
+        await player.get_tree().physics_frame
+
+        var step_distance := Vector2(
+            player.global_position.x - previous.x,
+            player.global_position.z - previous.z
+        ).length()
+        var new_distance := Vector2(
+            target_position.x - player.global_position.x,
+            target_position.z - player.global_position.z
+        ).length()
+        if step_distance > 0.05 or new_distance < best_distance - 0.25:
+            last_progress_frame = frame
+            best_distance = minf(best_distance, new_distance)
+        previous = player.global_position
+
+        if frame - last_progress_frame >= stuck_frames:
+            evidence.record("navigation_failure", {
+                "action_id": action_id,
+                "reason": "stuck_world_point",
+                "frame": frame,
+                "best_distance": best_distance
+            })
+            break
+
+    Input.action_release(&"move_forward")
+    await player.get_tree().physics_frame
+
+    var finish := player.global_position
+    var horizontal_distance := Vector2(
+        finish.x - start.x,
+        finish.z - start.z
+    ).length()
+    evidence.record("movement", {
+        "action_id": action_id,
+        "strategy": "steer_to_world_point",
+        "progress_ok": horizontal_distance > 0.5 or reached,
+        "horizontal_distance": horizontal_distance,
+        "reached": reached,
+        "stopped_by_condition": stopped_by_condition,
+        "used_frames": used_frames
+    })
+    return {
+        "reached": reached,
+        "stopped_by_condition": stopped_by_condition,
+        "horizontal_distance": horizontal_distance,
+        "used_frames": used_frames
+    }
