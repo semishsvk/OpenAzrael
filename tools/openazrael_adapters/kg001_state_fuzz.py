@@ -44,6 +44,7 @@ MONOTONIC_FLAGS = {
     "demo_complete",
 }
 MONOTONIC_PUZZLE = {
+    "PickupCollected:rusty_tongs",
     "R7KeyTake",
     "R8LensPlace",
     "R8LensLook",
@@ -96,7 +97,20 @@ def _state_invariants(state: DemoState) -> list[str]:
     elif not 0 <= step <= len(SWITCH_SOLUTION):
         errors.append(f"R7SwitchStep out of range: {step}")
 
+    tongs_collected = puzzle.get(
+        "PickupCollected:rusty_tongs",
+        False,
+    )
+    if inventory.get("rusty_tongs", False) and not tongs_collected:
+        errors.append(
+            "rusty_tongs inventory requires persistent pickup marker"
+        )
+
     if inventory.get("well_key", False):
+        if not tongs_collected:
+            errors.append(
+                "well_key requires prior persistent TONG6 pickup marker"
+            )
         if inventory.get("rusty_tongs", False):
             errors.append("well_key acquired while rusty_tongs still present")
         if not puzzle.get("R7KeyTake", False):
@@ -186,6 +200,17 @@ def _transition_invariants(
             and not after_inventory.get(key, False)
         ):
             errors.append(f"persistent inventory item disappeared: {key}")
+
+    if action == "pickup_rusty_tongs" and after != before:
+        if not after_inventory.get("rusty_tongs", False):
+            errors.append("pickup_rusty_tongs did not grant inventory item")
+        if not after_puzzle.get(
+            "PickupCollected:rusty_tongs",
+            False,
+        ):
+            errors.append(
+                "pickup_rusty_tongs did not persist collection marker"
+            )
 
     allowed_audio = ACTION_AUDIO.get(action, set())
     unexpected_audio = sorted(set(audio) - allowed_audio)
