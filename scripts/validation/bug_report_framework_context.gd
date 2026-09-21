@@ -23,6 +23,12 @@ const OPTIONAL_ARTIFACTS := [
         "path": "res://data/runtime/pppv_coverage.json",
         "schema": "remaster.validation_coverage",
         "zip_name": "pppv_coverage.json"
+    },
+    {
+        "id": "pppv_playthrough_evaluation",
+        "path": "res://data/runtime/pppv_playthrough_evaluation.json",
+        "schema": "remaster.playthrough_evaluation",
+        "zip_name": "pppv_playthrough_evaluation.json"
     }
 ]
 
@@ -52,6 +58,15 @@ func _summary_fields(artifact_id: String, payload: Dictionary) -> Dictionary:
                 "required_target_count": int(payload.get("required_target_count", 0)),
                 "covered_target_count": int(payload.get("covered_target_count", 0)),
                 "coverage_ratio": float(payload.get("coverage_ratio", 0.0))
+            }
+        "pppv_playthrough_evaluation":
+            return {
+                "status": String(payload.get("status", "")),
+                "plan_id": String(payload.get("plan_id", "")),
+                "step_count": int(payload.get("step_count", 0)),
+                "final_state_sha256": String(
+                    payload.get("final_state_sha256", "")
+                )
             }
     return {}
 
