@@ -218,9 +218,6 @@ def build_candidate_framework_bundle(
             "target_tag": "demo-known-good-001",
             "release_status": release_summary["status"],
             "pppv_coverage_status": pppv_coverage["status"],
-        "pppv_playthrough_plan_status": playthrough_plan["status"],
-        "pppv_playthrough_runtime_status": playthrough_runtime_status,
-        "pppv_playthrough_evaluation_status": playthrough_evaluation_status,
             "pppv_playthrough_plan_status": playthrough_plan["status"],
             "pppv_playthrough_runtime_status": playthrough_runtime_status,
             "pppv_playthrough_evaluation_status": (
@@ -256,6 +253,11 @@ def build_candidate_framework_bundle(
         "commit_sha": commit_sha,
         "release_status": release_summary["status"],
         "pppv_coverage_status": pppv_coverage["status"],
+        "pppv_playthrough_plan_status": playthrough_plan["status"],
+        "pppv_playthrough_runtime_status": playthrough_runtime_status,
+        "pppv_playthrough_evaluation_status": (
+            playthrough_evaluation_status
+        ),
         "well_tongs_real_input_pppv_status": (
             str(_load(well_pppv_path).get("status", ""))
             if well_pppv_path.is_file()
