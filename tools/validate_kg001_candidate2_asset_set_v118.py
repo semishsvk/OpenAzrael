@@ -27,6 +27,7 @@ ROOM_EXPECTED={
 AUDIO_NAMES=[
     "797TAP.WAV",
     "799SECDR.WAV",
+    "979TONGS.WAV",
     "S121.WAV",
     "S137.WAV",
     "S152V2.WAV",
@@ -173,8 +174,8 @@ def main() -> int:
         =="openazrael.kg001.texture_colorkey_contract",
         "expected_hash_texture_count":len(expected_hash)==10,
         "expected_room_count":len(ROOM_EXPECTED)==3,
-        "expected_audio_count":len(AUDIO_NAMES)==8,
-        "canonical_audio_fingerprint_count":len(canonical_audio)==8,
+        "expected_audio_count":len(AUDIO_NAMES)==9,
+        "canonical_audio_fingerprint_count":len(canonical_audio)==9,
         "canonical_audio_fingerprint_set":sorted(canonical_audio)==sorted(AUDIO_NAMES),
         "expected_classic_texture_count":TEXTURE_COUNT==86,
     }

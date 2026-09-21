@@ -16,6 +16,7 @@
     "floor_r1_stable": "PENDING",
     "floor_r7_stable": "PENDING",
     "floor_r8_stable": "PENDING",
+    "stairs_r8_up_down": "PENDING",
     "keyhole_transparency_clean": "PENDING",
     "tongs_transparency_clean": "PENDING",
     "tongs_pickup": "PENDING",
@@ -30,6 +31,8 @@
     "secret_door_and_shield": "PENDING",
     "shield_completes_demo": "PENDING",
     "audio_audible": "PENDING",
+    "triggered_979tongs_audible": "PENDING",
+    "triggered_switchboard_audio_audible": "PENDING",
     "encountered_hash_cutouts_clean": "PENDING",
     "save_load_roundtrip": "PENDING",
     "f11_zip_without_state_mutation": "PENDING",
@@ -38,7 +41,9 @@
   },
   "blocker_checks": {
     "issue_6_floor_collision": "PENDING",
+    "critical_stair_traversal": "PENDING",
     "issue_9_human_audibility": "PENDING",
+    "well_tongs_recovered_effect": "PENDING",
     "issue_11_colorkey_transparency": "PENDING"
   },
   "critical_bugs": [],

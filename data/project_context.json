@@ -88,10 +88,10 @@
     "kg001_acceptance_plan": "ACCEPTED",
     "kg001_target_tag": "demo-known-good-001",
     "kg001_gate_count": 11,
-    "kg001_build_status": "CANDIDATE2_SOURCE_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_build_status": "CANDIDATE2_MANUAL_FAIL_CRITICAL_TRAVERSAL",
     "release_rule": "ALL_GATES_PASS_AND_ZERO_RECORDED_RELEASE_BLOCKERS_AND_ZERO_REPRODUCIBLE_SOFTLOCKS",
     "source_safe_runtime_ir": "RESTORED_VALIDATED_METADATA",
-    "runtime_ir_event_graphs": 5,
+    "runtime_ir_event_graphs": 6,
     "runtime_ir_rooms": 3,
     "runtime_ir_transitions": 4,
     "kg001_state_model": "SOURCE_MODEL_PASS",
@@ -99,7 +99,7 @@
     "kg001_changed_edges": 123,
     "kg001_softlock_states": 0,
     "kg001_shortest_success_actions": 15,
-    "kg001_runtime_gate_status": "PENDING",
+    "kg001_runtime_gate_status": "G04_G05_G06_RUNTIME_RETEST_REQUIRED_AFTER_SOURCE_FIXES",
     "kg001_headless_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_headless_runtime": "NOT_EXECUTED",
     "kg001_state_restore": "IMPLEMENTED_NOT_RUNTIME_EXECUTED",
@@ -107,15 +107,15 @@
     "kg001_room_trigger_runtime": "NOT_EXECUTED",
     "kg001_full_demo_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_full_demo_runtime": "NOT_EXECUTED",
-    "kg001_overall_status": "BLOCKED_ISSUES_6_9_11_RETEST",
+    "kg001_overall_status": "BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL",
     "kg001_final_tag_allowed": false,
     "kg001_candidate_runner": "SOURCE_CONTRACT_READY",
     "kg001_status_engine": "EVIDENCE_DRIVEN_V112",
-    "kg001_manual_sanity": "BLOCKED_ISSUES_6_9_11_RETEST_REQUIRED",
+    "kg001_manual_sanity": "FAIL_CRITICAL_FLOOR_AND_STAIRS",
     "kg001_candidate_diagnostics": "SOURCE_CONTRACT_PASS",
     "kg001_candidate_build_id": "KG-001 Candidate 2",
     "kg001_candidate_build_source_ready": true,
-    "kg001_candidate_build_runtime": "V31_NOT_EXECUTED",
+    "kg001_candidate_build_runtime": "CANDIDATE2_MANUAL_FAIL",
     "kg001_candidate_debug_keys": {
       "F6": "trigger_volumes",
       "F7": "candidate_hud",
@@ -126,14 +126,15 @@
     },
     "kg001_candidate_event_log": "user://openazrael_candidate2_runs/<run_id>/events.jsonl",
     "kg001_candidate_fail_fast": "CORE_RESOURCES_PLUS_AMBIENT_IR_ALWAYS__EVENT_AND_AMBIENT_WAVS_NON_HEADLESS__TEXTURE_COLORKEY_VALIDATED_IN_RESTORE_AND_G09",
-    "documentation_consistency": "PASS_V31",
+    "documentation_consistency": "PASS_POST_CANDIDATE2_RUNTIME_FIX_BRANCH",
     "documentation_runtime_claim_boundary": "NO_RUNTIME_PROMOTION",
     "kg001_bug_reporting": "SOURCE_CONTRACT_PASS",
     "kg001_bug_report_prefix": "user://openazrael_candidate2_runs/<run_id>/bugreport_",
     "kg001_bug_report_source_safe": true,
-    "kg001_candidate_previous_runtime": "CANDIDATE1_MANUAL_FAIL_ISSUES_6_9_11",
+    "kg001_candidate_previous_runtime": "CANDIDATE2_MANUAL_FAIL_FLOOR_STAIRS__AMBIENT_AUDIBLE__TRIGGERED_AUDIO_UNTESTED",
     "kg001_known_critical_bugs": [
-      "#6 PLAYER_FALLS_THROUGH_FLOOR"
+      "#6 PLAYER_FALLS_THROUGH_FLOOR",
+      "STAIRS_UNTRAVERSABLE_UP_OR_DOWN"
     ],
     "kg001_collision_issue_6": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_6": true,
@@ -141,7 +142,7 @@
       "#9 NO_AUDIBLE_AUDIO",
       "#11 LEGACY_COLORKEY_MAGENTA_VISIBLE"
     ],
-    "kg001_audio_issue_9": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_audio_issue_9": "AMBIENT_AUDIBLE_TRIGGERED_EVENT_RUNTIME_RETEST_REQUIRED",
     "kg001_release_blocked_by_issue_9": true,
     "kg001_physical_audio_source_contract": "SOURCE_CONTRACT_PASS",
     "kg001_physical_audio_runtime": "NOT_EXECUTED",
@@ -189,7 +190,7 @@
     "kg001_test_build_receipt_status": "NOT_EXECUTED",
     "kg001_evidence_promotion_order": "AFTER_EXPORT_STARTUP_SMOKE_ON_WINDOWS_WRAPPER",
     "kg001_candidate2_expected_room_assets": 3,
-    "kg001_candidate2_expected_runtime_audio_assets": 8,
+    "kg001_candidate2_expected_runtime_audio_assets": 9,
     "kg001_candidate2_expected_classic_textures": 86,
     "kg001_candidate2_expected_indexed_colorkey_textures": 10,
     "kg001_build_manifest_version": 2,
@@ -218,7 +219,31 @@
     "kg001_startup_ready_marker_semantics": "AFTER_RESOURCE_PREFLIGHT_R1_LOAD_AND_SPAVIEW_SPAWN",
     "kg001_distribution_build_manifest": "SOURCE_CONTRACT_PASS_V118",
     "kg001_distribution_sha256sums": "SOURCE_CONTRACT_PASS_V118",
-    "kg001_distribution_integrity_runtime": "NOT_EXECUTED"
+    "kg001_distribution_integrity_runtime": "NOT_EXECUTED",
+    "kg001_stair_traversal": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_release_blocked_by_stair_traversal": true,
+    "kg001_physical_traversal_v117": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "kg001_portal_spawn_root_cause": "PRE_FIX_PORTAL_EYE_FORMULA_PLACED_CAPSULE_FEET_BELOW_AUTHORED_SUPPORT_IN_R1_SPAVIEW_R1_ENTCORI_R7_VIEW",
+    "kg001_portal_spawn_geometry_evidence": "data/tests/kg001_portal_spawn_geometry_v117.json",
+    "kg001_portal_spawn_fix": "PLUS_4_VERTICAL_CLEARANCE_PRESERVE_XZ_HEADING_THEN_NATURAL_PHYSICS_SETTLE",
+    "kg001_stair_root_cause": "CHARACTERBODY_MOVE_AND_SLIDE_HAS_NO_AUTOMATIC_DISCRETE_VERTICAL_RISER_STEP_UP",
+    "kg001_stair_fix": "COLLISION_TESTED_STEP_UP_MAX_14_PLUS_FLOOR_SNAP_16_NO_SYNTHETIC_RAMP",
+    "kg001_audio_candidate2_manual_ambient": "AUDIBLE",
+    "kg001_triggered_audio_manual": "NOT_TESTED_CANDIDATE2",
+    "kg001_triggered_audio_automation": "V116_PROBES_979TONGS_AND_S152V2_RUNTIME_RETEST_REQUIRED",
+    "kg001_well_tongs_animation_v118": "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
+    "kg001_well_tongs_animation_source_observation": "OFFICIAL_DEMO_RECOVERED_5_ACTION_GROUP: R7KEY_REMOVE__979TONGS__R7KEY_ADD__RUSTYTONGR6_REMOVE__TONG6_CONSUME; RANIM1_ALL_ZERO; NO_TRANSFORM_ROTATION_OPCODE",
+    "kg001_well_tongs_demo_evidence": "data/tests/kg001_well_tongs_demo_evidence_v118.json",
+    "kg001_release_blocked_by_well_tongs_animation": true,
+    "kg001_candidate_source_freeze": "POST_CANDIDATE2_TRAVERSAL_WELL_TONGS_AUDIO_FIX_RUNTIME_RETEST_REQUIRED",
+    "kg001_candidate_freeze_scope": [
+      "Issue #6 natural-spawn and active floor traversal must pass v117",
+      "Critical stair traversal must pass both real R8 stair profiles up/down in v117",
+      "R7 well+tongs must pass exact-demo v118 action/audio trace",
+      "G06 must physically load/start 979TONGS and S152V2 with nonzero Master-bus capture",
+      "Issue #11 indexed AZF color-key transparency",
+      "existing Candidate diagnostics, visual capture, build receipt and bug capture"
+    ]
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -229,7 +254,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Build Candidate 2 on Windows from the complete restored asset set using the pinned Godot 4.7.2 flow, require fresh-checkout + visual capture + exported-EXE startup smoke PASS, obtain the v118 test-build receipt, then run receipt-bound G10 via tools/record_kg001_g10_v118.py. Only a fully validated v2 G10 result bound to that exact receipt/commit/package may satisfy G10; Issues #6/#9/#11 and demo-known-good-001 remain blocked until the canonical release process clears them.",
+  "next_target": "Run the full PR12-hardened Candidate flow from this current fix branch with the complete restored 3-room/9-audio/86-texture asset set. Require source validators plus v109/v110/v111/audio-v116/v117/v118 runtime PASS, canonical visual capture, Windows export/startup smoke and receipt-bound G10. Candidate 2 remains manually FAILED until floor, stairs, triggered audio, well+tongs and transparency are reverified.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
@@ -386,11 +411,14 @@
       "R7": 3,
       "R8": 2
     },
-    "event_probe": "R8_LENS_PLACE -> S152V2.WAV",
     "source_status": "SOURCE_CONTRACT_PASS",
-    "runtime_status": "NOT_EXECUTED",
-    "boundary": "Automated contract covers required-WAV PCM non-silence and nonzero Godot Master-bus capture during the known Event-IR probe; human audibility/quality remains G10 and original Miles parity remains HOLD.",
-    "master_bus_capture": "AudioEffectCapture_NONZERO_FRAMES_AND_PEAK"
+    "runtime_status": "NOT_EXECUTED_CURRENT_FIX_BRANCH",
+    "boundary": "Automated contract proves physical resources/player/Master-bus energy for both triggered probes; user audibility remains G10/manual.",
+    "master_bus_capture": "AudioEffectCapture_NONZERO_FRAMES_AND_PEAK",
+    "event_probes": [
+      "R7_WELL_TONGS_USE -> 979TONGS.WAV",
+      "R7_WATER_SWITCHBOARD_SOLVED -> S152V2.WAV"
+    ]
   },
   "kg001_texture_colorkey_v116": {
     "validator": "tools/validate_kg001_texture_colorkey_v116.py",
@@ -563,5 +591,21 @@
     "startup_ready_semantics": "POST_PREFLIGHT__POST_R1_LOAD__POST_SPAVIEW_SPAWN",
     "distribution_build_manifest": "BYTE_IDENTICAL_COPY_OF_EXPORT_BUILD_MANIFEST",
     "distribution_checksum_manifest": "SHA256SUMS_COVERS_EXE_PCK_BUILD_MANIFEST_RECEIPT_TESTING_GUIDE"
+  },
+  "kg001_v117_physical_traversal": {
+    "runner": "scripts/kg001_physical_traversal_runner_v117.gd",
+    "validator": "tools/validate_kg001_physical_traversal_v117.py",
+    "contract": "data/tests/kg001_physical_traversal_contract_v117.json",
+    "spawn_geometry": "data/tests/kg001_portal_spawn_geometry_v117.json",
+    "source_status": "SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED",
+    "runtime_status": "NOT_EXECUTED_CURRENT_FIX_BRANCH"
+  },
+  "kg001_v118_well_tongs": {
+    "runner": "scripts/kg001_well_tongs_animation_runner_v118.gd",
+    "validator": "tools/validate_kg001_well_tongs_animation_v118.py",
+    "contract": "data/tests/kg001_well_tongs_animation_contract_v118.json",
+    "demo_evidence": "data/tests/kg001_well_tongs_demo_evidence_v118.json",
+    "source_status": "SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED",
+    "runtime_status": "NOT_EXECUTED_CURRENT_FIX_BRANCH"
   }
 }

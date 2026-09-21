@@ -3,45 +3,159 @@
   "scope": "demo gameplay event graph; only evidence-backed state/audio actions are marked verified/high",
   "graphs": {
     "R7_WATER_SWITCHBOARD_SOLVED": {
-      "source": ["data/r7_r8_gameplay_evidence_v15.json", "PUZZLES.DAT"],
+      "source": [
+        "data/r7_r8_gameplay_evidence_v15.json",
+        "PUZZLES.DAT"
+      ],
       "actions": [
-        {"op":"set_flag","key":"R7waterswitchboard","value":true,"confidence":"HIGH"},
-        {"op":"set_flag","key":"R8BathDrain","value":true,"confidence":"HIGH"},
-        {"op":"set_puzzle_node","key":"R8Water","value":false,"confidence":"HIGH"},
-        {"op":"play_sound","asset":"S152V2.WAV","semantic":"R8BathDrain","confidence":"VERIFIED"}
+        {
+          "op": "set_flag",
+          "key": "R7waterswitchboard",
+          "value": true,
+          "confidence": "HIGH"
+        },
+        {
+          "op": "set_flag",
+          "key": "R8BathDrain",
+          "value": true,
+          "confidence": "HIGH"
+        },
+        {
+          "op": "set_puzzle_node",
+          "key": "R8Water",
+          "value": false,
+          "confidence": "HIGH"
+        },
+        {
+          "op": "play_sound",
+          "asset": "S152V2.WAV",
+          "semantic": "R8BathDrain",
+          "confidence": "VERIFIED"
+        }
       ]
     },
     "R8_LENS_PLACE": {
-      "source": ["data/r8_compiled_action_slice_v19.json", "OBJECTS.DAT"],
+      "source": [
+        "data/r8_compiled_action_slice_v19.json",
+        "OBJECTS.DAT"
+      ],
       "actions": [
-        {"op":"remove_inventory","key":"r8_lens","confidence":"RECONSTRUCTED"},
-        {"op":"set_puzzle_node","key":"R8LensPlace","value":true,"confidence":"HIGH"},
-        {"op":"play_sound","asset":"S137.WAV","semantic":"R8LensPlace","confidence":"HIGH"}
+        {
+          "op": "remove_inventory",
+          "key": "r8_lens",
+          "confidence": "RECONSTRUCTED"
+        },
+        {
+          "op": "set_puzzle_node",
+          "key": "R8LensPlace",
+          "value": true,
+          "confidence": "HIGH"
+        },
+        {
+          "op": "play_sound",
+          "asset": "S137.WAV",
+          "semantic": "R8LensPlace",
+          "confidence": "HIGH"
+        }
       ]
     },
     "R8_OPTICAL_START": {
-      "source": ["data/r8_compiled_action_slice_v19.json"],
+      "source": [
+        "data/r8_compiled_action_slice_v19.json"
+      ],
       "actions": [
-        {"op":"set_puzzle_node","key":"R8LensLook","value":true,"confidence":"MEDIUM-HIGH"},
-        {"op":"set_puzzle_node","key":"R8RaiseTimer","value":true,"confidence":"HIGH"},
-        {"op":"play_sound","asset":"S121.WAV","semantic":"R8RaiseTimer/R8Counter","confidence":"HIGH"}
+        {
+          "op": "set_puzzle_node",
+          "key": "R8LensLook",
+          "value": true,
+          "confidence": "MEDIUM-HIGH"
+        },
+        {
+          "op": "set_puzzle_node",
+          "key": "R8RaiseTimer",
+          "value": true,
+          "confidence": "HIGH"
+        },
+        {
+          "op": "play_sound",
+          "asset": "S121.WAV",
+          "semantic": "R8RaiseTimer/R8Counter",
+          "confidence": "HIGH"
+        }
       ]
     },
     "R8_SECRET_DOOR_OPEN": {
-      "source": ["data/r8_compiled_action_slice_v19.json", "data/r8_timer_door_evidence_v18.json"],
+      "source": [
+        "data/r8_compiled_action_slice_v19.json",
+        "data/r8_timer_door_evidence_v18.json"
+      ],
       "actions": [
-        {"op":"set_puzzle_node","key":"R8Counter","value":true,"confidence":"UNKNOWN","note":"opcode 0x0e semantics unresolved; state retained as reconstruction"},
-        {"op":"set_puzzle_node","key":"DoorR8","value":true,"confidence":"MEDIUM-HIGH"},
-        {"op":"play_sound","asset":"799SECDR.WAV","semantic":"DoorR8","confidence":"VERIFIED"}
+        {
+          "op": "set_puzzle_node",
+          "key": "R8Counter",
+          "value": true,
+          "confidence": "UNKNOWN",
+          "note": "opcode 0x0e semantics unresolved; state retained as reconstruction"
+        },
+        {
+          "op": "set_puzzle_node",
+          "key": "DoorR8",
+          "value": true,
+          "confidence": "MEDIUM-HIGH"
+        },
+        {
+          "op": "play_sound",
+          "asset": "799SECDR.WAV",
+          "semantic": "DoorR8",
+          "confidence": "VERIFIED"
+        }
       ]
     },
     "R8_TAKE_SHIELD": {
-      "source": ["data/r8_compiled_action_slice_v19.json"],
+      "source": [
+        "data/r8_compiled_action_slice_v19.json"
+      ],
       "actions": [
-        {"op":"add_inventory","key":"shield","confidence":"RECONSTRUCTED"},
-        {"op":"set_puzzle_node","key":"R8TakeShield","value":true,"confidence":"HIGH"},
-        {"op":"set_flag","key":"demo_complete","value":true,"confidence":"RECONSTRUCTED"}
+        {
+          "op": "add_inventory",
+          "key": "shield",
+          "confidence": "RECONSTRUCTED"
+        },
+        {
+          "op": "set_puzzle_node",
+          "key": "R8TakeShield",
+          "value": true,
+          "confidence": "HIGH"
+        },
+        {
+          "op": "set_flag",
+          "key": "demo_complete",
+          "value": true,
+          "confidence": "RECONSTRUCTED"
+        }
       ]
+    },
+    "R7_WELL_TONGS_USE": {
+      "source": [
+        "official demo PUZZLES.DAT action @0x13AB2",
+        "official demo WORLD.DAT action group @0x15700..0x15786"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "979TONGS.WAV",
+          "semantic": "R7 well + tongs use",
+          "confidence": "VERIFIED"
+        }
+      ],
+      "recovered_runtime_sequence": [
+        "0x08 remove room object R7Key / section0 1149 nibdyky01",
+        "0x28 play 979TONGS.WAV at section0 1153 wel_well",
+        "0x07 add room object R7Key / section0 1149 nibdyky01",
+        "0x08 remove room object RustyTongR6 / section0 1245",
+        "0x09 remove inventory TONG6 / section0 1265"
+      ],
+      "note": "Dispatcher executes the five action records in one pending-group pass; no transform/rotation animation opcode occurs in this recovered event."
     }
   },
   "hold": [

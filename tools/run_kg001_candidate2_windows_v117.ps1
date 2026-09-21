@@ -300,8 +300,10 @@ if (-not $SkipExport) {
         checksum_manifest = "exports/OpenAzrael-KG001-Candidate2-v116.SHA256SUMS"
         startup_smoke = $exportEvidence.startup_smoke
         manual_pending = @(
-            "G10 verify stable floor collision in R1/R7/R8",
-            "G10 verify ambient/event audio is actually audible at expected volume",
+            "G10 verify stable natural floor collision in R1/R7/R8",
+            "G10 verify both real R8 stair profiles are traversable up and down",
+            "G10 verify ambient audio is actually audible at expected volume",
+            "G10 verify 979TONGS and switchboard triggered audio are actually audible",
             "G10 verify KEYHOLE#/tongs and other # cutouts have correct transparency with no pink/black fringe",
             "G10 complete the intended demo route and confirm zero reproducible softlocks"
         )
@@ -360,19 +362,30 @@ Do not create or treat demo-known-good-001 as approved from this package alone.
 MANUAL G10 CHECKLIST
 --------------------
 1. R1 / R7 / R8 floor collision:
-   - verify the player does not fall through floors;
-   - verify normal walking/standing at the canonical test locations.
+   - verify every canonical spawn settles naturally on the floor;
+   - verify the player does not fall through during normal walking/standing.
 
-2. Audio:
+2. R8 stairs:
+   - walk the lower step011 stairs both upward and downward;
+   - walk the main stairs__STAIR2 staircase both upward and downward;
+   - confirm there is no blocking, artificial launch, clipping or support loss.
+
+3. Audio:
    - verify ambient audio is actually audible;
-   - verify expected event audio is audible and not obviously distorted/silent.
+   - use the tongs on the well and confirm 979TONGS.WAV is audible;
+   - solve the R7 switchboard and confirm its triggered S152V2.WAV is audible;
+   - confirm neither triggered event is obviously distorted/silent.
 
-3. Legacy cutout transparency:
+4. Legacy cutout transparency:
    - inspect KEYHOLE#, rusty tongs/MINETON# and other # cutouts;
    - there must be no visible pink/magenta background;
    - there must be no obvious black fringe around the mask edge.
 
-4. Demo route:
+5. R7 well+tongs recovered interaction:
+   - use the actual rusty tongs on the well;
+   - confirm the key is retrieved, the tongs are consumed and the interaction completes once.
+
+6. Demo route:
    - complete the intended KG-001 demo route;
    - confirm zero reproducible softlocks.
 

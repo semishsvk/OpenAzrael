@@ -15,6 +15,8 @@ r109=load_optional(ROOT/"data/tests/kg001_headless_runtime_v109.json")
 r110=load_optional(ROOT/"data/tests/kg001_room_trigger_runtime_v110.json")
 r111=load_optional(ROOT/"data/tests/kg001_full_demo_runtime_v111.json")
 audio=load_optional(ROOT/"data/tests/kg001_audio_runtime_v116.json")
+physical=load_optional(ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json")
+well_tongs=load_optional(ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json")
 fresh=load_optional(ROOT/"data/tests/kg001_fresh_checkout.json")
 manual=load_optional(ROOT/"data/tests/kg001_manual_sanity.json")
 manual_validation=load_optional(
@@ -29,6 +31,8 @@ v109_pass=is_pass(r109)
 v110_pass=is_pass(r110)
 v111_pass=is_pass(r111)
 audio_pass=is_pass(audio)
+physical_pass=is_pass(physical)
+well_tongs_pass=is_pass(well_tongs)
 fresh_pass=is_pass(fresh)
 manual_pass=(
     is_pass(manual)
@@ -45,8 +49,8 @@ gates={
  "G01":{"name":"data_validation","status":"PASS" if source_pass else "PENDING_RECORDED_SOURCE_VALIDATION"},
  "G02":{"name":"unit_gameplay_logic","status":"PASS" if source_pass and v109_pass else "RUNTIME_PENDING"},
  "G03":{"name":"puzzle_state_space","status":"PASS" if source_pass and v108.get("status")=="PASS" else "PENDING"},
- "G04":{"name":"room_transition_state","status":"PASS" if v110_pass else "RUNTIME_PENDING"},
- "G05":{"name":"trigger_semantics","status":"PASS" if v110_pass else "RUNTIME_PENDING"},
+ "G04":{"name":"room_transition_and_physical_traversal","status":"PASS" if v110_pass and physical_pass else "RUNTIME_PENDING"},
+ "G05":{"name":"trigger_semantics_and_recovered_interaction_effects","status":"PASS" if v110_pass and well_tongs_pass else "RUNTIME_PENDING"},
  "G06":{"name":"audio_event_stream","status":"PASS" if v109_pass and v111_pass and audio_pass else "RUNTIME_PENDING"},
  "G07":{"name":"save_load_state_hash","status":"PASS" if v109_pass else "RUNTIME_PENDING"},
  "G08":{"name":"synthetic_full_demo_playthrough","status":"PASS" if v111_pass else "RUNTIME_PENDING"},
@@ -67,6 +71,8 @@ for gid,obj in (
     ("v110",r110),
     ("v111",r111),
     ("audio_v116",audio),
+    ("physical_v117",physical),
+    ("well_tongs_v118",well_tongs),
     ("fresh",fresh),
     ("manual",manual),
     ("manual_validation_v118",manual_validation),

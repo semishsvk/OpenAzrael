@@ -36,6 +36,14 @@ for p in [
     "tools/validate_kg001_room_trigger_v110.py",
     "data/tests/kg001_room_trigger_contract_v110.json",
     "docs/KG001_ROOM_TRIGGER_V110.md",
+    "scripts/kg001_physical_traversal_runner_v117.gd",
+    "tools/validate_kg001_physical_traversal_v117.py",
+    "data/tests/kg001_physical_traversal_contract_v117.json",
+    "data/tests/kg001_portal_spawn_geometry_v117.json",
+    "scripts/kg001_well_tongs_animation_runner_v118.gd",
+    "tools/validate_kg001_well_tongs_animation_v118.py",
+    "data/tests/kg001_well_tongs_animation_contract_v118.json",
+    "data/tests/kg001_well_tongs_demo_evidence_v118.json",
     "scripts/kg001_full_demo_runner_v111.gd",
     "tools/validate_kg001_full_demo_v111.py",
     "data/tests/kg001_full_demo_contract_v111.json",
@@ -149,7 +157,7 @@ try:
         errors.append("KG-001 v112 candidate runner drift")
     if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
         errors.append("KG-001 v112 status-engine drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_ISSUES_6_9_11_RETEST":
+    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_CANDIDATE2_CRITICAL_TRAVERSAL":
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
@@ -157,7 +165,7 @@ try:
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
         errors.append("KG-001 Issue #6 release blocker drift")
-    if c.get("quality",{}).get("kg001_audio_issue_9")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+    if c.get("quality",{}).get("kg001_audio_issue_9")!="AMBIENT_AUDIBLE_TRIGGERED_EVENT_RUNTIME_RETEST_REQUIRED":
         errors.append("KG-001 Issue #9 audio status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_9") is not True:
         errors.append("KG-001 Issue #9 release blocker drift")
@@ -173,9 +181,9 @@ try:
         errors.append("KG-001 legacy color-key texture-class drift")
     if "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS" not in c.get("hard_holds",[]):
         errors.append("legacy transparency HOLD boundary missing")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V31_NOT_EXECUTED":
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="CANDIDATE2_MANUAL_FAIL":
         errors.append("KG-001 Candidate 2 runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V31":
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_POST_CANDIDATE2_RUNTIME_FIX_BRANCH":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
@@ -200,6 +208,22 @@ try:
         errors.append("KG-001 PCM non-silence contract drift")
     if q.get("kg001_audio_master_capture_contract")!="SOURCE_CONTRACT_PASS":
         errors.append("KG-001 Master-bus capture contract drift")
+    if q.get("kg001_audio_candidate2_manual_ambient")!="AUDIBLE":
+        errors.append("KG-001 Candidate 2 ambient audibility evidence drift")
+    if q.get("kg001_triggered_audio_manual")!="NOT_TESTED_CANDIDATE2":
+        errors.append("KG-001 triggered-audio manual boundary drift")
+    if q.get("kg001_triggered_audio_automation")!="V116_PROBES_979TONGS_AND_S152V2_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 triggered-audio automation drift")
+    if q.get("kg001_stair_traversal")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 stair traversal fix status drift")
+    if q.get("kg001_release_blocked_by_stair_traversal") is not True:
+        errors.append("KG-001 stair traversal release blocker drift")
+    if q.get("kg001_physical_traversal_v117")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 v117 physical traversal status drift")
+    if q.get("kg001_well_tongs_animation_v118")!="SOURCE_FIX_READY_EXACT_DEMO_ACTION_STREAM_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 v118 well+tongs status drift")
+    if q.get("kg001_release_blocked_by_well_tongs_animation") is not True:
+        errors.append("KG-001 well+tongs release blocker drift")
     if q.get("kg001_texture_colorkey_detection")!="USED_INDEXED_PALETTE_ENTRY":
         errors.append("KG-001 indexed color-key detection drift")
     if q.get("kg001_texture_colorkey_ambiguity_policy")!="FAIL_CLOSED":
@@ -228,7 +252,7 @@ try:
         errors.append("KG-001 v118 asset-set runtime boundary drift")
     if q.get("kg001_candidate2_expected_room_assets")!=3:
         errors.append("KG-001 v118 room-asset count drift")
-    if q.get("kg001_candidate2_expected_runtime_audio_assets")!=8:
+    if q.get("kg001_candidate2_expected_runtime_audio_assets")!=9:
         errors.append("KG-001 v118 runtime-audio count drift")
     if q.get("kg001_candidate2_expected_classic_textures")!=86:
         errors.append("KG-001 v118 Classic texture count drift")

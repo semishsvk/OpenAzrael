@@ -41,6 +41,8 @@ required_runtime_paths={
     "scripts/room_manager.gd",
     "scripts/candidate_diagnostics_v116.gd",
     "scripts/kg001_room_trigger_runner_v110.gd",
+    "scripts/kg001_physical_traversal_runner_v117.gd",
+    "scripts/kg001_well_tongs_animation_runner_v118.gd",
     "scripts/kg001_audio_runtime_runner_v116.gd",
     "scripts/kg001_full_demo_runner_v111.gd",
     "scripts/kg001_visual_capture_v117.gd",
@@ -50,6 +52,8 @@ required_runtime_paths={
     "tools/validate_kg001_build_manifest_v118.py",
     "tools/validate_kg001_toolchain_v117.py",
     "tools/validate_kg001_export_preset_v117.py",
+    "tools/validate_kg001_physical_traversal_v117.py",
+    "tools/validate_kg001_well_tongs_animation_v118.py",
     "tools/run_kg001_candidate_v112.py",
     "tools/run_kg001_candidate2_windows_v117.ps1",
     "tools/promote_kg001_candidate_results_v118.py",
@@ -63,7 +67,7 @@ checks={
     "checkpoint":m.get("checkpoint")=="v116-context-v31",
     "commit_matches_head":m.get("commit_sha")==git_head() and bool(git_head()),
     "room_expected_count":rooms.get("expected_count")==3,
-    "audio_expected_count":audio.get("expected_count")==8,
+    "audio_expected_count":audio.get("expected_count")==9,
     "classic_texture_expected_count":textures.get("expected_count")==86,
     "source_contracts_complete":source.get("complete") is True
         and source.get("present_count")==source.get("expected_count"),
@@ -79,7 +83,7 @@ checks={
     "source_identity_complete":m.get("source_identity_complete") is True,
     "asset_counts_complete_consistent":m.get("asset_counts_complete") is (
         rooms.get("present_count")==3
-        and audio.get("present_count")==8
+        and audio.get("present_count")==9
         and textures.get("present_count")==86
     ),
     "restore_evidence_shape":isinstance(restore,dict)

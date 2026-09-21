@@ -18,6 +18,7 @@ REQUIRED_CHECKS=[
     "floor_r1_stable",
     "floor_r7_stable",
     "floor_r8_stable",
+    "stairs_r8_up_down",
     "keyhole_transparency_clean",
     "tongs_transparency_clean",
     "tongs_pickup",
@@ -32,6 +33,8 @@ REQUIRED_CHECKS=[
     "secret_door_and_shield",
     "shield_completes_demo",
     "audio_audible",
+    "triggered_979tongs_audible",
+    "triggered_switchboard_audio_audible",
     "encountered_hash_cutouts_clean",
     "save_load_roundtrip",
     "f11_zip_without_state_mutation",
@@ -40,7 +43,9 @@ REQUIRED_CHECKS=[
 ]
 REQUIRED_BLOCKERS=[
     "issue_6_floor_collision",
+    "critical_stair_traversal",
     "issue_9_human_audibility",
+    "well_tongs_recovered_effect",
     "issue_11_colorkey_transparency",
 ]
 

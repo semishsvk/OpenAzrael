@@ -12,6 +12,8 @@ const ROOM_NAMES := {
     "R7":"Well Room (R7)",
     "R8":"Baptistery (R8)"
 }
+const PORTAL_SPAWN_CLEARANCE := 4.0
+
 const PICKUPS := {
     "R1": {
         "TONG6": ["rusty_tongs", "Tongs"],
@@ -140,7 +142,10 @@ func _create_world_collision(room_id: String) -> void:
         var obj_name := _object_name_for_mesh(mi)
         if hidden.has(obj_name):
             mi.visible = false
-            continue
+            # R8/Object01 is authored horizontal support at the entrance gap.
+            # Keep collision even though its legacy material is TRANSPARANT.
+            if not (room_id == "R8" and obj_name == "Object01"):
+                continue
         if pickup_names.has(obj_name):
             continue
         if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
@@ -398,7 +403,13 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
         return
     var c := _v3(v["centroid"])
     var n := _v3(v["normal"]).normalized()
-    player.teleport_eye_to(c + n * 120.0, n)
+    # Candidate 2 portal-eye reconstruction could place the capsule feet
+    # slightly below the authored floor in R1/R7. Preserve X/Z/heading and add
+    # a small vertical clearance so physics settles naturally onto support.
+    player.teleport_eye_to(
+        c + n * 120.0 + Vector3.UP * PORTAL_SPAWN_CLEARANCE,
+        n
+    )
 
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])

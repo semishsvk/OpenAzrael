@@ -1,0 +1,59 @@
+{
+  "schema": "openazrael.kg001.portal_spawn_geometry",
+  "version": 117,
+  "status": "SOURCE_GEOMETRY_AUDIT_PASS",
+  "source": "restored official-demo R1/R7/R8 GLB plus canonical portal-view evidence",
+  "player_geometry": {
+    "eye_height": 32,
+    "capsule_radius": 11,
+    "capsule_height": 52,
+    "collision_shape_center_y": 26,
+    "feet_at_character_origin": true
+  },
+  "pre_fix_formula": "feet_y = portal_view_centroid_y - eye_height",
+  "fix": {
+    "room_manager_constant": "PORTAL_SPAWN_CLEARANCE",
+    "clearance": 4,
+    "formula": "eye = centroid + normal*120 + UP*4; CharacterBody feet = eye_y - eye_height"
+  },
+  "observations": [
+    {
+      "room": "R1",
+      "view": "spaview",
+      "pre_fix_feet_y": -84.316051,
+      "support_mesh": "tunnel03__mesh",
+      "support_y": -83.868143,
+      "pre_fix_clearance": -0.447908,
+      "post_fix_clearance": 3.552092
+    },
+    {
+      "room": "R1",
+      "view": "entcori",
+      "pre_fix_feet_y": -86.750095,
+      "support_mesh": "tunnel07__mesh",
+      "support_y": -84.2055,
+      "pre_fix_clearance": -2.544595,
+      "post_fix_clearance": 1.455405
+    },
+    {
+      "room": "R7",
+      "view": "view",
+      "pre_fix_feet_y": -43.220201,
+      "support_mesh": "tunnel08__mesh",
+      "support_y": -41.56402,
+      "pre_fix_clearance": -1.656181,
+      "post_fix_clearance": 2.343819
+    },
+    {
+      "room": "R8",
+      "view": "Object14",
+      "pre_fix_feet_y": -79.858878,
+      "support_mesh": "Object01__mesh",
+      "support_y": -87.124025,
+      "pre_fix_clearance": 7.265147,
+      "post_fix_clearance": 11.265147
+    }
+  ],
+  "conclusion": "Candidate 2 could begin R1 and some transition spawns with the capsule feet already below the authored support plane. The fix preserves X/Z and heading, adds vertical separation before physics settling, and v117 now validates natural spawn settling without floor-normalizing teleports.",
+  "runtime_boundary": "Geometry audit supports the root-cause hypothesis; only Godot v117 runtime proves the fix under physics."
+}

@@ -13,7 +13,11 @@ checks={
  "runtime_v110":"kg001_room_trigger_runner_v110.gd" in source,
  "runtime_v111":"kg001_full_demo_runner_v111.gd" in source,
  "runtime_audio_v116":"kg001_audio_runtime_runner_v116.gd" in source and "OPENAZRAEL_KG001_AUDIO_V116" in source,
+ "runtime_physical_v117":"kg001_physical_traversal_runner_v117.gd" in source and "OPENAZRAEL_KG001_PHYSICAL_V117" in source,
+ "runtime_well_tongs_v118":"kg001_well_tongs_animation_runner_v118.gd" in source and "OPENAZRAEL_KG001_WELL_TONGS_V118" in source,
  "source_audio_validator":"validate_kg001_audio_runtime_v116.py" in source,
+ "source_physical_validator":"validate_kg001_physical_traversal_v117.py" in source,
+ "source_well_tongs_validator":"validate_kg001_well_tongs_animation_v118.py" in source,
  "source_texture_colorkey_validator":"validate_kg001_texture_colorkey_v116.py" in source,
  "source_toolchain_validator":"validate_kg001_toolchain_v117.py" in source,
  "source_export_validator":"validate_kg001_export_preset_v117.py" in source,
@@ -27,6 +31,11 @@ checks={
  "asset_ignore_check":'"check-ignore"' in source,
  "fresh_requires_import":'import_status=="PASS"' in source,
  "fresh_requires_all_runtime":"full_runtime_pass" in source and "all(asset_present.values())" in source,
+ "full_runtime_set_includes_v117_v118":all(x in source for x in (
+     '("physical_v117","scripts/kg001_physical_traversal_runner_v117.gd","OPENAZRAEL_KG001_PHYSICAL_V117")',
+     '("well_tongs_v118","scripts/kg001_well_tongs_animation_runner_v118.gd","OPENAZRAEL_KG001_WELL_TONGS_V118")',
+ )),
+
  "fresh_requires_complete_asset_set":"--require-complete" in source and 'asset_gate.get("status")=="PASS"' in source and 'asset_gate.get("local_asset_status")=="COMPLETE"' in source,
  "promotion_is_optional":"--promote-results" in source,
  "fresh_is_optional":"--fresh-checkout" in source,

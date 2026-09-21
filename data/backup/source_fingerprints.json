@@ -16,6 +16,12 @@
       "reason": "original_or_demo_audio_runtime_copy"
     },
     {
+      "path": "assets/audio/979TONGS.WAV",
+      "size": 20994,
+      "sha256": "46f19b82e3c85ce5c4a198d745fe9ab5789a3d1a32d552748bb5b8585e0c8469",
+      "reason": "original_or_demo_audio_runtime_copy"
+    },
+    {
       "path": "assets/audio/S121.WAV",
       "size": 74972,
       "sha256": "7f1a054b31f79514ac46bd5706329311c486af38c2e0ef7be5b963cafbf65a47",
@@ -388,6 +394,12 @@
       "reason": "decoded_from_commercial_texture_data"
     },
     {
+      "path": "assets/textures/classic/N_BLACK.png",
+      "size": 125,
+      "sha256": "5c450eda12857d37d93326aa6cfbccd2edf39844df97ffff0003419079facbec",
+      "reason": "decoded_from_commercial_texture_data"
+    },
+    {
       "path": "assets/textures/classic/NIABOD.png",
       "size": 18579,
       "sha256": "45572de2344da6242c2e220e1ae53a24b25550d0da4a5382c58ec0b14d8ba010",
@@ -400,21 +412,15 @@
       "reason": "decoded_from_commercial_texture_data"
     },
     {
-      "path": "assets/textures/classic/N_BLACK.png",
-      "size": 125,
-      "sha256": "5c450eda12857d37d93326aa6cfbccd2edf39844df97ffff0003419079facbec",
+      "path": "assets/textures/classic/OR_TUNNL.png",
+      "size": 36558,
+      "sha256": "c68674f56b424e43825d5b9c6305c25318c7a8a4eefd3bc67f53fb5a15c057ce",
       "reason": "decoded_from_commercial_texture_data"
     },
     {
       "path": "assets/textures/classic/ORR2BAP.png",
       "size": 31805,
       "sha256": "9fd9edf240361a424b91e1bdff3a0a146ad22cb06bf6f57b9a3c79cf47d38dee",
-      "reason": "decoded_from_commercial_texture_data"
-    },
-    {
-      "path": "assets/textures/classic/OR_TUNNL.png",
-      "size": 36558,
-      "sha256": "c68674f56b424e43825d5b9c6305c25318c7a8a4eefd3bc67f53fb5a15c057ce",
       "reason": "decoded_from_commercial_texture_data"
     },
     {
@@ -586,18 +592,6 @@
       "reason": "decoded_from_commercial_texture_data"
     },
     {
-      "path": "data/MAPS.DAT",
-      "size": 565,
-      "sha256": "a156a2aba128a733e389166d6b57688b2308def957e67d5d005299c7d3810924",
-      "reason": "original_commercial_data"
-    },
-    {
-      "path": "data/ROOMS.DAT",
-      "size": 90968,
-      "sha256": "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b",
-      "reason": "original_commercial_data"
-    },
-    {
       "path": "data/audio/canonical_object_relative_xrefs_v36.json",
       "size": 5437543,
       "sha256": "95a9ce33d3e49d4ebf73caacb0703f48ce3411b0757fb13b55095f7a9d0fd087",
@@ -688,15 +682,15 @@
       "reason": "original_commercial_audio"
     },
     {
-      "path": "data/audio/original_audio/AWEMYST.XMI",
-      "size": 5078,
-      "sha256": "5fc0a74f866240a3034fcab7d89cfdae3eb9726899ffce34dec4801428b18700",
-      "reason": "original_commercial_audio"
-    },
-    {
       "path": "data/audio/original_audio/AWE_FM.XMI",
       "size": 5084,
       "sha256": "4b8b8d96cfd8e082d194c906b5c3662a2d164851f986f000577dc91703f11836",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/AWEMYST.XMI",
+      "size": 5078,
+      "sha256": "5fc0a74f866240a3034fcab7d89cfdae3eb9726899ffce34dec4801428b18700",
       "reason": "original_commercial_audio"
     },
     {
@@ -706,15 +700,15 @@
       "reason": "original_commercial_audio"
     },
     {
-      "path": "data/audio/original_audio/CATHEDRL.XMI",
-      "size": 4320,
-      "sha256": "3ca932f78041e63d3ed7248202917fa9c88a7a14a1150966af9452061d281301",
-      "reason": "original_commercial_audio"
-    },
-    {
       "path": "data/audio/original_audio/CATH_FM.XMI",
       "size": 5692,
       "sha256": "6b5d9d152bd2bf226a3d2bec036b69782aa36c76a9b3c5a6b84ca2e1a7b6469e",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/CATHEDRL.XMI",
+      "size": 4320,
+      "sha256": "3ca932f78041e63d3ed7248202917fa9c88a7a14a1150966af9452061d281301",
       "reason": "original_commercial_audio"
     },
     {
@@ -724,15 +718,15 @@
       "reason": "original_commercial_audio"
     },
     {
-      "path": "data/audio/original_audio/EGYPTIAN.XMI",
-      "size": 4426,
-      "sha256": "5d6c6c2942d41582bae51e0a73682085dfc3c45dd8573525b32a5bf0f3b0d6d9",
-      "reason": "original_commercial_audio"
-    },
-    {
       "path": "data/audio/original_audio/EGYPT_FM.XMI",
       "size": 4458,
       "sha256": "65db7fe78654ca96064386f68bc2a510924842e827b41f0764ef2cf37e404605",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/EGYPTIAN.XMI",
+      "size": 4426,
+      "sha256": "5d6c6c2942d41582bae51e0a73682085dfc3c45dd8573525b32a5bf0f3b0d6d9",
       "reason": "original_commercial_audio"
     },
     {
@@ -766,27 +760,27 @@
       "reason": "original_commercial_audio"
     },
     {
-      "path": "data/audio/original_audio/GHOSTS.XMI",
-      "size": 17382,
-      "sha256": "2767182b2cdd9613c3bfc8f8e1fb6c309f4ab772efc6c33b3b0da73649c2d617",
-      "reason": "original_commercial_audio"
-    },
-    {
       "path": "data/audio/original_audio/GHOST_FM.XMI",
       "size": 17700,
       "sha256": "17bd301ad4a10f8bc94862e4fa13a38a1e74e6b776f5d8b9ccaea779f87d8d5c",
       "reason": "original_commercial_audio"
     },
     {
-      "path": "data/audio/original_audio/GRAIL.XMI",
-      "size": 3998,
-      "sha256": "99add615561d421e79a1c317308e83675c896ab4cf678d7743b0b6f44cce1089",
+      "path": "data/audio/original_audio/GHOSTS.XMI",
+      "size": 17382,
+      "sha256": "2767182b2cdd9613c3bfc8f8e1fb6c309f4ab772efc6c33b3b0da73649c2d617",
       "reason": "original_commercial_audio"
     },
     {
       "path": "data/audio/original_audio/GRAIL_FM.XMI",
       "size": 3718,
       "sha256": "b8c9079de64216860fbab7e6442eac90f8cc94bd44fe0bf870516c30abfc9692",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/GRAIL.XMI",
+      "size": 3998,
+      "sha256": "99add615561d421e79a1c317308e83675c896ab4cf678d7743b0b6f44cce1089",
       "reason": "original_commercial_audio"
     },
     {
@@ -838,15 +832,15 @@
       "reason": "original_commercial_audio"
     },
     {
-      "path": "data/audio/original_audio/PEACEFUL.XMI",
-      "size": 8082,
-      "sha256": "0301e68ae3d9262849475363aa33e8055dab28e360b116e32a1a4b0d0b16403e",
-      "reason": "original_commercial_audio"
-    },
-    {
       "path": "data/audio/original_audio/PEACE_FM.XMI",
       "size": 9882,
       "sha256": "eeb09b3eab287c278c9a513a0bed25b79173170491a25468529d91b042338564",
+      "reason": "original_commercial_audio"
+    },
+    {
+      "path": "data/audio/original_audio/PEACEFUL.XMI",
+      "size": 8082,
+      "sha256": "0301e68ae3d9262849475363aa33e8055dab28e360b116e32a1a4b0d0b16403e",
       "reason": "original_commercial_audio"
     },
     {
@@ -958,6 +952,12 @@
       "reason": "oversized_reproducible_evidence_snapshot"
     },
     {
+      "path": "data/MAPS.DAT",
+      "size": 565,
+      "sha256": "a156a2aba128a733e389166d6b57688b2308def957e67d5d005299c7d3810924",
+      "reason": "original_commercial_data"
+    },
+    {
       "path": "data/puzzle_action_opcode_retail_corpus_v19.json",
       "size": 738328,
       "sha256": "9c0acde0a7bf84c8873ca30e116db993ec608984a040df1c5fc3fcc2cb5d033e",
@@ -968,6 +968,12 @@
       "size": 321411,
       "sha256": "3ec8c0f58fbfbc70ff9d983c873f4620488671ca9c4c23e1547bbc44b00e1359",
       "reason": "oversized_reproducible_evidence_snapshot"
+    },
+    {
+      "path": "data/ROOMS.DAT",
+      "size": 90968,
+      "sha256": "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b",
+      "reason": "original_commercial_data"
     },
     {
       "path": "docs/OpenAzrael_R8_control_screenshot_v18.png",

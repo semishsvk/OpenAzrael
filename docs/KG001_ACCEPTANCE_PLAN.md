@@ -33,14 +33,18 @@ Exercise deterministic gameplay-state primitives and Event IR operations indepen
 ### G03 — Puzzle state-space exploration
 Enumerate every reachable state for the demo puzzle subset and all supported actions from each state. Detect dead states, unintended cycles, unreachable required states and softlocks. The expected successful path must remain reachable from every intended precondition state.
 
-### G04 — Room and transition state
+### G04 — Room, transition and physical traversal state
 Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of persistent state across transitions. Re-entering a room must not accidentally reset one-shot or solved state unless explicitly specified.
 
-### G05 — Trigger semantics
+G04 also requires v117 to exercise the production `CharacterBody3D`: canonical R1/R7/R8 portal spawns must settle naturally on authored collision without a test-side floor teleport; R1 must survive active gameplay-input walking; and both real R8 stair profiles (`step011__mesh` and `stairs__STAIR2`) must be traversable upward and downward. Synthetic proxy ramps/stairs do not count.
+
+### G05 — Trigger semantics and recovered interaction effects
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
 
+The R7 well+tongs path must pass v118. Without tongs it must be inert. With tongs it must reproduce the recovered official-demo action order: remove room `R7Key` → play `979TONGS.WAV` → add `R7Key` → remove transient `RustyTongR6` → consume inventory `TONG6`, followed by the normal TAKE completion. Because the recovered group has no transform/rotation opcode and `RANIM1.ANM` is all zero, a synthetic Tween/AnimationPlayer motion is not accepted as Classic fidelity.
+
 ### G06 — Logical audio plus physical playback readiness
-First run gameplay with the deterministic capture/mock path and compare emitted logical events against the accepted golden stream. Then run the asset-backed physical-audio readiness regression: required Event/ambient WAVs must exist and load as AudioStreams, the Master bus must exist and be unmuted/not effectively silent, recovered ambient emitters must instantiate as R1=2 / R7=3 / R8=2 with valid streams and `playing=true`, and a real Event-IR `play_sound` action must create a playing `AudioStreamPlayer`.
+First run gameplay with the deterministic capture/mock path and compare emitted logical events against the accepted golden stream. Then run the asset-backed physical-audio readiness regression: required Event/ambient WAVs must exist and load as AudioStreams, the Master bus must exist and be unmuted/not effectively silent, recovered ambient emitters must instantiate as R1=2 / R7=3 / R8=2 with valid streams and `playing=true`, and both known triggered-event probes must create playing `AudioStreamPlayer` instances with nonzero Master-bus capture: `R7_WELL_TONGS_USE → 979TONGS.WAV` and `R7_WATER_SWITCHBOARD_SOLVED → S152V2.WAV`.
 
 This automated layer proves runtime readiness, not human audibility and not original Miles pan/volume fidelity. Human audibility remains part of G10; original-runtime pan/volume parity remains a separate forensic oracle.
 
