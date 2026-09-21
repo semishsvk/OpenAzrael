@@ -41,7 +41,7 @@ checks={
     "interaction_log": 'CandidateDiagnostics.record_interaction' in probe and 'interaction_miss' in probe,
     "event_log": 'user://openazrael_candidate1_events.jsonl' in diag and '_append_event_log' in diag,
     "state_dump": 'canonical_state_hash' in diag and 'openazrael_kg001_state_dump_' in diag,
-    "golden_audio_assets": all(x in diag for x in ["S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV"]),
+    "golden_audio_assets": all(x in diag for x in ["979TONGS.WAV","S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV"]),
     "headless_audio_boundary": 'DisplayServer.get_name() != "headless"' in room,
     "f6_triggers": 'KEY_F6' in trigger and 'BoxMesh.new()' in trigger,
     "f7_candidate_hud": 'KEY_F7' in hud and 'CandidateDebugPanelV116' in hud,
