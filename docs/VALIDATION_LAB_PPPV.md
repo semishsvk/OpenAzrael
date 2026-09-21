@@ -97,13 +97,12 @@ has the hooks required by the generic PPPV runtime.
 The current tooling branch is expected to report:
 
 - generic PPPV runtime core: READY;
-- exact Well+Tongs v118 evidence: not yet available on this branch.
+- exact Well+Tongs v118 evidence: READY.
 
-That is deliberate. The exact Well+Tongs implementation lives in the newer
-physical-traversal/v118 development line and is not silently copied into the
-tooling branch.
-
-CI now requires the generic PPPV runtime core to remain available.
+The v117/v118 runtime changes were integrated deliberately as a minimal parity
+set rather than by merging the highly diverged physical-traversal branch. CI
+requires both the generic PPPV core and the v117/v118 source contracts to remain
+valid.
 
 ## Coverage and planning
 
@@ -121,8 +120,12 @@ authoring backlog containing:
 - other referenced assets;
 - scenario coverage status.
 
-On the current main-derived IR the planner sees five gameplay targets and marks
-all five as authoring-required until physical-player scenarios are supplied.
+The current integrated IR contains six gameplay targets, including the verified
+`R7_WELL_TONGS_USE` graph. The candidate framework automatically materializes
+five reusable PPPV scenarios from the v117/v118 contracts: three physical
+traversal scenarios plus positive and negative Well+Tongs scenarios. Other
+gameplay targets remain visible as uncovered authoring work rather than being
+silently omitted.
 
 This mechanism is intended to scale to the full retail build: newly recovered
 puzzles automatically appear as uncovered targets rather than being silently
@@ -200,10 +203,12 @@ Evaluate its complete runtime bundle:
 
 ## Remaining Validation Lab integration
 
-- integrate the exact v117 physical-traversal and v118 Well+Tongs runtime changes
-  with this tooling branch through a deliberate integration branch/merge;
-- emit generic collision_support and stair_traversal evidence from the current
-  v117 physical runner or refactor that runner onto the reusable helpers;
+- bridge the proven v117 collision/support/stair measurements into the generic
+  `collision_support` and `stair_traversal` evidence vocabulary, preserving
+  the existing real-geometry assertions;
+- migrate the legacy v118 direct-call runner onto the generic Navigator /
+  InteractionProbe execution path for the final PPPV runtime oracle while
+  keeping the current v118 runner as parity evidence;
 - add full-demo orchestration where inventory must be acquired through earlier
   real-player scenarios rather than setup;
 - add save/load continuity and room-transition chains to the full-demo runner;
