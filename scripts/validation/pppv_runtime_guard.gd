@@ -19,6 +19,7 @@ var _active_action_kind := ""
 var _active_replay_index := -1
 var _start_snapshot: Dictionary = {}
 var _last_position := Vector3.ZERO
+var _last_room := ""
 var _unsupported_fall_frames := 0
 var _sample_index := 0
 var _action_failure_count := 0
@@ -38,9 +39,12 @@ func _v3(value: Vector3) -> Array:
     return [value.x, value.y, value.z]
 
 func _state_payload():
-    if state != null and state.has_method("canonical_state_payload"):
-        return state.call("canonical_state_payload").duplicate(true)
-    return null
+    if state == null or not state.has_method("canonical_state_payload"):
+        return null
+    var payload = state.call("canonical_state_payload")
+    if payload is Array or payload is Dictionary:
+        return payload.duplicate(true)
+    return payload
 
 func _state_hash() -> String:
     if state != null and state.has_method("canonical_state_hash"):
@@ -77,6 +81,7 @@ func begin_action(action: Dictionary) -> void:
     _action_failure_count = _failures.size()
     _start_snapshot = snapshot(_active_action_id, "before")
     _last_position = player.global_position
+    _last_room = String(_start_snapshot.get("room", ""))
 
     evidence.record("world_snapshot", _start_snapshot.duplicate(true))
     _replay.append({
@@ -106,9 +111,21 @@ func sample(action_id: String = "") -> bool:
     var effective_id := action_id if not action_id.is_empty() else _active_action_id
     var current := snapshot(effective_id, "sample")
     var position := player.global_position
-    var delta_y := position.y - _last_position.y
+    var current_room := String(current.get("room", ""))
+    var room_changed := not _last_room.is_empty() and current_room != _last_room
+    var delta_y := 0.0 if room_changed else position.y - _last_position.y
 
-    if not player.is_on_floor() and player.velocity.y < -0.1:
+    if room_changed:
+        _unsupported_fall_frames = 0
+        evidence.record("room_change_sample", {
+            "action_id": effective_id,
+            "source_room": _last_room,
+            "destination_room": current_room,
+            "previous_position": _v3(_last_position),
+            "destination_position": current["position"],
+            "continuity_reset": true
+        })
+    elif not player.is_on_floor() and player.velocity.y < -0.1:
         _unsupported_fall_frames += 1
     else:
         _unsupported_fall_frames = 0
@@ -119,15 +136,16 @@ func sample(action_id: String = "") -> bool:
         if raw is Array and raw.size() >= 3:
             start_position = Vector3(float(raw[0]), float(raw[1]), float(raw[2]))
 
-    var total_drop := start_position.y - position.y
+    var total_drop := 0.0 if room_changed else start_position.y - position.y
     var sample := {
         "index": _sample_index,
         "physics_frame": current["physics_frame"],
-        "room": current["room"],
+        "room": current_room,
         "position": current["position"],
         "rotation": current["rotation"],
         "velocity": current["velocity"],
         "is_on_floor": current["is_on_floor"],
+        "room_changed": room_changed,
         "delta_y": delta_y,
         "drop_from_action_start": total_drop
     }
@@ -135,14 +153,15 @@ func sample(action_id: String = "") -> bool:
     if _active_replay_index >= 0 and _active_replay_index < _replay.size():
         _replay[_active_replay_index]["trajectory"].append(sample)
 
-    if delta_y < -MAX_VERTICAL_DROP_PER_FRAME:
+    if not room_changed and delta_y < -MAX_VERTICAL_DROP_PER_FRAME:
         _critical("floor_drop_per_frame", {
             "delta_y": delta_y,
             "position": current["position"],
             "previous_position": _v3(_last_position)
         })
     if (
-        total_drop > MAX_ACTION_VERTICAL_DROP
+        not room_changed
+        and total_drop > MAX_ACTION_VERTICAL_DROP
         and _unsupported_fall_frames >= 6
         and player.velocity.y < -0.1
     ):
@@ -152,7 +171,7 @@ func sample(action_id: String = "") -> bool:
             "position": current["position"],
             "start_position": _start_snapshot.get("position", [])
         })
-    if _unsupported_fall_frames > MAX_UNSUPPORTED_FALL_FRAMES:
+    if not room_changed and _unsupported_fall_frames > MAX_UNSUPPORTED_FALL_FRAMES:
         _critical("unsupported_fall", {
             "unsupported_frames": _unsupported_fall_frames,
             "position": current["position"],
@@ -160,6 +179,7 @@ func sample(action_id: String = "") -> bool:
         })
 
     _last_position = position
+    _last_room = current_room
     _sample_index += 1
     return current_action_ok()
 
@@ -307,6 +327,7 @@ func end_action(success: bool, details: Dictionary = {}) -> void:
     _active_action_kind = ""
     _active_replay_index = -1
     _start_snapshot = {}
+    _last_room = ""
     _unsupported_fall_frames = 0
     _sample_index = 0
 
