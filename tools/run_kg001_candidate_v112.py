@@ -426,24 +426,9 @@ def run_pppv_scenario_suite(godot):
     write_json(summary_path,summary)
     return summary
 
-def run_full_pppv(godot):
-    plan_path=TMP/"pppv_playthrough_plan.json"
-    scenarios_path=TMP/"pppv_scenarios.json"
-    runtime_path=TMP/"kg001_pppv_playthrough.json"
-    evaluation_path=TMP/"kg001_pppv_playthrough_evaluation.json"
-
-    missing=[
-        str(path.relative_to(ROOT))
-        for path in (plan_path,scenarios_path)
-        if not path.is_file()
-    ]
-    if missing:
-        return {
-            "status":"FAIL",
-            "reason":"MISSING_PPPV_PLAN_OR_SCENARIOS",
-            "missing":missing,
-            "evaluation":{},
-        }
+def _run_full_pppv_once(godot, runtime_path, evaluation_path):
+    runtime_path.unlink(missing_ok=True)
+    evaluation_path.unlink(missing_ok=True)
 
     proc=run([
         godot,
@@ -451,8 +436,8 @@ def run_full_pppv(godot):
         "--path",str(ROOT),
         "--script","res://scripts/validation/pppv_playthrough_runner.gd",
         "--",
-        f"--pppv-plan={plan_path}",
-        f"--pppv-scenarios={scenarios_path}",
+        f"--pppv-plan={TMP/'pppv_playthrough_plan.json'}",
+        f"--pppv-scenarios={TMP/'pppv_scenarios.json'}",
         f"--pppv-output={runtime_path}",
     ])
 
@@ -494,11 +479,124 @@ def run_full_pppv(godot):
             if runtime_path.is_file()
             else ""
         ),
+        "evaluation_path":(
+            str(evaluation_path.relative_to(ROOT))
+            if evaluation_path.is_file()
+            else ""
+        ),
         "evaluation":evaluation or {},
         "output_tail":proc.stdout[-12000:],
         "evaluator_output_tail":evaluator_output,
-        "final_pppv_oracle":True,
-        "required_for_g04":True,
+    }
+
+
+def run_full_pppv(godot, repeat_count=2):
+    plan_path=TMP/"pppv_playthrough_plan.json"
+    scenarios_path=TMP/"pppv_scenarios.json"
+    missing=[
+        str(path.relative_to(ROOT))
+        for path in (plan_path,scenarios_path)
+        if not path.is_file()
+    ]
+    if missing:
+        return {
+            "status":"FAIL",
+            "reason":"MISSING_PPPV_PLAN_OR_SCENARIOS",
+            "missing":missing,
+            "evaluation":{},
+            "determinism_status":"NOT_RUN",
+        }
+
+    repeats=max(1,int(repeat_count))
+    runs=[]
+    for index in range(repeats):
+        if index==0:
+            runtime_path=TMP/"kg001_pppv_playthrough.json"
+            evaluation_path=TMP/"kg001_pppv_playthrough_evaluation.json"
+        else:
+            run_number=index+1
+            runtime_path=TMP/f"kg001_pppv_playthrough_repeat{run_number}.json"
+            evaluation_path=(
+                TMP/f"kg001_pppv_playthrough_repeat{run_number}_evaluation.json"
+            )
+        run_result=_run_full_pppv_once(
+            godot,
+            runtime_path,
+            evaluation_path,
+        )
+        run_result["run_number"]=index+1
+        runs.append(run_result)
+
+    all_runs_pass=all(row.get("status")=="PASS" for row in runs)
+    fingerprints=[
+        str(row.get("evaluation",{}).get("semantic_replay_sha256",""))
+        for row in runs
+    ]
+    final_hashes=[
+        str(row.get("evaluation",{}).get("final_state_sha256",""))
+        for row in runs
+    ]
+    fingerprint_complete=all(bool(value) for value in fingerprints)
+    final_hash_complete=all(bool(value) for value in final_hashes)
+    deterministic=(
+        repeats>=2
+        and all_runs_pass
+        and fingerprint_complete
+        and final_hash_complete
+        and len(set(fingerprints))==1
+        and len(set(final_hashes))==1
+    )
+    determinism_status=(
+        "PASS"
+        if deterministic
+        else ("NOT_RUN" if repeats<2 and all_runs_pass else "FAIL")
+    )
+    determinism={
+        "schema":"openazrael.kg001.pppv_determinism",
+        "version":1,
+        "status":determinism_status,
+        "repeat_count":repeats,
+        "all_runs_pass":all_runs_pass,
+        "semantic_replay_sha256":fingerprints,
+        "final_state_sha256":final_hashes,
+        "semantic_replay_match":(
+            fingerprint_complete and len(set(fingerprints))==1
+        ),
+        "final_state_match":(
+            final_hash_complete and len(set(final_hashes))==1
+        ),
+        "runs":[
+            {
+                "run_number":row.get("run_number"),
+                "status":row.get("status"),
+                "runtime":row.get("runtime",""),
+                "evaluation_path":row.get("evaluation_path",""),
+                "semantic_replay_sha256":row.get(
+                    "evaluation",{}
+                ).get("semantic_replay_sha256",""),
+                "final_state_sha256":row.get(
+                    "evaluation",{}
+                ).get("final_state_sha256",""),
+            }
+            for row in runs
+        ],
+    }
+    write_json(TMP/"kg001_pppv_determinism.json",determinism)
+
+    primary=runs[0] if runs else {}
+    status=(
+        "PASS"
+        if all_runs_pass and determinism_status=="PASS"
+        else "FAIL"
+    )
+    return {
+        **primary,
+        "status":status,
+        "repeat_count":repeats,
+        "runs":runs,
+        "determinism_status":determinism_status,
+        "determinism":determinism,
+        "final_pppv_oracle":status=="PASS",
         "required_for_g08":True,
         "required_for_g09":True,
     }
