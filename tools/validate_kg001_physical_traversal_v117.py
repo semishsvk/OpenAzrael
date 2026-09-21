@@ -85,10 +85,25 @@ checks = {
             "safe_margin = traversal_safe_margin",
             "if not test_move(",
             "var floor_hit := _step_floor_probe",
+            "probe_distances: Array[float]",
+            "query.hit_back_faces = true",
+            "absf(normal.y) < cos(floor_max_angle)",
             "if test_move(",
             "var raised := global_transform",
             "raised.origin += lift",
             "global_position += lift",
+        )
+    ),
+    "production_step_up_winding_safe_and_diagnostic": all(
+        value in player
+        for value in (
+            "Legacy tread winding is inconsistent",
+            "best_step_height",
+            "step_debug_snapshot",
+            "step_reject_no_tread",
+            "step_reject_lift_blocked",
+            "step_reject_forward_blocked",
+            "step_success",
         )
     ),
     "production_step_up_only_when_blocked": (
@@ -114,6 +129,11 @@ checks = {
         and "Input.action_release" in runner
     ),
     "runtime_advances_physics_frames": "await physics_frame" in runner,
+    "runtime_records_step_debug": (
+        '"step_debug": step_debug' in runner
+        and 'player.has_method("clear_step_debug")' in runner
+        and 'debug_player.has_method("step_debug_snapshot")' in runner
+    ),
     "natural_portal_spawn_regression": all(
         value in runner
         for value in (
