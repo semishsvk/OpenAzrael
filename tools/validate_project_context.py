@@ -217,6 +217,7 @@ for p in [
     "data/tests/kg001_audio_runtime_contract_v116.json",
     "tools/texture_pipeline/legacy_colorkey.py",
     "tools/validate_kg001_texture_colorkey_v116.py",
+    "tools/validate_public_release_safety.py",
     "data/tests/kg001_texture_colorkey_contract_v116.json",
     "data/tests/kg001_colorkey_corpus_audit_v116.json",
     "data/audio/legacy_world_ir.json",
