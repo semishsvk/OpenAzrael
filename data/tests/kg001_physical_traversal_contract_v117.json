@@ -24,7 +24,11 @@
       "step_clearance": 0.35,
       "safe_margin": 0.25,
       "floor_snap_length": 16,
-      "strategy": "only when normal horizontal test_move is blocked; downward ray resolves candidate tread; vertical lift and raised forward path must both pass collision tests"
+      "strategy": "only when normal horizontal test_move is blocked; near-to-far downward rays resolve the nearest valid tread independent of legacy winding; vertical lift and raised forward path must both pass collision tests",
+      "probe_strategy": "near-to-far multi-probe; choose smallest valid positive rise",
+      "probe_distances": "dynamic motion+1, motion+4, motion+8, then configured max probe",
+      "backface_policy": "explicit hit_back_faces=true; horizontal tread acceptance uses abs(normal.y) because legacy winding is not semantic",
+      "runtime_diagnostics": "bounded step_debug trace with probe hit/miss, face index, normal, height, rejection reason and success"
     }
   },
   "floor_regression": {
@@ -76,7 +80,8 @@
     "R8 step011 upper-to-lower traversal passes with production floor snap",
     "R8 stairs__STAIR2 lower-to-upper traversal passes with production stair assist",
     "R8 stairs__STAIR2 upper-to-lower traversal passes with production floor snap",
-    "no engine/script errors"
+    "no engine/script errors",
+    "v117 result preserves production step-debug trace so a failed stair gate identifies probe/rejection cause"
   ],
   "evidence_boundary": "This tracked contract and asset-derived geometry metadata do not prove runtime traversal. A current Godot v117 result from restored room assets is required.",
   "runtime_status": "NOT_EXECUTED_ON_THIS_BRANCH",
