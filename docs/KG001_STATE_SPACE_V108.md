@@ -3,11 +3,11 @@
 v108 adds the first executable source-safe KG-001 state/puzzle harness. It consumes the tracked v87 gameplay Event IR and tracked R1/R7/R8 trigger/transition IR, then exhaustively applies every supported demo action to every reachable logical state.
 
 ## Result
-- **63 reachable states**
-- **123 changed transition edges**
-- **945 action attempts**
+- **104 reachable states**
+- **214 changed transition edges**
+- **1560 action attempts**
 - **822 invalid/idempotent no-op attempts**
-- **3 success states**
+- **6 success states**
 - **0 softlock states**
 - **0 non-success dead-end states**
 - shortest successful route: **15 actions**
@@ -19,13 +19,13 @@ Every reachable logical state can reach `demo_complete=true` under the modeled d
 
 Reference hashes:
 - clean state: `90fdebf6dff29bf2b4b78980615205c2e6c067b65a28c2aff0b7f10b513f6abf`
-- shortest-path completed state: `69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8`
+- shortest-path completed state: `e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902`
 
 ## Shortest synthetic route
 `pickup_rusty_tongs -> open_r1_door1 -> R1/R7 -> retrieve_well_key -> lever -> wheel -> lever -> R7/R1 -> open_r1_door2 -> R1/R8 -> retrieve_r8_lens -> place_r8_lens -> start_optical_sequence -> finish_optical_sequence -> take_shield`
 
 Logical Event IR sound stream:
-`S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`
+`979TONGS.WAV -> S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`
 
 Wrong switch inputs, repeats/idempotent actions, partial switch progress, room exits/re-entry and leaving R8 during its room-local optical sequence are included in the state search.
 
