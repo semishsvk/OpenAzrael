@@ -49,6 +49,14 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             {"status": "PASS"},
         )
         self._write(
+            evidence / "kg001_pppv_playthrough_evaluation.json",
+            {
+                "schema": "remaster.playthrough_evaluation",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        self._write(
             evidence / "kg001_fresh_checkout.json",
             {
                 "status": "PASS",
@@ -59,6 +67,7 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                     "v111": "PASS",
                     "v117": "PASS",
                     "v118": "PASS",
+                    "pppv_playthrough": "PASS",
                 },
             },
         )
@@ -94,6 +103,32 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                     for item in row["evidence"]
                 )
             )
+
+
+    def test_guarded_pppv_is_required_for_transition_and_playthrough_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_pppv_playthrough_evaluation.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "PENDING")
+            self.assertEqual(statuses["G08"], "PENDING")
+
+    def test_failed_guarded_pppv_blocks_transition_and_playthrough_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_pppv_playthrough_evaluation.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "FAIL")
+            self.assertEqual(statuses["G08"], "FAIL")
 
     def test_supplemental_v117_v118_checks_are_evidence_bound(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
