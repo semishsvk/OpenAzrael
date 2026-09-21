@@ -2,7 +2,7 @@
 
 **Status:** APPROVED  
 **Context:** `v116-context-v30`  
-**Runtime implementation:** DEFERRED until after the first clean KG-001 Candidate 2 runtime/manual cycle.
+**Runtime implementation:** DEFERRED until after the first clean KG-001 Candidate 3 runtime/manual cycle.
 
 ## 1. Goal
 
@@ -189,11 +189,11 @@ Removed/renamed IDs require an explicit migration/deprecation window rather than
 
 ## 12. KG-001 boundary
 
-This decision remains outside the current KG-001 Candidate 2 stabilization scope.
+This decision remains outside the current KG-001 Candidate 3 stabilization scope.
 
-No localization runtime code, translated gameplay text or external pack loading is added before the first clean Candidate 2 runtime/manual cycle unless needed to fix a blocker.
+No localization runtime code, translated gameplay text or external pack loading is added before the first clean Candidate 3 runtime/manual cycle unless needed to fix a blocker.
 
-The approved implementation order after Candidate 2 is:
+The approved implementation order after Candidate 3 is:
 
 1. String IR + semantic ID conventions;
 2. English fallback catalog;
