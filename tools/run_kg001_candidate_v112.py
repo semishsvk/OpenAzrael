@@ -31,12 +31,16 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_room_trigger_v110.py"],
     [sys.executable,"tools/validate_kg001_full_demo_v111.py"],
     [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
+    [sys.executable,"tools/validate_kg001_physical_traversal_v117.py"],
+    [sys.executable,"tools/validate_kg001_well_tongs_animation_v118.py"],
 ]
 
 RUNTIMES=[
     ("v109","scripts/kg001_headless_runner_v109.gd","OPENAZRAEL_KG001_V109"),
     ("v110","scripts/kg001_room_trigger_runner_v110.gd","OPENAZRAEL_KG001_V110"),
     ("v111","scripts/kg001_full_demo_runner_v111.gd","OPENAZRAEL_KG001_V111"),
+    ("v117","scripts/kg001_physical_traversal_runner_v117.gd","OPENAZRAEL_KG001_PHYSICAL_V117"),
+    ("v118","scripts/kg001_well_tongs_animation_runner_v118.gd","OPENAZRAEL_KG001_WELL_TONGS_V118"),
 ]
 
 def run(cmd, check=False):
@@ -138,7 +142,7 @@ def main():
         else:
             import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
-            if name in ("v110","v111") and not all(asset_present.values()):
+            if name in ("v110","v111","v117","v118") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
@@ -229,6 +233,8 @@ def main():
             TMP/"kg001_v109_runtime.json":ROOT/"data/tests/kg001_headless_runtime_v109.json",
             TMP/"kg001_v110_runtime.json":ROOT/"data/tests/kg001_room_trigger_runtime_v110.json",
             TMP/"kg001_v111_runtime.json":ROOT/"data/tests/kg001_full_demo_runtime_v111.json",
+            TMP/"kg001_v117_runtime.json":ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json",
+            TMP/"kg001_v118_runtime.json":ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
             TMP/"kg001_release_gate_results.json":ROOT/"data/tests/kg001_release_gate_results.json",
