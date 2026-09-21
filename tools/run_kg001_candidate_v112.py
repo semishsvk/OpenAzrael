@@ -252,9 +252,41 @@ def run_pppv_scenario_suite(godot):
         write_json(summary_path,summary)
         return summary
 
+    v117_bridge_path=suite_root/"v117_pppv_bridge.json"
+    v117_runtime_path=TMP/"kg001_v117_runtime.json"
+    v117_contract_path=(
+        ROOT/"data/tests/kg001_physical_traversal_contract_v117.json"
+    )
+    v117_bridge={}
+    v117_rows={}
+    if v117_runtime_path.is_file() and v117_contract_path.is_file():
+        bridge_proc=run([
+            sys.executable,
+            "-m",
+            "tools.openazrael_adapters.v117_pppv_bridge",
+            "--runtime",str(v117_runtime_path),
+            "--contract",str(v117_contract_path),
+            "--output",str(v117_bridge_path),
+        ])
+        if v117_bridge_path.is_file():
+            try:
+                v117_bridge=json.loads(
+                    v117_bridge_path.read_text(encoding="utf-8")
+                )
+            except (json.JSONDecodeError,OSError):
+                v117_bridge={}
+        if isinstance(v117_bridge,dict):
+            v117_rows={
+                str(row.get("scenario_id","")):row
+                for row in v117_bridge.get("generic_scenarios",[])
+                if isinstance(row,dict) and row.get("scenario_id")
+            }
+
     results={}
     passed=0
     transition_ids=[]
+    guarded_count=0
+    v117_bridge_count=0
     for index,scenario in enumerate(rows):
         if not isinstance(scenario,dict):
             scenario_id=f"invalid_{index:03d}"
@@ -267,6 +299,28 @@ def run_pppv_scenario_suite(godot):
         scenario_id=str(scenario.get("scenario_id","")).strip()
         if not scenario_id:
             scenario_id=f"unnamed_{index:03d}"
+
+        bridge_row=v117_rows.get(scenario_id)
+        if isinstance(bridge_row,dict):
+            status=(
+                "PASS"
+                if v117_bridge.get("status")=="BRIDGE_PASS"
+                and bridge_row.get("status")=="PASS"
+                else "FAIL"
+            )
+            if status=="PASS":
+                passed+=1
+            v117_bridge_count+=1
+            results[scenario_id]={
+                "status":status,
+                "execution_profile":"v117_real_geometry_input",
+                "guarded_replay":False,
+                "bridge_status":v117_bridge.get("status","UNKNOWN"),
+                "bridge_report":bridge_row,
+            }
+            continue
+
+        guarded_count+=1
         safe_id="".join(
             ch if ch.isalnum() or ch in "-_" else "_"
             for ch in scenario_id
@@ -322,6 +376,8 @@ def run_pppv_scenario_suite(godot):
             passed+=1
         results[scenario_id]={
             "status":status,
+            "execution_profile":"guarded_generic_runtime",
+            "guarded_replay":True,
             "scenario":str(scenario_path.relative_to(ROOT)),
             "godot_returncode":proc.returncode,
             "evaluator_returncode":evaluator_returncode,
@@ -348,8 +404,20 @@ def run_pppv_scenario_suite(godot):
         "failed":scenario_count-passed,
         "transition_scenario_count":len(transition_ids),
         "transition_scenario_ids":sorted(transition_ids),
+        "guarded_scenario_count":guarded_count,
+        "v117_bridge_scenario_count":v117_bridge_count,
         "all_authored_scenarios_executed":len(results)==scenario_count,
-        "final_pppv_oracle":True,
+        "all_transition_scenarios_guarded":all(
+            bool(results.get(scenario_id,{}).get("guarded_replay"))
+            for scenario_id in transition_ids
+        ),
+        "aggregate_validation_oracle":True,
+        "final_pppv_oracle":False,
+        "guarded_replay_boundary":(
+            "Puzzle, interaction and transition scenarios use guarded generic "
+            "runtime replay. Physical floor/stair scenarios temporarily use "
+            "the v117 real-geometry Input runner with explicit direct setup."
+        ),
         "required_for_g04":True,
         "required_for_g05":True,
         "required_for_g09":True,
