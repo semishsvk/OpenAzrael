@@ -25,7 +25,8 @@
       "v111",
       "audio_v116",
       "physical_v117",
-      "well_tongs_v118"
+      "well_tongs_v118",
+      "r1_route_v119"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
@@ -71,7 +72,7 @@
     }
   },
   "post_export": {
-    "manual_gate": "G10_PENDING_USER",
+    "manual_gate": "G10_FAILED_CANDIDATE3_CRITICAL_R1_OBJECT02",
     "known_good_tag_allowed": false,
     "first_manual_checks": [
       "R1 natural spawn and floor traversal",
@@ -82,5 +83,5 @@
       "complete demo route"
     ]
   },
-  "evidence_boundary": "This tracked contract does not claim Candidate 3 runtime PASS. The local preflight and export receipts are Git-ignored runtime evidence and must be generated at the exact build commit."
+  "evidence_boundary": "Candidate 3 failed manual G10 on R1/Object02. Any guarded rebuild must additionally pass v119; the historical Candidate 3 artifact remains rejected."
 }
