@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -35,8 +36,75 @@ def _load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _canonical_compact(payload: dict[str, Any]) -> bytes:
+    return json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+
+def _sha256_without(payload: dict[str, Any], field: str) -> str:
+    reduced = dict(payload)
+    reduced.pop(field, None)
+    return hashlib.sha256(_canonical_compact(reduced)).hexdigest()
+
+
+def _verify_internal_integrity(
+    artifact_id: str,
+    payload: dict[str, Any],
+) -> None:
+    if artifact_id == "build_provenance":
+        expected = str(payload.get("provenance_sha256", ""))
+        actual = _sha256_without(payload, "provenance_sha256")
+        if expected != actual:
+            raise ValueError(
+                "build_provenance: provenance_sha256 integrity mismatch"
+            )
+    elif artifact_id == "release_gate_summary":
+        expected = str(payload.get("summary_sha256", ""))
+        actual = _sha256_without(payload, "summary_sha256")
+        if expected != actual:
+            raise ValueError(
+                "release_gate_summary: summary_sha256 integrity mismatch"
+            )
+
+
 def _canonical_json(payload: dict[str, Any]) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+
+def _artifact_sources_from_bundle(bundle_path: Path) -> dict[str, Path]:
+    bundle = _load_json(bundle_path)
+    if bundle.get("schema") != "openazrael.kg001.framework_bundle":
+        raise ValueError("unsupported KG framework bundle schema")
+    artifacts = bundle.get("artifacts")
+    if not isinstance(artifacts, dict):
+        raise ValueError("KG framework bundle artifacts must be an object")
+
+    base = bundle_path.resolve().parent
+    mapping = {
+        "build_provenance": "build_provenance",
+        "release_gate_summary": "release_gate_summary",
+        "pppv_coverage": "pppv_coverage",
+    }
+    resolved: dict[str, Path] = {}
+    for artifact_id, bundle_key in mapping.items():
+        raw = artifacts.get(bundle_key)
+        if not isinstance(raw, str) or not raw:
+            raise ValueError(
+                f"KG framework bundle missing artifact {bundle_key}"
+            )
+        candidate = (base / raw).resolve()
+        try:
+            candidate.relative_to(base)
+        except ValueError as exc:
+            raise ValueError(
+                f"KG framework artifact escapes bundle directory: {raw}"
+            ) from exc
+        resolved[artifact_id] = candidate
+    return resolved
 
 
 def stage_runtime_metadata(
@@ -45,6 +113,7 @@ def stage_runtime_metadata(
     build_provenance: Path | None = None,
     release_gate_summary: Path | None = None,
     pppv_coverage: Path | None = None,
+    framework_bundle: Path | None = None,
 ) -> dict[str, Any]:
     root = project_root.resolve()
     runtime_dir = root / RUNTIME_DIR
@@ -55,6 +124,14 @@ def stage_runtime_metadata(
         "release_gate_summary": release_gate_summary,
         "pppv_coverage": pppv_coverage,
     }
+    if framework_bundle is not None:
+        explicit = [key for key, value in supplied.items() if value is not None]
+        if explicit:
+            raise ValueError(
+                "framework_bundle cannot be combined with explicit artifact inputs"
+            )
+        supplied = _artifact_sources_from_bundle(framework_bundle)
+
     staged = []
     for artifact_id, source in supplied.items():
         if source is None:
@@ -67,13 +144,16 @@ def stage_runtime_metadata(
                 f"{artifact_id}: expected schema {expected_schema}, "
                 f"got {actual_schema!r}"
             )
+        _verify_internal_integrity(artifact_id, payload)
         destination = runtime_dir / filename
-        destination.write_text(_canonical_json(payload), encoding="utf-8")
+        rendered = _canonical_json(payload)
+        destination.write_text(rendered, encoding="utf-8")
         staged.append({
             "id": artifact_id,
             "source": str(source.resolve()),
             "destination": destination.relative_to(root).as_posix(),
             "schema": expected_schema,
+            "sha256": hashlib.sha256(rendered.encode("utf-8")).hexdigest(),
         })
 
     return {
@@ -81,6 +161,8 @@ def stage_runtime_metadata(
         "version": 1,
         "staged_count": len(staged),
         "staged": staged,
+        "source_safe": True,
+        "commercial_assets_included": False,
     }
 
 
@@ -107,6 +189,7 @@ def main() -> int:
     stage.add_argument("--build-provenance", type=Path)
     stage.add_argument("--release-gate-summary", type=Path)
     stage.add_argument("--pppv-coverage", type=Path)
+    stage.add_argument("--framework-bundle", type=Path)
     stage.add_argument("--output", type=Path)
 
     clean = sub.add_parser("clean")
@@ -123,6 +206,7 @@ def main() -> int:
         build_provenance=args.build_provenance,
         release_gate_summary=args.release_gate_summary,
         pppv_coverage=args.pppv_coverage,
+        framework_bundle=args.framework_bundle,
     )
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.output is not None:
