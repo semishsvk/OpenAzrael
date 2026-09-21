@@ -81,6 +81,22 @@ def _combined_status(*payloads: dict[str, Any] | None) -> str:
     return "PENDING"
 
 
+def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    runtime = payload.get("runtime_status")
+    if not isinstance(runtime, dict):
+        return "PENDING"
+    required = ("v109", "v110", "v111", "v117", "v118")
+    if all(str(runtime.get(key, "")).upper() == "PASS" for key in required):
+        return "PASS"
+    return "PENDING"
+
+
 def _evidence(path: Path | None, repo_root: Path) -> list[dict[str, Any]]:
     if path is None or not path.is_file():
         return []
@@ -200,7 +216,7 @@ def derive_gate_rows(
         },
         {
             "id": "G09",
-            "status": _combined_status(payloads["fresh"]),
+            "status": _fresh_checkout_status(payloads["fresh"]),
             "evidence": _merge_evidence(repo_root, fresh_path),
         },
         {
