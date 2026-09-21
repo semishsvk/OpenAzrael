@@ -219,7 +219,15 @@
     ],
     "kg001_candidate3_source_ci_observation": "Repeated Candidate 3 source-gate attempts, including same-SHA reruns, conclude failure with zero recorded steps for both Python 3.11 and 3.12. No checkout or source validator has executed in those attempts. Treat as a GitHub Actions execution/account/runner blocker, not Candidate 3 source-test evidence.",
     "kg001_candidate3_source_ci_code_result": "UNOBSERVED",
-    "kg001_candidate3_source_ci_observation_class": "REPEATED_ZERO_STEP_PRE_RUNNER_FAILURE"
+    "kg001_candidate3_source_ci_observation_class": "REPEATED_ZERO_STEP_PRE_RUNNER_FAILURE",
+    "public_release_current_tree": "PASS_SOURCE_SAFE",
+    "public_release_branch_tip_audit": "PASS_18_BRANCH_TIPS_NO_COMMERCIAL_PAYLOAD_OR_CREDENTIAL_FILES",
+    "public_release_history_known_forbidden_paths": "PASS_ZERO_COMMITS",
+    "public_release_history_privacy": "REVIEW_REQUIRED_PERSONAL_COMMIT_METADATA_AND_OLDER_LOCAL_PATHS",
+    "public_release_in_place_visibility_switch": "NOT_RECOMMENDED_WITHOUT_EXPLICIT_PRIVACY_ACCEPTANCE",
+    "public_release_preferred_model": "PUBLIC_SOURCE_SAFE_MIRROR_FRESH_HISTORY",
+    "public_release_safety_validator": "SOURCE_GATE_REQUIRED",
+    "public_release_license": "NOT_SELECTED"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -230,7 +238,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Resolve the repeated GitHub Actions pre-runner zero-step execution blocker, then require Candidate 3 source CI PASS at the exact head. After that run the asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118, guarded export with exact asset-set/hash binding and startup smoke, then fixed-order fail-fast receipt-bound G10.",
+  "next_target": "Use a fresh-history public source-safe CI mirror (preferred) or explicitly accept canonical-history privacy exposure before an in-place visibility switch. Then require the Candidate 3 source gate to execute and PASS for the exact canonical source state; after that run the private/local asset-backed preflight for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118, guarded export/startup smoke, and fixed-order G10.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
