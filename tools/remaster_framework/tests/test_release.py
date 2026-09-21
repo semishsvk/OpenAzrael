@@ -38,6 +38,7 @@ class ReleaseGateTests(unittest.TestCase):
                 "build_id": "0.1.0-rc.1",
             },
             "defects": {
+                "inventory_complete": True,
                 "known_critical_bugs": 0,
                 "reproducible_softlocks": 0,
             },
@@ -74,6 +75,15 @@ class ReleaseGateTests(unittest.TestCase):
         self.assertEqual(summary["status"], "BLOCKED")
         self.assertTrue(any("critical" in item for item in summary["blockers"]))
         self.assertTrue(any("softlocks" in item for item in summary["blockers"]))
+
+    def test_incomplete_defect_inventory_blocks_release(self) -> None:
+        results = self._results()
+        results["defects"]["inventory_complete"] = False
+        summary = aggregate_release(self.contract, results)
+        self.assertEqual(summary["status"], "BLOCKED")
+        self.assertTrue(
+            any("defect inventory" in item for item in summary["blockers"])
+        )
 
     def test_missing_manual_gate_blocks_release(self) -> None:
         results = self._results()
