@@ -318,6 +318,9 @@ def build_candidate_framework_bundle(
 
     determinism_path = evidence / "kg001_pppv_determinism.json"
     determinism_integrity_path = evidence / "pppv_determinism_integrity.json"
+    repeat2_runtime_path = (
+        evidence / "kg001_pppv_playthrough_repeat2.json"
+    )
     repeat2_evaluation_path = (
         evidence / "kg001_pppv_playthrough_repeat2_evaluation.json"
     )
@@ -579,6 +582,10 @@ def build_candidate_framework_bundle(
         inputs["pppv_determinism_integrity"] = sha256_file(
             determinism_integrity_path
         )
+    if repeat2_runtime_path.is_file():
+        inputs["pppv_playthrough_repeat2_runtime"] = sha256_file(
+            repeat2_runtime_path
+        )
     if repeat2_evaluation_path.is_file():
         inputs["pppv_playthrough_repeat2_evaluation"] = sha256_file(
             repeat2_evaluation_path
@@ -659,6 +666,10 @@ def build_candidate_framework_bundle(
     if determinism_integrity_path.is_file():
         artifacts["pppv_determinism_integrity"] = (
             determinism_integrity_path.name
+        )
+    if repeat2_runtime_path.is_file():
+        artifacts["pppv_playthrough_repeat2_runtime"] = (
+            repeat2_runtime_path.name
         )
     if repeat2_evaluation_path.is_file():
         artifacts["pppv_playthrough_repeat2_evaluation"] = (
