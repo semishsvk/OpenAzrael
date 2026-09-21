@@ -3,11 +3,11 @@
 v108 adds the first executable source-safe KG-001 state/puzzle harness. It consumes the tracked v87 gameplay Event IR and tracked R1/R7/R8 trigger/transition IR, then exhaustively applies every supported demo action to every reachable logical state.
 
 ## Result
-- **104 reachable states**
-- **214 changed transition edges**
-- **1560 action attempts**
-- **1346 invalid/idempotent no-op attempts**
-- **6 success states**
+- **63 reachable states**
+- **123 changed transition edges**
+- **945 action attempts**
+- **822 invalid/idempotent no-op attempts**
+- **3 success states**
 - **0 softlock states**
 - **0 non-success dead-end states**
 - shortest successful route: **15 actions**
@@ -19,7 +19,7 @@ Every reachable logical state can reach `demo_complete=true` under the modeled d
 
 Reference hashes:
 - clean state: `90fdebf6dff29bf2b4b78980615205c2e6c067b65a28c2aff0b7f10b513f6abf`
-- shortest-path completed state: `e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902`
+- shortest-path completed state: `076a47e6c05ac3b48e9238011c7df655c7642f8d562881a6c962a992fbee9cd2`
 
 ## Shortest synthetic route
 `pickup_rusty_tongs -> open_r1_door1 -> R1/R7 -> retrieve_well_key -> lever -> wheel -> lever -> R7/R1 -> open_r1_door2 -> R1/R8 -> retrieve_r8_lens -> place_r8_lens -> start_optical_sequence -> finish_optical_sequence -> take_shield`
