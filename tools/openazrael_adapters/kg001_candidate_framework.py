@@ -149,6 +149,20 @@ def build_candidate_framework_bundle(
             for value in expected_ids
             if value.startswith("openazrael.transition.")
         )
+        expected_bridge_ids = sorted(
+            str(row.get("scenario_id", ""))
+            for row in scenarios.get("scenarios", [])
+            if (
+                isinstance(row, dict)
+                and row.get("scenario_id")
+                and isinstance(row.get("metadata"), dict)
+                and row["metadata"].get("execution_profile")
+                == "v117_real_geometry_input"
+            )
+        )
+        expected_guarded_ids = sorted(
+            value for value in expected_ids if value not in expected_bridge_ids
+        )
         actual_transition_ids = sorted(
             str(value)
             for value in suite_payload.get("transition_scenario_ids", [])
@@ -171,6 +185,41 @@ def build_candidate_framework_bundle(
             integrity_errors.append(
                 "executed transition scenario set does not match current bundle"
             )
+
+        actual_bridge_ids = sorted(
+            scenario_id
+            for scenario_id, row in (
+                suite_rows.items() if isinstance(suite_rows, dict) else []
+            )
+            if (
+                isinstance(row, dict)
+                and row.get("execution_profile") == "v117_real_geometry_input"
+            )
+        )
+        actual_guarded_ids = sorted(
+            scenario_id
+            for scenario_id, row in (
+                suite_rows.items() if isinstance(suite_rows, dict) else []
+            )
+            if (
+                isinstance(row, dict)
+                and row.get("execution_profile") == "guarded_generic_runtime"
+                and row.get("guarded_replay") is True
+            )
+        )
+        if actual_bridge_ids != expected_bridge_ids:
+            integrity_errors.append(
+                "v117 bridge scenario set does not match declared profiles"
+            )
+        if actual_guarded_ids != expected_guarded_ids:
+            integrity_errors.append(
+                "guarded scenario set does not match declared profiles"
+            )
+        if suite_payload.get("all_transition_scenarios_guarded") is not True:
+            integrity_errors.append(
+                "not all transition scenarios used guarded replay"
+            )
+
         suite_integrity = {
             "schema": "openazrael.kg001.pppv_scenario_suite_integrity",
             "version": 1,
@@ -183,6 +232,10 @@ def build_candidate_framework_bundle(
             "executed_scenario_ids": actual_ids,
             "expected_transition_scenario_ids": expected_transition_ids,
             "executed_transition_scenario_ids": actual_transition_ids,
+            "expected_v117_bridge_scenario_ids": expected_bridge_ids,
+            "executed_v117_bridge_scenario_ids": actual_bridge_ids,
+            "expected_guarded_scenario_ids": expected_guarded_ids,
+            "executed_guarded_scenario_ids": actual_guarded_ids,
             "errors": integrity_errors,
         }
         _write(pppv_suite_integrity_path, suite_integrity)
