@@ -46,17 +46,20 @@ transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 | Item | Current state |
 |---|---|
 | Technical base | v116 |
-| Candidate | KG-001 Candidate 2 |
+| Candidate | KG-001 Candidate 3 |
 | Candidate diagnostic source contract | PASS |
 | Physical audio source contract | **PASS — Issue #9 regression wired** |
 | v109 headless runtime | AUTOMATED PASS |
 | v110 room/trigger runtime | AUTOMATED PASS |
 | v111 full-demo runtime | AUTOMATED PASS |
 | audio-v116 physical runtime | AUTOMATED PASS |
-| G09 fresh-checkout build | PENDING |
+| Candidate 3 source CI | PENDING/PASS required at exact HEAD |
+| Candidate 3 asset-backed preflight | PENDING — requires v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 PASS |
+| G09 fresh-checkout build | PENDING for Candidate 3 |
 | Candidate 1 manual observation | **FAIL — Issue #6 floor collision; Issue #9 no audible audio; Issue #11 magenta color-key artifacts** |
-| Candidate 2 v32 blocker fixes | AUTOMATED PASS / manual retest pending |
-| G10 manual sanity | **BLOCKED — Issues #6/#9/#11 retest required** |
+| Candidate 2 v32 evidence | HISTORICAL — automated PASS followed by manual traversal FAIL; stale for current source |
+| Candidate 3 blocker fixes | SOURCE HARDENED / runtime retest pending |
+| G10 manual sanity | **BLOCKED — Candidate 3 preflight/export PASS required; floor/stairs/audio/transparency/keyhole orientation retest pending** |
 | Known-good tag | NOT ALLOWED |
 | Localization architecture | APPROVED / IMPLEMENTATION DEFERRED |
 
@@ -108,9 +111,9 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | XAF -> GLB material | ASSET-BACKED PASS | Keyed RGBA becomes PBR MASK, cutoff 0.5 |
 | Demo `#` class registry | 10 candidates / actual corpus audit PASS | Archive + per-AZF hashes bind metadata; no commercial pixels tracked |
 | BLOOS4# control | PASS | key index 5; near-magenta non-key index 9 occurs once, proving broad-threshold uniqueness invalid |
-| R1 keyhole / tongs | REGRESSION WIRED | KEYHOLE# and TONG6 -> MINETON# must resolve to MASK |
+| R1 keyhole / tongs | REGRESSION WIRED | KEYHOLE# and TONG6 -> MINETON# must resolve to MASK; KEYHOLE# alone gets FLIP_V_CANDIDATE3_KEYHOLE, TONG6 is negative control |
 | Restored-corpus audit | AUTOMATIC WHEN ASSETS PRESENT | 86 PNG set + no residual key magenta |
-| Manual visual parity | G10 PENDING | Pink/magenta backgrounds must be absent |
+| Manual visual parity | G10 PENDING | Pink/magenta backgrounds must be absent and R1 keyhole must be upright |
 | Complete renderer transparency semantics | HOLD | No broad blending/transparency claim |
 
 ## v116 KG-001 physical audio readiness — Issue #9
@@ -196,13 +199,13 @@ The build is eligible for tag `demo-known-good-001` only with all required gates
 | Source-safe result boundary | PASS | No raw record bytes committed |
 
 
-## v116 KG-001 Candidate 2 diagnostics
+## v116 KG-001 Candidate 3 diagnostics
 
 | Layer | Status | Evidence boundary |
 |---|---|---|
-| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 2 / v116-context-v32 |
+| Candidate build watermark | SOURCE_CONTRACT_PASS | KG-001 Candidate 3 / v116-context-v32 |
 | Fail-fast room/IR preflight | SOURCE_CONTRACT_PASS | Runtime import PASS |
-| Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 2 |
+| Golden Event-IR WAV preflight | SOURCE_CONTRACT_PASS | Required only for non-headless Candidate 3 |
 | JSONL event telemetry | SOURCE_CONTRACT_PASS | Persistent log disabled in headless mode |
 | Trigger enter/exit telemetry | SOURCE_CONTRACT_PASS | Initial false states seeded without EXIT spam |
 | F6 trigger volumes | SOURCE_CONTRACT_PASS | Visualization only; does not alter transition logic |
