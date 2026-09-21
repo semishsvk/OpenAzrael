@@ -176,6 +176,7 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         "schema": EVALUATION_SCHEMA,
         "version": EVALUATION_VERSION,
         "plan_id": plan.get("plan_id"),
+        "plan_sha256": plan.get("plan_sha256"),
         "status": "PASS" if not errors else "FAIL",
         "errors": errors,
         "runtime_execution_status": runtime_status,
