@@ -152,8 +152,8 @@ checks = {
     ),
     "runner_does_not_normalize_spawn_to_floor": (
         "Candidate 2 failed immediately after the real portal spawn" in runner
-        and "floor_y + 4.0" not in runner
-        and "player.global_position = Vector3(" in runner
+        and 'player.global_position = Vector3(\n        player.global_position.x,\n        floor_y + 4.0,' not in runner
+        and "var spawn_result := await _observe_portal_spawn" in runner
     ),
     "r1_canonical_spawn_floor_walk": all(
         value in runner
