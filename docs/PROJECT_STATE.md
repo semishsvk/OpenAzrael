@@ -39,11 +39,11 @@ Development order remains `DEMO -> faithful reconstruction -> validation -> gene
 The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v32**.
 
 ## 3. Immediate execution priority
-Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v32 is source-frozen with the two-sided collision repair plus R1/R7/R8 entry support probes, physical-audio readiness, and audited indexed-AZF source-palette sentinel selection that preserves RGBA into GLB `MASK` materials. All fixes passed restored-asset/runtime checks and await human confirmation.
+Issues #6, #9 and #11 remain KG-001 release blockers, and Candidate 2 additionally exposed critical stair traversal failure. Candidate 2 Windows automation remains historical evidence only. Candidate 3 is the active integration target and contains the source fixes/regressions for natural floor support, real R8 stair ascent/descent, exact-demo well+tongs, triggered audio, audited color-key transparency and the manually observed upside-down KEYHOLE orientation.
 
-The current priority is the **source-frozen KG-001 Candidate 2** runtime cycle on a Godot-capable checkout: restore ignored assets with the v32 refrozen pipeline, run the v112 fresh-checkout workflow, require floor/audio/color-key regressions plus G00-G09 PASS, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
+The current priority is the **KG-001 Candidate 3** evidence cycle: first require source CI PASS, then run the exact-SHA asset-backed Candidate 3 preflight. The preflight must pass v109/v110/v111/audio-v116/physical-v117/well-tongs-v118. Export is permitted only through the guarded Candidate 3 wrapper, which binds the exact runtime asset path set and hashes and requires exported-EXE startup smoke before issuing a PASS receipt. F11 remains the source-safe defect capture path.
 
-Localization runtime work and the deferred v117 forensic copy/mutator audit follow the first clean Candidate 2 runtime/manual cycle; neither is part of the current blocker-fix scope.
+Localization runtime work and unrelated forensic expansion follow the first clean Candidate 3 runtime/manual cycle; neither is part of the current blocker-fix scope.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
@@ -161,7 +161,7 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - The future `LocalizationManager` owns discovery/validation/locale switching only; it does not own gameplay state.
 - The format is extensible to locale fonts, subtitles and optional localized voice assets.
 - Pseudolocalization, missing-ID checks, Unicode coverage and deterministic pack-building are required implementation tests.
-- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 2 runtime/manual cycle**, so this approval does not perturb the current test candidate.
+- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 3 runtime/manual cycle**, so this approval does not perturb the current test candidate.
 - Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
 ### KG-001 Candidate 2 diagnostics — v116
@@ -194,7 +194,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Restore Candidate 2 assets with the v32 refrozen indexed color-key pipeline, run the v112 candidate runner with --fresh-checkout --promote-results, require v109/v110/v111/audio-v116 plus texture color-key validation PASS, then complete G10 only after floor collision, audible audio and visual transparency are clean.
+1. Require Candidate 3 source CI PASS, then run the exact-SHA asset-backed preflight and require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118 PASS. Export only through the guarded Candidate 3 wrapper, require exact runtime asset-set/hash binding plus exported startup smoke, then complete G10 only after floor/stairs, audible audio, transparency and upright KEYHOLE orientation are clean.
 2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.
