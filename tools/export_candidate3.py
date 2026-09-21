@@ -116,6 +116,21 @@ def main() -> int:
         if not p.is_file() or sha256(p) != expected:
             return fail("PREFLIGHT_EVIDENCE_CHANGED", {"evidence": key})
 
+    pppv_receipt = receipt.get("evidence", {}).get("pppv_v2", {})
+    if not isinstance(pppv_receipt, dict) or not pppv_receipt:
+        return fail("PPPV_PREFLIGHT_EVIDENCE_MISSING")
+    for key, meta in pppv_receipt.items():
+        if not isinstance(meta, dict):
+            return fail("PPPV_PREFLIGHT_EVIDENCE_INVALID", {"evidence": key})
+        rel = meta.get("path")
+        expected = meta.get("sha256")
+        p = ROOT / str(rel)
+        if not p.is_file() or not expected or sha256(p) != expected:
+            return fail(
+                "PPPV_EVIDENCE_CHANGED_SINCE_PREFLIGHT",
+                {"evidence": key, "path": str(rel)},
+            )
+
     receipt_assets = receipt.get("runtime_assets", {})
     current_asset_paths = {
         str(p.relative_to(ROOT)) for p in runtime_asset_files()
@@ -164,6 +179,7 @@ def main() -> int:
         "godot_version": godot_version,
         "preset": args.preset,
         "preflight_receipt_sha256": sha256(RECEIPT),
+        "pppv_v2_evidence": receipt.get("evidence", {}).get("pppv_v2", {}),
     }
     RUNTIME_BUILD_IDENTITY.write_text(
         json.dumps(runtime_identity, indent=2) + "\n",
