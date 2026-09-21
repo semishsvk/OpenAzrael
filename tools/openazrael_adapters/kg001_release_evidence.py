@@ -47,6 +47,9 @@ EVIDENCE_CANDIDATES = {
     "pppv_determinism": (
         "kg001_pppv_determinism.json",
     ),
+    "pppv_determinism_integrity": (
+        "pppv_determinism_integrity.json",
+    ),
     "fresh": ("kg001_fresh_checkout.json",),
     "manual": (
         "kg001_manual_sanity.json",
@@ -161,6 +164,7 @@ def derive_gate_rows(
     pppv_suite_integrity_path: Path | None,
     pppv_playthrough_path: Path | None,
     pppv_determinism_path: Path | None,
+    pppv_determinism_integrity_path: Path | None,
     fresh_path: Path | None,
     manual_path: Path | None,
 ) -> list[dict[str, Any]]:
@@ -184,6 +188,11 @@ def derive_gate_rows(
         "pppv_determinism": (
             _load(pppv_determinism_path)
             if pppv_determinism_path
+            else None
+        ),
+        "pppv_determinism_integrity": (
+            _load(pppv_determinism_integrity_path)
+            if pppv_determinism_integrity_path
             else None
         ),
         "fresh": _load(fresh_path) if fresh_path else None,
@@ -276,12 +285,14 @@ def derive_gate_rows(
                 payloads["v111"],
                 payloads["pppv_playthrough"],
                 payloads["pppv_determinism"],
+                payloads["pppv_determinism_integrity"],
             ),
             "evidence": _merge_evidence(
                 repo_root,
                 v111_path,
                 pppv_playthrough_path,
                 pppv_determinism_path,
+                pppv_determinism_integrity_path,
             ),
         },
         {
@@ -290,12 +301,14 @@ def derive_gate_rows(
                 {"status": _fresh_checkout_status(payloads["fresh"])},
                 payloads["pppv_suite_integrity"],
                 payloads["pppv_determinism"],
+                payloads["pppv_determinism_integrity"],
             ),
             "evidence": _merge_evidence(
                 repo_root,
                 fresh_path,
                 pppv_suite_integrity_path,
                 pppv_determinism_path,
+                pppv_determinism_integrity_path,
             ),
         },
         {
@@ -371,6 +384,9 @@ def build_gate_results(
         pppv_suite_integrity_path=paths["pppv_suite_integrity"],
         pppv_playthrough_path=paths["pppv_playthrough"],
         pppv_determinism_path=paths["pppv_determinism"],
+        pppv_determinism_integrity_path=paths[
+            "pppv_determinism_integrity"
+        ],
         fresh_path=paths["fresh"],
         manual_path=paths["manual"],
     )
