@@ -161,7 +161,7 @@
       "KEYHOLE#",
       "TONG6 -> MINETON#"
     ],
-    "kg001_candidate_source_freeze": "POST_CANDIDATE3_OBJECT02_FIX_V119_RUNTIME_RETEST_REQUIRED",
+    "kg001_candidate_source_freeze": "POST_CANDIDATE3_OBJECT02_FIX_V119_V120_RUNTIME_RETEST_REQUIRED",
     "kg001_candidate_freeze_scope": [
       "Issue #6 floor collision must pass active Input-driven R1 traversal",
       "Critical stair traversal must pass both real R8 stair profiles up/down",
@@ -208,7 +208,8 @@
       "audio_v116",
       "physical_v117",
       "well_tongs_v118",
-      "r1_route_v119"
+      "r1_route_v119",
+      "collision_v120"
     ],
     "kg001_candidate3_preflight_contract": "data/tests/kg001_candidate3_preflight_contract_v1.json",
     "kg001_candidate3_runtime_asset_binding": "EXACT_PATH_SET_PLUS_FULL_ROOMS_AUDIO_CLASSIC_CORPUS_SHA256",
@@ -243,7 +244,9 @@
       "root_cause": "R1/Object02 visible authored floor was globally excluded from collision",
       "source_fix": "room-aware Object02 collision: enabled only in R1",
       "regression": "v119 exact bug point + Object02 two-triangle crossing + audited R1 route"
-    }
+    },
+    "kg001_collision_parity_v120": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+    "kg001_collision_parity_policy": "VISIBLE_FLOOR_LIKE_MESH_VS_RUNTIME_COLLISION_R1_R7_R8"
   },
   "hard_holds": [
     "PUZZLES_WORLD_AUTHORING_PRODUCER_EDGE",
@@ -254,7 +257,7 @@
     "WORLD_WRITER_INDIRECT_REACHABILITY",
     "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS"
   ],
-  "next_target": "Run source validation and asset-backed v119 against the room-aware R1/Object02 collision fix. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119 fresh-checkout PASS, then prepare a NEW Candidate 4 build; do not reuse Candidate 3 as a passing artifact. G10 must restart from R1 floor traversal.",
+  "next_target": "Run source validation, asset-backed v119 R1 route and v120 generic collision parity. Require v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119/collision-v120 fresh-checkout PASS before preparing Candidate 4. Upgrade F11 diagnostics to capture physical support/collider context before that build.",
   "runtime_ir": {
     "gameplay_event_graph": "data/gameplay_event_graph_v87.json",
     "trigger_portal_evidence": "data/xaf_trigger_evidence.json",
