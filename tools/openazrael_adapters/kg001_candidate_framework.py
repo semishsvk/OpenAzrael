@@ -19,11 +19,17 @@ from tools.openazrael_adapters.r1_pppv import build_r1_interaction_scenarios
 from tools.openazrael_adapters.r7_pppv import build_r7_switchboard_scenarios
 from tools.openazrael_adapters.r8_pppv import build_r8_interaction_scenarios
 from tools.openazrael_adapters.transition_pppv import build_transition_scenarios
+from tools.openazrael_adapters.demo_playthrough_plan import (
+    build_openazrael_demo_playthrough_plan,
+)
 from tools.remaster_framework.build_provenance import (
     build_provenance,
     sha256_file,
 )
 from tools.remaster_framework.coverage import audit_validation_coverage
+from tools.remaster_framework.evaluate_playthrough import (
+    evaluate_playthrough_bundle,
+)
 from tools.remaster_framework.release import aggregate_release
 
 
@@ -119,6 +125,28 @@ def build_candidate_framework_bundle(
     pppv_coverage_path = evidence / "pppv_coverage.json"
     _write(pppv_coverage_path, pppv_coverage)
 
+    playthrough_plan = build_openazrael_demo_playthrough_plan(scenarios)
+    playthrough_plan_path = evidence / "pppv_playthrough_plan.json"
+    _write(playthrough_plan_path, playthrough_plan)
+
+    playthrough_runtime_path = evidence / "kg001_pppv_playthrough.json"
+    playthrough_evaluation_path: Path | None = None
+    playthrough_runtime_status = "NOT_AVAILABLE"
+    playthrough_evaluation_status = "NOT_AVAILABLE"
+    if playthrough_runtime_path.is_file():
+        runtime_payload = _load(playthrough_runtime_path)
+        playthrough_runtime_status = str(
+            runtime_payload.get("status", "UNKNOWN")
+        )
+        playthrough_evaluation = evaluate_playthrough_bundle(runtime_payload)
+        playthrough_evaluation_path = (
+            evidence / "kg001_pppv_playthrough_evaluation.json"
+        )
+        _write(playthrough_evaluation_path, playthrough_evaluation)
+        playthrough_evaluation_status = str(
+            playthrough_evaluation.get("status", "UNKNOWN")
+        )
+
     v117_bridge_path: Path | None = None
     v117_runtime_path = evidence / "kg001_v117_runtime.json"
     if not v117_runtime_path.is_file():
@@ -161,6 +189,15 @@ def build_candidate_framework_bundle(
     inputs["release_gate_summary"] = sha256_file(release_summary_path)
     inputs["pppv_scenarios"] = sha256_file(scenario_bundle_output)
     inputs["pppv_coverage"] = sha256_file(pppv_coverage_path)
+    inputs["pppv_playthrough_plan"] = sha256_file(playthrough_plan_path)
+    if playthrough_runtime_path.is_file():
+        inputs["pppv_playthrough_runtime"] = sha256_file(
+            playthrough_runtime_path
+        )
+    if playthrough_evaluation_path is not None:
+        inputs["pppv_playthrough_evaluation"] = sha256_file(
+            playthrough_evaluation_path
+        )
     if v117_bridge_path is not None:
         inputs["v117_pppv_bridge"] = sha256_file(v117_bridge_path)
     well_pppv_path = evidence / "kg001_well_tongs_pppv.json"
@@ -181,6 +218,14 @@ def build_candidate_framework_bundle(
             "target_tag": "demo-known-good-001",
             "release_status": release_summary["status"],
             "pppv_coverage_status": pppv_coverage["status"],
+        "pppv_playthrough_plan_status": playthrough_plan["status"],
+        "pppv_playthrough_runtime_status": playthrough_runtime_status,
+        "pppv_playthrough_evaluation_status": playthrough_evaluation_status,
+            "pppv_playthrough_plan_status": playthrough_plan["status"],
+            "pppv_playthrough_runtime_status": playthrough_runtime_status,
+            "pppv_playthrough_evaluation_status": (
+                playthrough_evaluation_status
+            ),
         },
     )
     provenance_path = evidence / "build_provenance.json"
@@ -191,8 +236,15 @@ def build_candidate_framework_bundle(
         "release_gate_summary": release_summary_path.name,
         "pppv_scenarios": scenario_bundle_output.name,
         "pppv_coverage": pppv_coverage_path.name,
+        "pppv_playthrough_plan": playthrough_plan_path.name,
         "build_provenance": provenance_path.name,
     }
+    if playthrough_runtime_path.is_file():
+        artifacts["pppv_playthrough_runtime"] = playthrough_runtime_path.name
+    if playthrough_evaluation_path is not None:
+        artifacts["pppv_playthrough_evaluation"] = (
+            playthrough_evaluation_path.name
+        )
     if v117_bridge_path is not None:
         artifacts["v117_pppv_bridge"] = v117_bridge_path.name
     if well_pppv_path.is_file():
