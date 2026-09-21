@@ -41,6 +41,14 @@
   ],
   "runtime_status": "NOT_EXECUTED",
   "manual_visual_status": "PENDING",
-  "evidence_boundary": "Indexed source-palette binary color-key compatibility only; complete original renderer transparency/blending semantics remain HOLD.",
-  "actual_demo_corpus_audit": "data/tests/kg001_colorkey_corpus_audit_v116.json"
+  "evidence_boundary": "Indexed source-palette binary color-key compatibility only; complete original renderer transparency/blending semantics remain HOLD. KEYHOLE# orientation is an OpenAzrael presentation compatibility correction pending runtime/manual confirmation; it is not promoted as recovered global renderer UV semantics.",
+  "actual_demo_corpus_audit": "data/tests/kg001_colorkey_corpus_audit_v116.json",
+  "r1_keyhole_orientation": {
+    "status": "SOURCE_FIX_READY_RUNTIME_MANUAL_RETEST_REQUIRED",
+    "texture": "KEYHOLE#",
+    "correction": "FLIP_V_CANDIDATE3_KEYHOLE",
+    "scope": "texture-specific only; do not change global XAF UV convention",
+    "negative_control": "TONG6 -> MINETON# must retain uv_correction NONE",
+    "evidence": "Candidate 3 manual observation: keyhole rendered vertically inverted/upside down"
+  }
 }
