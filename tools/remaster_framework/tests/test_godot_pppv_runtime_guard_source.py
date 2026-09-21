@@ -47,6 +47,14 @@ class GodotPPPVRuntimeGuardSourceTests(unittest.TestCase):
         self.assertIn('"room_change_sample"', self.guard)
         self.assertIn('"continuity_reset": true', self.guard)
 
+    def test_guard_checks_live_runtime_invariants(self) -> None:
+        self.assertIn("player.global_position.is_finite()", self.guard)
+        self.assertIn("player.global_rotation.is_finite()", self.guard)
+        self.assertIn("player.velocity.is_finite()", self.guard)
+        self.assertIn('"non_finite_player_state"', self.guard)
+        self.assertIn('"current_room_node_invalid"', self.guard)
+        self.assertIn('"movement_input_stuck_after_action"', self.guard)
+
     def test_transition_spawn_is_verified_against_source_view(self) -> None:
         self.assertIn("verify_transition_spawn", self.guard)
         self.assertIn('runtime_evidence.get("demo_transitions"', self.guard)
