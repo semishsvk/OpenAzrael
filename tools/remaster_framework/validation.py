@@ -444,6 +444,11 @@ def evaluate_scenario(
         )
         for _, item in action_evidence
     ]
+    if len(action_evidence) < len(scenario.actions):
+        errors.append(
+            f"{scenario.scenario_id}: missing player_action evidence: "
+            f"expected {len(scenario.actions)}, got {len(action_evidence)}"
+        )
     if actual_action_sequence != expected_action_sequence:
         errors.append(
             f"{scenario.scenario_id}: player_action sequence mismatch: "
