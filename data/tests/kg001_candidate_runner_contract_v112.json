@@ -34,6 +34,11 @@
     "candidate3_godot_version_binding": true,
     "candidate3_runtime_asset_hash_binding": true,
     "candidate3_evidence_hash_binding": true,
-    "candidate3_manual_g10_separate": true
+    "candidate3_manual_g10_separate": true,
+    "r1_route_v119_source_validation": true,
+    "r1_route_v119_runtime_capture": true,
+    "r1_route_v119_result_promotion": true,
+    "g04_requires_v110_v117_v119": true,
+    "candidate3_historical_pass_not_reusable": true
   }
 }
