@@ -1,13 +1,13 @@
 # OpenAzrael bug reporting
 
-**Checkpoint:** `v116-context-v27`  
-**Candidate:** KG-001 Candidate 1
+**Checkpoint:** `Candidate 3 preflight / diagnostics v116`  
+**Candidate:** KG-001 Candidate 3
 
 OpenAzrael uses GitHub Issues as the canonical human bug tracker. The runtime capture path is diagnostic-only and must not change gameplay state.
 
 ## In-game capture
 
-Press **F11** during a normal graphical Candidate 1 run. OpenAzrael creates `user://openazrael_bugreport_<unix>_<sequence>.zip`.
+Press **F11** during a normal graphical Candidate 3 run. OpenAzrael creates `user://openazrael_bugreport_<unix>_<sequence>.zip`.
 
 The package contains, when available: `report.json`, `report.txt`, `state.json`, `system_info.json`, the last 500 events as `events_tail.jsonl`, `screenshot.png`, and `manifest.json`.
 
