@@ -16,6 +16,7 @@ TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
 VISUAL_AUDIO=[
     ROOT/"assets/audio/797TAP.WAV",
+    ROOT/"assets/audio/979TONGS.WAV",
     ROOT/"assets/audio/S152V2.WAV",
     ROOT/"assets/audio/S137.WAV",
     ROOT/"assets/audio/S121.WAV",
@@ -39,6 +40,8 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/kg001_state_space_v108.py"],
     [sys.executable,"tools/validate_kg001_headless_v109.py"],
     [sys.executable,"tools/validate_kg001_room_trigger_v110.py"],
+    [sys.executable,"tools/validate_kg001_physical_traversal_v117.py"],
+    [sys.executable,"tools/validate_kg001_well_tongs_animation_v118.py"],
     [sys.executable,"tools/validate_kg001_full_demo_v111.py"],
     [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
     [sys.executable,"tools/validate_kg001_audio_runtime_v116.py"],
@@ -57,6 +60,8 @@ RUNTIMES=[
     ("v110","scripts/kg001_room_trigger_runner_v110.gd","OPENAZRAEL_KG001_V110"),
     ("v111","scripts/kg001_full_demo_runner_v111.gd","OPENAZRAEL_KG001_V111"),
     ("audio_v116","scripts/kg001_audio_runtime_runner_v116.gd","OPENAZRAEL_KG001_AUDIO_V116"),
+    ("physical_v117","scripts/kg001_physical_traversal_runner_v117.gd","OPENAZRAEL_KG001_PHYSICAL_V117"),
+    ("well_tongs_v118","scripts/kg001_well_tongs_animation_runner_v118.gd","OPENAZRAEL_KG001_WELL_TONGS_V118"),
 ]
 
 def run(cmd, check=False):
@@ -119,7 +124,7 @@ def write_json(path,data):
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109-v111 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and full v109-v111/audio-v116/v117/v118 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
     ap.add_argument("--visual-capture",action="store_true",help="Also run the graphical canonical R1/R7/R8 capture contract. Requires a non-headless display plus restored room/audio assets.")
     args=ap.parse_args()
@@ -223,7 +228,7 @@ def main():
         else:
             import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
-            if name in ("v110","v111","audio_v116") and not all(asset_present.values()):
+            if name in ("v110","v111","audio_v116","physical_v117","well_tongs_v118") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
