@@ -31,6 +31,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_texture_colorkey_v116.py"],
     [sys.executable,"tools/validate_kg001_physical_traversal_v117.py"],
     [sys.executable,"tools/validate_kg001_well_tongs_animation_v118.py"],
+    [sys.executable,"tools/validate_candidate3_preflight.py"],
 ]
 
 RUNTIMES=[
