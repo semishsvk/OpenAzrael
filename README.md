@@ -23,21 +23,21 @@ is allowed or created. Original Miles parity and complete original renderer
 transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 `data/tests/kg001_candidate2_windows.json` for details.
 
-## Current status — v116-context-v32 / Candidate 3 hardening
+## Current status — Candidate 3 + PPPV v2 integration
 
-**Technical base:** `openazrael_godot_poc_v116`  
+**Historical technical checkpoint:** `openazrael_godot_poc_v116` (internal provenance, not project version)  
 **Runtime:** Godot 4  
 **Active slice:** R1 -> R7 -> R8  
-**Current candidate:** KG-001 Candidate 3  
+**Current candidate:** KG-001 Candidate 3 on `integration/kg001-candidate3-pppv-v2`  
 **Candidate source status:** HARDENED_SOURCE / source CI + exact-SHA asset-backed preflight required  
 **Historical Candidate 2 status:** automated Windows evidence PASS, subsequent manual traversal FAIL; evidence retained but stale for current source  
-**Candidate 3 runtime status:** NOT EXECUTED AT CURRENT HEAD  
+**Candidate 3 + PPPV v2 runtime status:** NOT EXECUTED AT CURRENT HEAD  
 **Known-good tag:** `demo-known-good-001` — NOT ALLOWED until G00-G10 all pass
 
 ### Immediate priority
 1. Require the Candidate 3 Python 3.11/3.12 source gate to PASS at the exact build SHA.
 2. Restore the ignored Candidate room/audio/texture assets and run `python tools/run_candidate3_preflight.py --godot <Godot> [--demo-dir <ATDEMO>]`.
-3. Require literal PASS for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118. v117 now exercises winding-safe near-to-far stair probing and preserves a bounded step-debug trace.
+3. Require literal PASS for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118/r1-route-v119/collision-parity-v120, then require PPPV v2 scenario-suite + integrity and two matching guarded chained playthroughs + determinism integrity. v117 retains the bounded stair step-debug trace.
 4. Export only with `tools/export_candidate3.py`; the exporter rejects changed HEAD/evidence/Godot, mutations **or additions/removals** in the bound runtime asset set, and requires exported-EXE startup smoke before writing a PASS receipt.
 5. Complete G10 on that exact EXE/PCK pair: R1 floor, both R8 stair profiles, well+tongs + triggered audio, ambient audio, color-key transparency, upright KEYHOLE orientation, full route and save/load. `demo-known-good-001` remains blocked until then.
 
@@ -48,7 +48,7 @@ transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 - Localization architecture is approved: stable semantic IDs, POT/PO authoring, built-in English fallback, external versioned PCK language packs, no core-resource replacement. Runtime implementation is deliberately deferred until after the first clean Candidate 3 runtime/manual validation.
 - Existing forensic HOLDs remain HOLD; documentation cleanup does not promote any unresolved claim.
 
-For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md`, `docs/LAST_SESSION.md`, and `data/project_context.json`.
+For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md`, `docs/LAST_SESSION.md`, `docs/VERSIONING.md`, and `data/project_context.json`. Internal `vNNN` labels are evidence/tool revisions, not the project version.
 
 ---
 
