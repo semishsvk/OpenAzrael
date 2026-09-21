@@ -345,6 +345,7 @@ try:
             "POST_CANDIDATE2_FIX_BRANCH_RUNTIME_RETEST_REQUIRED",
             "CANDIDATE3_SOURCE_HARDENED_RUNTIME_RETEST_REQUIRED",
             "POST_CANDIDATE3_OBJECT02_FIX_V119_RUNTIME_RETEST_REQUIRED",
+            "POST_CANDIDATE3_OBJECT02_FIX_V119_V120_RUNTIME_RETEST_REQUIRED",
         ):
         errors.append("KG-001 Candidate/source-freeze drift")
     if c.get("quality",{}).get("kg001_legacy_colorkey_runtime") not in ("NOT_EXECUTED","ASSET_VALIDATION_PASS_MANUAL_PENDING"):
@@ -405,6 +406,14 @@ try:
         errors.append("KG-001 F11 bug-report key drift")
     if c.get("quality",{}).get("kg001_bug_report_source_safe") is not True:
         errors.append("KG-001 bug-report source-safety drift")
+    if c.get("quality",{}).get("kg001_bug_report_schema") not in (None,2):
+        errors.append("KG-001 bug-report schema v2 drift")
+    if c.get("quality",{}).get("kg001_bug_report_physics_context") not in (
+            None,
+            "SOURCE_CONTRACT_READY_RUNTIME_RETEST_REQUIRED",
+            "PASS",
+        ):
+        errors.append("KG-001 bug-report physics-context drift")
     validate_runtime_evidence(c.get("quality",{}))
     manual_path=ROOT/"data/tests/kg001_manual_sanity.json"
     if manual_path.is_file() and json.loads(manual_path.read_text(encoding="utf-8")).get("status")=="PASS":
@@ -474,6 +483,7 @@ for marker in [
     "data/*.textured.v44.manifest.json",
     "data/audio/*.legacy.json",
     "data/graphics_pipeline_validation_v44.json",
+    "data/runtime_build_identity.json",
 ]:
     if marker not in gitignore:
         errors.append(f"gitignore safety missing: {marker}")
