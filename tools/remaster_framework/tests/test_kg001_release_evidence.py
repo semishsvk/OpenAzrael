@@ -130,6 +130,27 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             g09 = next(row for row in result["gates"] if row["id"] == "G09")
             self.assertEqual(g09["status"], "PENDING")
 
+    def test_real_input_well_pppv_is_supplemental_and_evidence_bound(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_well_tongs_pppv.json",
+                {
+                    "schema": "openazrael.kg001.well_tongs_pppv",
+                    "version": 1,
+                    "status": "PASS",
+                    "final_pppv_oracle": True,
+                },
+            )
+
+            result = build_gate_results(root, evidence)
+            checks = {row["id"]: row for row in result["supplemental_checks"]}
+            row = checks["PPPV_WELL_REAL_INPUT"]
+            self.assertEqual(row["status"], "PASS")
+            self.assertFalse(row["required_for_g09"])
+            self.assertEqual(len(row["evidence"][0]["sha256"]), 64)
+
     def test_missing_manual_keeps_g10_pending_and_defects_incomplete(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
