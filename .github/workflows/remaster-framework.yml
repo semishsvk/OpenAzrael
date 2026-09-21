@@ -27,3 +27,6 @@ jobs:
 
       - name: Require generic PPPV runtime hooks
         run: python -m tools.openazrael_adapters.runtime_capabilities . --require-core
+
+      - name: Validate Candidate Diagnostics F11 contract
+        run: python tools/validate_candidate_diagnostics_v116.py
