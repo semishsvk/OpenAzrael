@@ -1,0 +1,11 @@
+{
+  "schema":"openazrael.kg001.material_texture_parity_contract",
+  "version":124,
+  "status":"SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target":"KG-001 Candidate 4",
+  "scope":["R1","R7","R8"],
+  "canonical_manifest":"data/runtime_generated/demo_room_fidelity_v124.json",
+  "requires":["exact mesh-name set","source material name parity","textured surfaces keep an albedo texture","UV count and quantized UV SHA-256 parity","legacy # textures retain cutout transparency","production materials remain non-metallic"],
+  "forbids":["missing texture fallback","silent UV replacement","global UV correction","invented material substitution"],
+  "evidence_boundary":"Candidate 4 requires asset-backed Godot v124 PASS against a manifest generated only from canonical pinned room GLBs."
+}
