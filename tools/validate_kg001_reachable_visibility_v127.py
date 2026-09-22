@@ -9,6 +9,8 @@ checks={
  "schema":contract.get("schema")=="openazrael.kg001.reachable_visibility_contract" and contract.get("version")==127,
  "state_count":contract.get("expected_reachable_states")==104 and "len(records)!=104" in gen,
  "uses_v108":"from kg001_state_space_v108 import Model, explore" in gen,
+ "runtime_numeric_hash":all(x in gen for x in ("runtime_canonical_payload","runtime_canonical_hash","float(value)","model_persistent_sha256")),
+ "numeric_semantics_declared":"runtime-canonical" in json.dumps(contract.get("numeric_hash_semantics",{})),
  "canonical_restore":"restore_canonical_state_payload" in runner and "canonical_state_hash" in runner,
  "no_direct_mutation":all(x not in runner for x in ("set_flag(","set_puzzle_node(","acquire(","remove(")),
  "visibility_oracle":"expected_visibility" in gen and 'record["expected_visibility"]' in runner,
