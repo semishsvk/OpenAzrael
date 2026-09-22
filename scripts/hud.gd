@@ -4,7 +4,7 @@ extends CanvasLayer
 @onready var room_manager = get_node("../RoomManager")
 @onready var player = get_node("../Player")
 @onready var interaction_probe = get_node("../Player/Camera3D/InteractionProbe")
-const LegacyCursorCatalogV142 := preload("res://scripts/legacy_cursor_catalog_v142.gd")
+const LegacyCursorCatalogV143 := preload("res://scripts/legacy_cursor_catalog_v143.gd")
 var interaction_cursor: TextureRect
 var interaction_cursor_cache: Dictionary = {}
 var interaction_cursor_id := ""
@@ -49,23 +49,23 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _build_interaction_cursor() -> void:
     interaction_cursor = TextureRect.new()
-    interaction_cursor.name = "InteractionCursorV142"
+    interaction_cursor.name = "InteractionCursorV143"
     interaction_cursor.mouse_filter = Control.MOUSE_FILTER_IGNORE
     interaction_cursor.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
     interaction_cursor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     interaction_cursor.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-    interaction_cursor.size = LegacyCursorCatalogV142.DISPLAY_SIZE
+    interaction_cursor.size = LegacyCursorCatalogV143.DISPLAY_SIZE
     interaction_cursor.z_index = 1000
     add_child(interaction_cursor)
     _update_interaction_cursor()
 
 func _cursor_texture(cursor_id: String) -> Texture2D:
-    var normalized := LegacyCursorCatalogV142.normalize_id(cursor_id)
+    var normalized := LegacyCursorCatalogV143.normalize_id(cursor_id)
     if interaction_cursor_cache.has(normalized):
         return interaction_cursor_cache[normalized] as Texture2D
-    var texture := LegacyCursorCatalogV142.load_texture(normalized)
-    if texture == null and normalized != LegacyCursorCatalogV142.FALLBACK:
-        texture = LegacyCursorCatalogV142.load_texture(LegacyCursorCatalogV142.FALLBACK)
+    var texture := LegacyCursorCatalogV143.load_texture(normalized)
+    if texture == null and normalized != LegacyCursorCatalogV143.FALLBACK:
+        texture = LegacyCursorCatalogV143.load_texture(LegacyCursorCatalogV143.FALLBACK)
     interaction_cursor_cache[normalized] = texture
     return texture
 
@@ -75,7 +75,7 @@ func _update_interaction_cursor() -> void:
     var next_id := "POINTER"
     if is_instance_valid(interaction_probe) and interaction_probe.has_method("current_cursor_id"):
         next_id = String(interaction_probe.call("current_cursor_id"))
-    var normalized := LegacyCursorCatalogV142.normalize_id(next_id)
+    var normalized := LegacyCursorCatalogV143.normalize_id(next_id)
     if normalized != interaction_cursor_id or interaction_cursor.texture == null:
         interaction_cursor_id = normalized
         interaction_cursor.texture = _cursor_texture(normalized)
