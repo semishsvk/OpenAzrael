@@ -5,7 +5,12 @@ extends Node3D
 
 func _find_interactive() -> Object:
     var from := camera.global_position
-    var to := from + (-camera.global_transform.basis.z * max_distance)
+    var direction := -camera.global_transform.basis.z
+    if DisplayServer.get_name() != "headless" and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+        var mouse_pos := get_viewport().get_mouse_position()
+        from = camera.project_ray_origin(mouse_pos)
+        direction = camera.project_ray_normal(mouse_pos)
+    var to := from + (direction * max_distance)
     var q := PhysicsRayQueryParameters3D.create(from, to)
     q.collision_mask = 2
     q.collide_with_areas = true
