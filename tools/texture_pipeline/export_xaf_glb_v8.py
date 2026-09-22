@@ -1,5 +1,5 @@
 from pathlib import Path
-import re, sys, json
+import re, sys, json, hashlib
 from collections import defaultdict
 import numpy as np
 import trimesh
@@ -222,8 +222,12 @@ def parse(src,texture_dir):
             if not of: continue
             tex=mats.get(mn,{}).get('texture')
             material=get_material(mn)
-            corrected_uv,uv_correction=corrected_uvs(tex,ouv)
-            visual=trimesh.visual.TextureVisuals(uv=corrected_uv,material=material)
+            source_uv=np.asarray(ouv,dtype="<f4")
+            corrected_uv,uv_correction=corrected_uvs(tex,source_uv)
+            export_uv=np.asarray(corrected_uv,dtype="<f4")
+            source_uv_sha256=hashlib.sha256(source_uv.tobytes()).hexdigest()
+            export_input_uv_sha256=hashlib.sha256(export_uv.tobytes()).hexdigest()
+            visual=trimesh.visual.TextureVisuals(uv=export_uv,material=material)
             mesh=trimesh.Trimesh(vertices=np.array(ov),faces=np.array(of),vertex_normals=np.array(on),visual=visual,process=False)
             mesh.metadata.update({'xaf_object':nod['name'],'xaf_material':mn,'xaf_texture':tex})
             # Object transform lives on parent object node; geometry is identity child.
@@ -234,6 +238,9 @@ def parse(src,texture_dir):
                                     'material':mn,'texture':tex,'resolved_png':resolve_texture(tex,tex_idx).name if resolve_texture(tex,tex_idx) else None,
                                     'legacy_colorkey':material_alpha.get(mn)=='MASK','alpha_mode':material_alpha.get(mn,'OPAQUE'),
                                     'uv_correction':uv_correction,
+                                    'source_uv_count':len(source_uv),
+                                    'source_uv_sha256':source_uv_sha256,
+                                    'export_input_uv_sha256':export_input_uv_sha256,
                                     'corner_vertices':len(ov),'triangles':len(of),'bad_uv_corners':bad_uv,'bad_normal_corners':bad_normal})
             objrec['primitive_count']+=1; objrec['corner_vertices']+=len(ov); objrec['triangles']+=len(of)
             objrec['bad_uv_corners']+=bad_uv; objrec['bad_normal_corners']+=bad_normal
