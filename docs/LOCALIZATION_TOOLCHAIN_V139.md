@@ -23,8 +23,7 @@ Each source row may retain:
 - confidence and review status;
 - notes and reconstruction status.
 
-Fragments remain `NEEDS_RECONSTRUCTION` and are excluded from runtime packs.
-Technical IDs are retained as context but are not translated.
+Fragments remain research-only (`VERIFIED_FRAGMENT` or `NEEDS_RECONSTRUCTION`) and are excluded from runtime packs.\nTechnical IDs are retained as context but are not translated.
 
 ## Current evidence snapshot
 
@@ -106,11 +105,7 @@ An optional external manifest may be installed at:
 
 `user://localization/languages.json`
 
-It uses the same locale-row schema. Relative pack paths resolve below
-`user://localization/`.
-
-External packs may add languages but may not silently replace a built-in locale.
-This lets community translations ship independently from the game code.
+It uses the v139 localization-manifest schema. Relative pack paths resolve below\n`user://localization/`; traversal and absolute/resource-scheme paths are rejected.\n\nExternal packs may add languages but may not silently replace a built-in locale.\nAn incompatible external manifest is ignored fail-closed. This lets community\ntranslations ship independently from the game code.
 
 ## Translation quality workflow
 
