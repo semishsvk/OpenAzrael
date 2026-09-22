@@ -1,0 +1,34 @@
+{
+  "schema": "openazrael.kg001.candidate4_music_route_contract",
+  "version": 133,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "input_policy": {
+    "local_official_demo_only": true,
+    "required_files": ["MUSIC.DAT", "R.EXE"],
+    "bound_demo_rexe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "canonical_xmi_count": 24
+  },
+  "source_safety": {
+    "raw_music_dat_committed": false,
+    "raw_music_dat_emitted": false,
+    "raw_xmi_committed": false,
+    "raw_xmi_emitted": false,
+    "allowed_report_payload": [
+      "hashes",
+      "file sizes",
+      "line numbers",
+      "canonical XMI identities",
+      "explicit room identities",
+      "integer metadata",
+      "structural counts"
+    ]
+  },
+  "semantic_policy": {
+    "accepted_demo_rooms": ["R1", "R7", "R8"],
+    "bare_numeric_room_inference_allowed": false,
+    "ambiguous_mapping_policy": "HOLD",
+    "explicit_room_plus_single_xmi_required_for_binding": true,
+    "music_required_resolution": "REQUIRES_RUNTIME_MUSIC"
+  },
+  "output": ".tmp/kg001/candidate4_music_route_v133.json"
+}
