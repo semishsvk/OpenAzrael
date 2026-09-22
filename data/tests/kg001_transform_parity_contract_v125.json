@@ -1,0 +1,13 @@
+{
+  "schema":"openazrael.kg001.transform_parity_contract",
+  "version":125,
+  "status":"SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target":"KG-001 Candidate 4",
+  "scope":["R1","R7","R8"],
+  "canonical_manifest":"data/runtime_generated/demo_room_fidelity_v124.json",
+  "transform_tolerance":0.0001,
+  "bounds_tolerance":0.001,
+  "requires":["all mesh world transforms match the pinned source-derived GLB manifest","all local mesh AABBs match","no undeclared scale/rotation/translation correction"],
+  "forbids":["manual object repositioning","runtime geometry alignment by eye","silent coordinate compensation"],
+  "evidence_boundary":"Candidate 4 requires asset-backed Godot v125 PASS at the exact build SHA."
+}
