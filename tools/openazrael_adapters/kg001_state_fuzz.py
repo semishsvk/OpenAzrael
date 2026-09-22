@@ -291,6 +291,7 @@ def build_state_fuzz_report(
         reachable_state_keys=reachable_keys,
         recoverable_state_keys=recoverable_keys,
         is_success=lambda state: state.flag("demo_complete"),
+        success_must_be_monotonic=True,
         config=config
         or StateFuzzConfig(
             seed_base=0xA2A3E1,
