@@ -20,6 +20,7 @@ SCHEMA_PACK="openazrael.localization_pack"
 SCHEMA_MANIFEST="openazrael.localization_manifest"
 PRINTF_RE=re.compile(r"%(?:\d+\$)?[-+#0 ]*(?:\d+|\*)?(?:\.\d+|\.\*)?[hlLzjt]*[diuoxXfFeEgGaAcspn%]")
 BRACE_RE=re.compile(r"\{[A-Za-z_][A-Za-z0-9_]*\}")
+LOCALE_RE=re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$")
 
 def read_json(path:Path)->Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -47,8 +48,12 @@ def looks_localizable(text:str)->bool:
     return True
 
 def iter_glob(root:Path,pattern:str):
+    short=pattern[3:] if pattern.startswith("**/") else pattern
     for p in sorted(root.rglob("*")):
-        if p.is_file() and fnmatch.fnmatch(str(p.relative_to(root)).replace("\\","/"),pattern):
+        if not p.is_file():
+            continue
+        rel=str(p.relative_to(root)).replace("\\","/")
+        if fnmatch.fnmatch(rel,pattern) or (short!=pattern and fnmatch.fnmatch(rel,short)):
             yield p
 
 def extract_text_lines(root:Path,spec:dict,namespace:str)->list[dict]:
@@ -196,9 +201,14 @@ def cmd_validate(a)->int:
     codes=set()
     for row in locales:
         code=str(row.get("code",""))
-        if not code or code in codes: errs.append(f"bad/duplicate locale:{code}")
+        if not code or not LOCALE_RE.fullmatch(code) or code in codes: errs.append(f"bad/duplicate locale:{code}")
         codes.add(code)
-        path=(a.base / str(row.get("file",""))).resolve()
+        if str(row.get("direction","ltr")) not in ("ltr","rtl"): errs.append(f"bad direction:{code}")
+        rel_file=str(row.get("file",""))
+        if rel_file.startswith(("res://","user://")):
+            errs.append(f"built-in manifest must use relative pack path:{code}")
+            continue
+        path=(a.base / rel_file).resolve()
         if not path.is_file():
             errs.append(f"pack_missing:{code}:{path}"); continue
         pack=read_json(path)
