@@ -96,11 +96,35 @@
       ]
     },
     {
-      "name": "floorbit03",
+      "name": "save_detour_0",
       "point": [
-        -23.152938,
-        -114.276132,
-        32.386421
+        -75,
+        -114.3,
+        70
+      ]
+    },
+    {
+      "name": "save_detour_1",
+      "point": [
+        -75,
+        -114.3,
+        20
+      ]
+    },
+    {
+      "name": "save_detour_2",
+      "point": [
+        -50,
+        -114.3,
+        -20
+      ]
+    },
+    {
+      "name": "floorbit_entry",
+      "point": [
+        0,
+        -115,
+        -50
       ]
     },
     {
@@ -128,27 +152,115 @@
       ]
     },
     {
-      "name": "floorbit07",
+      "name": "floorbit02_exit",
       "point": [
-        238.31932,
-        -104.616944,
-        -303.747184
+        171,
+        -112.6228,
+        -243
       ]
     },
     {
-      "name": "floorbit06",
+      "name": "floorbit07_entry",
       "point": [
-        309.006074,
-        -104.581536,
-        -377.3124
+        201,
+        -114.2756,
+        -273
       ]
     },
     {
-      "name": "floorbit05",
+      "name": "floorbit07_corridor_0",
       "point": [
-        379.40759,
-        -102.654593,
-        -442.602868
+        221,
+        -114.2755,
+        -303
+      ]
+    },
+    {
+      "name": "floorbit07_corridor_1",
+      "point": [
+        231,
+        -114.2754,
+        -333
+      ]
+    },
+    {
+      "name": "floorbit06_entry",
+      "point": [
+        241,
+        -114.2804,
+        -353
+      ]
+    },
+    {
+      "name": "floorbit06_mid",
+      "point": [
+        271,
+        -114.2393,
+        -383
+      ]
+    },
+    {
+      "name": "floorbit06_exit",
+      "point": [
+        301,
+        -114.2017,
+        -413
+      ]
+    },
+    {
+      "name": "floorbit05_entry",
+      "point": [
+        321,
+        -112.9316,
+        -433
+      ]
+    },
+    {
+      "name": "floorbit05_mid",
+      "point": [
+        351,
+        -111.0581,
+        -443
+      ]
+    },
+    {
+      "name": "floorbit05_exit",
+      "point": [
+        371,
+        -109.9054,
+        -453
+      ]
+    },
+    {
+      "name": "floorbit04_ramp_0",
+      "point": [
+        385,
+        -108.7538,
+        -465
+      ]
+    },
+    {
+      "name": "floorbit04_ramp_1",
+      "point": [
+        401,
+        -106.3075,
+        -481
+      ]
+    },
+    {
+      "name": "floorbit04_ramp_2",
+      "point": [
+        417,
+        -102.7426,
+        -481
+      ]
+    },
+    {
+      "name": "floorbit04_ramp_3",
+      "point": [
+        433,
+        -98.01898,
+        -489
       ]
     },
     {
@@ -157,14 +269,6 @@
         449.22172,
         -93.255052,
         -498.865461
-      ]
-    },
-    {
-      "name": "wall01",
-      "point": [
-        476.230757,
-        -84.616455,
-        -504.15264
       ]
     },
     {
@@ -189,7 +293,7 @@
     "production CharacterBody3D reaches exact bug-report X/Z using gameplay move_forward input",
     "player crosses onto the second Object02 floor triangle without fall-through",
     "player returns to tunnel03 support",
-    "player follows every canonical route waypoint to tunnel07 with continuous support",
+    "player follows every capsule-safe canonical route waypoint to tunnel07 with continuous support",
     "no segment stalls before its waypoint",
     "no fall recovery teleport or synthetic floor is used",
     "no engine/script errors"
@@ -205,9 +309,22 @@
     ],
     "tunnel03_spawn_floor_face_index": 0,
     "tunnel03_object02_projected_gap": 0.09813844622236,
-    "canonical_route_graph_nodes": 15,
-    "canonical_route_segments": 14,
+    "canonical_route_graph_nodes": 28,
+    "canonical_route_segments": 27,
     "all_main_segments_covered_by_walkable_floor_union_with_0_5_buffer": true,
-    "derivation": "shortest connected floor-triangle-center path from natural spaview-side tunnel03 support to entcori-side tunnel07 support in restored R1.glb, with Object02 Candidate-3 detour added explicitly"
+    "derivation": "source-geometry route refined by asset-backed Godot capsule diagnostics: preserve the exact Object02 regression, route around authored Collision_save and the steep side face of Collision_floorbit07, do not target non-player-space wall01 mesh center, and reach tunnel07 by production CharacterBody3D movement"
+  },
+  "player_space_route_policy": {
+    "capsule_radius": 11,
+    "mesh_centers_are_not_implicitly_player_waypoints": true,
+    "known_authored_obstacles_avoided": [
+      "Collision_save",
+      "steep side face of Collision_floorbit07"
+    ],
+    "non_player_space_mesh_centers_removed": [
+      "wall01"
+    ],
+    "movement": "production CharacterBody3D + move_forward only",
+    "teleport_between_waypoints_forbidden": true
   }
 }
