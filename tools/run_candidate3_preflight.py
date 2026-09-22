@@ -39,6 +39,7 @@ REQUIRED_RUNTIME = (
     "r1_route_v119",
     "collision_v120",
     "surface_v121",
+    "geometry_v122",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
