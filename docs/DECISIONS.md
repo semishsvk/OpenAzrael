@@ -205,3 +205,12 @@ Candidate 4 extends source-exact geometry policy ADR-033 with a layered room-fid
 - v131 produces a fail-closed per-room forensic report spanning source through packaged build.
 
 No layer may promote a Candidate when required evidence is missing. These mechanisms are implemented so their generic fidelity/reporting primitives can be reused by future retail OpenAzrael and other remaster projects.
+
+
+## ADR-035 — Control renders use paired original and neutral lighting
+
+**Status:** ACCEPTED — 2026-09-22
+
+Every future OpenAzrael control render is emitted as a pair using identical source-exact geometry, textures/UVs, state and camera. The **ORIGINAL-1996** version uses only recovered/documented original-lighting or original-renderer evidence. If that evidence is incomplete, the result is explicitly marked `ORIGINAL-LIGHTING-PENDING`; artistic approximation is forbidden. The **NEUTRAL-QA** version uses even inspection lighting to expose geometry, UV, material, alpha, clipping and object-visibility defects. Neutral lighting is QA-only and must not be confused with historical visual fidelity.
+
+See `docs/CONTROL_RENDERING_STANDARD.md`.
