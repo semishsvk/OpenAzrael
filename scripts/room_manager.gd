@@ -313,7 +313,29 @@ func _on_character_animation_requested(request: Dictionary) -> void:
             animation_player.play(StringName(family))
             result["status"] = "PLAYING_SOURCE_CLIP"
             result["animation_player"] = String(animation_player.get_path())
+            result["source"] = "ROOM_IMPORTED_ANIMATION"
             break
+
+    # Generic source-derived character animation bridge. The converter may
+    # restore a Godot Animation resource under this ignored runtime root;
+    # production code never embeds or invents commercial animation payloads.
+    if result["status"] != "PLAYING_SOURCE_CLIP" and target != null:
+        var source_path := "res://assets/characters/%s/%s.tres" % [character, family]
+        if ResourceLoader.exists(source_path):
+            var clip := load(source_path) as Animation
+            if clip != null:
+                var source_player := AnimationPlayer.new()
+                source_player.name = "SourceCharacterAnimation_" + character + "_" + family
+                source_player.root_node = NodePath("..")
+                target.add_child(source_player)
+                var library := AnimationLibrary.new()
+                library.add_animation(StringName(family), clip)
+                source_player.add_animation_library(&"", library)
+                source_player.play(StringName(family))
+                result["status"] = "PLAYING_SOURCE_CLIP"
+                result["animation_player"] = String(source_player.get_path())
+                result["source"] = source_path
+
     _character_animation_status[character] = result
     CandidateDiagnostics.record_event("character_animation_request", result)
     if result["status"] != "PLAYING_SOURCE_CLIP" and bool(request.get("source_required", false)):
