@@ -57,7 +57,7 @@ REQUIRED_RUNTIME = (
     "portal_v129",
     "interaction_v130",
     "all_transitions_v141",
-    "cursor_v142",
+    "cursor_v143",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
