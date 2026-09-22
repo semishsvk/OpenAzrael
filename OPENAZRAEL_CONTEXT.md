@@ -164,3 +164,7 @@ The accepted first known-good demo target is `demo-known-good-001`. It requires 
 
 ## Session close rule
 A substantial session is complete only after canonical context is updated, validation passes, repository-safe changes are committed/pushed when possible, and significant milestones have an integrity-checked full snapshot.
+
+
+### Control rendering invariant
+All future validation renders are produced as a paired set from the same source-exact geometry/state/camera: **ORIGINAL-1996** lighting and **NEUTRAL-QA** lighting. Original lighting may only use recovered/documented 1996 renderer evidence; when unavailable it is marked `ORIGINAL-LIGHTING-PENDING` and is never approximated. See `docs/CONTROL_RENDERING_STANDARD.md`.
