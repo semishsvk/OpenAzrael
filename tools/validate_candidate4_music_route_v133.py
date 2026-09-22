@@ -15,7 +15,7 @@ checks={
  "tool_checks_rexe":"BOUND_DEMO_REXE_HASH_MISMATCH" in tool,
  "tool_checks_xmi":"CANONICAL_XMI_CORPUS_INVALID" in tool,
  "tool_no_numeric_promotion":"Bare numeric fields are metadata only" in tool,
- "tool_holds_ambiguous":"MUSIC_TABLE_PRESENT_BUT_ACCEPTED_ROUTE_BINDING_NOT_EXPLICIT" in tool,
+ "tool_holds_ambiguous":"MUSIC_TABLE_ROUTE_MAPPING_INCOMPLETE_OR_AMBIGUOUS" in tool,\n "tool_requires_complete_rooms":"route_complete=all(len(by_room[room])==1 for room in (\"R1\",\"R7\",\"R8\"))" in tool,
  "preflight_runs_analyzer":"analyze_candidate4_music_route_v133.py" in preflight,
  "audio_uses_local_route":'.tmp/kg001/candidate4_music_route_v133.json' in audio,
  "runtime_music_fail_closed":"MUSIC_RUNTIME_REQUIRED" in audio,
