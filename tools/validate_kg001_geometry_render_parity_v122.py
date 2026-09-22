@@ -11,6 +11,14 @@ contract = json.loads(
 
 assets = contract.get("expected_assets", {})
 checks = {
+    "strict_geometry_policy": (
+        contract.get("policy", {}).get("source_derived_only") is True
+        and contract.get("policy", {}).get("complete_room_required") is True
+        and contract.get("policy", {}).get("partial_import_forbidden") is True
+        and contract.get("policy", {}).get("invented_or_approximate_geometry_forbidden") is True
+        and contract.get("policy", {}).get("missing_geometry_action") == "BLOCKED_MISSING_SOURCE_GEOMETRY"
+        and contract.get("policy", {}).get("geometry_defect_severity") == "CRITICAL"
+    ),
     "contract_schema": (
         contract.get("schema") == "openazrael.kg001.geometry_render_parity_contract"
         and contract.get("version") == 122
