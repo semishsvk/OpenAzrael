@@ -32,6 +32,15 @@ backups/
 snapshots/
 *.bak
 
+# Persistent private source registry/cache. Never commit mounted commercial corpora.
+.openazrael/
+source_corpora/
+ATDEMO/
+atdemo.zip
+retail_original/
+retail_corpus/
+data/source_registry.local.json
+
 # Raw/original commercial game payloads: keep out of Git.
 # Their fingerprints may be committed under data/backup/.
 original/
