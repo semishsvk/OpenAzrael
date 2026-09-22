@@ -31,6 +31,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_headless_v109.py"],
     [sys.executable,"tools/validate_kg001_room_trigger_v110.py"],
     [sys.executable,"tools/validate_kg001_trigger_events_v137.py"],
+    [sys.executable,"tools/validate_kg001_character_animation_v138.py"],
     [sys.executable,"tools/validate_kg001_full_demo_v111.py"],
     [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
     [sys.executable,"tools/validate_kg001_audio_runtime_v116.py"],
