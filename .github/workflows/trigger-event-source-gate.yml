@@ -1,0 +1,26 @@
+name: Trigger event source gate
+
+on:
+  push:
+    branches:
+      - integration/kg001-candidate3-pppv-v2
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  trigger-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate complete demo trigger/event contract
+        run: python tools/validate_kg001_trigger_events_v137.py
+      - name: Compile validator
+        run: python -m py_compile tools/validate_kg001_trigger_events_v137.py
+      - name: Verify tracked checkout stayed clean
+        shell: bash
+        run: test -z "$(git status --porcelain --untracked-files=normal)"
