@@ -10,13 +10,15 @@ const HUD_BUTTONS := {
     "MAP": Rect2(213, 381, 77, 42),
     "SERVICE": Rect2(363, 386, 90, 43),
 }
+# Evidence-constrained, non-overlapping label regions measured from SAVE13.PCX.
+# Exact 1996 input hitboxes remain HOLD until original runtime capture proves them.
 const SERVICE_ACTIONS := {
-    "LOAD": Rect2(39, 25, 75, 28),
-    "SAVE": Rect2(48, 91, 67, 24),
-    "MUSIC": Rect2(108, 32, 50, 33),
-    "SFX": Rect2(108, 68, 40, 29),
-    "QUIT": Rect2(70, 50, 45, 35),
-    "CONFIRM": Rect2(22, 124, 69, 22),
+    "LOAD": Rect2(60, 24, 50, 28),
+    "MUSIC": Rect2(112, 44, 44, 23),
+    "QUIT": Rect2(80, 58, 30, 24),
+    "SFX": Rect2(110, 76, 32, 24),
+    "SAVE": Rect2(62, 91, 48, 26),
+    "CONFIRM": Rect2(25, 124, 60, 22),
 }
 const SCAN_STATUS := [
     "Updating Environment Scan....",
@@ -126,6 +128,9 @@ func _reflow() -> void:
     _offset = (vp - LOGICAL_SIZE * _scale) * 0.5
     classic_canvas.scale = Vector2(_scale, _scale)
     classic_canvas.position = _offset
+
+func blocks_world_cursor() -> bool:
+    return title_open or service_open
 
 func _screen_to_classic(screen_pos: Vector2) -> Vector2:
     return (screen_pos - _offset) / maxf(_scale, 0.0001)
