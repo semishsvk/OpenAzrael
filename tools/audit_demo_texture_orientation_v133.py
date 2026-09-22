@@ -57,6 +57,7 @@ def main()->int:
         texture_inventory.append({"file":p.name,"sha256":file_sha(p),"canonical_hash_match":ok})
 
     used=set()
+    found_corrections=set()
     textured_primitive_count=0
     primitive_rows=[]
     strong_vertical=[]
@@ -72,6 +73,7 @@ def main()->int:
         m=json.loads(manifest.read_text(encoding="utf-8"))
         corrections={str(x.get("uv_correction","NONE")) for x in m.get("primitives",[]) if str(x.get("uv_correction","NONE"))!="NONE"}
         expected_corr=set(contract.get("required_uv_corrections",{}).values())
+        found_corrections.update(corrections)
         unexpected=corrections-expected_corr
         if unexpected: failures.append(room+":unexpected_uv_corrections:"+",".join(sorted(unexpected)))
 
@@ -125,6 +127,10 @@ def main()->int:
                 strong_vertical.append({**row,"orientation":state,"accepted":accepted})
                 if not accepted:
                     failures.append(f"{room}/{node}:vertical_orientation:{state}")
+
+    missing_corrections=set(contract.get("required_uv_corrections",{}).values())-found_corrections
+    if missing_corrections:
+        failures.append("required_uv_corrections_missing:"+",".join(sorted(missing_corrections)))
 
     if len(used)!=int(contract["expected_used_texture_count"]):
         failures.append(f"used_texture_count:{len(used)}")
