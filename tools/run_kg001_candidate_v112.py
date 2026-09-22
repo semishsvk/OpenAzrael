@@ -60,6 +60,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_menu_lab_v144.py"],
     [sys.executable,"tools/validate_kg001_legacy_menu_runtime_v145.py"],
     [sys.executable,"tools/validate_kg001_menu_cursor_context_v146.py"],
+    [sys.executable,"tools/validate_kg001_classic_presentation_v147.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -87,6 +88,7 @@ RUNTIMES=[
     ("cursor_v143","scripts/kg001_interaction_cursor_runner_v143.gd","OPENAZRAEL_KG001_CURSOR_V143"),
     ("menu_v145","scripts/kg001_legacy_menu_runner_v145.gd","OPENAZRAEL_KG001_MENU_V145"),
     ("menu_cursor_v146","scripts/kg001_menu_cursor_context_runner_v146.gd","OPENAZRAEL_KG001_MENU_CURSOR_V146"),
+    ("classic_v147","scripts/kg001_classic_presentation_runner_v147.gd","OPENAZRAEL_KG001_CLASSIC_PRESENTATION_V147"),
 ]
 
 def run(cmd, check=False):
@@ -318,6 +320,7 @@ def main():
             TMP/"kg001_cursor_v143_runtime.json":ROOT/"data/tests/kg001_interaction_cursor_runtime_v143.json",
             TMP/"kg001_menu_v145_runtime.json":ROOT/"data/tests/kg001_legacy_menu_runtime_v145.json",
             TMP/"kg001_menu_cursor_v146_runtime.json":ROOT/"data/tests/kg001_menu_cursor_context_runtime_v146.json",
+            TMP/"kg001_classic_v147_runtime.json":ROOT/"data/tests/kg001_classic_presentation_runtime_v147.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }
