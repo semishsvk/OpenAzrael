@@ -1,0 +1,95 @@
+{
+  "schema": "openazrael.kg001.candidate4_release_contract",
+  "version": 132,
+  "status": "ACCEPTED_TARGET",
+  "candidate": "KG-001 Candidate 4",
+  "purpose": "First fully playable end-to-end demo release candidate.",
+  "release_policy": {
+    "zero_known_critical_bugs": true,
+    "zero_reproducible_softlocks": true,
+    "zero_failed_required_gates": true,
+    "exact_head_evidence_binding": true,
+    "fresh_checkout_required": true,
+    "asset_backed_runtime_required": true,
+    "manual_end_to_end_required": true,
+    "export_fail_closed": true
+  },
+  "geometry": {
+    "rooms": ["R1", "R7", "R8"],
+    "source_counts": {
+      "R1": {"primitives": 69, "triangles": 593, "textured_primitives": 62},
+      "R7": {"primitives": 48, "triangles": 689, "textured_primitives": 40},
+      "R8": {"primitives": 87, "triangles": 1050, "textured_primitives": 74}
+    },
+    "required_runtime_layers": [
+      "geometry_v122",
+      "visibility_v123",
+      "material_v124",
+      "transform_v125",
+      "visual_v126",
+      "reachable_visibility_v127",
+      "portal_v129",
+      "interaction_v130",
+      "room_forensic_v131"
+    ],
+    "visible_authored_object_omission_allowed": false,
+    "walkable_surface_without_collision_allowed": false,
+    "required_room_transition_failure_is_critical": true
+  },
+  "audio": {
+    "canonical_wav_count": 30,
+    "canonical_xmi_count": 24,
+    "wav_name_and_source_sha_required": true,
+    "runtime_asset_set_bound_to_restore_receipt": true,
+    "ambient_and_triggered_audio_runtime_tests_required": true,
+    "manual_audibility_required": true,
+    "music_policy": "REQUIRE_RUNTIME_OR_PROVEN_NOT_USED_ON_ACCEPTED_DEMO_ROUTE",
+    "music_route_evidence": "data/audio/candidate4_music_route_evidence.json"
+  },
+  "gameplay": {
+    "all_required_puzzles_use_production_interactions": true,
+    "all_required_transitions_use_real_player_input": true,
+    "save_load_roundtrip_required": true,
+    "pppv_v2_required": true,
+    "minimum_identical_end_to_end_runs": 2,
+    "direct_gameplay_state_injection_forbidden": true
+  },
+  "required_preflight": [
+    "legacy_candidate_runtime_suite",
+    "physical_v117",
+    "well_tongs_v118",
+    "r1_route_v119",
+    "collision_v120",
+    "surface_v121",
+    "geometry_v122",
+    "visibility_v123",
+    "material_v124",
+    "transform_v125",
+    "visual_v126",
+    "reachable_visibility_v127",
+    "portal_v129",
+    "interaction_v130",
+    "room_forensic_v131",
+    "candidate4_audio_v132",
+    "pppv_v2_scenario_suite",
+    "pppv_v2_integrity",
+    "pppv_v2_repeated_deterministic_playthrough"
+  ],
+  "g10": {
+    "required": true,
+    "complete_demo_route": true,
+    "stop_on_critical_failure": true,
+    "must_cover": [
+      "R1 full traversal including former Object02 hole",
+      "R8 both stair profiles up and down",
+      "R1<->R7 and R1<->R8 transitions",
+      "all demo puzzles and required interactions",
+      "well+tongs exact sequence",
+      "ambient and triggered audio",
+      "all required Candidate 4 music",
+      "transparency and keyhole orientation",
+      "save/load during route",
+      "successful end-of-demo state"
+    ]
+  }
+}
