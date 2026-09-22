@@ -31,6 +31,16 @@ func _run() -> void:
     _check("music_enabled", bool(music.call("enabled")))
     var by_room: Dictionary = manifest.get("music_by_room", {})
     var tracks: Dictionary = manifest.get("tracks", {})
+    _check("rendered_track_set_nonempty", tracks.size() > 0)
+    for identity in tracks.keys():
+        var meta: Dictionary = tracks[identity]
+        var path := String(meta.get("path", ""))
+        _check("corpus_resource_exists_" + String(identity), ResourceLoader.exists(path))
+        if ResourceLoader.exists(path):
+            var stream = load(path)
+            _check("corpus_stream_load_" + String(identity), stream is AudioStreamOggVorbis)
+            if stream is AudioStreamOggVorbis:
+                _check("corpus_duration_" + String(identity), float((stream as AudioStreamOggVorbis).get_length()) > 0.0)
     for room_id in ["R1", "R7", "R8"]:
         _check("binding_" + room_id, by_room.has(room_id))
         if not by_room.has(room_id):
