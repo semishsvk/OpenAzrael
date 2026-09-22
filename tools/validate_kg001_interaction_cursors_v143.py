@@ -5,7 +5,7 @@ import json,sys
 ROOT=Path(__file__).resolve().parents[1]
 manifest=json.loads((ROOT/"data/ui/legacy_cursor_manifest_v143.json").read_text(encoding="utf-8"))
 contract=json.loads((ROOT/"data/tests/kg001_interaction_cursor_contract_v143.json").read_text(encoding="utf-8"))
-restore=(ROOT/"tools/restore_legacy_cursors_v142.py").read_text(encoding="utf-8")
+restore=(ROOT/"tools/restore_legacy_cursors_v143.py").read_text(encoding="utf-8")
 probe=(ROOT/"scripts/interaction_probe.gd").read_text(encoding="utf-8")
 hud=(ROOT/"scripts/hud.gd").read_text(encoding="utf-8")
 runner=(ROOT/"scripts/kg001_interaction_cursor_runner_v143.gd").read_text(encoding="utf-8")
@@ -22,8 +22,8 @@ scripts={
 }
 names=list(manifest.get("files",{}))
 checks={
- "schema":manifest.get("schema")=="openazrael.legacy_cursor_manifest" and manifest.get("version")==142,
- "contract":contract.get("schema")=="openazrael.kg001.interaction_cursor_contract" and contract.get("version")==142,
+ "schema":manifest.get("schema")=="openazrael.legacy_cursor_manifest" and manifest.get("version")==143,
+ "contract":contract.get("schema")=="openazrael.kg001.interaction_cursor_contract" and contract.get("version")==143,
  "exact_source_count":len(names)==35 and len(set(names))==35 and manifest.get("source_file_count")==35,
  "core_source_icons":all(name in names for name in ("POINTER.PCX","TAKE.PCX","USE.PCX","PULL.PCX","ROT.PCX","CANT.PCX")),
  "all_fingerprints":all(len(str(spec[0]))==64 and int(spec[1])>0 for spec in manifest["files"].values()),
