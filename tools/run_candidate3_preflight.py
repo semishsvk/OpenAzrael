@@ -63,6 +63,7 @@ REQUIRED_RUNTIME = (
     "cursor_v143",
     "menu_v145",
     "menu_cursor_v146",
+    "classic_v147",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
