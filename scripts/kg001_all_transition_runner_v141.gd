@@ -102,7 +102,7 @@ func _walk_waypoints(prefix: String, points: Array, nav, guard) -> bool:
             Callable(),
             900,
             150,
-            11.0
+            18.0
         )
         var ok := bool(result.get("reached", false))
         guard.end_action(ok, {
@@ -245,6 +245,24 @@ func _run() -> void:
     room_sequence.append("R1")
     _check("initial_R1_supported", _supported(scene, player))
 
+    # Door 1 blocks the physical corridor from the spaview spawn toward
+    # TONG6. Open it first, then traverse the validated R1 route using
+    # production movement. The last route point is beyond door 2, so keep
+    # it out of this pre-key traversal.
+    if not await _approach_and_interact(
+        "open_R1_door1", "Interact_doorcor01", manager, nav, driver, guard
+    ):
+        _finish(scene, guard)
+        return
+    _check("door1_open_flag", state.flag("R1Door1Open"))
+
+    var r1_pre_door2: Array = []
+    for i in range(R1_ROUTE.size() - 1):
+        r1_pre_door2.append(R1_ROUTE[i])
+    if not await _walk_waypoints("R1_to_tongs", r1_pre_door2, nav, guard):
+        _finish(scene, guard)
+        return
+
     if not await _approach_and_interact(
         "pickup_tongs", "Interact_TONG6", manager, nav, driver, guard
     ):
@@ -252,12 +270,11 @@ func _run() -> void:
         return
     _check("tongs_in_inventory", state.has("rusty_tongs"))
 
-    if not await _approach_and_interact(
-        "open_R1_door1", "Interact_doorcor01", manager, nav, driver, guard
-    ):
+    var r1_back_to_r7: Array = r1_pre_door2.duplicate()
+    r1_back_to_r7.reverse()
+    if not await _walk_waypoints("R1_back_to_R7", r1_back_to_r7, nav, guard):
         _finish(scene, guard)
         return
-    _check("door1_open_flag", state.flag("R1Door1Open"))
 
     if not await _cross_transition(
         "transition_R1_R7", "R1", "zxcoriR5", "R7",
@@ -283,7 +300,7 @@ func _run() -> void:
         return
     await _settle(70)
 
-    if not await _walk_waypoints("R1_full_corridor", R1_ROUTE, nav, guard):
+    if not await _walk_waypoints("R1_to_door2", r1_pre_door2, nav, guard):
         _finish(scene, guard)
         return
 
@@ -294,6 +311,12 @@ func _run() -> void:
         return
     _check("door2_open_flag", state.flag("R1Door2Open"))
     _check("door2_unlock_flag", state.flag("FR1DoorUnlocked"))
+
+    if not await _walk_waypoints(
+        "R1_through_door2", [R1_ROUTE[R1_ROUTE.size() - 1]], nav, guard
+    ):
+        _finish(scene, guard)
+        return
 
     if not await _cross_transition(
         "transition_R1_R8", "R1", "zxcoriR2", "R8",
