@@ -13,32 +13,28 @@ const ROUTE := [
     Vector3(-168.693718, -91.949649, 281.939643),
     Vector3(-113.787899, -107.514682, 201.650247),
     Vector3(-72.816896, -114.240783, 116.816224),
-    # Capsule-safe detour around the authored Collision_save volume.
-    Vector3(-75.0, -114.30, 70.0),
-    Vector3(-75.0, -114.30, 20.0),
-    Vector3(-50.0, -114.30, -20.0),
-    Vector3(0.0, -115.0, -50.0),
+    # Runtime-verified capsule corridor around authored Collision_save.
+    Vector3(-75.0, -114.300000, 70.0),
+    Vector3(-75.0, -114.300000, 20.0),
+    Vector3(-50.0, -114.300000, -20.0),
+    Vector3(0.0, -115.000000, -50.0),
+    # From here use centers of actual walkable floor faces, not centroids of
+    # steep side faces that the earlier route incorrectly treated as floor.
     Vector3(38.260757, -115.691564, -50.391974),
     Vector3(95.934301, -117.355663, -127.453640),
     Vector3(141.988445, -115.622030, -209.540090),
-    # Capsule-safe path around the steep side face of floorbit07.
-    Vector3(171.0, -112.6228, -243.0),
-    Vector3(201.0, -114.2756, -273.0),
-    Vector3(221.0, -114.2755, -303.0),
-    Vector3(231.0, -114.2754, -333.0),
-    Vector3(241.0, -114.2804, -353.0),
-    Vector3(271.0, -114.2393, -383.0),
-    Vector3(301.0, -114.2017, -413.0),
-    Vector3(321.0, -112.9316, -433.0),
-    Vector3(351.0, -111.0581, -443.0),
-    Vector3(371.0, -109.9054, -453.0),
-    Vector3(385.0, -108.7538, -465.0),
-    Vector3(401.0, -106.3075, -481.0),
-    Vector3(417.0, -102.7426, -481.0),
-    Vector3(433.0, -98.01898, -489.0),
+    Vector3(119.250000, -114.455000, -261.236000),
+    Vector3(156.921000, -114.276000, -313.508000),
+    Vector3(203.566000, -114.275000, -324.678000),
+    Vector3(210.088000, -114.364000, -410.699000),
+    Vector3(266.328000, -114.240000, -415.593000),
+    Vector3(299.061000, -110.726000, -486.612000),
+    Vector3(356.752000, -108.708000, -475.156000),
+    Vector3(405.288000, -99.161000, -522.654000),
     Vector3(449.221720, -93.255052, -498.865461),
-    # wall01 is authored side geometry, not a player-space waypoint. From the
-    # floorbit04 corridor the production capsule reaches tunnel07 directly.
+    # wall01 face 10 is the walkable threshold into tunnel07. The former
+    # wall01 centroid targeted a steep side face and caused a false stall.
+    Vector3(476.420000, -85.030000, -514.950000),
     Vector3(529.295811, -84.205500, -513.041569),
 ]
 
