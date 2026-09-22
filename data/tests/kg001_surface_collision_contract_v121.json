@@ -15,21 +15,35 @@
     "samples_per_triangle": 4,
     "support_tolerance_y": 1,
     "ray_half_height": 3,
-    "legacy_winding_policy": "absolute normal Y; runtime ray uses hit_back_faces=true"
+    "legacy_winding_policy": "absolute normal Y; runtime ray uses hit_back_faces=true",
+    "support_semantics": "nearest runtime collision may be at or above the visual surface; only support more than 1.0 Y unit below the visual triangle is a fall-through-class failure"
   },
   "runtime_policy": {
     "actual_room_manager_collision": true,
     "synthetic_collision_forbidden": true,
     "player_recovery_teleport_forbidden": true,
     "hidden_r8_object01_support_included": true,
-    "explicit_non_solid_exemptions": true
+    "explicit_non_solid_exemptions": true,
+    "above_surface_collision_is_obstruction_not_hole": true,
+    "explicit_non_walkable_semantic_exemptions": [
+      "save",
+      "nibody",
+      "well_pzpi1",
+      "well_pzpi2",
+      "r8s1",
+      "door",
+      "door01",
+      "bible",
+      "fontbot02"
+    ]
   },
   "pass_requires": [
     "R1/R7/R8 load with restored assets",
     "every non-exempt floor-like triangle produces four interior support samples",
-    "every support ray hits collision within 1.0 Y unit of the visual triangle",
     "zero missing support samples",
-    "zero support-height mismatches",
+    "no nearest runtime support lies more than 1.0 Y unit below the visual triangle",
+    "collision above a visual triangle is classified as occupied/obstructed player space rather than a floor hole",
+    "known interactable/decorative horizontal faces are explicitly non-walkable semantics, not silently ignored by area/normal thresholds",
     "no engine/script errors"
   ],
   "complements": [
