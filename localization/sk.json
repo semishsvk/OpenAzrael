@@ -3,7 +3,10 @@
   "version": 139,
   "locale": "sk",
   "source_locale": "en",
+  "generated_from_registry_version": 139,
+  "translation_status": "EXPERIMENTAL",
   "strings": {
+    "dialog.demo.niamh.0001": "Dobrý Bože. Čo si zač?",
     "ui.menu.title": "Nastavenia",
     "ui.menu.language": "Jazyk",
     "ui.menu.close": "Späť",
