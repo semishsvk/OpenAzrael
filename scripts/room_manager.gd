@@ -13,6 +13,11 @@ const ROOM_NAMES := {
     "R8":"Baptistery (R8)"
 }
 const PORTAL_SPAWN_CLEARANCE := 4.0
+const PORTAL_SPAWN_DISTANCE := 120.0
+const PORTAL_SPAWN_DISTANCE_CANDIDATES := [120.0, 115.0, 125.0, 110.0, 130.0, 105.0, 135.0, 100.0]
+const PORTAL_SUPPORT_RAY_UP := 8.0
+const PORTAL_SUPPORT_RAY_DOWN := 48.0
+const PORTAL_SUPPORT_CLEARANCE := 0.2
 
 const PICKUPS := {
     "R1": {
@@ -429,19 +434,69 @@ func _trigger_record(room_id: String, trigger_name: String) -> Dictionary:
             return t
     return {}
 
+func _portal_spawn_distance(c: Vector3, n: Vector3) -> float:
+    var collision_shape := player.get_node_or_null("CollisionShape3D") as CollisionShape3D
+    if collision_shape == null or collision_shape.shape == null:
+        return PORTAL_SPAWN_DISTANCE
+
+    var nominal_foot_y := c.y + PORTAL_SPAWN_CLEARANCE - float(player.eye_height)
+    var space := get_world_3d().direct_space_state
+    for distance in PORTAL_SPAWN_DISTANCE_CANDIDATES:
+        var xz := c + n * float(distance)
+        var floor_query := PhysicsRayQueryParameters3D.create(
+            Vector3(xz.x, nominal_foot_y + PORTAL_SUPPORT_RAY_UP, xz.z),
+            Vector3(xz.x, nominal_foot_y - PORTAL_SUPPORT_RAY_DOWN, xz.z),
+            int(player.collision_mask)
+        )
+        floor_query.hit_back_faces = true
+        var floor_hit := space.intersect_ray(floor_query)
+        if floor_hit.is_empty():
+            continue
+        var floor_normal := floor_hit.get("normal", Vector3.ZERO) as Vector3
+        if absf(floor_normal.y) < cos(float(player.floor_max_angle)):
+            continue
+
+        # Evaluate the capsule at its eventual floor-resting transform. Contact
+        # with the supporting floor itself is acceptable; overlap with a
+        # different collision body means the nominal portal spawn is perched on
+        # or penetrating nearby geometry (R8/Object14 exposed this on step011).
+        var floor_position := floor_hit.get("position", Vector3.ZERO) as Vector3
+        var shape_query := PhysicsShapeQueryParameters3D.new()
+        shape_query.shape = collision_shape.shape
+        shape_query.collision_mask = int(player.collision_mask)
+        shape_query.transform = Transform3D(
+            Basis.IDENTITY,
+            Vector3(
+                xz.x,
+                floor_position.y + PORTAL_SUPPORT_CLEARANCE + collision_shape.position.y,
+                xz.z
+            )
+        )
+        var support_collider = floor_hit.get("collider")
+        var blocked := false
+        for row in space.intersect_shape(shape_query, 16):
+            if not (row is Dictionary):
+                continue
+            if row.get("collider") != support_collider:
+                blocked = true
+                break
+        if not blocked:
+            return float(distance)
+
+    return PORTAL_SPAWN_DISTANCE
+
 func _spawn_at_portal(room_id: String, view_name: String) -> void:
     var v := _view_record(room_id, view_name)
     if v.is_empty():
         return
     var c := _v3(v["centroid"])
     var n := _v3(v["normal"]).normalized()
-    # The portal-view centroid is an eye-space reconstruction, but the R1/R7
-    # source floors sit slightly above centroid-eye_height. Candidate 2 could
-    # therefore spawn the capsule already penetrating the floor and fall
-    # through before collision recovery. A small vertical clearance preserves
-    # the authored X/Z/heading and lets gravity settle onto the real floor.
+    # The portal-view centroid is an eye-space reconstruction. Keep its authored
+    # heading/Y, but choose the nearest deterministic normal offset whose
+    # eventual capsule resting pose is not blocked by adjacent geometry.
+    var spawn_distance := _portal_spawn_distance(c, n)
     player.teleport_eye_to(
-        c + n * 120.0 + Vector3.UP * PORTAL_SPAWN_CLEARANCE,
+        c + n * spawn_distance + Vector3.UP * PORTAL_SPAWN_CLEARANCE,
         n
     )
 
