@@ -5,6 +5,24 @@ const LOGICAL_SIZE := Vector2(640, 480)
 const SERVICE_ORIGIN := Vector2(235, 260)
 const SaveSystem := preload("res://scripts/legacy_save_system_v145.gd")
 
+# Source-derived service-menu frame semantics.
+# SAVE00..SAVE06 are the closed->open construction sequence.
+# Exact 1996 frame timing remains HOLD; runtime uses the proven stable states.
+const SERVICE_OPEN_SEQUENCE := ["SAVE00", "SAVE01", "SAVE02", "SAVE03", "SAVE04", "SAVE05", "SAVE06"]
+const SERVICE_CLOSE_SEQUENCE := ["SAVE06", "SAVE05", "SAVE04", "SAVE03", "SAVE02", "SAVE01", "SAVE00"]
+const SERVICE_BASE_FRAME := "SAVE06"
+const SERVICE_HOVER_FRAMES := {
+    "SAVE": "SAVE07",
+    "LOAD": "SAVE08",
+    "MUSIC": "SAVE09",
+    "SFX": "SAVE10",
+    "QUIT": "SAVE11",
+}
+const SERVICE_CONFIRM_FRAMES := {
+    "SAVE": "SAVE12",
+    "LOAD": "SAVE13",
+}
+
 const HUD_BUTTONS := {
     "SCAN": Rect2(235, 343, 83, 36),
     "MAP": Rect2(213, 381, 77, 42),
@@ -113,7 +131,7 @@ func _build() -> void:
 
     hud_texture = _make_tex("HUD3", "HUD3", Vector2.ZERO, LOGICAL_SIZE)
     title_texture = _make_tex("Title1996", "TITLE", Vector2(4, 3), Vector2(631, 474))
-    service_texture = _make_tex("ServiceMenu", "SAVE13", SERVICE_ORIGIN, Vector2(206, 170))
+    service_texture = _make_tex("ServiceMenu", SERVICE_BASE_FRAME, SERVICE_ORIGIN, Vector2(206, 170))
     map_indicator = _make_tex("MapIndicator", "MAPOFF", Vector2(0, 0), Vector2(639, 47))
 
     status_label = Label.new()
@@ -184,11 +202,46 @@ func _dismiss_title() -> void:
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
     CandidateDiagnostics.record_event("legacy_title_dismiss", {"compatibility_input": true})
 
+func _set_service_frame(stem: String) -> void:
+    var texture := _load_tex(stem)
+    if texture != null:
+        service_texture.texture = texture
+
+func _service_visual_frame(local: Vector2) -> String:
+    if SERVICE_CONFIRM_FRAMES.has(pending_action):
+        return String(SERVICE_CONFIRM_FRAMES[pending_action])
+    if pending_action == "QUIT":
+        return "SAVE11"
+    if not volume_target.is_empty() and SERVICE_HOVER_FRAMES.has(volume_target):
+        return String(SERVICE_HOVER_FRAMES[volume_target])
+    var action := _service_action_at(local)
+    if SERVICE_HOVER_FRAMES.has(action):
+        return String(SERVICE_HOVER_FRAMES[action])
+    return SERVICE_BASE_FRAME
+
+func _update_service_visual(local: Vector2) -> void:
+    if not service_open:
+        return
+    _set_service_frame(_service_visual_frame(local))
+
+func _toggle_service() -> void:
+    _set_service(not service_open)
+
+func _activate_hud_action(action: String) -> void:
+    match action:
+        "SCAN":
+            _scan()
+        "MAP":
+            _toggle_map()
+        "SERVICE":
+            _toggle_service()
+
 func _set_service(opened: bool) -> void:
     service_open = opened
     service_texture.visible = opened
     slot_label.visible = opened and pending_action in ["LOAD", "SAVE"]
     if opened:
+        _set_service_frame(SERVICE_BASE_FRAME)
         get_tree().paused = true
         Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
         _refresh_slots()
@@ -301,20 +354,26 @@ func _unhandled_input(event: InputEvent) -> void:
         get_viewport().set_input_as_handled()
         return
 
+    if service_open and event is InputEventMouseMotion:
+        _update_service_visual(_screen_to_classic(event.position))
+
     if service_open and event is InputEventMouseButton and event.pressed:
         var local := _screen_to_classic(event.position)
         if event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN] and not volume_target.is_empty():
             _adjust_selected_volume(1 if event.button_index == MOUSE_BUTTON_WHEEL_UP else -1)
             get_viewport().set_input_as_handled()
             return
-        if event.button_index == MOUSE_BUTTON_RIGHT:
-            _set_service(false)
-            get_viewport().set_input_as_handled()
-            return
         if event.button_index == MOUSE_BUTTON_LEFT:
+            # The original OPTIONS control is the service-menu toggle.
+            # When the panel is open the same HUD hotspot remains the close control.
+            if HUD_BUTTONS["SERVICE"].has_point(local):
+                _toggle_service()
+                get_viewport().set_input_as_handled()
+                return
             var action := _service_action_at(local)
             if not action.is_empty():
                 _handle_service_action(action)
+                _update_service_visual(local)
                 get_viewport().set_input_as_handled()
             return
 
@@ -322,9 +381,6 @@ func _unhandled_input(event: InputEvent) -> void:
         var local := _screen_to_classic(event.position)
         for action in HUD_BUTTONS:
             if HUD_BUTTONS[action].has_point(local):
-                match String(action):
-                    "SCAN": _scan()
-                    "MAP": _toggle_map()
-                    "SERVICE": _set_service(true)
+                _activate_hud_action(String(action))
                 get_viewport().set_input_as_handled()
                 return
