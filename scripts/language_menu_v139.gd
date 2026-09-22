@@ -102,7 +102,7 @@ func _on_locale_changed(_locale: String) -> void:
     _refresh_locales()
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event.is_action_pressed("menu_toggle"):
+    if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
         toggle_menu()
         get_viewport().set_input_as_handled()
 
