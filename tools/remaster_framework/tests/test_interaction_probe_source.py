@@ -25,7 +25,9 @@ class InteractionProbeSourceTests(unittest.TestCase):
     def test_probe_keeps_production_interact_input_path(self) -> None:
         self.assertIn('event.is_action_pressed("interact")', self.source)
         self.assertIn("n.interact()", self.source)
-        self.assertIn("CandidateDiagnostics.record_interaction", self.source)
+        self.assertIn('get_node_or_null("CandidateDiagnostics")', self.source)
+        self.assertIn('has_method("record_interaction")', self.source)
+        self.assertIn('call("record_interaction"', self.source)
 
 
 if __name__ == "__main__":
