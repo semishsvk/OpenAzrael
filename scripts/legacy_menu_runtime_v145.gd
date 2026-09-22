@@ -13,12 +13,12 @@ const HUD_BUTTONS := {
 # Evidence-constrained, non-overlapping label regions measured from SAVE13.PCX.
 # Exact 1996 input hitboxes remain HOLD until original runtime capture proves them.
 const SERVICE_ACTIONS := {
-    "LOAD": Rect2(60, 24, 50, 28),
-    "MUSIC": Rect2(112, 44, 44, 23),
-    "QUIT": Rect2(80, 58, 30, 24),
-    "SFX": Rect2(110, 76, 32, 24),
-    "SAVE": Rect2(62, 91, 48, 26),
-    "CONFIRM": Rect2(25, 124, 60, 22),
+    "LOAD": Rect2(45, 24, 60, 25),
+    "MUSIC": Rect2(112, 35, 44, 24),
+    "QUIT": Rect2(70, 52, 38, 30),
+    "SFX": Rect2(110, 66, 38, 31),
+    "SAVE": Rect2(48, 91, 58, 26),
+    "CONFIRM": Rect2(22, 124, 69, 22),
 }
 const SCAN_STATUS := [
     "Updating Environment Scan....",
