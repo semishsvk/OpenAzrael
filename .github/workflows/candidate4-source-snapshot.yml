@@ -9,6 +9,8 @@ on:
 permissions:
   contents: read
 
+# Source-only handoff artifact; commercial/runtime assets stay excluded.
+
 jobs:
   source-snapshot:
     runs-on: ubuntu-24.04
