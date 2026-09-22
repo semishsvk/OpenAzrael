@@ -210,7 +210,7 @@
   },
   "holds": [
     "Original Niamh character-ANI keyframes/timing are not decoded in the tracked source-safe corpus; do not synthesize a tween or substitute AI-generated animation.",
-    "The exact spoken line associated with zxactghost is not source-verified in the tracked corpus; do not hard-code 'Oisin, is that you?' as canonical evidence.",
+    "The user-provided 'Oisin...' wording is a research hint only. The exact zxactghost-associated spoken string must be recovered from source conversation data before any canonical text is implemented.",
     "R1 zxentry/textwall, R7 death-family action semantics, and R8 zxminehd/zxsecret/zxsound* remain explicit HOLD until original action bindings are recovered."
   ]
 }
