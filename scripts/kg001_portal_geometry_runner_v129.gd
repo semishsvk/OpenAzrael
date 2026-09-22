@@ -48,7 +48,7 @@ func _run()->void:
         var support_ok:=not hit.is_empty()
         _check(dest+"/"+view_name+"_spawn_support",support_ok)
         var fell:=false
-        var support_y:=player.global_position.y
+        var support_y: float = float(player.global_position.y)
         if support_ok:support_y=float((hit["position"] as Vector3).y);fell=player.global_position.y<support_y-4.0
         _check(dest+"/"+view_name+"_no_fall",not fell)
         _check(dest+"/"+view_name+"_settled_floor",player.is_on_floor() or (support_ok and absf(player.global_position.y-support_y)<4.5))
