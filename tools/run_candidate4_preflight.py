@@ -14,7 +14,7 @@ ROOT=Path(__file__).resolve().parents[1]
 TMP=ROOT/".tmp/kg001"
 C3=TMP/"candidate3_preflight_receipt.json"
 OUT=TMP/"candidate4_preflight_receipt.json"
-AUDIO_RESULT=TMP/"candidate4_audio_v132_runtime.json"
+AUDIO_RESULT=TMP/"candidate4_audio_v132_runtime.json"\nMUSIC_ROUTE=TMP/"candidate4_music_route_v133.json"
 
 def sha256(path: Path) -> str:
     h=hashlib.sha256()
@@ -28,7 +28,7 @@ def run(cmd):
 
 def fail(reason,details=None):
     OUT.unlink(missing_ok=True)
-    out={"schema":"openazrael.kg001.candidate4_preflight","version":132,
+    out={"schema":"openazrael.kg001.candidate4_preflight","version":133,
          "status":"FAIL","candidate":"KG-001 Candidate 4","export_allowed":False,
          "reason":reason}
     if details is not None: out["details"]=details
@@ -40,7 +40,7 @@ def main():
     ap.add_argument("--godot")
     ap.add_argument("--demo-dir",type=Path)
     args=ap.parse_args()
-    OUT.unlink(missing_ok=True);AUDIO_RESULT.unlink(missing_ok=True)
+    OUT.unlink(missing_ok=True);AUDIO_RESULT.unlink(missing_ok=True);MUSIC_ROUTE.unlink(missing_ok=True)
 
     cmd=[sys.executable,"tools/run_candidate3_preflight.py"]
     if args.godot: cmd += ["--godot",args.godot]
@@ -55,6 +55,24 @@ def main():
     source_contract=run([sys.executable,"tools/validate_candidate4_release_contract_v132.py"])
     if source_contract.returncode!=0:
         return fail("CANDIDATE4_RELEASE_CONTRACT_FAILED",{"output":source_contract.stdout[-12000:]})
+
+    if args.demo_dir is not None:
+        music_route=run([
+            sys.executable,
+            "tools/analyze_candidate4_music_route_v133.py",
+            str(args.demo_dir.resolve()),
+            "--out",
+            str(MUSIC_ROUTE),
+        ])
+        if music_route.returncode not in (0,2) or not MUSIC_ROUTE.is_file():
+            return fail("CANDIDATE4_MUSIC_ROUTE_ANALYSIS_FAILED",{
+                "returncode":music_route.returncode,
+                "output_tail":music_route.stdout[-12000:],
+            })
+    if not MUSIC_ROUTE.is_file():
+        return fail("CANDIDATE4_MUSIC_ROUTE_EVIDENCE_MISSING",{
+            "required_command":"run Candidate 4 preflight with --demo-dir <ATDEMO>",
+        })
 
     audio=run([sys.executable,"tools/validate_candidate4_audio_corpus_v132.py"])
     try:
@@ -91,9 +109,13 @@ def main():
         "path":str(AUDIO_RESULT.relative_to(ROOT)),
         "sha256":sha256(AUDIO_RESULT),
     }
+    receipt["evidence"]["candidate4_music_route_v133"]={
+        "path":str(MUSIC_ROUTE.relative_to(ROOT)),
+        "sha256":sha256(MUSIC_ROUTE),
+    }
     receipt["build_rule"]=(
         "Candidate 4 export is permitted only while exact Git HEAD, clean tree, Godot, "
-        "all inherited runtime/PPPV/fidelity evidence, room-forensic v131, complete-audio "
+        "all inherited runtime/PPPV/fidelity evidence, room-forensic v131, complete-audio/music-route "
         "v132 evidence and the exact runtime asset set remain identical to this receipt."
     )
     OUT.write_text(json.dumps(receipt,indent=2)+"\n",encoding="utf-8")
