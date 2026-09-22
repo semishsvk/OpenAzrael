@@ -13,6 +13,18 @@ func _find_interactive() -> Object:
     var hit := get_world_3d().direct_space_state.intersect_ray(q)
     return hit.get("collider") if hit else null
 
+func current_interactive() -> Object:
+    return _find_interactive()
+
+func current_cursor_id() -> String:
+    var target := _find_interactive()
+    if target == null:
+        return "POINTER"
+    if target.has_method("interaction_cursor_id"):
+        var value := String(target.call("interaction_cursor_id")).strip_edges().to_upper()
+        return value if not value.is_empty() else "USE"
+    return "USE"
+
 func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed("interact"):
         var n := _find_interactive()
