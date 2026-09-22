@@ -47,6 +47,13 @@ class GodotPPPVRuntimeGuardSourceTests(unittest.TestCase):
         self.assertIn('"room_change_sample"', self.guard)
         self.assertIn('"continuity_reset": true', self.guard)
 
+    def test_unsupported_fall_requires_missing_world_support(self) -> None:
+        self.assertIn("func _support_below_player()", self.guard)
+        self.assertIn("PhysicsRayQueryParameters3D.create", self.guard)
+        self.assertIn("and not support_ok", self.guard)
+        self.assertIn('"support_below"', self.guard)
+        self.assertIn('"support_gap"', self.guard)
+
     def test_guard_checks_live_runtime_invariants(self) -> None:
         self.assertIn("player.global_position.is_finite()", self.guard)
         self.assertIn("player.global_rotation.is_finite()", self.guard)
