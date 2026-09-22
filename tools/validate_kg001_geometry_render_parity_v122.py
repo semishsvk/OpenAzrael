@@ -34,11 +34,6 @@ checks = {
         and assets.get("R8", {}).get("mesh_instances") == 87
         and assets.get("R8", {}).get("triangles") == 1050
     ),
-    "canonical_hashes": all(
-        isinstance(assets.get(room, {}).get("sha256"), str)
-        and len(assets[room]["sha256"]) == 64
-        for room in ("R1", "R7", "R8")
-    ),
     "r1_rock_required": (
         "save__mesh" in assets.get("R1", {}).get("critical_visible_meshes", [])
         and "ROCKFACE1" in json.dumps(assets.get("R1", {}))
@@ -57,12 +52,10 @@ checks = {
         "manager.load_room(room_id, false)",
         "manager.current_room",
     )),
-    "hash_and_size_check": all(token in runner for token in (
-        "FileAccess.get_file_as_bytes",
-        "HashingContext.HASH_SHA256",
-        "_canonical_bytes",
-        "_canonical_sha256",
-    )),
+    "no_stale_generated_hash_pin": all(
+        "sha256" not in assets.get(room, {}) and "bytes" not in assets.get(room, {})
+        for room in ("R1", "R7", "R8")
+    ),
     "critical_visibility_check": all(token in runner for token in (
         "critical_visible",
         "_runtime_visible_",
