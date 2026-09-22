@@ -74,6 +74,7 @@ def main():
 
     # Cheap source-level blockers first.
     for tool in (
+        "tools/validate_kg001_trigger_events_v137.py",
         "tools/validate_candidate4_release_contract_v132.py",
         "tools/validate_candidate4_music_route_v133.py",
         "tools/validate_xmi_to_midi_v134.py",
