@@ -1,12 +1,15 @@
 {
-  "schema":"openazrael.kg001.manual_sanity",
-  "version":1,
-  "status":"PENDING",
-  "candidate_commit":"",
-  "godot_version":"",
-  "tester":"",
-  "date":"",
-  "critical_bugs":[],
-  "reproducible_softlocks":[],
-  "notes":"Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md after G00-G09 PASS. Change status to PASS only if every required manual check succeeds."
+  "schema": "openazrael.kg001.manual_sanity",
+  "version": 1,
+  "status": "PENDING",
+  "candidate_commit": "",
+  "godot_version": "",
+  "tester": "",
+  "date": "",
+  "critical_bugs": [],
+  "reproducible_softlocks": [],
+  "notes": "Complete docs/KG001_MANUAL_SANITY_CHECKLIST.md after G00-G09 PASS. Change status to PASS only if every required manual check succeeds, including Issue #6 floor support, Issue #9 human audibility, and Issue #11 visual color-key transparency.",
+  "texture_colorkey_visual_check": "PENDING",
+  "audio_audibility_check": "PENDING",
+  "floor_collision_check": "PENDING"
 }

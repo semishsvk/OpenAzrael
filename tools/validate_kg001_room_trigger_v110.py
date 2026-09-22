@@ -20,8 +20,9 @@ checks={
  "runner_bounds_checks": "inside_" in runner and "outside_" in runner,
  "persistence_check": "persistent_inventory_survives_rooms" in runner,
  "legacy_trimesh_two_sided": "ConcavePolygonShape3D" in manager and "backface_collision = true" in manager,
- "floor_probe_regression": "R1_floor_probe_hit" in runner and "PhysicsRayQueryParameters3D.create" in runner,
- "player_floor_regression": "R1_player_is_on_floor" in runner and "R1_player_did_not_fall_through" in runner and "await _settle_physics(120)" in runner,
+ "floor_probe_regression": "PhysicsRayQueryParameters3D.create" in runner and "FLOOR_SUPPORT_PROBES" in runner,
+ "multiroom_floor_probe_set": '["R1", "spaview"]' in runner and '["R7", "view"]' in runner and '["R8", "Object14"]' in runner,
+ "player_floor_regression": 'probe_room + "_player_is_on_floor"' in runner and 'probe_room + "_player_did_not_fall_through"' in runner and "await _settle_physics(120)" in runner,
  "issue_6_regression_link": "Issue #6" in runner
 }
 failed=[k for k,v in checks.items() if not v]

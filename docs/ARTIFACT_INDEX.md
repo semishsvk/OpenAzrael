@@ -1,7 +1,7 @@
 # OpenAzrael Artifact Index
 
 ## Current canonical checkpoint
-- `v116-context-v28` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
+- `v116-context-v32` — technical base v116 plus current context/Git/quality/architecture/documentation-consistency layer.
 
 ## Bug reporting / diagnostics
 - `docs/BUG_REPORTING.md`
@@ -12,9 +12,9 @@
 ## Localization architecture
 - `docs/LOCALIZATION_ARCHITECTURE.md`
 - `docs/DECISIONS.md` ADR-024
-- implementation deliberately deferred until after Candidate 1 runtime/manual validation
+- implementation deliberately deferred until after the first clean Candidate 2 runtime/manual validation
 
-## KG-001 Candidate 1 diagnostics v116
+## KG-001 Candidate 2 diagnostics v116
 - `docs/KG001_CANDIDATE_DIAGNOSTICS_V116.md`
 - `scripts/candidate_diagnostics_v116.gd`
 - `scripts/kg001_trigger_debug_v116.gd`
@@ -58,6 +58,27 @@
 - `tools/kg001_status_v111.py`
 - `data/tests/kg001_status_v111.json`
 - `docs/KG001_STATUS_V111.md`
+
+## Major legacy color-key regression — Issue #11
+- `tools/texture_pipeline/legacy_colorkey.py` — audited raw source-palette sentinel selection; zero/multiple used sentinels fail closed
+- `tools/texture_pipeline/azf_decode_v14.py`
+- `tools/texture_pipeline/export_xaf_glb_v8.py`
+- `tools/validate_kg001_texture_colorkey_v116.py`
+- `data/tests/kg001_texture_colorkey_contract_v116.json`
+- `data/tests/kg001_colorkey_corpus_audit_v116.json` — real 86-AZF metadata audit bound to demo/archive and per-texture SHA-256
+- Candidate restore integration in `tools/restore_candidate_assets.py`
+- known R1 regressions: KEYHOLE# and TONG6 -> MINETON#
+- broader original transparency/blending semantics remain HOLD
+- GitHub Issue #11 remains open pending corrected asset/runtime/manual visual retest
+
+## Major physical-audio regression — Issue #9
+- `scripts/kg001_audio_runtime_runner_v116.gd`
+- `tools/validate_kg001_audio_runtime_v116.py`
+- `data/tests/kg001_audio_runtime_contract_v116.json`
+- source-safe `data/audio/legacy_world_ir.json`
+- reproducible local restore: `tools/restore_candidate_assets.py` and `tools/prepare_candidate_audio.py`
+- recovered ambient count contract: R1=2, R7=3, R8=2
+- GitHub Issue #9 remains open pending Candidate 2 runtime/manual audibility retest
 
 ## Critical collision regression — Issue #6
 - source fix in `scripts/room_manager.gd`: two-sided legacy `ConcavePolygonShape3D` collision

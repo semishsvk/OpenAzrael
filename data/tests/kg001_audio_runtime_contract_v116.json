@@ -1,0 +1,37 @@
+{
+  "schema": "openazrael.kg001.audio_runtime_contract",
+  "version": 116,
+  "status": "SOURCE_CONTRACT_PASS",
+  "issue": "#9",
+  "required_assets": [
+    "S152V2.WAV",
+    "S137.WAV",
+    "S121.WAV",
+    "799SECDR.WAV",
+    "S174ELP1.WAV",
+    "S174ELP2.WAV",
+    "S186.WAV"
+  ],
+  "ambient_ir": "data/audio/legacy_world_ir.json",
+  "expected_ambient_counts": {
+    "R1": 2,
+    "R7": 3,
+    "R8": 2
+  },
+  "event_probe": {
+    "graph": "R8_LENS_PLACE",
+    "asset": "S152V2.WAV"
+  },
+  "checks": [
+    "physical resources exist and load as AudioStream",
+    "Master bus exists, is unmuted and is not effectively silent",
+    "R1/R7/R8 ambient emitter counts match recovered IR",
+    "ambient players have valid streams and playing=true",
+    "Event-IR play_sound creates a physical AudioStreamPlayer with playing=true"
+  ],
+  "evidence_boundary": {
+    "human_audibility": "G10_MANUAL",
+    "original_miles_pan_volume_parity": "HOLD_SEPARATE_ORACLE"
+  },
+  "runtime_status": "NOT_EXECUTED"
+}

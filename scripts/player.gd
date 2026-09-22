@@ -14,6 +14,9 @@ func _ready() -> void:
     Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func teleport_eye_to(eye_pos: Vector3, forward: Vector3) -> void:
+    # RoomManager can place the player before this sibling's _ready runs.
+    if camera == null:
+        camera = get_node("Camera3D") as Camera3D
     global_position = eye_pos - Vector3.UP * eye_height
     velocity = Vector3.ZERO
     var f := Vector3(forward.x, 0.0, forward.z).normalized()

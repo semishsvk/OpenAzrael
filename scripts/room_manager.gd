@@ -121,13 +121,21 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
 
 func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
-    var pickup_names := PICKUPS.get(room_id, {})
+    var pickup_names: Dictionary = PICKUPS.get(room_id, {})
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
     for n in nodes:
         if not (n is MeshInstance3D):
             continue
         var mi := n as MeshInstance3D
+        # Legacy XAF diffuse materials have no authored PBR metalness. The
+        # SimpleMaterial GLB conversion otherwise inherits glTF metallic=1,
+        # which can render the imported room nearly black.
+        if mi.mesh != null:
+            for surface in range(mi.mesh.get_surface_count()):
+                var imported := mi.get_active_material(surface) as BaseMaterial3D
+                if imported != null:
+                    imported.metallic = 0.0
         var obj_name := _object_name_for_mesh(mi)
         if hidden.has(obj_name):
             mi.visible = false
