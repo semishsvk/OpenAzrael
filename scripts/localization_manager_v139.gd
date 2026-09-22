@@ -33,17 +33,33 @@ func _read_json(path: String) -> Dictionary:
         return {}
     return parsed
 
-func _register_locale(raw: Dictionary, base_prefix: String, allow_override: bool = false) -> void:
+func _register_locale(
+    raw: Dictionary,
+    base_prefix: String,
+    allow_override: bool = false,
+    external: bool = false
+) -> void:
     var row := raw.duplicate(true)
     var code := String(row.get("code", "")).strip_edges()
-    var file_path := String(row.get("file", "")).strip_edges()
+    var file_path := String(row.get("file", "")).strip_edges().replace("\\", "/")
     if code.is_empty() or file_path.is_empty():
         return
     if locale_by_code.has(code) and not allow_override:
         push_warning("Localization: external locale duplicates built-in code " + code)
         return
+    # External manifests are data-only extension points. Keep their pack paths
+    # inside user://localization and reject traversal/absolute resource paths.
+    if external and (
+        file_path.contains("..")
+        or file_path.begins_with("/")
+        or file_path.contains("://")
+    ):
+        push_warning("Localization: unsafe external pack path for " + code)
+        return
     var resolved := file_path
-    if not (resolved.begins_with("res://") or resolved.begins_with("user://")):
+    if external:
+        resolved = base_prefix.path_join(file_path)
+    elif not (resolved.begins_with("res://") or resolved.begins_with("user://")):
         resolved = base_prefix.path_join(resolved)
     row["_resolved_file"] = resolved
     if locale_by_code.has(code):
@@ -60,19 +76,32 @@ func _load_manifest() -> void:
     locale_rows.clear()
     locale_by_code.clear()
     pack_cache.clear()
+    if (
+        String(manifest.get("schema", "")) != "openazrael.localization_manifest"
+        or int(manifest.get("version", -1)) != 139
+    ):
+        push_error("Localization: invalid built-in manifest contract")
+        manifest = {}
+        return
     fallback_locale = String(manifest.get("fallback_locale", "en"))
     for raw in manifest.get("locales", []):
         if raw is Dictionary:
-            _register_locale(raw, "res://", true)
+            _register_locale(raw, "res://", true, false)
 
     # Optional external language packs. Their manifest uses the same schema and
     # lives under user://localization. External packs may add languages without
     # modifying the project, but cannot silently override a built-in locale.
     if FileAccess.file_exists(EXTERNAL_MANIFEST_PATH):
         var external := _read_json(EXTERNAL_MANIFEST_PATH)
-        for raw in external.get("locales", []):
-            if raw is Dictionary:
-                _register_locale(raw, "user://localization", false)
+        if (
+            String(external.get("schema", "")) != "openazrael.localization_manifest"
+            or int(external.get("version", -1)) != 139
+        ):
+            push_warning("Localization: ignoring incompatible external manifest")
+        else:
+            for raw in external.get("locales", []):
+                if raw is Dictionary:
+                    _register_locale(raw, "user://localization", false, true)
 
 func available_locales() -> Array[Dictionary]:
     var out: Array[Dictionary] = []
