@@ -14,7 +14,7 @@ TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
 FORBIDDEN_TRACKED_PREFIXES=(
     "original/","raw/","source_original/","data/audio/original_audio/",
-    "assets/audio/","assets/rooms/","assets/textures/classic/"
+    "assets/audio/","assets/characters/","assets/rooms/","assets/textures/classic/"
 )
 FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
