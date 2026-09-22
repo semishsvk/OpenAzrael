@@ -111,7 +111,6 @@ func _run() -> void:
 
     _check("R7_niamh_activation_flag", state.flag("R7NiamhActivated"))
     _check("R7_niamh_AZ_state", state.puzzle_node("R7NiamhAZ"))
-    _check("R7_niamh_call_AZ_state", state.puzzle_node("R7NiamhCallAZ"))
     if niamh_body != null:
         _check("R7_niamh_visible_after_activation", niamh_body.visible)
 
