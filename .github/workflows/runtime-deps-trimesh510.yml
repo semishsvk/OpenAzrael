@@ -1,0 +1,30 @@
+name: Runtime dependency helper
+
+on:
+  push:
+    branches:
+      - tooling/runtime-deps-trimesh510
+
+permissions:
+  contents: read
+
+jobs:
+  trimesh-wheel:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download exact trimesh wheel
+        run: |
+          set -euo pipefail
+          python -m pip download --only-binary=:all: --no-deps trimesh==5.1.0 -d dist
+          sha256sum dist/trimesh-5.1.0-py3-none-any.whl | tee dist/SHA256SUMS
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: trimesh-5.1.0-wheel
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
