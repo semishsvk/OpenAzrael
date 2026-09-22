@@ -11,11 +11,13 @@ EXPECTED_TRANSITIONS = {
     ("R8", "zxorrery", "R1", "Object14", "entcori"),
 }
 EXPECTED_GRAPHS = {
-    "R7_WATER_SWITCHBOARD_SOLVED", "R7_WELL_TONGS_USE",
+    "R7_WATER_SWITCHBOARD_SOLVED", "R7_WELL_TONGS_USE", "R7_NIAMH_ACTIVATE",
     "R8_LENS_PLACE", "R8_OPTICAL_START",
     "R8_SECRET_DOOR_OPEN", "R8_TAKE_SHIELD",
 }
-ALLOWED_OPS = {"set_flag", "set_puzzle_node", "add_inventory", "remove_inventory", "play_sound"}
+STATE_OPS = {"set_flag", "set_puzzle_node", "add_inventory", "remove_inventory"}
+REQUEST_OPS = {"request_character_animation", "request_conversation"}
+ALLOWED_OPS = STATE_OPS | REQUEST_OPS | {"play_sound"}
 errors = []
 def fail(message): errors.append(message)
 def finite_vec3(value):
@@ -36,11 +38,19 @@ if events:
             op=action.get("op")
             if op not in ALLOWED_OPS: fail(f"unsupported op {graph_id}[{index}]: {op}")
             if not action.get("confidence"): fail(f"missing confidence {graph_id}[{index}]")
-            if op!="play_sound" and not action.get("key"): fail(f"missing state key {graph_id}[{index}]")
+            if op in STATE_OPS and not action.get("key"):
+                fail(f"missing state key {graph_id}[{index}]")
             if op=="play_sound":
                 asset=str(action.get("asset",""))
                 if not asset.upper().endswith(".WAV") or "/" in asset or "\\" in asset:
                     fail(f"unsafe/invalid sound asset {graph_id}[{index}]: {asset}")
+            if op in REQUEST_OPS:
+                if action.get("source_required") is not True:
+                    fail(f"request op not source-required {graph_id}[{index}]")
+                if not str(action.get("character","")).strip() or not str(action.get("family","")).strip():
+                    fail(f"incomplete request identity {graph_id}[{index}]")
+                if op=="request_character_animation" and not str(action.get("target_object","")).strip():
+                    fail(f"missing animation target {graph_id}[{index}]")
     if not events.get("hold"): fail("event graph HOLD boundary missing")
 
 if xaf:
