@@ -1,0 +1,215 @@
+{
+  "schema": "openazrael.trigger_event_ir",
+  "version": 137,
+  "scope": "KG-001 demo R1/R7/R8 authored XAF trigger/helper classification and source-safe runtime bindings",
+  "policy": {
+    "every_xaf_trigger_must_be_classified": true,
+    "unknown_semantics_fail_closed": true,
+    "guessed_animation_fallback_forbidden": true,
+    "source_animation_required_for_animation_events": true
+  },
+  "rooms": {
+    "R1": [
+      {
+        "trigger": "zxcoriR2",
+        "class": "transition",
+        "authority": "data/xaf_trigger_evidence.json#demo_transitions",
+        "confidence": "HIGH"
+      },
+      {
+        "trigger": "zxcoriR5",
+        "class": "transition",
+        "authority": "data/xaf_trigger_evidence.json#demo_transitions",
+        "confidence": "HIGH"
+      },
+      {
+        "trigger": "zxentry",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Authored activation-looking plane; exact demo side effect not yet source-bound."
+      },
+      {
+        "trigger": "zyR05",
+        "class": "helper_geometry",
+        "confidence": "HIGH",
+        "reason": "Companion helper plane adjacent to zxcoriR5 transition."
+      },
+      {
+        "trigger": "zyR02",
+        "class": "helper_geometry",
+        "confidence": "HIGH",
+        "reason": "Companion helper plane adjacent to zxcoriR2 transition."
+      },
+      {
+        "trigger": "textwall",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Authored transparent plane; exact text/event semantics not yet source-bound."
+      },
+      {
+        "trigger": "Object03",
+        "class": "helper_geometry",
+        "confidence": "MEDIUM-HIGH",
+        "reason": "Large transparent room helper surface; no source-backed gameplay action binding."
+      }
+    ],
+    "R7": [
+      {
+        "trigger": "zxwell2R6",
+        "class": "transition",
+        "authority": "data/xaf_trigger_evidence.json#demo_transitions",
+        "confidence": "HIGH"
+      },
+      {
+        "trigger": "zxactghost",
+        "class": "activation_enter",
+        "event_graph": "R7_NIAMH_ACTIVATE",
+        "one_shot_flag": "R7NiamhActivated",
+        "confidence": "HIGH",
+        "evidence": [
+          "R7.XAF authored transparent trigger zxactghost",
+          "ROOMS.DAT identifiers R7NiamhAZ and R7NiamhCallAZ",
+          "PUZZLES.DAT Niamh/Conv action family at source offsets 590, 970, 1160, 1350, 1540, 1730",
+          "CHARACTE.DAT -> Niamh -> NIAMH.DAT verified character data path"
+        ],
+        "animation_requirement": {
+          "character": "Niamh",
+          "family": "Conv",
+          "target_object": "nibody",
+          "exact_original_keyframes": "HOLD",
+          "fallback": "NONE"
+        }
+      },
+      {
+        "trigger": "zyR06",
+        "class": "helper_geometry",
+        "confidence": "HIGH",
+        "reason": "Companion helper plane for the R7 exit relation."
+      },
+      {
+        "trigger": "well_pzpa2",
+        "class": "helper_geometry",
+        "confidence": "HIGH",
+        "reason": "CLEAR_OBJECT parent/helper for authored well pipe geometry."
+      },
+      {
+        "trigger": "well_pzpa1",
+        "class": "helper_geometry",
+        "confidence": "HIGH",
+        "reason": "CLEAR_OBJECT parent/helper for authored well pipe geometry."
+      },
+      {
+        "trigger": "death",
+        "class": "hazard_HOLD",
+        "confidence": "MEDIUM",
+        "reason": "Name/location and deep-well evidence indicate hazard family, but exact original death action is not yet decoded."
+      },
+      {
+        "trigger": "zydeath",
+        "class": "hazard_HOLD",
+        "confidence": "HIGH",
+        "reason": "Deep-shaft helper/death plane; exact original death action remains source-HOLD."
+      },
+      {
+        "trigger": "zxdeath",
+        "class": "hazard_HOLD",
+        "confidence": "MEDIUM-HIGH",
+        "reason": "Authored death activation plane; exact original death action remains source-HOLD."
+      }
+    ],
+    "R8": [
+      {
+        "trigger": "zxminehd",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Likely production-world relation retained in demo geometry; no demo action may be guessed."
+      },
+      {
+        "trigger": "zxsecret",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Secret-area activation-looking plane; exact action not yet source-bound."
+      },
+      {
+        "trigger": "zxorrery",
+        "class": "transition",
+        "authority": "data/xaf_trigger_evidence.json#demo_transitions",
+        "confidence": "HIGH"
+      },
+      {
+        "trigger": "zyR06",
+        "class": "helper_geometry",
+        "confidence": "MEDIUM-HIGH",
+        "reason": "Companion helper plane near mine-head side."
+      },
+      {
+        "trigger": "zyR09",
+        "class": "helper_geometry",
+        "confidence": "HIGH",
+        "reason": "Companion helper plane adjacent to the orrery transition."
+      },
+      {
+        "trigger": "zxplate",
+        "class": "condition_zone",
+        "confidence": "HIGH",
+        "authority": "scripts/r8_bible_interaction.gd",
+        "reason": "Production interaction condition; must not auto-fire merely on entry."
+      },
+      {
+        "trigger": "zxsound",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Sound-zone name alone is insufficient to bind an audio asset."
+      },
+      {
+        "trigger": "zxsound1",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Sound-zone name alone is insufficient to bind an audio asset."
+      },
+      {
+        "trigger": "zxsound2",
+        "class": "UNKNOWN_HOLD",
+        "confidence": "UNKNOWN",
+        "reason": "Sound-zone name alone is insufficient to bind an audio asset."
+      },
+      {
+        "trigger": "mirror2",
+        "class": "helper_geometry",
+        "confidence": "MEDIUM-HIGH",
+        "reason": "Transparent authored mirror/helper geometry; no direct entry side effect is proven."
+      },
+      {
+        "trigger": "mirror03",
+        "class": "helper_geometry",
+        "confidence": "MEDIUM-HIGH",
+        "reason": "Transparent authored mirror/helper geometry; no direct entry side effect is proven."
+      },
+      {
+        "trigger": "zxwater",
+        "class": "state_visual",
+        "confidence": "HIGH",
+        "authority": "scripts/room_manager.gd::_setup_r8",
+        "reason": "Water visual is driven by R8BathDrain state, not player trigger entry."
+      },
+      {
+        "trigger": "zxshield",
+        "class": "helper_geometry",
+        "confidence": "MEDIUM-HIGH",
+        "reason": "Shield-area helper; pickup/reveal is driven by DoorR8/R8TakeShield state."
+      },
+      {
+        "trigger": "Object01",
+        "class": "support_collision",
+        "confidence": "HIGH",
+        "authority": "scripts/room_manager.gd::_create_world_collision",
+        "reason": "Invisible authored R8 entrance support quad retained for collision, not gameplay dispatch."
+      }
+    ]
+  },
+  "holds": [
+    "Original Niamh character-ANI keyframes/timing are not decoded in the tracked source-safe corpus; do not synthesize a tween or substitute AI-generated animation.",
+    "The exact spoken line associated with zxactghost is not source-verified in the tracked corpus; do not hard-code 'Oisin, is that you?' as canonical evidence.",
+    "R1 zxentry/textwall, R7 death-family action semantics, and R8 zxminehd/zxsecret/zxsound* remain explicit HOLD until original action bindings are recovered."
+  ]
+}
