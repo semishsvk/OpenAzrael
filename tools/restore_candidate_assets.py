@@ -7,15 +7,35 @@ from pathlib import Path
 import argparse, hashlib, json, shutil, subprocess, sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'tools/texture_pipeline'))
+from tools.remaster_framework.source_registry import resolve_source
 from azf_decode_v14 import save_png
 from export_xaf_glb_v8 import parse
 from prepare_candidate_audio import prepare
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('demo_dir', type=Path)
-    a = ap.parse_args(); src = a.demo_dir.resolve()
+    ap.add_argument(
+        'demo_dir',
+        type=Path,
+        nargs='?',
+        help=(
+            'Extracted ATDEMO directory. If omitted, resolve the persistent '
+            'registered demo corpus automatically.'
+        ),
+    )
+    ap.add_argument(
+        '--source-home',
+        type=Path,
+        help='Optional OPENAZRAEL_SOURCE_HOME override.',
+    )
+    a = ap.parse_args()
+    src = (
+        a.demo_dir.resolve()
+        if a.demo_dir is not None
+        else resolve_source('demo', home=a.source_home)
+    )
     textures = ROOT / 'assets/textures/classic'; textures.mkdir(parents=True, exist_ok=True)
     rooms = ROOT / 'assets/rooms'; rooms.mkdir(parents=True, exist_ok=True)
     audio = ROOT / 'assets/audio'; audio.mkdir(parents=True, exist_ok=True)
