@@ -15,8 +15,28 @@ func _find_interactive() -> Object:
     q.collision_mask = 2
     q.collide_with_areas = true
     q.collide_with_bodies = false
-    var hit := get_world_3d().direct_space_state.intersect_ray(q)
-    return hit.get("collider") if hit else null
+    var space := get_world_3d().direct_space_state
+    var hit := space.intersect_ray(q)
+    if hit:
+        return hit.get("collider")
+
+    # A normal interaction standoff can place the camera inside a large
+    # authored Area3D (door interaction spheres are the main example).
+    # Physics ray queries do not necessarily report the containing Area when
+    # the ray origin starts inside it, so fall back to an overlap query at the
+    # exact ray origin. This preserves ray-first cursor semantics and only
+    # resolves the otherwise-unreachable containing interactive Area.
+    var point_q := PhysicsPointQueryParameters3D.new()
+    point_q.position = from
+    point_q.collision_mask = 2
+    point_q.collide_with_areas = true
+    point_q.collide_with_bodies = false
+    var overlaps := space.intersect_point(point_q, 16)
+    for row in overlaps:
+        var collider = row.get("collider")
+        if collider != null and collider.has_method("interact"):
+            return collider
+    return null
 
 func current_interactive() -> Object:
     return _find_interactive()
