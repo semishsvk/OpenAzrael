@@ -19,7 +19,7 @@ checks={
  "required_categories":set(contract.get("required_asset_categories",[])).issubset(cats),
  "fingerprints":all(len(str(a.get("sha256","")))==64 and int(a.get("bytes",0))>0 for a in assets),
  "restore_no_resample":"resize(" not in restore and "thumbnail(" not in restore,
- "restore_rgb_only_hold":"HOLD_OPAQUE_RGB_SOURCE_PIXELS_ONLY" in restore,
+ "overlay_alpha_policy":"PALETTE_INDEX_0_TRANSPARENT_SOURCE_OVERLAY" in restore and 'category in {"hud_frame","save_preview","replay_animation","font_strip"}' in restore,
  "no_guessed_menu":any("No guessed New Game" in s for s in manifest.get("unresolved",[])) is False and "No invented menu option" in manifest.get("policy",""),
  "readme_roles":all(any(token in s for s in manifest.get("proven_behaviour",[])) for token in ("top-left HUD button scans","button below scan toggles map","right-hand HUD button brings up")),
  "runtime_boundary":"forensic/source inventory only" in contract.get("runtime_boundary","").lower(),
