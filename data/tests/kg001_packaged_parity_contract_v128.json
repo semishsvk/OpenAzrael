@@ -1,0 +1,9 @@
+{
+  "schema":"openazrael.kg001.packaged_parity_contract",
+  "version":128,
+  "status":"SOURCE_CONTRACT_READY_EXPORT_PENDING",
+  "candidate_target":"KG-001 Candidate 4",
+  "requires":["exported EXE/PCK startup smoke","every preflight runtime asset exists in package with exact bytes/SHA-256","pinned R1/R7/R8 room mesh set/counts/material/UV/transform/bounds parity inside exported build","fresh object visibility policy inside exported build"],
+  "metadata":["data/runtime_generated/runtime_asset_manifest_v128.json","data/runtime_generated/demo_room_fidelity_v124.json","data/runtime_visibility_policy_v123.json"],
+  "evidence_boundary":"PASS is produced only by executing the v128 runner through the exported executable/PCK, never from editor/project-run evidence."
+}
