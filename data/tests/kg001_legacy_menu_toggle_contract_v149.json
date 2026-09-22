@@ -1,0 +1,45 @@
+{
+  "schema": "openazrael.kg001.legacy_menu_toggle_contract",
+  "version": 149,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "source_evidence": {
+    "readme": "The original demo README states that the right-hand HUD button brings up the load/save box and adjusts volume.",
+    "service_button": "NBUT2 is the source-proven right-hand OPTIONS/SERVICE HUD control.",
+    "frame_sequence": {
+      "closed_to_open": [
+        "SAVE00",
+        "SAVE01",
+        "SAVE02",
+        "SAVE03",
+        "SAVE04",
+        "SAVE05",
+        "SAVE06"
+      ],
+      "stable_open": "SAVE06",
+      "hover": {
+        "SAVE": "SAVE07",
+        "LOAD": "SAVE08",
+        "MUSIC": "SAVE09",
+        "SFX": "SAVE10",
+        "QUIT": "SAVE11"
+      },
+      "confirm": {
+        "SAVE": "SAVE12",
+        "LOAD": "SAVE13"
+      }
+    },
+    "close_inference": "No separate close control exists in SAVE06..SAVE13; the same OPTIONS hotspot remains exposed while the panel is open. Therefore the right-hand OPTIONS control is used as an open/close toggle.",
+    "escape_rule": "ESC is documented as Skip Response for conversations and is not assigned to service-menu close."
+  },
+  "runtime_rules": [
+    "left click OPTIONS while closed opens the service menu",
+    "left click the same OPTIONS hotspot while open closes the service menu",
+    "right mouse button does not close the service menu",
+    "opening stable visual is SAVE06, not SAVE13",
+    "hover visuals use SAVE07 through SAVE11 according to action",
+    "SAVE confirmation uses SAVE12 and LOAD confirmation uses SAVE13",
+    "closing clears pending service action/volume state and resumes gameplay"
+  ],
+  "timing_boundary": "SAVE00..SAVE06 ordering is source-proven. Exact 1996 frame timing is still HOLD and is not guessed by v149."
+}
