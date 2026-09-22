@@ -7,7 +7,8 @@ contract=json.loads((ROOT/"data/tests/kg001_transform_parity_contract_v125.json"
 checks={
  "schema":contract.get("schema")=="openazrael.kg001.transform_parity_contract" and contract.get("version")==125,
  "all_rooms":contract.get("scope")==["R1","R7","R8"],
- "transform":all(x in runner for x in ("transform_values","TRANSFORM_TOL","_transform")),
+ "transform":all(x in runner for x in ("transform_values","TRANSFORM_ABS_TOL","TRANSFORM_REL_TOL","arrays_close_scaled","_transform")),
+ "declared_tolerance":contract.get("transform_tolerance",{}).get("absolute")==0.0001 and contract.get("transform_tolerance",{}).get("relative")==0.0000001,
  "bounds":all(x in runner for x in ("bounds_values","BOUNDS_TOL","_bounds")),
  "fresh_state":"state.reset_all()" in runner,
  "no_reposition":all(x not in runner for x in ("global_position =","rotation =","scale =")),
