@@ -14,7 +14,8 @@ import hashlib, json, sys
 ROOT=Path(__file__).resolve().parents[1]
 IR=ROOT/"data/audio/legacy_world_ir.json"
 RESTORE=ROOT/".tmp/kg001/candidate4_audio_restore_v132.json"
-MUSIC=ROOT/".tmp/kg001/candidate4_music_route_v133.json"\nMUSIC_RUNTIME=ROOT/".tmp/kg001/candidate4_music_runtime_v135.json"
+MUSIC=ROOT/".tmp/kg001/candidate4_music_route_v133.json"
+MUSIC_RUNTIME=ROOT/".tmp/kg001/candidate4_music_runtime_v135.json"
 AUDIO=ROOT/"assets/audio"
 
 def sha256(path: Path) -> str:
