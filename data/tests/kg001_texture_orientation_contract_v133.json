@@ -1,0 +1,46 @@
+{
+  "schema": "openazrael.kg001.texture_orientation_contract",
+  "version": 133,
+  "status": "SOURCE_CONTRACT_READY_ASSET_AUDIT_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "gltf_texture_origin": "upper_left",
+  "expected_classic_texture_count": 86,
+  "expected_used_texture_count": 75,
+  "expected_textured_primitive_count": 176,
+  "expected_unused_textures": [
+    "BLOOD2#.png",
+    "BLOOD5#.png",
+    "BLOOD6#.png",
+    "BLOOS3#.png",
+    "BLOOS4#.png",
+    "EUEYE.png",
+    "EUFRNT.png",
+    "EUSIDE.png",
+    "EUTOP.png",
+    "NIABOD.png",
+    "NIAHED.png"
+  ],
+  "required_uv_corrections": {
+    "KEYHOLE#": "FLIP_V_CANDIDATE3_KEYHOLE",
+    "BAPMSG": "FLIP_V_V133_TAPESTRY_MESSAGE"
+  },
+  "allowed_source_authored_orientation_variants": [
+    {
+      "room": "R8",
+      "node": "broken01__mesh",
+      "texture": "BAPBROK#",
+      "rationale": "Broken-shard cutout has no semantic upright direction; this per-object inversion is preserved as source-authored mapping."
+    }
+  ],
+  "pass_requires": [
+    "all 86 decoded classic PNG files match the canonical graphics-pipeline inventory",
+    "exactly 75 textures are referenced by R1/R7/R8 and exactly 176 primitives are textured",
+    "every referenced texture resolves; zero missing bindings",
+    "embedded GLB texture pixels are identical to the decoded canonical PNG",
+    "every textured primitive has finite UVs with UV count equal to vertex count",
+    "only documented UV corrections are present in regenerated room manifests",
+    "all strong vertical mappings are upright except explicit source-authored orientation variants",
+    "KEYHOLE# and BAPMSG are explicitly upright in world space under glTF upper-left coordinates"
+  ],
+  "evidence_boundary": "Asset-backed v133 must PASS on regenerated room GLBs and manifests before Candidate export."
+}
