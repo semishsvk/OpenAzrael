@@ -1,0 +1,26 @@
+{
+  "schema": "openazrael.kg001.interaction_cursor_contract",
+  "version": 142,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "source_manifest": "data/ui/legacy_cursor_manifest_v142.json",
+  "source_cursor_count": 35,
+  "required_runtime_icons": [
+    "POINTER",
+    "TAKE",
+    "USE",
+    "PULL",
+    "ROT",
+    "CANT"
+  ],
+  "pass_requires": [
+    "all 35 original ATDEMO/MICE PCX files fingerprint-match before conversion",
+    "runtime PNGs preserve source RGB and use only palette index 0 as transparency",
+    "no resize/resampling and no generated/AI cursor artwork",
+    "B-prefixed variants remain HOLD_UNRESOLVED",
+    "every current demo interactable exposes interaction_cursor_id",
+    "blocked prerequisites show CANT",
+    "HUD uses source icons at integer 2x scale with nearest filtering",
+    "Candidate preflight and package asset manifest bind all 35 restored cursor PNGs"
+  ],
+  "evidence_boundary": "Asset-backed Godot v142 PASS is required; source validation alone does not prove graphical presentation."
+}
