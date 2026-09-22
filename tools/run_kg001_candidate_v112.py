@@ -49,6 +49,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_portal_geometry_v129.py"],
     [sys.executable,"tools/validate_kg001_interaction_reachability_v130.py"],
     [sys.executable,"tools/validate_kg001_room_forensic_report_v131.py"],
+    [sys.executable,"tools/validate_kg001_texture_orientation_v133.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -182,6 +183,7 @@ def main():
         ("fidelity_v124",[sys.executable,"tools/build_demo_room_fidelity_manifest_v124.py"]),
         ("state_matrix_v127",[sys.executable,"tools/kg001_state_matrix_v127.py"]),
         ("asset_manifest_v128",[sys.executable,"tools/build_runtime_asset_manifest_v128.py"]),
+        ("texture_orientation_v133",[sys.executable,"tools/audit_demo_texture_orientation_v133.py"]),
     ]
     for name,cmd in generation_commands:
         proc=run(cmd)
