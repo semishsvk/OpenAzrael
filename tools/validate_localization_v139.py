@@ -39,6 +39,17 @@ def main():
       "generic_extractors":all(x in tool for x in ["text_lines","binary_ascii","json_strings","stable_id","placeholder_mismatch"]),
       "runtime_manifest_driven":all(x in manager for x in ["MANIFEST_PATH","available_locales()","set_locale(","fallback_locale","USER_CONFIG_PATH","TranslationServer.set_locale"]),
       "external_pack_support":all(x in manager for x in ["EXTERNAL_MANIFEST_PATH","user://localization","_register_locale("]),
+      "external_manifest_contract":all(x in manager for x in [
+          'String(external.get("schema", "")) != "openazrael.localization_manifest"',
+          'int(external.get("version", -1)) != 139',
+          "ignoring incompatible external manifest"
+      ]),
+      "external_pack_path_confined":all(x in manager for x in [
+          "unsafe external pack path",
+          'file_path.contains("..")',
+          'file_path.contains("://")',
+          '_register_locale(raw, "user://localization", false, true)'
+      ]),
       "rtl_support":'Control.LAYOUT_DIRECTION_RTL' in menu,
       "runtime_fallback":'if value.is_empty() and current_locale != fallback_locale:' in manager,
       "menu_runtime_switch":all(x in menu for x in ["OptionButton","available_locales()","set_locale(","KEY_ESCAPE"]),
