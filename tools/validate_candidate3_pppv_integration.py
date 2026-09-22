@@ -13,6 +13,7 @@ acceptance = json.loads(read("data/kg001_acceptance_contract.json"))
 preflight = read("tools/run_candidate3_preflight.py")
 pppv_runner = read("tools/run_candidate3_pppv_v2.py")
 candidate_runner = read("tools/run_kg001_candidate_v112.py")
+gate_manifest = read("tools/kg001_gate_manifest.py")
 status = read("tools/kg001_status_v112.py")
 room_manager = read("scripts/room_manager.gd")
 r1_runner = read("scripts/kg001_r1_route_runner_v119.gd")
@@ -30,8 +31,8 @@ checks = {
         and contract.get("candidate") == "KG-001 Candidate 3"
     ),
     "candidate3_runtime_authority_preserved": (
-        '"r1_route_v119"' in candidate_runner
-        and '"collision_v120"' in candidate_runner
+        '"r1_route_v119"' in gate_manifest
+        and '"collision_v120"' in gate_manifest
         and "R1/Object02" in room_manager
         and "Collision_Object02" in r1_runner
         and "R1_Object02_not_exempt" in collision_runner
@@ -67,7 +68,7 @@ checks = {
         and "PPPV_V2_RUNTIME_FAILED" in preflight
         and "PPPV_V2_EVIDENCE_MISSING" in preflight
         and "PPPV_V2_INVARIANT_FAILED" in preflight
-        and all(name in preflight for name in (
+        and all(name in gate_manifest for name in (
             "scenario_suite",
             "scenario_suite_integrity",
             "playthrough_evaluation",
@@ -76,9 +77,9 @@ checks = {
         ))
     ),
     "source_gate_includes_framework": (
-        "tools.remaster_framework.cli" in candidate_runner
-        and "tools/remaster_framework/tests" in candidate_runner
-        and "runtime_capabilities" in candidate_runner
+        "tools.remaster_framework.cli" in gate_manifest
+        and "tools/remaster_framework/tests" in gate_manifest
+        and "runtime_capabilities" in gate_manifest
     ),
     "acceptance_policy_requires_pppv": (
         acceptance.get("release_policy", {}).get("candidate3_pppv_v2_required") is True

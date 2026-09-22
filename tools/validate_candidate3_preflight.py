@@ -2,6 +2,10 @@
 from pathlib import Path
 import sys
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from tools.kg001_gate_manifest import (
     CANDIDATE3_REQUIRED_RUNTIME,
     CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE,
@@ -10,10 +14,6 @@ from tools.kg001_gate_manifest import (
 )
 import tools.run_kg001_candidate_v112 as candidate_runner
 import tools.run_candidate3_preflight as candidate3_preflight
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 preflight = (ROOT / "tools/run_candidate3_preflight.py").read_text(encoding="utf-8")
 exporter = (ROOT / "tools/export_candidate3.py").read_text(encoding="utf-8")
 runner = (ROOT / "tools/run_kg001_candidate_v112.py").read_text(encoding="utf-8")
@@ -94,10 +94,12 @@ checks = {
         and "pppv_scenario_suite_integrity.json" in pppv_runner
         and "pppv_determinism_integrity.json" in pppv_runner
     ),
-    "source_gate_runs_remaster_framework": (
-        "tools.remaster_framework.cli" in runner
-        and "tools/remaster_framework/tests" in runner
-        and "runtime_capabilities" in runner
+    "source_gate_runs_remaster_framework": any(
+        cmd[1:3] == ["-m", "tools.remaster_framework.cli"] for cmd in candidate_runner.SOURCE_COMMANDS
+    ) and any(
+        "tools/remaster_framework/tests" in cmd for cmd in candidate_runner.SOURCE_COMMANDS
+    ) and any(
+        "tools.openazrael_adapters.runtime_capabilities" in cmd for cmd in candidate_runner.SOURCE_COMMANDS
     ),
     "preflight_uses_canonical_runtime_matrix": (
         "CANDIDATE3_REQUIRED_RUNTIME" in preflight
