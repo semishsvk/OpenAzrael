@@ -26,6 +26,17 @@ const GLOBAL_EXEMPT := {
     "r3t1": true,
     "r8t3": true,
     "r8t4": true,
+    # Interactables/decorations can contain horizontal faces but are not
+    # walkable floor semantics. Their collision may sit above the visual face.
+    "save": true,
+    "nibody": true,
+    "well_pzpi1": true,
+    "well_pzpi2": true,
+    "r8s1": true,
+    "door": true,
+    "door01": true,
+    "bible": true,
+    "fontbot02": true,
 }
 const ROOM_EXEMPT := {
     "R7": {"Object02": true},
