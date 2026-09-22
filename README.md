@@ -56,6 +56,19 @@ by the accepted demo route or proves that XMI music is not used on that route.
 See `docs/CANDIDATE4_RELEASE_CRITERIA.md` and
 `data/tests/kg001_candidate4_release_contract_v132.json`.
 
+### Persistent demo / retail source bootstrap
+
+Commercial source payloads are now resolved through a private persistent source registry instead of being rediscovered for every build:
+
+```bash
+python tools/bootstrap_openazrael_sources.py register demo /private/atdemo.zip --mirror
+python tools/bootstrap_openazrael_sources.py register retail /private/azraels-tear-retail
+python tools/bootstrap_openazrael_sources.py verify all
+python tools/bootstrap_openazrael_sources.py prepare demo --restore-demo-runtime
+```
+
+Candidate preflights auto-resolve the registered demo corpus when no `--demo-dir` is supplied. See `docs/SOURCE_CORPUS_BOOTSTRAP.md`.
+
 ### Current architectural decisions
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
 - Candidate diagnostics are observational only; they do not directly mutate gameplay state.
