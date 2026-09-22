@@ -14,6 +14,7 @@ EVIDENCE_CANDIDATES = {
     "source": ("kg001_source_validation_v112.json",),
     "state_space": ("kg001_state_space_v108.json",),
     "state_fuzz": ("kg001_state_fuzz_v119.json",),
+    "collision_v120": ("kg001_collision_geometry_v120.json",),
     "v109": (
         "kg001_v109_runtime.json",
         "kg001_headless_runtime_v109.json",
@@ -155,6 +156,36 @@ def _state_fuzz_status(payload: dict[str, Any] | None) -> str:
     return "PASS"
 
 
+def _collision_v120_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    checks = payload.get("checks")
+    roles = payload.get("roles")
+    errors = payload.get("errors")
+    if (
+        payload.get("schema")
+        != "openazrael.kg001.collision_geometry_validation"
+        or payload.get("version") != 120
+        or not isinstance(checks, dict)
+        or not checks
+        or not all(value is True for value in checks.values())
+        or not isinstance(roles, list)
+        or not roles
+        or not all(
+            isinstance(row, dict) and row.get("status") == "PASS"
+            for row in roles
+        )
+        or not isinstance(errors, list)
+        or errors
+    ):
+        return "FAIL"
+    return "PASS"
+
+
 def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
     status = _status(payload)
     if status == "FAIL":
@@ -214,6 +245,7 @@ def derive_gate_rows(
     source_path: Path | None,
     state_space_path: Path | None,
     state_fuzz_path: Path | None,
+    collision_v120_path: Path | None,
     v109_path: Path | None,
     v110_path: Path | None,
     v111_path: Path | None,
@@ -229,6 +261,9 @@ def derive_gate_rows(
         "source": _load(source_path) if source_path else None,
         "state": _load(state_space_path) if state_space_path else None,
         "state_fuzz": _load(state_fuzz_path) if state_fuzz_path else None,
+        "collision_v120": (
+            _load(collision_v120_path) if collision_v120_path else None
+        ),
         "v109": _load(v109_path) if v109_path else None,
         "v110": _load(v110_path) if v110_path else None,
         "v111": _load(v111_path) if v111_path else None,
@@ -267,6 +302,10 @@ def derive_gate_rows(
             if "FAIL" in (state_space_status, state_fuzz_status)
             else "PENDING"
         )
+    )
+
+    collision_v120_status = _collision_v120_status(
+        payloads["collision_v120"]
     )
 
     rows = [
@@ -311,12 +350,14 @@ def derive_gate_rows(
                 payloads["v110"],
                 payloads["pppv_suite"],
                 payloads["pppv_suite_integrity"],
+                {"status": collision_v120_status},
             ),
             "evidence": _merge_evidence(
                 repo_root,
                 v110_path,
                 pppv_suite_path,
                 pppv_suite_integrity_path,
+                collision_v120_path,
             ),
         },
         {
@@ -440,6 +481,7 @@ def build_gate_results(
         source_path=paths["source"],
         state_space_path=state_path,
         state_fuzz_path=paths["state_fuzz"],
+        collision_v120_path=paths["collision_v120"],
         v109_path=paths["v109"],
         v110_path=paths["v110"],
         v111_path=paths["v111"],
