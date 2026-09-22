@@ -1,0 +1,39 @@
+{
+  "schema": "openazrael.kg001.classic_presentation_contract",
+  "version": 147,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "logical_frame": [
+    640,
+    480
+  ],
+  "aspect_ratio": "4:3",
+  "rules": [
+    "Classic UI/gameplay presentation is constrained to the centered 640x480 logical frame.",
+    "Pixels outside the scaled 4:3 frame are black matte; the 3D world must not leak into widescreen sidebars.",
+    "The modern diagnostic HUD Panel is hidden by default whenever LegacyMenuV145 is present.",
+    "F7/F8/F9/F10/F11 diagnostics remain available as explicit debug surfaces rather than persistent classic-mode overlays.",
+    "The v143 interaction cursor remains above the v145 menu and inside the actual viewport mouse context.",
+    "No menu artwork is generated or redrawn."
+  ],
+  "graphical_capture": {
+    "runner": "scripts/kg001_legacy_menu_graphical_capture_v147.gd",
+    "required_states": [
+      "TITLE",
+      "HUD",
+      "SERVICE"
+    ],
+    "renderer": "real Godot graphical viewport",
+    "no_ai": true
+  },
+  "pass_requires": [
+    "four classic matte ColorRects exist",
+    "classic frame remains exactly 4:3 at arbitrary viewport aspect",
+    "widescreen sidebars are black and non-negative",
+    "modern HUD Panel is hidden by default in classic mode",
+    "candidate debug and audio debug panels still exist and default hidden",
+    "v146 cursor layer remains above v145 menu",
+    "graphical capture runner records TITLE HUD SERVICE from the real Godot viewport"
+  ],
+  "boundary": "Headless v147 proves scene-tree presentation rules. Pixel appearance is proven only by the graphical capture/parity workflow."
+}
