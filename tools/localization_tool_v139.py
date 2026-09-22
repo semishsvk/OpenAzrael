@@ -15,6 +15,11 @@ import argparse, fnmatch, hashlib, json, re, sys
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from tools.remaster_framework.source_registry import resolve_source
+
 SCHEMA_REGISTRY="openazrael.localization_source_registry"
 SCHEMA_PACK="openazrael.localization_pack"
 SCHEMA_MANIFEST="openazrael.localization_manifest"
@@ -127,7 +132,18 @@ def extract_json_strings(root:Path,spec:dict,namespace:str)->list[dict]:
     return rows
 
 def cmd_extract(a)->int:
-    cfg=read_json(a.config); root=a.root.resolve()
+    cfg=read_json(a.config)
+    if a.root is not None:
+        root=a.root.resolve()
+    elif a.registered_corpus is not None:
+        root=resolve_source(
+            a.registered_corpus,
+            home=a.source_home,
+        )
+    else:
+        raise SystemExit(
+            "extract requires --root or --registered-corpus"
+        )
     namespace=cfg.get("namespace","loc")
     adapters={"text_lines":extract_text_lines,"binary_ascii":extract_binary_ascii,"json_strings":extract_json_strings}
     rows=[]
@@ -229,7 +245,7 @@ def cmd_compile(a)->int:
 
 def main()->int:
     ap=argparse.ArgumentParser(description=__doc__); sp=ap.add_subparsers(dest="cmd",required=True)
-    p=sp.add_parser("extract"); p.add_argument("--config",type=Path,required=True); p.add_argument("--root",type=Path,required=True); p.add_argument("--out",type=Path,required=True); p.set_defaults(fn=cmd_extract)
+    p=sp.add_parser("extract"); p.add_argument("--config",type=Path,required=True); p.add_argument("--root",type=Path); p.add_argument("--registered-corpus",choices=("demo","retail")); p.add_argument("--source-home",type=Path); p.add_argument("--out",type=Path,required=True); p.set_defaults(fn=cmd_extract)
     p=sp.add_parser("template"); p.add_argument("--registry",type=Path,required=True); p.add_argument("--locale",required=True); p.add_argument("--out",type=Path,required=True); p.set_defaults(fn=cmd_template)
     p=sp.add_parser("validate"); p.add_argument("--registry",type=Path,required=True); p.add_argument("--manifest",type=Path,required=True); p.add_argument("--base",type=Path,default=Path(".")); p.add_argument("--allow-missing",action="store_true"); p.set_defaults(fn=cmd_validate)
     p=sp.add_parser("compile"); p.add_argument("--pack",type=Path,required=True); p.add_argument("--out",type=Path,required=True); p.set_defaults(fn=cmd_compile)
