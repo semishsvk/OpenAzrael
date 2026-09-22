@@ -77,14 +77,8 @@ checks = {
         and '"PPPV_V2_RUNTIME_FAILED"' in preflight
         and '"PPPV_V2_EVIDENCE_MISSING"' in preflight
         and '"PPPV_V2_INVARIANT_FAILED"' in preflight
-        and "PPPV_REQUIRED_EVIDENCE" in preflight
-        and all(name in preflight for name in (
-            "scenario_suite",
-            "scenario_suite_integrity",
-            "playthrough_evaluation",
-            "determinism",
-            "determinism_integrity",
-        ))
+        and "PPPV_EVIDENCE_FILES" in preflight
+        and tuple(candidate3_preflight.PPPV_REQUIRED_EVIDENCE) == PPPV_REQUIRED_EVIDENCE
     ),
     "pppv_v2_runner_is_isolated": (
         'TMP=ROOT/".tmp/kg001_pppv_v2"' in pppv_runner
