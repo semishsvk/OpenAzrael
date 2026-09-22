@@ -22,5 +22,5 @@
     "HUD uses source icons at integer 2x scale with nearest filtering",
     "Candidate preflight and package asset manifest bind all 35 restored cursor PNGs"
   ],
-  "evidence_boundary": "Asset-backed Godot v142 PASS is required; source validation alone does not prove graphical presentation."
+  "evidence_boundary": "Asset-backed Godot v143 PASS is required; source validation alone does not prove graphical presentation."
 }
