@@ -360,6 +360,52 @@ func verify_transition_spawn(
         })
     return ok
 
+func verify_transition_grounded(
+    action_id: String,
+    destination_room: String
+) -> bool:
+    var on_floor := player != null and player.is_on_floor()
+    var floor_normal := Vector3.ZERO
+    if on_floor:
+        floor_normal = player.get_floor_normal()
+    var room_matches := (
+        manager != null
+        and String(manager.get("current_room_id")) == destination_room
+    )
+    var support_ok := on_floor and floor_normal.y >= 0.5
+    var ok := room_matches and support_ok
+
+    evidence.record("transition_ground_check", {
+        "action_id": action_id,
+        "destination_room": destination_room,
+        "actual_room": (
+            String(manager.get("current_room_id"))
+            if manager != null
+            else ""
+        ),
+        "position": _v3(player.global_position),
+        "velocity": _v3(player.velocity),
+        "is_on_floor": on_floor,
+        "floor_normal": _v3(floor_normal),
+        "support_ok": support_ok,
+        "match": ok
+    })
+    if not ok:
+        _critical("transition_not_grounded", {
+            "destination_room": destination_room,
+            "actual_room": (
+                String(manager.get("current_room_id"))
+                if manager != null
+                else ""
+            ),
+            "position": _v3(player.global_position),
+            "velocity": _v3(player.velocity),
+            "is_on_floor": on_floor,
+            "floor_normal": _v3(floor_normal)
+        })
+    return ok
+
+
 func end_action(success: bool, details: Dictionary = {}) -> void:
     _validate_live_invariants(_active_action_id)
     _validate_neutral_movement_input(_active_action_id)
