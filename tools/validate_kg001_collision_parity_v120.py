@@ -25,6 +25,15 @@ checks = {
         and contract.get("geometry_policy", {}).get("legacy_winding_policy")
         == "absolute normal Y; do not trust source winding"
     ),
+    "pickup_exemptions_bound": all(
+        token in runner for token in (
+            '"TONG6": true', '"r1p1": true', '"r3t1": true',
+            '"r8t3": true', '"r8t4": true'
+        )
+    ) and all(
+        name in contract.get("explicit_non_solid_exemptions", {}).get("all_rooms", [])
+        for name in ("TONG6","r1p1","r3t1","r8t3","r8t4")
+    ),
     "independent_exemptions": (
         "GLOBAL_EXEMPT" in runner
         and "ROOM_EXEMPT" in runner
