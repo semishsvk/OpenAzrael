@@ -25,6 +25,18 @@ func _settle(frames: int = 2) -> void:
     for _i in range(frames):
         await manager.get_tree().process_frame
 
+func _settle_physics_guarded(
+    action_id: String,
+    frames: int
+) -> bool:
+    for _i in range(maxi(frames, 0)):
+        await manager.get_tree().physics_frame
+        if runtime_guard != null and not bool(
+            runtime_guard.sample(action_id)
+        ):
+            return false
+    return true
+
 func _find_named(root_node: Node, wanted: String) -> Node:
     if String(root_node.name) == wanted:
         return root_node
@@ -147,6 +159,31 @@ func _execute_impl(action: Dictionary) -> bool:
                             action_id + ":transition_spawn_validation_failed"
                         )
                         return false
+
+                    var settle_frames := int(
+                        params.get("post_transition_settle_frames", 24)
+                    )
+                    var settled := await _settle_physics_guarded(
+                        action_id,
+                        settle_frames
+                    )
+                    if not settled:
+                        _append_failure(
+                            action_id + ":transition_settle_failed"
+                        )
+                        return false
+
+                    var grounded_ok := bool(
+                        runtime_guard.verify_transition_grounded(
+                            action_id,
+                            destination_room
+                        )
+                    )
+                    if not grounded_ok:
+                        _append_failure(
+                            action_id + ":transition_ground_validation_failed"
+                        )
+                        return false
                 return true
 
             var goal_target := String(params.get("goal_target", ""))
@@ -176,6 +213,19 @@ func _execute_impl(action: Dictionary) -> bool:
             )
             if walk_result.is_empty():
                 _append_failure(action_id + ":movement_failed")
+                return false
+            var minimum_distance := float(
+                params.get("minimum_horizontal_distance", 0.0)
+            )
+            if (
+                minimum_distance > 0.0
+                and float(
+                    walk_result.get("horizontal_distance", 0.0)
+                ) < minimum_distance
+            ):
+                _append_failure(
+                    action_id + ":insufficient_movement_progress"
+                )
                 return false
             return true
 
