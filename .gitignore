@@ -18,6 +18,7 @@ Thumbs.db
 
 # Build/export output
 data/runtime_build_identity.json
+data/runtime_generated/
 build/
 dist/
 exports/
