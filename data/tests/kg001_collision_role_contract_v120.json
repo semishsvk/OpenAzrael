@@ -1,0 +1,85 @@
+{
+  "schema": "openazrael.kg001.collision_role_contract",
+  "version": 120,
+  "status": "SOURCE_EVIDENCE_READY_RUNTIME_PENDING",
+  "source_assets": {
+    "R1": {
+      "sha256": "8a35e60b3f26d1fa656653cc7d3d5875c0927c77882189a6f073bf7ed16a3a6c"
+    },
+    "R7": {
+      "sha256": "3c2aa95c4612c550edf8729299f7fe3e992308c2ae9e051b01973f6f48db7971"
+    },
+    "R8": {
+      "sha256": "c36c69baaaff414e12c1c64c0c4e1e9febebf321fb1aa8f888e601326ff5f476"
+    }
+  },
+  "roles": [
+    {
+      "room": "R1",
+      "object": "Object02",
+      "xaf_material": "TUNNEL",
+      "xaf_texture": "or_tunnl.gif",
+      "triangle_count": 8,
+      "world_bounds": [
+        [
+          -304.739373,
+          -84.052223,
+          358.026127
+        ],
+        [
+          -240.13704,
+          -23.846325,
+          439.628892
+        ]
+      ],
+      "upward_floor_triangles": 2,
+      "support_y_approx": -83.85,
+      "route": "spaview -> zxcoriR5",
+      "route_intersects_xz_bounds": true,
+      "collision_required": true,
+      "severity_if_missing": "CRITICAL",
+      "evidence": "Restored R1 GLB: Object02 is a tunnel segment with an authored upward-facing lower surface on the R1->R7 portal approach."
+    },
+    {
+      "room": "R1",
+      "object": "Object03",
+      "xaf_material": "TRANSPARANT",
+      "triangle_count": 2,
+      "collision_required": false,
+      "reason": "source-backed transparent trigger surface"
+    },
+    {
+      "room": "R7",
+      "object": "Object02",
+      "xaf_material": "1DROWN",
+      "xaf_texture": "drown1.gif",
+      "triangle_count": 2,
+      "support_y_approx": -4559.005,
+      "collision_required": false,
+      "reason": "deep-well drowning/death plane"
+    },
+    {
+      "room": "R7",
+      "object": "Object03",
+      "xaf_material": "1DROWN",
+      "xaf_texture": "drown1.gif",
+      "triangle_count": 2,
+      "support_y_approx": -4569.405,
+      "collision_required": false,
+      "reason": "deep-well drowning/death plane"
+    }
+  ],
+  "runtime_policy": {
+    "portal_views": "derive from data/xaf_trigger_evidence.json per room",
+    "transparent_triggers": "hidden and non-colliding except explicit authored support exception",
+    "deep_well_drown_planes": "room-specific non-colliding exclusions",
+    "r1_object02": "must create StaticBody3D trimesh collision with backface_collision=true"
+  },
+  "acceptance": [
+    "R1 Object02 is never excluded by a room-agnostic Object02 blacklist",
+    "R1 Object02 produces collision when restored R1 GLB is loaded",
+    "R7 Object02/Object03 remain non-colliding deep-well planes",
+    "portal-view exclusion is derived per-room from source evidence",
+    "physical R1 traversal remains required before KG-001"
+  ]
+}
