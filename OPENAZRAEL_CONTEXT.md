@@ -40,6 +40,9 @@ This file is the mandatory entry point for every OpenAzrael work session.
 ## Non-negotiable workflow
 `DEMO -> faithful reconstruction -> validation -> generalization -> full game`
 
+### Non-negotiable room geometry fidelity
+Every playable room must use the **complete original source-derived geometry**. Partial imports, simplified rooms, invented/approximated architecture, AI-generated runtime geometry and substitute meshes are forbidden. Missing geometry is fail-closed (`BLOCKED_MISSING_SOURCE_GEOMETRY`) and is a critical build defect. Engine compatibility fixes may not change authored shape. Candidate export/KG promotion requires geometry parity for every included room. See ADR-033, `docs/SOURCE_GEOMETRY_FIDELITY.md` and geometry-render-parity v122.
+
 Canonical architecture:
 `Original Azrael data -> importers/decoders/forensic tools -> OpenAzrael IR -> Godot runtime`
 
