@@ -18,6 +18,7 @@ const PORTAL_SPAWN_DISTANCE_CANDIDATES := [120.0, 115.0, 125.0, 110.0, 130.0, 10
 const PORTAL_SUPPORT_RAY_UP := 8.0
 const PORTAL_SUPPORT_RAY_DOWN := 48.0
 const PORTAL_SUPPORT_CLEARANCE := 0.2
+const TRIGGER_EVENT_IR_PATH := "res://data/trigger_event_ir_v137.json"
 
 const PICKUPS := {
     "R1": {
@@ -43,9 +44,12 @@ const PICKUP_REMOVED_BY_FLAG := {
 var current_room_id := "R1"
 var current_room: Node3D
 var evidence: Dictionary = {}
+var trigger_event_ir: Dictionary = {}
 var transition_cooldown := 0.0
 var legacy_audio: Node3D
 var _diagnostic_inside: Dictionary = {}
+var _trigger_hold_reported: Dictionary = {}
+var _character_animation_status: Dictionary = {}
 @onready var player = get_node("../Player")
 
 func _ready() -> void:
@@ -62,6 +66,19 @@ func _ready() -> void:
         get_tree().quit(2)
         return
     evidence = parsed_evidence
+
+    var parsed_trigger_ir = JSON.parse_string(FileAccess.get_file_as_string(TRIGGER_EVENT_IR_PATH))
+    if not parsed_trigger_ir is Dictionary:
+        trigger_event_ir = {}
+        push_error("OpenAzrael v137: invalid trigger_event_ir_v137.json")
+        CandidateDiagnostics.record_event("startup_trigger_event_ir_parse", {"status":"FAIL"})
+        get_tree().quit(2)
+        return
+    trigger_event_ir = parsed_trigger_ir
+    if not LegacyEvents.character_animation_requested.is_connected(_on_character_animation_requested):
+        LegacyEvents.character_animation_requested.connect(_on_character_animation_requested)
+    if not LegacyEvents.conversation_requested.is_connected(_on_conversation_requested):
+        LegacyEvents.conversation_requested.connect(_on_conversation_requested)
 
     var require_candidate_audio := DisplayServer.get_name() != "headless"
     if not CandidateDiagnostics.fail_fast_if_required_resources_missing(require_candidate_audio):
@@ -256,6 +273,69 @@ func _setup_well_key() -> void:
     area.set_script(preload("res://scripts/well_key_interaction.gd"))
     area.set("key_visual", key)
 
+func _setup_r7_character_state() -> void:
+    if current_room_id != "R7":
+        return
+    var niamh_body := _find_node("nibody")
+    if niamh_body == null:
+        push_warning("OpenAzrael v137: R7 Niamh body object nibody not found")
+        return
+    # The source-backed zxactghost binding controls Niamh activation. Do not
+    # invent a fade/motion before the original character ANI is available.
+    niamh_body.visible = DemoState.flag("R7NiamhActivated")
+
+func _collect_animation_players(root: Node, out: Array[AnimationPlayer]) -> void:
+    if root is AnimationPlayer:
+        out.append(root as AnimationPlayer)
+    for child in root.get_children():
+        _collect_animation_players(child, out)
+
+func _on_character_animation_requested(request: Dictionary) -> void:
+    var character := String(request.get("character", ""))
+    var family := String(request.get("family", ""))
+    var target_name := String(request.get("target_object", ""))
+    var target := _find_node(target_name) if not target_name.is_empty() else null
+    if target != null:
+        target.visible = true
+
+    var result := {
+        "room": current_room_id,
+        "character": character,
+        "family": family,
+        "target_object": target_name,
+        "status": "HOLD_SOURCE_CLIP_MISSING"
+    }
+    var players: Array[AnimationPlayer] = []
+    if is_instance_valid(current_room):
+        _collect_animation_players(current_room, players)
+    for animation_player in players:
+        if animation_player.has_animation(StringName(family)):
+            animation_player.play(StringName(family))
+            result["status"] = "PLAYING_SOURCE_CLIP"
+            result["animation_player"] = String(animation_player.get_path())
+            break
+    _character_animation_status[character] = result
+    CandidateDiagnostics.record_event("character_animation_request", result)
+    if result["status"] != "PLAYING_SOURCE_CLIP" and bool(request.get("source_required", false)):
+        push_warning(
+            "OpenAzrael v137: source animation clip '%s' for %s is not restored/imported; no fallback animation will be synthesized."
+            % [family, character]
+        )
+
+func _on_conversation_requested(request: Dictionary) -> void:
+    # Conversation dispatch is explicit even while the exact trigger-associated
+    # line remains HOLD. Never substitute a remembered or guessed line.
+    CandidateDiagnostics.record_event("conversation_request", {
+        "room": current_room_id,
+        "character": String(request.get("character", "")),
+        "family": String(request.get("family", "")),
+        "source_required": bool(request.get("source_required", false)),
+        "status": "HOLD_EXACT_TRIGGER_LINE"
+    })
+
+func character_animation_status(character: String) -> Dictionary:
+    return _character_animation_status.get(character, {}).duplicate(true)
+
 func _setup_r7_switchboard() -> void:
     if current_room_id != "R7":
         return
@@ -413,9 +493,12 @@ func load_room(id: String, announce := true) -> void:
     add_child(current_room)
     current_room_id = id
     _diagnostic_inside.clear()
+    _trigger_hold_reported.clear()
+    _character_animation_status.clear()
     _create_world_collision(id)
     _setup_pickups(id)
     _setup_well_key()
+    _setup_r7_character_state()
     _setup_r7_switchboard()
     _setup_r1_doors()
     _setup_r8()
@@ -516,6 +599,72 @@ func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
         and p.z >= min(mn.z,mx.z) and p.z <= max(mn.z,mx.z) \
         and p.y >= y0 and p.y <= y1
 
+func _trigger_binding(room_id: String, trigger_name: String) -> Dictionary:
+    if trigger_event_ir.is_empty() or not trigger_event_ir.has("rooms"):
+        return {}
+    var rooms: Dictionary = trigger_event_ir["rooms"]
+    if not rooms.has(room_id):
+        return {}
+    for binding in rooms[room_id]:
+        if String(binding.get("trigger", "")) == trigger_name:
+            return binding
+    return {}
+
+func _dispatch_trigger_edge(trigger_name: String, entered: bool) -> void:
+    var binding := _trigger_binding(current_room_id, trigger_name)
+    if binding.is_empty():
+        push_error("OpenAzrael v137: unclassified authored trigger %s/%s" % [current_room_id, trigger_name])
+        CandidateDiagnostics.record_event("trigger_event_unclassified", {
+            "room": current_room_id,
+            "trigger": trigger_name,
+            "entered": entered
+        })
+        return
+
+    var trigger_class := String(binding.get("class", "UNKNOWN_HOLD"))
+    if trigger_class == "activation_enter" and entered:
+        var one_shot_flag := String(binding.get("one_shot_flag", ""))
+        if not one_shot_flag.is_empty() and DemoState.flag(one_shot_flag):
+            CandidateDiagnostics.record_event("trigger_event_suppressed", {
+                "room": current_room_id,
+                "trigger": trigger_name,
+                "reason": "one_shot_already_fired",
+                "flag": one_shot_flag
+            })
+            return
+        var graph_id := String(binding.get("event_graph", ""))
+        if graph_id.is_empty() or not LegacyEvents.has_graph(graph_id):
+            push_error("OpenAzrael v137: active trigger has no valid event graph: %s/%s" % [current_room_id, trigger_name])
+            CandidateDiagnostics.record_event("trigger_event_dispatch", {
+                "room": current_room_id,
+                "trigger": trigger_name,
+                "class": trigger_class,
+                "status": "FAIL_MISSING_GRAPH",
+                "graph": graph_id
+            })
+            return
+        var applied := LegacyEvents.run(graph_id)
+        CandidateDiagnostics.record_event("trigger_event_dispatch", {
+            "room": current_room_id,
+            "trigger": trigger_name,
+            "class": trigger_class,
+            "status": "DISPATCHED",
+            "graph": graph_id,
+            "actions": applied.size()
+        })
+        return
+
+    if trigger_class in ["UNKNOWN_HOLD", "hazard_HOLD"] and entered:
+        var hold_key := current_room_id + "/" + trigger_name
+        if not _trigger_hold_reported.has(hold_key):
+            _trigger_hold_reported[hold_key] = true
+            CandidateDiagnostics.record_event("trigger_event_hold", {
+                "room": current_room_id,
+                "trigger": trigger_name,
+                "class": trigger_class,
+                "status": "HOLD_NO_GUESSED_SIDE_EFFECT"
+            })
+
 func _update_diagnostic_trigger_states() -> void:
     if evidence.is_empty() or not evidence.has("rooms") or not evidence["rooms"].has(current_room_id):
         return
@@ -524,9 +673,15 @@ func _update_diagnostic_trigger_states() -> void:
         if trigger_name.is_empty():
             continue
         var inside := _inside_trigger(player.global_position, trigger)
-        if not _diagnostic_inside.has(trigger_name) or bool(_diagnostic_inside[trigger_name]) != inside:
+        var had_state := _diagnostic_inside.has(trigger_name)
+        var was_inside := bool(_diagnostic_inside.get(trigger_name, false))
+        if not had_state or was_inside != inside:
             _diagnostic_inside[trigger_name] = inside
             CandidateDiagnostics.observe_trigger(current_room_id, trigger_name, inside)
+            # Preserve the existing quiet-initial-state rule: room spawn seeds
+            # overlap state but does not masquerade as a player crossing.
+            if had_state:
+                _dispatch_trigger_edge(trigger_name, inside)
 
 func _process(delta: float) -> void:
     transition_cooldown = max(0.0, transition_cooldown - delta)
