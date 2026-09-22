@@ -16,7 +16,10 @@ checks={
     "stable_tiebreak_has_no_instance_id":"get_instance_id" not in probe and "get_path()" in probe,
     "diagnostics_lookup_isolated_safe":'get_node_or_null("CandidateDiagnostics")' in probe and "CandidateDiagnostics." not in probe,
     "fallback_uses_selector":"return _select_overlap_candidate(overlaps, from, direction)" in probe,
-    "two_overlapping_areas":all(token in runner for token in ("OverlapLowerPriority","OverlapPreferred","overlaps_area")),
+    "two_overlapping_areas":all(token in runner for token in (
+        "OverlapLowerPriority","OverlapPreferred","intersect_point",
+        "both_areas_contain_camera","lower in overlap_colliders","preferred in overlap_colliders"
+    )),
     "repeated_runs":contract.get("repeated_runtime_runs")==64 and "REPEATED_RUNS := 64" in runner,
     "production_path_repeated":"probe.current_interactive()" in runner and "repeated_runtime_selection_is_stable" in runner,
     "input_order_regression":"forward_order_prefers_explicit_priority" in runner and "reverse_order_prefers_explicit_priority" in runner,

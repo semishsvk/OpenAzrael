@@ -39,7 +39,13 @@ checks={
     "trigger_edges": '_update_diagnostic_trigger_states' in room and 'CandidateDiagnostics.observe_trigger' in room,
     "quiet_initial_trigger_state": 'if not _trigger_states.has(key)' in diag and 'if not inside:' in diag,
     "room_transition_log": 'CandidateDiagnostics.record_transition' in room,
-    "interaction_log": 'CandidateDiagnostics.record_interaction' in probe and 'interaction_miss' in probe,
+    "interaction_log": (
+        'get_node_or_null("CandidateDiagnostics")' in probe
+        and 'has_method("record_interaction")' in probe
+        and 'call("record_interaction"' in probe
+        and 'has_method("record_event")' in probe
+        and 'interaction_miss' in probe
+    ),
     "event_log": 'user://openazrael_candidate3_events.jsonl' in diag and '_append_event_log' in diag,
     "state_dump": 'canonical_state_hash' in diag and 'openazrael_kg001_state_dump_' in diag,
     "golden_audio_assets": all(x in diag for x in ["S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV","S174ELP1.WAV","S174ELP2.WAV","S186.WAV"]) and "data/audio/legacy_world_ir.json" in diag,

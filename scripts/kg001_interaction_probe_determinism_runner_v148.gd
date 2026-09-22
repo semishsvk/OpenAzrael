@@ -58,7 +58,15 @@ func _run() -> void:
     await physics_frame
     await physics_frame
 
-    _check("areas_overlap_camera", lower.overlaps_area(preferred))
+    var point_q := PhysicsPointQueryParameters3D.new()
+    point_q.position = camera.global_position
+    point_q.collision_mask = 2
+    point_q.collide_with_areas = true
+    point_q.collide_with_bodies = false
+    var camera_overlaps := world.get_world_3d().direct_space_state.intersect_point(point_q, 16)
+    var overlap_colliders: Array = camera_overlaps.map(func(row): return row.get("collider"))
+    _check("both_areas_contain_camera",
+        lower in overlap_colliders and preferred in overlap_colliders)
     var all_preferred := true
     for _i in range(REPEATED_RUNS):
         var selected = probe.current_interactive()
