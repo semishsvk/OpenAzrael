@@ -187,3 +187,21 @@ Engine-compatibility corrections may repair materials, alpha handling, triangle 
 A geometry mismatch is a **critical build defect** and blocks Candidate export, KG promotion and release. The demo slice is guarded by geometry-render-parity v122; the same invariant applies to all future retail rooms. Schematic topology placeholders are permitted only in documentation and must never enter runtime assets.
 
 See `docs/SOURCE_GEOMETRY_FIDELITY.md` and `data/source_geometry_policy.json`.
+
+
+## ADR-034 — Candidate fidelity closure is layered and fail-closed
+
+**Status:** ACCEPTED — 2026-09-22
+
+Candidate 4 extends source-exact geometry policy ADR-033 with a layered room-fidelity pipeline:
+
+- v124 validates material, texture presence, legacy cutout behavior and quantized UV parity for every imported demo mesh.
+- v125 validates source-derived transforms and local bounds for every mesh.
+- v126 performs a graphical geometry-only census by rendering the canonical direct GLB and the production RoomManager version from identical deterministic cameras; AI/hand-authored reference imagery is forbidden.
+- v127 replays all 104 currently reachable source-model states through production canonical save/restore and checks state-dependent visibility.
+- v128 executes from the exported EXE/PCK and verifies every packaged runtime asset by bytes/SHA-256 plus room geometry/material/UV/transform/visibility parity.
+- v129 validates transition/portal geometry closure and authored destination floor support.
+- v130 physically approaches visible interaction targets through production player input/PPPVNavigator and requires the production InteractionProbe to acquire them. Hidden objects must not leave active invisible interaction areas.
+- v131 produces a fail-closed per-room forensic report spanning source through packaged build.
+
+No layer may promote a Candidate when required evidence is missing. These mechanisms are implemented so their generic fidelity/reporting primitives can be reused by future retail OpenAzrael and other remaster projects.
