@@ -296,6 +296,26 @@ def main() -> int:
             },
         )
 
+    packaged_evidence = TMP / "kg001_packaged_v128_runtime.json"
+    packaged_evidence.write_text(
+        json.dumps(packaged_result, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    forensic_package = TMP / "room_forensic_report_v131_package.json"
+    forensic_run = run([
+        sys.executable,
+        "tools/build_room_forensic_report_v131.py",
+        "--phase",
+        "package",
+        "--out",
+        str(forensic_package),
+    ])
+    if forensic_run.returncode != 0 or not forensic_package.is_file():
+        return fail(
+            "ROOM_FORENSIC_PACKAGE_V131_FAILED",
+            {"output_tail": forensic_run.stdout[-20000:]},
+        )
+
     RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)
 
     artifacts = {
@@ -330,6 +350,11 @@ def main() -> int:
             "engine_errors": smoke_errors,
         },
         "packaged_parity_v128": packaged_result,
+        "room_forensic_v131": {
+            "path": str(forensic_package.relative_to(ROOT)),
+            "sha256": sha256(forensic_package),
+            "status": "PASS",
+        },
         "manual_gate": "G10_PENDING_USER",
     }
     EXPORT_RECEIPT.write_text(
