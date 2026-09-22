@@ -2,6 +2,8 @@ extends Node
 
 signal logical_audio_event(filename: String)
 signal physical_audio_started(filename: String, player: AudioStreamPlayer)
+signal character_animation_requested(request: Dictionary)
+signal conversation_requested(request: Dictionary)
 
 const GRAPH_PATH := "res://data/gameplay_event_graph_v87.json"
 var graphs: Dictionary = {}
@@ -73,6 +75,10 @@ func run(graph_id: String) -> Array:
                 DemoState.remove(key)
             "play_sound":
                 _play_sound(String(action.get("asset", "")))
+            "request_character_animation":
+                character_animation_requested.emit(action.duplicate(true))
+            "request_conversation":
+                conversation_requested.emit(action.duplicate(true))
             _:
                 push_warning("OpenAzrael v87: unsupported event op " + op)
                 continue
