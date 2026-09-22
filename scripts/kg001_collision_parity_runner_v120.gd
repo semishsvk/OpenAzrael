@@ -203,7 +203,7 @@ func _finish(scene: Node = null) -> void:
         if not (row is Dictionary):
             continue
         var reasons_value = row.get("fail_reasons", [])
-        var row_failed := (
+        var row_failed: bool = (
             reasons_value is Array and not reasons_value.is_empty()
         )
         if not bool(row.get("explicit_exempt", false)) and row_failed:
