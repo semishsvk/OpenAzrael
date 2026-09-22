@@ -176,6 +176,84 @@
       "text": "WASD move | Shift sprint | Mouse look | E interact | Esc menu | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room",
       "status": "AUTHORED_COMPLETE",
       "localizable": true
+    },
+    {
+      "id": "event.retail.r6.speech",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R6Speech",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 10,
+      "opcodes": [
+        "0x0e",
+        "0x0f"
+      ],
+      "first_offset": "0x5db2"
+    },
+    {
+      "id": "event.retail.r6.edgar_conv",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R6EdgarConv",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x131bb"
+    },
+    {
+      "id": "event.retail.r11.tobias_conv",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R11TobiasConv",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x85625"
+    },
+    {
+      "id": "event.retail.r62.tobias_conv",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R62TobiasConv",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0xf5727"
+    },
+    {
+      "id": "event.retail.rooms.niamh_call_concat",
+      "domain": "dialogue_state",
+      "source": "retail ROOMS string corpus",
+      "text": "R4WaR8PlR7NiamhCallAZ",
+      "status": "RAW_CONCATENATED_PRINTABLE_RUN",
+      "localizable": false,
+      "context": "Do not promote R7NiamhCallAZ as a standalone symbol until record structure proves it."
+    },
+    {
+      "id": "engine.file.character_state",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "%s.dat",
+      "status": "VERIFIED_FORMAT_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.file.npc_state",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "npc%d.dat",
+      "status": "VERIFIED_FORMAT_REFERENCE",
+      "localizable": false
     }
   ],
   "holds": [
