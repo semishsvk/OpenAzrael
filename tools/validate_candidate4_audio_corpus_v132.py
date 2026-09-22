@@ -14,7 +14,7 @@ import hashlib, json, sys
 ROOT=Path(__file__).resolve().parents[1]
 IR=ROOT/"data/audio/legacy_world_ir.json"
 RESTORE=ROOT/".tmp/kg001/candidate4_audio_restore_v132.json"
-MUSIC=ROOT/"data/audio/candidate4_music_route_evidence.json"
+MUSIC=ROOT/".tmp/kg001/candidate4_music_route_v133.json"\nMUSIC_RUNTIME=ROOT/".tmp/kg001/candidate4_music_runtime_v134.json"
 AUDIO=ROOT/"assets/audio"
 
 def sha256(path: Path) -> str:
@@ -78,10 +78,30 @@ def main() -> int:
     if music.get("status")!="PASS":
         return fail("MUSIC_ROUTE_EVIDENCE_NOT_PASS",music)
     resolution=music.get("resolution")
-    if resolution not in ("RUNTIME_SUPPORTED","NOT_USED_ON_ACCEPTED_DEMO_ROUTE"):
+    if resolution=="REQUIRES_RUNTIME_MUSIC":
+        if not MUSIC_RUNTIME.is_file():
+            return fail("MUSIC_RUNTIME_REQUIRED",{
+                "required_xmi":music.get("accepted_demo_route",{}).get("required_xmi",[]),
+                "expected_runtime_evidence":str(MUSIC_RUNTIME.relative_to(ROOT)),
+            })
+        runtime=json.loads(MUSIC_RUNTIME.read_text(encoding="utf-8"))
+        required=set(music.get("accepted_demo_route",{}).get("required_xmi",[]))
+        rendered=set(runtime.get("rendered_xmi",[]))
+        if (
+            runtime.get("status")!="PASS"
+            or runtime.get("runtime_playback_test")!="PASS"
+            or not required
+            or not required.issubset(rendered)
+        ):
+            return fail("MUSIC_RUNTIME_PLAYBACK_NOT_PROVEN",{
+                "required_xmi":sorted(required),
+                "rendered_xmi":sorted(rendered),
+                "runtime_status":runtime.get("status"),
+                "runtime_playback_test":runtime.get("runtime_playback_test"),
+            })
+        resolution="RUNTIME_SUPPORTED"
+    elif resolution!="NOT_USED_ON_ACCEPTED_DEMO_ROUTE":
         return fail("MUSIC_ROUTE_RESOLUTION_INVALID",{"resolution":resolution})
-    if resolution=="RUNTIME_SUPPORTED" and music.get("runtime_playback_test")!="PASS":
-        return fail("MUSIC_RUNTIME_PLAYBACK_NOT_PROVEN",music)
     out={
         "schema":"openazrael.kg001.candidate4_audio_validation",
         "version":132,
