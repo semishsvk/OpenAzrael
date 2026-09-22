@@ -13,6 +13,8 @@ checks={
     "selection_order":contract.get("selection_order")==expected,
     "priority_default":contract.get("explicit_priority_default")==0 and 'get_meta("interaction_priority", 0)' in probe,
     "deterministic_sort":all(token in probe for token in ("_select_overlap_candidate","_candidate_less","sort_custom","stable_path","angle_error","distance")),
+    "stable_tiebreak_has_no_instance_id":"get_instance_id" not in probe and "get_path()" in probe,
+    "diagnostics_lookup_isolated_safe":'get_node_or_null("CandidateDiagnostics")' in probe and "CandidateDiagnostics." not in probe,
     "fallback_uses_selector":"return _select_overlap_candidate(overlaps, from, direction)" in probe,
     "two_overlapping_areas":all(token in runner for token in ("OverlapLowerPriority","OverlapPreferred","overlaps_area")),
     "repeated_runs":contract.get("repeated_runtime_runs")==64 and "REPEATED_RUNS := 64" in runner,

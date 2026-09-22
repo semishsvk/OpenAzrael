@@ -14,8 +14,10 @@ func _interaction_priority(collider: Object) -> int:
 
 func _stable_node_path(collider: Object) -> String:
     if collider is Node:
-        return String(collider.get_path())
-    return "%s:%d" % [collider.get_class(), collider.get_instance_id()]
+        return String((collider as Node).get_path())
+    # Non-Node objects are not expected from the physics query, but keep the
+    # fallback deterministic across processes instead of using instance IDs.
+    return collider.get_class()
 
 func _overlap_candidate(collider: Object, from: Vector3, direction: Vector3) -> Dictionary:
     var target_position := from
@@ -99,11 +101,18 @@ func current_cursor_id() -> String:
         return value if not value.is_empty() else "USE"
     return "USE"
 
+func _diagnostics() -> Node:
+    var tree := get_tree()
+    return tree.root.get_node_or_null("CandidateDiagnostics") if tree != null else null
+
 func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed("interact"):
         var n := _find_interactive()
+        var diagnostics := _diagnostics()
         if n != null and n.has_method("interact"):
-            CandidateDiagnostics.record_interaction(String(n.name))
+            if diagnostics != null and diagnostics.has_method("record_interaction"):
+                diagnostics.call("record_interaction", String(n.name))
             n.interact()
         else:
-            CandidateDiagnostics.record_event("interaction_miss", {})
+            if diagnostics != null and diagnostics.has_method("record_event"):
+                diagnostics.call("record_event", "interaction_miss", {})
