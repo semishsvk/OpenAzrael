@@ -8,6 +8,7 @@ var activation_center := Vector3.ZERO
 var activation_half_extents := Vector3(12.0, 80.0, 12.0)
 var door_visual: Node3D
 var shield_visual: Node3D
+var shield_interaction: Area3D
 var sequence_running := false
 
 # v18: do NOT use the nearby 0x0726/1830 token tag as milliseconds; it is compiler/source metadata.
@@ -60,6 +61,8 @@ func _run_optical_sequence() -> void:
         tw.tween_property(door_visual, "rotation:y", door_visual.rotation.y + deg_to_rad(90.0), SECRET_DOOR_SECONDS)
     if is_instance_valid(shield_visual):
         shield_visual.visible = true
+    if is_instance_valid(shield_interaction):
+        shield_interaction.collision_layer = 2
     await get_tree().create_timer(SECRET_DOOR_SECONDS).timeout
     sequence_running = false
     print("Secret DoorR8 open. Shield exposed.")
