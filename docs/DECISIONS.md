@@ -174,3 +174,16 @@ Candidate 3 remains the authoritative runtime tree for KG-001 traversal, collisi
 ## ADR-032 — Separate project versions from internal evidence revisions
 
 Project versions use the approved pre-1.0 semantic form `0.MAJOR.MINOR-dev`, `0.MAJOR.MINOR-rc.N`, and `0.MAJOR.MINOR`. KG-001 Candidate numbers are integration labels, while `v109`…`v120` and historical `v116-context-v32` are internal test/context/evidence revisions only. `demo-known-good-001` remains a separate immutable acceptance checkpoint. The exact Git SHA and receipts are authoritative build identity. See `docs/VERSIONING.md`.
+
+
+## ADR-033 — Runtime room geometry is source-exact and complete
+
+**Status:** ACCEPTED — 2026-09-22
+
+Every playable OpenAzrael room must be derived from the original game/demo room geometry and imported completely. Partial room imports, hand-built approximations, AI-generated architecture, procedural substitutes, placeholder runtime meshes, or geometry invented to fill missing source data are forbidden. Missing source geometry is fail-closed and blocks the room/build rather than degrading to an approximation.
+
+Engine-compatibility corrections may repair materials, alpha handling, triangle winding, normals, collision generation or reversible coordinate conversion, but must not change the authored room shape. State-dependent rooms require each original authored geometry state independently.
+
+A geometry mismatch is a **critical build defect** and blocks Candidate export, KG promotion and release. The demo slice is guarded by geometry-render-parity v122; the same invariant applies to all future retail rooms. Schematic topology placeholders are permitted only in documentation and must never enter runtime assets.
+
+See `docs/SOURCE_GEOMETRY_FIDELITY.md` and `data/source_geometry_policy.json`.
