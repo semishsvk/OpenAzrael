@@ -76,34 +76,34 @@
     "origin_status": "EVIDENCE_CONSTRAINED_HOLD_EXACT_CAPTURE",
     "actions": {
       "LOAD": [
-        39,
-        25,
-        75,
-        28
+        45,
+        24,
+        60,
+        25
+      ],
+      "MUSIC": [
+        112,
+        35,
+        44,
+        24
+      ],
+      "QUIT": [
+        70,
+        52,
+        38,
+        30
+      ],
+      "SFX": [
+        110,
+        66,
+        38,
+        31
       ],
       "SAVE": [
         48,
         91,
-        67,
-        24
-      ],
-      "MUSIC": [
-        108,
-        32,
-        50,
-        33
-      ],
-      "SFX": [
-        108,
-        68,
-        40,
-        29
-      ],
-      "QUIT": [
-        70,
-        50,
-        45,
-        35
+        58,
+        26
       ],
       "CONFIRM": [
         22,
@@ -124,7 +124,8 @@
       "LOAD",
       "SAVE",
       "QUIT"
-    ]
+    ],
+    "action_region_status": "EVIDENCE_CONSTRAINED_SOURCE_LABEL_REGIONS_NON_OVERLAPPING__HOLD_EXACT_1996_HITBOXES"
   },
   "context_actions": {
     "SCAN": "use current mouse-ray interactive target; otherwise source generic surface-scan status",
