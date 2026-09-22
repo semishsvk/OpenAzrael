@@ -1,0 +1,38 @@
+name: Candidate 4 source snapshot
+
+on:
+  push:
+    branches:
+      - integration/kg001-candidate3-pppv-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-snapshot:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Archive tracked source only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git ls-files -z | tar --null -T - -czf candidate4-source.tar.gz
+          printf '%s\n' "$GITHUB_SHA" > candidate4-source.sha256-input.txt
+          sha256sum candidate4-source.tar.gz > candidate4-source.tar.gz.sha256
+
+      - name: Upload source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate4-source-${{ github.sha }}
+          path: |
+            candidate4-source.tar.gz
+            candidate4-source.tar.gz.sha256
+            candidate4-source.sha256-input.txt
+          if-no-files-found: error
+          retention-days: 7
