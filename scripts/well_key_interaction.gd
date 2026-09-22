@@ -49,3 +49,8 @@ func interact() -> void:
         _step("default_take:R7Key")
         print("Retrieved the Well Key with the tongs.")
         queue_free()
+
+func interaction_cursor_id() -> String:
+    if DemoState.has("well_key"):
+        return "CANT"
+    return "USE" if DemoState.has("rusty_tongs") else "CANT"
