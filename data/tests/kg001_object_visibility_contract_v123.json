@@ -1,0 +1,108 @@
+{
+  "schema": "openazrael.kg001.object_visibility_parity_contract",
+  "version": 123,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "purpose": "prove that every source-authored demo object has the correct runtime visibility across initial and persistent gameplay states",
+  "scope": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "fresh_state": {
+    "R1": {
+      "mesh_instances": 69,
+      "expected_hidden_meshes": [
+        "Object03__mesh",
+        "textwall__mesh",
+        "zyR02__mesh",
+        "zyR05__mesh",
+        "zxentry__mesh",
+        "zxcoriR5__mesh",
+        "zxcoriR2__mesh"
+      ],
+      "must_be_visible": [
+        "TONG6__mesh",
+        "r1p1__mesh",
+        "r3t1__mesh",
+        "save__mesh",
+        "doorcor01__mesh",
+        "doorcor2__SPADOOR",
+        "doorcor2__1KEYHOLE"
+      ]
+    },
+    "R7": {
+      "mesh_instances": 48,
+      "expected_hidden_meshes": [
+        "zxdeath__mesh",
+        "zydeath__mesh",
+        "death__mesh",
+        "well_pzpa1__mesh",
+        "well_pzpa2__mesh",
+        "zyR06__mesh",
+        "zxactghost__mesh",
+        "zxwell2R6__mesh"
+      ],
+      "must_be_visible": [
+        "nibdyky01__mesh",
+        "nibody__mesh",
+        "well_lev02__mesh",
+        "well_weel3__mesh",
+        "well_floor__mesh",
+        "pipes2well__mesh"
+      ]
+    },
+    "R8": {
+      "mesh_instances": 87,
+      "expected_hidden_meshes": [
+        "Object01__mesh",
+        "zxshield__mesh",
+        "mirror03__mesh",
+        "mirror2__mesh",
+        "zxsound2__mesh",
+        "zxsound1__mesh",
+        "zxsound__mesh",
+        "zxplate__mesh",
+        "zyR09__mesh",
+        "zyR06__mesh",
+        "zxorrery__mesh",
+        "zxsecret__mesh",
+        "zxminehd__mesh",
+        "r8s1__mesh",
+        "lenstop__mesh",
+        "lenstop01__mesh",
+        "tapestry1__mesh",
+        "tapestry3__mesh",
+        "tapestry4__mesh",
+        "tapestry2a__mesh"
+      ],
+      "must_be_visible": [
+        "r8t3__mesh",
+        "r8t4__mesh",
+        "lens__mesh",
+        "bible__mesh",
+        "tapestry2__mesh",
+        "zxwater__mesh",
+        "door__mesh",
+        "bath__BAPFLOOR"
+      ]
+    }
+  },
+  "persistent_lifecycle": [
+    "TONG6 visible in fresh R1; hidden after pickup; remains hidden after source-authored R7 well-key event consumes inventory TONG6 and R1 is reloaded",
+    "r1p1 parchment visible in fresh R1 and remains hidden after pickup/reload while held in inventory",
+    "r3t1 tapestry piece visible in fresh R1; after placement into R8 frame 1 it must not respawn in R1",
+    "R7 well key visible before retrieval and hidden after retrieval/reload",
+    "R8 r8t3/r8t4 loose tapestry pieces are visible fresh; after placement they remain absent from loose locations while tapestry3/tapestry4 installed meshes are visible",
+    "R8 water visible before R8BathDrain and hidden after drain",
+    "R8 lens mesh visible before retrieval, hidden after retrieval/placement; installed lenstop visible after R8LensPlace",
+    "R8 shield hidden before DoorR8, visible after DoorR8, hidden after demo_complete",
+    "R8 tapestry2 message mesh hidden before R8TapestryBack and visible after tapestry rotation"
+  ],
+  "invisible_source_materials": [
+    "TRANSPARANT",
+    "CLEAR_OBJECT"
+  ],
+  "geometry_policy": "Visibility state may change only according to source/evidence-backed object state. No authored visible object may disappear because of import simplification or fallback rendering.",
+  "evidence_boundary": "Source validation proves only the visibility contract. Candidate 4 requires asset-backed Godot v123 PASS at the exact build SHA before export."
+}
