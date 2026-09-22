@@ -28,6 +28,8 @@ jobs:
         run: python tools/run_kg001_candidate_v112.py --source-only
       - name: Validate Candidate 4 hard release contract
         run: python tools/validate_candidate4_release_contract_v132.py
+      - name: Validate Candidate 4 MUSIC.DAT route contract
+        run: python tools/validate_candidate4_music_route_v133.py
       - name: Verify tracked checkout stayed clean
         shell: bash
         run: test -z "$(git status --porcelain --untracked-files=normal)"
