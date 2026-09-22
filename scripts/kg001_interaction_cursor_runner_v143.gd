@@ -76,7 +76,7 @@ func _run() -> void:
         _finish(scene)
         return
 
-    var cursor_rect = hud.get_node_or_null("InteractionCursorV143") if hud != null else null
+    var cursor_rect = hud.find_child("InteractionCursorV143", true, false) if hud != null else null
     _check("hud_cursor_created", cursor_rect is TextureRect)
     if cursor_rect is TextureRect:
         _check("hud_pointer_texture_loaded", (cursor_rect as TextureRect).texture != null)
