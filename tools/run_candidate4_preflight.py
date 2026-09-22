@@ -20,6 +20,8 @@ ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tools.remaster_framework.source_registry import resolve_source
+from tools.kg001_gate_manifest import CANDIDATE4_SOURCE_VALIDATORS
+SOURCE_VALIDATORS = CANDIDATE4_SOURCE_VALIDATORS
 TMP=ROOT/".tmp/kg001"
 C3=TMP/"candidate3_preflight_receipt.json"
 OUT=TMP/"candidate4_preflight_receipt.json"
@@ -82,14 +84,8 @@ def main():
     for path in (OUT,AUDIO_RESULT,MUSIC_ROUTE,MUSIC_RUNTIME,MUSIC_GODOT,MUSIC_MANIFEST):
         path.unlink(missing_ok=True)
 
-    # Cheap source-level blockers first.
-    for tool in (
-        "tools/validate_kg001_trigger_events_v137.py",
-        "tools/validate_candidate4_release_contract_v132.py",
-        "tools/validate_candidate4_music_route_v133.py",
-        "tools/validate_xmi_to_midi_v134.py",
-        "tools/validate_candidate4_music_renderer_v135.py",
-    ):
+    # Cheap source-level blockers first; declaration is shared with the validator.
+    for tool in SOURCE_VALIDATORS:
         proc=run([sys.executable,tool])
         if proc.returncode!=0:
             return fail("CANDIDATE4_SOURCE_CONTRACT_FAILED",{

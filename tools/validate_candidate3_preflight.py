@@ -2,6 +2,15 @@
 from pathlib import Path
 import sys
 
+from tools.kg001_gate_manifest import (
+    CANDIDATE3_REQUIRED_RUNTIME,
+    CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE,
+    PPPV_REQUIRED_EVIDENCE,
+    RUNTIMES,
+)
+import tools.run_kg001_candidate_v112 as candidate_runner
+import tools.run_candidate3_preflight as candidate3_preflight
+
 ROOT = Path(__file__).resolve().parents[1]
 preflight = (ROOT / "tools/run_candidate3_preflight.py").read_text(encoding="utf-8")
 exporter = (ROOT / "tools/export_candidate3.py").read_text(encoding="utf-8")
@@ -17,6 +26,14 @@ contract = __import__("json").loads(
 )
 
 checks = {
+    "canonical_runner_runtime_list": (
+        candidate_runner.RUNTIMES == RUNTIMES
+        and tuple(name for name, _script, _marker in candidate_runner.RUNTIMES) == CANDIDATE3_REQUIRED_RUNTIME
+    ),
+    "canonical_preflight_runtime_list": tuple(candidate3_preflight.REQUIRED_RUNTIME) == CANDIDATE3_REQUIRED_RUNTIME,
+    "contract_runtime_list_exact": contract.get("local_preflight", {}).get("required_runtime_pass") == list(CANDIDATE3_REQUIRED_RUNTIME),
+    "contract_additional_runtime_evidence_exact": contract.get("local_preflight", {}).get("required_additional_runtime_evidence_pass") == list(CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE),
+    "contract_pppv_list_exact": contract.get("local_preflight", {}).get("required_pppv_v2_pass") == list(PPPV_REQUIRED_EVIDENCE),
     "tracked_contract": (
         contract.get("schema") == "openazrael.kg001.candidate3_preflight_contract"
         and contract.get("version") == 1
@@ -80,19 +97,16 @@ checks = {
         and "tools/remaster_framework/tests" in runner
         and "runtime_capabilities" in runner
     ),
-    "preflight_requires_runtime_matrix": all(
-        name in preflight
-        for name in (
-            '"v109"',
-            '"v110"',
-            '"v111"',
-            '"audio_v116"',
-            '"physical_v117"',
-            '"well_tongs_v118"',
-            '"r1_route_v119"',
-            '"collision_v120"',
-            '"surface_v121"',
-        )
+    "preflight_uses_canonical_runtime_matrix": (
+        "CANDIDATE3_REQUIRED_RUNTIME" in preflight
+        and "REQUIRED_RUNTIME = CANDIDATE3_REQUIRED_RUNTIME" in preflight
+        and "SOURCE_COMMANDS=[" not in runner
+        and "RUNTIMES=[" not in runner
+    ),
+    "preflight_forensic_report_is_fail_closed": (
+        "ROOM_FORENSIC_REPORT_V131_INVALID" in preflight
+        and "ROOM_FORENSIC_REPORT_V131_NOT_PASS" in preflight
+        and 'for room in ("R1", "R7", "R8")' in preflight
     ),
     "preflight_binds_git_sha": (
         "head_before = git_head()" in preflight

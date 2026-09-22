@@ -15,11 +15,27 @@
     "export_fail_closed": true
   },
   "geometry": {
-    "rooms": ["R1", "R7", "R8"],
+    "rooms": [
+      "R1",
+      "R7",
+      "R8"
+    ],
     "source_counts": {
-      "R1": {"primitives": 69, "triangles": 593, "textured_primitives": 62},
-      "R7": {"primitives": 48, "triangles": 689, "textured_primitives": 40},
-      "R8": {"primitives": 87, "triangles": 1050, "textured_primitives": 74}
+      "R1": {
+        "primitives": 69,
+        "triangles": 593,
+        "textured_primitives": 62
+      },
+      "R7": {
+        "primitives": 48,
+        "triangles": 689,
+        "textured_primitives": 40
+      },
+      "R8": {
+        "primitives": 87,
+        "triangles": 1050,
+        "textured_primitives": 74
+      }
     },
     "required_runtime_layers": [
       "geometry_v122",
@@ -55,7 +71,12 @@
     "direct_gameplay_state_injection_forbidden": true
   },
   "required_preflight": [
-    "legacy_candidate_runtime_suite",
+    "v109",
+    "v110",
+    "trigger_v137",
+    "localization_v139",
+    "v111",
+    "audio_v116",
     "physical_v117",
     "well_tongs_v118",
     "r1_route_v119",
@@ -65,15 +86,25 @@
     "visibility_v123",
     "material_v124",
     "transform_v125",
-    "visual_v126",
     "reachable_visibility_v127",
     "portal_v129",
     "interaction_v130",
+    "all_transitions_v141",
+    "cursor_v143",
+    "menu_v145",
+    "menu_cursor_v146",
+    "classic_v147",
+    "visual_v126",
     "room_forensic_v131",
-    "candidate4_audio_v132",
-    "pppv_v2_scenario_suite",
-    "pppv_v2_integrity",
-    "pppv_v2_repeated_deterministic_playthrough"
+    "pppv_v2:scenario_suite",
+    "pppv_v2:scenario_suite_integrity",
+    "pppv_v2:playthrough_evaluation",
+    "pppv_v2:determinism",
+    "pppv_v2:determinism_integrity",
+    "candidate4_music_route_v133",
+    "candidate4_music_render_v135",
+    "candidate4_music_godot_v136",
+    "candidate4_audio_v132"
   ],
   "g10": {
     "required": true,
@@ -91,5 +122,45 @@
       "save/load during route",
       "successful end-of-demo state"
     ]
+  },
+  "inherited_candidate3": {
+    "canonical_gate_manifest": "tools/kg001_gate_manifest.py",
+    "required_runtime_pass": [
+      "v109",
+      "v110",
+      "trigger_v137",
+      "localization_v139",
+      "v111",
+      "audio_v116",
+      "physical_v117",
+      "well_tongs_v118",
+      "r1_route_v119",
+      "collision_v120",
+      "surface_v121",
+      "geometry_v122",
+      "visibility_v123",
+      "material_v124",
+      "transform_v125",
+      "reachable_visibility_v127",
+      "portal_v129",
+      "interaction_v130",
+      "all_transitions_v141",
+      "cursor_v143",
+      "menu_v145",
+      "menu_cursor_v146",
+      "classic_v147"
+    ],
+    "required_additional_runtime_evidence_pass": [
+      "visual_v126",
+      "room_forensic_v131"
+    ],
+    "required_pppv_v2_pass": [
+      "scenario_suite",
+      "scenario_suite_integrity",
+      "playthrough_evaluation",
+      "determinism",
+      "determinism_integrity"
+    ],
+    "contract_runner_consistency": "EXACT_ORDERED_MATCH_REQUIRED"
   }
 }

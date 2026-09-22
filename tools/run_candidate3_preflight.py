@@ -20,6 +20,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tools.remaster_framework.source_registry import resolve_source
+from tools.kg001_gate_manifest import (
+    CANDIDATE3_REQUIRED_RUNTIME,
+    CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE,
+    PPPV_EVIDENCE_FILES,
+)
 TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
@@ -32,39 +37,12 @@ GENERATED_METADATA = {
     "asset_manifest_v128": ROOT / "data/runtime_generated/runtime_asset_manifest_v128.json",
     "texture_orientation_v133": ROOT / "data/runtime_generated/demo_texture_orientation_v133.json",
 }
-PPPV_TMP = ROOT / ".tmp/kg001_pppv_v2"
 PPPV_REQUIRED_EVIDENCE = {
-    "scenario_suite": PPPV_TMP / "kg001_pppv_scenario_suite.json",
-    "scenario_suite_integrity": PPPV_TMP / "pppv_scenario_suite_integrity.json",
-    "playthrough_evaluation": PPPV_TMP / "kg001_pppv_playthrough_evaluation.json",
-    "determinism": PPPV_TMP / "kg001_pppv_determinism.json",
-    "determinism_integrity": PPPV_TMP / "pppv_determinism_integrity.json",
+    name: ROOT / rel_path
+    for name, rel_path in PPPV_EVIDENCE_FILES.items()
 }
-REQUIRED_RUNTIME = (
-    "v109",
-    "v110",
-    "trigger_v137",
-    "localization_v139",
-    "v111",
-    "audio_v116",
-    "physical_v117",
-    "well_tongs_v118",
-    "r1_route_v119",
-    "collision_v120",
-    "surface_v121",
-    "geometry_v122",
-    "visibility_v123",
-    "material_v124",
-    "transform_v125",
-    "reachable_visibility_v127",
-    "portal_v129",
-    "interaction_v130",
-    "all_transitions_v141",
-    "cursor_v143",
-    "menu_v145",
-    "menu_cursor_v146",
-    "classic_v147",
-)
+REQUIRED_RUNTIME = CANDIDATE3_REQUIRED_RUNTIME
+
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
     ROOT / "assets/rooms/R7.glb",
@@ -324,6 +302,18 @@ def main() -> int:
             "ROOM_FORENSIC_REPORT_V131_FAILED",
             {"output_tail": forensic_run.stdout[-20000:]},
         )
+    try:
+        forensic_payload = json.loads(FORENSIC_PREFLIGHT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return fail("ROOM_FORENSIC_REPORT_V131_INVALID", {"error": str(exc)})
+    if (
+        forensic_payload.get("status") != "PASS"
+        or any(
+            forensic_payload.get("rooms", {}).get(room, {}).get("status") != "PASS"
+            for room in ("R1", "R7", "R8")
+        )
+    ):
+        return fail("ROOM_FORENSIC_REPORT_V131_NOT_PASS", forensic_payload)
 
     pppv_cmd = [
         sys.executable,
@@ -411,6 +401,9 @@ def main() -> int:
         "godot_import": "PASS",
         "runtime_status": {name: runtime_status[name] for name in REQUIRED_RUNTIME},
         "visual_v126": "PASS",
+        "additional_runtime_evidence": {
+            name: "PASS" for name in CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE
+        },
         "pppv_v2_status": pppv_status,
         "evidence": {
             "candidate_result": str(CANDIDATE_RESULT.relative_to(ROOT)),

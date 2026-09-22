@@ -22,13 +22,27 @@
     "required_runtime_pass": [
       "v109",
       "v110",
+      "trigger_v137",
+      "localization_v139",
       "v111",
       "audio_v116",
       "physical_v117",
       "well_tongs_v118",
       "r1_route_v119",
       "collision_v120",
-      "surface_v121"
+      "surface_v121",
+      "geometry_v122",
+      "visibility_v123",
+      "material_v124",
+      "transform_v125",
+      "reachable_visibility_v127",
+      "portal_v129",
+      "interaction_v130",
+      "all_transitions_v141",
+      "cursor_v143",
+      "menu_v145",
+      "menu_cursor_v146",
+      "classic_v147"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
@@ -54,7 +68,13 @@
       "determinism",
       "determinism_integrity"
     ],
-    "pppv_v2_runner": "python tools/run_candidate3_pppv_v2.py --fresh-checkout --godot <Godot>"
+    "pppv_v2_runner": "python tools/run_candidate3_pppv_v2.py --fresh-checkout --godot <Godot>",
+    "required_additional_runtime_evidence_pass": [
+      "visual_v126",
+      "room_forensic_v131"
+    ],
+    "canonical_gate_manifest": "tools/kg001_gate_manifest.py",
+    "contract_runner_consistency": "EXACT_ORDERED_MATCH_REQUIRED"
   },
   "export": {
     "command": "python tools/export_candidate3.py --godot <Godot>",
