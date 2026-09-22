@@ -18,6 +18,8 @@ diag=read("scripts/candidate_diagnostics_v116.gd")
 trigger=read("scripts/kg001_trigger_debug_v116.gd")
 room=read("scripts/room_manager.gd")
 hud=read("scripts/hud.gd")
+locale_en=read("localization/en.json")
+locale_sk=read("localization/sk.json")
 probe=read("scripts/interaction_probe.gd")
 runner=read("tools/run_kg001_candidate_v112.py")
 bug_capture=diag.split("# v116-context-v32: observational one-key bug-report capture.",1)[-1]
@@ -77,7 +79,12 @@ checks={
     "bug_report_source_safe": '"commercial_assets_included": false' in diag and '"source_safe": true' in diag,
     "bug_report_observational": all(x not in bug_capture for x in ["DemoState.acquire(","DemoState.set_flag(","DemoState.set_puzzle_node(","DemoState.restore_canonical_state_payload(","LegacyEvents.run(","load_room("]),
     "bug_report_no_commercial_asset_reads": all(x not in bug_capture for x in ["res://assets/rooms/","res://assets/audio/","res://assets/textures/classic/"]),
-    "bug_hud_surface": "F11 bug report" in hud and "CandidateDiagnostics.last_bug_report" in hud,
+    "bug_hud_surface": (
+        'LocalizationManager.tr_key("ui.hud.controls")' in hud
+        and "CandidateDiagnostics.last_bug_report" in hud
+        and "F11 bug report" in locale_en
+        and "F11 hlásenie chyby" in locale_sk
+    ),
     "issue_template": 'name: OpenAzrael bug report' in issuetpl and 'Diagnostic package' in issuetpl,
     "bug_reporting_doc": 'F11' in bugdoc and 'Critical' in bugdoc and 'regression' in bugdoc.lower(),
     "watermark": 'CandidateDiagnostics.BUILD_ID' in hud and 'CandidateDiagnostics.BUILD_CHECKPOINT' in hud,
