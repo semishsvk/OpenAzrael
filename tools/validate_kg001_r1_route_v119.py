@@ -49,9 +49,9 @@ checks = {
             )) - 0.09813844622236
         ) < 1.0e-9
         and contract.get("geometry_audit", {}).get("canonical_route_graph_nodes")
-        == 28
+        == 23
         and contract.get("geometry_audit", {}).get("canonical_route_segments")
-        == 27
+        == 22
         and contract.get("geometry_audit", {}).get(
             "all_main_segments_covered_by_walkable_floor_union_with_0_5_buffer"
         ) is True
@@ -112,11 +112,11 @@ checks = {
         )
     ),
     "route_is_not_short_smoke": (
-        len(contract.get("canonical_route_waypoints", [])) == 28
+        len(contract.get("canonical_route_waypoints", [])) == 23
         and "for index in range(ROUTE.size())" in runner
         and "R1_route_reached_tunnel07" in runner
     ),
-    "route_is_capsule_safe_not_mesh_center_chain": (
+    "route_is_runtime_verified_walkable_chain": (
         contract.get("player_space_route_policy", {}).get(
             "mesh_centers_are_not_implicitly_player_waypoints"
         ) is True
@@ -126,12 +126,21 @@ checks = {
         and "Collision_save" in contract.get("player_space_route_policy", {}).get(
             "known_authored_obstacles_avoided", []
         )
-        and "wall01" in contract.get("player_space_route_policy", {}).get(
-            "non_player_space_mesh_centers_removed", []
-        )
-        and "Capsule-safe detour around the authored Collision_save volume" in runner
-        and "Capsule-safe path around the steep side face of floorbit07" in runner
-        and "wall01 is authored side geometry" in runner
+        and contract.get("player_space_route_policy", {}).get(
+            "walkable_threshold"
+        ) == "wall01 face 10"
+        and contract.get("geometry_audit", {}).get("runtime_rebuild", {}).get(
+            "local_godot_4_7_2_result"
+        ) == "PASS"
+        and contract.get("geometry_audit", {}).get("runtime_rebuild", {}).get(
+            "local_checks"
+        ) == 138
+        and "Runtime-verified capsule corridor around authored Collision_save" in runner
+        and "centers of actual walkable floor faces" in runner
+        and "wall01 face 10 is the walkable threshold into tunnel07" in runner
+        and "Vector3(476.420000, -85.030000, -514.950000)" in runner
+        and "Vector3(156.921000, -114.276000, -313.508000)" in runner
+        and "Vector3(210.088000, -114.364000, -410.699000)" in runner
     ),
     "object02_detour_is_two_triangle_crossing": (
         len(contract.get("object02_detour", [])) == 3
