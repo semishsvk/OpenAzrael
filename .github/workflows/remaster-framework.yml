@@ -81,3 +81,25 @@ jobs:
             candidate4-source-head.txt
           if-no-files-found: error
           retention-days: 7
+
+
+  godot-linux-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            -o Godot_v4.7.2-stable_linux.x86_64.zip \
+            https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          sha256sum Godot_v4.7.2-stable_linux.x86_64.zip > Godot_v4.7.2-stable_linux.x86_64.zip.sha256
+      - name: Upload Godot runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-4.7.2-linux-x86_64
+          path: |
+            Godot_v4.7.2-stable_linux.x86_64.zip
+            Godot_v4.7.2-stable_linux.x86_64.zip.sha256
+          if-no-files-found: error
+          retention-days: 1
