@@ -27,6 +27,7 @@ GENERATED_METADATA = {
     "fidelity_v124": ROOT / "data/runtime_generated/demo_room_fidelity_v124.json",
     "state_matrix_v127": ROOT / "data/runtime_generated/kg001_state_matrix_v127.json",
     "asset_manifest_v128": ROOT / "data/runtime_generated/runtime_asset_manifest_v128.json",
+    "texture_orientation_v133": ROOT / "data/runtime_generated/demo_texture_orientation_v133.json",
 }
 PPPV_TMP = ROOT / ".tmp/kg001_pppv_v2"
 PPPV_REQUIRED_EVIDENCE = {
