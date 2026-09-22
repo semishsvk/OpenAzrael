@@ -102,9 +102,27 @@ func _walkable_projected_area(mi: MeshInstance3D) -> Dictionary:
         "max_projected_triangle_area": max_triangle,
     }
 
-func _collision_child(mi: MeshInstance3D, object_name: String) -> StaticBody3D:
-    var candidate := mi.get_node_or_null("Collision_" + object_name)
-    return candidate as StaticBody3D if candidate is StaticBody3D else null
+func _find_named(node: Node, wanted: String) -> Node:
+    if String(node.name) == wanted:
+        return node
+    for child in node.get_children():
+        var found := _find_named(child, wanted)
+        if found != null:
+            return found
+    return null
+
+func _collision_body(mi: MeshInstance3D, object_name: String) -> StaticBody3D:
+    # Simple legacy objects own Collision_<object> directly. Multipart objects
+    # (for example stairs/STAIR2 or dorwall06/1FLOOR*) share one collision body
+    # named after the parent legacy object and attached under one child mesh.
+    var exact := mi.get_node_or_null("Collision_" + object_name)
+    if exact is StaticBody3D:
+        return exact as StaticBody3D
+    var parent := mi.get_parent()
+    if parent == null:
+        return null
+    var grouped := _find_named(parent, "Collision_" + String(parent.name))
+    return grouped as StaticBody3D if grouped is StaticBody3D else null
 
 func _collision_shape(body: StaticBody3D) -> CollisionShape3D:
     if body == null:
@@ -142,7 +160,7 @@ func _audit_room(manager, room_id: String) -> void:
 
         candidate_count += 1
         var exempt := _is_explicit_exempt(room_id, object_name)
-        var body := _collision_child(mi, object_name)
+        var body := _collision_body(mi, object_name)
         var cs := _collision_shape(body)
         var shape = cs.shape if cs != null else null
         var reasons: Array[String] = []
