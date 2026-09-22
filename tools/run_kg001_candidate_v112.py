@@ -252,6 +252,7 @@ def main():
             TMP/"kg001_menu_v145_runtime.json":ROOT/"data/tests/kg001_legacy_menu_runtime_v145.json",
             TMP/"kg001_menu_cursor_v146_runtime.json":ROOT/"data/tests/kg001_menu_cursor_context_runtime_v146.json",
             TMP/"kg001_classic_v147_runtime.json":ROOT/"data/tests/kg001_classic_presentation_runtime_v147.json",
+            TMP/"kg001_menu_toggle_v149_runtime.json":ROOT/"data/tests/kg001_legacy_menu_toggle_runtime_v149.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }
