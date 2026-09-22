@@ -68,6 +68,32 @@ static func arrays_close(actual: Array, expected: Array, tolerance: float) -> bo
             return false
     return true
 
+static func arrays_close_scaled(actual: Array, expected: Array, absolute_tolerance: float, relative_tolerance: float) -> bool:
+    if actual.size() != expected.size():
+        return false
+    for i in range(actual.size()):
+        var av := float(actual[i])
+        var ev := float(expected[i])
+        var allowed := maxf(
+            absolute_tolerance,
+            maxf(absf(av), absf(ev)) * relative_tolerance
+        )
+        if absf(av - ev) > allowed:
+            return false
+    return true
+
+static func texture_rgba_sha(texture: Texture2D) -> String:
+    if texture == null:
+        return ""
+    var image := texture.get_image()
+    if image == null:
+        return ""
+    image.convert(Image.FORMAT_RGBA8)
+    var context := HashingContext.new()
+    context.start(HashingContext.HASH_SHA256)
+    context.update(image.get_data())
+    return context.finish().hex_encode()
+
 static func room_mesh_map(room: Node) -> Dictionary:
     var nodes: Array[Node] = []
     walk(room, nodes)
