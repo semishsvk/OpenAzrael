@@ -25,6 +25,15 @@ const PICKUPS := {
         "r8t4": ["tapestry_piece_4", "Tapestry piece 4"]
     }
 }
+# Source-state flags that prove a loose pickup has already left its authored
+# room location even if the inventory item was later consumed/placed.
+# This prevents room reload from resurrecting TONG6 or tapestry pieces.
+const PICKUP_REMOVED_BY_FLAG := {
+    "TONG6": "R7key",
+    "r3t1": "R8Tap1",
+    "r8t3": "R8Tap3",
+    "r8t4": "R8Tap4",
+}
 
 var current_room_id := "R1"
 var current_room: Node3D
@@ -117,7 +126,10 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
     var out := {}
     if evidence.has("rooms") and evidence["rooms"].has(room_id):
         for t in evidence["rooms"][room_id]["triggers"]:
-            if String(t.get("material", "")) == "TRANSPARANT":
+            # Both legacy helper materials are non-rendered source semantics.
+            # CLEAR_OBJECT occurs on R7 well helper planes; rendering them as
+            # fallback white geometry would be a fidelity bug.
+            if String(t.get("material", "")) in ["TRANSPARANT", "CLEAR_OBJECT"]:
                 out[String(t["name"])] = true
     return out
 
@@ -206,9 +218,15 @@ func _setup_pickups(room_id: String) -> void:
         if obj == null:
             push_warning("OpenAzrael pickup object not found: " + object_name)
             continue
-        if DemoState.has(item_id):
+        var removed_flag := String(PICKUP_REMOVED_BY_FLAG.get(object_name, ""))
+        var removed_from_authored_location := (
+            DemoState.has(item_id)
+            or (not removed_flag.is_empty() and DemoState.flag(removed_flag))
+        )
+        if removed_from_authored_location:
             obj.visible = false
             continue
+        obj.visible = true
         var area := _add_area_for_object(obj)
         area.name = "Interact_" + object_name
         area.set_script(pickup_script)
@@ -223,9 +241,10 @@ func _setup_well_key() -> void:
     if key == null:
         push_warning("OpenAzrael R7 key object nibdyky01 not found")
         return
-    if DemoState.has("well_key"):
+    if DemoState.has("well_key") or DemoState.flag("R7key"):
         key.visible = false
         return
+    key.visible = true
     var area := _add_area_for_object(key, 18.0)
     area.name = "Interact_WellKey"
     area.set_script(preload("res://scripts/well_key_interaction.gd"))
@@ -289,6 +308,7 @@ func _setup_r8() -> void:
         if DemoState.has("r8_lens") or DemoState.puzzle_node("R8LensPlace"):
             lens.visible = false
         else:
+            lens.visible = true
             var lens_area := _add_area_for_object(lens, 15.0)
             lens_area.name = "Interact_R8Lens"
             lens_area.set_script(preload("res://scripts/r8_lens_interaction.gd"))
