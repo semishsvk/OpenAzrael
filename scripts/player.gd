@@ -69,8 +69,6 @@ func _unhandled_input(event: InputEvent) -> void:
         rotation.y -= event.relative.x * mouse_sensitivity
         pitch = clamp(pitch - event.relative.y * mouse_sensitivity, -1.35, 1.35)
         camera.rotation.x = pitch
-    elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-        Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
 
 func _step_floor_probe(direction: Vector3, horizontal_motion: Vector3) -> Dictionary:
     # Legacy tread winding is inconsistent and the two R8 stair profiles have
