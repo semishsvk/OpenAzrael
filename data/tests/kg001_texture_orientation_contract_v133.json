@@ -31,7 +31,9 @@
     "85 of 87 strong vertical source mappings are directly upright; the only two source-authored variants are BAPMSG back-face state and broken01 BAPBROK# shard",
     "R8 window textures BAPBACK1/BAPFRNT1/BAPLEFT1/BAPRGHT1 are upright in raw GLB",
     "R1 KEYHOLE# is upright in raw GLB",
-    "BAPMSG becomes upright only through the source-consistent tapestry2 horizontal X-axis 180-degree reveal transform"
+    "BAPMSG becomes upright only through the source-consistent tapestry2 horizontal X-axis 180-degree reveal transform",
+    "KEYHOLE# remains source-UV exact with no exporter correction and is upright in world space",
+    "BAPMSG is upright after its explicit texture-specific V correction"
   ],
   "evidence_boundary": "Asset-backed v133 PASS requires a clean restore from the original ATDEMO AZF/XAF corpus, raw-GLB UV comparison, embedded-image comparison and runtime-state orientation policy. Source-only CI proves wiring only.",
   "uv_export_adapter": {
@@ -59,5 +61,11 @@
       "expected_revealed_orientation": "NON_SEMANTIC_SHARD",
       "rationale": "Broken cutout shard has no semantic upright reading direction; preserve its original XAF mapping exactly."
     }
-  ]
+  ],
+  "required_uv_corrections": {
+    "BAPMSG": "FLIP_V_V133_TAPESTRY_MESSAGE"
+  },
+  "source_preserved_orientation": {
+    "KEYHOLE#": "Original R1.XAF mapping is already upright; no UV correction permitted."
+  }
 }
