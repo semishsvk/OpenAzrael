@@ -90,19 +90,28 @@ def resolve_texture(tex_name,idx):
     return idx.get(Path(tex_name).stem.upper()) if tex_name else None
 
 
-def corrected_uvs(tex_name, uvs):
-    """Apply narrowly-scoped legacy presentation corrections.
+UV_CORRECTIONS = {
+    # Candidate 3 manual evidence: keyhole presented vertically inverted.
+    "KEYHOLE#": "FLIP_V_CANDIDATE3_KEYHOLE",
+    # v132 corpus audit: BAPMSG contains readable text and the uncorrected
+    # tapestry2a mapping sends image bottom to world top under glTF's
+    # upper-left texture-coordinate convention.
+    "BAPMSG": "FLIP_V_V132_TAPESTRY_MESSAGE",
+}
 
-    Candidate 3 manual evidence showed KEYHOLE# vertically inverted while the
-    rest of the audited cutout corpus retained the expected orientation. Keep
-    the correction texture-specific rather than changing the global XAF UV
-    convention and record it in the export manifest for regression auditing.
+def corrected_uvs(tex_name, uvs):
+    """Apply only evidence-backed, texture-specific legacy UV corrections.
+
+    glTF defines (0, 0) at the upper-left image corner, so there is no global
+    V inversion here. Any exception must be named in UV_CORRECTIONS and is
+    emitted into the export manifest for regression auditing.
     """
     corrected=np.array(uvs,float,copy=True)
     correction='NONE'
-    if tex_name and Path(tex_name).stem.upper()=='KEYHOLE#' and len(corrected):
+    stem=Path(tex_name).stem.upper() if tex_name else ""
+    if stem in UV_CORRECTIONS and len(corrected):
         corrected[:,1]=1.0-corrected[:,1]
-        correction='FLIP_V_CANDIDATE3_KEYHOLE'
+        correction=UV_CORRECTIONS[stem]
     return corrected,correction
 
 
