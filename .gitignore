@@ -78,3 +78,6 @@ data/audio/canonical_object_relative_xrefs_v36.json
 
 # Original demo cursor artwork restored locally from ATDEMO/MICE.
 assets/ui/mice/
+
+# Original 1996 menu/HUD artwork restored locally from ATDEMO.
+assets/ui/legacy_menu/
