@@ -140,7 +140,7 @@ def main():
     )
     subprocess.run([sys.executable, str(ROOT/'tools/validate_graphics_pipeline_v44.py')], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/validate_kg001_texture_colorkey_v116.py')], check=True)
-    subprocess.run([sys.executable, str(ROOT/'tools/audit_demo_texture_orientation_v133.py')], check=True)
+    subprocess.run([sys.executable, '-m', 'tools.audit_demo_texture_orientation_v133'], cwd=ROOT, check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_cursors_v143.py'), str(src)], check=True)
     print('KG-001 Candidate assets restored; source-exact textures, legacy cursor art and audio validated; all raw/commercial binaries remain Git-ignored.')
 
