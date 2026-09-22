@@ -150,6 +150,38 @@ func _validate_live_invariants(action_id: String) -> void:
         })
 
 
+func _support_below_player() -> Dictionary:
+    if player == null or not player.is_inside_tree():
+        return {"supported": false}
+    var ray_from := player.global_position + Vector3.UP * 8.0
+    var ray_to := player.global_position + Vector3.DOWN * 72.0
+    var query := PhysicsRayQueryParameters3D.create(
+        ray_from,
+        ray_to,
+        int(player.collision_mask)
+    )
+    query.exclude = [player.get_rid()]
+    query.hit_back_faces = true
+    var hit := player.get_world_3d().direct_space_state.intersect_ray(query)
+    if hit.is_empty():
+        return {"supported": false}
+    var hit_position := hit["position"] as Vector3
+    var gap := player.global_position.y - hit_position.y
+    # Player origin is at foot level (capsule is offset +26). Allow authored
+    # stair/step height plus floor-snap margin, but reject deep geometry below.
+    var supported := gap >= -4.0 and gap <= 24.0
+    return {
+        "supported": supported,
+        "gap": gap,
+        "position": _v3(hit_position),
+        "collider": (
+            String((hit.get("collider") as Object).get("name"))
+            if hit.get("collider") != null
+            else ""
+        )
+    }
+
+
 func _validate_neutral_movement_input(action_id: String) -> void:
     var stuck: Array[String] = []
     for input_action in MOVEMENT_ACTIONS:
@@ -174,6 +206,9 @@ func sample(action_id: String = "") -> bool:
     var room_changed := not _last_room.is_empty() and current_room != _last_room
     var delta_y := 0.0 if room_changed else position.y - _last_position.y
 
+    var support := _support_below_player()
+    var support_ok := bool(support.get("supported", false))
+
     if room_changed:
         _unsupported_fall_frames = 0
         evidence.record("room_change_sample", {
@@ -184,7 +219,11 @@ func sample(action_id: String = "") -> bool:
             "destination_position": current["position"],
             "continuity_reset": true
         })
-    elif not player.is_on_floor() and player.velocity.y < -0.1:
+    elif (
+        not player.is_on_floor()
+        and player.velocity.y < -0.1
+        and not support_ok
+    ):
         _unsupported_fall_frames += 1
     else:
         _unsupported_fall_frames = 0
@@ -206,7 +245,10 @@ func sample(action_id: String = "") -> bool:
         "is_on_floor": current["is_on_floor"],
         "room_changed": room_changed,
         "delta_y": delta_y,
-        "drop_from_action_start": total_drop
+        "drop_from_action_start": total_drop,
+        "support_below": support_ok,
+        "support_gap": support.get("gap", null),
+        "support_collider": support.get("collider", "")
     }
 
     if _active_replay_index >= 0 and _active_replay_index < _replay.size():
