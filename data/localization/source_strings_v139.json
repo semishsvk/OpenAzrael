@@ -117,6 +117,65 @@
       "text": "characte.dat",
       "status": "VERIFIED_FILENAME_REFERENCE",
       "localizable": false
+    },
+    {
+      "id": "ui.menu.title",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Options",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true,
+      "context": "in-game options menu title"
+    },
+    {
+      "id": "ui.menu.language",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Language",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true,
+      "context": "language selector label"
+    },
+    {
+      "id": "ui.menu.close",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Back",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true,
+      "context": "close/back button"
+    },
+    {
+      "id": "ui.hud.demo_complete",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "DEMO COMPLETE — Shield acquired",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "ui.hud.bath_drained",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Baptistery bath: DRAINED",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "ui.hud.empty",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "(empty)",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "ui.hud.controls",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "WASD move | Shift sprint | Mouse look | E interact | Esc menu | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
     }
   ],
   "holds": [
