@@ -166,6 +166,31 @@ def main() -> int:
                 {"evidence": key, "path": str(rel)},
             )
 
+    candidate4_evidence = receipt.get("evidence", {})
+    for key in (
+        "candidate4_audio_v132",
+        "candidate4_music_route_v133",
+        "candidate4_music_runtime_v135",
+        "candidate4_music_godot_v136",
+        "candidate4_music_manifest_v135",
+    ):
+        meta = candidate4_evidence.get(key, {})
+        if not isinstance(meta, dict):
+            return fail("CANDIDATE4_EVIDENCE_MISSING", {"evidence": key})
+        path = ROOT / str(meta.get("path", ""))
+        expected = meta.get("sha256")
+        if not path.is_file() or not expected or sha256(path) != expected:
+            return fail("CANDIDATE4_EVIDENCE_CHANGED", {"evidence": key, "path": str(meta.get("path", ""))})
+
+    music_runtime_path = ROOT / str(candidate4_evidence["candidate4_music_runtime_v135"]["path"])
+    music_runtime = json.loads(music_runtime_path.read_text(encoding="utf-8"))
+    if (
+        music_runtime.get("status") != "PASS"
+        or music_runtime.get("runtime_playback_test") != "PASS"
+        or music_runtime.get("all_canonical_rendered") is not True
+    ):
+        return fail("CANDIDATE4_MUSIC_RUNTIME_NOT_RELEASE_READY", music_runtime)
+
     receipt_assets = receipt.get("runtime_assets", {})
     current_asset_paths = {
         str(p.relative_to(ROOT)) for p in runtime_asset_files()
@@ -296,6 +321,32 @@ def main() -> int:
             },
         )
 
+    packaged_music = run([
+        str(out),
+        "--headless",
+        "--script",
+        "res://scripts/kg001_music_runtime_runner_v136.gd",
+    ])
+    packaged_music_errors = engine_errors(packaged_music.stdout)
+    packaged_music_result = parse_marker(
+        packaged_music.stdout,
+        "OPENAZRAEL_KG001_MUSIC_V136",
+    )
+    if (
+        packaged_music.returncode != 0
+        or packaged_music_errors
+        or packaged_music_result.get("status") != "PASS"
+    ):
+        return fail(
+            "PACKAGED_MUSIC_V136_FAILED",
+            {
+                "returncode": packaged_music.returncode,
+                "status": packaged_music_result.get("status"),
+                "engine_errors": packaged_music_errors,
+                "output_tail": packaged_music.stdout[-20000:],
+            },
+        )
+
     packaged_evidence = TMP / "kg001_packaged_v128_runtime.json"
     packaged_evidence.write_text(
         json.dumps(packaged_result, indent=2) + "\n",
@@ -350,6 +401,7 @@ def main() -> int:
             "engine_errors": smoke_errors,
         },
         "packaged_parity_v128": packaged_result,
+        "packaged_music_v136": packaged_music_result,
         "room_forensic_v131": {
             "path": str(forensic_package.relative_to(ROOT)),
             "sha256": sha256(forensic_package),
