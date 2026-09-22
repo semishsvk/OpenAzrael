@@ -1,0 +1,10 @@
+{
+  "schema": "openazrael.kg001.candidate4_music_route_evidence",
+  "version": 1,
+  "status": "HOLD",
+  "resolution": "UNKNOWN",
+  "canonical_xmi_count": 24,
+  "policy": "REQUIRE_RUNTIME_OR_PROVEN_NOT_USED_ON_ACCEPTED_DEMO_ROUTE",
+  "reason": "The demo package contains 24 XMI assets, but current repository evidence does not yet prove which XMI tracks are required by the accepted Candidate 4 route or provide a tested runtime playback path.",
+  "next_action": "Trace original demo route music selection/triggering. If required, implement and runtime-test XMI playback/conversion; otherwise record evidence that no XMI is used on the accepted route."
+}
