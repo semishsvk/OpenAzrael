@@ -1,0 +1,96 @@
+{
+  "schema": "openazrael.kg001.trigger_action_census_contract",
+  "version": 142,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "expected_total_triggers": 29,
+  "expected_class_counts": {
+    "transition": 4,
+    "activation_enter": 1,
+    "condition_zone": 1,
+    "UNKNOWN_HOLD": 7,
+    "hazard_HOLD": 3,
+    "helper_geometry": 11,
+    "state_visual": 1,
+    "support_collision": 1
+  },
+  "automatic_entry_actions": {
+    "R7/zxactghost": {
+      "event_graph": "R7_NIAMH_ACTIVATE",
+      "one_shot_flag": "R7NiamhActivated",
+      "required_ops": [
+        "set_flag",
+        "set_puzzle_node",
+        "request_character_animation",
+        "request_conversation"
+      ],
+      "execution_boundary": "State/event dispatch is executable. Final animation PASS requires an original/restored Niamh Conv source clip; no synthetic fallback is allowed."
+    }
+  },
+  "condition_interactions": {
+    "R8/zxplate": {
+      "interaction_target": "Interact_R8Bible",
+      "event_graphs": [
+        "R8_OPTICAL_START",
+        "R8_SECRET_DOOR_OPEN"
+      ],
+      "physical_scenario": "openazrael.r8.optical_sequence",
+      "execution_boundary": "Entering zxplate alone must not fire the mechanism; the player must be in the zone and interact with the Bible through the production InteractionProbe."
+    }
+  },
+  "transitions": [
+    "R1/zxcoriR5->R7",
+    "R7/zxwell2R6->R1",
+    "R1/zxcoriR2->R8",
+    "R8/zxorrery->R1"
+  ],
+  "research_holds": {
+    "R1/zxentry": {
+      "evidence": [
+        "ROOMS.DAT contains R1Entry",
+        "PUZZLES-derived corpus contains R1Entry opcode 0x03 and R1Entered opcode 0x04"
+      ],
+      "reason": "0x04 is source-classified as a persistent flag operation, but opcode 0x03 has only one known R1Entry record and remains UNKNOWN/HOLD; do not guess the entry side effect."
+    },
+    "R1/textwall": {
+      "reason": "Authored transparent plane, but no exact source-bound demo side effect is decoded."
+    },
+    "R7/death": {
+      "evidence": ["ROOMS-derived corpus contains the R7WellDeathAZ identifier"],
+      "reason": "Hazard family is strongly indicated, but exact death/reset/damage semantics are not decoded."
+    },
+    "R7/zydeath": {
+      "reason": "Deep-shaft helper/death plane; exact action remains source-HOLD."
+    },
+    "R7/zxdeath": {
+      "reason": "Authored death activation plane; exact action remains source-HOLD."
+    },
+    "R8/zxminehd": {
+      "reason": "Likely production-world relation retained in demo geometry; no demo action is source-bound."
+    },
+    "R8/zxsecret": {
+      "reason": "Secret-area activation-looking plane; no exact entry action is source-bound."
+    },
+    "R8/zxsound": {
+      "reason": "Zone name alone does not identify an original audio asset or action."
+    },
+    "R8/zxsound1": {
+      "reason": "Zone name alone does not identify an original audio asset or action."
+    },
+    "R8/zxsound2": {
+      "reason": "Zone name alone does not identify an original audio asset or action."
+    }
+  },
+  "historical_runtime_evidence": {
+    "v110_transitions": "Tracked asset-backed Godot receipt is PASS on an older commit and proves the four transition paths existed there; current Candidate 4 still requires exact-SHA v141 PASS.",
+    "v111_optical_sequence": "Tracked asset-backed Godot receipt is PASS on an older commit and executed the R8 optical state/audio sequence; current Candidate 4 still requires exact-SHA PPPV/runtime PASS."
+  },
+  "policy": {
+    "every_authored_trigger_classified": true,
+    "promoted_action_requires_runtime_path": true,
+    "hold_has_no_guessed_side_effect": true,
+    "automatic_trigger_requires_event_graph": true,
+    "condition_zone_must_not_autofire": true,
+    "physical_validation_required_for_candidate": true
+  }
+}

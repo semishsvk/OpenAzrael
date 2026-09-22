@@ -21,8 +21,10 @@ jobs:
         run: python tools/validate_kg001_trigger_events_v137.py
       - name: Validate generic character-animation contract
         run: python tools/validate_kg001_character_animation_v138.py
+      - name: Validate trigger/action census
+        run: python tools/validate_kg001_trigger_action_census_v142.py
       - name: Compile trigger and character-animation tools
-        run: python -m py_compile tools/validate_kg001_trigger_events_v137.py tools/validate_kg001_character_animation_v138.py tools/audit_character_animation_sources_v138.py
+        run: python -m py_compile tools/validate_kg001_trigger_events_v137.py tools/validate_kg001_character_animation_v138.py tools/validate_kg001_trigger_action_census_v142.py tools/audit_character_animation_sources_v138.py
       - name: Verify tracked checkout stayed clean
         shell: bash
         run: test -z "$(git status --porcelain --untracked-files=normal)"
