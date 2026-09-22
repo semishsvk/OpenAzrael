@@ -70,6 +70,9 @@ func _refresh_text() -> void:
     title_label.text = LocalizationManager.tr_key("ui.menu.title")
     language_label.text = LocalizationManager.tr_key("ui.menu.language")
     close_button.text = LocalizationManager.tr_key("ui.menu.close")
+    var info := LocalizationManager.locale_info()
+    var direction := String(info.get("direction", "ltr")).to_lower()
+    root_overlay.layout_direction = Control.LAYOUT_DIRECTION_RTL if direction == "rtl" else Control.LAYOUT_DIRECTION_LTR
 
 func _refresh_locales() -> void:
     if language_select == null:
