@@ -122,12 +122,21 @@ def main():
         "_dispatch_trigger_edge(trigger_name, inside)",
         "if had_state:",
     ])
-    checks["niamh_visibility_state"] = all(marker in room_manager for marker in [
-        "func _setup_r7_character_state()",
-        'var niamh_body := _find_node("nibody")',
-        'DemoState.flag("R7NiamhActivated")',
-        "target.visible = true",
-    ])
+    setup_start = room_manager.find("func _setup_r7_character_state()")
+    setup_end = room_manager.find("\nfunc ", setup_start + 1)
+    setup_body = room_manager[setup_start:setup_end if setup_end >= 0 else len(room_manager)]
+    visibility_ops = {"hide", "show", "add_room", "remove_room", "set_visible"}
+    graph_visibility_ops = [
+        op for op in ops if op in visibility_ops
+    ]
+    checks["niamh_visibility_state"] = (
+        setup_start >= 0
+        and 'var niamh_body := _find_node("nibody")' in setup_body
+        and "niamh_body.visible = true" in setup_body
+        and 'DemoState.flag("R7NiamhActivated")' not in setup_body
+        and not graph_visibility_ops
+        and "target.visible = true" in room_manager
+    )
     checks["animation_source_only"] = (
         "func _on_character_animation_requested(" in room_manager
         and 'has_animation(StringName(family))' in room_manager
