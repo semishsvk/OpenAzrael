@@ -51,20 +51,25 @@ checks={
         "raw_uv_not_source_exact",
         "primitive_base_color_image",
     )),
-    "semantic_sentinels": all(token in audit for token in (
-        "doorcor2__1KEYHOLE",
-        "BAPBACK1",
-        "BAPFRNT1",
-        "BAPLEFT1",
-        "BAPRGHT1",
-        "tapestry2a__mesh",
-        "broken01__mesh",
-    )),
+    "semantic_sentinels": (
+        all(token in audit for token in (
+            "doorcor2__1KEYHOLE",
+            "BAPBACK1",
+            "BAPFRNT1",
+            "BAPLEFT1",
+            "BAPRGHT1",
+            "tapestry2a__mesh",
+        ))
+        and "expected_variants" in audit
+        and "actual_variants" in audit
+        and "source_orientation_variants" in audit
+    ),
     "tapestry_state_orientation": (
         'rotate_x(PI)' in tapestry
         and '"rotation:x"' in tapestry
         and '"rotation:y"' not in tapestry
     ),
+    "no_required_per_texture_corrections": contract.get("required_uv_corrections")=={},
     "gltf_upper_left": contract.get("gltf_texture_origin")=="upper_left",
     "source_variants_exact": {
         (x.get("room"),x.get("node"),x.get("texture"))
