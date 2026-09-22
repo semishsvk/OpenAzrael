@@ -40,6 +40,7 @@ REQUIRED_RUNTIME = (
     "collision_v120",
     "surface_v121",
     "geometry_v122",
+    "visibility_v123",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
