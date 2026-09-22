@@ -767,6 +767,41 @@
       "deterministic": false,
       "mutates_runtime": false,
       "maturity": "stable"
+    },
+    {
+      "tool_id": "room_fidelity_framework",
+      "family": "validation_lab",
+      "description": "Validate source-exact room fidelity manifests and build fail-closed layered room forensic reports reusable across remaster projects.",
+      "entrypoint": "tools/remaster_framework/fidelity.py",
+      "inputs": [
+        "source_room_manifest",
+        "runtime_fidelity_layers"
+      ],
+      "outputs": [
+        "room_fidelity_validation",
+        "room_forensic_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
+    },
+    {
+      "tool_id": "openazrael_room_forensic_report",
+      "family": "validation_lab",
+      "description": "Aggregate OpenAzrael source, Godot, visibility, material/UV, transform, graphical, state, portal, interaction and packaged-build evidence per room.",
+      "entrypoint": "tools/build_room_forensic_report_v131.py",
+      "inputs": [
+        "kg001_runtime_evidence",
+        "generated_fidelity_metadata"
+      ],
+      "outputs": [
+        "room_forensic_report"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
     }
   ]
 }
