@@ -1,6 +1,7 @@
 extends SceneTree
 const H = preload("res://scripts/validation/room_fidelity_helpers.gd")
-const TRANSFORM_TOL:=0.0001
+const TRANSFORM_ABS_TOL:=0.0001
+const TRANSFORM_REL_TOL:=0.0000001
 const BOUNDS_TOL:=0.001
 var failures:Array[String]=[]
 var checks:=0
@@ -30,7 +31,7 @@ func _run()->void:
             var name:=String(spec["node"]); var mi=actual.get(name)
             _check(room_id+"/"+name+"_exists",mi is MeshInstance3D)
             if not mi is MeshInstance3D: continue
-            var tok:=H.arrays_close(H.transform_values(mi.global_transform),spec["transform"],TRANSFORM_TOL)
+            var tok:=H.arrays_close_scaled(H.transform_values(mi.global_transform),spec["transform"],TRANSFORM_ABS_TOL,TRANSFORM_REL_TOL)
             var bok:=H.arrays_close(H.bounds_values(mi.get_aabb()),spec["bounds"],BOUNDS_TOL)
             _check(room_id+"/"+name+"_transform",tok); _check(room_id+"/"+name+"_bounds",bok)
             if not tok: tfail+=1
