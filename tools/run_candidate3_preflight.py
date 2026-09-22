@@ -21,6 +21,12 @@ TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
 FRESH_RESULT = TMP / "kg001_fresh_checkout.json"
+VISUAL_RESULT = TMP / "kg001_visual_v126_runtime.json"
+GENERATED_METADATA = {
+    "fidelity_v124": ROOT / "data/runtime_generated/demo_room_fidelity_v124.json",
+    "state_matrix_v127": ROOT / "data/runtime_generated/kg001_state_matrix_v127.json",
+    "asset_manifest_v128": ROOT / "data/runtime_generated/runtime_asset_manifest_v128.json",
+}
 PPPV_TMP = ROOT / ".tmp/kg001_pppv_v2"
 PPPV_REQUIRED_EVIDENCE = {
     "scenario_suite": PPPV_TMP / "kg001_pppv_scenario_suite.json",
@@ -41,6 +47,9 @@ REQUIRED_RUNTIME = (
     "surface_v121",
     "geometry_v122",
     "visibility_v123",
+    "material_v124",
+    "transform_v125",
+    "reachable_visibility_v127",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
@@ -71,6 +80,21 @@ def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
+
+def parse_marker(output: str, marker: str) -> dict:
+    for line in reversed(output.splitlines()):
+        if marker in line:
+            payload = line.split(marker, 1)[1].strip()
+            try:
+                return json.loads(payload)
+            except json.JSONDecodeError:
+                return {"status": "FAIL", "parse_error": payload}
+    return {"status": "FAIL", "error": "result marker missing"}
+
+
+def engine_errors(output: str) -> list[str]:
+    return [line for line in output.splitlines() if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))]
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -202,6 +226,41 @@ def main() -> int:
     if not CANDIDATE_RESULT.is_file() or not FRESH_RESULT.is_file():
         return fail("PREFLIGHT_EVIDENCE_MISSING")
 
+    missing_generated = [
+        str(path.relative_to(ROOT))
+        for path in GENERATED_METADATA.values()
+        if not path.is_file()
+    ]
+    if missing_generated:
+        return fail("GENERATED_FIDELITY_METADATA_MISSING", {"missing": missing_generated})
+
+    visual_run = run([
+        godot,
+        "--path",
+        str(ROOT),
+        "--script",
+        "res://scripts/kg001_visual_census_runner_v126.gd",
+    ])
+    visual_result = parse_marker(
+        visual_run.stdout,
+        "OPENAZRAEL_KG001_VISUAL_CENSUS_V126",
+    )
+    visual_errors = engine_errors(visual_run.stdout)
+    if visual_run.returncode != 0 or visual_errors or visual_result.get("status") != "PASS":
+        return fail(
+            "GRAPHICAL_VISUAL_CENSUS_V126_FAILED",
+            {
+                "returncode": visual_run.returncode,
+                "status": visual_result.get("status"),
+                "engine_errors": visual_errors,
+                "output_tail": visual_run.stdout[-20000:],
+            },
+        )
+    VISUAL_RESULT.write_text(
+        json.dumps(visual_result, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     pppv_cmd = [
         sys.executable,
         "tools/run_candidate3_pppv_v2.py",
@@ -287,12 +346,24 @@ def main() -> int:
         "source_validators": "PASS",
         "godot_import": "PASS",
         "runtime_status": {name: runtime_status[name] for name in REQUIRED_RUNTIME},
+        "visual_v126": "PASS",
         "pppv_v2_status": pppv_status,
         "evidence": {
             "candidate_result": str(CANDIDATE_RESULT.relative_to(ROOT)),
             "candidate_result_sha256": sha256(CANDIDATE_RESULT),
             "fresh_checkout": str(FRESH_RESULT.relative_to(ROOT)),
             "fresh_checkout_sha256": sha256(FRESH_RESULT),
+            "visual_v126": {
+                "path": str(VISUAL_RESULT.relative_to(ROOT)),
+                "sha256": sha256(VISUAL_RESULT),
+            },
+            "generated_metadata": {
+                name: {
+                    "path": str(path.relative_to(ROOT)),
+                    "sha256": sha256(path),
+                }
+                for name, path in GENERATED_METADATA.items()
+            },
             "pppv_v2": {
                 name: {
                     "path": str(path.relative_to(ROOT)),
@@ -316,7 +387,7 @@ def main() -> int:
         },
         "build_rule": (
             "Export is permitted only while Git HEAD, clean worktree, Godot version, "
-            "candidate/fresh evidence, PPPV v2 evidence and restored runtime asset hashes still match this receipt."
+            "candidate/fresh evidence, v126 graphical evidence, generated fidelity metadata, PPPV v2 evidence and restored runtime asset hashes still match this receipt."
         ),
     }
     RECEIPT.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
