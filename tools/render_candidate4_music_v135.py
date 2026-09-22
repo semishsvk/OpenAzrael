@@ -184,6 +184,9 @@ def main():
     if unknown:raise SystemExit("unknown canonical XMI: "+",".join(unknown))
     silence_xmi=sorted(name for name in selected_all if name=="BLANK.XMI")
     selected=[name for name in selected_all if name!="BLANK.XMI"]
+    args.out_dir.mkdir(parents=True,exist_ok=True)
+    for stale in args.out_dir.glob("*.ogg"):
+        stale.unlink()
     rows=[]
     for name in selected:
         source=locate(demo,name)
