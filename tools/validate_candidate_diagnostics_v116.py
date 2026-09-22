@@ -22,6 +22,7 @@ locale_en=read("localization/en.json")
 locale_sk=read("localization/sk.json")
 probe=read("scripts/interaction_probe.gd")
 runner=read("tools/run_kg001_candidate_v112.py")
+gate_manifest=read("tools/kg001_gate_manifest.py")
 bug_capture=diag.split("# v116-context-v32: observational one-key bug-report capture.",1)[-1]
 bugdoc=read("docs/BUG_REPORTING.md")
 issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
@@ -88,7 +89,10 @@ checks={
     "issue_template": 'name: OpenAzrael bug report' in issuetpl and 'Diagnostic package' in issuetpl,
     "bug_reporting_doc": 'F11' in bugdoc and 'Critical' in bugdoc and 'regression' in bugdoc.lower(),
     "watermark": 'CandidateDiagnostics.BUILD_ID' in hud and 'CandidateDiagnostics.BUILD_CHECKPOINT' in hud,
-    "runner_includes_validator": 'tools/validate_candidate_diagnostics_v116.py' in runner,
+    "runner_includes_validator": (
+        'from tools.kg001_gate_manifest import SOURCE_COMMANDS, RUNTIMES' in runner
+        and 'tools/validate_candidate_diagnostics_v116.py' in gate_manifest
+    ),
 }
 for k,v in checks.items():
     if not v: errors.append("check failed: "+k)

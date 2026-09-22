@@ -10,6 +10,8 @@ import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
 FORBIDDEN_TRACKED_PREFIXES=(

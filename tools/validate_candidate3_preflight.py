@@ -12,6 +12,8 @@ import tools.run_kg001_candidate_v112 as candidate_runner
 import tools.run_candidate3_preflight as candidate3_preflight
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 preflight = (ROOT / "tools/run_candidate3_preflight.py").read_text(encoding="utf-8")
 exporter = (ROOT / "tools/export_candidate3.py").read_text(encoding="utf-8")
 runner = (ROOT / "tools/run_kg001_candidate_v112.py").read_text(encoding="utf-8")
