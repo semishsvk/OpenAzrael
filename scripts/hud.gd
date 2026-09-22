@@ -135,15 +135,16 @@ func _process(_delta: float) -> void:
     inv.sort()
     var status := ""
     if DemoState.flag("demo_complete"):
-        status = "\nDEMO COMPLETE — Shield acquired"
+        status = "\n" + LocalizationManager.tr_key("ui.hud.demo_complete")
     elif DemoState.flag("R8BathDrain"):
-        status = "\nBaptistery bath: DRAINED"
-    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\nWASD move | Shift sprint | Mouse look | E interact | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room" % [
+        status = "\n" + LocalizationManager.tr_key("ui.hud.bath_drained")
+    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\n%s" % [
         CandidateDiagnostics.BUILD_ID,
         CandidateDiagnostics.BUILD_CHECKPOINT,
         room_manager.current_room_id,
-        ", ".join(inv) if not inv.is_empty() else "(empty)",
-        status
+        ", ".join(inv) if not inv.is_empty() else LocalizationManager.tr_key("ui.hud.empty"),
+        status,
+        LocalizationManager.tr_key("ui.hud.controls")
     ]
 
     if candidate_debug_visible and is_instance_valid(candidate_debug_label):
