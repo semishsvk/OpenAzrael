@@ -53,6 +53,8 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_interaction_reachability_v130.py"],
     [sys.executable,"tools/validate_kg001_room_forensic_report_v131.py"],
     [sys.executable,"tools/validate_kg001_texture_orientation_v133.py"],
+    [sys.executable,"tools/validate_kg001_demo_connectivity_v140.py"],
+    [sys.executable,"tools/validate_kg001_all_transition_v141.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -76,6 +78,7 @@ RUNTIMES=[
     ("reachable_visibility_v127","scripts/kg001_reachable_visibility_runner_v127.gd","OPENAZRAEL_KG001_REACHABLE_VISIBILITY_V127"),
     ("portal_v129","scripts/kg001_portal_geometry_runner_v129.gd","OPENAZRAEL_KG001_PORTAL_GEOMETRY_V129"),
     ("interaction_v130","scripts/kg001_interaction_reachability_runner_v130.gd","OPENAZRAEL_KG001_INTERACTION_REACHABILITY_V130"),
+    ("all_transitions_v141","scripts/kg001_all_transition_runner_v141.gd","OPENAZRAEL_KG001_ALL_TRANSITIONS_V141"),
 ]
 
 def run(cmd, check=False):
