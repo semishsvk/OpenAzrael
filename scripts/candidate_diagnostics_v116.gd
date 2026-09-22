@@ -3,11 +3,12 @@ extends Node
 signal event_recorded(entry: Dictionary)
 signal bug_report_created(path: String)
 
-const BUILD_ID := "KG-001 Candidate 1"
-const BUILD_CHECKPOINT := "v116-context-v28"
-const EVENT_LOG_PATH := "user://openazrael_candidate1_events.jsonl"
-const STATE_DUMP_PREFIX := "user://openazrael_kg001_state_dump_"
-const BUG_REPORT_PREFIX := "user://openazrael_bugreport_"
+const BUILD_ID := "KG-001 Candidate 2"
+const BUILD_CHECKPOINT := "v116-context-v31"
+const BUILD_MANIFEST_PATH := "res://data/generated/kg001_candidate_build_manifest.json"
+const RUN_ROOT_PREFIX := "user://openazrael_candidate2_runs/"
+const STATE_DUMP_BASENAME := "state_"
+const BUG_REPORT_BASENAME := "bugreport_"
 const BUG_REPORT_SCHEMA := "openazrael.bug_report"
 const BUG_REPORT_SCHEMA_VERSION := 1
 const BUG_REPORT_EVENT_TAIL_LINES := 500
@@ -17,19 +18,32 @@ const REQUIRED_CORE_RESOURCES := [
     "res://assets/rooms/R7.glb",
     "res://assets/rooms/R8.glb",
     "res://data/xaf_trigger_evidence.json",
-    "res://data/gameplay_event_graph_v87.json"
+    "res://data/gameplay_event_graph_v87.json",
+    "res://data/audio/legacy_world_ir.json",
+    BUILD_MANIFEST_PATH
 ]
 
-# Golden Event-IR stream used by the KG-001 demo route. Ambient/classic parity
-# has its own evidence track and is intentionally not promoted here.
+# Physical Candidate audio resources required for G06 readiness. Original
+# Miles pan/volume parity remains a separate forensic HOLD.
 const REQUIRED_CANDIDATE_AUDIO := [
+    "res://assets/audio/797TAP.WAV",
     "res://assets/audio/S152V2.WAV",
     "res://assets/audio/S137.WAV",
     "res://assets/audio/S121.WAV",
-    "res://assets/audio/799SECDR.WAV"
+    "res://assets/audio/799SECDR.WAV",
+    "res://assets/audio/S174ELP1.WAV",
+    "res://assets/audio/S174ELP2.WAV",
+    "res://assets/audio/S186.WAV"
 ]
 
+var run_id := ""
+var run_dir := ""
+var event_log_path := ""
+var run_manifest_path := ""
+var run_started_unix := 0
+var build_manifest: Dictionary = {}
 var last_event: Dictionary = {}
+var startup_ready_emitted := false
 var last_trigger := "(none)"
 var last_audio := "(none)"
 var startup_errors: Array[String] = []
@@ -44,15 +58,107 @@ var _bug_report_capture_in_progress := false
 
 func _ready() -> void:
     file_logging_enabled = DisplayServer.get_name() != "headless"
+    _initialize_run_scope()
     DemoState.inventory_changed.connect(_on_inventory_changed)
     DemoState.flag_changed.connect(_on_flag_changed)
     DemoState.puzzle_node_changed.connect(_on_puzzle_node_changed)
     LegacyEvents.logical_audio_event.connect(_on_logical_audio_event)
+    record_event("candidate_run_start", {
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
+        "run_manifest": run_manifest_path,
+        "event_log": event_log_path
+    })
     record_event("diagnostics_ready", {
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
         "file_logging": file_logging_enabled
     })
+
+func emit_startup_ready(room_id: String) -> void:
+    if startup_ready_emitted:
+        return
+    startup_ready_emitted = true
+    var payload := {
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
+        "room": room_id,
+        "required_resource_preflight": "PASS"
+    }
+    record_event("candidate_startup_ready", payload)
+    print("OPENAZRAEL_CANDIDATE_STARTUP_READY " + JSON.stringify(payload))
+
+func _exit_tree() -> void:
+    if run_id.is_empty():
+        return
+    record_event("candidate_run_end", {
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "events_recorded": event_sequence
+    })
+    _write_run_manifest("ENDED")
+
+func _new_run_id() -> String:
+    return "%d-%d-%d" % [
+        int(Time.get_unix_time_from_system()),
+        OS.get_process_id(),
+        Time.get_ticks_msec()
+    ]
+
+func _load_json_dictionary(path: String) -> Dictionary:
+    if not FileAccess.file_exists(path):
+        return {}
+    var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+    return parsed if parsed is Dictionary else {}
+
+func _initialize_run_scope() -> void:
+    run_started_unix = int(Time.get_unix_time_from_system())
+    run_id = _new_run_id()
+    run_dir = RUN_ROOT_PREFIX + run_id
+    var absolute := ProjectSettings.globalize_path(run_dir)
+    var mkdir_error := DirAccess.make_dir_recursive_absolute(absolute)
+    if mkdir_error != OK and mkdir_error != ERR_ALREADY_EXISTS:
+        push_warning("OpenAzrael Candidate Diagnostics: cannot create run dir " + run_dir)
+        file_logging_enabled = false
+    event_log_path = run_dir + "/events.jsonl"
+    run_manifest_path = run_dir + "/run_manifest.json"
+    build_manifest = _load_json_dictionary(BUILD_MANIFEST_PATH)
+    _write_run_manifest("RUNNING")
+
+func _run_manifest_payload(status: String) -> Dictionary:
+    return {
+        "schema": "openazrael.kg001.candidate_run_manifest",
+        "version": 1,
+        "status": status,
+        "run_id": run_id,
+        "build_id": BUILD_ID,
+        "checkpoint": BUILD_CHECKPOINT,
+        "run_started_unix": run_started_unix,
+        "run_ended_unix": int(Time.get_unix_time_from_system()) if status == "ENDED" else null,
+        "godot": Engine.get_version_info(),
+        "system": _system_info(),
+        "build_manifest_path": BUILD_MANIFEST_PATH,
+        "build_manifest": build_manifest,
+        "event_log_path": event_log_path,
+        "event_sequence": event_sequence,
+        "last_event_kind": String(last_event.get("kind", "")),
+        "source_safe": true,
+        "commercial_asset_bytes_embedded": false
+    }
+
+func _write_run_manifest(status: String) -> void:
+    if run_manifest_path.is_empty():
+        return
+    var f := FileAccess.open(run_manifest_path, FileAccess.WRITE)
+    if f == null:
+        push_warning("OpenAzrael Candidate Diagnostics: cannot write run manifest " + run_manifest_path)
+        return
+    f.store_string(JSON.stringify(_run_manifest_payload(status), "  ") + "\n")
+    f.flush()
 
 func _sorted_keys(source: Dictionary) -> Array[String]:
     var out: Array[String] = []
@@ -65,14 +171,14 @@ func _append_event_log(entry: Dictionary) -> void:
     if not file_logging_enabled:
         return
     var f: FileAccess = null
-    if FileAccess.file_exists(EVENT_LOG_PATH):
-        f = FileAccess.open(EVENT_LOG_PATH, FileAccess.READ_WRITE)
+    if FileAccess.file_exists(event_log_path):
+        f = FileAccess.open(event_log_path, FileAccess.READ_WRITE)
         if f != null:
             f.seek_end()
     else:
-        f = FileAccess.open(EVENT_LOG_PATH, FileAccess.WRITE)
+        f = FileAccess.open(event_log_path, FileAccess.WRITE)
     if f == null:
-        push_warning("OpenAzrael Candidate Diagnostics: cannot open event log " + EVENT_LOG_PATH)
+        push_warning("OpenAzrael Candidate Diagnostics: cannot open event log " + event_log_path)
         return
     f.store_line(JSON.stringify(entry))
     f.flush()
@@ -84,6 +190,8 @@ func record_event(kind: String, data: Dictionary = {}) -> void:
         "unix_time": Time.get_unix_time_from_system(),
         "ticks_msec": Time.get_ticks_msec(),
         "kind": kind,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "data": data.duplicate(true),
         "state_hash": DemoState.canonical_state_hash()
     }
@@ -163,7 +271,7 @@ func fail_fast_if_required_resources_missing(require_audio: bool) -> bool:
         })
         return true
     for path in startup_errors:
-        push_error("OpenAzrael KG-001 Candidate 1 missing required resource: " + path)
+        push_error("OpenAzrael KG-001 Candidate 2 missing required resource: " + path)
     record_event("candidate_asset_validation", {
         "status": "FAIL",
         "audio_required": require_audio,
@@ -178,12 +286,14 @@ func last_event_text() -> String:
 
 func dump_state(room_id: String, player_position: Vector3) -> String:
     var stamp := int(Time.get_unix_time_from_system())
-    var path := "%s%d_%04d.json" % [STATE_DUMP_PREFIX, stamp, event_sequence % 10000]
+    var path := "%s/%s%d_%04d.json" % [run_dir, STATE_DUMP_BASENAME, stamp, event_sequence % 10000]
     var payload := {
         "schema": "openazrael.kg001.runtime_state_dump",
         "version": 116,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "room": room_id,
         "player_position": [player_position.x, player_position.y, player_position.z],
         "canonical_state_payload": DemoState.canonical_state_payload(),
@@ -191,7 +301,8 @@ func dump_state(room_id: String, player_position: Vector3) -> String:
         "last_event": last_event,
         "last_trigger": last_trigger,
         "last_audio": last_audio,
-        "event_log_path": EVENT_LOG_PATH
+        "event_log_path": event_log_path,
+        "run_manifest_path": run_manifest_path
     }
     var f := FileAccess.open(path, FileAccess.WRITE)
     if f == null:
@@ -204,7 +315,7 @@ func dump_state(room_id: String, player_position: Vector3) -> String:
     return path
 
 
-# v116-context-v28: observational one-key bug-report capture.
+# v116-context-v31: observational one-key bug-report capture.
 # Reads diagnostics/runtime state only; no gameplay mutator is called.
 func stable_room_id(room_id: String) -> String:
     return "ROOM:" + (room_id if not room_id.is_empty() else "UNKNOWN")
@@ -269,11 +380,11 @@ func _system_info() -> Dictionary:
     }
 
 func _event_log_tail(max_lines: int = BUG_REPORT_EVENT_TAIL_LINES) -> String:
-    if not FileAccess.file_exists(EVENT_LOG_PATH):
+    if not FileAccess.file_exists(event_log_path):
         return ""
-    var content := FileAccess.get_file_as_string(EVENT_LOG_PATH)
+    var content := FileAccess.get_file_as_string(event_log_path)
     var lines := content.split("\n", false)
-    var start := max(0, lines.size() - max_lines)
+    var start: int = maxi(0, lines.size() - max_lines)
     var out := ""
     for i in range(start, lines.size()):
         out += String(lines[i]) + "\n"
@@ -306,6 +417,8 @@ func _state_snapshot(context: Dictionary, last_game_event: Dictionary) -> Dictio
         "version": 1,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "room": context.get("room_id", "UNKNOWN"),
         "room_entity_id": context.get("room_entity_id", "ROOM:UNKNOWN"),
         "player_position": context.get("player_position", [0.0, 0.0, 0.0]),
@@ -329,6 +442,8 @@ func _bug_report_text(report: Dictionary) -> String:
         "",
         "Build: " + String(report.get("build_id", "")),
         "Checkpoint: " + String(report.get("checkpoint", "")),
+        "Run ID: " + String(report.get("run_id", "")),
+        "Commit: " + String(report.get("build_commit_sha", "")),
         "Room: " + String(report.get("room", "")),
         "Room ID: " + String(report.get("room_entity_id", "")),
         "Trigger ID: " + String(report.get("trigger_entity_id", "")),
@@ -366,7 +481,7 @@ func capture_bug_report() -> String:
 
     var stamp := int(Time.get_unix_time_from_system())
     var suffix := event_sequence % 10000
-    var base := "%s%d_%04d" % [BUG_REPORT_PREFIX, stamp, suffix]
+    var base := "%s/%s%d_%04d" % [run_dir, BUG_REPORT_BASENAME, stamp, suffix]
     var zip_path := base + ".zip"
     var screenshot_bytes := _capture_screenshot_png()
     var screenshot_ok := not screenshot_bytes.is_empty()
@@ -377,6 +492,8 @@ func capture_bug_report() -> String:
         "schema_version": BUG_REPORT_SCHEMA_VERSION,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "created_unix": stamp,
         "repository": "semishsvk/OpenAzrael",
         "room": context.get("room_id", "UNKNOWN"),
@@ -387,7 +504,9 @@ func capture_bug_report() -> String:
         "last_game_event": last_game_event,
         "last_trigger": last_trigger,
         "last_audio": last_audio,
-        "event_log_source": EVENT_LOG_PATH,
+        "event_log_source": event_log_path,
+        "run_manifest_source": run_manifest_path,
+        "build_manifest_source": BUILD_MANIFEST_PATH,
         "event_log_tail_limit": BUG_REPORT_EVENT_TAIL_LINES,
         "screenshot_included": screenshot_ok,
         "severity": "UNCLASSIFIED",
@@ -412,6 +531,8 @@ func capture_bug_report() -> String:
         ["report.txt", _bug_report_text(report)],
         ["state.json", JSON.stringify(state, "  ") + "\n"],
         ["system_info.json", JSON.stringify(system_info, "  ") + "\n"],
+        ["run_manifest.json", FileAccess.get_file_as_string(run_manifest_path)],
+        ["build_manifest.json", JSON.stringify(build_manifest, "  ") + "\n"],
         ["events_tail.jsonl", _event_log_tail()]
     ]
     for entry in entries:
@@ -431,6 +552,8 @@ func capture_bug_report() -> String:
         "version": 1,
         "build_id": BUILD_ID,
         "checkpoint": BUILD_CHECKPOINT,
+        "run_id": run_id,
+        "build_commit_sha": String(build_manifest.get("commit_sha", "")),
         "files": included,
         "entry_errors": entry_errors,
         "source_safe": true,

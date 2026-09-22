@@ -1,6 +1,6 @@
 [application]
-config/name="OpenAzrael Demo Reconstruction"
-config/version="KG001-Candidate-1-v116"
+config/name="OpenAzrael KG-001 Candidate 2"
+config/version="KG001-Candidate-2-v116"
 run/main_scene="res://main.tscn"
 
 [display]

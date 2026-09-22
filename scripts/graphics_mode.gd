@@ -3,7 +3,7 @@ extends Node
 # OpenAzrael presentation layer. Gameplay/world coordinates remain shared.
 enum GraphicsMode { CLASSIC, ENHANCED, REMASTERED }
 
-var mode: GraphicsMode = GraphicsMode.CLASSIC
+var mode: int = GraphicsMode.CLASSIC
 
 func mode_name() -> String:
     match mode:
@@ -12,7 +12,7 @@ func mode_name() -> String:
         GraphicsMode.REMASTERED: return "REMASTERED"
     return "CLASSIC"
 
-func set_mode(next_mode: GraphicsMode) -> void:
+func set_mode(next_mode: int) -> void:
     mode = next_mode
     # v44 ships the validated Classic asset path. Enhanced and Remastered are
     # architecture slots only; never silently substitute generated assets.

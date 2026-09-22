@@ -1,0 +1,40 @@
+{
+  "schema": "openazrael.kg001.audio_runtime_contract",
+  "version": 116,
+  "status": "SOURCE_CONTRACT_PASS",
+  "issue": "#9",
+  "required_assets": [
+    "S152V2.WAV",
+    "S137.WAV",
+    "S121.WAV",
+    "799SECDR.WAV",
+    "S174ELP1.WAV",
+    "S174ELP2.WAV",
+    "S186.WAV"
+  ],
+  "ambient_ir": "data/audio/legacy_world_ir.json",
+  "expected_ambient_counts": {
+    "R1": 2,
+    "R7": 3,
+    "R8": 2
+  },
+  "event_probe": {
+    "graph": "R8_LENS_PLACE",
+    "asset": "S152V2.WAV"
+  },
+  "checks": [
+    "physical resources exist and load as AudioStream",
+    "asset-backed required WAVs contain non-empty non-silent PCM when local audio is restored",
+    "Master bus exists, is unmuted and is not effectively silent",
+    "temporary AudioEffectCapture records nonzero Master-bus frames/peak during the known Event-IR playback probe",
+    "R1/R7/R8 ambient emitter counts match recovered IR",
+    "ambient players have valid streams and playing=true",
+    "Event-IR play_sound creates a physical AudioStreamPlayer with playing=true on Master"
+  ],
+  "evidence_boundary": {
+    "automated_non_silence": "PCM source payload + Godot Master-bus frame energy",
+    "human_audibility_quality": "G10_MANUAL",
+    "original_miles_pan_volume_parity": "HOLD_SEPARATE_ORACLE"
+  },
+  "runtime_status": "NOT_EXECUTED"
+}

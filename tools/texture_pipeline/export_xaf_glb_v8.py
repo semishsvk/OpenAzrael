@@ -4,6 +4,7 @@ from collections import defaultdict
 import numpy as np
 import trimesh
 from PIL import Image
+from legacy_colorkey import image_alpha_mode, prepare_mask_texture
 
 OBJ_RE = re.compile(r'\bobject\s+"([^"]+)"\s*\{', re.I)
 MAT_RE = re.compile(r'\bmaterial\s+"([^"]+)"\s*\{', re.I)
@@ -114,7 +115,7 @@ def face_material_names(meshb, poly_count):
 def parse(src,texture_dir):
     src=Path(src); t=src.read_text('latin1')
     mats=material_table(t); tex_idx=texture_index(texture_dir)
-    scene=trimesh.Scene(); missing=set(); resolved=set(); material_cache={}
+    scene=trimesh.Scene(); missing=set(); resolved=set(); material_cache={}; material_alpha={}; material_bleed={}
     nodes=all_object_nodes(t)
     # Unique names are expected in demo rooms; disambiguate defensively.
     used=defaultdict(int)
@@ -130,8 +131,26 @@ def parse(src,texture_dir):
         if tex_name and tex_path is None: missing.add(tex_name)
         if tex_path is not None:
             resolved.add(tex_path.name)
-            mat=trimesh.visual.material.SimpleMaterial(image=Image.open(tex_path).convert('RGB'),name=mn)
+            with Image.open(tex_path) as source_image:
+                source_image.load()
+                image=source_image.copy()
+            alpha_mode=image_alpha_mode(image, tex_path)
+            material_alpha[mn]=alpha_mode
+            if alpha_mode == 'MASK':
+                material_bleed[mn]=True
+                mat=trimesh.visual.material.PBRMaterial(
+                    baseColorTexture=prepare_mask_texture(image),
+                    metallicFactor=0.0,
+                    roughnessFactor=1.0,
+                    alphaMode='MASK',
+                    alphaCutoff=0.5,
+                    name=mn,
+                )
+            else:
+                material_bleed[mn]=False
+                mat=trimesh.visual.material.SimpleMaterial(image=image.convert('RGB'),name=mn)
         else:
+            material_alpha[mn]='OPAQUE'; material_bleed[mn]=False
             col=md.get('colour'); rgba=[max(0,min(255,round(x*255))) for x in col[:4]] if col else [180,180,180,255]
             mat=trimesh.visual.material.SimpleMaterial(diffuse=rgba,name=mn)
         material_cache[mn]=mat; return mat
@@ -184,7 +203,8 @@ def parse(src,texture_dir):
                 for k in range(1,len(poly)-1): of.append([corners[0],corners[k],corners[k+1]])
             if not of: continue
             tex=mats.get(mn,{}).get('texture')
-            visual=trimesh.visual.TextureVisuals(uv=np.array(ouv,float),material=get_material(mn))
+            material=get_material(mn)
+            visual=trimesh.visual.TextureVisuals(uv=np.array(ouv,float),material=material)
             mesh=trimesh.Trimesh(vertices=np.array(ov),faces=np.array(of),vertex_normals=np.array(on),visual=visual,process=False)
             mesh.metadata.update({'xaf_object':nod['name'],'xaf_material':mn,'xaf_texture':tex})
             # Object transform lives on parent object node; geometry is identity child.
@@ -193,6 +213,8 @@ def parse(src,texture_dir):
             scene.add_geometry(mesh,node_name=child,geom_name=child,parent_node_name=name,transform=np.eye(4))
             primitive_stats.append({'object':nod['name'],'object_node':name,'node':child,'parent_object':objrec['parent'],
                                     'material':mn,'texture':tex,'resolved_png':resolve_texture(tex,tex_idx).name if resolve_texture(tex,tex_idx) else None,
+                                    'legacy_colorkey':material_alpha.get(mn)=='MASK','alpha_mode':material_alpha.get(mn,'OPAQUE'),
+                                    'alpha_edge_bleed_safe':bool(material_bleed.get(mn,False)),
                                     'corner_vertices':len(ov),'triangles':len(of),'bad_uv_corners':bad_uv,'bad_normal_corners':bad_normal})
             objrec['primitive_count']+=1; objrec['corner_vertices']+=len(ov); objrec['triangles']+=len(of)
             objrec['bad_uv_corners']+=bad_uv; objrec['bad_normal_corners']+=bad_normal

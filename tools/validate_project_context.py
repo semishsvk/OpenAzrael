@@ -3,7 +3,7 @@ from pathlib import Path
 import json, sys
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_CHECKPOINT="v116-context-v28"
+EXPECTED_CHECKPOINT="v116-context-v31"
 errors=[]
 
 def req(p):
@@ -53,6 +53,7 @@ for p in [
     "data/tests/kg001_manual_sanity_template.json",
     "data/evidence/evidence_registry.json",
     "data/backup/source_fingerprints.json",
+    "PUZZLES_FILEIO_CENSUS_V103.md",
     "WORLD_RUNTIME_SERIALIZATION_V106.md",
     "WORLD_PUZZLE_SOUND_BRIDGE_V107.md",
     "PUZZLES_ALTERNATIVE_OPEN_PATHS_V105.md",
@@ -75,8 +76,48 @@ for p in [
     "scripts/kg001_trigger_debug_v116.gd",
     "tools/validate_candidate_diagnostics_v116.py",
     "data/tests/kg001_candidate_diagnostics_contract_v116.json",
+    "scripts/kg001_audio_runtime_runner_v116.gd",
+    "tools/validate_kg001_audio_runtime_v116.py",
+    "data/tests/kg001_audio_runtime_contract_v116.json",
+    "tools/texture_pipeline/legacy_colorkey.py",
+    "tools/validate_kg001_texture_colorkey_v116.py",
+    "data/tests/kg001_texture_colorkey_contract_v116.json",
+    "data/audio/legacy_world_ir.json",
+    "tools/restore_candidate_assets.py",
+    "tools/prepare_candidate_audio.py",
     "docs/BUG_REPORTING.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/workflows/kg001-source-safe.yml",
+    "export_presets.cfg",
+    "tools/requirements-kg001-source-safe.txt",
+    "tools/validate_kg001_toolchain_v117.py",
+    "data/tests/kg001_toolchain_contract_v117.json",
+    "tools/write_kg001_build_manifest.py",
+    "tools/validate_kg001_export_preset_v117.py",
+    "scripts/kg001_visual_capture_v117.gd",
+    "tools/validate_kg001_visual_capture_v117.py",
+    "data/tests/kg001_visual_capture_contract_v117.json",
+    "tools/validate_source_safe_asset_loading_v117.py",
+    "tools/run_kg001_candidate2_windows_v117.ps1",
+    "tools/validate_candidate2_windows_wrapper_v117.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/validate_kg001_build_manifest_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
+    "tools/record_kg001_g10_v118.py",
+    "tools/validate_kg001_manual_sanity_v118.py",
+    "tools/validate_kg001_g10_contract_v118.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/validate_kg001_build_manifest_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
+    "tools/validate_kg001_candidate2_asset_set_v118.py",
+    "tools/validate_kg001_build_manifest_v118.py",
+    "tools/promote_kg001_candidate_results_v118.py",
+    "data/tests/kg001_test_build_contract_v118.json",
+    "tools/validate_kg001_test_build_contract_v118.py",
 ]:
     req(p)
 
@@ -108,7 +149,7 @@ try:
         errors.append("KG-001 v112 candidate runner drift")
     if c.get("quality",{}).get("kg001_status_engine")!="EVIDENCE_DRIVEN_V112":
         errors.append("KG-001 v112 status-engine drift")
-    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_CRITICAL_BUG_ISSUE_6_RETEST":
+    if c.get("quality",{}).get("kg001_overall_status")!="BLOCKED_ISSUES_6_9_11_RETEST":
         errors.append("KG-001 v112 overall status drift")
     if c.get("quality",{}).get("kg001_final_tag_allowed") is not False:
         errors.append("KG-001 tag unexpectedly allowed")
@@ -116,9 +157,25 @@ try:
         errors.append("KG-001 Issue #6 collision status drift")
     if c.get("quality",{}).get("kg001_release_blocked_by_issue_6") is not True:
         errors.append("KG-001 Issue #6 release blocker drift")
-    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V28_NOT_EXECUTED":
-        errors.append("KG-001 v28 candidate runtime boundary drift")
-    if c.get("quality",{}).get("documentation_consistency")!="PASS_V28":
+    if c.get("quality",{}).get("kg001_audio_issue_9")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 Issue #9 audio status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_issue_9") is not True:
+        errors.append("KG-001 Issue #9 release blocker drift")
+    if c.get("quality",{}).get("kg001_physical_audio_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 physical audio source-contract drift")
+    if c.get("quality",{}).get("kg001_texture_issue_11")!="SOURCE_FIX_READY_RUNTIME_RETEST_REQUIRED":
+        errors.append("KG-001 Issue #11 texture status drift")
+    if c.get("quality",{}).get("kg001_release_blocked_by_issue_11") is not True:
+        errors.append("KG-001 Issue #11 release blocker drift")
+    if c.get("quality",{}).get("kg001_legacy_colorkey_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 legacy color-key source-contract drift")
+    if c.get("quality",{}).get("kg001_legacy_colorkey_expected_hash_textures")!=10:
+        errors.append("KG-001 legacy color-key texture-class drift")
+    if "COMPLETE_ORIGINAL_RENDERER_TRANSPARENCY_SEMANTICS" not in c.get("hard_holds",[]):
+        errors.append("legacy transparency HOLD boundary missing")
+    if c.get("quality",{}).get("kg001_candidate_build_runtime")!="V31_NOT_EXECUTED":
+        errors.append("KG-001 Candidate 2 runtime boundary drift")
+    if c.get("quality",{}).get("documentation_consistency")!="PASS_V31":
         errors.append("documentation consistency drift")
     if c.get("quality",{}).get("documentation_runtime_claim_boundary")!="NO_RUNTIME_PROMOTION":
         errors.append("documentation/runtime boundary drift")
@@ -128,6 +185,97 @@ try:
         errors.append("KG-001 F11 bug-report key drift")
     if c.get("quality",{}).get("kg001_bug_report_source_safe") is not True:
         errors.append("KG-001 bug-report source-safety drift")
+    q=c.get("quality",{})
+    if q.get("kg001_independent_audit_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 independent-audit source-contract drift")
+    if q.get("kg001_pinned_toolchain_contract")!="PINNED_V117":
+        errors.append("KG-001 pinned toolchain contract drift")
+    if q.get("kg001_build_manifest_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 build-manifest contract drift")
+    if q.get("kg001_candidate_run_provenance")!="RUN_SCOPED_V1":
+        errors.append("KG-001 run-scoped provenance drift")
+    if q.get("kg001_floor_regression_rooms")!=["R1","R7","R8"]:
+        errors.append("KG-001 three-room floor regression drift")
+    if q.get("kg001_audio_pcm_non_silence_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 PCM non-silence contract drift")
+    if q.get("kg001_audio_master_capture_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 Master-bus capture contract drift")
+    if q.get("kg001_texture_colorkey_detection")!="USED_INDEXED_PALETTE_ENTRY":
+        errors.append("KG-001 indexed color-key detection drift")
+    if q.get("kg001_texture_colorkey_ambiguity_policy")!="FAIL_CLOSED":
+        errors.append("KG-001 indexed color-key ambiguity policy drift")
+    if q.get("kg001_texture_mask_edge_bleed_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 MASK edge-bleed contract drift")
+    if q.get("kg001_visual_capture_source_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 visual-capture source-contract drift")
+    if q.get("kg001_visual_capture_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 visual-capture runtime boundary drift")
+    if q.get("kg001_windows_export_contract")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 Windows export contract drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 Candidate 2 asset-set contract drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 test-build contract drift")
+    if q.get("kg001_g10_receipt_bound_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 receipt-bound G10 contract drift")
+    if q.get("kg001_g10_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 G10 runtime boundary drift")
+    if q.get("kg001_source_safe_ci_workflow")!=".github/workflows/kg001-source-safe.yml":
+        errors.append("KG-001 source-safe CI workflow drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 asset-set contract drift")
+    if q.get("kg001_candidate2_asset_set_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 asset-set runtime boundary drift")
+    if q.get("kg001_candidate2_expected_room_assets")!=3:
+        errors.append("KG-001 v118 room-asset count drift")
+    if q.get("kg001_candidate2_expected_runtime_audio_assets")!=8:
+        errors.append("KG-001 v118 runtime-audio count drift")
+    if q.get("kg001_candidate2_expected_classic_textures")!=86:
+        errors.append("KG-001 v118 Classic texture count drift")
+    if q.get("kg001_build_manifest_version")!=2:
+        errors.append("KG-001 build-manifest schema drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 test-build contract status drift")
+    if q.get("kg001_test_build_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 test-build runtime boundary drift")
+    if q.get("kg001_test_build_ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 test-build ready status drift")
+    if q.get("kg001_release_blockers_close_automatically") is not False:
+        errors.append("KG-001 v118 release-blocker automation drift")
+    if q.get("kg001_test_build_known_good_tag_allowed") is not False:
+        errors.append("KG-001 v118 test-build known-good boundary drift")
+    if q.get("kg001_exported_startup_ready_marker")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 startup-ready marker contract drift")
+    audit=c.get("kg001_v117_audit",{})
+    if audit.get("status")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 v117 audit status drift")
+    if audit.get("draft_pr")!=12:
+        errors.append("KG-001 v117 audit PR drift")
+    if audit.get("pinned_godot")!="4.7.2.stable.official.ed1daf0bf":
+        errors.append("KG-001 v117 Godot pin drift")
+    if audit.get("visual_capture_runtime")!="NOT_EXECUTED":
+        errors.append("KG-001 v117 visual runtime boundary drift")
+    if q.get("kg001_candidate2_asset_set_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 asset-set contract drift")
+    if q.get("kg001_build_manifest_schema")!="V2_RUNTIME_SOURCE_BOUND":
+        errors.append("KG-001 v118 build-manifest schema drift")
+    if q.get("kg001_test_build_contract")!="SOURCE_CONTRACT_PASS_V118":
+        errors.append("KG-001 v118 test-build contract drift")
+    if q.get("kg001_test_build_status")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 test-build runtime boundary drift")
+    if q.get("kg001_test_build_ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 ready-status drift")
+    if q.get("kg001_release_blockers_close_automatically") is not False:
+        errors.append("KG-001 v118 blocker auto-close safety drift")
+    if q.get("kg001_test_build_known_good_tag_allowed") is not False:
+        errors.append("KG-001 v118 known-good tag safety drift")
+    v118=c.get("kg001_v118",{})
+    if v118.get("status")!="SOURCE_CONTRACT_PASS":
+        errors.append("KG-001 v118 context status drift")
+    if v118.get("ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 context ready-status drift")
+    if v118.get("runtime_status")!="NOT_EXECUTED":
+        errors.append("KG-001 v118 context runtime boundary drift")
     loc=c.get("localization",{})
     if loc.get("status")!="ARCHITECTURE_APPROVED_IMPLEMENTATION_DEFERRED":
         errors.append("localization architecture status drift")
@@ -146,8 +294,17 @@ except Exception as e:
 
 try:
     d=json.loads((ROOT/"data/world_runtime_serialization_v106.json").read_text(encoding="utf-8"))
-    if "96425" not in json.dumps(d):
-        errors.append("v106 EOF-size evidence missing")
+    world=d.get("world",{})
+    if (
+        d.get("schema")!="openazrael.world_runtime_serialization_summary"
+        or d.get("version")!=106
+        or d.get("status")!="PASS"
+        or world.get("file_size_bytes")!=96425
+        or world.get("reconstructed_consumed_bytes")!=96425
+        or world.get("exact_eof") is not True
+        or world.get("top_level_section_counts")!=[1303,12,37,3,101,8,15]
+    ):
+        errors.append("v106 source-safe serialization summary drift")
 except Exception as e:
     errors.append(f"v106 evidence json: {e}")
 
@@ -163,6 +320,79 @@ try:
 except Exception as e:
     errors.append(f"KG-001 contract: {e}")
 
+try:
+    t=json.loads((ROOT/"data/tests/kg001_texture_colorkey_contract_v116.json").read_text(encoding="utf-8"))
+    expected=t.get("expected_demo_hash_textures",[])
+    if t.get("status")!="SOURCE_CONTRACT_PASS" or len(expected)!=10:
+        errors.append("KG-001 texture color-key contract drift")
+    policy=t.get("policy",{})
+    if policy.get("runtime_material")!="MASK" or policy.get("alpha_cutoff")!=0.5:
+        errors.append("KG-001 texture material policy drift")
+    if t.get("evidence_boundary","").find("HOLD")<0:
+        errors.append("KG-001 texture evidence boundary drift")
+    if policy.get("indexed_detection")!="USED_INDEXED_PALETTE_ENTRY":
+        errors.append("KG-001 texture indexed-detection policy drift")
+    if policy.get("ambiguity_policy")!="FAIL_CLOSED_IF_MULTIPLE_USED_KEY_INDICES":
+        errors.append("KG-001 texture ambiguity policy drift")
+except Exception as e:
+    errors.append(f"KG-001 texture contract: {e}")
+
+try:
+    tc=json.loads((ROOT/"data/tests/kg001_toolchain_contract_v117.json").read_text(encoding="utf-8"))
+    if tc.get("status")!="PINNED" or tc.get("python")!="3.11.11":
+        errors.append("KG-001 toolchain contract drift")
+    if tc.get("godot",{}).get("version")!="4.7.2.stable.official.ed1daf0bf":
+        errors.append("KG-001 Godot toolchain pin drift")
+except Exception as e:
+    errors.append(f"KG-001 toolchain contract: {e}")
+
+try:
+    tb=json.loads((ROOT/"data/tests/kg001_test_build_contract_v118.json").read_text(encoding="utf-8"))
+    if tb.get("status")!="SOURCE_CONTRACT_PASS" or tb.get("version")!=118:
+        errors.append("KG-001 v118 test-build contract drift")
+    if tb.get("ready_status")!="READY_FOR_G10_MANUAL_TEST":
+        errors.append("KG-001 v118 test-build ready-status drift")
+    if tb.get("release_blockers_close_automatically") is not False:
+        errors.append("KG-001 v118 release-blocker boundary drift")
+    if tb.get("demo_known_good_tag_allowed") is not False:
+        errors.append("KG-001 v118 known-good boundary drift")
+except Exception as e:
+    errors.append(f"KG-001 v118 test-build contract: {e}")
+
+try:
+    vc=json.loads((ROOT/"data/tests/kg001_visual_capture_contract_v117.json").read_text(encoding="utf-8"))
+    if vc.get("status")!="SOURCE_CONTRACT_PASS" or vc.get("runtime_status")!="NOT_EXECUTED":
+        errors.append("KG-001 visual-capture contract drift")
+    if [(x.get("room"),x.get("view")) for x in vc.get("captures",[])] != [
+        ("R1","spaview"),("R7","view"),("R8","Object14")
+    ]:
+        errors.append("KG-001 canonical visual capture set drift")
+except Exception as e:
+    errors.append(f"KG-001 visual-capture contract: {e}")
+
+try:
+    tb=json.loads((ROOT/"data/tests/kg001_test_build_contract_v118.json").read_text(encoding="utf-8"))
+    if (
+        tb.get("status")!="SOURCE_CONTRACT_PASS"
+        or tb.get("version")!=118
+        or tb.get("ready_status")!="READY_FOR_G10_MANUAL_TEST"
+        or tb.get("demo_known_good_tag_allowed") is not False
+        or tb.get("release_blockers_close_automatically") is not False
+    ):
+        errors.append("KG-001 test-build v118 contract drift")
+except Exception as e:
+    errors.append(f"KG-001 test-build contract: {e}")
+
+workflow=(ROOT/".github/workflows/kg001-source-safe.yml").read_text(encoding="utf-8")
+for marker in [
+    "SCRIPT ERROR:",
+    "ERROR: Failed to load script",
+    "ERROR: Failed to create an autoload",
+    "openazrael-godot-parse.log",
+]:
+    if marker not in workflow:
+        errors.append(f"Godot parse-log CI guard missing: {marker}")
+
 gitignore=(ROOT/".gitignore").read_text(encoding="utf-8")
 for marker in [
     "data/audio/original_audio/",
@@ -170,6 +400,11 @@ for marker in [
     "assets/audio/",
     "assets/rooms/",
     "assets/textures/classic/",
+    "data/*.textured.v44.manifest.json",
+    "data/audio/*.legacy.json",
+    "data/graphics_pipeline_validation_v44.json",
+    "*.gd.uid",
+    "data/generated/",
 ]:
     if marker not in gitignore:
         errors.append(f"gitignore safety missing: {marker}")

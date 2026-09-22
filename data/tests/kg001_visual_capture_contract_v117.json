@@ -1,0 +1,38 @@
+{
+  "schema": "openazrael.kg001.visual_capture_contract",
+  "version": 117,
+  "status": "SOURCE_CONTRACT_PASS",
+  "runtime_status": "NOT_EXECUTED",
+  "requires_graphical_display": true,
+  "output": "user://openazrael_candidate2_runs/<run_id>/captures/",
+  "captures": [
+    {
+      "room": "R1",
+      "view": "spaview",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "room": "R7",
+      "view": "view",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "room": "R8",
+      "view": "Object14",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "evidence": [
+    "PNG SHA-256",
+    "run_id",
+    "build commit SHA",
+    "room/view identity",
+    "rendering method",
+    "display server"
+  ],
+  "oracle": "OBSERVATIONAL_CANONICAL_VIEW_NOT_CROSS_GPU_PIXEL_HASH",
+  "boundary": "Canonical-view screenshots are regression evidence for human/differential review; hashes are not required to match across GPUs/drivers."
+}

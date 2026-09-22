@@ -5,11 +5,18 @@ var state_flag := ""
 var piece_visual: Node3D
 var frame_visual: Node3D
 
-const TAP_SOUND = preload("res://assets/audio/797TAP.WAV")
+const TAP_SOUND_PATH := "res://assets/audio/797TAP.WAV"
 
-func _play_one_shot(stream: AudioStream) -> void:
+func _play_one_shot(path: String) -> void:
+    if not ResourceLoader.exists(path):
+        push_warning("OpenAzrael R8 tapestry sound missing: " + path)
+        return
+    var stream = load(path)
+    if not stream is AudioStream:
+        push_warning("OpenAzrael R8 tapestry sound is not an AudioStream: " + path)
+        return
     var p := AudioStreamPlayer.new()
-    p.stream = stream
+    p.stream = stream as AudioStream
     get_tree().current_scene.add_child(p)
     p.finished.connect(p.queue_free)
     p.play()
@@ -62,7 +69,7 @@ func interact() -> void:
     _align_piece_to_frame()
     if is_instance_valid(piece_visual):
         piece_visual.visible = true
-    _play_one_shot(TAP_SOUND)
+    _play_one_shot(TAP_SOUND_PATH)
     if DemoState.flag("R8Tap1") and DemoState.flag("R8Tap3") and DemoState.flag("R8Tap4"):
         DemoState.set_flag("R8TapestryComplete")
         print("All three loose tapestry pieces are back in their frames.")

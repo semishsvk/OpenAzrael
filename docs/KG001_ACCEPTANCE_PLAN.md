@@ -39,8 +39,10 @@ Verify R1/R7/R8 room entry/exit, transition preconditions and preservation of pe
 ### G05 — Trigger semantics
 Exercise every demo trigger/event edge with valid and invalid preconditions, repeated activation, ordering and boundary cases. No trigger may fire twice when modeled as one-shot, disappear when persistent, or leave the state machine in an undefined state.
 
-### G06 — Audio event stream
-Run gameplay with a deterministic mock audio backend and compare emitted logical events against golden streams: sound identity, start/stop/loop intent, emitter/reference id and event ordering. This gate does not claim original-runtime pan/volume parity; that remains a separate forensic oracle.
+### G06 — Logical audio plus physical playback readiness
+First run gameplay with the deterministic capture/mock path and compare emitted logical events against the accepted golden stream. Then run the asset-backed physical-audio readiness regression: required Event/ambient WAVs must exist and load as AudioStreams, the Master bus must exist and be unmuted/not effectively silent, recovered ambient emitters must instantiate as R1=2 / R7=3 / R8=2 with valid streams and `playing=true`, and a real Event-IR `play_sound` action must create a playing `AudioStreamPlayer`.
+
+This automated layer proves runtime readiness, not human audibility and not original Miles pan/volume fidelity. Human audibility remains part of G10; original-runtime pan/volume parity remains a separate forensic oracle.
 
 ### G07 — Save/load state hash
 At defined checkpoints serialize state, reload it and compare a canonical state hash plus explicit invariants. Save/load must preserve solved puzzles, inventory, room/transition state, trigger one-shots and active logical audio state where persistence is defined.
@@ -52,7 +54,7 @@ Run a deterministic, no-human-input playthrough from clean state through the ful
 From a clean checkout of the candidate commit, restore only permitted/reproducible dependencies and local excluded assets through the documented workflow, then run source/context checks plus the automated KG-001 suite. No untracked local source edit may be required.
 
 ### G10 — Manual sanity check
-After all automated gates pass, perform a short human run of the candidate build. Confirm launch, controls, room traversal, key interactions, puzzle completion, expected logical audio and save/load behavior. Record any discrepancy before tagging.
+After all automated gates pass, perform a short human run of the candidate build. Confirm launch, controls, room traversal, key interactions, puzzle completion, save/load behavior, that expected ambient/event audio is actually audible at usable levels, and that legacy cutout textures render with their intended binary mask rather than visible magenta key color. A logical event or a runtime player reporting `playing=true` is not a substitute for the listening check; source-level alpha metadata is likewise not a substitute for the graphical transparency check. Record any discrepancy before tagging.
 
 ## Evidence to archive
 
@@ -60,4 +62,4 @@ For the candidate commit record: Git commit SHA, Godot version, source-data fing
 
 ## Failure policy
 
-Any critical bug, reproducible softlock or required-gate failure blocks KG-001. A failure is fixed first, then the affected gate and all dependent gates are rerun. The tag is immutable evidence of the passing candidate; later fixes create a new known-good tag rather than rewriting KG-001.
+Any critical bug, reproducible softlock, required-gate failure, or explicitly recorded KG-001 release blocker blocks KG-001. A failure is fixed first, then the affected gate and all dependent gates are rerun. The tag is immutable evidence of the passing candidate; later fixes create a new known-good tag rather than rewriting KG-001.

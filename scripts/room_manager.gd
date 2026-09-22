@@ -59,6 +59,7 @@ func _ready() -> void:
         return
     _spawn_at_portal("R1", "spaview")
     transition_cooldown = 1.0
+    CandidateDiagnostics.emit_startup_ready("R1")
 
 func _walk(node: Node, out: Array[Node]) -> void:
     out.append(node)
@@ -121,13 +122,21 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
 
 func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
-    var pickup_names := PICKUPS.get(room_id, {})
+    var pickup_names: Dictionary = PICKUPS.get(room_id, {})
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
     for n in nodes:
         if not (n is MeshInstance3D):
             continue
         var mi := n as MeshInstance3D
+        # Legacy XAF diffuse materials have no authored PBR metalness. The
+        # SimpleMaterial GLB conversion otherwise inherits glTF metallic=1,
+        # which can render the imported room nearly black.
+        if mi.mesh != null:
+            for surface in range(mi.mesh.get_surface_count()):
+                var imported := mi.get_active_material(surface) as BaseMaterial3D
+                if imported != null:
+                    imported.metallic = 0.0
         var obj_name := _object_name_for_mesh(mi)
         if hidden.has(obj_name):
             mi.visible = false
@@ -394,8 +403,8 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
     var mx := _v3(t["bounds"][1])
-    var y0 := min(mn.y, mx.y) - 12.0
-    var y1 := max(mn.y, mx.y) + 70.0
+    var y0: float = minf(mn.y, mx.y) - 12.0
+    var y1: float = maxf(mn.y, mx.y) + 70.0
     return p.x >= min(mn.x,mx.x) and p.x <= max(mn.x,mx.x) \
         and p.z >= min(mn.z,mx.z) and p.z <= max(mn.z,mx.z) \
         and p.y >= y0 and p.y <= y1

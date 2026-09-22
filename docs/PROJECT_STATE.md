@@ -1,7 +1,7 @@
 # OpenAzrael Project State
 
-**Canonical checkpoint:** `v116-context-v28`
-**Date:** 2026-09-19
+**Canonical checkpoint:** `v116-context-v31`
+**Date:** 2026-09-20
 **Runtime target:** Godot 4
 **Active reference slice:** R1 -> R7 -> R8
 
@@ -13,20 +13,58 @@ OpenAzrael reconstructs *Azrael's Tear* with an evidence-first pipeline:
 Development order remains `DEMO -> faithful reconstruction -> validation -> generalization -> full game`.
 
 ## 2. Current technical base
-The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v28**.
+The newest technical base is now **v116**. The context/Git/quality layer is merged forward as **v116-context-v31**.
 
 ## 3. Immediate execution priority
-Critical Issue #6 is the active release blocker: the first graphical Candidate run showed the player falling through the R1 floor. v28 changes legacy concave room collision to two-sided and adds a physical player-floor regression to v110. The fix is source-ready but requires Godot runtime and manual confirmation before the issue can close.
+Issues #6, #9 and #11 are the active KG-001 release blockers. Candidate 1 showed the player falling through the R1 floor, produced no audible audio, and exposed pink/magenta where legacy cutout textures should be transparent. Candidate 2 / v31 now carries the independently audited source hardening: two-sided collision plus canonical R1/R7/R8 floor probes, PCM and Master-bus audio non-silence checks, and indexed-AZF color-key detection with fail-closed ambiguity handling and GLB `MASK` edge-bleed hardening. All fixes are source/CI ready but still require restored-asset runtime and human confirmation.
 
-The current priority is the first real **KG-001 Candidate 1** runtime cycle on a Godot-capable checkout: restore ignored assets, run the v112 fresh-checkout candidate workflow, require literal G00-G09 PASS before manual acceptance, then complete G10 through the normal graphical build. F11 can capture any discovered defect into a source-safe diagnostic ZIP for GitHub Issues.
+The current priority is the corrected **KG-001 Candidate 2** test-build cycle on Windows. v118 now requires a complete restored asset set before G09, binds the build manifest to current HEAD plus runtime/export source identity, exports from the clean validated checkout, smoke-launches the exported EXE, records package hashes and emits a `READY_FOR_G10_MANUAL_TEST` receipt. Only after that package smoke may tracked evidence be promoted. G10 remains human and release-blocking.
 
-Localization runtime work and the deferred v117 forensic copy/mutator audit follow this runtime/manual cycle; neither is a blocker for Candidate 1.
+Localization runtime work and the deferred v117 forensic copy/mutator audit follow the first clean Candidate 2 runtime/manual cycle; neither is part of the current blocker-fix scope.
+
+### Independent audit hardening — context v31
+- Pinned source-safe toolchain: Python 3.11.11, NumPy 2.3.5, Pillow 12.3.0, trimesh 5.1.0 and Godot 4.7.2.stable.official.ed1daf0bf.
+- `.github/workflows/kg001-source-safe.yml` validates the toolchain, generated build manifest, export contract, Python compile, Godot parse/import, canonical KG-001 source suite and clean working tree.
+- Candidate diagnostics are run-scoped under `user://openazrael_candidate2_runs/<run_id>/` with `run_manifest.json`, `events.jsonl`, state dumps and F11 bug packages tied to build commit identity.
+- `tools/write_kg001_build_manifest.py` fingerprints local room/audio/Classic texture payloads and source contracts without embedding commercial asset bytes.
+- `Windows Candidate 2` export preset includes the generated build manifest and remains source-contract only until a real export/runtime pass.
+- `scripts/kg001_visual_capture_v117.gd` defines canonical R1/R7/R8 1280x720 screenshots as observational regression evidence; hashes are not a cross-GPU pixel-perfect oracle.
+- PR #12 remains draft while restored-asset runtime, graphical capture and G10 are pending.
+
+### Test-build hardening — v118
+- Fresh-checkout requires 3 canonical room GLBs with expected generated manifests, all 8 runtime WAVs including `797TAP.WAV`, exactly 86 Classic PNGs and all 10 valid indexed-key `#` restore records.
+- Build-manifest schema v2 fingerprints local room/audio/Classic aggregates plus runtime source, export orchestration and source-contract identity.
+- Windows packaging occurs before tracked evidence promotion so the package is built from the clean validated checkout.
+- The exported EXE is launched headlessly for a bounded startup smoke; critical script/autoload/resource-load errors fail the handoff.
+- `data/tests/kg001_test_build_contract_v118.json` defines `READY_FOR_G10_MANUAL_TEST`.
+- The receipt never closes Issues #6/#9/#11, never satisfies G10 and never authorizes `demo-known-good-001`.
+
+### Candidate 2 test-build hardening — v118
+- Fresh-checkout now requires a complete restored asset set, not merely the three room GLBs: 3/3 room GLBs with canonical manifests, 8/8 runtime WAVs including 797TAP.WAV, exactly 86 Classic PNGs, all 10 expected # textures, and complete indexed color-key restore evidence.
+- All eight runtime WAVs are checked as valid uncompressed WAV/PCM with non-empty frames and nonzero signal peak before a test build can pass the asset gate.
+- Build manifest schema v2 binds the package to current Git HEAD, pinned Godot/toolchain, source contracts, critical runtime/build source hashes, room/audio/Classic aggregate hashes and restore evidence.
+- Windows Candidate 2 is exported only after fresh-checkout + requested canonical visual capture PASS and only while the checkout is still clean.
+- The exported EXE must pass a headless startup smoke and its log must contain no critical script/autoload/resource-load errors.
+- A successful automated package emits a v118 `READY_FOR_G10_MANUAL_TEST` receipt with EXE/PCK/build/source/asset fingerprints. This is **not** release approval: G10, Issues #6/#9/#11 and `demo-known-good-001` remain blocked.
+- Optional tracked evidence promotion is deferred until after Windows export/startup verification so evidence mutation cannot change the package being tested.
+- Runtime audio is provenance-bound: tracked canonical source SHA-256 -> restore-evidence runtime SHA-256 -> current WAV SHA-256, with PCM-preserving preparation required for 797TAP/S137.
+- Build-manifest source identity includes the build-producing manifest/toolchain/export/audio-preparation tools plus the tracked canonical audio fingerprint registry.
+- The test-build receipt is bound to the exact visual-capture run ID, current commit and the three canonical 1280x720 R1/R7/R8 capture hashes.
 
 ### Graphics / rooms
 - R1/R7/R8 remain the demo integration slice.
 - v44 decodes all 86 demo AZF textures and validates textured R1/R7/R8 exports.
 - Demo coordinate transform closure is identity XYZ at HIGH confidence since v67.
 - Retail-global coordinate closure and pixel-perfect original framebuffer parity remain separate validation targets.
+
+### Legacy color-key textures — Issue #11
+- AZF output remains RGB for ordinary textures.
+- `#` assets use decoded indexed palette evidence: exactly one used engine-quantized magenta-like palette index is accepted as the binary key; multiple used candidates fail closed.
+- Shared magenta class after optional engine-style component quantization remains R/B >= 248 and G <= 12.
+- Source Classic PNG evidence keeps deterministic zero hidden RGB under alpha=0; runtime GLB MASK textures fill hidden RGB from nearest opaque texels without changing alpha, reducing filtered edge darkening/fringing.
+- XAF->GLB preserves binary alpha as PBR alpha mode MASK / cutoff 0.5.
+- Source-safe synthetic regression plus restored-corpus/index audit is wired into the Candidate runner.
+- Complete original renderer transparency/blending semantics remain HOLD.
 
 ### Classic audio
 - v58-v67 close the principal Classic spatial constants/math and demo coordinate transform.
@@ -129,11 +167,11 @@ Localization runtime work and the deferred v117 forensic copy/mutator audit foll
 - The future `LocalizationManager` owns discovery/validation/locale switching only; it does not own gameplay state.
 - The format is extensible to locale fonts, subtitles and optional localized voice assets.
 - Pseudolocalization, missing-ID checks, Unicode coverage and deterministic pack-building are required implementation tests.
-- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 1 runtime/manual cycle**, so this approval does not perturb the current test candidate.
+- Runtime implementation is **DEFERRED until after the first KG-001 Candidate 2 runtime/manual cycle**, so this approval does not perturb the current test candidate.
 - Canonical design: `docs/LOCALIZATION_ARCHITECTURE.md`.
 
-### KG-001 Candidate 1 diagnostics — v116
-- The first real Godot integration candidate is now source-ready as **KG-001 Candidate 1**.
+### KG-001 Candidate 2 diagnostics — v116
+- The first real Godot integration candidate is now source-ready as **KG-001 Candidate 2**.
 - Added `CandidateDiagnostics` autoload with structured JSONL event logging, canonical state hashes and F10 state dumps.
 - Added F6 authored trigger-volume visualization and an F7 diagnostic HUD showing room, player XYZ, flags, puzzle nodes, value keys, last trigger, last event and last logical audio.
 - Existing F8 audio debug and F9 parity capture are deliberately preserved.
@@ -162,7 +200,7 @@ Do not promote these as recovered original behavior yet:
 - retail-global coordinate transform and pixel-perfect original-vs-Godot framebuffer parity.
 
 ## 4. Current technical target
-1. Run the v112 candidate runner with --fresh-checkout --promote-results on the v116 Candidate 1 source tree, then perform an interactive Candidate 1 pass with F6/F7/F10 diagnostics and complete G10 only if G00-G09 are PASS.
+1. On Windows restore the complete Candidate 2 asset set, run the canonical v112 fresh-checkout + visual-capture suite from a clean checkout, require the v118 asset-set/build-manifest/test-build contracts plus v109/v110/v111/audio-v116 and indexed color-key validation to PASS, export Windows Candidate 2, pass the exported-EXE startup smoke, produce the READY_FOR_G10_MANUAL_TEST receipt, and only then perform G10. Evidence promotion in the Windows flow happens after export/startup smoke.
 2. Audit generic 27-byte copy paths, direct/indirect stores into action-record +17..+26, and variable/generic allocation paths outside the now-closed load/schedule/dispatch lifecycle.
 3. Continue tracing the complete PUZZLES/ROOMS -> WORLD producer/compiler edge; v113-v114 close only the sound-family runtime representation and serialization behavior.
 4. Continue Classic audio original-runtime capture parity as a separate evidence track.

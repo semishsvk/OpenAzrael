@@ -78,6 +78,26 @@ func _build_candidate_debug_panel() -> void:
     candidate_debug_panel.add_child(candidate_debug_label)
     add_child(candidate_debug_panel)
 
+func _physical_audio_debug_text() -> String:
+    var lines: Array[String] = []
+    var master := AudioServer.get_bus_index("Master")
+    if master < 0:
+        lines.append("Master bus: MISSING")
+    else:
+        lines.append("Master bus: mute=%s volume_db=%.2f" % [str(AudioServer.is_bus_mute(master)), AudioServer.get_bus_volume_db(master)])
+    var physical: Array = LegacyEvents.physical_audio_snapshot() if LegacyEvents.has_method("physical_audio_snapshot") else []
+    lines.append("Event physical players: %d" % physical.size())
+    for item in physical:
+        var snap: Dictionary = item
+        lines.append("   %s playing=%s stream=%s bus=%s vol=%.2f" % [
+            String(snap.get("asset", "?")),
+            str(bool(snap.get("playing", false))),
+            str(bool(snap.get("stream_valid", false))),
+            String(snap.get("bus", "?")),
+            float(snap.get("volume_db", 0.0))
+        ])
+    return "\n".join(lines)
+
 func _build_audio_debug_panel() -> void:
     audio_debug_panel = PanelContainer.new()
     audio_debug_panel.name = "AudioDebugPanelV69"
@@ -153,4 +173,4 @@ func _process(_delta: float) -> void:
             snaps = la.call("get_debug_snapshot")
             mode_name = "CLASSIC" if int(la.get("audio_mode")) == 0 else "ENHANCED"
             master = int(la.get("parity_master_volume"))
-        audio_debug_label.text = AudioDebugView.format_snapshot(room_manager.current_room_id, mode_name, snaps, master) + ("\n" + capture_notice if not capture_notice.is_empty() else "")
+        audio_debug_label.text = AudioDebugView.format_snapshot(room_manager.current_room_id, mode_name, snaps, master) + "\n" + _physical_audio_debug_text() + ("\n" + capture_notice if not capture_notice.is_empty() else "")

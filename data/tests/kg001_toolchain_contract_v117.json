@@ -1,0 +1,24 @@
+{
+  "schema": "openazrael.kg001.toolchain_contract",
+  "version": 117,
+  "status": "PINNED",
+  "python": "3.11.11",
+  "packages": {
+    "numpy": "2.3.5",
+    "Pillow": "12.3.0",
+    "trimesh": "5.1.0"
+  },
+  "godot": {
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "release_tag": "4.7.2-stable",
+    "linux_archive": "Godot_v4.7.2-stable_linux.x86_64.zip"
+  },
+  "requirements": "tools/requirements-kg001-source-safe.txt",
+  "evidence_origin": {
+    "godot": "Candidate 1 Windows export/runtime evidence",
+    "trimesh": "Candidate asset restoration evidence",
+    "pillow": "shared pinned Texture Lab/source-safe image toolchain",
+    "numpy": "pinned Candidate 2 source-safe CI baseline"
+  },
+  "boundary": "This pins Candidate 2 reconstruction/build validation. It does not claim original Azrael runtime/toolchain parity."
+}
