@@ -17,6 +17,9 @@ from pathlib import Path
 import argparse, hashlib, json, os, subprocess, sys
 
 ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from tools.remaster_framework.source_registry import resolve_source
 TMP=ROOT/".tmp/kg001"
 C3=TMP/"candidate3_preflight_receipt.json"
 OUT=TMP/"candidate4_preflight_receipt.json"
@@ -64,7 +67,14 @@ def load_json(path: Path):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--godot")
-    ap.add_argument("--demo-dir",type=Path,required=True)
+    ap.add_argument(
+        "--demo-dir",
+        type=Path,
+        help=(
+            "Optional extracted ATDEMO directory. If omitted, use the "
+            "persistent registered demo corpus."
+        ),
+    )
     ap.add_argument("--soundfont",type=Path)
     ap.add_argument("--fluidsynth-lib")
     args=ap.parse_args()
@@ -86,7 +96,21 @@ def main():
                 "tool":tool,"returncode":proc.returncode,"output_tail":proc.stdout[-12000:]
             })
 
-    demo=args.demo_dir.resolve()
+    try:
+        demo=(
+            args.demo_dir.resolve()
+            if args.demo_dir is not None
+            else resolve_source("demo")
+        )
+    except Exception as exc:
+        return fail("DEMO_SOURCE_NOT_REGISTERED_OR_INVALID",{
+            "error":str(exc),
+            "hint":(
+                "Run: python tools/bootstrap_openazrael_sources.py "
+                "register demo <atdemo.zip-or-extracted-dir>"
+            ),
+        })
+
     route_run=run([
         sys.executable,"tools/analyze_candidate4_music_route_v133.py",
         str(demo),"--out",str(MUSIC_ROUTE),
