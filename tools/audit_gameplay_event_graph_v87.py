@@ -6,10 +6,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_GRAPHS = {
-    "R7_WELL_TONGS_USE", "R7_WATER_SWITCHBOARD_SOLVED", "R8_LENS_PLACE", "R8_OPTICAL_START",
-    "R8_SECRET_DOOR_OPEN", "R8_TAKE_SHIELD",
+    "R7_WELL_TONGS_USE", "R7_WATER_SWITCHBOARD_SOLVED", "R7_NIAMH_ACTIVATE",
+    "R8_LENS_PLACE", "R8_OPTICAL_START", "R8_SECRET_DOOR_OPEN", "R8_TAKE_SHIELD",
 }
-ALLOWED = {"set_flag", "set_puzzle_node", "add_inventory", "remove_inventory", "play_sound"}
+STATE_OPS = {"set_flag", "set_puzzle_node", "add_inventory", "remove_inventory"}
+REQUEST_OPS = {"request_character_animation", "request_conversation"}
+ALLOWED = STATE_OPS | REQUEST_OPS | {"play_sound"}
 
 def main():
     parser = argparse.ArgumentParser()
@@ -30,14 +32,23 @@ def main():
             op = action.get("op")
             ck(f"{graph_id}:{index}:op", op in ALLOWED)
             ck(f"{graph_id}:{index}:confidence", bool(action.get("confidence")))
+            if op in STATE_OPS:
+                ck(f"{graph_id}:{index}:state_key", bool(action.get("key")))
             if op == "play_sound":
                 asset = str(action.get("asset", ""))
                 ck(f"{graph_id}:{index}:asset_name", asset.upper().endswith(".WAV") and "/" not in asset and "\\" not in asset)
                 if not args.source_only:
                     ck(f"{graph_id}:{index}:asset_exists", (ROOT / "assets/audio" / asset).is_file())
+            if op in REQUEST_OPS:
+                ck(f"{graph_id}:{index}:source_required", action.get("source_required") is True)
+                ck(f"{graph_id}:{index}:request_identity", bool(str(action.get("character","")).strip()) and bool(str(action.get("family","")).strip()))
+                if op == "request_character_animation":
+                    ck(f"{graph_id}:{index}:target_object", bool(str(action.get("target_object","")).strip()))
 
     runner = (ROOT / "scripts/legacy_event_runner_v87.gd").read_text(encoding="utf-8")
     ck("runner_loads_graph", "gameplay_event_graph_v87.json" in runner)
+    ck("runner_supports_character_animation_request", '"request_character_animation"' in runner)
+    ck("runner_supports_conversation_request", '"request_conversation"' in runner)
     project = (ROOT / "project.godot").read_text(encoding="utf-8")
     ck("autoload_registered", 'LegacyEvents="*res://scripts/legacy_event_runner_v87.gd"' in project)
     call_sites = {
