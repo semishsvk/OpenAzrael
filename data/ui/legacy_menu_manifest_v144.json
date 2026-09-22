@@ -1,0 +1,416 @@
+{
+  "schema": "openazrael.menu_lab.source_manifest",
+  "version": 144,
+  "status": "SOURCE_INVENTORY_READY",
+  "source": "official ATDEMO corpus",
+  "executable": {
+    "file": "R.EXE",
+    "bytes": 1703907,
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "readme": {
+    "file": "README.TXT",
+    "bytes": 9773,
+    "sha256": "2976197be180e90d9370c580d5f07491c84d459d9f1e26ada58e993a1230adc2"
+  },
+  "assets": [
+    {
+      "file": "TITLE.PCX",
+      "category": "title_screen",
+      "width": 631,
+      "height": 474,
+      "bytes": 237376,
+      "sha256": "d0fb123f1cad349cdabfd8e3dce2950be4a6fdcd54316d3bb62e04ea751222a2",
+      "mode": "P"
+    },
+    {
+      "file": "HUD3.PCX",
+      "category": "hud_frame",
+      "width": 640,
+      "height": 480,
+      "bytes": 57965,
+      "sha256": "f95e9647b943e68edccf96a11365eb923139dbef9c2832883e57571a0c1c2ec6",
+      "mode": "P"
+    },
+    {
+      "file": "HUDOFF.PCX",
+      "category": "hud_frame",
+      "width": 640,
+      "height": 480,
+      "bytes": 56964,
+      "sha256": "a7a9e11d2cbc0dbb260dfad24707744eecde561f8b5538e2222eb2f7165f90a2",
+      "mode": "P"
+    },
+    {
+      "file": "NBUT0OFF.PCX",
+      "category": "hud_button",
+      "width": 83,
+      "height": 36,
+      "bytes": 3441,
+      "sha256": "0f9ae8d46861bafd34343a0a90fed880678de853e3d4cf0e19c5561fefef877d",
+      "mode": "P"
+    },
+    {
+      "file": "NBUT0ON.PCX",
+      "category": "hud_button",
+      "width": 83,
+      "height": 36,
+      "bytes": 3470,
+      "sha256": "b9328dc7c5f4564484f942a9d3e1a8d03ed975f87ab2af7753b45173cbddd8ad",
+      "mode": "P"
+    },
+    {
+      "file": "NBUT1OFF.PCX",
+      "category": "hud_button",
+      "width": 77,
+      "height": 42,
+      "bytes": 3709,
+      "sha256": "f442025552a3fd01e30a916b211540c326723eab5d81b651acd9edf6fbe33942",
+      "mode": "P"
+    },
+    {
+      "file": "NBUT1ON.PCX",
+      "category": "hud_button",
+      "width": 77,
+      "height": 42,
+      "bytes": 3841,
+      "sha256": "e378fb75154f1a812b86ee16a2abed6faa6a1b24ca1f446f16da6f2961b424e3",
+      "mode": "P"
+    },
+    {
+      "file": "NBUT2OFF.PCX",
+      "category": "hud_button",
+      "width": 90,
+      "height": 43,
+      "bytes": 4240,
+      "sha256": "6eaef61e7b3c552eef3de3348159bb0e74f202c9284beffc8d009fb83a144280",
+      "mode": "P"
+    },
+    {
+      "file": "NBUT2ON.PCX",
+      "category": "hud_button",
+      "width": 90,
+      "height": 43,
+      "bytes": 4356,
+      "sha256": "39eb489e203d66340475fae61573cd920c05de6de5b91d14a665229556f2e3b3",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY0.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1069,
+      "sha256": "02e571ca6300275af87e3a47649cfaec1c5c9db6e8fec9dadccacd987b6a0474",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY1.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1375,
+      "sha256": "c9717b3d205539c01d2edb6594bec3c62c9866c367aa505b241bc8005e6dff12",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY2.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1405,
+      "sha256": "fb465559ccb5f7320c4d2fb20c24b526934317cc2885aa15cece2ff26baec78f",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY3.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1477,
+      "sha256": "6a5677eafc1096800db7b6275430456c7dac61585c01d893cb40ef74c5626984",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY4.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1602,
+      "sha256": "24dd0ea124a901542a769e204fbda260f65a80c30baa0929e1e099b92b4f7474",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY5.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1684,
+      "sha256": "48bac6c951860a26bf8b49922463201de677bcad130e18cce1287b18561796b2",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY6.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 1977,
+      "sha256": "f8714a540de89cb0d951c6630d2cd03d746d1ff835a5314fb420b049849139aa",
+      "mode": "P"
+    },
+    {
+      "file": "REPLAY7.PCX",
+      "category": "replay_animation",
+      "width": 86,
+      "height": 43,
+      "bytes": 2013,
+      "sha256": "372d35fe934a71c5498bf3035c45467dec791c09ea164618d0d5bf251a078cac",
+      "mode": "P"
+    },
+    {
+      "file": "INVFONT.PCX",
+      "category": "font_strip",
+      "width": 1380,
+      "height": 12,
+      "bytes": 5476,
+      "sha256": "0f675420b3ed712fc83507bad0e27c929c34b439ea8dbe9db82dfd11f2c5f9d4",
+      "mode": "P"
+    },
+    {
+      "file": "GENBLU2.PCX",
+      "category": "font_strip",
+      "width": 1380,
+      "height": 12,
+      "bytes": 8360,
+      "sha256": "0e2bab349ecb61c93bb2d437840a6d93020538e455a013c00eafe6df8c5b4b4d",
+      "mode": "P"
+    },
+    {
+      "file": "RUSGLD2.PCX",
+      "category": "font_strip",
+      "width": 1380,
+      "height": 12,
+      "bytes": 8356,
+      "sha256": "abc746358829c953b5bc8330614ac0c3d4c126d91c8cf97a1c8a0d8a23a13679",
+      "mode": "P"
+    },
+    {
+      "file": "INVBACK2.PCX",
+      "category": "inventory_ui",
+      "width": 103,
+      "height": 69,
+      "bytes": 5494,
+      "sha256": "4925ffe3b0fdc67c88944b0cc528905d4e48cfc1b9b433bcb63a46eec4f3bfec",
+      "mode": "P"
+    },
+    {
+      "file": "MAPON.PCX",
+      "category": "map_ui",
+      "width": 639,
+      "height": 47,
+      "bytes": 5088,
+      "sha256": "904107290d1cfe5a1e903657c3378e9eff4bf7efbc1326f690eb98eb82dcc7af",
+      "mode": "P"
+    },
+    {
+      "file": "MAPOFF.PCX",
+      "category": "map_ui",
+      "width": 639,
+      "height": 47,
+      "bytes": 5129,
+      "sha256": "f83469987c0f7a244a63423b4a38511c338cce548c3f6f61d8a567612044fe2d",
+      "mode": "P"
+    },
+    {
+      "file": "COMPMAP.PCX",
+      "category": "map_ui",
+      "width": 348,
+      "height": 24,
+      "bytes": 2289,
+      "sha256": "beaf0d6668b3f16d6355b065e8854724a2de86338a6b1c787737f4859d590991",
+      "mode": "P"
+    },
+    {
+      "file": "BEMP.PCX",
+      "category": "ui_strip",
+      "width": 87,
+      "height": 27,
+      "bytes": 1485,
+      "sha256": "abd8ad3eae8640224be561b48000f4e5fc071495a9375c01f95491ecfa1708db",
+      "mode": "P"
+    },
+    {
+      "file": "TEMP.PCX",
+      "category": "ui_strip",
+      "width": 87,
+      "height": 27,
+      "bytes": 1485,
+      "sha256": "83d4d5e5eb0078bb4a9a1090193bc5fcf89d27ca022713a037c14668b37141a1",
+      "mode": "P"
+    },
+    {
+      "file": "PALETTE.PCX",
+      "category": "palette_reference",
+      "width": 640,
+      "height": 480,
+      "bytes": 61105,
+      "sha256": "5435283fb1cf9f684a915ae4757e93dc00cf159d99d8bafb3a4e575d97f719df",
+      "mode": "P"
+    },
+    {
+      "file": "PAL.PCX",
+      "category": "palette_reference",
+      "width": 256,
+      "height": 256,
+      "bytes": 21713,
+      "sha256": "c93d44a17160739f82ada1284ec4db9f6c7f1550a20110a726a872260a8dbf17",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE00.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 2257,
+      "sha256": "acee9053757c598b8887088773a611f330f8ca34db712a3ace6f766fe8baa869",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE01.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 4937,
+      "sha256": "44bd47c798e4b0c2ef405f755e65eb94ee99a0489af26fbb1572be17257e71cd",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE02.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 5740,
+      "sha256": "c9356aa138bfa5fb96fbc3bf224f28e8a70d35514d5a0a8876a5d0d81f7d36f5",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE03.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 6423,
+      "sha256": "301ccfa3a87f704117a75ea5bf17c8f2acf40377929be2d5f2b8298fabe3a2a6",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE04.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 6901,
+      "sha256": "17ba98034f7a0e449e553face4a509fd24626cb06de604405bbdf1dfebbe7d48",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE05.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 8233,
+      "sha256": "d0c0efc21c0075efdc945798976cefdb4d26abb27baf81562edfc1e403b46abd",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE06.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 9613,
+      "sha256": "22473fa1b1566216075ba52f7e0f40217eed525c1e42ab671d9ee5ee590e51e8",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE07.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 9245,
+      "sha256": "05673e8380bbdbbdf1563b8c463298d1b0bf3c7af71c8cabff814d824d64599a",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE08.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 9603,
+      "sha256": "3c21a5f83bb0d252d2d5948ca3c3a956b4e36dbdf55f363329152dba9198ddb4",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE09.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 9657,
+      "sha256": "bff8f1f441c9fe21cd33fd083771e0a94d28aabf00e36480d04a0b2575c1d500",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE10.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 9595,
+      "sha256": "d391d67ac0ab54a485b2ee488f02c95564f5aaf22c01ac4bb1e15006913aeac1",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE11.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 10533,
+      "sha256": "ea6890444f2ffc4d391f85d1249f1e62707c3d3f31ff53216b5a84e69809924d",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE12.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 10117,
+      "sha256": "b3a0b9637897babf89fe4638d48b44fc21f136e2b6809f8740841f4fddeae31c",
+      "mode": "P"
+    },
+    {
+      "file": "SAVE13.PCX",
+      "category": "save_preview",
+      "width": 206,
+      "height": 170,
+      "bytes": 10474,
+      "sha256": "30aed25537bdf74d906de0a9dfdc23646ddba55e6deddf7a995d6e67d3fa0d7e",
+      "mode": "P"
+    }
+  ],
+  "proven_behaviour": [
+    "TITLE.PCX is referenced by the original demo executable.",
+    "README: top-left HUD button scans objects.",
+    "README: button below scan toggles map.",
+    "README: right-hand HUD button brings up the load/save box and adjusts volume.",
+    "README: M toggles map/external view.",
+    "README: left HUD box lists carried objects with arrow-key scrolling.",
+    "R.EXE references SAVE%02d.pcx, SAVE%d.dat, REPLAY%d.PCX, RESTART, hud3.pcx, hudoff.pcx, hudmes.dat and objhud.dat.",
+    "R.EXE contains Saving Game.... and Loading Game.... strings."
+  ],
+  "unresolved": [
+    "Exact TITLE.PCX blit origin inside the 640x480 framebuffer.",
+    "Exact input/event that dismisses the title screen.",
+    "Exact semantic mapping of NBUT0/NBUT1/NBUT2 to the three HUD controls.",
+    "Exact load/save panel coordinates, selection mechanics and volume-control gesture.",
+    "Exact REPLAY0-7 frame timing/state machine.",
+    "Exact font-strip glyph index map for INVFONT/GENBLU2/RUSGLD2.",
+    "Transparency/colorkey semantics for non-fullscreen menu sprites."
+  ],
+  "policy": "No invented menu option, layout coordinate, glyph map, alpha rule or animation timing is permitted. Unresolved behaviour remains HOLD until executable/capture evidence resolves it."
+}
