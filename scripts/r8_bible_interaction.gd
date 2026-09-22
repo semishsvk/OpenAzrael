@@ -90,3 +90,10 @@ func interact() -> void:
         return
 
     _run_optical_sequence()
+
+func interaction_cursor_id() -> String:
+    if not DemoState.puzzle_node("R8LensPlace"):
+        return "USE" if DemoState.has("r8_lens") else "CANT"
+    if DemoState.puzzle_node("DoorR8") or sequence_running:
+        return "CANT"
+    return "USE" if _on_activation_zone() else "CANT"
