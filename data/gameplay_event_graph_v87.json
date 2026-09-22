@@ -160,7 +160,7 @@
     "R7_NIAMH_ACTIVATE": {
       "source": [
         "R7.XAF: zxactghost / nibody",
-        "ROOMS.DAT: R7NiamhAZ + R7NiamhCallAZ identifiers",
+        "ROOMS.DAT: standalone R7NiamhAZ identifier",
         "PUZZLES.DAT: Niamh/Conv action family at 0x24E,0x3CA,0x488,0x546,0x604,0x6C2",
         "CHARACTE.DAT -> Niamh -> NIAMH.DAT"
       ],
@@ -175,13 +175,6 @@
         {
           "op": "set_puzzle_node",
           "key": "R7NiamhAZ",
-          "value": true,
-          "confidence": "MEDIUM-HIGH",
-          "note": "Original room identifier is verified; runtime-state role reconstructed."
-        },
-        {
-          "op": "set_puzzle_node",
-          "key": "R7NiamhCallAZ",
           "value": true,
           "confidence": "MEDIUM-HIGH",
           "note": "Original room identifier is verified; runtime-state role reconstructed."
