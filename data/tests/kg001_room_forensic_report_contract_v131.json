@@ -1,9 +1,36 @@
 {
-  "schema":"openazrael.kg001.room_forensic_report_contract",
-  "version":131,
-  "status":"SOURCE_CONTRACT_READY_RUNTIME_PENDING",
-  "rooms":["R1","R7","R8"],
-  "preflight_layers":["source","geometry_v122","visibility_v123","material_v124","transform_v125","visual_v126","reachable_visibility_v127","portal_v129","interaction_v130"],
-  "package_layers":["source","geometry_v122","visibility_v123","material_v124","transform_v125","visual_v126","reachable_visibility_v127","portal_v129","interaction_v130","package_v128"],
-  "rule":"Missing or non-PASS required layer makes the per-room and bundle report FAIL."
+  "schema": "openazrael.kg001.room_forensic_report_contract",
+  "version": 131,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "rooms": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "preflight_layers": [
+    "source",
+    "geometry_v122",
+    "visibility_v123",
+    "material_v124",
+    "texture_orientation_v133",
+    "transform_v125",
+    "visual_v126",
+    "reachable_visibility_v127",
+    "portal_v129",
+    "interaction_v130"
+  ],
+  "package_layers": [
+    "source",
+    "geometry_v122",
+    "visibility_v123",
+    "material_v124",
+    "texture_orientation_v133",
+    "transform_v125",
+    "visual_v126",
+    "reachable_visibility_v127",
+    "portal_v129",
+    "interaction_v130",
+    "package_v128"
+  ],
+  "rule": "Missing or non-PASS required layer makes the per-room and bundle report FAIL."
 }
