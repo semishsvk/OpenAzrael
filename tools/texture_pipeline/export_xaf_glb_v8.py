@@ -90,30 +90,25 @@ def resolve_texture(tex_name,idx):
     return idx.get(Path(tex_name).stem.upper()) if tex_name else None
 
 
-UV_CORRECTIONS = {
-    # Candidate 3 manual evidence: keyhole presented vertically inverted.
-    "KEYHOLE#": "FLIP_V_CANDIDATE3_KEYHOLE",
-    # v132 corpus audit: BAPMSG contains readable text and the uncorrected
-    # tapestry2a mapping sends image bottom to world top under glTF's
-    # upper-left texture-coordinate convention.
-    "BAPMSG": "FLIP_V_V133_TAPESTRY_MESSAGE",
-}
+UV_EXPORT_CORRECTION = "TRIMESH_PRE_FLIP_V_PRESERVE_XAF_GLTF"
 
 def corrected_uvs(tex_name, uvs):
-    """Apply only evidence-backed, texture-specific legacy UV corrections.
+    """Preserve the original XAF UVs in the exported raw glTF/GLB.
 
-    glTF defines (0, 0) at the upper-left image corner, so there is no global
-    V inversion here. Any exception must be named in UV_CORRECTIONS and is
-    emitted into the export manifest for regression auditing.
+    The recovered XAF corpus already uses the same semantic V direction as
+    glTF: V=0 is the top of an image.  Trimesh's TextureVisuals uses the
+    opposite internal image convention and flips V again while writing glTF.
+    Therefore we pre-flip V once *for the exporter adapter only*.  The raw GLB
+    TEXCOORD_0 values then match the original XAF authored UVs exactly.
+
+    This is deliberately global and content-neutral.  Do not add per-texture
+    orientation hacks here; source-authored back-face/state geometry is handled
+    by the object transform/state logic, not by changing its UV data.
     """
     corrected=np.array(uvs,float,copy=True)
-    correction='NONE'
-    stem=Path(tex_name).stem.upper() if tex_name else ""
-    if stem in UV_CORRECTIONS and len(corrected):
+    if len(corrected):
         corrected[:,1]=1.0-corrected[:,1]
-        correction=UV_CORRECTIONS[stem]
-    return corrected,correction
-
+    return corrected,UV_EXPORT_CORRECTION
 
 def face_records(fs):
     out=[]
