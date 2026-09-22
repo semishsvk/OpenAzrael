@@ -4,7 +4,11 @@
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "candidate_target": "KG-001 Candidate 4",
   "purpose": "prove that Godot imports and runtime-loads the complete restored demo room geometry rather than a simplified or partially missing scene",
-  "scope": ["R1", "R7", "R8"],
+  "scope": [
+    "R1",
+    "R7",
+    "R8"
+  ],
   "expected_assets": {
     "R1": {
       "path": "res://assets/rooms/R1.glb",
@@ -12,7 +16,12 @@
       "sha256": "8a35e60b3f26d1fa656653cc7d3d5875c0927c77882189a6f073bf7ed16a3a6c",
       "mesh_instances": 69,
       "triangles": 593,
-      "critical_visible_meshes": ["save__mesh", "Object02__mesh", "wall10__mesh", "floorbit03__mesh"],
+      "critical_visible_meshes": [
+        "save__mesh",
+        "Object02__mesh",
+        "wall10__mesh",
+        "floorbit03__mesh"
+      ],
       "critical_evidence": {
         "save__mesh": "ROCKFACE1 / corirock.gif authored rock geometry in the middle of Entry Corridor",
         "Object02__mesh": "authored R1 floor/tunnel segment implicated by Candidate 3 critical floor-hole report"
@@ -24,7 +33,11 @@
       "sha256": "3c2aa95c4612c550edf8729299f7fe3e992308c2ae9e051b01973f6f48db7971",
       "mesh_instances": 48,
       "triangles": 689,
-      "critical_visible_meshes": ["well_floor__mesh", "nibody__mesh", "pipes2well__mesh"]
+      "critical_visible_meshes": [
+        "well_floor__mesh",
+        "nibody__mesh",
+        "pipes2well__mesh"
+      ]
     },
     "R8": {
       "path": "res://assets/rooms/R8.glb",
@@ -32,15 +45,36 @@
       "sha256": "c36c69baaaff414e12c1c64c0c4e1e9febebf321fb1aa8f888e601326ff5f476",
       "mesh_instances": 87,
       "triangles": 1050,
-      "critical_visible_meshes": ["bath__BAPFLOOR", "stairs__STAIR2", "broken3__mesh", "bible__mesh"]
+      "critical_visible_meshes": [
+        "bath__BAPFLOOR",
+        "stairs__STAIR2",
+        "broken3__mesh",
+        "bible__mesh"
+      ]
     }
   },
   "source_export_evidence": {
-    "R1": {"xaf_objects": 64, "primitives": 69, "triangles": 593, "missing_textures": 0},
-    "R7": {"xaf_objects": 38, "primitives": 48, "triangles": 689, "missing_textures": 0},
-    "R8": {"xaf_objects": 84, "primitives": 87, "triangles": 1050, "missing_textures": 0}
+    "R1": {
+      "xaf_objects": 64,
+      "primitives": 69,
+      "triangles": 593,
+      "missing_textures": 0
+    },
+    "R7": {
+      "xaf_objects": 38,
+      "primitives": 48,
+      "triangles": 689,
+      "missing_textures": 0
+    },
+    "R8": {
+      "xaf_objects": 84,
+      "primitives": 87,
+      "triangles": 1050,
+      "missing_textures": 0
+    }
   },
   "runtime_pass_requires": [
+    "every runtime room is the complete source-derived room; partial, invented, approximate or substitute geometry is forbidden",
     "all three canonical restored room assets load",
     "each asset byte size and SHA-256 match the canonical restored demo GLB",
     "direct Godot import exposes the expected MeshInstance3D count and triangle total for every room",
@@ -50,5 +84,14 @@
     "no engine/script errors"
   ],
   "visibility_boundary": "State-dependent puzzle meshes may intentionally change visibility. The parity gate requires authored static geometry and selected critical gameplay geometry; it does not require mutually exclusive puzzle states to be visible simultaneously.",
-  "evidence_boundary": "Source validation proves only the gate definition. Candidate 4 requires asset-backed Godot v122 PASS at the exact build SHA before export."
+  "evidence_boundary": "Source validation proves only the gate definition. Candidate 4 requires asset-backed Godot v122 PASS at the exact build SHA before export.",
+  "policy": {
+    "canonical_policy": "data/source_geometry_policy.json",
+    "source_derived_only": true,
+    "complete_room_required": true,
+    "partial_import_forbidden": true,
+    "invented_or_approximate_geometry_forbidden": true,
+    "missing_geometry_action": "BLOCKED_MISSING_SOURCE_GEOMETRY",
+    "geometry_defect_severity": "CRITICAL"
+  }
 }
