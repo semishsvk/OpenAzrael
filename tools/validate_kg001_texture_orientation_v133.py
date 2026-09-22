@@ -32,6 +32,10 @@ checks={
         "source_uv_sha256",
         "export_input_uv_sha256",
     )),
+    "uv_preflip_precision_preserved_until_trimesh": (
+        'export_uv=np.asarray(corrected_uv,dtype="<f8")' in exporter
+        and 'export_uv=np.asarray(corrected_uv,dtype="<f4")' not in exporter
+    ),
     "no_per_texture_uv_hacks": (
         "UV_CORRECTIONS" not in exporter
         and "KEYHOLE#" not in exporter
