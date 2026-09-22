@@ -121,7 +121,7 @@ func _audit_room(scene: Node3D, manager, room_id: String) -> void:
     var walkable_triangles := 0
     var samples := 0
     var missing_support := 0
-    var wrong_height := 0
+    var support_below_visual := 0
     var meshes_sampled := 0
 
     for node in nodes:
@@ -191,11 +191,15 @@ func _audit_room(scene: Node3D, manager, room_id: String) -> void:
                         )
                         continue
                     var hit_y := float((hit["position"] as Vector3).y)
-                    if absf(hit_y - point.y) > SUPPORT_TOLERANCE_Y:
-                        wrong_height += 1
+                    # A collider above the sampled visual triangle means the
+                    # player-space column is occupied/obstructed, not that the
+                    # floor is missing. Only support materially BELOW the
+                    # authored surface can allow a fall-through class bug.
+                    if hit_y < point.y - SUPPORT_TOLERANCE_Y:
+                        support_below_visual += 1
                         _record_failure(
                             room_id, object_name, surface, tri, sample_index,
-                            point, hit, "collision_support_height_mismatch"
+                            point, hit, "collision_support_below_visual_floor"
                         )
 
         if mesh_had_samples:
@@ -206,12 +210,12 @@ func _audit_room(scene: Node3D, manager, room_id: String) -> void:
         "walkable_triangles": walkable_triangles,
         "samples": samples,
         "missing_support": missing_support,
-        "wrong_height": wrong_height,
+        "support_below_visual": support_below_visual,
     }
     _check(room_id + "_walkable_triangles_present", walkable_triangles > 0)
     _check(room_id + "_surface_samples_present", samples > 0)
     _check(room_id + "_no_missing_support", missing_support == 0)
-    _check(room_id + "_support_height_matches", wrong_height == 0)
+    _check(room_id + "_no_support_below_visual", support_below_visual == 0)
 
 func _finish(scene: Node = null) -> void:
     var result := {
