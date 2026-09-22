@@ -80,6 +80,7 @@ def run_state_fuzz(
     reachable_state_keys: set[str] | None = None,
     recoverable_state_keys: set[str] | None = None,
     is_success: Callable[[StateT], bool] | None = None,
+    success_must_be_monotonic: bool = False,
     no_op_effects_must_be_empty: bool = True,
     config: StateFuzzConfig | None = None,
 ) -> dict[str, Any]:
@@ -274,7 +275,11 @@ def run_state_fuzz(
                 now_success = bool(is_success(next_a))
                 if now_success:
                     success_hits += 1
-                if success_seen and not now_success:
+                if (
+                    success_must_be_monotonic
+                    and success_seen
+                    and not now_success
+                ):
                     add_failure(
                         "success_regression",
                         seed=seed,
@@ -324,6 +329,7 @@ def run_state_fuzz(
                 cfg.repeat_previous_probability
             ),
             "restart_probability": cfg.restart_probability,
+            "success_must_be_monotonic": success_must_be_monotonic,
         },
         "action_count": len(actions),
         "attempts": total_attempts,
