@@ -30,10 +30,28 @@
           "count": 30
         }
       ]
+    },
+    {
+      "profile_id": "openazrael_retail_v1",
+      "game_id": "azraels_tear",
+      "edition": "retail",
+      "evidence": [
+        "tools/compare_demo_retail_rooms.py",
+        "data/localization/extraction_config_v139.json",
+        "docs/RETAIL_ROOM_GEOMETRY_ATLAS_V1.md"
+      ],
+      "required_exact": [
+        "PUZZLES.DAT",
+        "OBJECTS.DAT",
+        "ROOMS.DAT",
+        "CHARACTE.DAT"
+      ],
+      "required_patterns": [],
+      "expected_counts": []
     }
   ],
   "hold": [
-    "Do not guess a retail profile until a canonical retail corpus has evidence-backed anchors and counts.",
+    "Retail profile proves evidence-backed corpus shape only; canonical retail identity is the complete local SHA-256 inventory pinned by the private source registry.",
     "Profiles identify corpus shape only; they do not prove semantic correctness of extracted data."
   ]
 }
