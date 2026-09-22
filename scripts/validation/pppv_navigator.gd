@@ -107,6 +107,15 @@ func approach_interactable(
         flat_delta.y = 0.0
         var distance := flat_delta.length()
 
+        # Movement only needs to reach a safe interaction standoff.
+        # Exact cursor/probe acquisition is validated separately by
+        # aim_at_interactable(), so do not keep walking into the target
+        # merely because the current camera ray does not hit it yet.
+        var standoff_distance := 64.0
+        if distance <= standoff_distance:
+            reached = true
+            break
+
         var yaw_error := _turn_toward(target_position)
         if absf(yaw_error) <= 0.45:
             Input.action_press(&"move_forward", 1.0)
