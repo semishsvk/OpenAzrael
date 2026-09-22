@@ -1,0 +1,13 @@
+{
+  "schema":"openazrael.kg001.visual_census_contract",
+  "version":126,
+  "status":"SOURCE_CONTRACT_READY_GRAPHICAL_PENDING",
+  "candidate_target":"KG-001 Candidate 4",
+  "scope":["R1","R7","R8"],
+  "comparison":"canonical direct GLB render versus production RoomManager runtime render",
+  "views_per_room":3,
+  "render_mode":"unshaded geometry-only isolation; source-backed expected-hidden meshes removed from direct reference",
+  "requires":["graphical renderer","identical fixed cameras","exact reference/runtime image fingerprint per view","PNG evidence for mismatches"],
+  "forbids":["AI reference images","hand-authored replacement geometry","per-room hand-tuned geometry corrections"],
+  "evidence_boundary":"v126 proves direct-import versus runtime visual geometry parity in the tested Godot renderer. It does not claim pixel parity with the original 1996 renderer."
+}
