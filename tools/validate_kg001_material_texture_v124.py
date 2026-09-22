@@ -7,7 +7,7 @@ gen=(ROOT/"tools/build_demo_room_fidelity_manifest_v124.py").read_text(encoding=
 contract=json.loads((ROOT/"data/tests/kg001_material_texture_contract_v124.json").read_text(encoding="utf-8"))
 checks={
  "schema":contract.get("schema")=="openazrael.kg001.material_texture_parity_contract" and contract.get("version")==124,
- "pinned_source":all(x in gen for x in ("8a35e60b3f26","3c2aa95c4612","c36c69baaaff")),
+ "source_derived_reference":all(x in gen for x in ("read_glb","accessor_array","RAW_GLTF_UPPER_LEFT","mesh_count","triangle_count")),
  "uv_fingerprint":all(x in runner for x in ("quantized_uv_sha","_uv_parity","uv_sha256")),
  "material_texture":all(x in runner for x in ("resource_name","albedo_texture","_material_name","_texture_present")),
  "colorkey":all(x in runner for x in ("legacy_colorkey","TRANSPARENCY_DISABLED")),
