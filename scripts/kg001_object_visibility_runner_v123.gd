@@ -255,6 +255,26 @@ func _audit_lifecycle(manager, state) -> void:
         "r8_water_lens_shield_message_checked": true,
     }
 
+func _free_audio_players(node: Node) -> void:
+    # This gate validates state/visibility, not physical audio lifetime. Stop
+    # transient one-shot players synchronously before SceneTree shutdown so
+    # Godot 4.7 error diagnostics stay deterministic.
+    for child in node.get_children().duplicate():
+        if not is_instance_valid(child):
+            continue
+        _free_audio_players(child)
+        if child is AudioStreamPlayer:
+            var player := child as AudioStreamPlayer
+            player.stop()
+            player.stream = null
+            player.free()
+
+func _cleanup_runtime_audio() -> void:
+    var events = root.get_node_or_null("LegacyEvents")
+    if events != null and events.has_method("clear_physical_audio"):
+        events.call("clear_physical_audio")
+    _free_audio_players(root)
+
 func _finish(scene: Node = null) -> void:
     var result := {
         "schema": "openazrael.kg001.object_visibility_parity",
@@ -286,6 +306,12 @@ func _run() -> void:
             }))
             quit(2)
             return
+
+    # Visibility/lifecycle parity does not validate physical audio. Keep the
+    # logical event graph active but suppress transient players/resources.
+    var events = root.get_node_or_null("LegacyEvents")
+    if events != null and events.has_method("set_capture_only"):
+        events.call("set_capture_only", true)
 
     var state = root.get_node_or_null("DemoState")
     _check("demo_state_present", state != null)
