@@ -1,0 +1,27 @@
+{
+  "schema": "openazrael.localization_translation_master",
+  "version": 139,
+  "locale": "sk",
+  "source_registry": "data/localization/source_strings_v139.json",
+  "source_registry_version": 139,
+  "glossary": "data/localization/sk_glossary_v139.json",
+  "status": "EXPERIMENTAL",
+  "verification_required": "IN_ENGINE_LAYOUT_AND_SUBTITLE_QA",
+  "english_audio_policy": "UNCHANGED",
+  "english_fallback_required": true,
+  "entries": [
+    {"id":"dialog.demo.niamh.0001","source":"Good Lord. What are you?","translation":"Dobrý Bože. Čo si zač?","source_file":"NIAMH.DAT","source_hash":"e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71","context":"demo Niamh character-data conversation block; speaker UNKNOWN","source_status":"VERIFIED_COMPLETE","translation_status":"CANDIDATE"},
+    {"id":"dialog.demo.niamh.0002.fragment","source":"What do you mean? I'm","translation":null,"source_file":"NIAMH.DAT","source_hash":"e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71","context":"retained evidence ends mid-line","source_status":"VERIFIED_FRAGMENT","translation_status":"NEEDS_RECONSTRUCTION","runtime_localizable":false},
+    {"id":"ui.menu.title","source":"Options","translation":"Nastavenia","source_file":"OPENAZRAEL_UI","context":"in-game options menu title","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"},
+    {"id":"ui.menu.language","source":"Language","translation":"Jazyk","source_file":"OPENAZRAEL_UI","context":"language selector label","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"},
+    {"id":"ui.menu.close","source":"Back","translation":"Späť","source_file":"OPENAZRAEL_UI","context":"close/back button","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"},
+    {"id":"ui.hud.demo_complete","source":"DEMO COMPLETE — Shield acquired","translation":"DEMO DOKONČENÉ — štít získaný","source_file":"OPENAZRAEL_UI","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"},
+    {"id":"ui.hud.bath_drained","source":"Baptistery bath: DRAINED","translation":"Baptistérium: nádrž vypustená","source_file":"OPENAZRAEL_UI","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"},
+    {"id":"ui.hud.empty","source":"(empty)","translation":"(prázdne)","source_file":"OPENAZRAEL_UI","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"},
+    {"id":"ui.hud.controls","source":"WASD move | Shift sprint | Mouse look | E interact | Esc menu | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room","translation":"WASD pohyb | Shift beh | Myš rozhľad | E interakcia | Esc menu | F6 triggery | F7 diagnostika buildu | F8 audio | F9 parita | F10 stav | F11 hlásenie chyby | 1/2/3 debug miestnosť","source_file":"OPENAZRAEL_UI","source_status":"AUTHORED_COMPLETE","translation_status":"EXPERIMENTAL"}
+  ],
+  "excluded_policy": {
+    "technical_identifiers": "NOT_TRANSLATED",
+    "unreconstructed_fragments": "NOT_IN_RUNTIME_PACK"
+  }
+}
