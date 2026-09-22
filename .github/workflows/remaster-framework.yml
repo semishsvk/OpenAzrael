@@ -87,6 +87,7 @@ jobs:
 
   godot-linux-runtime:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - name: Checkout exact source head
         uses: actions/checkout@v4
@@ -107,10 +108,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ./Godot_v4.7.2-stable_linux.x86_64 \
-            --headless --path . \
+          timeout 45s ./Godot_v4.7.2-stable_linux.x86_64 \
+            --headless --path . --quit-after 300 \
             --script res://scripts/kg001_interaction_probe_determinism_runner_v148.gd \
-            | tee interaction-probe-v148.log
+            2>&1 | tee interaction-probe-v148.log
           grep -F 'OPENAZRAEL_KG001_INTERACTION_PROBE_DETERMINISM_V148' interaction-probe-v148.log
           grep -F '"status":"PASS"' interaction-probe-v148.log
       - name: Upload Godot runtime

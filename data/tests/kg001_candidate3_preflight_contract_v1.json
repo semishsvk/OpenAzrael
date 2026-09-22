@@ -43,7 +43,8 @@
       "menu_v145",
       "menu_cursor_v146",
       "classic_v147",
-      "interaction_probe_v148"
+      "interaction_probe_v148",
+      "menu_toggle_v149"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
