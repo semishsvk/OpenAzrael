@@ -450,6 +450,17 @@ def evaluate_scenario(
             f"{actual_action_sequence!r} != {expected_action_sequence!r}"
         )
 
+    actual_action_ids = [
+        str(item.payload.get("action_id", ""))
+        for _, item in action_evidence
+    ]
+    for action in scenario.actions:
+        if action.action_id not in actual_action_ids:
+            errors.append(
+                f"{scenario.scenario_id}: missing player_action evidence "
+                f"for {action.action_id}"
+            )
+
     action_windows: dict[str, tuple[int, int]] = {}
     for action_index, action in enumerate(scenario.actions):
         if action_index >= len(action_evidence):
