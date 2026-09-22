@@ -44,7 +44,9 @@ func step_debug_snapshot() -> Array[Dictionary]:
     return out
 
 func _ready() -> void:
-    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    # Original demo keeps a free HUD cursor and uses held RMB for head look.
+    # Headless PPPV keeps captured-style synthetic mouse motion unchanged.
+    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if DisplayServer.get_name() == "headless" else Input.MOUSE_MODE_VISIBLE
     # Keep support while descending the same discrete stair profiles that the
     # step-up helper can climb. Godot floor snapping only acts downward; it
     # therefore complements rather than replaces explicit step-up handling.
@@ -65,7 +67,11 @@ func teleport_eye_to(eye_pos: Vector3, forward: Vector3) -> void:
     camera.rotation.x = pitch
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+    var allow_head_look := (
+        DisplayServer.get_name() == "headless"
+        or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
+    )
+    if event is InputEventMouseMotion and allow_head_look:
         rotation.y -= event.relative.x * mouse_sensitivity
         pitch = clamp(pitch - event.relative.y * mouse_sensitivity, -1.35, 1.35)
         camera.rotation.x = pitch
