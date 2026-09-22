@@ -280,9 +280,11 @@ func _setup_r7_character_state() -> void:
     if niamh_body == null:
         push_warning("OpenAzrael v137: R7 Niamh body object nibody not found")
         return
-    # The source-backed zxactghost binding controls Niamh activation. Do not
-    # invent a fade/motion before the original character ANI is available.
-    niamh_body.visible = DemoState.flag("R7NiamhActivated")
+    # Preserve the authored XAF visibility. The recovered R7_NIAMH_ACTIVATE
+    # event graph requests animation/conversation and sets state, but contains
+    # no hide/remove/add/show opcode for nibody. Hiding Niamh until activation
+    # would therefore invent source behavior.
+    niamh_body.visible = true
 
 func _collect_animation_players(root: Node, out: Array[AnimationPlayer]) -> void:
     if root is AnimationPlayer:
