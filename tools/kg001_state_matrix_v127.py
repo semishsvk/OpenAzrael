@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 from pathlib import Path
-import argparse,json,sys
+import argparse,hashlib,json,sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"tools"))
@@ -38,6 +38,30 @@ def expected_visibility(state):
         }
     return out
 
+def runtime_canonical_payload(state):
+    """Mirror Godot JSON numeric semantics for cross-language state hashes.
+
+    JSON.parse_string() materializes numeric values as floats in GDScript, so a
+    Python integer value such as R7SwitchStep=3 is serialized by the runtime as
+    3.0. Normalize only the value payload here; boolean/state fields remain
+    untouched. The original model hash is retained separately for diagnostics.
+    """
+    payload=state.persistent_payload()
+    values=[]
+    for key,value in payload[4]:
+        if isinstance(value,(int,float)) and not isinstance(value,bool):
+            value=float(value)
+        values.append([key,value])
+    return [1,payload[1],payload[2],payload[3],values]
+
+def runtime_canonical_hash(state):
+    raw=json.dumps(
+        runtime_canonical_payload(state),
+        separators=(",",":"),
+        ensure_ascii=False
+    )
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--out",type=Path,default=ROOT/"data/runtime_generated/kg001_state_matrix_v127.json")
@@ -52,7 +76,8 @@ def main():
             "index":index,
             "room":s.room,
             "persistent_payload":s.persistent_payload(),
-            "persistent_sha256":s.persistent_hash(),
+            "persistent_sha256":runtime_canonical_hash(s),
+            "model_persistent_sha256":s.persistent_hash(),
             "sequence_running":bool(s.sequence_running),
             "expected_visibility":expected_visibility(s),
         })
