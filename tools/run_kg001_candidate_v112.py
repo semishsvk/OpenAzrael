@@ -41,6 +41,11 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_surface_collision_v121.py"],
     [sys.executable,"tools/validate_kg001_geometry_render_parity_v122.py"],
     [sys.executable,"tools/validate_kg001_object_visibility_v123.py"],
+    [sys.executable,"tools/validate_kg001_material_texture_v124.py"],
+    [sys.executable,"tools/validate_kg001_transform_parity_v125.py"],
+    [sys.executable,"tools/validate_kg001_visual_census_v126.py"],
+    [sys.executable,"tools/validate_kg001_reachable_visibility_v127.py"],
+    [sys.executable,"tools/validate_kg001_packaged_parity_v128.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -57,6 +62,9 @@ RUNTIMES=[
     ("surface_v121","scripts/kg001_surface_collision_runner_v121.gd","OPENAZRAEL_KG001_SURFACE_COLLISION_V121"),
     ("geometry_v122","scripts/kg001_geometry_render_parity_runner_v122.gd","OPENAZRAEL_KG001_GEOMETRY_RENDER_PARITY_V122"),
     ("visibility_v123","scripts/kg001_object_visibility_runner_v123.gd","OPENAZRAEL_KG001_OBJECT_VISIBILITY_V123"),
+    ("material_v124","scripts/kg001_material_texture_runner_v124.gd","OPENAZRAEL_KG001_MATERIAL_TEXTURE_V124"),
+    ("transform_v125","scripts/kg001_transform_parity_runner_v125.gd","OPENAZRAEL_KG001_TRANSFORM_V125"),
+    ("reachable_visibility_v127","scripts/kg001_reachable_visibility_runner_v127.gd","OPENAZRAEL_KG001_REACHABLE_VISIBILITY_V127"),
 ]
 
 def run(cmd, check=False):
@@ -128,7 +136,7 @@ def write_json(path,data):
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-v117, well-tongs-v118 and R1-route-v119, collision-parity-v120, surface-coverage-v121 and geometry-render-parity-v122 and object-visibility-v123 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-v117, well-tongs-v118 and R1-route-v119, collision-parity-v120, surface-coverage-v121 and geometry-render-parity-v122 object-visibility-v123, material/UV-v124, transform-v125 and reachable-state-visibility-v127 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
     ap.add_argument("--source-only",action="store_true",help="Run source-safe validators and repository tracking checks only; do not require Godot or local commercial assets.")
     args=ap.parse_args()
@@ -163,6 +171,21 @@ def main():
     if args.source_only:
         print(json.dumps(source_receipt,indent=2))
         sys.exit(0 if source_receipt["status"]=="PASS" else 1)
+
+    generated_inputs={}
+    generation_commands=[
+        ("fidelity_v124",[sys.executable,"tools/build_demo_room_fidelity_manifest_v124.py"]),
+        ("state_matrix_v127",[sys.executable,"tools/kg001_state_matrix_v127.py"]),
+        ("asset_manifest_v128",[sys.executable,"tools/build_runtime_asset_manifest_v128.py"]),
+    ]
+    for name,cmd in generation_commands:
+        proc=run(cmd)
+        generated_inputs[name]={
+            "status":"PASS" if proc.returncode==0 else "FAIL",
+            "returncode":proc.returncode,
+            "output":proc.stdout[-12000:],
+        }
+    generated_ok=all(item["status"]=="PASS" for item in generated_inputs.values())
 
     godot=find_godot(args.godot)
     godot_version=""
@@ -212,7 +235,7 @@ def main():
     fresh_pass=(
         args.fresh_checkout and clean_before and clean_after and not bad_tracked and source_ok
         and godot is not None and import_status=="PASS" and full_runtime_pass
-        and all(asset_present.values()) and all(asset_ignored.values())
+        and all(asset_present.values()) and all(asset_ignored.values()) and generated_ok
     )
 
     fresh={
@@ -227,6 +250,8 @@ def main():
         "clean_after":clean_after,
         "forbidden_tracked_files":bad_tracked,
         "source_validators_pass":source_ok,
+        "generated_inputs":generated_inputs,
+        "generated_inputs_pass":generated_ok,
         "room_assets_present":asset_present,
         "room_assets_git_ignored":asset_ignored,
         "runtime_status":{k:v.get("status","") for k,v in runtimes.items()}
@@ -260,6 +285,9 @@ def main():
             TMP/"kg001_surface_v121_runtime.json":ROOT/"data/tests/kg001_surface_collision_runtime_v121.json",
             TMP/"kg001_geometry_v122_runtime.json":ROOT/"data/tests/kg001_geometry_render_parity_runtime_v122.json",
             TMP/"kg001_visibility_v123_runtime.json":ROOT/"data/tests/kg001_object_visibility_runtime_v123.json",
+            TMP/"kg001_material_v124_runtime.json":ROOT/"data/tests/kg001_material_texture_runtime_v124.json",
+            TMP/"kg001_transform_v125_runtime.json":ROOT/"data/tests/kg001_transform_parity_runtime_v125.json",
+            TMP/"kg001_reachable_visibility_v127_runtime.json":ROOT/"data/tests/kg001_reachable_visibility_runtime_v127.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }
