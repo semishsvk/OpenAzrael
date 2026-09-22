@@ -17,6 +17,9 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from tools.remaster_framework.source_registry import resolve_source
 TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
@@ -178,11 +181,30 @@ def main() -> int:
     if not head_before:
         return fail("GIT_HEAD_UNAVAILABLE")
 
-    if args.demo_dir is not None:
+    restore_source = args.demo_dir.resolve() if args.demo_dir is not None else None
+    sentinels_missing_before_restore = any(
+        not path.is_file() for path in REQUIRED_SENTINELS
+    )
+    if restore_source is None and sentinels_missing_before_restore:
+        try:
+            restore_source = resolve_source("demo")
+        except Exception as exc:
+            return fail(
+                "DEMO_SOURCE_NOT_REGISTERED_OR_INVALID",
+                {
+                    "error": str(exc),
+                    "hint": (
+                        "Run: python tools/bootstrap_openazrael_sources.py "
+                        "register demo <atdemo.zip-or-extracted-dir>"
+                    ),
+                },
+            )
+
+    if restore_source is not None:
         restore = run([
             sys.executable,
             "tools/restore_candidate_assets.py",
-            str(args.demo_dir.resolve()),
+            str(restore_source),
         ])
         if restore.returncode != 0:
             return fail(
