@@ -22,6 +22,7 @@ RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/audio",
     ROOT / "assets/textures/classic",
     ROOT / "assets/ui/mice",
+    ROOT / "assets/ui/legacy_menu",
 )
 
 
