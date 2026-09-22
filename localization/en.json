@@ -1,0 +1,16 @@
+{
+  "schema": "openazrael.localization_pack",
+  "version": 139,
+  "locale": "en",
+  "source_locale": "en",
+  "strings": {
+    "dialog.demo.niamh.0001": "Good Lord. What are you?",
+    "ui.menu.title": "Options",
+    "ui.menu.language": "Language",
+    "ui.menu.close": "Back",
+    "ui.hud.demo_complete": "DEMO COMPLETE — Shield acquired",
+    "ui.hud.bath_drained": "Baptistery bath: DRAINED",
+    "ui.hud.empty": "(empty)",
+    "ui.hud.controls": "WASD move | Shift sprint | Mouse look | E interact | Esc menu | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room"
+  }
+}
