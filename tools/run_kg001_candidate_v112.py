@@ -46,6 +46,8 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_visual_census_v126.py"],
     [sys.executable,"tools/validate_kg001_reachable_visibility_v127.py"],
     [sys.executable,"tools/validate_kg001_packaged_parity_v128.py"],
+    [sys.executable,"tools/validate_kg001_portal_geometry_v129.py"],
+    [sys.executable,"tools/validate_kg001_interaction_reachability_v130.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -65,6 +67,8 @@ RUNTIMES=[
     ("material_v124","scripts/kg001_material_texture_runner_v124.gd","OPENAZRAEL_KG001_MATERIAL_TEXTURE_V124"),
     ("transform_v125","scripts/kg001_transform_parity_runner_v125.gd","OPENAZRAEL_KG001_TRANSFORM_V125"),
     ("reachable_visibility_v127","scripts/kg001_reachable_visibility_runner_v127.gd","OPENAZRAEL_KG001_REACHABLE_VISIBILITY_V127"),
+    ("portal_v129","scripts/kg001_portal_geometry_runner_v129.gd","OPENAZRAEL_KG001_PORTAL_GEOMETRY_V129"),
+    ("interaction_v130","scripts/kg001_interaction_reachability_runner_v130.gd","OPENAZRAEL_KG001_INTERACTION_REACHABILITY_V130"),
 ]
 
 def run(cmd, check=False):
@@ -205,7 +209,7 @@ def main():
         else:
             import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
-            if name in ("v110","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121","geometry_v122","visibility_v123") and not all(asset_present.values()):
+            if name in ("v110","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121","geometry_v122","visibility_v123","material_v124","transform_v125","reachable_visibility_v127","portal_v129","interaction_v130") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
@@ -288,6 +292,8 @@ def main():
             TMP/"kg001_material_v124_runtime.json":ROOT/"data/tests/kg001_material_texture_runtime_v124.json",
             TMP/"kg001_transform_v125_runtime.json":ROOT/"data/tests/kg001_transform_parity_runtime_v125.json",
             TMP/"kg001_reachable_visibility_v127_runtime.json":ROOT/"data/tests/kg001_reachable_visibility_runtime_v127.json",
+            TMP/"kg001_portal_v129_runtime.json":ROOT/"data/tests/kg001_portal_geometry_runtime_v129.json",
+            TMP/"kg001_interaction_v130_runtime.json":ROOT/"data/tests/kg001_interaction_reachability_runtime_v130.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }
