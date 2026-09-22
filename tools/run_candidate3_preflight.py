@@ -58,6 +58,7 @@ REQUIRED_RUNTIME = (
     "interaction_v130",
     "all_transitions_v141",
     "cursor_v143",
+    "menu_v145",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
@@ -66,12 +67,16 @@ REQUIRED_SENTINELS = (
     ROOT / "assets/audio/979TONGS.WAV",
     ROOT / "assets/ui/mice/POINTER.png",
     ROOT / "assets/ui/mice/TAKE.png",
+    ROOT / "assets/ui/legacy_menu/HUD3.png",
+    ROOT / "assets/ui/legacy_menu/SAVE13.png",
+    ROOT / "assets/ui/legacy_menu/TITLE.png",
 )
 RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/rooms",
     ROOT / "assets/audio",
     ROOT / "assets/textures/classic",
     ROOT / "assets/ui/mice",
+    ROOT / "assets/ui/legacy_menu",
 )
 
 def runtime_asset_files() -> list[Path]:
@@ -210,7 +215,11 @@ def main() -> int:
         p for p in asset_files
         if p.parent == ROOT / "assets/ui/mice" and p.suffix.lower() == ".png"
     ]
-    if len(classic_pngs) != 86 or len(room_glbs) < 3 or not audio_files or len(cursor_pngs) != 35:
+    menu_pngs = [
+        p for p in asset_files
+        if p.parent == ROOT / "assets/ui/legacy_menu" and p.suffix.lower() == ".png"
+    ]
+    if len(classic_pngs) != 86 or len(room_glbs) < 3 or not audio_files or len(cursor_pngs) != 35 or len(menu_pngs) != 42:
         return fail(
             "RUNTIME_ASSET_CORPUS_INCOMPLETE",
             {
@@ -218,6 +227,8 @@ def main() -> int:
                 "room_glb_count": len(room_glbs),
                 "audio_file_count": len(audio_files),
                 "cursor_png_count": len(cursor_pngs),
+            "menu_png_count": len(menu_pngs),
+                "menu_png_count": len(menu_pngs),
             },
         )
 
