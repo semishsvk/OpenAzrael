@@ -15,7 +15,7 @@ func _interaction_priority(collider: Object) -> int:
 func _stable_node_path(collider: Object) -> String:
     if collider is Node:
         return String(collider.get_path())
-    return String(collider)
+    return "%s:%d" % [collider.get_class(), collider.get_instance_id()]
 
 func _overlap_candidate(collider: Object, from: Vector3, direction: Vector3) -> Dictionary:
     var target_position := from
