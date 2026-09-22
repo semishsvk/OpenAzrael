@@ -27,6 +27,32 @@ class CorpusDiscoveryTests(unittest.TestCase):
             self.assertEqual(profile["profile_id"], "openazrael_demo_v1")
             self.assertEqual(profile["status"], "match")
 
+    def test_retail_profile_matches_evidence_backed_anchors(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in (
+                "PUZZLES.DAT",
+                "OBJECTS.DAT",
+                "ROOMS.DAT",
+                "CHARACTE.DAT",
+            ):
+                (root / name).write_bytes(name.encode("ascii"))
+
+            result = discover_corpus(root)
+            profiles = {
+                row["profile_id"]: row
+                for row in result["profiles"]
+            }
+
+            self.assertEqual(
+                profiles["openazrael_retail_v1"]["status"],
+                "match",
+            )
+            self.assertEqual(
+                profiles["openazrael_demo_v1"]["status"],
+                "no_match",
+            )
+
     def test_count_drift_is_partial_not_false_match(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
