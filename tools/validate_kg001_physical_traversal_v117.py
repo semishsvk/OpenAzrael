@@ -8,6 +8,7 @@ runner = (ROOT / "scripts/kg001_physical_traversal_runner_v117.gd").read_text(en
 player = (ROOT / "scripts/player.gd").read_text(encoding="utf-8")
 main = (ROOT / "main.tscn").read_text(encoding="utf-8")
 project = (ROOT / "project.godot").read_text(encoding="utf-8")
+room = (ROOT / "scripts/room_manager.gd").read_text(encoding="utf-8")
 contract = json.loads(
     (ROOT / "data/tests/kg001_physical_traversal_contract_v117.json").read_text(
         encoding="utf-8"
@@ -67,6 +68,15 @@ checks = {
         and contract.get("production_path", {}).get("step_up", {}).get(
             "safe_margin"
         ) == 0.25
+        and contract.get("production_path", {}).get("step_up", {}).get(
+            "step_surface_epsilon"
+        ) == 0.75
+        and contract.get("production_path", {}).get("step_up", {}).get(
+            "minimum_forward_settle"
+        ) == 2.0
+        and contract.get("production_path", {}).get("step_up", {}).get(
+            "post_step_floor_snap"
+        ) is True
     ),
     "runner_version_marker": (
         '"version": 117' in runner
@@ -87,6 +97,7 @@ checks = {
             "@export var max_step_height := 14.0",
             "@export var step_probe_distance := 14.0",
             "@export var step_clearance := 0.35",
+            "@export var step_surface_epsilon := 0.75",
             "@export var traversal_safe_margin := 0.25",
             "floor_snap_length = max_step_height + 2.0",
             "safe_margin = traversal_safe_margin",
@@ -99,6 +110,9 @@ checks = {
             "var raised := global_transform",
             "raised.origin += lift",
             "global_position += lift",
+            "var settle_motion := direction * maxf(horizontal_motion.length(), 2.0)",
+            "global_position += settle_motion",
+            "apply_floor_snap()",
         )
     ),
     "production_step_up_winding_safe_and_diagnostic": all(
@@ -160,6 +174,16 @@ checks = {
         and "player.global_position = Vector3(" not in portal_spawn_section
         and "player.global_position = Vector3(" not in r1_floor_section
         and "player.global_position = origin" in r1_floor_section
+    ),
+    "production_portal_spawn_avoids_adjacent_geometry": (
+        contract.get("portal_spawn_policy", {}).get("default_normal_offset") == 120.0
+        and contract.get("portal_spawn_policy", {}).get("r8_object14_expected_offset") == 115.0
+        and contract.get("portal_spawn_policy", {}).get("hardcoded_per_portal_offsets_forbidden") is True
+        and "func _portal_spawn_distance" in room
+        and "PORTAL_SPAWN_DISTANCE_CANDIDATES" in room
+        and "intersect_shape" in room
+        and "support_collider" in room
+        and "spawn_distance := _portal_spawn_distance" in room
     ),
     "r1_canonical_spawn_floor_walk": all(
         value in runner
@@ -236,6 +260,8 @@ checks = {
             'check_prefix + "_down_height"',
             'check_prefix + "_down_no_fall_through"',
             'check_prefix + "_down_floor_contact"',
+            '"final_on_floor"',
+            '"final_y"',
         )
     ),
     "stair_runs_are_near_landing_to_landing": (
