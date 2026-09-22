@@ -9,6 +9,15 @@ static func _demo_state() -> Node:
     var tree := Engine.get_main_loop() as SceneTree
     return tree.root.get_node_or_null("DemoState") if tree != null else null
 
+static func _diagnostics() -> Node:
+    var tree := Engine.get_main_loop() as SceneTree
+    return tree.root.get_node_or_null("CandidateDiagnostics") if tree != null else null
+
+static func _record_event(name: String, payload: Dictionary) -> void:
+    var diagnostics := _diagnostics()
+    if diagnostics != null and diagnostics.has_method("record_event"):
+        diagnostics.call("record_event", name, payload)
+
 static func slot_path(index: int) -> String:
     return "user://SAVE%d.dat" % clampi(index, 0, SLOT_NAMES.size() - 1)
 
@@ -40,7 +49,7 @@ static func save_slot(index: int, room_manager: Node, player: CharacterBody3D) -
         return false
     file.store_string(JSON.stringify(payload))
     file.close()
-    CandidateDiagnostics.record_event("legacy_menu_save", {"slot": index, "name": slot_name(index), "room": payload["room"]})
+    _record_event("legacy_menu_save", {"slot": index, "name": slot_name(index), "room": payload["room"]})
     return true
 
 static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -> bool:
@@ -69,5 +78,5 @@ static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -
     var camera := player.get_node_or_null("Camera3D") as Camera3D
     if camera != null:
         camera.rotation.x = pitch
-    CandidateDiagnostics.record_event("legacy_menu_load", {"slot": index, "name": slot_name(index), "room": room})
+    _record_event("legacy_menu_load", {"slot": index, "name": slot_name(index), "room": room})
     return true
