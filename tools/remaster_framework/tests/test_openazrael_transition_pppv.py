@@ -46,6 +46,38 @@ class OpenAzraelTransitionPPPVTests(unittest.TestCase):
             )
 
 
+    def test_transition_requires_grounded_continuation(self) -> None:
+        for scenario in self.scenarios.values():
+            crossing = scenario.actions[0]
+            continuation = scenario.actions[1]
+            self.assertEqual(
+                crossing.parameters["post_transition_settle_frames"],
+                24,
+            )
+            self.assertEqual(
+                continuation.execution_mode,
+                ExecutionMode.INPUT,
+            )
+            self.assertEqual(continuation.input_action, "move_forward")
+            self.assertGreater(
+                continuation.parameters["minimum_horizontal_distance"],
+                0.0,
+            )
+            self.assertTrue(
+                scenario.metadata["destination_ground_support_required"]
+            )
+            self.assertTrue(
+                scenario.metadata["post_transition_movement_required"]
+            )
+            self.assertEqual(
+                scenario.requirements[-1].action_id,
+                continuation.action_id,
+            )
+            self.assertEqual(
+                scenario.requirements[-1].kind,
+                "movement_sample",
+            )
+
     def test_transition_matrix_matches_source_evidence(self) -> None:
         root = Path(__file__).resolve().parents[3]
         payload = json.loads(
