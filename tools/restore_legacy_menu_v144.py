@@ -34,12 +34,21 @@ def main()->int:
                 raise ValueError(f"{spec['file']}: expected indexed PCX")
             if indexed.size!=(int(spec["width"]),int(spec["height"])):
                 raise ValueError(f"{spec['file']}: source dimensions mismatch")
-            # RGB only: alpha/colorkey semantics remain HOLD until source evidence
-            # resolves them. No resampling or palette reinterpretation occurs.
-            rgb=indexed.convert("RGB")
             destination=OUT_ROOT/(Path(spec["file"]).stem+".png")
             destination.parent.mkdir(parents=True,exist_ok=True)
-            rgb.save(destination,format="PNG",optimize=False)
+            category=str(spec["category"])
+            use_index0_alpha=category in {"hud_frame","save_preview","replay_animation","font_strip"}
+            if use_index0_alpha:
+                rgba=indexed.convert("RGBA")
+                source_indices=list(indexed.getdata())
+                alpha=Image.new("L",indexed.size,255)
+                alpha.putdata([0 if int(v)==0 else 255 for v in source_indices])
+                rgba.putalpha(alpha)
+                rgba.save(destination,format="PNG",optimize=False)
+                alpha_policy="PALETTE_INDEX_0_TRANSPARENT_SOURCE_OVERLAY"
+            else:
+                indexed.convert("RGB").save(destination,format="PNG",optimize=False)
+                alpha_policy="OPAQUE_SOURCE_RGB"
             rows.append({
                 "source":spec["file"],
                 "category":spec["category"],
@@ -48,7 +57,7 @@ def main()->int:
                 "runtime_png_sha256":sha256(destination),
                 "width":indexed.width,
                 "height":indexed.height,
-                "alpha_policy":"HOLD_OPAQUE_RGB_SOURCE_PIXELS_ONLY",
+                "alpha_policy":alpha_policy,
             })
     RECEIPT.parent.mkdir(parents=True,exist_ok=True)
     receipt={"schema":"openazrael.menu_lab.restore","version":144,"status":"PASS","asset_count":len(rows),"files":rows}
