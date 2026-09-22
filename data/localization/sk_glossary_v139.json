@@ -1,0 +1,22 @@
+{
+  "schema": "openazrael.localization_glossary",
+  "version": 139,
+  "locale": "sk",
+  "status": "EXPERIMENTAL",
+  "policy": {
+    "sole_terminology_authority": true,
+    "do_not_translate_internal_identifiers": true,
+    "uncertain_lore_or_wordplay_status": "CANDIDATE",
+    "fragments_status": "NEEDS_RECONSTRUCTION"
+  },
+  "terms": [
+    {"source": "Options", "translation": "Nastavenia", "status": "APPROVED_TEST"},
+    {"source": "Language", "translation": "Jazyk", "status": "APPROVED_TEST"},
+    {"source": "Back", "translation": "Späť", "status": "APPROVED_TEST"},
+    {"source": "Shield", "translation": "štít", "status": "APPROVED_TEST"},
+    {"source": "Baptistery", "translation": "baptistérium", "status": "APPROVED_TEST"},
+    {"source": "bug report", "translation": "hlásenie chyby", "status": "APPROVED_TEST"},
+    {"source": "Good Lord.", "translation": "Dobrý Bože.", "status": "CANDIDATE", "note": "Dialogue tone/context requires in-engine review."},
+    {"source": "What are you?", "translation": "Čo si zač?", "status": "CANDIDATE", "note": "Natural Slovak rendering; speaker/context remains UNKNOWN in source registry."}
+  ]
+}
