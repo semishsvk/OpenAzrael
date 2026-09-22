@@ -1,0 +1,55 @@
+{
+  "schema": "openazrael.localization_extraction_config",
+  "version": 139,
+  "namespace": "azrael",
+  "source_locale": "en",
+  "sources": [
+    {
+      "adapter": "text_lines",
+      "glob": "**/CHARACTE.DAT",
+      "domain": "character",
+      "encoding": "latin1",
+      "localizable": false
+    },
+    {
+      "adapter": "text_lines",
+      "glob": "**/NIAMH.DAT",
+      "domain": "dialogue",
+      "encoding": "latin1",
+      "localizable": "auto"
+    },
+    {
+      "adapter": "text_lines",
+      "glob": "**/CON*.DAT",
+      "domain": "dialogue",
+      "encoding": "latin1",
+      "localizable": "auto"
+    },
+    {
+      "adapter": "binary_ascii",
+      "glob": "**/*.ANI",
+      "domain": "character_animation",
+      "min_length": 3,
+      "localizable": false
+    },
+    {
+      "adapter": "binary_ascii",
+      "glob": "**/RANIM*.ANM",
+      "domain": "room_animation",
+      "min_length": 3,
+      "localizable": false
+    },
+    {
+      "adapter": "binary_ascii",
+      "glob": "**/PUZZLES.DAT",
+      "domain": "event_reference",
+      "min_length": 4,
+      "localizable": false
+    }
+  ],
+  "notes": [
+    "Configuration is OpenAzrael-specific; the extractor itself is generic and driven entirely by this file.",
+    "Per-character and conversation payloads are scanned locally from an official corpus; raw commercial files remain outside Git.",
+    "Auto-localizable lines are candidates and still require contextual review before runtime promotion."
+  ]
+}
