@@ -35,12 +35,17 @@ func _run() -> void:
     _check("set_sk", manager.set_locale("sk", false))
     _check("sk_title", manager.tr_key("ui.menu.title") == "Nastavenia")
     _check("sk_controls", manager.tr_key("ui.hud.controls").begins_with("WASD pohyb"))
-    # Slovak deliberately omits the source dialogue entry: fallback must be
-    # deterministic and return the exact English source string.
-    _check("fallback_dialogue", manager.tr_key("dialog.demo.niamh.0001") == "Good Lord. What are you?")
+    _check(
+        "sk_dialogue",
+        manager.tr_key("dialog.demo.niamh.0001") == "Dobrý Bože. Čo si zač?"
+    )
 
     _check("set_en", manager.set_locale("en", false))
     _check("en_title", manager.tr_key("ui.menu.title") == "Options")
+    _check(
+        "en_dialogue",
+        manager.tr_key("dialog.demo.niamh.0001") == "Good Lord. What are you?"
+    )
     _check("missing_key_identity", manager.tr_key("missing.contract.key") == "missing.contract.key")
     _check("reject_unknown_locale", not manager.set_locale("xx-NOT-A-REAL-LOCALE", false))
 
