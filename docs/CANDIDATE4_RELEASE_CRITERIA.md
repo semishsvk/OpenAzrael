@@ -7,6 +7,24 @@ It MUST NOT be exported as Candidate 4 unless the exact Git HEAD passes the
 asset-backed runtime preflight and every required evidence artifact is bound to
 that same source and runtime asset set.
 
+## Source corpus identity
+
+Candidate 4 may consume commercial source payloads only through an explicit
+`--demo-dir` or the verified persistent source registry defined by
+`data/source_corpora_contract_v1.json`.
+
+The canonical official-demo archive identity is fixed to the source-backed
+ATDEMO SHA-256 contract. If the source is registered as an extracted directory,
+its complete local inventory is pinned and must remain byte-identical.
+
+Retail payloads use the same private registry mechanism but are pinned by the
+complete local SHA-256 inventory on first verified registration. Build and
+forensic tools MUST NOT rediscover substitute corpora by scanning disks,
+historical ZIPs or unrelated caches.
+
+A missing registry entry, missing source path, archive mismatch, retail
+inventory drift or corpus-shape mismatch is a hard failure.
+
 ## Geometry
 
 R1, R7 and R8 must use the complete restored demo geometry. The importer must
