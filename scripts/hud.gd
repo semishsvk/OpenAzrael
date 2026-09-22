@@ -81,7 +81,10 @@ func _update_interaction_cursor() -> void:
         interaction_cursor.texture = _cursor_texture(normalized)
     interaction_cursor.visible = interaction_cursor.texture != null
     var viewport_size := get_viewport().get_visible_rect().size
-    interaction_cursor.position = (viewport_size - interaction_cursor.size) * 0.5
+    if DisplayServer.get_name() != "headless" and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+        interaction_cursor.position = get_viewport().get_mouse_position() - interaction_cursor.size * 0.5
+    else:
+        interaction_cursor.position = (viewport_size - interaction_cursor.size) * 0.5
 
 func _capture_audio_parity() -> void:
     var la = room_manager.legacy_audio
