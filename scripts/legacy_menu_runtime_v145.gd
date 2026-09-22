@@ -35,6 +35,10 @@ const SCAN_STATUS := [
 
 var root_control: Control
 var classic_canvas: Control
+var matte_left: ColorRect
+var matte_right: ColorRect
+var matte_top: ColorRect
+var matte_bottom: ColorRect
 var hud_texture: TextureRect
 var title_texture: TextureRect
 var service_texture: TextureRect
@@ -67,6 +71,15 @@ func _load_tex(stem: String) -> Texture2D:
     var path := "res://assets/ui/legacy_menu/" + stem + ".png"
     return load(path) as Texture2D if ResourceLoader.exists(path) else null
 
+func _make_matte(name: String) -> ColorRect:
+    var node := ColorRect.new()
+    node.name = name
+    node.color = Color.BLACK
+    node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    node.z_index = -100
+    root_control.add_child(node)
+    return node
+
 func _make_tex(name: String, stem: String, pos: Vector2, size: Vector2) -> TextureRect:
     var node := TextureRect.new()
     node.name = name
@@ -86,6 +99,11 @@ func _build() -> void:
     root_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     root_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(root_control)
+
+    matte_left = _make_matte("ClassicMatteLeftV147")
+    matte_right = _make_matte("ClassicMatteRightV147")
+    matte_top = _make_matte("ClassicMatteTopV147")
+    matte_bottom = _make_matte("ClassicMatteBottomV147")
 
     classic_canvas = Control.new()
     classic_canvas.name = "Classic640x480"
@@ -128,6 +146,19 @@ func _reflow() -> void:
     _offset = (vp - LOGICAL_SIZE * _scale) * 0.5
     classic_canvas.scale = Vector2(_scale, _scale)
     classic_canvas.position = _offset
+
+    var framed := LOGICAL_SIZE * _scale
+    matte_left.position = Vector2.ZERO
+    matte_left.size = Vector2(maxf(_offset.x, 0.0), vp.y)
+    matte_right.position = Vector2(_offset.x + framed.x, 0.0)
+    matte_right.size = Vector2(maxf(vp.x - (_offset.x + framed.x), 0.0), vp.y)
+    matte_top.position = Vector2(0.0, 0.0)
+    matte_top.size = Vector2(vp.x, maxf(_offset.y, 0.0))
+    matte_bottom.position = Vector2(0.0, _offset.y + framed.y)
+    matte_bottom.size = Vector2(vp.x, maxf(vp.y - (_offset.y + framed.y), 0.0))
+
+func classic_frame_rect() -> Rect2:
+    return Rect2(_offset, LOGICAL_SIZE * _scale)
 
 func blocks_world_cursor() -> bool:
     return title_open or service_open
