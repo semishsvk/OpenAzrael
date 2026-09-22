@@ -172,11 +172,18 @@ def main():
     route=json.loads(args.route_evidence.read_text(encoding="utf-8"))
     if route.get("status")!="PASS" or route.get("resolution")!="REQUIRES_RUNTIME_MUSIC":
         raise SystemExit("music route evidence must be PASS/REQUIRES_RUNTIME_MUSIC before rendering")
-    route_required=[x.upper() for x in route.get("accepted_demo_route",{}).get("required_xmi",[])]
-    selected=sorted(canonical) if args.all else sorted(set(route_required))
-    if not selected:raise SystemExit("no route-required XMI tracks")
-    unknown=sorted(set(selected)-set(canonical))
+    route_data=route.get("accepted_demo_route",{})
+    music_by_room=route_data.get("music_by_room",{})
+    if not all(isinstance(music_by_room.get(room),list) and len(music_by_room[room])==1 for room in ("R1","R7","R8")):
+        raise SystemExit("route evidence does not contain exactly one binding for R1/R7/R8")
+    room_map={room:music_by_room[room][0].upper() for room in ("R1","R7","R8")}
+    route_required=[x.upper() for x in route_data.get("required_xmi",[])]
+    selected_all=sorted(canonical) if args.all else sorted(set(route_required))
+    if not selected_all:raise SystemExit("no route-required XMI tracks")
+    unknown=sorted(set(selected_all)-set(canonical))
     if unknown:raise SystemExit("unknown canonical XMI: "+",".join(unknown))
+    silence_xmi=sorted(name for name in selected_all if name=="BLANK.XMI")
+    selected=[name for name in selected_all if name!="BLANK.XMI"]
     rows=[]
     for name in selected:
         source=locate(demo,name)
@@ -187,17 +194,43 @@ def main():
         row=render_one(source,out,soundfont,args.sample_rate,args.gain,args.fluidsynth_lib,args.release_tail_seconds)
         row["source_sha256"]=observed
         rows.append(row)
+    track_map={row["source_xmi"].upper():row for row in rows}
+    runtime_manifest={
+        "schema":"openazrael.kg001.candidate4_music_manifest",
+        "version":135,
+        "status":"PASS",
+        "music_by_room":room_map,
+        "silence_identity":"BLANK.XMI",
+        "tracks":{
+            name:{
+                "path":"res://"+track_map[name]["output"],
+                "sha256":track_map[name]["output_sha256"],
+                "loop":track_map[name]["loop"],
+                "loop_offset_seconds":track_map[name]["loop_offset_seconds"],
+                "duration_seconds":track_map[name]["duration_seconds"],
+            }
+            for name in track_map
+        },
+    }
+    args.runtime_manifest.parent.mkdir(parents=True,exist_ok=True)
+    args.runtime_manifest.write_text(json.dumps(runtime_manifest,indent=2)+"\n",encoding="utf-8")
     receipt={
         "schema":"openazrael.kg001.candidate4_music_runtime",
         "version":135,
         "status":"PASS",
         "runtime_playback_test":"PENDING_GODOT",
-        "rendered_xmi":[row["source_xmi"] for row in rows],
+        "rendered_xmi":[row["source_xmi"].upper() for row in rows],
+        "silence_xmi":silence_xmi,
         "required_xmi":route_required,
-        "all_canonical_rendered":len(rows)==24,
+        "music_by_room":room_map,
+        "all_canonical_rendered":len(selected_all)==24,
         "soundfont":{"bytes":soundfont.stat().st_size,"sha256":sha256(soundfont)},
         "renderer":{"backend":"FluidSynth","sample_rate":args.sample_rate,"gain":args.gain},
         "tracks":rows,
+        "runtime_manifest":{
+            "path":str(args.runtime_manifest.relative_to(ROOT)).replace("\\","/"),
+            "sha256":sha256(args.runtime_manifest),
+        },
         "source_safe_receipt":True,
     }
     args.receipt.parent.mkdir(parents=True,exist_ok=True)
