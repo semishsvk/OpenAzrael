@@ -35,3 +35,6 @@ func interact() -> void:
         tw.tween_property(tapestry_visual, "rotation:x", tapestry_visual.rotation.x + PI, 0.8)
     rotated = true
     print("Rotated the hanging tapestry to reveal its message.")
+
+func interaction_cursor_id() -> String:
+    return "CANT" if rotated or DemoState.puzzle_node("R8TapestryBack") else "ROT"
