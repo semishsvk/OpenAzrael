@@ -1,5 +1,27 @@
 # OpenAzrael Localization Toolchain v139
 
+## Persistent retail source registry
+
+Retail extraction no longer needs a rediscovered filesystem path on every run.
+After one-time registration:
+
+```bash
+python tools/bootstrap_openazrael_sources.py register retail /private/azraels-tear-retail
+```
+
+the generic extractor may resolve the verified corpus directly:
+
+```bash
+python tools/localization_tool_v139.py extract \
+  --config data/localization/extraction_config_v139.json \
+  --registered-corpus retail \
+  --out .tmp/retail_source_strings.json
+```
+
+`--root` remains available for explicit one-off inputs. If neither `--root`
+nor `--registered-corpus` is supplied, extraction fails instead of scanning
+the filesystem.
+
 ## Goals
 
 The localization layer is reusable for the demo, retail reconstruction and future
