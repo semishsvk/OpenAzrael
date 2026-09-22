@@ -25,6 +25,12 @@ class GodotPPPVNavigatorSourceTests(unittest.TestCase):
         self.assertNotIn("player.velocity =", self.source)
         self.assertNotIn("player.move_and_slide()", self.source)
 
+    def test_interaction_approach_stops_before_exact_probe_aim(self) -> None:
+        self.assertIn("standoff_distance := 64.0", self.source)
+        self.assertIn("distance <= standoff_distance", self.source)
+        self.assertIn("func aim_at_interactable", self.source)
+        self.assertIn("_probe_target_name() == target_name", self.source)
+
     def test_navigation_fails_when_target_missing_or_stuck(self) -> None:
         self.assertIn('"target_not_found"', self.source)
         self.assertIn('"stuck"', self.source)
