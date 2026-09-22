@@ -22,6 +22,7 @@ RECEIPT = TMP / "candidate3_preflight_receipt.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
 FRESH_RESULT = TMP / "kg001_fresh_checkout.json"
 VISUAL_RESULT = TMP / "kg001_visual_v126_runtime.json"
+FORENSIC_PREFLIGHT = TMP / "room_forensic_report_v131_preflight.json"
 GENERATED_METADATA = {
     "fidelity_v124": ROOT / "data/runtime_generated/demo_room_fidelity_v124.json",
     "state_matrix_v127": ROOT / "data/runtime_generated/kg001_state_matrix_v127.json",
@@ -263,6 +264,20 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    forensic_run = run([
+        sys.executable,
+        "tools/build_room_forensic_report_v131.py",
+        "--phase",
+        "preflight",
+        "--out",
+        str(FORENSIC_PREFLIGHT),
+    ])
+    if forensic_run.returncode != 0 or not FORENSIC_PREFLIGHT.is_file():
+        return fail(
+            "ROOM_FORENSIC_REPORT_V131_FAILED",
+            {"output_tail": forensic_run.stdout[-20000:]},
+        )
+
     pppv_cmd = [
         sys.executable,
         "tools/run_candidate3_pppv_v2.py",
@@ -358,6 +373,10 @@ def main() -> int:
             "visual_v126": {
                 "path": str(VISUAL_RESULT.relative_to(ROOT)),
                 "sha256": sha256(VISUAL_RESULT),
+            },
+            "room_forensic_v131": {
+                "path": str(FORENSIC_PREFLIGHT.relative_to(ROOT)),
+                "sha256": sha256(FORENSIC_PREFLIGHT),
             },
             "generated_metadata": {
                 name: {
