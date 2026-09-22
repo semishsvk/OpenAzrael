@@ -57,10 +57,21 @@ checks = {
     ),
     "fail_closed_samples": all(token in runner for token in (
         "missing_collision_support",
-        "collision_support_height_mismatch",
+        "collision_support_below_visual_floor",
         "_no_missing_support",
-        "_support_height_matches",
+        "_no_support_below_visual",
+        "hit_y < point.y - SUPPORT_TOLERANCE_Y",
     )),
+    "one_sided_support_semantics": (
+        contract.get("runtime_policy", {}).get(
+            "above_surface_collision_is_obstruction_not_hole"
+        ) is True
+        and "support_semantics" in contract.get("geometry_policy", {})
+        and all(name in runner for name in (
+            "save", "nibody", "well_pzpi1", "well_pzpi2",
+            "r8s1", "door", "door01", "bible", "fontbot02",
+        ))
+    ),
     "result_marker": (
         "OPENAZRAEL_KG001_SURFACE_COLLISION_V121" in runner
         and '"version": 121' in runner
