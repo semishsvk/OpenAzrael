@@ -20,6 +20,7 @@ FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
 SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_public_release_safety.py"],
+    [sys.executable,"tools/validate_source_geometry_policy.py"],
     [sys.executable,"tools/validate_project_context.py"],
     [sys.executable,"-m","tools.remaster_framework.cli","validate"],
     [sys.executable,"-m","unittest","discover","-s","tools/remaster_framework/tests","-v"],
