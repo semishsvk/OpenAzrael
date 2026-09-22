@@ -8,6 +8,7 @@ contract=json.loads((ROOT/"data/tests/kg001_packaged_parity_contract_v128.json")
 checks={
  "schema":contract.get("schema")=="openazrael.kg001.packaged_parity_contract" and contract.get("version")==128,
  "asset_manifest":"runtime_asset_manifest_v128.json" in runner,
+ "menu_assets_bound":'assets/ui/legacy_menu' in (ROOT/"tools/build_runtime_asset_manifest_v128.py").read_text(encoding="utf-8") and 'menu_png_count' in (ROOT/"tools/build_runtime_asset_manifest_v128.py").read_text(encoding="utf-8"),
  "cursor_assets_bound":'assets/ui/mice' in (ROOT/"tools/build_runtime_asset_manifest_v128.py").read_text(encoding="utf-8") and 'cursor_png_count' in (ROOT/"tools/build_runtime_asset_manifest_v128.py").read_text(encoding="utf-8"),
  "fidelity_manifest":"H.MANIFEST_PATH" in runner,
  "asset_hashes":all(x in runner for x in ("asset_bytes:","asset_sha:","_sha_bytes")),
