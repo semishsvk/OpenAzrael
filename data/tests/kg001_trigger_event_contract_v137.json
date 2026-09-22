@@ -35,7 +35,8 @@
         "target_object": "nibody",
         "source_required": true
       },
-      "no_synthetic_fallback": true
+      "no_synthetic_fallback": true,
+      "visibility_policy": "PRESERVE_AUTHORED_XAF_VISIBILITY_NO_TRIGGER_VISIBILITY_OPCODE"
     }
   },
   "required_condition_zones": {
@@ -44,7 +45,7 @@
   "runtime_acceptance": [
     "Every authored XAF trigger/helper record has exactly one explicit IR classification.",
     "Entering R7/zxactghost after an outside state dispatches R7_NIAMH_ACTIVATE exactly once.",
-    "The Niamh body becomes visible only through source-backed activation state.",
+    "The Niamh body preserves authored XAF visibility; activation changes animation/conversation state only because the recovered event graph contains no visibility opcode.",
     "A source-provided AnimationPlayer clip named Conv is played when present.",
     "If the original Conv clip is unavailable, runtime reports HOLD_SOURCE_CLIP_MISSING and never synthesizes substitute motion.",
     "Re-entering zxactghost after R7NiamhActivated does not replay the one-shot event.",
