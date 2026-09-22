@@ -41,6 +41,7 @@ REQUIRED_RUNTIME = (
     "v109",
     "v110",
     "trigger_v137",
+    "localization_v139",
     "v111",
     "audio_v116",
     "physical_v117",
