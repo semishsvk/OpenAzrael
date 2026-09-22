@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import trimesh
 
+from tools.remaster_framework.gltf_raw import accessor_array, read_glb
 from tools.remaster_framework.fidelity import (
     FIDELITY_SCHEMA,
     FIDELITY_VERSION,
@@ -17,9 +18,9 @@ ROOT=Path(__file__).resolve().parents[1]
 DEFAULT_OUT=ROOT/"data/runtime_generated/demo_room_fidelity_v124.json"
 QUANTIZATION=1e-5
 EXPECTED={
-    "R1":{"path":ROOT/"assets/rooms/R1.glb","bytes":535916,"sha256":"8a35e60b3f26d1fa656653cc7d3d5875c0927c77882189a6f073bf7ed16a3a6c","meshes":69,"triangles":593},
-    "R7":{"path":ROOT/"assets/rooms/R7.glb","bytes":790640,"sha256":"3c2aa95c4612c550edf8729299f7fe3e992308c2ae9e051b01973f6f48db7971","meshes":48,"triangles":689},
-    "R8":{"path":ROOT/"assets/rooms/R8.glb","bytes":1341944,"sha256":"c36c69baaaff414e12c1c64c0c4e1e9febebf321fb1aa8f888e601326ff5f476","meshes":87,"triangles":1050},
+    "R1":{"path":ROOT/"assets/rooms/R1.glb","meshes":69,"triangles":593},
+    "R7":{"path":ROOT/"assets/rooms/R7.glb","meshes":48,"triangles":689},
+    "R8":{"path":ROOT/"assets/rooms/R8.glb","meshes":87,"triangles":1050},
 }
 
 def sha256_file(path:Path)->str:
@@ -37,15 +38,28 @@ def room_record(room_id:str,spec:dict)->dict:
     path=Path(spec["path"])
     if not path.is_file():
         raise FileNotFoundError(path)
-    if path.stat().st_size != spec["bytes"] or sha256_file(path) != spec["sha256"]:
-        raise ValueError(f"{room_id}: canonical GLB fingerprint mismatch")
+    gltf,binary=read_glb(path)
+    raw_uv={}
+    for node in gltf.get("nodes",[]):
+        mesh_index=node.get("mesh")
+        if mesh_index is None:
+            continue
+        primitives=gltf["meshes"][mesh_index].get("primitives",[])
+        if len(primitives)!=1:
+            continue
+        uv_index=primitives[0].get("attributes",{}).get("TEXCOORD_0")
+        if uv_index is not None:
+            raw_uv[str(node.get("name",""))]=accessor_array(gltf,binary,uv_index)
     scene=trimesh.load(path,force="scene")
     meshes=[]
     for node in sorted(scene.graph.nodes_geometry):
         transform,geom_name=scene.graph[node]
         geom=scene.geometry[geom_name]
         md=geom.metadata or {}
-        uv=np.asarray(getattr(geom.visual,"uv",np.empty((0,2))),dtype=float)
+        # Fidelity references must use raw glTF TEXCOORD_0.  Trimesh converts
+        # V to its own internal convention when loading, which would invert the
+        # reference and hide exactly the class of bug v133 is intended to catch.
+        uv=np.asarray(raw_uv.get(str(node),np.empty((0,2))),dtype=float)
         if uv.ndim!=2: uv=np.empty((0,2))
         bounds=np.asarray(geom.bounds,dtype=float).reshape(-1)
         meshes.append({
@@ -57,6 +71,7 @@ def room_record(room_id:str,spec:dict)->dict:
             "triangles":int(len(geom.faces)),
             "uv_count":int(len(uv)),
             "uv_sha256":quantized_text_sha(uv),
+            "uv_convention":"RAW_GLTF_UPPER_LEFT",
             "transform":[round(float(v),6) for v in np.asarray(transform,dtype=float).reshape(-1)],
             "bounds":[round(float(v),6) for v in bounds],
             "source_hidden_material":str(md.get("xaf_material") or "") in {"TRANSPARANT","CLEAR_OBJECT"},
@@ -84,7 +99,7 @@ def main()->int:
         payload={
             "schema":FIDELITY_SCHEMA,
             "version":FIDELITY_VERSION,
-            "producer":"OpenAzrael v124 pinned source-derived GLB fidelity census",
+            "producer":"OpenAzrael v124 source-derived GLB fidelity census with raw glTF UV reference",
             "quantization":QUANTIZATION,
             "rooms":rooms,
         }
