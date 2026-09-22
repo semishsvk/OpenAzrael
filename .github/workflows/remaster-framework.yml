@@ -54,3 +54,17 @@ jobs:
         run: python tools/validate_kg001_physical_traversal_v117.py
       - name: Validate v118 Well+Tongs source contract
         run: python tools/validate_kg001_well_tongs_animation_v118.py
+
+  exact-head-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive exact tracked source
+        run: git archive --format=tar.gz --output candidate-final-source.tar.gz HEAD
+      - name: Upload exact-head source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-head-source
+          path: candidate-final-source.tar.gz
+          if-no-files-found: error
+          retention-days: 1
