@@ -25,14 +25,14 @@ func _run() -> void:
         "MAPOFF":[639,47],
     }
     for stem in required:
-        var path := "res://assets/ui/legacy_menu/" + stem + ".png"
-        _check("asset_exists:"+stem, ResourceLoader.exists(path))
+        var path: String = "res://assets/ui/legacy_menu/" + String(stem) + ".png"
+        _check("asset_exists:"+String(stem), ResourceLoader.exists(path))
         if ResourceLoader.exists(path):
             var tex := load(path) as Texture2D
-            _check("texture:"+stem, tex != null)
+            _check("texture:"+String(stem), tex != null)
             if tex != null:
-                _check("width:"+stem, tex.get_width()==int(required[stem][0]))
-                _check("height:"+stem, tex.get_height()==int(required[stem][1]))
+                _check("width:"+String(stem), tex.get_width()==int(required[stem][0]))
+                _check("height:"+String(stem), tex.get_height()==int(required[stem][1]))
 
     var state = root.get_node_or_null("DemoState")
     var packed = load("res://main.tscn")
