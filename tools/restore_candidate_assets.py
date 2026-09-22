@@ -46,14 +46,44 @@ def main():
                         missing_textures=missing, textured_primitives=actual[2], primitive_count=actual[0], triangles=actual[1],
                         legacy_colorkey_primitives=sum(bool(x.get('legacy_colorkey')) for x in prims))
         (ROOT/'data'/f'{room}.textured.v44.manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
-    fingerprints = json.loads((ROOT/'data/backup/source_fingerprints.json').read_text(encoding='utf-8'))
-    for entry in fingerprints['entries']:
-        if not entry['path'].startswith('assets/audio/'): continue
-        p = src/Path(entry['path']).name
-        if hashlib.sha256(p.read_bytes()).hexdigest() != entry['sha256']: raise ValueError('Audio fingerprint mismatch: '+p.name)
-        shutil.copyfile(p, ROOT/entry['path'])
+    canonical_audio_ir = json.loads((ROOT/'data/audio/legacy_world_ir.json').read_text(encoding='utf-8'))
+    sound_rows = canonical_audio_ir.get('audio', {}).get('sounds', [])
+    if len(sound_rows) != 30:
+        raise ValueError(f'Expected canonical demo WAV corpus: 30 files, got {len(sound_rows)}')
+    audio_restore_rows = []
+    for row in sound_rows:
+        name = row['filename']
+        p = src / name
+        if not p.is_file():
+            raise FileNotFoundError('Missing canonical demo WAV: ' + name)
+        source_sha = hashlib.sha256(p.read_bytes()).hexdigest()
+        if source_sha != row['sha256']:
+            raise ValueError('Audio fingerprint mismatch: ' + name)
+        destination = audio / name
+        shutil.copyfile(p, destination)
+        audio_restore_rows.append({
+            'filename': name,
+            'source_sha256': source_sha,
+            'expected_source_sha256': row['sha256'],
+        })
     prepare(src/'797TAP.WAV', audio/'797TAP.WAV')
     prepare(src/'S137.WAV', audio/'S137.WAV')
+    for row in audio_restore_rows:
+        runtime_path = audio / row['filename']
+        row['runtime_sha256'] = hashlib.sha256(runtime_path.read_bytes()).hexdigest()
+        row['runtime_bytes'] = runtime_path.stat().st_size
+    (ROOT/'.tmp/kg001').mkdir(parents=True, exist_ok=True)
+    (ROOT/'.tmp/kg001/candidate4_audio_restore_v132.json').write_text(
+        json.dumps({
+            'schema': 'openazrael.kg001.candidate4_audio_restore',
+            'version': 132,
+            'status': 'PASS',
+            'expected_wav_count': 30,
+            'restored_wav_count': len(audio_restore_rows),
+            'files': audio_restore_rows,
+        }, indent=2) + '\n',
+        encoding='utf-8'
+    )
     subprocess.run([sys.executable, str(ROOT/'tools/legacy_export/export_legacy_world_v21.py'), str(src), str(ROOT/'data/audio')], check=True)
     (ROOT/'.tmp/kg001').mkdir(parents=True, exist_ok=True)
     (ROOT/'.tmp/kg001/legacy_colorkey_restore.json').write_text(
