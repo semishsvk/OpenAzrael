@@ -160,13 +160,17 @@ def main() -> int:
     by_room={room:sorted({m["xmi"] for m in explicit if m["room"]==room}) for room in ("R1","R7","R8")}
     route_music=sorted({x for vals in by_room.values() for x in vals})
 
-    # Fail closed: absence of explicit room aliases does NOT prove that music is unused.
-    if route_music:
+    # Fail closed: a partial binding is not enough to drive runtime music.
+    # BLANK.XMI is a valid explicit silence identity, so every accepted room can
+    # still be bound exactly once without inventing a soundtrack.
+    route_complete=all(len(by_room[room])==1 for room in ("R1","R7","R8"))
+    route_ambiguous=any(row.get("room_count",0)>0 for row in ambiguous)
+    if route_complete and not route_ambiguous:
         status="PASS"; resolution="REQUIRES_RUNTIME_MUSIC"
-        reason="EXPLICIT_ACCEPTED_ROUTE_MUSIC_BINDINGS_RECOVERED"
+        reason="COMPLETE_EXPLICIT_ACCEPTED_ROUTE_MUSIC_BINDINGS_RECOVERED"
     else:
         status="HOLD"; resolution="UNKNOWN"
-        reason="MUSIC_TABLE_PRESENT_BUT_ACCEPTED_ROUTE_BINDING_NOT_EXPLICIT"
+        reason="MUSIC_TABLE_ROUTE_MAPPING_INCOMPLETE_OR_AMBIGUOUS"
 
     payload={
         "schema":"openazrael.kg001.candidate4_music_route",
@@ -190,7 +194,7 @@ def main() -> int:
             "rooms":["R1","R7","R8"],
             "explicit_bindings":explicit,
             "music_by_room":by_room,
-            "required_xmi":route_music,
+            "required_xmi":route_music,\n            "complete_one_binding_per_room":route_complete,
             "ambiguous_rows":ambiguous,
         },
         "source_safe":True,
