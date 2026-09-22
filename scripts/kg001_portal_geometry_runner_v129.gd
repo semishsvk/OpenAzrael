@@ -11,7 +11,7 @@ func _v3(a:Array)->Vector3:return Vector3(float(a[0]),float(a[1]),float(a[2]))
 func _settle_physics(n:int=6)->void:
     for _i in range(n):await physics_frame
 func _floor(scene:Node3D,player:CharacterBody3D,p:Vector3)->Dictionary:
-    var q:=PhysicsRayQueryParameters3D.create(p+Vector3.UP*80.0,p+Vector3.DOWN*180.0,1)
+    var q:=PhysicsRayQueryParameters3D.create(p+Vector3.UP*8.0,p+Vector3.DOWN*72.0,1)
     q.exclude=[player.get_rid()];q.hit_back_faces=true
     return scene.get_world_3d().direct_space_state.intersect_ray(q)
 func _run()->void:
@@ -43,7 +43,7 @@ func _run()->void:
         _check(dest+"/"+view_name+"_view",not view.is_empty())
         if view.is_empty():continue
         manager.call("_spawn_at_portal",dest,view_name)
-        await _settle_physics(10)
+        await _settle_physics(36)
         var hit:=_floor(scene,player,player.global_position)
         var support_ok:=not hit.is_empty()
         _check(dest+"/"+view_name+"_spawn_support",support_ok)
