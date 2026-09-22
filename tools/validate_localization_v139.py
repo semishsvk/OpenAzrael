@@ -38,6 +38,8 @@ def main():
       "known_niamh_strings": "Good Lord. What are you?" in exact_legacy and "What do you mean? I'm" in exact_legacy,
       "generic_extractors":all(x in tool for x in ["text_lines","binary_ascii","json_strings","stable_id","placeholder_mismatch"]),
       "runtime_manifest_driven":all(x in manager for x in ["MANIFEST_PATH","available_locales()","set_locale(","fallback_locale","USER_CONFIG_PATH","TranslationServer.set_locale"]),
+      "external_pack_support":all(x in manager for x in ["EXTERNAL_MANIFEST_PATH","user://localization","_register_locale("]),
+      "rtl_support":'Control.LAYOUT_DIRECTION_RTL' in menu,
       "runtime_fallback":'if value.is_empty() and current_locale != fallback_locale:' in manager,
       "menu_runtime_switch":all(x in menu for x in ["OptionButton","available_locales()","set_locale(","KEY_ESCAPE"]),
       "menu_in_scene":'res://scripts/language_menu_v139.gd' in main_scene and '[node name="LanguageMenu"' in main_scene,
