@@ -227,7 +227,6 @@ def main() -> int:
                 "room_glb_count": len(room_glbs),
                 "audio_file_count": len(audio_files),
                 "cursor_png_count": len(cursor_pngs),
-            "menu_png_count": len(menu_pngs),
                 "menu_png_count": len(menu_pngs),
             },
         )
@@ -423,6 +422,7 @@ def main() -> int:
             "room_glb_count": len(room_glbs),
             "audio_file_count": len(audio_files),
             "cursor_png_count": len(cursor_pngs),
+            "menu_png_count": len(menu_pngs),
         },
         "runtime_assets": {
             str(p.relative_to(ROOT)): {
