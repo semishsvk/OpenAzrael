@@ -342,6 +342,10 @@ func _setup_r8() -> void:
         shield_area.name = "Interact_ShieldR8"
         shield_area.set_script(preload("res://scripts/r8_shield_interaction.gd"))
         shield_area.set("shield_visual", shield)
+        # Hidden Shield must not occlude the production interaction ray.
+        # Its Area3D becomes active only when the source-backed DoorR8 state
+        # exposes the Shield.
+        shield_area.collision_layer = 2 if shield.visible else 0
 
     if bible != null and activation_zone != null:
         var barea := _add_area_for_object(bible, 20.0)
@@ -356,6 +360,7 @@ func _setup_r8() -> void:
         barea.set("activation_half_extents", Vector3(max(1.0, zbox.size.x * 0.5), 80.0, max(1.0, zbox.size.z * 0.5)))
         barea.set("door_visual", door)
         barea.set("shield_visual", shield)
+        barea.set("shield_interaction", shield_area if shield != null else null)
 
     var tapestry := _find_node("tapestry2")
     var message := _find_node("tapestry2a")
