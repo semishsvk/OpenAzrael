@@ -42,7 +42,7 @@ checks={
         "source_azf_sha256",
         "source_xaf_sha256",
         "runtime_png_sha256",
-        "audit_demo_texture_orientation_v133.py",
+        "tools.audit_demo_texture_orientation_v133",
     )),
     "raw_gltf_audit": all(token in audit for token in (
         "read_glb",
