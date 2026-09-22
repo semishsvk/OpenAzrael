@@ -68,3 +68,8 @@ func interact() -> void:
         print("All three loose tapestry pieces are back in their frames.")
     else:
         print("Placed tapestry piece in its frame.")
+
+func interaction_cursor_id() -> String:
+    if DemoState.flag(state_flag):
+        return "CANT"
+    return "USE" if DemoState.has(required_item) else "CANT"
