@@ -1,0 +1,28 @@
+{
+  "schema": "openazrael.localization_manifest",
+  "version": 139,
+  "fallback_locale": "en",
+  "default_locale": "en",
+  "locales": [
+    {
+      "code": "en",
+      "native_name": "English",
+      "english_name": "English",
+      "file": "localization/en.json",
+      "direction": "ltr"
+    },
+    {
+      "code": "sk",
+      "native_name": "Slovenčina",
+      "english_name": "Slovak",
+      "file": "localization/sk.json",
+      "direction": "ltr"
+    }
+  ],
+  "policy": {
+    "add_language_without_code_change": true,
+    "fallback_for_missing_strings": true,
+    "runtime_switching": true,
+    "persist_user_selection": true
+  }
+}
