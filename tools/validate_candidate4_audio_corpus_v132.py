@@ -85,19 +85,27 @@ def main() -> int:
                 "expected_runtime_evidence":str(MUSIC_RUNTIME.relative_to(ROOT)),
             })
         runtime=json.loads(MUSIC_RUNTIME.read_text(encoding="utf-8"))
-        required=set(music.get("accepted_demo_route",{}).get("required_xmi",[]))
-        rendered=set(runtime.get("rendered_xmi",[]))
+        route_required=set(x.upper() for x in music.get("accepted_demo_route",{}).get("required_xmi",[]))
+        required=set(x for x in route_required if x!="BLANK.XMI")
+        rendered=set(x.upper() for x in runtime.get("rendered_xmi",[]))
+        canonical_music=set(row["filename"].upper() for row in music_assets)
+        expected_rendered=canonical_music-{"BLANK.XMI"}
         if (
             runtime.get("status")!="PASS"
             or runtime.get("runtime_playback_test")!="PASS"
-            or not required
+            or not route_required
             or not required.issubset(rendered)
+            or runtime.get("all_canonical_rendered") is not True
+            or rendered!=expected_rendered
         ):
             return fail("MUSIC_RUNTIME_PLAYBACK_NOT_PROVEN",{
-                "required_xmi":sorted(required),
+                "route_required_xmi":sorted(route_required),
+                "required_audible_xmi":sorted(required),
                 "rendered_xmi":sorted(rendered),
+                "expected_complete_rendered_xmi":sorted(expected_rendered),
                 "runtime_status":runtime.get("status"),
                 "runtime_playback_test":runtime.get("runtime_playback_test"),
+                "all_canonical_rendered":runtime.get("all_canonical_rendered"),
             })
         resolution="RUNTIME_SUPPORTED"
     elif resolution!="NOT_USED_ON_ACCEPTED_DEMO_ROUTE":
