@@ -12,6 +12,23 @@ const ROOM_NAMES := {
     "R7":"Well Room (R7)",
     "R8":"Baptistery (R8)"
 }
+const NON_COLLIDING_OBJECTS_BY_ROOM := {
+    # R7 Object02/Object03 are source-backed 1DROWN planes at the bottom of
+    # the deep Well shaft. They are gameplay/death geometry, not walkable
+    # support. Object02 in R1 is a different authored TUNNEL mesh and MUST
+    # retain collision.
+    "R7": {
+        "Object02": true,
+        "Object03": true
+    }
+}
+const NON_COLLIDING_OBJECTS := {
+    "zxwater": true,
+    "tapestry1": true,
+    "tapestry3": true,
+    "tapestry4": true
+}
+
 const PICKUPS := {
     "R1": {
         "TONG6": ["rusty_tongs", "Tongs"],
@@ -119,8 +136,27 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
                 out[String(t["name"])] = true
     return out
 
+func _portal_view_names(room_id: String) -> Dictionary:
+    var out := {}
+    if evidence.has("rooms") and evidence["rooms"].has(room_id):
+        for view in evidence["rooms"][room_id].get("portal_views", []):
+            out[String(view.get("name", ""))] = true
+    return out
+
+func _collision_excluded(room_id: String, object_name: String) -> bool:
+    if object_name.begins_with("ZQ"):
+        return true
+    if NON_COLLIDING_OBJECTS.has(object_name):
+        return true
+    var room_specific: Dictionary = NON_COLLIDING_OBJECTS_BY_ROOM.get(
+        room_id,
+        {}
+    )
+    return room_specific.has(object_name)
+
 func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
+    var portal_views := _portal_view_names(room_id)
     var pickup_names: Dictionary = PICKUPS.get(room_id, {})
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
@@ -147,7 +183,9 @@ func _create_world_collision(room_id: String) -> void:
                 continue
         if pickup_names.has(obj_name):
             continue
-        if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
+        if portal_views.has(obj_name):
+            continue
+        if _collision_excluded(room_id, obj_name):
             continue
         if mi.mesh == null:
             continue
