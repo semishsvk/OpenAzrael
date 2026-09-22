@@ -1,0 +1,128 @@
+{
+  "schema": "openazrael.localization_source_registry",
+  "version": 139,
+  "generated_from": "currently retained source-safe character/dialog/animation evidence",
+  "source_locale": "en",
+  "completeness": "AVAILABLE_EVIDENCE_ONLY",
+  "policy": {
+    "exact_source_text_only": true,
+    "fragments_not_runtime_localizable": true,
+    "technical_identifiers_not_translatable": true,
+    "guessed_dialogue_forbidden": true,
+    "commercial_payload_embedded": false
+  },
+  "entries": [
+    {
+      "id": "dialog.demo.niamh.0001",
+      "domain": "dialogue",
+      "source": "NIAMH.DAT",
+      "source_hash": "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71",
+      "text": "Good Lord. What are you?",
+      "status": "VERIFIED_COMPLETE",
+      "localizable": true,
+      "speaker": "UNKNOWN",
+      "context": "demo Niamh character-data conversation block"
+    },
+    {
+      "id": "dialog.demo.niamh.0002.fragment",
+      "domain": "dialogue",
+      "source": "NIAMH.DAT",
+      "source_hash": "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71",
+      "text": "What do you mean? I'm",
+      "status": "VERIFIED_FRAGMENT",
+      "localizable": false,
+      "speaker": "UNKNOWN",
+      "context": "retained evidence ends mid-line; recover full source before runtime use"
+    },
+    {
+      "id": "char.demo.name.niamh",
+      "domain": "character",
+      "source": "CHARACTE.DAT",
+      "source_hash": "5a1a67f5cfba790a543c7548e86f4d03c219e98cc20e5827927ddb7326fa8088",
+      "text": "Niamh",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false
+    },
+    {
+      "id": "anim.demo.niamh.family.conv",
+      "domain": "animation",
+      "source": "PUZZLES.DAT",
+      "text": "Conv",
+      "status": "VERIFIED_ACTION_FAMILY",
+      "localizable": false,
+      "evidence_offsets": [
+        590,
+        970,
+        1160,
+        1350,
+        1540,
+        1730
+      ],
+      "character": "Niamh"
+    },
+    {
+      "id": "event.demo.r7.niamh_az",
+      "domain": "event",
+      "source": "ROOMS.DAT",
+      "text": "R7NiamhAZ",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false
+    },
+    {
+      "id": "event.retail.r7.oisin_call_done",
+      "domain": "event",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R7OisinCallDone",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "source_offset": 299498
+    },
+    {
+      "id": "event.retail.r7.niamh_call.raw",
+      "domain": "event",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "7NiamhCall",
+      "status": "RAW_TOKEN_NEEDS_RECORD_RECONSTRUCTION",
+      "localizable": false,
+      "source_offset": 298787
+    },
+    {
+      "id": "engine.format.conversation",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "con%d.dat",
+      "status": "VERIFIED_FORMAT_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.loader.character_animation",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "ICharacterAnim",
+      "status": "HIGH_CONFIDENCE_DIAGNOSTIC_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.format.room_animation",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "RANIM%d.ANM",
+      "status": "HIGH_CONFIDENCE_FORMAT_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.file.character_list",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "characte.dat",
+      "status": "VERIFIED_FILENAME_REFERENCE",
+      "localizable": false
+    }
+  ],
+  "holds": [
+    "The retained NIAMH.DAT evidence contains only the first 96 bytes; the second dialogue line is truncated.",
+    "No exact 'Oisin...' spoken line has been recovered from the retained corpus yet.",
+    "CON%d.DAT payloads and original character ANI payloads are not present in the current source-safe repository evidence and must be scanned from the official local corpus.",
+    "RANIM room-animation data is a separate format and must never be substituted for ICharacterAnim."
+  ]
+}
