@@ -45,6 +45,9 @@ checks={
         and "well_pzpa1__mesh" in runner
         and "well_pzpa2__mesh" in runner
     ),
+    "audio_test_isolation": all(token in runner for token in (
+        "set_capture_only", "_cleanup_runtime_audio", "_free_audio_players"
+    )),
     "no_direct_visual_fabrication": all(token not in runner for token in (
         "MeshInstance3D.new()","ArrayMesh.new()","BoxMesh.new()","PlaneMesh.new()"
     )),
