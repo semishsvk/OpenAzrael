@@ -1,0 +1,175 @@
+{
+  "schema": "openazrael.dialog_animation_extraction",
+  "version": 139,
+  "status": "AVAILABLE_EVIDENCE_EXTRACTED",
+  "scope": "all currently retained source-safe dialogue/character-animation/room-animation strings and linkage tokens",
+  "demo_character_list": {
+    "source": "CHARACTE.DAT",
+    "sha256": "5a1a67f5cfba790a543c7548e86f4d03c219e98cc20e5827927ddb7326fa8088",
+    "bytes": 10,
+    "lines": [
+      "1",
+      "Niamh"
+    ]
+  },
+  "demo_niamh_prefix": {
+    "source": "NIAMH.DAT",
+    "sha256": "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71",
+    "file_bytes": 342,
+    "retained_evidence_bytes": 96,
+    "exact_prefix_lines": [
+      "1",
+      "1A",
+      "1",
+      "2",
+      "3",
+      "0",
+      "30",
+      "0",
+      "1",
+      "0,0,0,2,0",
+      "Good Lord. What are you?",
+      "1",
+      "1",
+      "0",
+      "What do you mean? I'm"
+    ],
+    "localizable_complete": [
+      "Good Lord. What are you?"
+    ],
+    "localizable_fragments": [
+      "What do you mean? I'm"
+    ]
+  },
+  "demo_animation_action_strings": {
+    "character": "Niamh",
+    "action_family": "Conv",
+    "puzzle_offsets": [
+      590,
+      970,
+      1160,
+      1350,
+      1540,
+      1730
+    ],
+    "source_status": "STRUCTURAL_ACTION_FAMILY_VERIFIED_EXACT_KEYFRAMES_HOLD"
+  },
+  "retail_dialogue_animation_tokens": [
+    {
+      "text": "R6Speech",
+      "occurrences": 10,
+      "opcodes": [
+        "0x0e",
+        "0x0f"
+      ],
+      "first_offset": "0x5db2"
+    },
+    {
+      "text": "R6EdgarConv",
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x131bb"
+    },
+    {
+      "text": "7NiamhCall",
+      "occurrences": 1,
+      "opcodes": [
+        "0x52"
+      ],
+      "first_offset": "0x48f23",
+      "status": "RAW_TOKEN_NEEDS_RECORD_RECONSTRUCTION"
+    },
+    {
+      "text": "R7OisinCallDone",
+      "occurrences": 2,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x491ea"
+    },
+    {
+      "text": "Niamh",
+      "occurrences": 6,
+      "opcodes": [
+        "0x0b",
+        "0x13",
+        "0x14",
+        "0x1e",
+        "0x20"
+      ],
+      "first_offset": "0x62355"
+    },
+    {
+      "text": "R11TobiasConv",
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x85625"
+    },
+    {
+      "text": "R62TobiasConv",
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0xf5727"
+    }
+  ],
+  "room_string_linkage": [
+    {
+      "text": "R7NiamhAZ",
+      "status": "VERIFIED_STANDALONE_IDENTIFIER"
+    },
+    {
+      "text": "R4WaR8PlR7NiamhCallAZ",
+      "status": "RAW_CONCATENATED_PRINTABLE_RUN"
+    }
+  ],
+  "engine_loader_strings": [
+    {
+      "text": "%s.dat",
+      "family": "character_flag_data",
+      "confidence": "VERIFIED"
+    },
+    {
+      "text": "characte.dat",
+      "family": "character_list",
+      "confidence": "VERIFIED"
+    },
+    {
+      "text": "con%d.dat",
+      "family": "conversation_data",
+      "confidence": "HIGH"
+    },
+    {
+      "text": "ICharacterAnim",
+      "family": "character_animation",
+      "confidence": "HIGH"
+    },
+    {
+      "text": "npc%d.dat",
+      "family": "npc_state_text",
+      "confidence": "VERIFIED"
+    },
+    {
+      "text": "RANIM%d.ANM",
+      "family": "room_animation",
+      "confidence": "HIGH"
+    }
+  ],
+  "missing_raw_sources": [
+    "remaining 246 bytes of canonical demo NIAMH.DAT are not retained in the current source-safe evidence",
+    "CON%d.DAT payloads are not currently mounted",
+    "original ICharacterAnim/ANI payloads are not currently mounted",
+    "raw retail per-character/NPC dialogue files are not currently mounted"
+  ],
+  "rules": [
+    "Only complete source-backed human-facing strings are runtime-localizable.",
+    "Fragments are retained for research but excluded from runtime packs.",
+    "Internal state/action/animation identifiers are retained as context and never translated.",
+    "The user-provided Oisin wording is a search hint only; no exact dialogue string is claimed until recovered from source."
+  ]
+}
