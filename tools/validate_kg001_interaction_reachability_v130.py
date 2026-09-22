@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json,sys
+ROOT=Path(__file__).resolve().parents[1]
+runner=(ROOT/"scripts/kg001_interaction_reachability_runner_v130.gd").read_text(encoding="utf-8")
+contract=json.loads((ROOT/"data/tests/kg001_interaction_reachability_contract_v130.json").read_text(encoding="utf-8"))
+checks={
+ "schema":contract.get("schema")=="openazrael.kg001.interaction_reachability_contract" and contract.get("version")==130,
+ "all_targets":sum(len(v) for v in contract.get("rooms",{}).values())==16,
+ "production_navigator":"pppv_navigator.gd" in runner and "approach_interactable" in runner and "aim_at_interactable" in runner,
+ "production_probe":"Camera3D/InteractionProbe" in runner,
+ "natural_spawn":"_spawn_at_portal" in runner and "ROOM_VIEWS" in runner,
+ "hidden_interaction_negative":"R8_hidden_shield_area_disabled" in runner,
+ "no_direct_mutators":all(x not in runner for x in (".interact()","set_flag(","set_puzzle_node(","velocity.x =","velocity.z =")),
+ "marker":"OPENAZRAEL_KG001_INTERACTION_REACHABILITY_V130" in runner,
+}
+failed=[k for k,v in checks.items() if not v]
+print(json.dumps({"schema":"openazrael.kg001.interaction_reachability_contract_validation","version":130,"status":"SOURCE_CONTRACT_PASS" if not failed else "FAIL","runtime_status":"NOT_EXECUTED","checks":checks,"failed":failed},indent=2))
+sys.exit(1 if failed else 0)
