@@ -96,7 +96,7 @@ UV_CORRECTIONS = {
     # v132 corpus audit: BAPMSG contains readable text and the uncorrected
     # tapestry2a mapping sends image bottom to world top under glTF's
     # upper-left texture-coordinate convention.
-    "BAPMSG": "FLIP_V_V132_TAPESTRY_MESSAGE",
+    "BAPMSG": "FLIP_V_V133_TAPESTRY_MESSAGE",
 }
 
 def corrected_uvs(tex_name, uvs):
