@@ -1,0 +1,69 @@
+{
+  "schema": "openazrael.kg001.demo_connectivity_closure_contract",
+  "version": 140,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "rooms": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "directed_transitions": [
+    {
+      "source": "R1",
+      "trigger": "zxcoriR5",
+      "destination": "R7",
+      "source_view": "spaview",
+      "destination_view": "view"
+    },
+    {
+      "source": "R7",
+      "trigger": "zxwell2R6",
+      "destination": "R1",
+      "source_view": "view",
+      "destination_view": "spaview"
+    },
+    {
+      "source": "R1",
+      "trigger": "zxcoriR2",
+      "destination": "R8",
+      "source_view": "entcori",
+      "destination_view": "Object14"
+    },
+    {
+      "source": "R8",
+      "trigger": "zxorrery",
+      "destination": "R1",
+      "source_view": "Object14",
+      "destination_view": "entcori"
+    }
+  ],
+  "reciprocal_pairs": [
+    [
+      "R1",
+      "R7"
+    ],
+    [
+      "R1",
+      "R8"
+    ]
+  ],
+  "pass_requires": [
+    "exactly three demo rooms and exactly four directed transition records",
+    "directed transition graph is strongly connected",
+    "every transition source trigger exists in source XAF evidence",
+    "every source and destination portal view exists",
+    "each reciprocal room pair has both directions",
+    "no transition points to an unknown room",
+    "runtime RoomManager consumes the evidence transition graph and gates only the two authored R1 doors"
+  ],
+  "runtime_closure": {
+    "transition_runner": "scripts/kg001_all_transition_runner_v141.gd",
+    "accessibility_union": [
+      "v117 natural portal support + R8 stair ascent/descent",
+      "v119 complete R1 corridor route over real floor geometry",
+      "v130 all 16 fresh-state gameplay interaction targets via production input/probe",
+      "v141 all four room-transition edges in one continuous stateful route"
+    ]
+  },
+  "critical_rule": "Any missing/broken/one-way/softlocking demo transition or inaccessible required gameplay anchor is CRITICAL and blocks Candidate/KG promotion."
+}
