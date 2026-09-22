@@ -224,7 +224,10 @@ def parse(src,texture_dir):
             material=get_material(mn)
             source_uv=np.asarray(ouv,dtype="<f4")
             corrected_uv,uv_correction=corrected_uvs(tex,source_uv)
-            # Preserve adapter precision until trimesh applies its matching V flip\n            # and performs the final float32 glTF cast. Quantizing the pre-flipped\n            # values here makes the round-trip non-bit-exact for authored XAF UVs.\n            export_uv=np.asarray(corrected_uv,dtype="<f8")
+            # Preserve adapter precision until trimesh applies its matching V flip
+            # and performs the final float32 glTF cast. Quantizing the pre-flipped
+            # values here makes the round-trip non-bit-exact for authored XAF UVs.
+            export_uv=np.asarray(corrected_uv,dtype="<f8")
             source_uv_sha256=hashlib.sha256(source_uv.tobytes()).hexdigest()
             export_input_uv_sha256=hashlib.sha256(export_uv.tobytes()).hexdigest()
             visual=trimesh.visual.TextureVisuals(uv=export_uv,material=material)
