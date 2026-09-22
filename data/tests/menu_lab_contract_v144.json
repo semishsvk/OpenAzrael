@@ -1,0 +1,36 @@
+{
+  "schema": "openazrael.menu_lab.contract",
+  "version": 144,
+  "status": "FORENSIC_POC",
+  "required_asset_categories": [
+    "title_screen",
+    "hud_frame",
+    "hud_button",
+    "replay_animation",
+    "save_preview",
+    "font_strip",
+    "inventory_ui",
+    "map_ui"
+  ],
+  "required_source_assets": [
+    "TITLE.PCX",
+    "HUD3.PCX",
+    "HUDOFF.PCX",
+    "NBUT0OFF.PCX",
+    "NBUT0ON.PCX",
+    "NBUT1OFF.PCX",
+    "NBUT1ON.PCX",
+    "NBUT2OFF.PCX",
+    "NBUT2ON.PCX"
+  ],
+  "pass_requires": [
+    "all source PCX assets fingerprint-match the v144 manifest before conversion",
+    "conversion preserves indexed RGB exactly and performs no resize/resampling",
+    "title/menu layout uses only source-proven coordinates or is marked HOLD",
+    "HUD controls reproduce source-proven scan/map/load-save-volume roles",
+    "save/load UI is not promoted until SAVE preview/state behaviour is captured",
+    "font rendering is not promoted until glyph indexing is recovered",
+    "no modern or invented menu replaces the classic menu in CLASSIC mode"
+  ],
+  "runtime_boundary": "v144 is forensic/source inventory only. It does not yet claim a pixel-perfect Godot menu runtime."
+}
