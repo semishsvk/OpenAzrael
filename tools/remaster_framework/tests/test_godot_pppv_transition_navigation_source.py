@@ -44,6 +44,9 @@ class GodotPPPVTransitionNavigationSourceTests(unittest.TestCase):
         self.assertIn("transition_not_observed", execute)
         self.assertIn("verify_transition_spawn", execute)
         self.assertIn("transition_spawn_validation_failed", execute)
+        self.assertIn("verify_transition_grounded", execute)
+        self.assertIn("transition_ground_validation_failed", execute)
+        self.assertIn("minimum_horizontal_distance", execute)
 
     def test_scenario_runner_has_only_shared_action_executor_path(self) -> None:
         self.assertIn("ActionExecutorScript.new", self.runner)
