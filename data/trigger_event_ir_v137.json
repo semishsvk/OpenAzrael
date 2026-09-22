@@ -65,12 +65,13 @@
         "class": "activation_enter",
         "event_graph": "R7_NIAMH_ACTIVATE",
         "one_shot_flag": "R7NiamhActivated",
-        "confidence": "HIGH",
+        "confidence": "MEDIUM-HIGH",
         "evidence": [
           "R7.XAF authored transparent trigger zxactghost",
-          "ROOMS.DAT identifiers R7NiamhAZ and R7NiamhCallAZ",
+          "ROOMS.DAT standalone identifier R7NiamhAZ",
           "PUZZLES.DAT Niamh/Conv action family at source offsets 590, 970, 1160, 1350, 1540, 1730",
-          "CHARACTE.DAT -> Niamh -> NIAMH.DAT verified character data path"
+          "CHARACTE.DAT -> Niamh -> NIAMH.DAT verified character data path",
+          "ROOMS printable corpus contains a NiamhCallAZ substring only in concatenated context; it is not promoted as a standalone symbol"
         ],
         "animation_requirement": {
           "character": "Niamh",
