@@ -18,6 +18,14 @@ const GLOBAL_EXEMPT := {
     "tapestry1": true,
     "tapestry3": true,
     "tapestry4": true,
+    # Pickups/interactables are intentionally Area3D-driven and are not
+    # structural world-floor collision, even when their authored triangles
+    # happen to be near-horizontal.
+    "TONG6": true,
+    "r1p1": true,
+    "r3t1": true,
+    "r8t3": true,
+    "r8t4": true,
 }
 const ROOM_EXEMPT := {
     "R7": {"Object02": true},
