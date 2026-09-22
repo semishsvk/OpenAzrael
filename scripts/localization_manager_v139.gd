@@ -3,6 +3,7 @@ extends Node
 signal locale_changed(locale: String)
 
 const MANIFEST_PATH := "res://localization/languages.json"
+const EXTERNAL_MANIFEST_PATH := "user://localization/languages.json"
 const USER_CONFIG_PATH := "user://localization.cfg"
 
 var manifest: Dictionary = {}
@@ -32,21 +33,46 @@ func _read_json(path: String) -> Dictionary:
         return {}
     return parsed
 
+func _register_locale(raw: Dictionary, base_prefix: String, allow_override: bool = false) -> void:
+    var row := raw.duplicate(true)
+    var code := String(row.get("code", "")).strip_edges()
+    var file_path := String(row.get("file", "")).strip_edges()
+    if code.is_empty() or file_path.is_empty():
+        return
+    if locale_by_code.has(code) and not allow_override:
+        push_warning("Localization: external locale duplicates built-in code " + code)
+        return
+    var resolved := file_path
+    if not (resolved.begins_with("res://") or resolved.begins_with("user://")):
+        resolved = base_prefix.path_join(resolved)
+    row["_resolved_file"] = resolved
+    if locale_by_code.has(code):
+        for i in range(locale_rows.size()):
+            if String(locale_rows[i].get("code", "")) == code:
+                locale_rows[i] = row
+                break
+    else:
+        locale_rows.append(row)
+    locale_by_code[code] = row
+
 func _load_manifest() -> void:
     manifest = _read_json(MANIFEST_PATH)
     locale_rows.clear()
     locale_by_code.clear()
+    pack_cache.clear()
     fallback_locale = String(manifest.get("fallback_locale", "en"))
     for raw in manifest.get("locales", []):
-        if not raw is Dictionary:
-            continue
-        var row: Dictionary = raw
-        var code := String(row.get("code", "")).strip_edges()
-        var file_path := String(row.get("file", "")).strip_edges()
-        if code.is_empty() or file_path.is_empty():
-            continue
-        locale_rows.append(row.duplicate(true))
-        locale_by_code[code] = row.duplicate(true)
+        if raw is Dictionary:
+            _register_locale(raw, "res://", true)
+
+    # Optional external language packs. Their manifest uses the same schema and
+    # lives under user://localization. External packs may add languages without
+    # modifying the project, but cannot silently override a built-in locale.
+    if FileAccess.file_exists(EXTERNAL_MANIFEST_PATH):
+        var external := _read_json(EXTERNAL_MANIFEST_PATH)
+        for raw in external.get("locales", []):
+            if raw is Dictionary:
+                _register_locale(raw, "user://localization", false)
 
 func available_locales() -> Array[Dictionary]:
     var out: Array[Dictionary] = []
@@ -60,7 +86,11 @@ func has_locale(code: String) -> bool:
 func _pack_path(code: String) -> String:
     if not locale_by_code.has(code):
         return ""
-    var rel := String(locale_by_code[code].get("file", ""))
+    var row: Dictionary = locale_by_code[code]
+    var resolved := String(row.get("_resolved_file", ""))
+    if not resolved.is_empty():
+        return resolved
+    var rel := String(row.get("file", ""))
     return "res://" + rel.trim_prefix("res://")
 
 func _load_pack(code: String) -> Dictionary:
