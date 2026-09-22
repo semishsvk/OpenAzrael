@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse, hashlib, json
+import argparse, hashlib, json, sys
 from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import numpy as np
 import trimesh
 
@@ -14,7 +19,6 @@ from tools.remaster_framework.fidelity import (
     validate_room_fidelity_manifest,
 )
 
-ROOT=Path(__file__).resolve().parents[1]
 DEFAULT_OUT=ROOT/"data/runtime_generated/demo_room_fidelity_v124.json"
 QUANTIZATION=1e-5
 EXPECTED={
