@@ -5,9 +5,10 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 import argparse, hashlib, json, sys
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_EVENT_GRAPHS={"R7_WATER_SWITCHBOARD_SOLVED","R8_LENS_PLACE","R8_OPTICAL_START","R8_SECRET_DOOR_OPEN","R8_TAKE_SHIELD"}
+EXPECTED_EVENT_GRAPHS={"R7_WELL_TONGS_USE","R7_WATER_SWITCHBOARD_SOLVED","R8_LENS_PLACE","R8_OPTICAL_START","R8_SECRET_DOOR_OPEN","R8_TAKE_SHIELD"}
 ALLOWED_EVENT_OPS={"set_flag","set_puzzle_node","add_inventory","remove_inventory","play_sound"}
 SWITCH_SOLUTION=("well_lev02","well_weel3","well_lev02")
+TONGS_PICKUP_MARKER="PickupCollected:rusty_tongs"
 EXPECTED_ROOM_EDGES={("R1","zxcoriR5","R7"),("R1","zxcoriR2","R8"),("R7","zxwell2R6","R1"),("R8","zxorrery","R1")}
 ACTION_NAMES=("pickup_rusty_tongs","open_r1_door1","open_r1_door2","transition_R1_R7","transition_R1_R8","transition_R7_R1","transition_R8_R1","retrieve_well_key","switch_well_lev02","switch_well_weel3","retrieve_r8_lens","place_r8_lens","start_optical_sequence","finish_optical_sequence","take_shield")
 
@@ -56,7 +57,12 @@ class Model:
     def attempt(self,s,a):
         audio=()
         if a=="pickup_rusty_tongs":
-            if s.room=="R1" and not s.has("rusty_tongs"): return s.add_inventory("rusty_tongs"),audio
+            if s.room=="R1" and not s.puzzle(TONGS_PICKUP_MARKER):
+                return (
+                    s.add_inventory("rusty_tongs")
+                    .set_puzzle(TONGS_PICKUP_MARKER),
+                    audio,
+                )
         elif a=="open_r1_door1":
             if s.room=="R1" and not s.flag("R1Door1Open"): return s.set_flag("R1Door1Open"),audio
         elif a=="open_r1_door2":
@@ -70,7 +76,15 @@ class Model:
         elif a=="transition_R8_R1":
             if s.room=="R8" and self.edge("R8","zxorrery","R1"): return replace(s,room="R1",sequence_running=False),audio
         elif a=="retrieve_well_key":
-            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"): return s.add_inventory("well_key").set_puzzle("R7KeyTake").set_flag("R7key"),audio
+            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"):
+                s,audio=apply_event_graph(s,self.event_graph,"R7_WELL_TONGS_USE")
+                return (
+                    s.remove_inventory("rusty_tongs")
+                    .add_inventory("well_key")
+                    .set_puzzle("R7KeyTake")
+                    .set_flag("R7key"),
+                    audio,
+                )
         elif a in ("switch_well_lev02","switch_well_weel3"):
             if s.room=="R7" and not s.flag("R8BathDrain"):
                 control=a.removeprefix("switch_"); step=int(s.value("R7SwitchStep",0))
@@ -106,15 +120,16 @@ def validate_inputs(event_graph,trigger_ir):
     return errors
 
 def validate_source_contract():
-    paths={"demo":ROOT/"scripts/demo_state.gd","room":ROOT/"scripts/room_manager.gd","lens":ROOT/"scripts/r8_lens_interaction.gd","bible":ROOT/"scripts/r8_bible_interaction.gd","shield":ROOT/"scripts/r8_shield_interaction.gd"}
+    paths={"demo":ROOT/"scripts/demo_state.gd","room":ROOT/"scripts/room_manager.gd","pickup":ROOT/"scripts/pickup.gd","lens":ROOT/"scripts/r8_lens_interaction.gd","bible":ROOT/"scripts/r8_bible_interaction.gd","shield":ROOT/"scripts/r8_shield_interaction.gd"}
     t={k:p.read_text(encoding="utf-8") for k,p in paths.items()}
     return {
       "godot_codec_payload":"func canonical_state_payload()" in t["demo"],
       "godot_codec_hash":"func canonical_state_hash()" in t["demo"] and "HASH_SHA256" in t["demo"],
       "switch_solution_parity":'["well_lev02", "well_weel3", "well_lev02"]' in t["demo"],
-      "well_key_parity":all(x in t["demo"] for x in ('"R7KeyTake"','"R7key"','"well_key"')),
+      "well_key_parity":all(x in t["demo"] for x in ('"R7KeyTake"','"R7key"','"well_key"','remove("rusty_tongs")')),
       "door2_parity":all(x in t["demo"] for x in ('"FR1DoorUnlocked"','"R1Door2Open"')),
-      "tongs_pickup_parity":all(x in t["room"] for x in ('"TONG6"','"rusty_tongs"')),
+      "tongs_pickup_parity":all(x in t["room"] for x in ('"TONG6"','"rusty_tongs"')) and "DemoState.acquire_pickup(item_id)" in t["pickup"],
+      "pickup_persistence_parity":all(x in t["demo"] for x in ("func pickup_collected(","func acquire_pickup(","PickupCollected:")) and "DemoState.pickup_collected(item_id)" in t["room"],
       "room_transition_gate_parity":all(x in t["room"] for x in ('"zxcoriR5"','"R1Door1Open"','"zxcoriR2"','"R1Door2Open"')),
       "lens_precondition_parity":all(x in t["lens"] for x in ('"R8BathDrain"','"r8_lens"','"R8Lens"')),
       "optical_event_parity":all(x in t["bible"] for x in ('"R8_LENS_PLACE"','"R8_OPTICAL_START"','"R8_SECRET_DOOR_OPEN"')),

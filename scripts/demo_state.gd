@@ -24,6 +24,22 @@ func remove(item_id: String) -> void:
 func has(item_id: String) -> bool:
     return inventory.has(item_id)
 
+# Runtime persistence marker for one-shot world pickups. This is deliberately
+# stored as an internal puzzle/object-state node rather than pretending that
+# the original game exposed a source-confirmed persistent flag with this name.
+func _pickup_marker(item_id: String) -> String:
+    return "PickupCollected:" + item_id
+
+func pickup_collected(item_id: String) -> bool:
+    return puzzle_node(_pickup_marker(item_id))
+
+func acquire_pickup(item_id: String) -> bool:
+    if item_id.is_empty() or pickup_collected(item_id):
+        return false
+    acquire(item_id)
+    set_puzzle_node(_pickup_marker(item_id))
+    return true
+
 func set_flag(flag: String, value: bool = true) -> void:
     flags[flag] = value
     flag_changed.emit(flag, value)

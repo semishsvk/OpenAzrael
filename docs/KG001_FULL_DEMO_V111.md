@@ -16,13 +16,13 @@ The optical sequence uses the production `r8_bible_interaction.gd` coroutine and
 
 The runner verifies the final canonical persistent hash against the v108 exhaustive-model shortest-success hash:
 
-`69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8`
+`076a47e6c05ac3b48e9238011c7df655c7642f8d562881a6c962a992fbee9cd2`
 
 and the logical Event IR audio stream:
 
-`S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
+`979TONGS.WAV -> S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`.
 
-The source-contract validator also rejects direct `state.set_flag(...)` or `state.set_puzzle_node(...)` injection in the runner.
+After the R7 -> R1 return, the runner also requires consumed TONG6 to remain absent (`Interact_TONG6` must not respawn) while its persistent pickup marker remains set. The source-contract validator also rejects direct `state.set_flag(...)` or `state.set_puzzle_node(...)` injection in the runner.
 
 ## Execution
 

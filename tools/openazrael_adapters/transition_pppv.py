@@ -42,6 +42,21 @@ def _transition_scenario(
                     "stuck_frames": 180,
                     "reach_distance": 8.0,
                     "driver_policy": "steer_to_trigger_via_gameplay_input",
+                    "verify_destination_spawn": True,
+                    "spawn_position_tolerance": 14.0,
+                    "spawn_yaw_tolerance": 0.35,
+                    "post_transition_settle_frames": 24,
+                },
+            ),
+            PlayerAction(
+                action_id="continue_after_" + trigger,
+                kind=ActionKind.MOVE,
+                execution_mode=ExecutionMode.INPUT,
+                input_action="move_forward",
+                frames=12,
+                parameters={
+                    "minimum_horizontal_distance": 1.0,
+                    "driver_policy": "production_input_after_transition",
                 },
             ),
         ),
@@ -49,6 +64,7 @@ def _transition_scenario(
             EvidenceRequirement(
                 requirement_id="trigger_enter_" + trigger,
                 kind="trigger",
+                action_id="cross_" + trigger,
                 match={
                     "room": source_room,
                     "target": trigger,
@@ -60,12 +76,23 @@ def _transition_scenario(
             EvidenceRequirement(
                 requirement_id="room_transition_" + trigger,
                 kind="room_transition",
+                action_id="cross_" + trigger,
                 match={
                     "source_room": source_room,
                     "trigger": trigger,
                     "destination_room": destination_room,
                 },
                 after_requirement="trigger_enter_" + trigger,
+            ),
+            EvidenceRequirement(
+                requirement_id="post_transition_move_" + trigger,
+                kind="movement_sample",
+                action_id="continue_after_" + trigger,
+                match={
+                    "action_id": "continue_after_" + trigger,
+                    "input_action": "move_forward",
+                },
+                after_requirement="room_transition_" + trigger,
             ),
         ),
         state_expectations=preserved_state,
@@ -76,6 +103,10 @@ def _transition_scenario(
             "physical_crossing_required": True,
             "trigger_centroid_role": "steering_target_only",
             "teleport_allowed_during_action": False,
+            "destination_spawn_validation_required": True,
+            "destination_ground_support_required": True,
+            "post_transition_movement_required": True,
+            "critical_if_transition_broken": True,
             "source_evidence": "data/xaf_trigger_evidence.json",
         },
     )
@@ -117,5 +148,13 @@ def build_transition_scenarios() -> tuple[ValidationScenario, ...]:
                 StateExpectation("flags.R1Door2Open", True, True),
                 StateExpectation("flags.FR1DoorUnlocked", True, True),
             ),
+        ),
+        _transition_scenario(
+            scenario_id="openazrael.transition.r8_to_r1",
+            source_room="R8",
+            spawn_view="Object14",
+            trigger="zxorrery",
+            destination_room="R1",
+            setup_flags={},
         ),
     )

@@ -17,7 +17,10 @@
     "zero_failed_required_gates": true,
     "fresh_checkout_required": true,
     "manual_sanity_required": true,
-    "immutable_tag": true
+    "immutable_tag": true,
+    "broken_required_room_transition_is_critical": true,
+    "synthetic_playthrough_deterministic": true,
+    "runtime_evidence_bound_to_current_candidate": true
   },
   "gates": [
     {
@@ -42,19 +45,33 @@
       "id": "G03",
       "name": "puzzle_state_space",
       "required": true,
-      "automation": "automated_exhaustive"
+      "automation": "automated_exhaustive_plus_adversarial_fuzz",
+      "required_evidence": [
+        "current_candidate_state_space",
+        "deterministic_state_fuzz"
+      ]
     },
     {
       "id": "G04",
       "name": "room_transition_state",
       "required": true,
-      "automation": "automated"
+      "automation": "automated_guarded_real_input",
+      "required_evidence": [
+        "legacy_room_trigger_runtime",
+        "pppv_scenario_suite",
+        "pppv_scenario_suite_integrity"
+      ]
     },
     {
       "id": "G05",
       "name": "trigger_semantics",
       "required": true,
-      "automation": "automated"
+      "automation": "automated_guarded_real_input",
+      "required_evidence": [
+        "legacy_room_trigger_runtime",
+        "pppv_scenario_suite",
+        "pppv_scenario_suite_integrity"
+      ]
     },
     {
       "id": "G06",
@@ -72,13 +89,26 @@
       "id": "G08",
       "name": "synthetic_full_demo_playthrough",
       "required": true,
-      "automation": "headless"
+      "automation": "headless_guarded_real_input_repeated",
+      "required_evidence": [
+        "legacy_full_demo_runtime",
+        "guarded_pppv_playthrough",
+        "pppv_determinism",
+        "pppv_determinism_integrity"
+      ],
+      "minimum_identical_runs": 2
     },
     {
       "id": "G09",
       "name": "fresh_checkout_build",
       "required": true,
-      "automation": "clean_environment"
+      "automation": "clean_environment",
+      "required_evidence": [
+        "fresh_checkout",
+        "pppv_scenario_suite_integrity",
+        "pppv_determinism",
+        "pppv_determinism_integrity"
+      ]
     },
     {
       "id": "G10",

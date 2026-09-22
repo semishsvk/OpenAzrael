@@ -7,6 +7,7 @@ from typing import Any
 
 from .evaluate_validation import evaluate_runtime_bundle
 from .playthrough import validate_checkpoint_roundtrip
+from .replay_validation import semantic_replay_sha256, validate_replay
 
 
 RUNTIME_SCHEMA = "remaster.runtime_playthrough_bundle"
@@ -40,6 +41,39 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
             f"runtime execution failure: {item}"
             for item in runtime_failures
         )
+
+    guard_failures = payload.get("runtime_guard_failures", [])
+    if not isinstance(guard_failures, list):
+        errors.append("runtime_guard_failures must be a list")
+        guard_failures = []
+    errors.extend(
+        f"runtime guard failure: {item}"
+        for item in guard_failures
+    )
+
+    replay = payload.get("replay", {})
+    expected_replay_actions: list[dict[str, Any]] = []
+    for actual in actual_steps:
+        if not isinstance(actual, dict):
+            continue
+        scenario = actual.get("scenario")
+        if not isinstance(scenario, dict):
+            continue
+        actions = scenario.get("actions", [])
+        if not isinstance(actions, list):
+            continue
+        expected_replay_actions.extend(
+            action for action in actions if isinstance(action, dict)
+        )
+    replay_errors = validate_replay(expected_replay_actions, replay)
+    errors.extend(replay_errors)
+    replay_actions = (
+        replay.get("actions", [])
+        if isinstance(replay, dict)
+        else []
+    )
+    if not isinstance(replay_actions, list):
+        replay_actions = []
 
     if len(actual_steps) != len(planned_steps):
         errors.append(
@@ -164,6 +198,10 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         "state_reset_between_scenarios": False,
         "direct_interact_calls": False,
         "gameplay_teleport_during_actions": False,
+        "frame_level_avatar_trajectory": True,
+        "world_state_snapshots": True,
+        "softlock_watchdog": True,
+        "transition_spawn_validation": True,
     }
     for key, expected in required_boundary.items():
         if boundary.get(key) is not expected:
@@ -171,6 +209,7 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
                 f"runtime boundary mismatch {key}: "
                 f"{boundary.get(key)!r} != {expected!r}"
             )
+
 
     return {
         "schema": EVALUATION_SCHEMA,
@@ -185,6 +224,11 @@ def evaluate_playthrough_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         "final_state_sha256": final_hash,
         "expected_final_state_sha256": expected_final,
         "runtime_boundary": boundary,
+        "runtime_guard_failures": guard_failures,
+        "replay_action_count": len(replay_actions),
+        "expected_replay_action_count": len(expected_replay_actions),
+        "replay_integrity_status": "PASS" if not replay_errors else "FAIL",
+        "semantic_replay_sha256": semantic_replay_sha256(replay),
     }
 
 

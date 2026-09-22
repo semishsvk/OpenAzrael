@@ -25,8 +25,68 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             {"status": "PASS"},
         )
         self._write(
+            evidence / "kg001_state_space_v108.json",
+            {
+                      "schema": "openazrael.kg001.state_space",
+                      "version": 108,
+                      "status": "PASS",
+                      "softlock_states": 0,
+                      "non_success_dead_end_states": 0,
+                      "shortest_success_persistent_state_sha256": "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902",
+                      "exploration_checks": {
+                                "all_reachable_states_can_reach_success": True,
+                                "no_non_success_dead_ends": True,
+                                "success_reachable": True,
+                                "shortest_path_ends_in_demo_complete": True,
+                                "canonical_hash_is_order_invariant": True
+                      }
+            },
+        )
+        self._write(
+            evidence / "kg001_state_fuzz_v119.json",
+            {
+                      "schema": "openazrael.kg001.state_fuzz",
+                      "version": 119,
+                      "status": "PASS",
+                      "fuzz": {
+                                "status": "PASS",
+                                "failure_count": 0,
+                                "attempts": 512
+                      },
+                      "properties": {
+                                "transition_determinism": True,
+                                "noop_purity": True,
+                                "state_invariants": True,
+                                "transition_invariants": True,
+                                "reachable_graph_membership": True,
+                                "liveness_to_success": True,
+                                "success_monotonicity": True
+                      }
+            },
+        )
+        self._write(
             evidence / "kg001_source_validation_v112.json",
             {"status": "PASS"},
+        )
+        self._write(
+            evidence / "kg001_collision_geometry_v120.json",
+            {
+                "schema": "openazrael.kg001.collision_geometry_validation",
+                "version": 120,
+                "status": "PASS",
+                "checks": {
+                    "room_specific_exclusions": True,
+                    "r1_object02_support": True,
+                },
+                "roles": [
+                    {
+                        "room": "R1",
+                        "object": "Object02",
+                        "status": "PASS",
+                    }
+                ],
+                "errors": [],
+            },
         )
         self._write(
             evidence / "kg001_v109_runtime.json",
@@ -49,6 +109,52 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
             {"status": "PASS"},
         )
         self._write(
+            evidence / "kg001_pppv_scenario_suite.json",
+            {
+                "schema": "openazrael.kg001.pppv_scenario_suite",
+                "version": 1,
+                "status": "PASS",
+                "scenario_count": 20,
+                "passed": 20,
+            },
+        )
+        self._write(
+            evidence / "pppv_scenario_suite_integrity.json",
+            {
+                "schema": "openazrael.kg001.pppv_scenario_suite_integrity",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        self._write(
+            evidence / "kg001_pppv_playthrough_evaluation.json",
+            {
+                "schema": "remaster.playthrough_evaluation",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        self._write(
+            evidence / "kg001_pppv_determinism.json",
+            {
+                "schema": "openazrael.kg001.pppv_determinism",
+                "version": 1,
+                "status": "PASS",
+                "repeat_count": 2,
+                "all_runs_pass": True,
+                "semantic_replay_match": True,
+                "final_state_match": True,
+            },
+        )
+        self._write(
+            evidence / "pppv_determinism_integrity.json",
+            {
+                "schema": "openazrael.kg001.pppv_determinism_integrity",
+                "version": 1,
+                "status": "PASS",
+            },
+        )
+        self._write(
             evidence / "kg001_fresh_checkout.json",
             {
                 "status": "PASS",
@@ -59,6 +165,8 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                     "v111": "PASS",
                     "v117": "PASS",
                     "v118": "PASS",
+                    "pppv_scenario_suite": "PASS",
+                    "pppv_playthrough": "PASS",
                 },
             },
         )
@@ -94,6 +202,188 @@ class KG001ReleaseEvidenceTests(unittest.TestCase):
                     for item in row["evidence"]
                 )
             )
+
+
+
+    def test_missing_state_fuzz_keeps_g03_pending(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_state_fuzz_v119.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "PENDING")
+
+    def test_failed_state_fuzz_blocks_g03(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_state_fuzz_v119.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "FAIL")
+
+
+    def test_malformed_green_state_space_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_state_space_v108.json",
+                {"status": "PASS"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "FAIL")
+
+    def test_malformed_green_state_fuzz_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_state_fuzz_v119.json",
+                {"status": "PASS"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G03"], "FAIL")
+
+    def test_guarded_scenario_suite_is_required_for_g04_and_g05(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_pppv_scenario_suite.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "PENDING")
+            self.assertEqual(statuses["G05"], "PENDING")
+            self.assertEqual(statuses["G08"], "PASS")
+
+    def test_failed_guarded_scenario_suite_blocks_g04_and_g05(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_pppv_scenario_suite.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "FAIL")
+            self.assertEqual(statuses["G05"], "FAIL")
+
+
+    def test_missing_suite_integrity_blocks_transition_and_fresh_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "pppv_scenario_suite_integrity.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "PENDING")
+            self.assertEqual(statuses["G05"], "PENDING")
+            self.assertEqual(statuses["G09"], "PENDING")
+
+    def test_failed_suite_integrity_blocks_transition_and_fresh_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "pppv_scenario_suite_integrity.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "FAIL")
+            self.assertEqual(statuses["G05"], "FAIL")
+            self.assertEqual(statuses["G09"], "FAIL")
+
+    def test_guarded_chained_playthrough_is_required_for_g08(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_pppv_playthrough_evaluation.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G04"], "PASS")
+            self.assertEqual(statuses["G05"], "PASS")
+            self.assertEqual(statuses["G08"], "PENDING")
+
+    def test_failed_guarded_chained_playthrough_blocks_g08(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_pppv_playthrough_evaluation.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "FAIL")
+
+
+    def test_missing_determinism_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "kg001_pppv_determinism.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "PENDING")
+            self.assertEqual(statuses["G09"], "PENDING")
+
+    def test_failed_determinism_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "kg001_pppv_determinism.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "FAIL")
+            self.assertEqual(statuses["G09"], "FAIL")
+
+    def test_missing_determinism_integrity_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            (evidence / "pppv_determinism_integrity.json").unlink()
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "PENDING")
+            self.assertEqual(statuses["G09"], "PENDING")
+
+    def test_failed_determinism_integrity_blocks_g08_and_g09(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence = self._prepare(root)
+            self._write(
+                evidence / "pppv_determinism_integrity.json",
+                {"status": "FAIL"},
+            )
+
+            result = build_gate_results(root, evidence)
+            statuses = {row["id"]: row["status"] for row in result["gates"]}
+            self.assertEqual(statuses["G08"], "FAIL")
+            self.assertEqual(statuses["G09"], "FAIL")
 
     def test_supplemental_v117_v118_checks_are_evidence_bound(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

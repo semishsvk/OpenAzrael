@@ -66,6 +66,8 @@ class V117PPPVBridgeTests(unittest.TestCase):
                 add("player_action", {
                     "action_id": action_id,
                     "execution_mode": "input",
+                    "mesh": mesh,
+                    "direction": direction,
                 })
                 add("stair_traversal", {
                     "mesh": mesh,
@@ -95,6 +97,32 @@ class V117PPPVBridgeTests(unittest.TestCase):
                 row["status"] == "PASS"
                 for row in report["generic_scenarios"]
             )
+        )
+
+
+    def test_stair_evidence_is_isolated_per_mesh(self) -> None:
+        report = evaluate_v117_bridge(self._runtime(), self._contract())
+        rows = {
+            row["scenario_id"]: row
+            for row in report["generic_scenarios"]
+        }
+        self.assertEqual(
+            rows["openazrael.r8.stairs.step011__mesh"]["evidence_count"],
+            4,
+        )
+        self.assertEqual(
+            rows["openazrael.r8.stairs.stairs__STAIR2"]["evidence_count"],
+            4,
+        )
+        self.assertTrue(report["scenario_evidence_isolated"])
+        self.assertTrue(
+            all(
+                row["execution_profile"] == "v117_real_geometry_input"
+                for row in rows.values()
+            )
+        )
+        self.assertTrue(
+            all(row["guarded_replay"] is False for row in rows.values())
         )
 
     def test_legacy_failure_cannot_be_bridge_pass(self) -> None:

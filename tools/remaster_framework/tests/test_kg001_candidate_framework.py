@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 import unittest
@@ -16,7 +17,7 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[3]
         bundle = _default_scenario_bundle(root)
         ids = {row["scenario_id"] for row in bundle["scenarios"]}
-        self.assertEqual(bundle["scenario_count"], 19)
+        self.assertEqual(bundle["scenario_count"], 20)
         self.assertIn("openazrael.r1.pickup_tongs", ids)
         self.assertIn("openazrael.r1.open_door1", ids)
         self.assertIn("openazrael.r1.open_door2", ids)
@@ -33,6 +34,7 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
         self.assertIn("openazrael.transition.r1_to_r7", ids)
         self.assertIn("openazrael.transition.r7_to_r1", ids)
         self.assertIn("openazrael.transition.r1_to_r8", ids)
+        self.assertIn("openazrael.transition.r8_to_r1", ids)
         self.assertIn("openazrael.r1.floor_traversal", ids)
         self.assertIn("openazrael.r7.well_tongs.positive", ids)
         self.assertIn(
@@ -99,6 +101,66 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             evidence / "kg001_source_validation_v112.json",
             {"status": "PASS"},
         )
+        self._write(
+            evidence / "kg001_state_space_v108.json",
+            {
+                      "schema": "openazrael.kg001.state_space",
+                      "version": 108,
+                      "status": "PASS",
+                      "softlock_states": 0,
+                      "non_success_dead_end_states": 0,
+                      "shortest_success_persistent_state_sha256": "e266137c74746996608ffcdd165b6a1072e2c9f55833473546061ccac0e05902",
+                      "exploration_checks": {
+                                "all_reachable_states_can_reach_success": True,
+                                "no_non_success_dead_ends": True,
+                                "success_reachable": True,
+                                "shortest_path_ends_in_demo_complete": True,
+                                "canonical_hash_is_order_invariant": True
+                      }
+            },
+        )
+        self._write(
+            evidence / "kg001_state_fuzz_v119.json",
+            {
+                      "schema": "openazrael.kg001.state_fuzz",
+                      "version": 119,
+                      "status": "PASS",
+                      "fuzz": {
+                                "status": "PASS",
+                                "failure_count": 0,
+                                "attempts": 512
+                      },
+                      "properties": {
+                                "transition_determinism": True,
+                                "noop_purity": True,
+                                "state_invariants": True,
+                                "transition_invariants": True,
+                                "reachable_graph_membership": True,
+                                "liveness_to_success": True,
+                                "success_monotonicity": True
+                      }
+            },
+        )
+        self._write(
+            evidence / "kg001_collision_geometry_v120.json",
+            {
+                "schema": "openazrael.kg001.collision_geometry_validation",
+                "version": 120,
+                "status": "PASS",
+                "checks": {
+                    "room_specific_exclusions": True,
+                    "r1_object02_support": True,
+                },
+                "roles": [
+                    {
+                        "room": "R1",
+                        "object": "Object02",
+                        "status": "PASS",
+                    }
+                ],
+                "errors": [],
+            },
+        )
         for version in (109, 110, 111, 117, 118):
             self._write(
                 evidence / f"kg001_v{version}_runtime.json",
@@ -133,6 +195,134 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             )
         return evidence
 
+    def _materialize_passing_pppv_evidence(
+        self,
+        root: Path,
+        evidence: Path,
+    ) -> None:
+        build_candidate_framework_bundle(
+            root,
+            evidence,
+            commit_sha="a" * 40,
+            godot_version="4.x",
+        )
+        scenario_path = evidence / "pppv_scenarios.json"
+        scenario_bundle = json.loads(
+            scenario_path.read_text(encoding="utf-8")
+        )
+        scenario_ids = sorted(
+            row["scenario_id"]
+            for row in scenario_bundle["scenarios"]
+        )
+        transition_ids = sorted(
+            value
+            for value in scenario_ids
+            if value.startswith("openazrael.transition.")
+        )
+        profiles = {}
+        for row in scenario_bundle["scenarios"]:
+            metadata = row.get("metadata", {})
+            profile = (
+                metadata.get("execution_profile")
+                if isinstance(metadata, dict)
+                else None
+            )
+            profiles[row["scenario_id"]] = (
+                profile or "guarded_generic_runtime"
+            )
+        bridge_ids = sorted(
+            scenario_id
+            for scenario_id, profile in profiles.items()
+            if profile == "v117_real_geometry_input"
+        )
+        guarded_ids = sorted(
+            scenario_id
+            for scenario_id, profile in profiles.items()
+            if profile == "guarded_generic_runtime"
+        )
+        bundle_sha = hashlib.sha256(scenario_path.read_bytes()).hexdigest()
+        self._write(
+            evidence / "kg001_pppv_scenario_suite.json",
+            {
+                "schema": "openazrael.kg001.pppv_scenario_suite",
+                "version": 1,
+                "status": "PASS",
+                "scenario_bundle": ".tmp/kg001/pppv_scenarios.json",
+                "scenario_bundle_sha256": bundle_sha,
+                "scenario_count": len(scenario_ids),
+                "passed": len(scenario_ids),
+                "failed": 0,
+                "transition_scenario_count": len(transition_ids),
+                "transition_scenario_ids": transition_ids,
+                "guarded_scenario_count": len(guarded_ids),
+                "v117_bridge_scenario_count": len(bridge_ids),
+                "all_authored_scenarios_executed": True,
+                "all_transition_scenarios_guarded": True,
+                "scenarios": {
+                    scenario_id: {
+                        "status": "PASS",
+                        "execution_profile": profiles[scenario_id],
+                        "guarded_replay": (
+                            profiles[scenario_id]
+                            == "guarded_generic_runtime"
+                        ),
+                    }
+                    for scenario_id in scenario_ids
+                },
+            },
+        )
+        plan_path = evidence / "pppv_playthrough_plan.json"
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        plan_sha = str(plan.get("plan_sha256", ""))
+        final_hash = str(plan.get("success_state_sha256", ""))
+        semantic_hash = "d" * 64
+        evaluation = {
+            "schema": "remaster.playthrough_evaluation",
+            "version": 1,
+            "status": "PASS",
+            "plan_sha256": plan_sha,
+            "semantic_replay_sha256": semantic_hash,
+            "final_state_sha256": final_hash,
+        }
+        self._write(
+            evidence / "kg001_pppv_playthrough_evaluation.json",
+            evaluation,
+        )
+        self._write(
+            evidence / "kg001_pppv_playthrough_repeat2_evaluation.json",
+            evaluation,
+        )
+        self._write(
+            evidence / "kg001_pppv_determinism.json",
+            {
+                "schema": "openazrael.kg001.pppv_determinism",
+                "version": 1,
+                "status": "PASS",
+                "plan_sha256": plan_sha,
+                "plan_document_sha256": hashlib.sha256(
+                    plan_path.read_bytes()
+                ).hexdigest(),
+                "scenario_bundle_sha256": bundle_sha,
+                "repeat_count": 2,
+                "all_runs_pass": True,
+                "semantic_replay_sha256": [
+                    semantic_hash,
+                    semantic_hash,
+                ],
+                "final_state_sha256": [
+                    final_hash,
+                    final_hash,
+                ],
+                "semantic_replay_match": True,
+                "final_state_match": True,
+            },
+        )
+        fresh_path = evidence / "kg001_fresh_checkout.json"
+        fresh = json.loads(fresh_path.read_text(encoding="utf-8"))
+        fresh["runtime_status"]["pppv_scenario_suite"] = "PASS"
+        fresh["runtime_status"]["pppv_playthrough"] = "PASS"
+        self._write(fresh_path, fresh)
+
     def test_bundle_is_blocked_without_manual_sanity(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -164,6 +354,26 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                 bundle["artifacts"]["pppv_playthrough_plan"],
                 "pppv_playthrough_plan.json",
             )
+            plan = json.loads(
+                (evidence / "pppv_playthrough_plan.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            state_report = json.loads(
+                (evidence / "kg001_state_space_v108.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(
+                plan["success_state_sha256"],
+                state_report[
+                    "shortest_success_persistent_state_sha256"
+                ],
+            )
+            self.assertEqual(
+                plan["metadata"]["success_hash_source"],
+                "candidate_state_space",
+            )
             provenance = json.loads(
                 (evidence / "build_provenance.json").read_text(
                     encoding="utf-8"
@@ -171,6 +381,14 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
             )
             self.assertIn(
                 "pppv_playthrough_plan",
+                provenance["inputs"],
+            )
+            self.assertIn(
+                "kg001_state_space",
+                provenance["inputs"],
+            )
+            self.assertIn(
+                "kg001_state_fuzz",
                 provenance["inputs"],
             )
             self.assertEqual(
@@ -252,11 +470,134 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                     godot_version="4.x",
                 )
 
+
+
+    def test_missing_state_fuzz_prevents_known_good_eligibility(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            (evidence / "kg001_state_fuzz_v119.json").unlink()
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(bundle["release_status"], "BLOCKED")
+            self.assertFalse(bundle["known_good_eligible"])
+
+    def test_stale_pppv_suite_hash_is_blocked_by_integrity_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            suite_path = evidence / "kg001_pppv_scenario_suite.json"
+            suite = json.loads(suite_path.read_text(encoding="utf-8"))
+            suite["scenario_bundle_sha256"] = "f" * 64
+            self._write(suite_path, suite)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(
+                bundle["pppv_scenario_suite_integrity_status"],
+                "FAIL",
+            )
+            self.assertEqual(bundle["release_status"], "BLOCKED")
+            self.assertFalse(bundle["known_good_eligible"])
+
+            integrity = json.loads(
+                (evidence / "pppv_scenario_suite_integrity.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(integrity["status"], "FAIL")
+            self.assertTrue(
+                any("SHA-256 mismatch" in item for item in integrity["errors"])
+            )
+
+
+    def test_stale_determinism_scenario_hash_is_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            determinism_path = evidence / "kg001_pppv_determinism.json"
+            determinism = json.loads(
+                determinism_path.read_text(encoding="utf-8")
+            )
+            determinism["scenario_bundle_sha256"] = "f" * 64
+            self._write(determinism_path, determinism)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(
+                bundle["pppv_determinism_integrity_status"],
+                "FAIL",
+            )
+            self.assertEqual(bundle["release_status"], "BLOCKED")
+            self.assertFalse(bundle["known_good_eligible"])
+
+    def test_mismatched_repeat_evaluation_is_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._repo(root)
+            evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
+
+            repeat_path = (
+                evidence / "kg001_pppv_playthrough_repeat2_evaluation.json"
+            )
+            repeat = json.loads(repeat_path.read_text(encoding="utf-8"))
+            repeat["semantic_replay_sha256"] = "e" * 64
+            self._write(repeat_path, repeat)
+
+            bundle = build_candidate_framework_bundle(
+                root,
+                evidence,
+                commit_sha="a" * 40,
+                godot_version="4.x",
+                manual_path=evidence / "kg001_manual_sanity.json",
+            )
+            self.assertEqual(
+                bundle["pppv_determinism_integrity_status"],
+                "FAIL",
+            )
+            integrity = json.loads(
+                (evidence / "pppv_determinism_integrity.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertTrue(
+                any(
+                    "semantic replay hashes differ" in item
+                    for item in integrity["errors"]
+                )
+            )
+
     def test_complete_evidence_can_be_known_good_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._repo(root)
             evidence = self._evidence(root, manual=True)
+            self._materialize_passing_pppv_evidence(root, evidence)
 
             bundle = build_candidate_framework_bundle(
                 root,

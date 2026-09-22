@@ -19,13 +19,13 @@ Every reachable logical state can reach `demo_complete=true` under the modeled d
 
 Reference hashes:
 - clean state: `90fdebf6dff29bf2b4b78980615205c2e6c067b65a28c2aff0b7f10b513f6abf`
-- shortest-path completed state: `69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8`
+- shortest-path completed state: `076a47e6c05ac3b48e9238011c7df655c7642f8d562881a6c962a992fbee9cd2`
 
 ## Shortest synthetic route
 `pickup_rusty_tongs -> open_r1_door1 -> R1/R7 -> retrieve_well_key -> lever -> wheel -> lever -> R7/R1 -> open_r1_door2 -> R1/R8 -> retrieve_r8_lens -> place_r8_lens -> start_optical_sequence -> finish_optical_sequence -> take_shield`
 
 Logical Event IR sound stream:
-`S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`
+`979TONGS.WAV -> S152V2.WAV -> S137.WAV -> S121.WAV -> 799SECDR.WAV`
 
 Wrong switch inputs, repeats/idempotent actions, partial switch progress, room exits/re-entry and leaving R8 during its room-local optical sequence are included in the state search.
 

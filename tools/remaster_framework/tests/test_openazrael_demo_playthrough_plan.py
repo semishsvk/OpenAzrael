@@ -122,6 +122,29 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
             plan["success_state_sha256"],
         )
 
+
+    def test_candidate_state_hash_overrides_authoring_fallback(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        expected = "b" * 64
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root),
+            success_state_sha256=expected,
+        )
+        self.assertEqual(plan["success_state_sha256"], expected)
+        self.assertEqual(
+            plan["metadata"]["success_hash_source"],
+            "candidate_state_space",
+        )
+        final = next(
+            row
+            for row in plan["steps"]
+            if row["step_id"] == "C14_FINAL_STATE"
+        )
+        self.assertEqual(
+            final["metadata"]["expected_state_sha256"],
+            expected,
+        )
+
     def test_transition_steps_explicitly_forbid_centroid_teleport(self) -> None:
         root = Path(__file__).resolve().parents[3]
         plan = build_openazrael_demo_playthrough_plan(

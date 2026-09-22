@@ -12,6 +12,9 @@ RESULTS_VERSION = 1
 
 EVIDENCE_CANDIDATES = {
     "source": ("kg001_source_validation_v112.json",),
+    "state_space": ("kg001_state_space_v108.json",),
+    "state_fuzz": ("kg001_state_fuzz_v119.json",),
+    "collision_v120": ("kg001_collision_geometry_v120.json",),
     "v109": (
         "kg001_v109_runtime.json",
         "kg001_headless_runtime_v109.json",
@@ -34,6 +37,21 @@ EVIDENCE_CANDIDATES = {
     ),
     "well_pppv": (
         "kg001_well_tongs_pppv.json",
+    ),
+    "pppv_suite": (
+        "kg001_pppv_scenario_suite.json",
+    ),
+    "pppv_suite_integrity": (
+        "pppv_scenario_suite_integrity.json",
+    ),
+    "pppv_playthrough": (
+        "kg001_pppv_playthrough_evaluation.json",
+    ),
+    "pppv_determinism": (
+        "kg001_pppv_determinism.json",
+    ),
+    "pppv_determinism_integrity": (
+        "pppv_determinism_integrity.json",
     ),
     "fresh": ("kg001_fresh_checkout.json",),
     "manual": (
@@ -84,6 +102,90 @@ def _combined_status(*payloads: dict[str, Any] | None) -> str:
     return "PENDING"
 
 
+def _valid_sha256(value: Any) -> bool:
+    if not isinstance(value, str) or len(value) != 64:
+        return False
+    return all(char in "0123456789abcdef" for char in value)
+
+
+def _state_space_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    checks = payload.get("exploration_checks")
+    if (
+        payload.get("schema") != "openazrael.kg001.state_space"
+        or payload.get("version") != 108
+        or int(payload.get("softlock_states", -1)) != 0
+        or int(payload.get("non_success_dead_end_states", -1)) != 0
+        or not _valid_sha256(
+            payload.get("shortest_success_persistent_state_sha256")
+        )
+        or not isinstance(checks, dict)
+        or not checks
+        or not all(value is True for value in checks.values())
+    ):
+        return "FAIL"
+    return "PASS"
+
+
+def _state_fuzz_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    fuzz = payload.get("fuzz")
+    properties = payload.get("properties")
+    if (
+        payload.get("schema") != "openazrael.kg001.state_fuzz"
+        or payload.get("version") != 119
+        or not isinstance(fuzz, dict)
+        or fuzz.get("status") != "PASS"
+        or int(fuzz.get("failure_count", -1)) != 0
+        or int(fuzz.get("attempts", 0)) <= 0
+        or not isinstance(properties, dict)
+        or not properties
+        or not all(value is True for value in properties.values())
+    ):
+        return "FAIL"
+    return "PASS"
+
+
+def _collision_v120_status(payload: dict[str, Any] | None) -> str:
+    status = _status(payload)
+    if status == "FAIL":
+        return "FAIL"
+    if status != "PASS" or payload is None:
+        return "PENDING"
+
+    checks = payload.get("checks")
+    roles = payload.get("roles")
+    errors = payload.get("errors")
+    if (
+        payload.get("schema")
+        != "openazrael.kg001.collision_geometry_validation"
+        or payload.get("version") != 120
+        or not isinstance(checks, dict)
+        or not checks
+        or not all(value is True for value in checks.values())
+        or not isinstance(roles, list)
+        or not roles
+        or not all(
+            isinstance(row, dict) and row.get("status") == "PASS"
+            for row in roles
+        )
+        or not isinstance(errors, list)
+        or errors
+    ):
+        return "FAIL"
+    return "PASS"
+
+
 def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
     status = _status(payload)
     if status == "FAIL":
@@ -94,7 +196,15 @@ def _fresh_checkout_status(payload: dict[str, Any] | None) -> str:
     runtime = payload.get("runtime_status")
     if not isinstance(runtime, dict):
         return "PENDING"
-    required = ("v109", "v110", "v111", "v117", "v118")
+    required = (
+        "v109",
+        "v110",
+        "v111",
+        "v117",
+        "v118",
+        "pppv_scenario_suite",
+        "pppv_playthrough",
+    )
     if all(str(runtime.get(key, "")).upper() == "PASS" for key in required):
         return "PASS"
     return "PENDING"
@@ -134,27 +244,68 @@ def derive_gate_rows(
     *,
     source_path: Path | None,
     state_space_path: Path | None,
+    state_fuzz_path: Path | None,
+    collision_v120_path: Path | None,
     v109_path: Path | None,
     v110_path: Path | None,
     v111_path: Path | None,
+    pppv_suite_path: Path | None,
+    pppv_suite_integrity_path: Path | None,
+    pppv_playthrough_path: Path | None,
+    pppv_determinism_path: Path | None,
+    pppv_determinism_integrity_path: Path | None,
     fresh_path: Path | None,
     manual_path: Path | None,
 ) -> list[dict[str, Any]]:
     payloads = {
         "source": _load(source_path) if source_path else None,
         "state": _load(state_space_path) if state_space_path else None,
+        "state_fuzz": _load(state_fuzz_path) if state_fuzz_path else None,
+        "collision_v120": (
+            _load(collision_v120_path) if collision_v120_path else None
+        ),
         "v109": _load(v109_path) if v109_path else None,
         "v110": _load(v110_path) if v110_path else None,
         "v111": _load(v111_path) if v111_path else None,
+        "pppv_suite": _load(pppv_suite_path) if pppv_suite_path else None,
+        "pppv_suite_integrity": (
+            _load(pppv_suite_integrity_path)
+            if pppv_suite_integrity_path
+            else None
+        ),
+        "pppv_playthrough": (
+            _load(pppv_playthrough_path)
+            if pppv_playthrough_path
+            else None
+        ),
+        "pppv_determinism": (
+            _load(pppv_determinism_path)
+            if pppv_determinism_path
+            else None
+        ),
+        "pppv_determinism_integrity": (
+            _load(pppv_determinism_integrity_path)
+            if pppv_determinism_integrity_path
+            else None
+        ),
         "fresh": _load(fresh_path) if fresh_path else None,
         "manual": _load(manual_path) if manual_path else None,
     }
 
+    state_space_status = _state_space_status(payloads["state"])
+    state_fuzz_status = _state_fuzz_status(payloads["state_fuzz"])
     state_status = (
         "PASS"
-        if payloads["state"] is not None
-        and str(payloads["state"].get("status", "")).upper() == "PASS"
-        else ("FAIL" if _status(payloads["state"]) == "FAIL" else "PENDING")
+        if state_space_status == "PASS" and state_fuzz_status == "PASS"
+        else (
+            "FAIL"
+            if "FAIL" in (state_space_status, state_fuzz_status)
+            else "PENDING"
+        )
+    )
+
+    collision_v120_status = _collision_v120_status(
+        payloads["collision_v120"]
     )
 
     rows = [
@@ -190,17 +341,38 @@ def derive_gate_rows(
                 repo_root,
                 source_path,
                 state_space_path,
+                state_fuzz_path,
             ),
         },
         {
             "id": "G04",
-            "status": _combined_status(payloads["v110"]),
-            "evidence": _merge_evidence(repo_root, v110_path),
+            "status": _combined_status(
+                payloads["v110"],
+                payloads["pppv_suite"],
+                payloads["pppv_suite_integrity"],
+                {"status": collision_v120_status},
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                v110_path,
+                pppv_suite_path,
+                pppv_suite_integrity_path,
+                collision_v120_path,
+            ),
         },
         {
             "id": "G05",
-            "status": _combined_status(payloads["v110"]),
-            "evidence": _merge_evidence(repo_root, v110_path),
+            "status": _combined_status(
+                payloads["v110"],
+                payloads["pppv_suite"],
+                payloads["pppv_suite_integrity"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                v110_path,
+                pppv_suite_path,
+                pppv_suite_integrity_path,
+            ),
         },
         {
             "id": "G06",
@@ -214,13 +386,35 @@ def derive_gate_rows(
         },
         {
             "id": "G08",
-            "status": _combined_status(payloads["v111"]),
-            "evidence": _merge_evidence(repo_root, v111_path),
+            "status": _combined_status(
+                payloads["v111"],
+                payloads["pppv_playthrough"],
+                payloads["pppv_determinism"],
+                payloads["pppv_determinism_integrity"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                v111_path,
+                pppv_playthrough_path,
+                pppv_determinism_path,
+                pppv_determinism_integrity_path,
+            ),
         },
         {
             "id": "G09",
-            "status": _fresh_checkout_status(payloads["fresh"]),
-            "evidence": _merge_evidence(repo_root, fresh_path),
+            "status": _combined_status(
+                {"status": _fresh_checkout_status(payloads["fresh"])},
+                payloads["pppv_suite_integrity"],
+                payloads["pppv_determinism"],
+                payloads["pppv_determinism_integrity"],
+            ),
+            "evidence": _merge_evidence(
+                repo_root,
+                fresh_path,
+                pppv_suite_integrity_path,
+                pppv_determinism_path,
+                pppv_determinism_integrity_path,
+            ),
         },
         {
             "id": "G10",
@@ -273,9 +467,7 @@ def build_gate_results(
     if manual_path is not None:
         paths["manual"] = manual_path.resolve()
 
-    state_path = repo_root / "data/tests/kg001_state_space_v108.json"
-    if not state_path.is_file():
-        state_path = None
+    state_path = paths["state_space"]
 
     fresh = _load(paths["fresh"]) if paths["fresh"] else None
     manual = _load(paths["manual"]) if paths["manual"] else None
@@ -288,9 +480,18 @@ def build_gate_results(
         repo_root,
         source_path=paths["source"],
         state_space_path=state_path,
+        state_fuzz_path=paths["state_fuzz"],
+        collision_v120_path=paths["collision_v120"],
         v109_path=paths["v109"],
         v110_path=paths["v110"],
         v111_path=paths["v111"],
+        pppv_suite_path=paths["pppv_suite"],
+        pppv_suite_integrity_path=paths["pppv_suite_integrity"],
+        pppv_playthrough_path=paths["pppv_playthrough"],
+        pppv_determinism_path=paths["pppv_determinism"],
+        pppv_determinism_integrity_path=paths[
+            "pppv_determinism_integrity"
+        ],
         fresh_path=paths["fresh"],
         manual_path=paths["manual"],
     )

@@ -12,6 +12,23 @@ const ROOM_NAMES := {
     "R7":"Well Room (R7)",
     "R8":"Baptistery (R8)"
 }
+const NON_COLLIDING_OBJECTS_BY_ROOM := {
+    # R7 Object02/Object03 are source-backed 1DROWN planes at the bottom of
+    # the deep Well shaft. They are gameplay/death geometry, not walkable
+    # support. Object02 in R1 is a different authored TUNNEL mesh and MUST
+    # retain collision.
+    "R7": {
+        "Object02": true,
+        "Object03": true
+    }
+}
+const NON_COLLIDING_OBJECTS := {
+    "zxwater": true,
+    "tapestry1": true,
+    "tapestry3": true,
+    "tapestry4": true
+}
+
 const PICKUPS := {
     "R1": {
         "TONG6": ["rusty_tongs", "Tongs"],
@@ -119,9 +136,29 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
                 out[String(t["name"])] = true
     return out
 
+func _portal_view_names(room_id: String) -> Dictionary:
+    var out := {}
+    if evidence.has("rooms") and evidence["rooms"].has(room_id):
+        for view in evidence["rooms"][room_id].get("portal_views", []):
+            out[String(view.get("name", ""))] = true
+    return out
+
+func _collision_excluded(room_id: String, object_name: String) -> bool:
+    if object_name.begins_with("ZQ"):
+        return true
+    if NON_COLLIDING_OBJECTS.has(object_name):
+        return true
+    var room_specific: Dictionary = NON_COLLIDING_OBJECTS_BY_ROOM.get(
+        room_id,
+        {}
+    )
+    return room_specific.has(object_name)
+
 func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
+    var portal_views := _portal_view_names(room_id)
     var pickup_names: Dictionary = PICKUPS.get(room_id, {})
+    var collision_objects: Array[String] = []
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
     for n in nodes:
@@ -147,7 +184,9 @@ func _create_world_collision(room_id: String) -> void:
                 continue
         if pickup_names.has(obj_name):
             continue
-        if obj_name.begins_with("ZQ") or obj_name in ["Object02", "Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]:
+        if portal_views.has(obj_name):
+            continue
+        if _collision_excluded(room_id, obj_name):
             continue
         if mi.mesh == null:
             continue
@@ -167,6 +206,33 @@ func _create_world_collision(room_id: String) -> void:
         cs.shape = shape
         body.add_child(cs)
         mi.add_child(body)
+        if not collision_objects.has(obj_name):
+            collision_objects.append(obj_name)
+
+    collision_objects.sort()
+    CandidateDiagnostics.record_event("room_collision_built", {
+        "room": room_id,
+        "collision_object_count": collision_objects.size(),
+        "objects": collision_objects,
+        "r1_object02_support": (
+            collision_objects.has("Object02")
+            if room_id == "R1"
+            else null
+        )
+    })
+    if room_id == "R1" and not collision_objects.has("Object02"):
+        push_error(
+            "OpenAzrael critical collision invariant: "
+            + "R1 Object02 tunnel support has no collision"
+        )
+        CandidateDiagnostics.record_event(
+            "critical_collision_support_missing",
+            {
+                "room": room_id,
+                "object": "Object02",
+                "severity": "CRITICAL"
+            }
+        )
 
 func _add_area_for_object(obj: Node3D, radius_min: float = 10.0) -> Area3D:
     var area := Area3D.new()
@@ -193,7 +259,11 @@ func _setup_pickups(room_id: String) -> void:
         if obj == null:
             push_warning("OpenAzrael pickup object not found: " + object_name)
             continue
-        if DemoState.has(item_id):
+        # Inventory presence alone cannot represent world-pickup history:
+        # consumables such as TONG6 leave inventory after use but must not respawn.
+        # Keep DemoState.has() as a backwards-compatible hide condition for older
+        # restored states that predate PickupCollected markers.
+        if DemoState.pickup_collected(item_id) or DemoState.has(item_id):
             obj.visible = false
             continue
         var area := _add_area_for_object(obj)

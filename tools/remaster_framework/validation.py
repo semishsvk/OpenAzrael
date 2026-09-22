@@ -103,6 +103,7 @@ class EvidenceRequirement:
     min_count: int = 1
     max_count: int | None = None
     after_requirement: str | None = None
+    action_id: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -124,6 +125,7 @@ class EvidenceRequirement:
                 else None
             ),
             after_requirement=payload.get("after_requirement"),
+            action_id=payload.get("action_id"),
         )
 
 
@@ -249,6 +251,16 @@ class ValidationScenario:
             ):
                 errors.append(
                     f"{requirement.requirement_id}: max_count < min_count"
+                )
+
+        for requirement in (*self.requirements, *self.forbidden):
+            if (
+                requirement.action_id is not None
+                and requirement.action_id not in action_ids
+            ):
+                errors.append(
+                    f"{requirement.requirement_id}: unknown action_id "
+                    f"{requirement.action_id}"
                 )
 
         for requirement in self.requirements:
@@ -415,35 +427,92 @@ def evaluate_scenario(
     if len({item.event_id for item in ordered}) != len(ordered):
         errors.append("runtime evidence event_id values must be unique")
 
+    indexed = list(enumerate(ordered))
     action_evidence = [
-        item for item in ordered if item.kind == "player_action"
+        (index, item)
+        for index, item in indexed
+        if item.kind == "player_action"
+    ]
+    expected_action_sequence = [
+        (action.action_id, action.execution_mode.value)
+        for action in scenario.actions
+    ]
+    actual_action_sequence = [
+        (
+            str(item.payload.get("action_id", "")),
+            str(item.payload.get("execution_mode", "")),
+        )
+        for _, item in action_evidence
+    ]
+    if actual_action_sequence != expected_action_sequence:
+        errors.append(
+            f"{scenario.scenario_id}: player_action sequence mismatch: "
+            f"{actual_action_sequence!r} != {expected_action_sequence!r}"
+        )
+
+    actual_action_ids = [
+        str(item.payload.get("action_id", ""))
+        for _, item in action_evidence
     ]
     for action in scenario.actions:
-        found = any(
-            item.payload.get("action_id") == action.action_id
-            and item.payload.get("execution_mode") == action.execution_mode.value
-            for item in action_evidence
-        )
-        if not found:
+        if action.action_id not in actual_action_ids:
             errors.append(
                 f"{scenario.scenario_id}: missing player_action evidence "
                 f"for {action.action_id}"
             )
 
-    matches_by_requirement: dict[str, list[RuntimeEvidence]] = {}
-    for requirement in scenario.requirements:
-        matches = [
-            item
-            for item in ordered
+    action_windows: dict[str, tuple[int, int]] = {}
+    for action_index, action in enumerate(scenario.actions):
+        if action_index >= len(action_evidence):
+            continue
+        event_index, event = action_evidence[action_index]
+        if str(event.payload.get("action_id", "")) != action.action_id:
+            continue
+        end_index = (
+            action_evidence[action_index + 1][0]
+            if action_index + 1 < len(action_evidence)
+            else len(ordered)
+        )
+        action_windows[action.action_id] = (event_index, end_index)
+
+    def requirement_matches(
+        requirement: EvidenceRequirement,
+    ) -> list[tuple[int, RuntimeEvidence]]:
+        rows = [
+            (index, item)
+            for index, item in indexed
             if item.kind == requirement.kind
             and _subset_match(item.payload, requirement.match)
         ]
+        if requirement.action_id is None:
+            return rows
+        window = action_windows.get(requirement.action_id)
+        if window is None:
+            return []
+        start_index, end_index = window
+        return [
+            (index, item)
+            for index, item in rows
+            if start_index <= index < end_index
+        ]
+
+    matches_by_requirement: dict[
+        str,
+        list[tuple[int, RuntimeEvidence]],
+    ] = {}
+    for requirement in scenario.requirements:
+        matches = requirement_matches(requirement)
         matches_by_requirement[requirement.requirement_id] = matches
         count = len(matches)
         if count < requirement.min_count:
+            suffix = (
+                f" within action {requirement.action_id}"
+                if requirement.action_id
+                else ""
+            )
             errors.append(
                 f"{requirement.requirement_id}: expected >= "
-                f"{requirement.min_count}, got {count}"
+                f"{requirement.min_count}, got {count}{suffix}"
             )
         if requirement.max_count is not None and count > requirement.max_count:
             errors.append(
@@ -460,23 +529,23 @@ def evaluate_scenario(
         )
         if not matches or not prior_matches:
             continue
-        if matches[0].frame < prior_matches[0].frame:
+        if matches[0][0] < prior_matches[0][0]:
             errors.append(
                 f"{requirement.requirement_id}: occurred before "
                 f"{requirement.after_requirement}"
             )
 
     for forbidden in scenario.forbidden:
-        matches = [
-            item
-            for item in ordered
-            if item.kind == forbidden.kind
-            and _subset_match(item.payload, forbidden.match)
-        ]
+        matches = requirement_matches(forbidden)
         if len(matches) >= max(1, forbidden.min_count):
+            scope = (
+                f" during action {forbidden.action_id}"
+                if forbidden.action_id
+                else ""
+            )
             errors.append(
                 f"{forbidden.requirement_id}: forbidden evidence observed "
-                f"{len(matches)} time(s)"
+                f"{len(matches)} time(s){scope}"
             )
 
     for sequence in scenario.sequences:

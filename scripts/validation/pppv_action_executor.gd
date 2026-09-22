@@ -5,22 +5,37 @@ var manager: Node
 var driver
 var navigator
 var observer
+var runtime_guard = null
 var failures: Array[String] = []
 
 func _init(
     room_manager: Node,
     player_driver,
     player_navigator,
-    runtime_observer
+    runtime_observer,
+    guard = null
 ) -> void:
     manager = room_manager
     driver = player_driver
     navigator = player_navigator
     observer = runtime_observer
+    runtime_guard = guard
 
 func _settle(frames: int = 2) -> void:
     for _i in range(frames):
         await manager.get_tree().process_frame
+
+func _settle_physics_guarded(
+    action_id: String,
+    frames: int
+) -> bool:
+    for _i in range(maxi(frames, 0)):
+        await manager.get_tree().physics_frame
+        if runtime_guard != null and not bool(
+            runtime_guard.sample(action_id)
+        ):
+            return false
+    return true
 
 func _find_named(root_node: Node, wanted: String) -> Node:
     if String(root_node.name) == wanted:
@@ -45,7 +60,32 @@ func _trigger_centroid(room: String, trigger: String):
         return null
     return Vector3(float(value[0]), float(value[1]), float(value[2]))
 
+func _append_failure(failure: String) -> void:
+    if not failures.has(failure):
+        failures.append(failure)
+
 func execute(action: Dictionary) -> bool:
+    if runtime_guard != null:
+        runtime_guard.begin_action(action)
+
+    var ok: bool = await _execute_impl(action)
+    var action_id := String(action.get("action_id", ""))
+
+    if runtime_guard != null:
+        var guard_ok := bool(runtime_guard.current_action_ok())
+        runtime_guard.end_action(ok, {
+            "room_after": String(manager.get("current_room_id"))
+        })
+        for failure in runtime_guard.failure_list():
+            _append_failure(String(failure))
+        if not guard_ok:
+            ok = false
+
+    if not ok and failures.is_empty():
+        _append_failure(action_id + ":execution_failed")
+    return ok
+
+func _execute_impl(action: Dictionary) -> bool:
     var action_id := String(action.get("action_id", ""))
     var kind := String(action.get("kind", ""))
     var params = action.get("parameters", {})
@@ -64,7 +104,7 @@ func execute(action: Dictionary) -> bool:
                 )
                 var centroid = _trigger_centroid(source_room, goal_trigger)
                 if centroid == null:
-                    failures.append(action_id + ":invalid_trigger_goal")
+                    _append_failure(action_id + ":invalid_trigger_goal")
                     return false
 
                 if destination_room.is_empty():
@@ -77,7 +117,7 @@ func execute(action: Dictionary) -> bool:
                         float(params.get("reach_distance", 4.0))
                     )
                     if not bool(trigger_result.get("reached", false)):
-                        failures.append(action_id + ":trigger_goal_not_reached")
+                        _append_failure(action_id + ":trigger_goal_not_reached")
                         return false
                     return true
 
@@ -94,15 +134,63 @@ func execute(action: Dictionary) -> bool:
                     not bool(transition_result.get("stopped_by_condition", false))
                     or String(manager.get("current_room_id")) != destination_room
                 ):
-                    failures.append(action_id + ":transition_not_observed")
+                    _append_failure(action_id + ":transition_not_observed")
                     return false
+
+                if runtime_guard != null and bool(
+                    params.get("verify_destination_spawn", true)
+                ):
+                    var spawn_ok := bool(runtime_guard.verify_transition_spawn(
+                        action_id,
+                        source_room,
+                        goal_trigger,
+                        destination_room,
+                        float(params.get(
+                            "spawn_position_tolerance",
+                            14.0
+                        )),
+                        float(params.get(
+                            "spawn_yaw_tolerance",
+                            0.35
+                        ))
+                    ))
+                    if not spawn_ok:
+                        _append_failure(
+                            action_id + ":transition_spawn_validation_failed"
+                        )
+                        return false
+
+                    var settle_frames := int(
+                        params.get("post_transition_settle_frames", 24)
+                    )
+                    var settled := await _settle_physics_guarded(
+                        action_id,
+                        settle_frames
+                    )
+                    if not settled:
+                        _append_failure(
+                            action_id + ":transition_settle_failed"
+                        )
+                        return false
+
+                    var grounded_ok := bool(
+                        runtime_guard.verify_transition_grounded(
+                            action_id,
+                            destination_room
+                        )
+                    )
+                    if not grounded_ok:
+                        _append_failure(
+                            action_id + ":transition_ground_validation_failed"
+                        )
+                        return false
                 return true
 
             var goal_target := String(params.get("goal_target", ""))
             if not goal_target.is_empty():
                 var current_room = manager.get("current_room")
                 if current_room == null:
-                    failures.append(action_id + ":missing_current_room")
+                    _append_failure(action_id + ":missing_current_room")
                     return false
                 var nav_result: Dictionary = await navigator.approach_interactable(
                     action_id,
@@ -112,7 +200,7 @@ func execute(action: Dictionary) -> bool:
                     int(params.get("stuck_frames", 120))
                 )
                 if not bool(nav_result.get("reached", false)):
-                    failures.append(action_id + ":navigation_failed")
+                    _append_failure(action_id + ":navigation_failed")
                     return false
                 return true
 
@@ -124,7 +212,20 @@ func execute(action: Dictionary) -> bool:
                 walk_frames
             )
             if walk_result.is_empty():
-                failures.append(action_id + ":movement_failed")
+                _append_failure(action_id + ":movement_failed")
+                return false
+            var minimum_distance := float(
+                params.get("minimum_horizontal_distance", 0.0)
+            )
+            if (
+                minimum_distance > 0.0
+                and float(
+                    walk_result.get("horizontal_distance", 0.0)
+                ) < minimum_distance
+            ):
+                _append_failure(
+                    action_id + ":insufficient_movement_progress"
+                )
                 return false
             return true
 
@@ -133,7 +234,7 @@ func execute(action: Dictionary) -> bool:
             if not look_target.is_empty():
                 var look_room = manager.get("current_room")
                 if look_room == null:
-                    failures.append(action_id + ":missing_current_room")
+                    _append_failure(action_id + ":missing_current_room")
                     return false
                 var aim_result: Dictionary = await navigator.aim_at_interactable(
                     action_id,
@@ -142,13 +243,13 @@ func execute(action: Dictionary) -> bool:
                     int(params.get("max_frames", 180))
                 )
                 if not bool(aim_result.get("acquired", false)):
-                    failures.append(action_id + ":aim_target_not_acquired")
+                    _append_failure(action_id + ":aim_target_not_acquired")
                     return false
                 return true
 
             var relative = params.get("relative", [0.0, 0.0])
             if not relative is Array or relative.size() < 2:
-                failures.append(action_id + ":invalid_look")
+                _append_failure(action_id + ":invalid_look")
                 return false
             await driver.mouse_look(
                 action_id,
@@ -163,7 +264,9 @@ func execute(action: Dictionary) -> bool:
                 observer.attach_interaction(_find_named(current_room, target))
             var ok: bool = await driver.interact_via_probe(action_id, target)
             if not ok:
-                failures.append(action_id + ":interaction_target_not_reachable")
+                _append_failure(
+                    action_id + ":interaction_target_not_reachable"
+                )
                 return false
             await _settle(2)
             return true
@@ -175,12 +278,12 @@ func execute(action: Dictionary) -> bool:
                 maxi(wait_frames, 1)
             )
             if not wait_ok:
-                failures.append(action_id + ":wait_failed")
+                _append_failure(action_id + ":wait_failed")
                 return false
             return true
 
         _:
-            failures.append(action_id + ":unsupported_action:" + kind)
+            _append_failure(action_id + ":unsupported_action:" + kind)
             return false
 
 func failure_list() -> Array[String]:

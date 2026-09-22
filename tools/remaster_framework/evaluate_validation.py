@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .replay_validation import semantic_replay_sha256, validate_replay
 from .validation import (
     RuntimeEvidence,
     ValidationScenario,
@@ -60,6 +61,63 @@ def evaluate_runtime_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         before_state,
         after_state,
     )
+
+    extra_errors: list[str] = []
+    if "runtime_guard_failures" in payload:
+        guard_failures = payload.get("runtime_guard_failures", [])
+        if not isinstance(guard_failures, list):
+            extra_errors.append("runtime_guard_failures must be a list")
+            guard_failures = []
+        extra_errors.extend(
+            f"runtime guard failure: {item}"
+            for item in guard_failures
+        )
+        report["runtime_guard_failures"] = list(guard_failures)
+
+    if "replay" in payload:
+        replay = payload.get("replay", {})
+        expected_actions = scenario_payload.get("actions", [])
+        if not isinstance(expected_actions, list):
+            expected_actions = []
+        replay_errors = validate_replay(expected_actions, replay)
+        extra_errors.extend(replay_errors)
+        if isinstance(replay, dict):
+            replay_actions = replay.get("actions", [])
+            report["replay_action_count"] = (
+                len(replay_actions)
+                if isinstance(replay_actions, list)
+                else 0
+            )
+            report["replay_integrity_status"] = (
+                "PASS" if not replay_errors else "FAIL"
+            )
+            report["semantic_replay_sha256"] = semantic_replay_sha256(replay)
+
+    if "runtime_boundary" in payload:
+        boundary = payload.get("runtime_boundary", {})
+        if not isinstance(boundary, dict):
+            extra_errors.append("runtime_boundary must be an object")
+            boundary = {}
+        required_boundary = {
+            "direct_interact_calls": False,
+            "gameplay_teleport_during_actions": False,
+            "frame_level_avatar_trajectory": True,
+            "world_state_snapshots": True,
+            "softlock_watchdog": True,
+            "transition_spawn_validation": True,
+        }
+        for key, expected in required_boundary.items():
+            if boundary.get(key) is not expected:
+                extra_errors.append(
+                    f"runtime boundary mismatch {key}: "
+                    f"{boundary.get(key)!r} != {expected!r}"
+                )
+        report["runtime_boundary"] = boundary
+
+    if extra_errors:
+        report["errors"] = list(report["errors"]) + extra_errors
+        report["status"] = "FAIL"
+
     execution_status = str(payload.get("status", ""))
     execution_failures = payload.get("failures", [])
     if execution_status != "EXECUTION_PASS":

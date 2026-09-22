@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import unittest
+from pathlib import Path
 
 from tools.openazrael_adapters.transition_pppv import (
     build_transition_scenarios,
@@ -14,11 +16,12 @@ class OpenAzraelTransitionPPPVTests(unittest.TestCase):
             row.scenario_id: row for row in build_transition_scenarios()
         }
 
-    def test_builds_three_demo_route_transitions(self) -> None:
-        self.assertEqual(len(self.scenarios), 3)
+    def test_builds_all_four_authored_demo_transitions(self) -> None:
+        self.assertEqual(len(self.scenarios), 4)
         self.assertIn("openazrael.transition.r1_to_r7", self.scenarios)
         self.assertIn("openazrael.transition.r7_to_r1", self.scenarios)
         self.assertIn("openazrael.transition.r1_to_r8", self.scenarios)
+        self.assertIn("openazrael.transition.r8_to_r1", self.scenarios)
 
     def test_transition_actions_use_input_and_trigger_goal(self) -> None:
         for scenario in self.scenarios.values():
@@ -32,6 +35,73 @@ class OpenAzraelTransitionPPPVTests(unittest.TestCase):
                 scenario.metadata["trigger_centroid_role"],
                 "steering_target_only",
             )
+            self.assertTrue(
+                action.parameters["verify_destination_spawn"]
+            )
+            self.assertTrue(
+                scenario.metadata["destination_spawn_validation_required"]
+            )
+            self.assertTrue(
+                scenario.metadata["critical_if_transition_broken"]
+            )
+
+
+    def test_transition_requires_grounded_continuation(self) -> None:
+        for scenario in self.scenarios.values():
+            crossing = scenario.actions[0]
+            continuation = scenario.actions[1]
+            self.assertEqual(
+                crossing.parameters["post_transition_settle_frames"],
+                24,
+            )
+            self.assertEqual(
+                continuation.execution_mode,
+                ExecutionMode.INPUT,
+            )
+            self.assertEqual(continuation.input_action, "move_forward")
+            self.assertGreater(
+                continuation.parameters["minimum_horizontal_distance"],
+                0.0,
+            )
+            self.assertTrue(
+                scenario.metadata["destination_ground_support_required"]
+            )
+            self.assertTrue(
+                scenario.metadata["post_transition_movement_required"]
+            )
+            self.assertEqual(
+                scenario.requirements[-1].action_id,
+                continuation.action_id,
+            )
+            self.assertEqual(
+                scenario.requirements[-1].kind,
+                "movement_sample",
+            )
+
+    def test_transition_matrix_matches_source_evidence(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        payload = json.loads(
+            (root / "data" / "xaf_trigger_evidence.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        expected = {
+            (
+                row["source_room"],
+                row["trigger"],
+                row["destination_room"],
+            )
+            for row in payload["demo_transitions"]
+        }
+        actual = {
+            (
+                scenario.room,
+                scenario.actions[0].parameters["goal_trigger"],
+                scenario.actions[0].parameters["destination_room"],
+            )
+            for scenario in self.scenarios.values()
+        }
+        self.assertEqual(actual, expected)
 
     def test_transition_requires_enter_then_room_transition_evidence(self) -> None:
         scenario = self.scenarios["openazrael.transition.r1_to_r7"]

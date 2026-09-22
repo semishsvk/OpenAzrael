@@ -61,6 +61,7 @@ def build_r7_switchboard_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="switchboard_flag",
                 kind="state_change",
+                action_id="switch_3",
                 match={
                     "path": "flags.R7waterswitchboard",
                     "before": False,
@@ -70,6 +71,7 @@ def build_r7_switchboard_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="bath_drain_flag",
                 kind="state_change",
+                action_id="switch_3",
                 match={
                     "path": "flags.R8BathDrain",
                     "before": False,
@@ -80,6 +82,7 @@ def build_r7_switchboard_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="r8_water_cleared",
                 kind="state_change",
+                action_id="switch_3",
                 match={
                     "path": "puzzle.R8Water",
                     "before": False,
@@ -90,6 +93,7 @@ def build_r7_switchboard_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="drain_audio",
                 kind="audio",
+                action_id="switch_3",
                 match={"asset": "S152V2.WAV"},
                 after_requirement="bath_drain_flag",
             ),
@@ -136,14 +140,24 @@ def build_r7_switchboard_scenarios() -> tuple[ValidationScenario, ...]:
         ),
         requirements=(
             EvidenceRequirement(
-                requirement_id="wrong_sequence_dispatched",
+                requirement_id="wrong_sequence_first_dispatch",
                 kind="trigger",
+                action_id="wrong_1",
                 match={
                     "target": lever,
                     "activated": True,
                     "mechanism": "interaction_dispatch",
                 },
-                min_count=2,
+            ),
+            EvidenceRequirement(
+                requirement_id="wrong_sequence_second_dispatch",
+                kind="trigger",
+                action_id="wrong_2",
+                match={
+                    "target": lever,
+                    "activated": True,
+                    "mechanism": "interaction_dispatch",
+                },
             ),
         ),
         forbidden=(

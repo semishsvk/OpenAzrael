@@ -164,6 +164,162 @@ class ValidationLabTests(unittest.TestCase):
         self.assertEqual(len(report["before_state_sha256"]), 64)
         self.assertEqual(len(report["after_state_sha256"]), 64)
 
+
+    def test_player_action_order_is_exactly_enforced(self) -> None:
+        scenario = ValidationScenario(
+            scenario_id="ordered_actions",
+            room="R1",
+            setup={},
+            actions=(
+                PlayerAction(
+                    action_id="first",
+                    kind=ActionKind.MOVE,
+                    execution_mode=ExecutionMode.INPUT,
+                    input_action="move_forward",
+                    frames=1,
+                ),
+                PlayerAction(
+                    action_id="second",
+                    kind=ActionKind.MOVE,
+                    execution_mode=ExecutionMode.INPUT,
+                    input_action="move_back",
+                    frames=1,
+                ),
+            ),
+            requirements=(),
+        )
+        evidence = [
+            RuntimeEvidence(
+                event_id="e1",
+                frame=1,
+                kind="player_action",
+                payload={
+                    "action_id": "second",
+                    "execution_mode": "input",
+                },
+            ),
+            RuntimeEvidence(
+                event_id="e2",
+                frame=2,
+                kind="player_action",
+                payload={
+                    "action_id": "first",
+                    "execution_mode": "input",
+                },
+            ),
+        ]
+        errors = evaluate_scenario(scenario, evidence, {}, {})
+        self.assertTrue(
+            any("player_action sequence mismatch" in item for item in errors)
+        )
+
+    def test_action_scoped_requirement_rejects_effect_from_prior_action(self) -> None:
+        scenario = ValidationScenario(
+            scenario_id="causal_scope",
+            room="R1",
+            setup={},
+            actions=(
+                PlayerAction(
+                    action_id="prepare",
+                    kind=ActionKind.MOVE,
+                    execution_mode=ExecutionMode.INPUT,
+                    input_action="move_forward",
+                    frames=1,
+                ),
+                PlayerAction(
+                    action_id="activate",
+                    kind=ActionKind.INTERACT,
+                    execution_mode=ExecutionMode.INTERACTION_PROBE,
+                    target="target",
+                ),
+            ),
+            requirements=(
+                EvidenceRequirement(
+                    requirement_id="activation_effect",
+                    kind="state_change",
+                    action_id="activate",
+                    match={"path": "flags.done", "after": True},
+                ),
+            ),
+        )
+        evidence = [
+            RuntimeEvidence(
+                event_id="e1",
+                frame=1,
+                kind="player_action",
+                payload={
+                    "action_id": "prepare",
+                    "execution_mode": "input",
+                },
+            ),
+            RuntimeEvidence(
+                event_id="e2",
+                frame=2,
+                kind="state_change",
+                payload={"path": "flags.done", "after": True},
+            ),
+            RuntimeEvidence(
+                event_id="e3",
+                frame=3,
+                kind="player_action",
+                payload={
+                    "action_id": "activate",
+                    "execution_mode": "interaction_probe",
+                },
+            ),
+        ]
+        errors = evaluate_scenario(scenario, evidence, {}, {})
+        self.assertTrue(
+            any(
+                "expected >= 1, got 0 within action activate" in item
+                for item in errors
+            )
+        )
+
+    def test_action_scoped_requirement_uses_event_order_within_same_frame(self) -> None:
+        scenario = ValidationScenario(
+            scenario_id="same_frame_causality",
+            room="R1",
+            setup={},
+            actions=(
+                PlayerAction(
+                    action_id="activate",
+                    kind=ActionKind.INTERACT,
+                    execution_mode=ExecutionMode.INTERACTION_PROBE,
+                    target="target",
+                ),
+            ),
+            requirements=(
+                EvidenceRequirement(
+                    requirement_id="activation_effect",
+                    kind="state_change",
+                    action_id="activate",
+                    match={"path": "flags.done", "after": True},
+                ),
+            ),
+        )
+        evidence = [
+            RuntimeEvidence(
+                event_id="e1",
+                frame=10,
+                kind="player_action",
+                payload={
+                    "action_id": "activate",
+                    "execution_mode": "interaction_probe",
+                },
+            ),
+            RuntimeEvidence(
+                event_id="e2",
+                frame=10,
+                kind="state_change",
+                payload={"path": "flags.done", "after": True},
+            ),
+        ]
+        self.assertEqual(
+            evaluate_scenario(scenario, evidence, {}, {}),
+            [],
+        )
+
     def test_exact_sequence_order_is_enforced(self) -> None:
         scenario = ValidationScenario(
             scenario_id="sequence",

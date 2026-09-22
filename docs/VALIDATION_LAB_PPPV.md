@@ -12,13 +12,13 @@ interaction, trigger, observable-effect, and state paths used by a real player.
 
 ## Current KG-001 status
 
-The default OpenAzrael bundle currently materializes **19 reusable PPPV
+The default OpenAzrael bundle currently materializes **20 reusable PPPV
 scenarios** covering:
 
 - R1 TONG6 pickup;
 - R1 Door 1;
 - R1 Door 2 positive and negative-without-key paths;
-- physical R1 -> R7, R7 -> R1, and R1 -> R8 transition crossings;
+- physical R1 -> R7, R7 -> R1, R1 -> R8, and R8 -> R1 transition crossings;
 - R7 Well+Tongs positive and negative-without-tongs paths;
 - R7 water switchboard positive and wrong-sequence negative paths;
 - R8 lens pickup and submerged-lens negative path;
@@ -40,6 +40,31 @@ authored scenarios cover all six:
 
 Therefore scenario/graph coverage is authoring-complete. This does **not** mean
 the full physical playthrough has passed runtime validation.
+
+## Synthetic-player v2 runtime guard
+
+The guarded runtime path treats the synthetic test as a robot player rather
+than a shortcut into game state. Every shared gameplay action now emits:
+
+- a complete world-state snapshot before and after the action;
+- frame-level avatar position, rotation, velocity and floor-support trajectory
+  while physics-driven movement is active;
+- a deterministic replay command/result record;
+- hard failures for excessive per-frame vertical drops, sustained unsupported
+  falling, or excessive vertical displacement during one action;
+- a softlock watchdog event when canonical navigation makes no progress;
+- destination room, spawn-position and facing validation after every room
+  transition.
+
+The guard is observational only. It must never write player transforms,
+velocity, call `move_and_slide()`, call an interaction target directly, or
+teleport during a gameplay action.
+
+Transition coverage is source-complete rather than route-complete: the adapter
+must contain one scenario for every row in `data/xaf_trigger_evidence.json`
+`demo_transitions`. Missing either direction of an authored reciprocal
+transition is a test failure, even if the shortest demo-completion route would
+not use that direction.
 
 ## Core runtime rule
 
@@ -193,8 +218,10 @@ Candidate release tooling always writes and hashes
 or evaluation can enter build provenance. This prevents a PASS from an older
 plan being attached to a newer candidate.
 
-The playthrough runtime/evaluation remain supplemental evidence for now. They do
-not silently alter the established G00-G10 Known-Good contract.
+The guarded playthrough is now required evidence for G08, and candidate-bound
+suite/determinism integrity is required for G09. A successful chained
+playthrough is executed at least twice; both evaluations must share the same
+semantic replay fingerprint and final canonical state hash.
 
 ## F11 diagnostics
 
@@ -243,14 +270,15 @@ and evaluation hashes into build provenance.
 
 The remaining major gate is **execution**, not scenario authoring:
 
-- run the chained full-demo PPPV against a fresh candidate with the local
+- run the chained full-demo PPPV twice against a fresh candidate with the local
   R1/R7/R8 assets;
+- require matching semantic replay fingerprints and final state hashes;
 - inspect any navigation/interaction failures and fix production/runtime issues
   rather than adding shortcuts;
 - confirm the visual/audio evidence for the R8 optical sequence;
 - confirm every canonical-state checkpoint and final hash;
-- only after stable repeated passes decide explicitly whether chained PPPV should
-  become a required future KG acceptance gate.
+- run the current-candidate exhaustive state-space and deterministic adversarial
+  fuzz reports before G03 can pass.
 
 GitHub-hosted Actions are currently infrastructure-blocked for this branch:
 diagnostic jobs fail before even a `python3 --version` step executes. Recent red

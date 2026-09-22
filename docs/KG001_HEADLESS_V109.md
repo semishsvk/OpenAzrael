@@ -10,12 +10,12 @@ v109 prepares the first Godot-executable KG-001 slice that does not require the 
 
 ## Headless runner
 
-`scripts/kg001_headless_runner_v109.gd` uses the real project autoloads and v87 Event IR without loading `main.tscn`. It defines **13 runtime assertions** and verifies:
+`scripts/kg001_headless_runner_v109.gd` uses the real project autoloads and v87 Event IR without loading `main.tscn`. It defines **14 runtime assertions** and verifies:
 
 - clean-state canonical hash;
-- well-key and R7 switchboard logic;
+- one-shot TONG6 pickup persistence, well-key consumption plus `R7_WELL_TONGS_USE` audio and R7 switchboard logic;
 - R8 lens / optical / secret-door / shield Event IR;
-- logical audio stream `S152V2 -> S137 -> S121 -> 799SECDR`;
+- logical audio stream `979TONGS -> S152V2 -> S137 -> S121 -> 799SECDR`;
 - completed-state canonical hash;
 - reset to clean hash;
 - save payload restore;

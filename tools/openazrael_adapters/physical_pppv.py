@@ -48,6 +48,7 @@ def adapt_physical_traversal_contract(
                 EvidenceRequirement(
                     requirement_id="r1_forward_support",
                     kind="collision_support",
+                    action_id="r1_forward",
                     match={
                         "action_id": "r1_forward",
                         "continuous": True,
@@ -57,6 +58,7 @@ def adapt_physical_traversal_contract(
                 EvidenceRequirement(
                     requirement_id="r1_back_support",
                     kind="collision_support",
+                    action_id="r1_back",
                     match={
                         "action_id": "r1_back",
                         "continuous": True,
@@ -66,16 +68,20 @@ def adapt_physical_traversal_contract(
                 EvidenceRequirement(
                     requirement_id="r1_forward_progress",
                     kind="movement",
+                    action_id="r1_forward",
                     match={"action_id": "r1_forward", "progress_ok": True},
                 ),
                 EvidenceRequirement(
                     requirement_id="r1_back_progress",
                     kind="movement",
+                    action_id="r1_back",
                     match={"action_id": "r1_back", "progress_ok": True},
                 ),
             ),
             metadata={
                 "source_version": payload.get("version"),
+                "execution_profile": "v117_real_geometry_input",
+                "guarded_replay_required": False,
                 "stationary_only_evidence_accepted": False,
                 "direct_horizontal_velocity_injection_accepted": False,
                 "production_path": payload.get("production_path", {}),
@@ -123,6 +129,7 @@ def adapt_physical_traversal_contract(
                     EvidenceRequirement(
                         requirement_id="ascent",
                         kind="stair_traversal",
+                        action_id="ascend",
                         match={
                             "mesh": mesh,
                             "direction": "ascending",
@@ -134,6 +141,7 @@ def adapt_physical_traversal_contract(
                     EvidenceRequirement(
                         requirement_id="descent",
                         kind="stair_traversal",
+                        action_id="descend",
                         match={
                             "mesh": mesh,
                             "direction": "descending",
@@ -145,6 +153,8 @@ def adapt_physical_traversal_contract(
                 ),
                 metadata={
                     "source_version": payload.get("version"),
+                    "execution_profile": "v117_real_geometry_input",
+                    "guarded_replay_required": False,
                     "minimum_tread_levels": stair.get("minimum_tread_levels"),
                     "audited_total_rise": stair.get("audited_total_rise"),
                     "audited_horizontal_run": stair.get("audited_horizontal_run"),

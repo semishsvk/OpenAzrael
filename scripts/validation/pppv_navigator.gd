@@ -4,15 +4,18 @@ class_name PPPVNavigator
 var player: CharacterBody3D
 var interaction_probe: Node
 var evidence: PPPVEvidenceBus
+var runtime_guard = null
 
 func _init(
     production_player: CharacterBody3D,
     production_interaction_probe: Node,
-    evidence_bus: PPPVEvidenceBus
+    evidence_bus: PPPVEvidenceBus,
+    guard = null
 ) -> void:
     player = production_player
     interaction_probe = production_interaction_probe
     evidence = evidence_bus
+    runtime_guard = guard
 
 func _find_named(root: Node, wanted: String) -> Node3D:
     if root is Node3D and String(root.name) == wanted:
@@ -34,6 +37,15 @@ func _mouse_sensitivity() -> float:
     if typeof(value) in [TYPE_FLOAT, TYPE_INT] and float(value) > 0.000001:
         return float(value)
     return 0.0025
+
+func _guard_sample(action_id: String) -> bool:
+    if runtime_guard == null:
+        return true
+    return bool(runtime_guard.sample(action_id))
+
+func _watchdog(action_id: String, reason: String, details: Dictionary) -> void:
+    if runtime_guard != null:
+        runtime_guard.report_watchdog(action_id, reason, details)
 
 func _turn_toward(target_position: Vector3, max_pixels: float = 90.0) -> float:
     var flat := target_position - player.global_position
@@ -80,6 +92,7 @@ func approach_interactable(
     var best_distance := start.distance_to(target.global_position)
     var used_frames := 0
     var reached := false
+    var runtime_guard_failed := false
 
     Input.action_release(&"move_forward")
     for frame in range(max_frames):
@@ -101,6 +114,15 @@ func approach_interactable(
             Input.action_release(&"move_forward")
 
         await player.get_tree().physics_frame
+        if not _guard_sample(action_id):
+            runtime_guard_failed = true
+            evidence.record("navigation_failure", {
+                "action_id": action_id,
+                "target": target_name,
+                "reason": "runtime_guard_failure",
+                "frame": frame
+            })
+            break
 
         var step_distance := Vector2(
             player.global_position.x - previous.x,
@@ -112,6 +134,12 @@ func approach_interactable(
         previous = player.global_position
 
         if frame - last_progress_frame >= stuck_frames:
+            var watchdog_details := {
+                "target": target_name,
+                "frame": frame,
+                "best_distance": best_distance,
+                "strategy": "steer_to_interactable"
+            }
             evidence.record("navigation_failure", {
                 "action_id": action_id,
                 "target": target_name,
@@ -119,10 +147,13 @@ func approach_interactable(
                 "frame": frame,
                 "best_distance": best_distance
             })
+            _watchdog(action_id, "navigation_stuck", watchdog_details)
             break
 
     Input.action_release(&"move_forward")
     await player.get_tree().physics_frame
+    if not runtime_guard_failed:
+        runtime_guard_failed = not _guard_sample(action_id)
 
     var finish := player.global_position
     var horizontal_distance := Vector2(
@@ -135,6 +166,7 @@ func approach_interactable(
         "progress_ok": horizontal_distance > 0.5 or reached,
         "horizontal_distance": horizontal_distance,
         "reached": reached,
+        "runtime_guard_failed": runtime_guard_failed,
         "used_frames": used_frames
     })
     evidence.record_interaction_probe(
@@ -143,8 +175,9 @@ func approach_interactable(
         _probe_target_name()
     )
     return {
-        "reached": reached,
+        "reached": reached and not runtime_guard_failed,
         "horizontal_distance": horizontal_distance,
+        "runtime_guard_failed": runtime_guard_failed,
         "used_frames": used_frames
     }
 
@@ -177,6 +210,7 @@ func approach_world_point(
     var used_frames := 0
     var reached := false
     var stopped_by_condition := false
+    var runtime_guard_failed := false
 
     Input.action_release(&"move_forward")
     for frame in range(max_frames):
@@ -201,6 +235,14 @@ func approach_world_point(
             Input.action_release(&"move_forward")
 
         await player.get_tree().physics_frame
+        if not _guard_sample(action_id):
+            runtime_guard_failed = true
+            evidence.record("navigation_failure", {
+                "action_id": action_id,
+                "reason": "runtime_guard_failure",
+                "frame": frame
+            })
+            break
 
         var step_distance := Vector2(
             player.global_position.x - previous.x,
@@ -216,16 +258,29 @@ func approach_world_point(
         previous = player.global_position
 
         if frame - last_progress_frame >= stuck_frames:
+            var watchdog_details := {
+                "frame": frame,
+                "best_distance": best_distance,
+                "target_position": [
+                    target_position.x,
+                    target_position.y,
+                    target_position.z
+                ],
+                "strategy": "steer_to_world_point"
+            }
             evidence.record("navigation_failure", {
                 "action_id": action_id,
                 "reason": "stuck_world_point",
                 "frame": frame,
                 "best_distance": best_distance
             })
+            _watchdog(action_id, "navigation_stuck_world_point", watchdog_details)
             break
 
     Input.action_release(&"move_forward")
     await player.get_tree().physics_frame
+    if not runtime_guard_failed:
+        runtime_guard_failed = not _guard_sample(action_id)
 
     var finish := player.global_position
     var horizontal_distance := Vector2(
@@ -239,12 +294,14 @@ func approach_world_point(
         "horizontal_distance": horizontal_distance,
         "reached": reached,
         "stopped_by_condition": stopped_by_condition,
+        "runtime_guard_failed": runtime_guard_failed,
         "used_frames": used_frames
     })
     return {
-        "reached": reached,
-        "stopped_by_condition": stopped_by_condition,
+        "reached": reached and not runtime_guard_failed,
+        "stopped_by_condition": stopped_by_condition and not runtime_guard_failed,
         "horizontal_distance": horizontal_distance,
+        "runtime_guard_failed": runtime_guard_failed,
         "used_frames": used_frames
     }
 

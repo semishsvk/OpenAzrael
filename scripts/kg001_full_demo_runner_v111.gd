@@ -5,8 +5,8 @@ const REQUIRED_ROOMS := [
     "res://assets/rooms/R7.glb",
     "res://assets/rooms/R8.glb"
 ]
-const COMPLETE_HASH := "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8"
-const EXPECTED_AUDIO := ["S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
+const COMPLETE_HASH := "076a47e6c05ac3b48e9238011c7df655c7642f8d562881a6c962a992fbee9cd2"
+const EXPECTED_AUDIO := ["979TONGS.WAV", "S152V2.WAV", "S137.WAV", "S121.WAV", "799SECDR.WAV"]
 
 var failures: Array[String] = []
 var check_count := 0
@@ -140,6 +140,12 @@ func _run() -> void:
     _check("place_R7_R1_trigger", _place_on_trigger(manager, player, "R7", "zxwell2R6"))
     await _settle()
     _check("returned_R1", manager.current_room_id == "R1")
+    _check(
+        "consumed_tongs_do_not_respawn",
+        _find_named(manager.current_room, "Interact_TONG6") == null
+        and state.puzzle_node("PickupCollected:rusty_tongs")
+        and not state.has("rusty_tongs")
+    )
 
     _check("door2_interaction", _interact_named(manager, "Interact_doorcor2"))
     await _settle(1)
