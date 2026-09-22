@@ -46,6 +46,12 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
     [sys.executable,"tools/validate_kg001_physical_traversal_v117.py"],
     [sys.executable,"tools/validate_kg001_well_tongs_animation_v118.py"],
+    [
+        sys.executable,
+        "tools/validate_kg001_collision_geometry_v120.py",
+        "--out",
+        str(TMP/"kg001_collision_geometry_v120.json"),
+    ],
 ]
 
 RUNTIMES=[
@@ -1028,6 +1034,7 @@ def main():
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_state_space_v108.json":ROOT/"data/tests/kg001_state_space_v108.json",
             TMP/"kg001_state_fuzz_v119.json":ROOT/"data/tests/kg001_state_fuzz_v119.json",
+            TMP/"kg001_collision_geometry_v120.json":ROOT/"data/tests/kg001_collision_geometry_v120.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
             TMP/"kg001_release_gate_results.json":ROOT/"data/tests/kg001_release_gate_results.json",
             TMP/"release_gate_summary.json":ROOT/"data/tests/kg001_release_gate_summary.json",
