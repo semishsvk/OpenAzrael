@@ -94,6 +94,7 @@
     "menu_v145",
     "menu_cursor_v146",
     "classic_v147",
+    "interaction_probe_v148",
     "visual_v126",
     "room_forensic_v131",
     "pppv_v2:scenario_suite",
@@ -148,7 +149,8 @@
       "cursor_v143",
       "menu_v145",
       "menu_cursor_v146",
-      "classic_v147"
+      "classic_v147",
+      "interaction_probe_v148"
     ],
     "required_additional_runtime_evidence_pass": [
       "visual_v126",
