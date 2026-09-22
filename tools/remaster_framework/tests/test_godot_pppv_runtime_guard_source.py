@@ -55,6 +55,15 @@ class GodotPPPVRuntimeGuardSourceTests(unittest.TestCase):
         self.assertIn('"current_room_node_invalid"', self.guard)
         self.assertIn('"movement_input_stuck_after_action"', self.guard)
 
+    def test_transition_ground_support_is_required_after_settle(self) -> None:
+        self.assertIn("verify_transition_grounded", self.guard)
+        self.assertIn('"transition_ground_check"', self.guard)
+        self.assertIn('"transition_not_grounded"', self.guard)
+        self.assertIn("player.is_on_floor()", self.guard)
+        self.assertIn("floor_normal.y >= 0.5", self.guard)
+        self.assertIn("post_transition_settle_frames", self.executor)
+        self.assertIn("_settle_physics_guarded", self.executor)
+
     def test_transition_spawn_is_verified_against_source_view(self) -> None:
         self.assertIn("verify_transition_spawn", self.guard)
         self.assertIn('runtime_evidence.get("demo_transitions"', self.guard)
