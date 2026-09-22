@@ -14,7 +14,7 @@ TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
 FORBIDDEN_TRACKED_PREFIXES=(
     "original/","raw/","source_original/","data/audio/original_audio/",
-    "assets/audio/","assets/characters/","assets/rooms/","assets/textures/classic/","assets/ui/mice/"
+    "assets/audio/","assets/characters/","assets/rooms/","assets/textures/classic/","assets/ui/mice/","assets/ui/legacy_menu/"
 )
 FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
@@ -58,6 +58,7 @@ SOURCE_COMMANDS=[
     [sys.executable,"tools/validate_kg001_all_transition_v141.py"],
     [sys.executable,"tools/validate_kg001_interaction_cursors_v143.py"],
     [sys.executable,"tools/validate_menu_lab_v144.py"],
+    [sys.executable,"tools/validate_kg001_legacy_menu_runtime_v145.py"],
     [sys.executable,"tools/validate_candidate3_preflight.py"],
     [sys.executable,"tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -83,6 +84,7 @@ RUNTIMES=[
     ("interaction_v130","scripts/kg001_interaction_reachability_runner_v130.gd","OPENAZRAEL_KG001_INTERACTION_REACHABILITY_V130"),
     ("all_transitions_v141","scripts/kg001_all_transition_runner_v141.gd","OPENAZRAEL_KG001_ALL_TRANSITIONS_V141"),
     ("cursor_v143","scripts/kg001_interaction_cursor_runner_v143.gd","OPENAZRAEL_KG001_CURSOR_V143"),
+    ("menu_v145","scripts/kg001_legacy_menu_runner_v145.gd","OPENAZRAEL_KG001_MENU_V145"),
 ]
 
 def run(cmd, check=False):
@@ -312,6 +314,7 @@ def main():
             TMP/"kg001_portal_v129_runtime.json":ROOT/"data/tests/kg001_portal_geometry_runtime_v129.json",
             TMP/"kg001_interaction_v130_runtime.json":ROOT/"data/tests/kg001_interaction_reachability_runtime_v130.json",
             TMP/"kg001_cursor_v143_runtime.json":ROOT/"data/tests/kg001_interaction_cursor_runtime_v143.json",
+            TMP/"kg001_menu_v145_runtime.json":ROOT/"data/tests/kg001_legacy_menu_runtime_v145.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }
