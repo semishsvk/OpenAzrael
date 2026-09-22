@@ -8,8 +8,11 @@ contract=json.loads((ROOT/"data/tests/kg001_material_texture_contract_v124.json"
 checks={
  "schema":contract.get("schema")=="openazrael.kg001.material_texture_parity_contract" and contract.get("version")==124,
  "source_derived_reference":all(x in gen for x in ("read_glb","accessor_array","RAW_GLTF_UPPER_LEFT","mesh_count","triangle_count")),
- "uv_fingerprint":all(x in runner for x in ("quantized_uv_sha","_uv_parity","uv_sha256")),
- "material_texture":all(x in runner for x in ("resource_name","albedo_texture","_material_name","_texture_present")),
+ "runtime_import_reference":all(x in runner for x in ("direct_packed","direct_root","direct_mesh_set")),
+ "uv_fingerprint":all(x in runner for x in ("quantized_uv_sha","_uv_runtime_import_parity","ref_uv")),
+ "material_texture":all(x in runner for x in ("resource_name","albedo_texture","_material_runtime_import_parity","_texture_present")),
+ "texture_pixel_parity":"texture_rgba_sha" in runner and "_texture_pixels_runtime_import_parity" in runner,
+ "source_identity_delegated_to_v133":"v133" in contract.get("evidence_boundary",""),
  "colorkey":all(x in runner for x in ("legacy_colorkey","TRANSPARENCY_DISABLED")),
  "no_fabricated_geometry":all(x not in runner for x in ("MeshInstance3D.new()","ArrayMesh.new()","BoxMesh.new()")),
  "marker":"OPENAZRAEL_KG001_MATERIAL_TEXTURE_V124" in runner,
