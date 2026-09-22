@@ -13,6 +13,7 @@ class ToolFamily(str, Enum):
     LOCALIZATION_LAB = "localization_lab"
     VALIDATION_LAB = "validation_lab"
     PROJECT_RELEASE = "project_release"
+    SOURCE_BOOTSTRAP = "source_bootstrap"
 
 
 class ToolMaturity(str, Enum):
