@@ -11,6 +11,7 @@ FILES={
  "geometry_v122":TMP/"kg001_geometry_v122_runtime.json",
  "visibility_v123":TMP/"kg001_visibility_v123_runtime.json",
  "material_v124":TMP/"kg001_material_v124_runtime.json",
+ "texture_orientation_v133":ROOT/"data/runtime_generated/demo_texture_orientation_v133.json",
  "transform_v125":TMP/"kg001_transform_v125_runtime.json",
  "visual_v126":TMP/"kg001_visual_v126_runtime.json",
  "reachable_visibility_v127":TMP/"kg001_reachable_visibility_v127_runtime.json",
@@ -32,7 +33,7 @@ def main():
  if not FIDELITY.is_file():
   print(json.dumps({"status":"FAIL","error":"fidelity manifest missing"}));return 1
  fidelity=json.loads(FIDELITY.read_text(encoding="utf-8"))
- base=["source","geometry_v122","visibility_v123","material_v124","transform_v125","visual_v126","reachable_visibility_v127","portal_v129","interaction_v130"]
+ base=["source","geometry_v122","visibility_v123","material_v124","texture_orientation_v133","transform_v125","visual_v126","reachable_visibility_v127","portal_v129","interaction_v130"]
  required=tuple(base+(["package_v128"] if args.phase=="package" else []))
  reports={}
  for room_id in ("R1","R7","R8"):
