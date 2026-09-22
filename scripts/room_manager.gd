@@ -158,6 +158,7 @@ func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
     var portal_views := _portal_view_names(room_id)
     var pickup_names: Dictionary = PICKUPS.get(room_id, {})
+    var collision_objects: Array[String] = []
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
     for n in nodes:
@@ -205,6 +206,33 @@ func _create_world_collision(room_id: String) -> void:
         cs.shape = shape
         body.add_child(cs)
         mi.add_child(body)
+        if not collision_objects.has(obj_name):
+            collision_objects.append(obj_name)
+
+    collision_objects.sort()
+    CandidateDiagnostics.record_event("room_collision_built", {
+        "room": room_id,
+        "collision_object_count": collision_objects.size(),
+        "objects": collision_objects,
+        "r1_object02_support": (
+            collision_objects.has("Object02")
+            if room_id == "R1"
+            else null
+        )
+    })
+    if room_id == "R1" and not collision_objects.has("Object02"):
+        push_error(
+            "OpenAzrael critical collision invariant: "
+            + "R1 Object02 tunnel support has no collision"
+        )
+        CandidateDiagnostics.record_event(
+            "critical_collision_support_missing",
+            {
+                "room": room_id,
+                "object": "Object02",
+                "severity": "CRITICAL"
+            }
+        )
 
 func _add_area_for_object(obj: Node3D, radius_min: float = 10.0) -> Area3D:
     var area := Area3D.new()
