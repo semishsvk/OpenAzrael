@@ -336,9 +336,10 @@ func _setup_r8() -> void:
     if door != null and DemoState.puzzle_node("DoorR8"):
         door.rotation.y += deg_to_rad(90.0)
 
+    var shield_area: Area3D = null
     if shield != null:
         shield.visible = DemoState.puzzle_node("DoorR8") and not DemoState.flag("demo_complete")
-        var shield_area := _add_area_for_object(shield, 22.0)
+        shield_area = _add_area_for_object(shield, 22.0)
         shield_area.name = "Interact_ShieldR8"
         shield_area.set_script(preload("res://scripts/r8_shield_interaction.gd"))
         shield_area.set("shield_visual", shield)
