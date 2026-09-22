@@ -10,7 +10,10 @@ const TAP_SOUND = preload("res://assets/audio/797TAP.WAV")
 func _play_one_shot(stream: AudioStream) -> void:
     var p := AudioStreamPlayer.new()
     p.stream = stream
-    get_tree().current_scene.add_child(p)
+    var host: Node = get_tree().current_scene
+    if host == null:
+        host = get_tree().root
+    host.add_child(p)
     p.finished.connect(p.queue_free)
     p.play()
 
