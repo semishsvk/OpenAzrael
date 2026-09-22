@@ -47,10 +47,13 @@ checks = {
         "not mi.visible" in runner
         and "projected_area >= MIN_TOTAL_PROJECTED_AREA" in runner
     ),
-    "runtime_collision_child": (
+    "runtime_collision_owner": (
         '"Collision_" + object_name' in runner
-        and "_collision_child" in runner
+        and '"Collision_" + String(parent.name)' in runner
+        and "_collision_body" in runner
+        and "_find_named" in runner
         and "_collision_shape" in runner
+        and "var grouped := _find_named(parent" in runner
     ),
     "collision_contract": all(
         token in runner
