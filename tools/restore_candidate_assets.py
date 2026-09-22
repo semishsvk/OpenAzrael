@@ -136,6 +136,7 @@ def main():
         })
     prepare(src/'797TAP.WAV', audio/'797TAP.WAV')
     prepare(src/'S137.WAV', audio/'S137.WAV')
+    prepare(src/'981PULL.WAV', audio/'981PULL.WAV')
     for row in audio_restore_rows:
         runtime_path = audio / row['filename']
         row['runtime_sha256'] = hashlib.sha256(runtime_path.read_bytes()).hexdigest()
