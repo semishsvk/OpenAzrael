@@ -141,6 +141,26 @@ class KG001CandidateFrameworkTests(unittest.TestCase):
                       }
             },
         )
+        self._write(
+            evidence / "kg001_collision_geometry_v120.json",
+            {
+                "schema": "openazrael.kg001.collision_geometry_validation",
+                "version": 120,
+                "status": "PASS",
+                "checks": {
+                    "room_specific_exclusions": True,
+                    "r1_object02_support": True,
+                },
+                "roles": [
+                    {
+                        "room": "R1",
+                        "object": "Object02",
+                        "status": "PASS",
+                    }
+                ],
+                "errors": [],
+            },
+        )
         for version in (109, 110, 111, 117, 118):
             self._write(
                 evidence / f"kg001_v{version}_runtime.json",
