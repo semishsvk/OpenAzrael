@@ -50,6 +50,8 @@ REQUIRED_RUNTIME = (
     "material_v124",
     "transform_v125",
     "reachable_visibility_v127",
+    "portal_v129",
+    "interaction_v130",
 )
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
