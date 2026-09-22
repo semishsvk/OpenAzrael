@@ -23,6 +23,11 @@ var capture_notice := ""
 var state_dump_notice := ""
 
 func _ready() -> void:
+    var legacy_classic_mode_active := is_instance_valid(legacy_menu)
+    if legacy_classic_mode_active and is_instance_valid(label):
+        var legacy_overlay := label.get_parent()
+        if legacy_overlay is CanvasItem:
+            (legacy_overlay as CanvasItem).visible = false
     _build_candidate_debug_panel()
     _build_audio_debug_panel()
     _build_interaction_cursor()
