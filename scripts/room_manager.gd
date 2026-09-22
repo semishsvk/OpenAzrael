@@ -70,6 +70,7 @@ func _ready() -> void:
         return
 
     load_room("R1", false)
+    CandidateMusic.bind_room_manager(self)
     if not is_instance_valid(current_room):
         get_tree().quit(2)
         return
