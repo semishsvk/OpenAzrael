@@ -5,6 +5,10 @@ const SLOT_NAMES := ["FILE ALPHA", "FILE BETA", "FILE GAMMA", "FILE DELTA", "FIL
 const SCHEMA := "openazrael.demo_save"
 const VERSION := 145
 
+static func _demo_state() -> Node:
+    var tree := Engine.get_main_loop() as SceneTree
+    return tree.root.get_node_or_null("DemoState") if tree != null else null
+
 static func slot_path(index: int) -> String:
     return "user://SAVE%d.dat" % clampi(index, 0, SLOT_NAMES.size() - 1)
 
@@ -15,7 +19,8 @@ static func slot_exists(index: int) -> bool:
     return FileAccess.file_exists(slot_path(index))
 
 static func save_slot(index: int, room_manager: Node, player: CharacterBody3D) -> bool:
-    if room_manager == null or player == null:
+    var demo_state := _demo_state()
+    if room_manager == null or player == null or demo_state == null:
         return false
     var camera := player.get_node_or_null("Camera3D") as Camera3D
     var pitch := float(player.get("pitch")) if player.get("pitch") != null else (camera.rotation.x if camera != null else 0.0)
@@ -24,7 +29,7 @@ static func save_slot(index: int, room_manager: Node, player: CharacterBody3D) -
         "version": VERSION,
         "slot": clampi(index, 0, SLOT_NAMES.size() - 1),
         "slot_name": slot_name(index),
-        "state": DemoState.canonical_state_payload(),
+        "state": demo_state.call("canonical_state_payload"),
         "room": String(room_manager.current_room_id),
         "player_position": [player.global_position.x, player.global_position.y, player.global_position.z],
         "player_yaw": player.rotation.y,
@@ -39,8 +44,9 @@ static func save_slot(index: int, room_manager: Node, player: CharacterBody3D) -
     return true
 
 static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -> bool:
+    var demo_state := _demo_state()
     var path := slot_path(index)
-    if not FileAccess.file_exists(path) or room_manager == null or player == null:
+    if not FileAccess.file_exists(path) or room_manager == null or player == null or demo_state == null:
         return false
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
     if not parsed is Dictionary:
@@ -48,7 +54,7 @@ static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -
     if String(parsed.get("schema", "")) != SCHEMA:
         return false
     var state = parsed.get("state", [])
-    if not state is Array or not DemoState.restore_canonical_state_payload(state):
+    if not state is Array or not bool(demo_state.call("restore_canonical_state_payload", state)):
         return false
     var room := String(parsed.get("room", "R1"))
     room_manager.load_room(room, false)
