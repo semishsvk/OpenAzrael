@@ -28,13 +28,46 @@ class OpenAzraelR1PPPVTests(unittest.TestCase):
     def test_every_r1_scenario_uses_real_approach_and_probe(self) -> None:
         for scenario in self.scenarios.values():
             self.assertEqual(scenario.validate(), [])
-            self.assertEqual(
-                [action.execution_mode for action in scenario.actions],
-                [ExecutionMode.INPUT, ExecutionMode.INTERACTION_PROBE],
+            modes = [action.execution_mode for action in scenario.actions]
+            self.assertEqual(modes[-1], ExecutionMode.INTERACTION_PROBE)
+            self.assertTrue(
+                all(mode == ExecutionMode.INPUT for mode in modes[:-1])
             )
             self.assertFalse(
                 scenario.metadata["direct_interact_call_allowed"]
             )
+
+    def test_tongs_uses_audited_physical_corridor_route(self) -> None:
+        scenario = self.scenarios["openazrael.r1.pickup_tongs"]
+        self.assertTrue(scenario.setup["flags"]["R1Door1Open"])
+        waypoint_actions = [
+            action
+            for action in scenario.actions
+            if "goal_world_point" in action.parameters
+        ]
+        self.assertGreaterEqual(len(waypoint_actions), 40)
+        self.assertTrue(
+            all(
+                action.execution_mode == ExecutionMode.INPUT
+                for action in waypoint_actions
+            )
+        )
+        self.assertEqual(
+            scenario.metadata["route_policy"],
+            "production input only; no teleport",
+        )
+
+    def test_door2_uses_same_audited_route_before_real_interaction(self) -> None:
+        scenario = self.scenarios["openazrael.r1.open_door2"]
+        self.assertTrue(scenario.setup["flags"]["R1Door1Open"])
+        self.assertTrue(scenario.setup["inventory"]["well_key"])
+        self.assertTrue(
+            any("goal_world_point" in action.parameters for action in scenario.actions)
+        )
+        self.assertEqual(
+            scenario.actions[-1].parameters["goal_world_point"],
+            [529.295811, -84.2055, -513.041569],
+        )
 
     def test_tongs_pickup_requires_inventory_state_change(self) -> None:
         scenario = self.scenarios["openazrael.r1.pickup_tongs"]
