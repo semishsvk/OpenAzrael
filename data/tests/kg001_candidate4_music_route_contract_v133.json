@@ -23,7 +23,10 @@
       "canonical XMI identities",
       "explicit room identities",
       "integer metadata",
-      "structural counts"
+      "structural counts",
+      "bound executable code-offset signature status",
+      "verified numeric route bindings",
+      "music selector indices"
     ]
   },
   "semantic_policy": {
@@ -34,28 +37,34 @@
     ],
     "bare_numeric_room_inference_allowed": false,
     "ambiguous_mapping_policy": "HOLD",
-    "explicit_room_plus_single_xmi_required_for_binding": true,
     "music_required_resolution": "REQUIRES_RUNTIME_MUSIC",
-    "bound_numeric_room_mapping_evidence": "data/world_sound_record_fields_v113.json",
-    "bound_demo_room_numeric_mapping": {
-      "0": "R1",
-      "1": "R7",
-      "2": "R8"
+    "numeric_binding_requires_bound_rexe_loader_and_slot_signatures": true,
+    "accepted_room_numeric_identity": {
+      "R1": 1,
+      "R7": 7,
+      "R8": 8
     },
-    "bound_rexe_gm_slot_table": [
-      "AWEMYST.XMI",
-      "CATHEDRL.XMI",
-      "EGYPTIAN.XMI",
-      "FIGHT2.XMI",
-      "GHOSTS.XMI",
-      "GRAIL.XMI",
-      "INGAME.XMI",
-      "INGAME2.XMI",
-      "KREEPY2.XMI",
-      "KREEPY3.XMI",
-      "PEACEFUL.XMI"
+    "candidate4_synth_profile": "GENERAL_MIDI_XMI",
+    "numeric_binding_policy": "ALLOW_ONLY_AFTER_EXACT_BOUND_REXE_PAIR_AND_SLOT_PROOF",
+    "binding_paths": [
+      "EXPLICIT_TEXT",
+      "BOUND_REXE_NUMERIC_TABLE"
     ],
-    "numeric_binding_policy": "Allowed only when both independently bound room-ID evidence and the exact bound R.EXE GM slot table validate; otherwise HOLD."
+    "gm_selector_slots": {
+      "0": "AWEMYST.XMI",
+      "1": "CATHEDRL.XMI",
+      "2": "EGYPTIAN.XMI",
+      "3": "FIGHT2.XMI",
+      "4": "GHOSTS.XMI",
+      "5": "GRAIL.XMI",
+      "6": "INGAME.XMI",
+      "7": "INGAME2.XMI",
+      "8": "KREEPY2.XMI",
+      "9": "KREEPY3.XMI",
+      "10": "PEACEFUL.XMI",
+      "11": "DEATH.XMI",
+      "12": "BLANK.XMI"
+    }
   },
   "output": ".tmp/kg001/candidate4_music_route_v133.json"
 }
