@@ -9,6 +9,67 @@ const ActionExecutorScript = preload("res://scripts/validation/pppv_action_execu
 const RuntimeGuardScript = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
 var failures: Array[String] = []
+var proof_enabled := false
+var proof_label: Label = null
+
+func _arg_enabled(flag: String) -> bool:
+    for arg in OS.get_cmdline_args():
+        if arg == flag or arg == flag + "=1" or arg == flag + "=true":
+            return true
+    return false
+
+func _proof_overlay_create() -> void:
+    if not proof_enabled:
+        return
+    var layer := CanvasLayer.new()
+    layer.name = "PPPVProofCaptureOverlay"
+    layer.layer = 1000
+    root.add_child(layer)
+
+    var background := ColorRect.new()
+    background.name = "Background"
+    background.position = Vector2(12, 620)
+    background.size = Vector2(1256, 88)
+    background.color = Color(0.0, 0.0, 0.0, 0.72)
+    layer.add_child(background)
+
+    proof_label = Label.new()
+    proof_label.name = "Status"
+    proof_label.position = Vector2(24, 628)
+    proof_label.size = Vector2(1232, 72)
+    proof_label.add_theme_font_size_override("font_size", 18)
+    proof_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
+    proof_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+    proof_label.add_theme_constant_override("outline_size", 4)
+    layer.add_child(proof_label)
+
+func _proof_overlay_update(step: Dictionary, manager: Node, status: String) -> void:
+    if not proof_enabled or proof_label == null:
+        return
+    var sha := OS.get_environment("OPENAZRAEL_PROOF_GIT_SHA")
+    if sha.is_empty():
+        sha = "UNKNOWN"
+    var sha_short := sha.substr(0, min(12, sha.length()))
+    var freeze_sha := OS.get_environment("OPENAZRAEL_PROOF_FREEZE_SHA")
+    var freeze_short := (
+        freeze_sha.substr(0, min(12, freeze_sha.length()))
+        if not freeze_sha.is_empty()
+        else "UNKNOWN"
+    )
+    var room := (
+        String(manager.get("current_room_id"))
+        if manager != null
+        else "UNKNOWN"
+    )
+    var step_id := String(step.get("step_id", "BOOT"))
+    proof_label.text = (
+        "OpenAzrael KG-001 Candidate 4 | REAL PPPV PROOF CAPTURE\n"
+        + "SHA " + sha_short
+        + " | FREEZE " + freeze_short
+        + " | ROOM " + room
+        + " | STEP " + step_id
+        + " | " + status
+    )
 
 func _initialize() -> void:
     call_deferred("_run")
@@ -348,6 +409,7 @@ func _finish(
     quit(0 if failures.is_empty() and wrote else 1)
 
 func _run() -> void:
+    proof_enabled = _arg_enabled("--pppv-proof-overlay")
     var plan_path := _arg_value("--pppv-plan=")
     var scenarios_path := _arg_value("--pppv-scenarios=")
     var output_path := _arg_value(
@@ -403,6 +465,9 @@ func _run() -> void:
         quit(2)
         return
 
+    _proof_overlay_create()
+    _proof_overlay_update({"step_id": "BOOT"}, manager, "READY")
+
     var evidence = EvidenceBusScript.new()
     var observer = ObserverScript.new(
         evidence,
@@ -436,10 +501,15 @@ func _run() -> void:
             failures.append("invalid_plan_step")
             break
 
+        _proof_overlay_update(raw_step, manager, "RUNNING")
         var kind := String(raw_step.get("kind", ""))
         if kind == "checkpoint":
-            step_results.append(
-                _run_checkpoint(raw_step, state, evidence)
+            var checkpoint_result := _run_checkpoint(raw_step, state, evidence)
+            step_results.append(checkpoint_result)
+            _proof_overlay_update(
+                raw_step,
+                manager,
+                String(checkpoint_result.get("status", "UNKNOWN"))
             )
             continue
 
@@ -462,9 +532,19 @@ func _run() -> void:
             runtime_guard
         )
         step_results.append(result)
+        _proof_overlay_update(
+            raw_step,
+            manager,
+            String(result.get("status", "UNKNOWN"))
+        )
         if String(result.get("status", "")) != "EXECUTION_PASS":
             break
 
+    _proof_overlay_update(
+        {"step_id": "FINAL_STATE"},
+        manager,
+        "VERIFYING EVIDENCE"
+    )
     _finish(
         output_path,
         plan,

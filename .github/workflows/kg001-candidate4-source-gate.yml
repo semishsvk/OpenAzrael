@@ -41,6 +41,10 @@ jobs:
             tools/validate_candidate4_audio_corpus_v132.py \
             tools/run_candidate4_preflight.py \
             tools/export_candidate4.py
+      - name: Validate Candidate 4 proof capture contract
+        run: |
+          python tools/validate_kg001_proof_capture_v151.py
+          python -m py_compile tools/capture_candidate4_proof_video.py
       - name: Verify tracked checkout stayed clean
         shell: bash
         run: test -z "$(git status --porcelain --untracked-files=normal)"

@@ -30,3 +30,10 @@ Run final source VERIFY on the resulting exact SHA. If all source checks pass, u
 Final source VERIFY is required on the exact resulting HEAD; this documentation line deliberately does not promote runtime/export/G10 evidence.
 
 - 2026-09-23: exact-head Candidate 4 validation closure cycle requested; no runtime scope change.
+
+
+### Candidate 4 proof capture v151
+
+Source-safe proof-capture support is implemented for the frozen Candidate 4 path. It records the real chained PPPV run through Godot Movie Maker, overlays exact source/freeze identity plus room/step status, re-evaluates the captured run, requires replay/final-state identity with the deterministic PPPV baseline, and only then emits MP4 + a SHA-bound receipt. This remains supplemental evidence and does not promote runtime/export/G10 by itself.
+
+No proof MP4 is claimed by source integration alone. A real video still requires the private registered demo corpus, graphical Godot runtime, a PASS Candidate 4 preflight/freeze, and ffmpeg on the exact source SHA.

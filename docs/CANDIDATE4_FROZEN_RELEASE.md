@@ -18,6 +18,16 @@ The `Candidate 4 source snapshot` workflow is source-only. For a frozen handoff,
 
 The artifact intentionally excludes ignored commercial/runtime assets. It is a source provenance artifact, not a replacement for the private asset-backed preflight/freeze receipt.
 
+## Proof capture evidence
+
+After a PASS Candidate 4 preflight and a PASS frozen-release receipt, a supplemental real-runtime proof video can be produced with:
+
+`python tools/capture_candidate4_proof_video.py`
+
+The capture runs the chained PPPV playthrough again in graphical Godot Movie Maker mode using the production player camera and production interactions. It then re-evaluates that captured run and requires its semantic replay fingerprint and final state hash to match the already-PASS deterministic PPPV runs. Only then is the raw movie transcoded to MP4 and a hash-bound v151 proof-capture receipt emitted.
+
+The proof video is strong visual/runtime evidence, but it is not a substitute for packaged EXE/PCK parity or manual G10.
+
 ## Protection boundary
 
 Repository branch protection/rulesets are useful administrative controls but are not treated as release evidence. The cryptographic source/runtime freeze remains required even if branch protection is later enabled.

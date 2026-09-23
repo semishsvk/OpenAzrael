@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+import json
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+CONTRACT = ROOT / "data/tests/kg001_proof_capture_contract_v151.json"
+CAPTURE = ROOT / "tools/capture_candidate4_proof_video.py"
+RUNNER = ROOT / "scripts/validation/pppv_playthrough_runner.gd"
+WORKFLOW = ROOT / ".github/workflows/kg001-candidate4-source-gate.yml"
+
+REQUIRED_CAPTURE_TOKENS = (
+    "candidate4_preflight_receipt.json",
+    "candidate4_frozen_release_receipt.json",
+    "--write-movie",
+    "--fixed-fps",
+    "--pppv-proof-overlay=1",
+    "semantic_replay_sha256",
+    "final_state_sha256",
+    "libx264",
+    "ai_generated_visuals",
+)
+REQUIRED_RUNNER_TOKENS = (
+    "PPPVProofCaptureOverlay",
+    "OPENAZRAEL_PROOF_GIT_SHA",
+    "OPENAZRAEL_PROOF_FREEZE_SHA",
+    "REAL PPPV PROOF CAPTURE",
+)
+REQUIRED_WORKFLOW_TOKENS = (
+    "validate_kg001_proof_capture_v151.py",
+    "capture_candidate4_proof_video.py",
+)
+
+
+def fail(errors: list[str]) -> int:
+    print(json.dumps({
+        "schema": "openazrael.kg001.proof_capture_source_validation",
+        "version": 151,
+        "status": "FAIL",
+        "errors": errors,
+    }, indent=2))
+    return 1
+
+
+def main() -> int:
+    errors: list[str] = []
+    for path in (CONTRACT, CAPTURE, RUNNER, WORKFLOW):
+        if not path.is_file():
+            errors.append(f"missing:{path.relative_to(ROOT)}")
+    if errors:
+        return fail(errors)
+
+    try:
+        contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return fail([f"invalid_contract:{exc}"])
+
+    if contract.get("schema") != "openazrael.kg001.proof_capture_contract":
+        errors.append("contract_schema")
+    if contract.get("version") != 151:
+        errors.append("contract_version")
+    if contract.get("status") != "ACCEPTED":
+        errors.append("contract_status")
+    if contract.get("supplemental_evidence") is not True:
+        errors.append("supplemental_evidence")
+    if contract.get("replaces_manual_g10") is not False:
+        errors.append("manual_g10_boundary")
+    if contract.get("forbid_ai_generated_visuals") is not True:
+        errors.append("ai_visual_boundary")
+    if contract.get("forbid_noclip_camera") is not True:
+        errors.append("noclip_boundary")
+
+    capture_text = CAPTURE.read_text(encoding="utf-8")
+    runner_text = RUNNER.read_text(encoding="utf-8")
+    workflow_text = WORKFLOW.read_text(encoding="utf-8")
+    for token in REQUIRED_CAPTURE_TOKENS:
+        if token not in capture_text:
+            errors.append(f"capture_token:{token}")
+    for token in REQUIRED_RUNNER_TOKENS:
+        if token not in runner_text:
+            errors.append(f"runner_token:{token}")
+    for token in REQUIRED_WORKFLOW_TOKENS:
+        if token not in workflow_text:
+            errors.append(f"workflow_token:{token}")
+
+    if errors:
+        return fail(errors)
+
+    print(json.dumps({
+        "schema": "openazrael.kg001.proof_capture_source_validation",
+        "version": 151,
+        "status": "PASS",
+        "contract": str(CONTRACT.relative_to(ROOT)),
+        "capture_tool": str(CAPTURE.relative_to(ROOT)),
+        "runner": str(RUNNER.relative_to(ROOT)),
+        "supplemental_evidence_only": True,
+    }, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
