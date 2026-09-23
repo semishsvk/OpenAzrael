@@ -26,8 +26,8 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
         self.assertTrue(
             plan["metadata"]["chained_execution_implemented"]
         )
-        self.assertNotIn("S01_PICKUP_TONGS", plan["blocked_steps"])
-        self.assertNotIn("S02_OPEN_DOOR1", plan["blocked_steps"])
+        self.assertNotIn("S02_PICKUP_TONGS", plan["blocked_steps"])
+        self.assertNotIn("S01_OPEN_DOOR1", plan["blocked_steps"])
         self.assertNotIn("S08_OPEN_DOOR2", plan["blocked_steps"])
         self.assertNotIn("T03_R1_TO_R7", plan["blocked_steps"])
         self.assertNotIn("T07_R7_TO_R1", plan["blocked_steps"])
@@ -44,9 +44,33 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
             _default_scenario_bundle(root)
         )
         rows = {row["step_id"]: row for row in plan["steps"]}
-        self.assertEqual(rows["S01_PICKUP_TONGS"]["status"], "READY")
-        self.assertEqual(rows["S02_OPEN_DOOR1"]["status"], "READY")
+        self.assertEqual(rows["S02_PICKUP_TONGS"]["status"], "READY")
+        self.assertEqual(rows["S01_OPEN_DOOR1"]["status"], "READY")
         self.assertEqual(rows["S08_OPEN_DOOR2"]["status"], "READY")
+
+    def test_r1_order_matches_physical_corridor_dependency(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root)
+        )
+        step_ids = [row["step_id"] for row in plan["steps"]]
+        self.assertLess(
+            step_ids.index("S01_OPEN_DOOR1"),
+            step_ids.index("S02_PICKUP_TONGS"),
+        )
+        rows = {row["step_id"]: row for row in plan["steps"]}
+        self.assertEqual(
+            rows["S01_OPEN_DOOR1"]["scenario_id"],
+            "openazrael.r1.open_door1",
+        )
+        self.assertEqual(
+            rows["S02_PICKUP_TONGS"]["scenario_id"],
+            "openazrael.r1.pickup_tongs",
+        )
+        self.assertIn(
+            "flags.R1Door1Open",
+            rows["S02_PICKUP_TONGS"]["required_state_paths"],
+        )
 
     def test_transition_scenarios_are_reused_as_ready_segments(self) -> None:
         root = Path(__file__).resolve().parents[3]
