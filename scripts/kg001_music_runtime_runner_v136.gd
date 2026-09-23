@@ -62,7 +62,7 @@ func _run() -> void:
         _check(room_id + "_resource_exists", ResourceLoader.exists(path))
         _check(room_id + "_stream_valid", bool(snap.get("stream_valid", false)))
         _check(room_id + "_playing", bool(snap.get("playing", false)))
-        _check(room_id + "_master_bus", String(snap.get("bus", "")) == "Master")
+        _check(room_id + "_music_bus", String(snap.get("bus", "")) == "OA_Music")
         _check(room_id + "_loop", bool(snap.get("loop", false)) == bool(meta.get("loop", false)))
         _check(room_id + "_loop_offset", absf(float(snap.get("loop_offset_seconds", 0.0)) - float(meta.get("loop_offset_seconds", 0.0))) < 0.01)
     music.call("stop")
