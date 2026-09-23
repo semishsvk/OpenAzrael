@@ -128,7 +128,7 @@ func _execute_impl(action: Dictionary) -> bool:
                 if runtime_guard != null and bool(
                     params.get("verify_destination_spawn", true)
                 ):
-                    var spawn_ok := bool(runtime_guard.verify_transition_spawn(
+                    var spawn_ok := bool(await runtime_guard.verify_transition_spawn(
                         action_id,
                         source_room,
                         goal_trigger,
