@@ -644,6 +644,44 @@ func load_room_at_portal(
     })
     return true
 
+func portal_spawn_expectation(room_id: String, view_name: String) -> Dictionary:
+    # Read-only mirror of the exact production spawn calculation. Validation
+    # uses this instead of duplicating nominal offsets or guessing coordinates.
+    if current_room_id != room_id or not is_instance_valid(current_room):
+        return {}
+    var view := _view_record(room_id, view_name)
+    if view.is_empty():
+        return {}
+    var centroid := _v3(view["centroid"])
+    var normal := _v3(view["normal"]).normalized()
+    var spawn_distance := _portal_spawn_distance(centroid, normal)
+    var eye_position := (
+        centroid
+        + normal * spawn_distance
+        + Vector3.UP * PORTAL_SPAWN_CLEARANCE
+    )
+    var expected_player_position := (
+        eye_position - Vector3.UP * float(player.eye_height)
+    )
+    var flat := Vector3(normal.x, 0.0, normal.z).normalized()
+    if flat.length_squared() < 0.001:
+        flat = Vector3.FORWARD
+    return {
+        "room": room_id,
+        "portal": view_name,
+        "spawn_distance": spawn_distance,
+        "eye_position": [
+            eye_position.x, eye_position.y, eye_position.z
+        ],
+        "player_position": [
+            expected_player_position.x,
+            expected_player_position.y,
+            expected_player_position.z
+        ],
+        "forward": [normal.x, normal.y, normal.z],
+        "yaw": atan2(-flat.x, -flat.z)
+    }
+
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
     var mx := _v3(t["bounds"][1])
