@@ -83,20 +83,29 @@ def build_openazrael_demo_playthrough_plan(
     available = _scenario_ids(scenario_bundle)
     steps: list[PlaythroughStep] = [
         _scenario_step(
-            "S01_PICKUP_TONGS",
-            "R1",
-            "openazrael.r1.pickup_tongs",
-            available,
-            required_state_paths=("inventory.rusty_tongs",),
-            purpose="Acquire TONG6 through production pickup interaction.",
-        ),
-        _scenario_step(
-            "S02_OPEN_DOOR1",
+            "S01_OPEN_DOOR1",
             "R1",
             "openazrael.r1.open_door1",
             available,
             required_state_paths=("flags.R1Door1Open",),
-            purpose="Open the R1 door that gates the R7 transition.",
+            purpose=(
+                "Open the physical R1 corridor before attempting the TONG6 "
+                "route, matching the audited v119/v141 traversal."
+            ),
+        ),
+        _scenario_step(
+            "S02_PICKUP_TONGS",
+            "R1",
+            "openazrael.r1.pickup_tongs",
+            available,
+            required_state_paths=(
+                "flags.R1Door1Open",
+                "inventory.rusty_tongs",
+            ),
+            purpose=(
+                "Traverse the audited R1 corridor, acquire TONG6 through "
+                "production pickup interaction, and return toward R7."
+            ),
         ),
         _transition_step(
             "T03_R1_TO_R7",
