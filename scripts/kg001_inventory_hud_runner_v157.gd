@@ -51,6 +51,10 @@ func _run() -> void:
 
     var initial: Dictionary = menu.call("debug_inventory_snapshot")
     _check("inventory_rect", initial.get("rect", []) == [70.0, 345.0, 103.0, 69.0])
+    _check("source_font_cell", initial.get("font_cell", []) == [10.0, 12.0])
+    _check("source_font_first_codepoint", int(initial.get("font_first_codepoint", -1)) == 35)
+    _check("source_font_cell_count", int(initial.get("font_cell_count", -1)) == 138)
+    _check("source_font_fidelity", String(initial.get("font_fidelity", "")) == "SOURCE_INVFONT_FIXED_CELL_MAP")
     _check("initial_empty", _labels(menu).is_empty())
 
     state.acquire("rusty_tongs")
@@ -60,7 +64,7 @@ func _run() -> void:
     state.remove("rusty_tongs")
     state.acquire("well_key")
     await _settle()
-    _check("tongs_removed_key_visible", _ids(menu) == ["well_key"] and _labels(menu) == ["Well Key"])
+    _check("tongs_removed_key_visible", _ids(menu) == ["well_key"] and _labels(menu) == ["Key"])
 
     state.acquire("r8_lens")
     await _settle()
@@ -73,7 +77,7 @@ func _run() -> void:
     events.call("run", "R8_TAKE_SHIELD")
     await _settle()
     _check("shield_added_by_event", _ids(menu) == ["well_key", "shield"])
-    _check("shield_label", _labels(menu) == ["Well Key", "Shield"])
+    _check("shield_label", _labels(menu) == ["Key", "Shield"])
 
     manager.call("load_room", "R8", false)
     await _settle()
@@ -89,12 +93,12 @@ func _run() -> void:
     _check("load_slot", SaveSystem.load_slot(0, manager, player))
     await _settle(4)
     _check("load_restores_inventory_ids", _ids(menu) == ["well_key", "shield"])
-    _check("load_restores_inventory_labels", _labels(menu) == ["Well Key", "Shield"])
+    _check("load_restores_inventory_labels", _labels(menu) == ["Key", "Shield"])
 
     state.acquire("unmapped_future_item")
     await _settle()
     var unknown: Dictionary = menu.call("debug_inventory_snapshot")
-    _check("unknown_not_rendered", _labels(menu) == ["Well Key", "Shield"])
+    _check("unknown_not_rendered", _labels(menu) == ["Key", "Shield"])
     _check("unknown_reported", unknown.get("unknown_ids", []) == ["unmapped_future_item"])
 
     var save_path := SaveSystem.slot_path(0)
@@ -113,7 +117,7 @@ func _finish(scene: Node = null) -> void:
         "failed": failures,
         "source_of_truth": "DemoState.inventory",
         "inventory_rect": [70, 345, 103, 69],
-        "font_fidelity": "COMPATIBILITY_FONT__INVFONT_GLYPH_MAP_HOLD",
+        "font_fidelity": "SOURCE_INVFONT_FIXED_CELL_MAP",
     }
     print("OPENAZRAEL_KG001_INVENTORY_HUD_V157 " + JSON.stringify(out))
     if scene != null:
