@@ -67,9 +67,12 @@ def main() -> int:
         errors.append("supplemental_evidence")
     if contract.get("replaces_manual_g10") is not False:
         errors.append("manual_g10_boundary")
-    if contract.get("forbid_ai_generated_visuals") is not True:
+    visual = contract.get("visual_evidence", {})
+    if not isinstance(visual, dict):
+        visual = {}
+    if visual.get("forbid_ai_generated_visuals") is not True:
         errors.append("ai_visual_boundary")
-    if contract.get("forbid_noclip_camera") is not True:
+    if visual.get("forbid_noclip_camera") is not True:
         errors.append("noclip_boundary")
 
     capture_text = CAPTURE.read_text(encoding="utf-8")
