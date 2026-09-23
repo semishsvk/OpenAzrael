@@ -27,6 +27,14 @@ checks={
  "wav_30":contract.get("audio",{}).get("canonical_wav_count")==30,
  "xmi_24":contract.get("audio",{}).get("canonical_xmi_count")==24,
  "music_fail_closed":contract.get("audio",{}).get("music_policy")=="REQUIRE_RUNTIME_OR_PROVEN_NOT_USED_ON_ACCEPTED_DEMO_ROUTE",
+ "music_reproducibility_boundary":(
+     contract.get("audio",{}).get("music_reproducibility",{}).get("event_schedule_sha256_required") is True
+     and contract.get("audio",{}).get("music_reproducibility",{}).get("pcm_f32le_sha256_required") is True
+     and contract.get("audio",{}).get("music_reproducibility",{}).get("fluidsynth_version_required") is True
+     and contract.get("audio",{}).get("music_reproducibility",{}).get("libsndfile_version_required") is True
+     and contract.get("audio",{}).get("music_reproducibility",{}).get("cross_platform_pcm_bit_identity_guaranteed") is False
+     and contract.get("audio",{}).get("music_reproducibility",{}).get("cross_platform_ogg_bit_identity_guaranteed") is False
+ ),
  "pppv_two_runs":contract.get("gameplay",{}).get("minimum_identical_end_to_end_runs",0)>=2,
  "audio_validator_30":"len(sounds)!=30" in audio and "RUNTIME_WAV_CORPUS_INCOMPLETE" in audio,
  "audio_validator_music":"MUSIC_ROUTE_EVIDENCE_MISSING" in audio,

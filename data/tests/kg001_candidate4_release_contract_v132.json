@@ -60,7 +60,19 @@
     "ambient_and_triggered_audio_runtime_tests_required": true,
     "manual_audibility_required": true,
     "music_policy": "REQUIRE_RUNTIME_OR_PROVEN_NOT_USED_ON_ACCEPTED_DEMO_ROUTE",
-    "music_route_evidence": "data/audio/candidate4_music_route_evidence.json"
+    "music_route_evidence": "data/audio/candidate4_music_route_evidence.json",
+    "music_reproducibility": {
+      "renderer_identity_required": true,
+      "fluidsynth_version_required": true,
+      "native_library_sha256": "RECORD_WHEN_STABLE_RESOLVED_FILE_IS_AVAILABLE",
+      "libsndfile_version_required": true,
+      "event_schedule_sha256_required": true,
+      "pcm_f32le_sha256_required": true,
+      "ogg_output_sha256_required": true,
+      "cross_platform_pcm_bit_identity_guaranteed": false,
+      "cross_platform_ogg_bit_identity_guaranteed": false,
+      "evidence_boundary": "Event/timing identity and produced PCM are hashed independently of the OGG container. OGG SHA-256 is exact-artifact evidence for one invocation, not a cross-platform canonical byte identity."
+    }
   },
   "gameplay": {
     "all_required_puzzles_use_production_interactions": true,
