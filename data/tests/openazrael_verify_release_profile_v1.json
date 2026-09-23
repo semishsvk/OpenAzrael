@@ -290,6 +290,33 @@
       "verify": false
     },
     {
+      "id": "inventory_hud_v157",
+      "command": [
+        "<python>",
+        "tools/validate_kg001_inventory_hud_v157.py"
+      ],
+      "triggers": [
+        "scripts/legacy_menu_runtime_v145.gd",
+        "scripts/kg001_inventory_hud_runner_v157.gd",
+        "tools/validate_kg001_inventory_hud_v157.py",
+        "data/tests/kg001_inventory_hud_contract_v157.json",
+        "scripts/demo_state.gd",
+        "data/gameplay_event_graph_v87.json",
+        "docs/INVENTORY_HUD_V157.md"
+      ],
+      "inputs": [
+        "scripts/legacy_menu_runtime_v145.gd",
+        "scripts/kg001_inventory_hud_runner_v157.gd",
+        "tools/validate_kg001_inventory_hud_v157.py",
+        "data/tests/kg001_inventory_hud_contract_v157.json",
+        "scripts/demo_state.gd",
+        "data/gameplay_event_graph_v87.json",
+        "docs/INVENTORY_HUD_V157.md"
+      ],
+      "verify": true,
+      "cacheable": true
+    },
+    {
       "id": "candidate4_music_route",
       "command": [
         "<python>",

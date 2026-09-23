@@ -45,7 +45,8 @@
       "classic_v147",
       "interaction_probe_v148",
       "menu_toggle_v149",
-      "save_compat_v150"
+      "save_compat_v150",
+      "inventory_hud_v157"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
