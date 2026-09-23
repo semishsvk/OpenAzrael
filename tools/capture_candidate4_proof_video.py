@@ -18,6 +18,16 @@ import re
 import shutil
 import subprocess
 import sys
+import atexit
+from types import SimpleNamespace
+
+from tools.remaster_framework.capture_safety import (
+    CaptureLease,
+    CaptureSafetyError,
+    assert_no_conflicting_movie_capture,
+    audit_visual_stability,
+    run_monitored_capture,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 KG_TMP = ROOT / ".tmp/kg001"
@@ -32,11 +42,12 @@ BASELINE_EVAL = PPPV_TMP / "kg001_pppv_playthrough_evaluation.json"
 DETERMINISM = PPPV_TMP / "kg001_pppv_determinism.json"
 RUNTIME = OUT_DIR / "kg001_pppv_proof_runtime.json"
 EVALUATION = OUT_DIR / "kg001_pppv_proof_evaluation.json"
-RECEIPT = OUT_DIR / "kg001_proof_capture_receipt_v151.json"
+RECEIPT = OUT_DIR / "kg001_proof_capture_receipt_v152.json"
 DEFAULT_AVI = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof_raw.avi"
 DEFAULT_MP4 = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof.mp4"
 RAW_AUDIO_PCM = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof_raw_audio.s16le"
 MP4_AUDIO_PCM = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof_mp4_audio.s16le"
+SAFETY_LOCK = OUT_DIR / ".capture.lock"
 
 
 def run(cmd: list[str], *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
@@ -173,7 +184,7 @@ def fail(reason: str, details: dict | None = None, *, final_video: Path | None =
         final_video.unlink(missing_ok=True)
     payload = {
         "schema": "openazrael.kg001.proof_capture",
-        "version": 151,
+        "version": 152,
         "status": "FAIL",
         "reason": reason,
     }
@@ -200,6 +211,20 @@ def main() -> int:
     raw_avi = args.raw_avi.expanduser().resolve()
     final_video.parent.mkdir(parents=True, exist_ok=True)
     raw_avi.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        assert_no_conflicting_movie_capture(ROOT, exclude_pids={os.getpid()})
+        capture_lease = CaptureLease.acquire(
+            SAFETY_LOCK,
+            {
+                "purpose": "kg001-proof-capture-v152",
+                "argv": sys.argv,
+                "root": str(ROOT.resolve()),
+            },
+        )
+        atexit.register(capture_lease.release)
+    except CaptureSafetyError as exc:
+        return fail(exc.code, exc.details, final_video=final_video)
 
     for stale in (
         RUNTIME, EVALUATION, RECEIPT, raw_avi, final_video,
@@ -314,7 +339,20 @@ def main() -> int:
         f"--pppv-output={RUNTIME}",
         "--pppv-proof-overlay=1",
     ]
-    movie = run(movie_cmd, env=proof_env)
+    try:
+        capture_monitor = run_monitored_capture(
+            movie_cmd,
+            cwd=ROOT,
+            env=proof_env,
+            raw_movie=raw_avi,
+            lease=capture_lease,
+        )
+        movie = SimpleNamespace(
+            returncode=0,
+            stdout=str(capture_monitor.get("output_tail", "")),
+        )
+    except CaptureSafetyError as exc:
+        return fail(exc.code, exc.details, final_video=final_video)
     if (
         movie.returncode != 0
         or not raw_avi.is_file()
@@ -528,13 +566,31 @@ def main() -> int:
             final_video=final_video,
         )
 
+    try:
+        visual_qa = audit_visual_stability(
+            ffmpeg,
+            final_video,
+            fps=float(args.fps),
+            p99_frame_mad_max=28.0,
+            p99_luma_jump_max=14.0,
+            isolated_flash_score_max=45.0,
+        )
+    except CaptureSafetyError as exc:
+        return fail(exc.code, exc.details, final_video=final_video)
+    if visual_qa.get("status") != "PASS":
+        return fail(
+            "VISUAL_STABILITY_GATE_FAILED",
+            visual_qa,
+            final_video=final_video,
+        )
+
     godot_ver = run([godot, "--version"])
     ffmpeg_ver = run([ffmpeg, "-version"])
     ffmpeg_first = ffmpeg_ver.stdout.splitlines()[0] if ffmpeg_ver.stdout else ""
 
     receipt = {
         "schema": "openazrael.kg001.proof_capture",
-        "version": 151,
+        "version": 152,
         "status": "PASS",
         "candidate": "KG-001 Candidate 4",
         "commit_sha": head,
@@ -608,6 +664,14 @@ def main() -> int:
                 "max_volume_db": max_volume_db,
                 "non_silent_signal_verified": True,
             },
+        },
+        "capture_safety": {
+            "single_writer_lock": True,
+            "duplicate_movie_maker_forbidden": True,
+            "output_inode_monitored": True,
+            "output_size_monotonic_required": True,
+            "movie_monitor": capture_monitor,
+            "visual_stability": visual_qa,
         },
         "toolchain": {
             "godot": godot_ver.stdout.strip(),

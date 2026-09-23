@@ -44,7 +44,12 @@ jobs:
       - name: Validate Candidate 4 proof capture contract
         run: |
           python tools/validate_kg001_proof_capture_v151.py
-          python -m py_compile tools/capture_candidate4_proof_video.py
+          python tools/validate_kg001_proof_capture_v152.py
+          python -m unittest tools.remaster_framework.tests.test_capture_safety
+          python -m py_compile \
+            tools/capture_candidate4_proof_video.py \
+            tools/remaster_framework/capture_safety.py \
+            tools/validate_kg001_proof_capture_v152.py
       - name: Verify tracked checkout stayed clean
         shell: bash
         run: test -z "$(git status --porcelain --untracked-files=normal)"
