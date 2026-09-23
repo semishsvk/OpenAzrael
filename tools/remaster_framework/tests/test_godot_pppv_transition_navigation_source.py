@@ -36,6 +36,14 @@ class GodotPPPVTransitionNavigationSourceTests(unittest.TestCase):
         self.assertNotIn("player.global_position =", execute)
         self.assertNotIn("_spawn_at_portal", execute)
 
+    def test_shared_executor_supports_audited_world_waypoints(self) -> None:
+        execute = self.executor.split("func _execute_impl", 1)[1]
+        execute = execute.split("func failure_list", 1)[0]
+        self.assertIn('params.get("goal_world_point"', execute)
+        self.assertIn("navigator.approach_world_point", execute)
+        self.assertIn('"world_point_not_reached"', execute)
+        self.assertNotIn("player.global_position =", execute)
+
     def test_transition_success_requires_room_and_spawn_validation(self) -> None:
         execute = self.executor.split("func _execute_impl", 1)[1]
         execute = execute.split("func failure_list", 1)[0]
@@ -49,6 +57,13 @@ class GodotPPPVTransitionNavigationSourceTests(unittest.TestCase):
         self.assertIn("ActionExecutorScript.new", self.runner)
         self.assertIn("action_executor.execute(raw_action)", self.runner)
         self.assertNotIn("func _execute_action(", self.runner)
+
+    def test_scenario_setup_uses_one_portal_entry_helper_and_support_gate(self) -> None:
+        self.assertIn('manager.has_method("load_room_at_portal")', self.runner)
+        self.assertIn('manager.call("load_room_at_portal"', self.runner)
+        self.assertNotIn('manager.call("_spawn_at_portal"', self.runner)
+        self.assertIn("for frame in range(30)", self.runner)
+        self.assertIn("portal_support_failed", self.runner)
 
 
 if __name__ == "__main__":
