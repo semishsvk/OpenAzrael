@@ -46,6 +46,7 @@ jobs:
           python tools/validate_kg001_proof_capture_v151.py
           python tools/validate_kg001_proof_capture_v152.py
           python -m unittest tools.remaster_framework.tests.test_capture_safety
+          python tools/capture_candidate4_proof_video.py --help >/dev/null
           python -m py_compile \
             tools/capture_candidate4_proof_video.py \
             tools/remaster_framework/capture_safety.py \
