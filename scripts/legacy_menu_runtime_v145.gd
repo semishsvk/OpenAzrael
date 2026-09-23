@@ -32,12 +32,16 @@ const HUD_BUTTONS := {
 # Pixel-exact occurrence of INVBACK2.PCX inside HUD3.PCX from the official demo.
 # The background is already baked into HUD3, so runtime renders only the item text.
 const INVENTORY_RECT := Rect2(70, 345, 103, 69)
-const INVENTORY_TEXT_RECT := Rect2(77, 351, 89, 57)
+const INVENTORY_TEXT_ORIGIN := Vector2(70, 349)
 const INVENTORY_VISIBLE_ROWS := 5
+const INVENTORY_FONT_CELL_SIZE := Vector2(10, 12)
+const INVENTORY_FONT_FIRST_CODEPOINT := 35
+const INVENTORY_FONT_CELL_COUNT := 138
+const INVENTORY_SPACE_ADVANCE := 3.0
 const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield"]
 const INVENTORY_ITEM_LABELS := {
     "rusty_tongs": "Rusty tongs",
-    "well_key": "Well Key",
+    "well_key": "Key",
     "r8_lens": "Lens",
     "shield": "Shield",
 }
@@ -76,7 +80,7 @@ var service_texture: TextureRect
 var map_indicator: TextureRect
 var status_label: Label
 var slot_label: Label
-var inventory_label: Label
+var inventory_text_layer: Control
 
 var title_open := false
 var service_open := false
@@ -171,16 +175,13 @@ func _build() -> void:
     slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
     classic_canvas.add_child(slot_label)
 
-    inventory_label = Label.new()
-    inventory_label.name = "LegacyInventoryItemsV157"
-    inventory_label.position = INVENTORY_TEXT_RECT.position
-    inventory_label.size = INVENTORY_TEXT_RECT.size
-    inventory_label.add_theme_font_size_override("font_size", 9)
-    inventory_label.add_theme_color_override("font_color", Color(0.78, 0.76, 0.58, 1.0))
-    inventory_label.add_theme_constant_override("line_spacing", 0)
-    inventory_label.clip_text = true
-    inventory_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    classic_canvas.add_child(inventory_label)
+    inventory_text_layer = Control.new()
+    inventory_text_layer.name = "LegacyInventoryItemsV157"
+    inventory_text_layer.position = INVENTORY_TEXT_ORIGIN
+    inventory_text_layer.size = Vector2(INVENTORY_RECT.size.x, INVENTORY_FONT_CELL_SIZE.y * INVENTORY_VISIBLE_ROWS)
+    inventory_text_layer.clip_contents = true
+    inventory_text_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    classic_canvas.add_child(inventory_text_layer)
 
     service_texture.visible = false
     slot_label.visible = false
@@ -208,18 +209,57 @@ func _inventory_labels() -> Array[String]:
         out.append(String(INVENTORY_ITEM_LABELS[item_id]))
     return out
 
-func _refresh_inventory() -> void:
-    if inventory_label == null:
+func _inventory_font_texture() -> Texture2D:
+    return _load_tex("INVFONT")
+
+func _inventory_glyph_codepoint(character: String) -> int:
+    if character.is_empty():
+        return -1
+    return character.unicode_at(0)
+
+func _inventory_draw_line(text: String, row: int) -> void:
+    var atlas := _inventory_font_texture()
+    if atlas == null:
         return
+    var x := 0.0
+    for character in text:
+        if character == " ":
+            x += INVENTORY_SPACE_ADVANCE
+            continue
+        var codepoint := _inventory_glyph_codepoint(character)
+        var cell := codepoint - INVENTORY_FONT_FIRST_CODEPOINT
+        if cell < 0 or cell >= INVENTORY_FONT_CELL_COUNT:
+            cell = 63 - INVENTORY_FONT_FIRST_CODEPOINT
+        if x + INVENTORY_FONT_CELL_SIZE.x > INVENTORY_RECT.size.x:
+            break
+        var region := AtlasTexture.new()
+        region.atlas = atlas
+        region.region = Rect2(float(cell) * INVENTORY_FONT_CELL_SIZE.x, 0.0, INVENTORY_FONT_CELL_SIZE.x, INVENTORY_FONT_CELL_SIZE.y)
+        var glyph := TextureRect.new()
+        glyph.texture = region
+        glyph.position = Vector2(x, float(row) * INVENTORY_FONT_CELL_SIZE.y)
+        glyph.size = INVENTORY_FONT_CELL_SIZE
+        glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        glyph.stretch_mode = TextureRect.STRETCH_KEEP
+        glyph.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+        glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        inventory_text_layer.add_child(glyph)
+        x += INVENTORY_FONT_CELL_SIZE.x
+
+func _refresh_inventory() -> void:
+    if inventory_text_layer == null:
+        return
+    for child in inventory_text_layer.get_children():
+        child.queue_free()
     var items := _inventory_labels()
     var max_scroll := maxi(items.size() - INVENTORY_VISIBLE_ROWS, 0)
     inventory_scroll = clampi(inventory_scroll, 0, max_scroll)
-    var visible: Array[String] = []
     var end := mini(inventory_scroll + INVENTORY_VISIBLE_ROWS, items.size())
+    var row := 0
     for i in range(inventory_scroll, end):
-        visible.append(items[i])
-    inventory_label.text = "\n".join(visible)
-    inventory_label.visible = not title_open
+        _inventory_draw_line(items[i], row)
+        row += 1
+    inventory_text_layer.visible = not title_open
 
 func _on_inventory_changed() -> void:
     _refresh_inventory()
@@ -251,14 +291,17 @@ func debug_inventory_snapshot() -> Dictionary:
         visible.append(labels[i])
     return {
         "rect": [INVENTORY_RECT.position.x, INVENTORY_RECT.position.y, INVENTORY_RECT.size.x, INVENTORY_RECT.size.y],
-        "text_rect": [INVENTORY_TEXT_RECT.position.x, INVENTORY_TEXT_RECT.position.y, INVENTORY_TEXT_RECT.size.x, INVENTORY_TEXT_RECT.size.y],
+        "text_origin": [INVENTORY_TEXT_ORIGIN.x, INVENTORY_TEXT_ORIGIN.y],
+        "font_cell": [INVENTORY_FONT_CELL_SIZE.x, INVENTORY_FONT_CELL_SIZE.y],
+        "font_first_codepoint": INVENTORY_FONT_FIRST_CODEPOINT,
+        "font_cell_count": INVENTORY_FONT_CELL_COUNT,
         "visible_rows": INVENTORY_VISIBLE_ROWS,
         "item_ids": _inventory_item_ids(),
         "labels": labels,
         "visible_labels": visible,
         "scroll": inventory_scroll,
         "unknown_ids": _inventory_unknown_ids(),
-        "font_fidelity": "COMPATIBILITY_FONT__INVFONT_GLYPH_MAP_HOLD",
+        "font_fidelity": "SOURCE_INVFONT_FIXED_CELL_MAP",
     }
 
 func _reflow() -> void:
@@ -296,7 +339,7 @@ func _show_title() -> void:
     service_texture.visible = false
     slot_label.visible = false
     map_indicator.visible = false
-    inventory_label.visible = false
+    inventory_text_layer.visible = false
     get_tree().paused = true
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -304,7 +347,7 @@ func _dismiss_title() -> void:
     title_open = false
     title_texture.visible = false
     hud_texture.visible = true
-    inventory_label.visible = true
+    inventory_text_layer.visible = true
     _refresh_inventory()
     get_tree().paused = false
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -458,9 +501,9 @@ func _unhandled_input(event: InputEvent) -> void:
         return
 
     if not service_open and event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_UP, KEY_DOWN]:
-        if _scroll_inventory(-1 if event.keycode == KEY_UP else 1):
-            get_viewport().set_input_as_handled()
-            return
+        # README assigns cursor keys to movement and inventory scrolling.
+        # Scroll without consuming the event so movement semantics are preserved.
+        _scroll_inventory(-1 if event.keycode == KEY_UP else 1)
 
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_M:
         _toggle_map()
