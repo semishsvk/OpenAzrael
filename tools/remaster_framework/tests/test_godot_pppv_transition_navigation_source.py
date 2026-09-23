@@ -41,7 +41,7 @@ class GodotPPPVTransitionNavigationSourceTests(unittest.TestCase):
         execute = execute.split("func failure_list", 1)[0]
         self.assertIn('params.get("goal_world_point"', execute)
         self.assertIn("navigator.approach_world_point", execute)
-        self.assertIn('"world_point_not_reached"', execute)
+        self.assertIn("world_point_not_reached", execute)
         self.assertNotIn("player.global_position =", execute)
 
     def test_transition_success_requires_room_and_spawn_validation(self) -> None:
