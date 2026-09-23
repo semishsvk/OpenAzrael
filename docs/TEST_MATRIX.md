@@ -10,6 +10,7 @@
 | Remaster Framework validate + unit tests | REQUIRED; exact-head PASS observed at `34d5b207…` | N/A | Final source HEAD must be re-observed |
 | Candidate 3 contract ↔ runner | Canonical manifest exact-match enforcement | PENDING final asset-backed preflight | No Candidate 3 evidence reused across changed SHA |
 | Candidate 4 release contract ↔ preflight | Canonical manifest exact-match enforcement | PENDING | Candidate 4 export forbidden before PASS |
+| Verify/Release Orchestrator | SOURCE CONTRACT WIRED; 7 generic unit tests PASS in authoring validation; exact-head CI pending | No asset/runtime execution | FAST is diff-targeted; unknown critical changes escalate; only dual-Python exact-head VERIFY may declare source preflight readiness |
 | Trigger v137 | SOURCE workflow PASS observed at `34d5b207…` | Required in canonical runtime list | Production trigger path only |
 | Localization v139 | SOURCE workflow PASS observed at `34d5b207…` | Required in canonical runtime list | No source-only PASS promoted to runtime |
 | v117 physical traversal / stairs | Source validator wired | PENDING final exact-SHA asset run | Natural player movement and real floor/stair collision |

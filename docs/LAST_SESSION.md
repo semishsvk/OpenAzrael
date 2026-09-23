@@ -14,6 +14,7 @@ Work continued on the authoritative `integration/kg001-candidate3-pppv-v2` branc
 - Candidate 4 music receipts now separate canonical event/timing identity, PCM identity and encoded OGG artifact identity. FluidSynth and libsndfile identities are recorded; native FluidSynth library SHA-256 is recorded when a stable resolved file is available. Cross-platform bit identity is explicitly not claimed.
 - Added source-safe Candidate 4 frozen handoff: exact commit/tree + preflight receipt SHA + complete runtime-asset identity digest. The exporter requires the matching freeze receipt.
 - Updated the source snapshot workflow to support an explicitly requested exact SHA using tracked-source-only `git archive`.
+- Added the reusable Verify/Release Orchestrator: diff-targeted FAST selection, fail-safe escalation for unknown critical changes, fingerprint-bound PASS cache reuse, full source VERIFY, and exact-head CI readiness without invoking a Candidate build.
 
 ### Evidence status
 

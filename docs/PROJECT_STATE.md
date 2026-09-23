@@ -18,6 +18,13 @@ OpenAzrael keeps four evidence tiers separate:
 
 The obsolete zero-step/UNOBSERVED source-CI incident from 2026-09-21 is historical only. Subsequent exact-head Candidate 3, Candidate 4, Remaster Framework, trigger and localization workflows have executed successfully.
 
+## Verify / Release Orchestrator
+
+The source-safe `tools/run_verify_release_orchestrator.py` now implements the approved FAST -> VERIFY decision layer. FAST selects only diff-matched gates and escalates any unmatched critical source change to the broad KG-001 source suite. PASS cache reuse requires the exact gate fingerprint over command, profile, environment and declared tracked-input hashes; FAIL is never reused.
+
+A local full VERIFY may report only `LOCAL_VERIFY_PASS_CI_CONFIRMATION_REQUIRED`. The stronger `SOURCE_CHECKPOINT_READY_FOR_ASSET_PREFLIGHT` state is reserved for the exact-head CI sequence after both Python 3.11 and 3.12 uncached VERIFY passes. The orchestrator cannot execute an asset-backed preflight, freeze, export or Candidate build.
+
+
 ## Canonical validation stack
 
 `tools/kg001_gate_manifest.py` is the canonical declaration shared by the candidate runner, preflights and validators. Candidate 3 and Candidate 4 machine-readable contracts must match its ordered runtime gate list exactly.

@@ -55,8 +55,7 @@ It must not be interpreted as exact-head CI evidence.
 
 ## Exact-head CI
 
-`.github/workflows/openazrael-verify-release.yml` can be run for a pull request
-or manually for an explicit SHA. It checks out that exact SHA, requires a clean
+`.github/workflows/openazrael-verify-release.yml` runs for pull-request events. Once this workflow is present on the repository default branch, it can also be manually dispatched for an explicit SHA. It checks out that exact SHA, requires a clean
 tree, runs uncached VERIFY first on Python 3.11 and then on Python 3.12, and
 uploads both receipts.
 
