@@ -34,11 +34,11 @@ func _settle_physics(frames: int = 2) -> void:
         await physics_frame
 
 func _setup_floor_probe(manager: Node) -> Dictionary:
-    var player = manager.get("player")
+    var player := manager.get("player") as CharacterBody3D
     if not (player is CharacterBody3D) or not player.is_inside_tree():
         return {"supported": false, "reason": "player_unavailable"}
-    var ray_from := player.global_position + Vector3.UP * 8.0
-    var ray_to := player.global_position + Vector3.DOWN * 72.0
+    var ray_from: Vector3 = player.global_position + Vector3.UP * 8.0
+    var ray_to: Vector3 = player.global_position + Vector3.DOWN * 72.0
     var query := PhysicsRayQueryParameters3D.create(
         ray_from,
         ray_to,
@@ -46,7 +46,7 @@ func _setup_floor_probe(manager: Node) -> Dictionary:
     )
     query.exclude = [player.get_rid()]
     query.hit_back_faces = true
-    var hit := player.get_world_3d().direct_space_state.intersect_ray(query)
+    var hit: Dictionary = player.get_world_3d().direct_space_state.intersect_ray(query)
     if hit.is_empty():
         return {
             "supported": false,
@@ -59,7 +59,7 @@ func _setup_floor_probe(manager: Node) -> Dictionary:
             "ray_to": [ray_to.x, ray_to.y, ray_to.z]
         }
     var hit_position := hit.get("position", Vector3.ZERO) as Vector3
-    var gap := player.global_position.y - hit_position.y
+    var gap: float = player.global_position.y - hit_position.y
     return {
         "supported": gap >= -4.0 and gap <= 24.0,
         "player_position": [
