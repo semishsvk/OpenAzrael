@@ -135,6 +135,18 @@ class FluidRenderer:
         self.lib.fluid_synth_write_float(self.synth,count,left.ctypes.data,0,1,right.ctypes.data,0,1)
         return np.column_stack((left,right))
 
+def event_json_arg(value):
+    """Canonical JSON-safe representation for deterministic XMIDI schedule hashing."""
+    if isinstance(value,(bytes,bytearray,memoryview)):
+        return {"bytes_hex":bytes(value).hex()}
+    if isinstance(value,(tuple,list)):
+        return [event_json_arg(item) for item in value]
+    if isinstance(value,dict):
+        return {str(key):event_json_arg(value[key]) for key in sorted(value,key=lambda item:str(item))}
+    if value is None or isinstance(value,(str,int,float,bool)):
+        return value
+    raise TypeError(f"unsupported schedule argument type: {type(value).__name__}")
+
 def render_one(xmi: Path, out: Path, soundfont: Path, sample_rate: int, gain: float, explicit_lib: str|None, release_tail_seconds: float):
     events,meta=parse_xmi_events(xmi.read_bytes())
     loop_start=meta.get("loop_start_tick");loop_end=meta.get("loop_end_tick")
@@ -145,7 +157,7 @@ def render_one(xmi: Path, out: Path, soundfont: Path, sample_rate: int, gain: fl
         "render_end_tick":render_end_tick,
         "loop_start_tick":loop_start,
         "loop_end_tick":loop_end,
-        "events":[[int(tick),int(order),kind,list(args)] for tick,order,kind,args in events],
+        "events":[[int(tick),int(order),kind,[event_json_arg(arg) for arg in args]] for tick,order,kind,args in events],
     }
     event_schedule_sha256=sha256_bytes(json.dumps(schedule_payload,sort_keys=True,separators=(",",":")).encode("utf-8"))
     renderer=FluidRenderer(soundfont,sample_rate,gain,explicit_lib)
