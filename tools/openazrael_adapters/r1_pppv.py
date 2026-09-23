@@ -10,6 +10,61 @@ from tools.remaster_framework.validation import (
 )
 
 
+# Recovered/audited physical R1 corridor route from v119/v141. These are not
+# teleport destinations: each point is reached through production player input.
+R1_ROUTE = (
+    (-203.801173, -84.921990, 300.265764),
+    (-168.693718, -91.949649, 281.939643),
+    (-113.787899, -107.514682, 201.650247),
+    (-72.816896, -114.240783, 116.816224),
+    (-75.0, -114.300000, 70.0),
+    (-75.0, -114.300000, 20.0),
+    (-50.0, -114.300000, -20.0),
+    (0.0, -115.000000, -50.0),
+    (38.260757, -115.691564, -50.391974),
+    (95.934301, -117.355663, -127.453640),
+    (141.988445, -115.622030, -209.540090),
+    (119.250000, -114.455000, -261.236000),
+    (156.921000, -114.276000, -313.508000),
+    (203.566000, -114.275000, -324.678000),
+    (210.088000, -114.364000, -410.699000),
+    (266.328000, -114.240000, -415.593000),
+    (299.061000, -110.726000, -486.612000),
+    (356.752000, -108.708000, -475.156000),
+    (405.288000, -99.161000, -522.654000),
+    (449.221720, -93.255052, -498.865461),
+    (476.420000, -85.030000, -514.950000),
+    (529.295811, -84.205500, -513.041569),
+)
+R1_PRE_DOOR2_ROUTE = R1_ROUTE[:-1]
+
+
+def _world_waypoint(point: tuple[float, float, float], action_id: str) -> PlayerAction:
+    return PlayerAction(
+        action_id=action_id,
+        kind=ActionKind.MOVE,
+        execution_mode=ExecutionMode.INPUT,
+        input_action="move_forward",
+        parameters={
+            "goal_world_point": list(point),
+            "driver_policy": "audited_world_waypoint_v119_v141",
+            "max_frames": 900,
+            "stuck_frames": 150,
+            "reach_distance": 18.0,
+        },
+    )
+
+
+def _route_actions(
+    points: tuple[tuple[float, float, float], ...],
+    prefix: str,
+) -> tuple[PlayerAction, ...]:
+    return tuple(
+        _world_waypoint(point, f"{prefix}_{index:02d}")
+        for index, point in enumerate(points)
+    )
+
+
 def _approach_and_interact(
     *,
     target: str,
@@ -52,11 +107,19 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         setup={
             **common_setup,
             "inventory": {"rusty_tongs": False},
+            "flags": {"R1Door1Open": True},
         },
-        actions=_approach_and_interact(
-            target="Interact_TONG6",
-            approach_id="approach_tongs",
-            interact_id="take_tongs",
+        actions=(
+            *_route_actions(R1_PRE_DOOR2_ROUTE, "route_to_tongs"),
+            *_approach_and_interact(
+                target="Interact_TONG6",
+                approach_id="approach_tongs",
+                interact_id="take_tongs",
+            ),
+            *_route_actions(
+                tuple(reversed(R1_PRE_DOOR2_ROUTE)),
+                "route_back_to_r7",
+            ),
         ),
         requirements=(
             EvidenceRequirement(
@@ -86,12 +149,15 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         ),
         state_expectations=(
             StateExpectation("inventory.rusty_tongs", False, True),
+            StateExpectation("flags.R1Door1Open", True, True),
         ),
         metadata={
             "coverage_targets": ["interaction:R1:TONG6"],
             "physical_approach_required": True,
             "direct_interact_call_allowed": False,
             "source_runtime": "RoomManager.PICKUPS + pickup.gd",
+            "route_source": "v119/v141 audited R1 corridor",
+            "route_policy": "production input only; no teleport",
         },
     )
 
@@ -147,11 +213,16 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         setup={
             **common_setup,
             "inventory": {"well_key": True},
+            "flags": {"R1Door1Open": True},
         },
-        actions=_approach_and_interact(
-            target="Interact_doorcor2",
-            approach_id="approach_door2",
-            interact_id="open_door2",
+        actions=(
+            *_route_actions(R1_PRE_DOOR2_ROUTE, "route_to_door2"),
+            *_approach_and_interact(
+                target="Interact_doorcor2",
+                approach_id="approach_door2",
+                interact_id="open_door2",
+            ),
+            _world_waypoint(R1_ROUTE[-1], "route_through_door2"),
         ),
         requirements=(
             EvidenceRequirement(
@@ -192,6 +263,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         ),
         state_expectations=(
             StateExpectation("inventory.well_key", True, True),
+            StateExpectation("flags.R1Door1Open", True, True),
             StateExpectation("flags.FR1DoorUnlocked", False, True),
             StateExpectation("flags.R1Door2Open", False, True),
         ),
@@ -210,11 +282,15 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
         setup={
             **common_setup,
             "inventory": {"well_key": False},
+            "flags": {"R1Door1Open": True},
         },
-        actions=_approach_and_interact(
-            target="Interact_doorcor2",
-            approach_id="approach_locked_door2",
-            interact_id="try_locked_door2",
+        actions=(
+            *_route_actions(R1_PRE_DOOR2_ROUTE, "route_to_locked_door2"),
+            *_approach_and_interact(
+                target="Interact_doorcor2",
+                approach_id="approach_locked_door2",
+                interact_id="try_locked_door2",
+            ),
         ),
         requirements=(
             EvidenceRequirement(
