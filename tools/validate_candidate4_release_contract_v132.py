@@ -18,6 +18,9 @@ import tools.run_candidate4_preflight as candidate4_preflight
 
 contract=json.loads((ROOT/"data/tests/kg001_candidate4_release_contract_v132.json").read_text(encoding="utf-8"))
 audio=(ROOT/"tools/validate_candidate4_audio_corpus_v132.py").read_text(encoding="utf-8")
+freeze=(ROOT/"tools/freeze_candidate4_release.py").read_text(encoding="utf-8")
+exporter=(ROOT/"tools/export_candidate4.py").read_text(encoding="utf-8")
+snapshot=(ROOT/".github/workflows/candidate4-source-snapshot.yml").read_text(encoding="utf-8")
 checks={
  "schema":contract.get("schema")=="openazrael.kg001.candidate4_release_contract" and contract.get("version")==132,
  "candidate4":contract.get("candidate")=="KG-001 Candidate 4",
@@ -43,6 +46,19 @@ checks={
  "inherited_additional_runtime_exact":contract.get("inherited_candidate3",{}).get("required_additional_runtime_evidence_pass")==list(CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE),
  "pppv_evidence_exact":contract.get("inherited_candidate3",{}).get("required_pppv_v2_pass")==list(PPPV_REQUIRED_EVIDENCE),
  "required_preflight_exact":contract.get("required_preflight")==list(CANDIDATE4_REQUIRED_PREFLIGHT),
+ "frozen_release_contract":(
+     contract.get("frozen_release",{}).get("required") is True
+     and contract.get("frozen_release",{}).get("commercial_payload_bytes_embedded") is False
+     and contract.get("frozen_release",{}).get("export_requires_matching_freeze_receipt") is True
+ ),
+ "freeze_binds_source_and_assets":all(token in freeze for token in (
+     '"source_tree_sha"','"preflight_receipt"','"runtime_asset_identity"','"commercial_payload_bytes_embedded":False'
+ )),
+ "export_requires_freeze":all(token in exporter for token in (
+     "FROZEN_RELEASE_RECEIPT_MISSING","SOURCE_TREE_CHANGED_SINCE_FREEZE",
+     "PREFLIGHT_RECEIPT_CHANGED_SINCE_FREEZE","RUNTIME_ASSET_IDENTITY_CHANGED_SINCE_FREEZE"
+ )),
+ "source_snapshot_exact_sha_capable":"expected_sha" in snapshot and "git archive" in snapshot and "HEAD^{tree}" in snapshot,
 }
 failed=[k for k,v in checks.items() if not v]
 print(json.dumps({"schema":"openazrael.kg001.candidate4_release_contract_validation","version":132,

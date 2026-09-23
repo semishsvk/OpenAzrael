@@ -180,5 +180,17 @@
       "determinism_integrity"
     ],
     "contract_runner_consistency": "EXACT_ORDERED_MATCH_REQUIRED"
+  },
+  "frozen_release": {
+    "required": true,
+    "command": "python tools/freeze_candidate4_release.py",
+    "receipt": ".tmp/kg001/candidate4_frozen_release_receipt.json",
+    "source_tree_sha_required": true,
+    "preflight_receipt_sha256_required": true,
+    "complete_runtime_asset_identity_digest_required": true,
+    "commercial_payload_bytes_embedded": false,
+    "export_requires_matching_freeze_receipt": true,
+    "mutation_policy": "FAIL_CLOSED",
+    "cloud_source_snapshot": ".github/workflows/candidate4-source-snapshot.yml"
   }
 }
