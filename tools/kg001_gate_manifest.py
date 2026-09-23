@@ -55,6 +55,7 @@ SOURCE_COMMANDS = [
     [sys.executable, "tools/validate_interaction_probe_determinism_v148.py"],
     [sys.executable, "tools/validate_kg001_legacy_menu_toggle_v149.py"],
     [sys.executable, "tools/validate_kg001_save_compat_v150.py"],
+    [sys.executable, "tools/validate_kg001_inventory_hud_v157.py"],
     [sys.executable, "tools/validate_release_docs.py"],
     [sys.executable, "tools/validate_verify_release_orchestrator.py"],
     [sys.executable, "tools/validate_candidate3_preflight.py"],
@@ -88,6 +89,7 @@ RUNTIMES = [
     ("interaction_probe_v148", "scripts/kg001_interaction_probe_determinism_runner_v148.gd", "OPENAZRAEL_KG001_INTERACTION_PROBE_DETERMINISM_V148"),
     ("menu_toggle_v149", "scripts/kg001_legacy_menu_toggle_runner_v149.gd", "OPENAZRAEL_KG001_MENU_TOGGLE_V149"),
     ("save_compat_v150", "scripts/kg001_save_compat_runner_v150.gd", "OPENAZRAEL_KG001_SAVE_COMPAT_V150"),
+    ("inventory_hud_v157", "scripts/kg001_inventory_hud_runner_v157.gd", "OPENAZRAEL_KG001_INVENTORY_HUD_V157"),
 ]
 
 CANDIDATE3_REQUIRED_RUNTIME = tuple(name for name, _script, _marker in RUNTIMES)
