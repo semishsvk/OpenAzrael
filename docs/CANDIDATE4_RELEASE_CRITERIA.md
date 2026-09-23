@@ -1,66 +1,55 @@
 # KG-001 Candidate 4 release criteria
 
-Candidate 4 is the first OpenAzrael demo candidate intended to be fully playable
-end to end rather than a partial diagnostic build.
+Candidate 4 is the first OpenAzrael demo candidate intended to be fully playable end to end. It MUST NOT be exported merely to validate source changes.
 
-It MUST NOT be exported as Candidate 4 unless the exact Git HEAD passes the
-asset-backed runtime preflight and every required evidence artifact is bound to
-that same source and runtime asset set.
+## Evidence tiers
+
+SOURCE CONTRACT PASS, ASSET-BACKED RUNTIME PASS, PACKAGED/EXPORT PASS and MANUAL G10 PASS are separate claims. Passing one tier never promotes another.
+
+Candidate 4 and `demo-known-good-001` remain forbidden until the exact exported EXE/PCK pair has completed every required tier.
+
+## Source and contract identity
+
+`tools/kg001_gate_manifest.py` is the canonical ordered gate declaration used by runner/preflight validators. Candidate 3 and Candidate 4 machine-readable contracts must match it exactly.
+
+The exact Git HEAD/tree used for asset-backed preflight is immutable for the release cycle. Any source change invalidates the preflight/freeze chain and requires a new cycle.
 
 ## Source corpus identity
 
-Candidate 4 may consume commercial source payloads only through an explicit
-`--demo-dir` or the verified persistent source registry defined by
-`data/source_corpora_contract_v1.json`.
+Commercial source payloads may be consumed only through an explicit `--demo-dir` or the verified persistent source registry. Missing registration, source fingerprint drift or corpus-shape mismatch is a hard failure. Commercial and reproducible commercial-derived payload bytes stay outside Git.
 
-The canonical official-demo archive identity is fixed to the source-backed
-ATDEMO SHA-256 contract. If the source is registered as an extracted directory,
-its complete local inventory is pinned and must remain byte-identical.
+## Geometry and traversal
 
-Retail payloads use the same private registry mechanism but are pinned by the
-complete local SHA-256 inventory on first verified registration. Build and
-forensic tools MUST NOT rediscover substitute corpora by scanning disks,
-historical ZIPs or unrelated caches.
+R1, R7 and R8 must use the complete restored demo geometry. The v117-v131 traversal/fidelity stack must pass, including the former R1/Object02 failure point, both R8 stair profiles, all required room transitions and a literal PASS v131 forensic report for R1/R7/R8.
 
-A missing registry entry, missing source path, archive mismatch, retail
-inventory drift or corpus-shape mismatch is a hard failure.
+PPPV v2 must exercise production player movement/interactions and produce its required scenario, integrity, playthrough and repeated-determinism evidence. No direct gameplay-state injection is allowed for scenarios intended to simulate a real player.
 
-## Geometry
+## Interactions and save/load
 
-R1, R7 and R8 must use the complete restored demo geometry. The importer must
-match the canonical source counts, and the v122-v131 fidelity stack must pass:
-geometry/render parity, object visibility, materials/textures, transforms,
-graphical census, reachable visibility, portal geometry, interaction
-reachability and the fail-closed room forensic report. No visible authored
-object may be silently omitted. Any required walkable surface without working
-collision is critical.
+v148 requires deterministic selection when the camera starts inside overlapping interactable Area3D volumes while preserving a successful raycast as the primary path.
 
-## Gameplay
+The legacy save format remains `SAVE%d.dat`, schema `openazrael.demo_save`, version 145. Current saves must roundtrip. Older/unknown versions, corrupt JSON, wrong schema and incompatible canonical state payloads must fail closed unless an explicit migration exists. No migration is currently claimed.
 
-The synthetic player must traverse the demo through production player input and
-production interactions. All four required room transitions, both R8 stair
-profiles, the R1 former Object02 failure point, every required puzzle effect,
-save/load and the successful end-of-demo state are release gates. PPPV v2 must
-produce at least two identical guarded end-to-end runs. Required transition
-failure or a reproducible softlock is critical.
+## Audio and music
 
-## Audio
+The canonical 30-WAV demo corpus remains mandatory, followed by human audibility in G10.
 
-Candidate 4 requires the canonical 30/30 WAV demo corpus. Restore validates each
-source file against the canonical SHA-256 in `data/audio/legacy_world_ir.json`
-and binds the resulting runtime file hashes in a local receipt. Ambient and
-triggered-event runtime tests remain mandatory, followed by human audibility in
-G10.
+Candidate 4 music must bind source XMI SHA-256, SoundFont SHA-256 and output OGG SHA-256. The renderer additionally records FluidSynth identity/version, libsndfile identity, canonical event/timing SHA-256 and pre-encode PCM f32le SHA-256.
 
-The demo package also contains 24 XMI music assets. Candidate 4 is fail-closed
-until forensic route evidence proves one of two states: the required XMI music
-is supported and runtime-tested, or XMI music is proven not to be used on the
-accepted Candidate 4 demo route. Merely having the XMI files in the package is
-not sufficient evidence either way.
+Evidence boundary:
+
+- event/timing SHA identifies the codec-independent render schedule;
+- PCM SHA identifies the exact produced PCM for that invocation;
+- OGG SHA identifies the exact encoded artifact for that invocation;
+- cross-platform bit-identical PCM is **not guaranteed**;
+- cross-platform bit-identical OGG/container output is **not guaranteed**.
+
+## Frozen release handoff
+
+After a PASS Candidate 4 preflight, run `python tools/freeze_candidate4_release.py`. The source-safe local receipt binds exact commit/tree, preflight receipt SHA-256 and the complete runtime asset identity digest.
+
+`tools/export_candidate4.py` must reject missing/stale freeze receipts and any source-tree, preflight or runtime-asset drift. The exact source may optionally be mirrored as a source-only GitHub artifact using the Candidate 4 source snapshot workflow with an explicit expected SHA.
 
 ## Release rule
 
-Candidate 4 requires zero known critical bugs, zero reproducible softlocks,
-zero failed mandatory gates, clean-checkout reproducibility, exact-head asset
-binding, guarded export/startup smoke, and a complete manual G10 run on the
-exact exported EXE/PCK pair.
+Candidate 4 requires zero known critical bugs, zero reproducible softlocks, zero failed mandatory gates, clean-checkout reproducibility, exact-head/runtime-asset binding, guarded export/startup smoke, packaged parity/music PASS and complete manual G10 on the exact exported EXE/PCK pair.

@@ -55,6 +55,7 @@ SOURCE_COMMANDS = [
     [sys.executable, "tools/validate_interaction_probe_determinism_v148.py"],
     [sys.executable, "tools/validate_kg001_legacy_menu_toggle_v149.py"],
     [sys.executable, "tools/validate_kg001_save_compat_v150.py"],
+    [sys.executable, "tools/validate_release_docs.py"],
     [sys.executable, "tools/validate_candidate3_preflight.py"],
     [sys.executable, "tools/validate_candidate3_pppv_integration.py"],
 ]
