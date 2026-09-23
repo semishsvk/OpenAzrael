@@ -250,6 +250,7 @@ func _refresh_inventory() -> void:
     if inventory_text_layer == null:
         return
     for child in inventory_text_layer.get_children():
+        inventory_text_layer.remove_child(child)
         child.queue_free()
     var items := _inventory_labels()
     var max_scroll := maxi(items.size() - INVENTORY_VISIBLE_ROWS, 0)
@@ -301,6 +302,7 @@ func debug_inventory_snapshot() -> Dictionary:
         "visible_labels": visible,
         "scroll": inventory_scroll,
         "unknown_ids": _inventory_unknown_ids(),
+        "glyph_node_count": inventory_text_layer.get_child_count() if inventory_text_layer != null else 0,
         "font_fidelity": "SOURCE_INVFONT_FIXED_CELL_MAP",
     }
 
