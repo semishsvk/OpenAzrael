@@ -31,6 +31,13 @@ checks = {
     "lens_remove_event": any(a.get("op") == "remove_inventory" and a.get("key") == "r8_lens" for a in events["graphs"]["R8_LENS_PLACE"]["actions"]),
     "shield_add_event": any(a.get("op") == "add_inventory" and a.get("key") == "shield" for a in events["graphs"]["R8_TAKE_SHIELD"]["actions"]),
     "runtime_flow": all(token in runner for token in ("rusty_tongs", "R8_LENS_PLACE", "R8_TAKE_SHIELD", "save_slot", "load_slot", "unmapped_future_item")),
+    "runtime_requires_real_font_asset": all(token in runner for token in (
+        'res://assets/ui/legacy_menu/INVFONT.png',
+        'get_width() == 1380',
+        'get_height() == 12',
+        'glyph_node_count'
+    )),
+    "frame_clean_glyph_refresh": "inventory_text_layer.remove_child(child)" in menu,
 }
 failed = [name for name, ok in checks.items() if not ok]
 print(json.dumps({
