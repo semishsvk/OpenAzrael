@@ -14,7 +14,7 @@ func _initialize() -> void:
     call_deferred("_run")
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
-    for arg in OS.get_cmdline_args():
+    for arg in OS.get_cmdline_args() + OS.get_cmdline_user_args():
         if arg.begins_with(prefix):
             return arg.substr(prefix.length())
     return default_value
