@@ -226,7 +226,7 @@ func _run_scenario_step(
         scene_specs
     )
 
-    var event_start := evidence.events().size()
+    var event_start: int = int(evidence.events().size())
     var executor = ActionExecutorScript.new(
         manager,
         driver,
