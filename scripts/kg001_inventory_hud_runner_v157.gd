@@ -13,6 +13,55 @@ func _settle(frames: int = 2) -> void:
     for _i in range(frames):
         await process_frame
 
+func _floor_probe(scene: Node3D, player: CharacterBody3D) -> Dictionary:
+    var ray_from := player.global_position + Vector3.UP * 8.0
+    var ray_to := player.global_position + Vector3.DOWN * 72.0
+    var query := PhysicsRayQueryParameters3D.create(ray_from, ray_to, 1)
+    query.exclude = [player.get_rid()]
+    query.hit_back_faces = true
+    var hit := scene.get_world_3d().direct_space_state.intersect_ray(query)
+    if hit.is_empty():
+        return {
+            "supported": false,
+            "player_position": [
+                player.global_position.x,
+                player.global_position.y,
+                player.global_position.z
+            ]
+        }
+    var floor_position := hit.get("position", Vector3.ZERO) as Vector3
+    var gap := player.global_position.y - floor_position.y
+    return {
+        "supported": gap >= -4.0 and gap <= 24.0,
+        "gap": gap,
+        "player_position": [
+            player.global_position.x,
+            player.global_position.y,
+            player.global_position.z
+        ],
+        "floor_position": [
+            floor_position.x, floor_position.y, floor_position.z
+        ],
+        "collider": (
+            String((hit.get("collider") as Object).get("name"))
+            if hit.get("collider") != null
+            else ""
+        )
+    }
+
+func _verify_floor_support(
+    scene: Node3D,
+    player: CharacterBody3D,
+    required_frames: int = 30
+) -> bool:
+    for _i in range(required_frames):
+        await physics_frame
+        var probe := _floor_probe(scene, player)
+        if not bool(probe.get("supported", false)):
+            failures.append("R8_portal_support:" + JSON.stringify(probe))
+            return false
+    return true
+
 func _labels(menu: Node) -> Array:
     var snap: Dictionary = menu.call("debug_inventory_snapshot")
     return snap.get("labels", [])
@@ -91,11 +140,14 @@ func _run() -> void:
     _check("shield_label", _labels(menu) == ["Key", "Shield"])
     _check("key_shield_source_glyph_count", int(menu.call("debug_inventory_snapshot").get("glyph_node_count", -1)) == 9)
 
-    manager.call("load_room", "R8", false)
-    await _settle()
-    player.global_position = Vector3(12.0, 34.0, -56.0)
-    player.rotation.y = 0.25
-    player.set("pitch", -0.1)
+    _check(
+        "R8_portal_entry",
+        bool(manager.call("load_room_at_portal", "R8", "Object14", false))
+    )
+    _check(
+        "R8_portal_support_30_frames",
+        await _verify_floor_support(scene, player, 30)
+    )
     _check("save_slot", SaveSystem.save_slot(0, manager, player))
 
     state.reset_all()
