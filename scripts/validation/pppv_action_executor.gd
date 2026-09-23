@@ -232,17 +232,6 @@ func _execute_impl(action: Dictionary) -> bool:
             var current_room = manager.get("current_room")
             if current_room != null:
                 observer.attach_interaction(_find_named(current_room, target))
-                var aim_result: Dictionary = await navigator.aim_at_interactable(
-                    action_id + "_aim",
-                    target,
-                    current_room,
-                    int(params.get("aim_max_frames", 180))
-                )
-                if not bool(aim_result.get("acquired", false)):
-                    _append_failure(
-                        action_id + ":interaction_aim_failed"
-                    )
-                    return false
             var ok: bool = await driver.interact_via_probe(action_id, target)
             if not ok:
                 _append_failure(
