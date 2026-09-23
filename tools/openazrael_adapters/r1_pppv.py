@@ -70,7 +70,7 @@ def _approach_and_interact(
     target: str,
     approach_id: str,
     interact_id: str,
-) -> tuple[PlayerAction, PlayerAction]:
+) -> tuple[PlayerAction, PlayerAction, PlayerAction]:
     return (
         PlayerAction(
             action_id=approach_id,
@@ -83,6 +83,17 @@ def _approach_and_interact(
                 "driver_policy": "rotate_then_apply_gameplay_input",
                 "max_frames": 900,
                 "stuck_frames": 150,
+            },
+        ),
+        PlayerAction(
+            action_id=approach_id + "_aim",
+            kind=ActionKind.LOOK,
+            execution_mode=ExecutionMode.INPUT,
+            input_action="mouse_motion",
+            parameters={
+                "goal_target": target,
+                "max_frames": 180,
+                "driver_policy": "aim_via_production_mouse_input",
             },
         ),
         PlayerAction(
@@ -125,7 +136,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="tongs_reachable",
                 kind="interaction_probe",
-                action_id="approach_tongs",
+                action_id="approach_tongs_aim",
                 match={"target": "Interact_TONG6", "reachable": True},
             ),
             EvidenceRequirement(
@@ -174,7 +185,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="door1_reachable",
                 kind="interaction_probe",
-                action_id="approach_door1",
+                action_id="approach_door1_aim",
                 match={"target": "Interact_doorcor01", "reachable": True},
             ),
             EvidenceRequirement(
@@ -228,7 +239,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="door2_reachable",
                 kind="interaction_probe",
-                action_id="approach_door2",
+                action_id="approach_door2_aim",
                 match={"target": "Interact_doorcor2", "reachable": True},
             ),
             EvidenceRequirement(
@@ -296,7 +307,7 @@ def build_r1_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             EvidenceRequirement(
                 requirement_id="locked_door2_reachable",
                 kind="interaction_probe",
-                action_id="approach_locked_door2",
+                action_id="approach_locked_door2_aim",
                 match={"target": "Interact_doorcor2", "reachable": True},
             ),
             EvidenceRequirement(
