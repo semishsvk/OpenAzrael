@@ -1,0 +1,98 @@
+name: OpenAzrael Verify Release Orchestrator
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Exact commit SHA to verify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify-release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Resolve expected SHA
+        id: expected
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            printf 'sha=%s\n' "${{ inputs.expected_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            printf 'sha=%s\n' "${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout exact source SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.expected.outputs.sha }}
+          fetch-depth: 2
+
+      - name: Verify exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "${{ steps.expected.outputs.sha }}"
+          test -z "$(git status --porcelain --untracked-files=normal)"
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install source validator dependencies for 3.11
+        run: python -m pip install --upgrade pip numpy pillow trimesh
+
+      - name: Exact-head VERIFY on Python 3.11
+        env:
+          OPENAZRAEL_CI_EXPECTED_SHA: ${{ steps.expected.outputs.sha }}
+          OPENAZRAEL_CI_COMPLETE: "false"
+        run: |
+          python tools/run_verify_release_orchestrator.py             --mode verify             --base HEAD^             --no-cache             --receipt .tmp/kg001/verify_py311.json
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install source validator dependencies for 3.12
+        run: python -m pip install --upgrade pip numpy pillow trimesh
+
+      - name: Exact-head VERIFY on Python 3.12 and complete CI attestation
+        env:
+          OPENAZRAEL_CI_EXPECTED_SHA: ${{ steps.expected.outputs.sha }}
+          OPENAZRAEL_CI_COMPLETE: "true"
+        run: |
+          python tools/run_verify_release_orchestrator.py             --mode verify             --base HEAD^             --no-cache             --receipt .tmp/kg001/verify_release_orchestrator.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path(".tmp/kg001/verify_release_orchestrator.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          assert payload["status"] == "PASS", payload
+          assert payload["commit_sha"] == os.environ["OPENAZRAEL_CI_EXPECTED_SHA"], payload
+          assert payload["execution_context"]["exact_head_ci"] is True, payload
+          assert payload["readiness"] == "SOURCE_CHECKPOINT_READY_FOR_ASSET_PREFLIGHT", payload
+          PY
+
+      - name: Verify tracked checkout stayed clean
+        shell: bash
+        run: test -z "$(git status --porcelain --untracked-files=normal)"
+
+      - name: Upload exact-head VERIFY receipts
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-release-${{ steps.expected.outputs.sha }}
+          path: |
+            .tmp/kg001/verify_py311.json
+            .tmp/kg001/verify_release_orchestrator.json
+          if-no-files-found: error
+          retention-days: 14

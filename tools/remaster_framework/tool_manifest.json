@@ -840,6 +840,26 @@
       "deterministic": true,
       "mutates_runtime": false,
       "maturity": "poc"
+    },
+    {
+      "tool_id": "verify_release_orchestrator",
+      "family": "project_release",
+      "description": "Diff-aware FAST/VERIFY planner and source-safe exact-head release-readiness orchestrator with fail-safe critical-change escalation and fingerprint-bound PASS cache reuse.",
+      "entrypoint": "tools/run_verify_release_orchestrator.py",
+      "inputs": [
+        "git_diff",
+        "openazrael_verify_release_profile",
+        "tracked_source_tree"
+      ],
+      "outputs": [
+        "verify_release_plan",
+        "source_verify_receipt",
+        "local_pass_cache"
+      ],
+      "source_safe": true,
+      "deterministic": true,
+      "mutates_runtime": false,
+      "maturity": "poc"
     }
   ]
 }

@@ -50,3 +50,10 @@ OpenAzrael-specific adapters are kept outside the reusable core under
 Do not rename or delete legacy versioned scripts merely to fit this framework.
 Register them first, characterize their inputs/outputs with tests, then migrate
 shared logic into stable modules only when parity has been proven.
+
+## Verify / Release orchestration
+
+OpenAzrael uses a thin project profile over the reusable `verify_orchestrator.py`
+core. FAST selects diff-matched gates and escalates unknown critical changes;
+VERIFY runs the complete source-safe release set without creating a Candidate
+build. See `docs/VERIFY_RELEASE_ORCHESTRATOR.md`.
