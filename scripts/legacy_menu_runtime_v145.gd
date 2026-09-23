@@ -28,6 +28,19 @@ const HUD_BUTTONS := {
     "MAP": Rect2(213, 381, 77, 42),
     "SERVICE": Rect2(363, 386, 90, 43),
 }
+
+# Pixel-exact occurrence of INVBACK2.PCX inside HUD3.PCX from the official demo.
+# The background is already baked into HUD3, so runtime renders only the item text.
+const INVENTORY_RECT := Rect2(70, 345, 103, 69)
+const INVENTORY_TEXT_RECT := Rect2(77, 351, 89, 57)
+const INVENTORY_VISIBLE_ROWS := 5
+const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield"]
+const INVENTORY_ITEM_LABELS := {
+    "rusty_tongs": "Rusty tongs",
+    "well_key": "Well Key",
+    "r8_lens": "Lens",
+    "shield": "Shield",
+}
 # Evidence-constrained, non-overlapping label regions measured from SAVE13.PCX.
 # Exact 1996 input hitboxes remain HOLD until original runtime capture proves them.
 const SERVICE_ACTIONS := {
@@ -63,6 +76,7 @@ var service_texture: TextureRect
 var map_indicator: TextureRect
 var status_label: Label
 var slot_label: Label
+var inventory_label: Label
 
 var title_open := false
 var service_open := false
@@ -70,6 +84,7 @@ var map_mode := false
 var pending_action := ""
 var selected_slot := 0
 var volume_target := ""
+var inventory_scroll := 0
 var _scale := 1.0
 var _offset := Vector2.ZERO
 
@@ -77,6 +92,10 @@ func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
     layer = 50
     _build()
+    var inventory_callback := Callable(self, "_on_inventory_changed")
+    if not DemoState.is_connected("inventory_changed", inventory_callback):
+        DemoState.connect("inventory_changed", inventory_callback)
+    _refresh_inventory()
     _reflow()
     if DisplayServer.get_name() != "headless":
         _show_title()
@@ -152,9 +171,95 @@ func _build() -> void:
     slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
     classic_canvas.add_child(slot_label)
 
+    inventory_label = Label.new()
+    inventory_label.name = "LegacyInventoryItemsV157"
+    inventory_label.position = INVENTORY_TEXT_RECT.position
+    inventory_label.size = INVENTORY_TEXT_RECT.size
+    inventory_label.add_theme_font_size_override("font_size", 9)
+    inventory_label.add_theme_color_override("font_color", Color(0.78, 0.76, 0.58, 1.0))
+    inventory_label.add_theme_constant_override("line_spacing", 0)
+    inventory_label.clip_text = true
+    inventory_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    classic_canvas.add_child(inventory_label)
+
     service_texture.visible = false
     slot_label.visible = false
     map_indicator.visible = false
+
+func _inventory_item_ids() -> Array[String]:
+    var out: Array[String] = []
+    for item_id in INVENTORY_ITEM_ORDER:
+        if DemoState.has(String(item_id)):
+            out.append(String(item_id))
+    return out
+
+func _inventory_unknown_ids() -> Array[String]:
+    var out: Array[String] = []
+    for raw_id in DemoState.inventory.keys():
+        var item_id := String(raw_id)
+        if bool(DemoState.inventory.get(raw_id, false)) and not INVENTORY_ITEM_LABELS.has(item_id):
+            out.append(item_id)
+    out.sort()
+    return out
+
+func _inventory_labels() -> Array[String]:
+    var out: Array[String] = []
+    for item_id in _inventory_item_ids():
+        out.append(String(INVENTORY_ITEM_LABELS[item_id]))
+    return out
+
+func _refresh_inventory() -> void:
+    if inventory_label == null:
+        return
+    var items := _inventory_labels()
+    var max_scroll := maxi(items.size() - INVENTORY_VISIBLE_ROWS, 0)
+    inventory_scroll = clampi(inventory_scroll, 0, max_scroll)
+    var visible: Array[String] = []
+    var end := mini(inventory_scroll + INVENTORY_VISIBLE_ROWS, items.size())
+    for i in range(inventory_scroll, end):
+        visible.append(items[i])
+    inventory_label.text = "\n".join(visible)
+    inventory_label.visible = not title_open
+
+func _on_inventory_changed() -> void:
+    _refresh_inventory()
+    CandidateDiagnostics.record_event("legacy_inventory_changed", {
+        "items": _inventory_item_ids(),
+        "scroll": inventory_scroll,
+        "unknown_ids": _inventory_unknown_ids(),
+    })
+
+func _scroll_inventory(delta_rows: int) -> bool:
+    var items := _inventory_labels()
+    var max_scroll := maxi(items.size() - INVENTORY_VISIBLE_ROWS, 0)
+    var before := inventory_scroll
+    inventory_scroll = clampi(inventory_scroll + delta_rows, 0, max_scroll)
+    _refresh_inventory()
+    if inventory_scroll != before:
+        CandidateDiagnostics.record_event("legacy_inventory_scroll", {
+            "scroll": inventory_scroll,
+            "max_scroll": max_scroll,
+        })
+        return true
+    return false
+
+func debug_inventory_snapshot() -> Dictionary:
+    var labels := _inventory_labels()
+    var visible: Array[String] = []
+    var end := mini(inventory_scroll + INVENTORY_VISIBLE_ROWS, labels.size())
+    for i in range(inventory_scroll, end):
+        visible.append(labels[i])
+    return {
+        "rect": [INVENTORY_RECT.position.x, INVENTORY_RECT.position.y, INVENTORY_RECT.size.x, INVENTORY_RECT.size.y],
+        "text_rect": [INVENTORY_TEXT_RECT.position.x, INVENTORY_TEXT_RECT.position.y, INVENTORY_TEXT_RECT.size.x, INVENTORY_TEXT_RECT.size.y],
+        "visible_rows": INVENTORY_VISIBLE_ROWS,
+        "item_ids": _inventory_item_ids(),
+        "labels": labels,
+        "visible_labels": visible,
+        "scroll": inventory_scroll,
+        "unknown_ids": _inventory_unknown_ids(),
+        "font_fidelity": "COMPATIBILITY_FONT__INVFONT_GLYPH_MAP_HOLD",
+    }
 
 func _reflow() -> void:
     if classic_canvas == null:
@@ -191,6 +296,7 @@ func _show_title() -> void:
     service_texture.visible = false
     slot_label.visible = false
     map_indicator.visible = false
+    inventory_label.visible = false
     get_tree().paused = true
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -198,6 +304,8 @@ func _dismiss_title() -> void:
     title_open = false
     title_texture.visible = false
     hud_texture.visible = true
+    inventory_label.visible = true
+    _refresh_inventory()
     get_tree().paused = false
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
     CandidateDiagnostics.record_event("legacy_title_dismiss", {"compatibility_input": true})
@@ -348,6 +456,11 @@ func _unhandled_input(event: InputEvent) -> void:
             _dismiss_title()
             get_viewport().set_input_as_handled()
         return
+
+    if not service_open and event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_UP, KEY_DOWN]:
+        if _scroll_inventory(-1 if event.keycode == KEY_UP else 1):
+            get_viewport().set_input_as_handled()
+            return
 
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_M:
         _toggle_map()
