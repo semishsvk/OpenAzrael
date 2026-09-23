@@ -33,6 +33,68 @@ func _settle_physics(frames: int = 2) -> void:
     for _i in range(frames):
         await physics_frame
 
+func _setup_floor_probe(manager: Node) -> Dictionary:
+    var player = manager.get("player")
+    if not (player is CharacterBody3D) or not player.is_inside_tree():
+        return {"supported": false, "reason": "player_unavailable"}
+    var ray_from := player.global_position + Vector3.UP * 8.0
+    var ray_to := player.global_position + Vector3.DOWN * 72.0
+    var query := PhysicsRayQueryParameters3D.create(
+        ray_from,
+        ray_to,
+        int(player.collision_mask)
+    )
+    query.exclude = [player.get_rid()]
+    query.hit_back_faces = true
+    var hit := player.get_world_3d().direct_space_state.intersect_ray(query)
+    if hit.is_empty():
+        return {
+            "supported": false,
+            "player_position": [
+                player.global_position.x,
+                player.global_position.y,
+                player.global_position.z
+            ],
+            "ray_from": [ray_from.x, ray_from.y, ray_from.z],
+            "ray_to": [ray_to.x, ray_to.y, ray_to.z]
+        }
+    var hit_position := hit.get("position", Vector3.ZERO) as Vector3
+    var gap := player.global_position.y - hit_position.y
+    return {
+        "supported": gap >= -4.0 and gap <= 24.0,
+        "player_position": [
+            player.global_position.x,
+            player.global_position.y,
+            player.global_position.z
+        ],
+        "floor_position": [
+            hit_position.x, hit_position.y, hit_position.z
+        ],
+        "gap": gap,
+        "collider": (
+            String((hit.get("collider") as Object).get("name"))
+            if hit.get("collider") != null
+            else ""
+        )
+    }
+
+func _verify_setup_support(
+    manager: Node,
+    room: String,
+    portal: String
+) -> bool:
+    var last_probe: Dictionary = {}
+    for frame in range(30):
+        await physics_frame
+        last_probe = _setup_floor_probe(manager)
+        if not bool(last_probe.get("supported", false)):
+            failures.append(
+                "portal_support_failed:%s/%s:%s"
+                % [room, portal, JSON.stringify(last_probe)]
+            )
+            return false
+    return true
+
 func _find_named(root_node: Node, wanted: String) -> Node:
     if String(root_node.name) == wanted:
         return root_node
@@ -101,22 +163,28 @@ func _apply_setup(
             )
 
     var room := String(scenario.get("room", ""))
-    if room.is_empty() or not manager.has_method("load_room"):
+    var spawn_view := String(setup.get("spawn_view", ""))
+    if (
+        room.is_empty()
+        or spawn_view.is_empty()
+        or not manager.has_method("load_room_at_portal")
+    ):
         failures.append("invalid_room_setup")
         return false
 
-    manager.call("load_room", room, false)
-    await _settle(2)
+    var room_entry_ok := bool(
+        manager.call("load_room_at_portal", room, spawn_view, false)
+    )
+    if not room_entry_ok:
+        failures.append("room_portal_setup_failed:%s/%s" % [room, spawn_view])
+        return false
+    if not await _verify_setup_support(manager, room, spawn_view):
+        return false
 
     var current_room = manager.get("current_room")
     if current_room == null:
         failures.append("room_not_loaded:" + room)
         return false
-
-    var spawn_view := String(setup.get("spawn_view", ""))
-    if not spawn_view.is_empty():
-        manager.call("_spawn_at_portal", room, spawn_view)
-        await _settle_physics(3)
 
     if bool(setup.get("lock_room_transitions", false)):
         manager.set("transition_cooldown", 999.0)
