@@ -35,7 +35,11 @@ const REQUIRED_CANDIDATE_AUDIO := [
     "res://assets/audio/799SECDR.WAV",
     "res://assets/audio/S174ELP1.WAV",
     "res://assets/audio/S174ELP2.WAV",
-    "res://assets/audio/S186.WAV"
+    "res://assets/audio/S186.WAV",
+    "res://data/runtime_generated/candidate4_music_manifest_v135.json",
+    "res://assets/audio/music/INGAME2.ogg",
+    "res://assets/audio/music/AWEMYST.ogg",
+    "res://assets/audio/music/INGAME.ogg"
 ]
 
 var last_event: Dictionary = {}
@@ -50,6 +54,11 @@ var last_trigger_name := ""
 var last_trigger_edge := ""
 var last_bug_report := ""
 var _bug_report_capture_in_progress := false
+const PROOF_AUDIO_BUSES := ["OA_Music", "OA_Ambient"]
+var _proof_audio_bus_max_db := {
+    "OA_Music": -120.0,
+    "OA_Ambient": -120.0
+}
 
 func _ready() -> void:
     file_logging_enabled = DisplayServer.get_name() != "headless"
@@ -62,6 +71,28 @@ func _ready() -> void:
         "checkpoint": BUILD_CHECKPOINT,
         "file_logging": file_logging_enabled
     })
+
+func _process(_delta: float) -> void:
+    for bus_name in PROOF_AUDIO_BUSES:
+        var idx := AudioServer.get_bus_index(bus_name)
+        if idx < 0:
+            continue
+        var peak := maxf(
+            AudioServer.get_bus_peak_volume_left_db(idx, 0),
+            AudioServer.get_bus_peak_volume_right_db(idx, 0)
+        )
+        _proof_audio_bus_max_db[bus_name] = maxf(
+            float(_proof_audio_bus_max_db.get(bus_name, -120.0)),
+            peak
+        )
+
+func audio_mix_snapshot() -> Dictionary:
+    return {
+        "music_bus": "OA_Music",
+        "ambient_bus": "OA_Ambient",
+        "music_max_peak_db": float(_proof_audio_bus_max_db.get("OA_Music", -120.0)),
+        "ambient_max_peak_db": float(_proof_audio_bus_max_db.get("OA_Ambient", -120.0))
+    }
 
 func _sorted_keys(source: Dictionary) -> Array[String]:
     var out: Array[String] = []
