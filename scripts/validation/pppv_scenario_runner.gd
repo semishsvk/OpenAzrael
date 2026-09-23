@@ -105,10 +105,13 @@ func _find_named(root_node: Node, wanted: String) -> Node:
     return null
 
 func _known_state_keys(scenario: Dictionary) -> Dictionary:
+    var inventory_keys: Array[String] = []
+    var flag_keys: Array[String] = []
+    var puzzle_keys: Array[String] = []
     var out := {
-        "inventory": [],
-        "flags": [],
-        "puzzle": []
+        "inventory": inventory_keys,
+        "flags": flag_keys,
+        "puzzle": puzzle_keys
     }
     for row in scenario.get("state_expectations", []):
         if not row is Dictionary:
