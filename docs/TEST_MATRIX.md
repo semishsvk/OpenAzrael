@@ -20,6 +20,7 @@
 | InteractionProbe v148 | Source contract previously CI-observed | PENDING final runtime execution | Raycast primary; deterministic overlap fallback |
 | Legacy menu toggle v149 | Source contract previously CI-observed | PENDING final runtime execution | No new gameplay scope |
 | Save compatibility v150 | SOURCE CONTRACT WIRED; final exact-head CI pending | PENDING final runtime execution | Current v145 save succeeds; invalid/unsupported saves fail closed |
+| Inventory HUD v157 | SOURCE CONTRACT PASS on feature branch; exact-head CI pending | PENDING Godot runtime execution | Canonical DemoState inventory -> source-positioned carried-object list; save/load and lens/shield flow regression |
 | Candidate 4 music v133-v136 | SOURCE CONTRACT WIRED; final exact-head CI pending | PENDING SoundFont/XMI render + Godot playback | Event/PCM hashes independent of OGG exact-artifact SHA |
 | Candidate 4 frozen handoff | SOURCE CONTRACT WIRED | Runs only after PASS preflight | Commit/tree + preflight SHA + complete runtime asset digest |
 | Candidate 4 packaged/export | N/A | PENDING | Guarded EXE/PCK, startup smoke, packaged parity/music |
