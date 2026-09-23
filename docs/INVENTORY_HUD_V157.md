@@ -7,7 +7,7 @@ This increment closes the source-documented carried-object list in the classic H
 - The official demo README states that the left HUD box lists carried objects and is scrollable with the arrow keys.
 - `INVBACK2.PCX` is 103x69.
 - A pixel-exact comparison against `HUD3.PCX` places `INVBACK2.PCX` at logical framebuffer coordinate **(70,345)**.
-- `INVFONT.PCX` exists, but its glyph-index map remains HOLD. v157 therefore uses a compatibility runtime font and does not claim pixel-perfect 1996 text rendering.
+- `INVFONT.PCX` is a 1380x12 source strip resolved as 138 fixed 10x12 cells. The contiguous character map starts at codepoint 35 (`#`); e.g. cell 13 is `0` and cell 30 is `A`. v157 renders inventory text directly from this source texture with nearest filtering.
 
 ## Runtime rule
 
@@ -16,11 +16,11 @@ This increment closes the source-documented carried-object list in the classic H
 Demo labels are source-backed:
 
 - `rusty_tongs` -> `Rusty tongs`
-- `well_key` -> `Well Key`
+- `well_key` -> `Key`
 - `r8_lens` -> `Lens`
 - `shield` -> `Shield`
 
-Unknown future/retail IDs are deliberately not converted into invented player-facing labels. They are exposed in the debug snapshot until a source-backed label mapping is available.
+Unknown future/retail IDs are deliberately not converted into invented player-facing labels. Cursor Up/Down may scroll the list, but the menu does not consume those events, preserving the README-documented movement bindings. They are exposed in the debug snapshot until a source-backed label mapping is available.
 
 ## Regression path
 
