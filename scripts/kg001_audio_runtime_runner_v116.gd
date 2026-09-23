@@ -110,6 +110,7 @@ func _run() -> void:
             var snap: Dictionary = snapshots[i]
             _check("%s_ambient_%d_stream" % [room_id, i], bool(snap.get("stream_valid", false)))
             _check("%s_ambient_%d_playing" % [room_id, i], bool(snap.get("playing", false)))
+            _check("%s_ambient_%d_bus" % [room_id, i], String(snap.get("bus", "")) == "OA_Ambient")
             _check("%s_ambient_%d_nonempty_loop" % [room_id, i], int(snap.get("loop_end", 0)) > int(snap.get("loop_begin", 0)))
             _check("%s_ambient_%d_forward_loop" % [room_id, i], int(snap.get("loop_mode", -1)) == AudioStreamWAV.LOOP_FORWARD)
 
