@@ -44,6 +44,15 @@ def _norm(path: str) -> str:
     return path.replace("\\", "/").lstrip("./")
 
 
+def merge_changed_files(*groups: Iterable[str]) -> tuple[str, ...]:
+    return tuple(sorted({
+        _norm(path)
+        for group in groups
+        for path in group
+        if str(path).strip()
+    }))
+
+
 def matches_any(path: str, patterns: Sequence[str]) -> bool:
     normalized = _norm(path)
     return any(fnmatch(normalized, pattern) for pattern in patterns)
@@ -59,7 +68,7 @@ def select_plan(
 ) -> Plan:
     if mode not in {"fast", "verify"}:
         raise ValueError(f"unsupported mode: {mode}")
-    changed = tuple(sorted({_norm(path) for path in changed_files if str(path).strip()}))
+    changed = merge_changed_files(changed_files)
     by_id = {gate.gate_id: gate for gate in gates}
     if fallback_gate_id not in by_id:
         raise ValueError(f"fallback gate missing: {fallback_gate_id}")

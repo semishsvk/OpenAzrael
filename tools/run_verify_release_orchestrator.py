@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import os
 import platform
@@ -20,6 +21,7 @@ from tools.remaster_framework.verify_orchestrator import (
     classify_readiness,
     gate_fingerprint,
     matches_any,
+    merge_changed_files,
     select_plan,
 )
 
@@ -80,13 +82,29 @@ def resolve_base(explicit: str | None, head: str) -> str | None:
     return None
 
 
-def changed_files(base: str | None, head: str) -> list[str]:
+def working_tree_changed_files() -> list[str]:
+    groups: list[list[str]] = []
+    for cmd in (
+        ["git", "diff", "--name-only"],
+        ["git", "diff", "--name-only", "--cached"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
+    ):
+        proc = run(cmd)
+        if proc.returncode != 0:
+            raise RuntimeError(proc.stdout.strip() or f"{' '.join(cmd)} failed")
+        groups.append([line.strip() for line in proc.stdout.splitlines() if line.strip()])
+    return list(merge_changed_files(*groups))
+
+
+def changed_files(base: str | None, head: str, worktree: list[str]) -> list[str]:
     if base is None:
-        return tracked_files()
-    proc = run(["git", "diff", "--name-only", f"{base}...{head}"])
-    if proc.returncode != 0:
-        raise RuntimeError(proc.stdout.strip() or "git diff failed")
-    return sorted({line.strip() for line in proc.stdout.splitlines() if line.strip()})
+        committed = tracked_files()
+    else:
+        proc = run(["git", "diff", "--name-only", f"{base}...{head}"])
+        if proc.returncode != 0:
+            raise RuntimeError(proc.stdout.strip() or "git diff failed")
+        committed = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+    return list(merge_changed_files(committed, worktree))
 
 
 def expand_command(command: tuple[str, ...]) -> list[str]:
@@ -112,12 +130,23 @@ def file_identity_for_gate(gate: GateSpec, tracked: list[str]) -> dict[str, dict
     return identity
 
 
+def _package_version(name: str) -> str:
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return "NOT_INSTALLED"
+
+
 def environment_identity() -> dict[str, object]:
     return {
         "python": platform.python_version(),
         "implementation": platform.python_implementation(),
         "platform": platform.system(),
         "machine": platform.machine(),
+        "packages": {
+            name: _package_version(name)
+            for name in ("numpy", "Pillow", "trimesh", "soundfile")
+        },
     }
 
 
@@ -160,7 +189,8 @@ def main() -> int:
 
     head = git("rev-parse", args.head)
     base = resolve_base(args.base, head)
-    diff = changed_files(base, head)
+    worktree = working_tree_changed_files()
+    diff = changed_files(base, head, worktree)
     requested_mode = args.mode
     plan_mode = "fast" if requested_mode == "plan" else requested_mode
     if base is None and plan_mode == "fast":
@@ -177,6 +207,7 @@ def main() -> int:
 
     profile_sha = sha256(PROFILE)
     tracked = tracked_files()
+    fingerprint_files = list(merge_changed_files(tracked, worktree))
     env = environment_identity()
     cache = load_cache(args.cache)
     cache_gates = cache.setdefault("gates", {})
@@ -184,7 +215,7 @@ def main() -> int:
 
     if requested_mode != "plan":
         for gate in selected:
-            identity = file_identity_for_gate(gate, tracked)
+            identity = file_identity_for_gate(gate, fingerprint_files)
             fingerprint = gate_fingerprint(
                 gate,
                 input_identity=identity,
@@ -263,6 +294,7 @@ def main() -> int:
         "base": base,
         "clean_worktree": clean,
         "changed_files": list(plan.changed_files),
+        "worktree_changed_files": worktree,
         "selected_gates": list(plan.selected_gate_ids),
         "unmatched_critical_files": list(plan.unmatched_critical_files),
         "escalated_to_verify": plan.escalated_to_verify or (requested_mode == "fast" and plan_mode == "verify"),

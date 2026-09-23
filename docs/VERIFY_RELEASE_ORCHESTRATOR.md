@@ -15,7 +15,8 @@ Use FAST for ordinary development changes:
     python tools/run_verify_release_orchestrator.py --mode fast --base <known-base>
 
 FAST always runs the current-tree public-release safety check, then adds only
-the source gates whose declared trigger patterns match the Git diff. A critical
+the source gates whose declared trigger patterns match the committed Git diff
+plus staged, unstaged and untracked worktree changes. A critical
 change under `scripts/`, `tools/`, `data/`, Godot scene/project files or GitHub
 workflows that is not covered by a known mapping automatically escalates to the
 broad `kg001_source_suite`. Unknown critical changes therefore fail safe instead
@@ -33,7 +34,7 @@ the gate fingerprint is identical. The fingerprint binds:
 - the exact command;
 - the verify/release profile SHA-256;
 - all tracked files declared as gate inputs, including size and SHA-256;
-- Python implementation/version and basic platform identity.
+- Python implementation/version, relevant validator package versions, and basic platform identity.
 
 FAIL results are never reused. `--no-cache` forces execution.
 

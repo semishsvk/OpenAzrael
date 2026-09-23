@@ -116,6 +116,20 @@ checks = {
         and fallback in unknown_plan.selected_gate_ids
         and "scripts/unknown_future_runtime_change.gd" in unknown_plan.unmatched_critical_files
     ),
+    "worktree_changes_are_planned_and_fingerprinted":all(token in tool for token in (
+        "working_tree_changed_files",
+        '"git", "diff", "--name-only", "--cached"',
+        '"git", "ls-files", "--others", "--exclude-standard"',
+        "merge_changed_files(tracked, worktree)",
+        '"worktree_changed_files": worktree',
+    )),
+    "dependency_versions_in_cache_identity":all(token in tool for token in (
+        'importlib.metadata.version',
+        '"numpy"',
+        '"Pillow"',
+        '"trimesh"',
+        '"soundfile"',
+    )),
     "pass_only_exact_cache": (
         "PASS_ONLY_EXACT_GATE_FINGERPRINT" in tool
         and "can_reuse_pass" in tool

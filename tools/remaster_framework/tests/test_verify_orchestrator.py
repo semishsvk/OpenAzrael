@@ -7,6 +7,7 @@ from tools.remaster_framework.verify_orchestrator import (
     can_reuse_pass,
     classify_readiness,
     gate_fingerprint,
+    merge_changed_files,
     select_plan,
 )
 
@@ -110,6 +111,28 @@ class VerifyOrchestratorTests(unittest.TestCase):
             environment_identity={"python": "3.11"},
         )
         self.assertNotEqual(first, second)
+
+    def test_merge_changed_files_preserves_worktree_only_changes(self) -> None:
+        merged = merge_changed_files(
+            ["docs/PROJECT_STATE.md"],
+            ["scripts/new_untracked_runtime.gd"],
+            ["docs/PROJECT_STATE.md"],
+        )
+        self.assertEqual(
+            merged,
+            ("docs/PROJECT_STATE.md", "scripts/new_untracked_runtime.gd"),
+        )
+
+    def test_dirty_verify_is_never_release_ready(self) -> None:
+        self.assertEqual(
+            classify_readiness(
+                mode="verify",
+                all_selected_pass=True,
+                clean_worktree=False,
+                exact_head_ci=True,
+            ),
+            "BLOCKED_DIRTY_WORKTREE",
+        )
 
     def test_readiness_never_promotes_local_verify_to_exact_head_ci(self) -> None:
         self.assertEqual(
