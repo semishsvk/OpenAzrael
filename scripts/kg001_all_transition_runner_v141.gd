@@ -238,8 +238,10 @@ func _run() -> void:
     var driver = PlayerDriver.new(player, probe, evidence, guard)
 
     manager.transition_cooldown = 999.0
-    manager.load_room("R1", false)
-    manager.call("_spawn_at_portal", "R1", "spaview")
+    _check(
+        "initial_R1_portal_entry",
+        bool(manager.call("load_room_at_portal", "R1", "spaview", false))
+    )
     manager.transition_cooldown = 0.0
     await _settle(12)
     room_sequence.append("R1")
