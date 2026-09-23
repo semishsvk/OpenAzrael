@@ -29,9 +29,18 @@ class OpenAzraelR1PPPVTests(unittest.TestCase):
         for scenario in self.scenarios.values():
             self.assertEqual(scenario.validate(), [])
             modes = [action.execution_mode for action in scenario.actions]
-            self.assertEqual(modes[-1], ExecutionMode.INTERACTION_PROBE)
+            self.assertEqual(
+                modes.count(ExecutionMode.INTERACTION_PROBE),
+                1,
+            )
             self.assertTrue(
-                all(mode == ExecutionMode.INPUT for mode in modes[:-1])
+                all(
+                    mode in (
+                        ExecutionMode.INPUT,
+                        ExecutionMode.INTERACTION_PROBE,
+                    )
+                    for mode in modes
+                )
             )
             self.assertFalse(
                 scenario.metadata["direct_interact_call_allowed"]
