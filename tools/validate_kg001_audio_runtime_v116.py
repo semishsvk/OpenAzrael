@@ -19,6 +19,7 @@ runner=read("scripts/kg001_audio_runtime_runner_v116.gd")
 restore=read("tools/restore_candidate_assets.py")
 prepare=read("tools/prepare_candidate_audio.py")
 ir_text=read("data/audio/legacy_world_ir.json")
+exporter=read("tools/legacy_export/export_legacy_world_v21.py")
 
 checks={
     "ambient_null_fallback": 'if position_value == null:' in ambient and 'legacy_position' in ambient,
@@ -43,6 +44,7 @@ checks={
     "restore_audio_fingerprints": "Audio fingerprint mismatch" in restore,
     "well_tongs_audio_ir": "979TONGS.WAV" in ir_text and "0.9501133786848073" in ir_text,
     "restore_legacy_ir": "export_legacy_world_v21.py" in restore,
+    "music_ir_deterministic_casefold_order": "sorted(src.glob('*.XMI'),key=lambda p:p.name.casefold())" in exporter,
     "wav_pcm_preserved": "pcm_unchanged" in prepare,
     "wav_981pull_verified_repair": (
         '"981PULL.WAV"' in prepare
