@@ -311,6 +311,30 @@ def main() -> int:
     if not godot:
         return fail("GODOT_NOT_FOUND", final_video=final_video)
 
+    audio_runtime_preflight = []
+    for label, script_path in (
+        ("ambient_and_sfx", "res://scripts/kg001_audio_runtime_runner_v116.gd"),
+        ("music", "res://scripts/kg001_music_runtime_runner_v136.gd"),
+    ):
+        audio_check = run([
+            godot,
+            "--headless",
+            "--path", str(ROOT),
+            "--script", script_path,
+        ])
+        audio_runtime_preflight.append({
+            "label": label,
+            "script": script_path,
+            "returncode": audio_check.returncode,
+            "output_tail": audio_check.stdout[-12000:],
+        })
+        if audio_check.returncode != 0:
+            return fail(
+                "AUDIO_RUNTIME_PREFLIGHT_FAILED",
+                audio_runtime_preflight[-1],
+                final_video=final_video,
+            )
+
     ffmpeg = resolve_executable(args.ffmpeg, ["ffmpeg"])
     if not ffmpeg:
         return fail("FFMPEG_NOT_FOUND", final_video=final_video)
@@ -375,6 +399,24 @@ def main() -> int:
                 "raw_movie_exists": raw_avi.is_file(),
                 "runtime_exists": RUNTIME.is_file(),
                 "output_tail": movie.stdout[-16000:],
+            },
+            final_video=final_video,
+        )
+
+    runtime_bundle = load_json(RUNTIME)
+    audio_mix = runtime_bundle.get("audio_mix", {})
+    if not isinstance(audio_mix, dict):
+        audio_mix = {}
+    music_peak_db = float(audio_mix.get("music_max_peak_db", -120.0))
+    ambient_peak_db = float(audio_mix.get("ambient_max_peak_db", -120.0))
+    if music_peak_db <= -60.0 or ambient_peak_db <= -60.0:
+        return fail(
+            "PROOF_AUDIO_LAYER_MISSING_OR_INAUDIBLE",
+            {
+                "music_max_peak_db": music_peak_db,
+                "ambient_max_peak_db": ambient_peak_db,
+                "threshold_db": -60.0,
+                "audio_mix": audio_mix,
             },
             final_video=final_video,
         )
@@ -650,6 +692,12 @@ def main() -> int:
         },
         "audio_evidence": {
             "required": True,
+            "runtime_preflight": audio_runtime_preflight,
+            "layer_peaks": {
+                "music_max_peak_db": music_peak_db,
+                "ambient_max_peak_db": ambient_peak_db,
+                "minimum_required_peak_db": -60.0,
+            },
             "raw_capture_stream_count": len(raw_audio_streams),
             "raw_capture_primary_stream": raw_audio_streams[0],
             "raw_capture_pcm": raw_audio,
