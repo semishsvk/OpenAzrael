@@ -8,6 +8,7 @@ enum AudioMode { CLASSIC, ENHANCED }
 const LEGACY_TOTAL_3D_SLOTS := 7
 const LEGACY_AMBIENT_SLOTS := 3
 const LEGACY_DYNAMIC_SLOTS := 4
+const AMBIENT_BUS := "OA_Ambient"
 var spawned: Array[AudioStreamPlayer3D] = []
 const ClassicParity := preload("res://scripts/classic_3d_parity_backend_v68.gd")
 const ClassicMilesRenderer := preload("res://scripts/classic_miles_renderer_v86.gd")
@@ -108,6 +109,15 @@ func setup_for_room(room_id: String) -> void:
             break
         _spawn_emitter(rec, spawned.size())
 
+func _ensure_ambient_bus() -> StringName:
+    var idx := AudioServer.get_bus_index(AMBIENT_BUS)
+    if idx < 0:
+        AudioServer.add_bus()
+        idx = AudioServer.get_bus_count() - 1
+        AudioServer.set_bus_name(idx, AMBIENT_BUS)
+        AudioServer.set_bus_send(idx, "Master")
+    return StringName(AMBIENT_BUS)
+
 func _spawn_emitter(rec: Dictionary, legacy_slot: int) -> void:
     var fn := String(rec.get("sample", ""))
     var path := "res://assets/audio/" + fn
@@ -130,6 +140,7 @@ func _spawn_emitter(rec: Dictionary, legacy_slot: int) -> void:
             stream.loop_end = int(round(stream.get_length() * stream.mix_rate))
         stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
     p.stream = stream
+    p.bus = _ensure_ambient_bus()
     p.set_meta("openazrael_provenance", "ORIGINAL_EXPLICIT")
     p.set_meta("legacy_3d_slot", legacy_slot)
     p.set_meta("legacy_slot_class", "AMBIENT_RESERVED_0_2")
