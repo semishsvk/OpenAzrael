@@ -118,6 +118,20 @@ func _run() -> void:
         DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
 
     events.call("set_capture_only", false)
+    var ambient = manager.get("legacy_audio")
+    if ambient != null and ambient.has_method("clear_emitters"):
+        ambient.call("clear_emitters")
+    var music = root.get_node_or_null("CandidateMusic")
+    if music != null:
+        music.call("stop")
+        var music_player = music.get_node_or_null("CandidateMusicPlayer")
+        if music_player is AudioStreamPlayer:
+            music_player.stop()
+            music_player.stream = null
+    # Godot command-line audio teardown is asynchronous. Give the audio thread
+    # a short real-time grace period after clearing streams so shutdown does
+    # not report the known AudioStreamPlayer/OggPacketSequence false leak.
+    await create_timer(0.5).timeout
     _finish(scene)
 
 func _finish(scene: Node = null) -> void:
