@@ -3,7 +3,7 @@
 **Date:** 2026-09-23  
 **Authoritative integration branch:** `integration/kg001-candidate3-pppv-v2`  
 **Release target:** KG-001 Candidate 4, after exact-SHA asset-backed preflight and manual G10  
-**Known Good:** **NO** — neither Candidate 4 nor `demo-known-good-001` is allowed yet.
+Known Good: **NO** — neither Candidate 4 nor `demo-known-good-001` is allowed yet.
 
 ## Evidence state
 
