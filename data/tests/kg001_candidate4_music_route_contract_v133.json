@@ -4,7 +4,10 @@
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "input_policy": {
     "local_official_demo_only": true,
-    "required_files": ["MUSIC.DAT", "R.EXE"],
+    "required_files": [
+      "MUSIC.DAT",
+      "R.EXE"
+    ],
     "bound_demo_rexe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
     "canonical_xmi_count": 24
   },
@@ -24,11 +27,35 @@
     ]
   },
   "semantic_policy": {
-    "accepted_demo_rooms": ["R1", "R7", "R8"],
+    "accepted_demo_rooms": [
+      "R1",
+      "R7",
+      "R8"
+    ],
     "bare_numeric_room_inference_allowed": false,
     "ambiguous_mapping_policy": "HOLD",
     "explicit_room_plus_single_xmi_required_for_binding": true,
-    "music_required_resolution": "REQUIRES_RUNTIME_MUSIC"
+    "music_required_resolution": "REQUIRES_RUNTIME_MUSIC",
+    "bound_numeric_room_mapping_evidence": "data/world_sound_record_fields_v113.json",
+    "bound_demo_room_numeric_mapping": {
+      "0": "R1",
+      "1": "R7",
+      "2": "R8"
+    },
+    "bound_rexe_gm_slot_table": [
+      "AWEMYST.XMI",
+      "CATHEDRL.XMI",
+      "EGYPTIAN.XMI",
+      "FIGHT2.XMI",
+      "GHOSTS.XMI",
+      "GRAIL.XMI",
+      "INGAME.XMI",
+      "INGAME2.XMI",
+      "KREEPY2.XMI",
+      "KREEPY3.XMI",
+      "PEACEFUL.XMI"
+    ],
+    "numeric_binding_policy": "Allowed only when both independently bound room-ID evidence and the exact bound R.EXE GM slot table validate; otherwise HOLD."
   },
   "output": ".tmp/kg001/candidate4_music_route_v133.json"
 }

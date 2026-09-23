@@ -66,6 +66,8 @@ python tools/bootstrap_openazrael_sources.py prepare demo --restore-demo-runtime
 `tools/restore_candidate_assets.py` now also resolves the registered demo
 automatically when no positional path is supplied.
 
+The canonical demo root is anchored by `PUZZLES.DAT`, `ROOMS.DAT`, `WORLD.DAT`, `MUSIC.DAT`, `R.EXE` and `CHARACTE.DAT`, plus the existing texture/audio counts. The official demo does **not** contain `OBJECTS.DAT`; that remains a retail-only corpus anchor.
+
 ## Retail
 
 Retail is deliberately stricter about claims. The repository has

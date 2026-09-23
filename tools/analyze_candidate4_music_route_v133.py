@@ -14,8 +14,15 @@ import argparse, hashlib, json, re, sys
 
 ROOT=Path(__file__).resolve().parents[1]
 IR=ROOT/"data/audio/legacy_world_ir.json"
+ROOM_EVIDENCE=ROOT/"data/world_sound_record_fields_v113.json"
 EXPECTED_REXE_SHA256="381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
 DEFAULT_OUT=ROOT/".tmp/kg001/candidate4_music_route_v133.json"
+
+DEMO_ROOM_NUMERIC_MAP={0:"R1",1:"R7",2:"R8"}
+GM_SLOT_TABLE=[
+    "AWEMYST.XMI","CATHEDRL.XMI","EGYPTIAN.XMI","FIGHT2.XMI","GHOSTS.XMI",
+    "GRAIL.XMI","INGAME.XMI","INGAME2.XMI","KREEPY2.XMI","KREEPY3.XMI","PEACEFUL.XMI",
+]
 
 ROOM_ALIASES={
     "R1":{"R1","ROOM0","ROOM 0","ENTRYCORRIDOR","ENTRY CORRIDOR","ENTCORI"},
@@ -58,6 +65,27 @@ def room_hits(line_upper: str) -> list[str]:
         if matched:hits.append(room)
     return sorted(set(hits))
 
+def bound_numeric_evidence(rexe: Path) -> tuple[bool,dict]:
+    evidence=json.loads(ROOM_EVIDENCE.read_text(encoding="utf-8"))
+    observed_map=evidence.get("record_layout",{}).get("room_id",{}).get("mapping",{})
+    expected_map={str(k):v for k,v in DEMO_ROOM_NUMERIC_MAP.items()}
+    room_ok=observed_map==expected_map
+    exe_lower=rexe.read_bytes().lower()
+    gm_blob=b"\x00".join(name.lower().encode("ascii") for name in GM_SLOT_TABLE)+b"\x00"
+    gm_offset=exe_lower.find(gm_blob)
+    music_literal_offset=exe_lower.find(b"music.dat")
+    gm_ok=gm_offset>=0 and music_literal_offset>=0 and gm_offset<music_literal_offset
+    return room_ok and gm_ok,{
+        "room_mapping":observed_map,
+        "expected_room_mapping":expected_map,
+        "room_mapping_source":"data/world_sound_record_fields_v113.json",
+        "gm_slot_table":GM_SLOT_TABLE,
+        "gm_slot_table_offset":gm_offset,
+        "music_dat_literal_offset":music_literal_offset,
+        "gm_slot_table_sha256":hashlib.sha256(gm_blob).hexdigest(),
+        "bound_demo_rexe_sha256":sha256(rexe),
+    }
+
 def main() -> int:
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument("demo_dir",type=Path)
@@ -93,6 +121,15 @@ def main() -> int:
                  "reason":"BOUND_DEMO_REXE_HASH_MISMATCH",
                  "expected_rexe_sha256":EXPECTED_REXE_SHA256,
                  "observed_rexe_sha256":rexe_sha}
+        out.write_text(json.dumps(payload,indent=2)+"\n",encoding="utf-8")
+        print(json.dumps(payload,indent=2)); return 1
+
+    bound_ok,bound_evidence=bound_numeric_evidence(rexe)
+    if not bound_ok:
+        payload={"schema":"openazrael.kg001.candidate4_music_route","version":133,
+                 "status":"FAIL","resolution":"UNKNOWN",
+                 "reason":"BOUND_NUMERIC_MUSIC_EVIDENCE_INVALID",
+                 "bound_numeric_evidence":bound_evidence}
         out.write_text(json.dumps(payload,indent=2)+"\n",encoding="utf-8")
         print(json.dumps(payload,indent=2)); return 1
 
@@ -146,6 +183,21 @@ def main() -> int:
                 "token_count":len(tokens),
             })
 
+    numeric_rows=[]
+    for line_no,line in enumerate(text.splitlines(),1):
+        stripped=line.strip()
+        if not stripped or stripped.upper()=="END":
+            continue
+        match=re.fullmatch(r"([-+]?\d+)\s+([-+]?\d+)",stripped)
+        if not match:
+            continue
+        numeric_rows.append({
+            "line":line_no,
+            "legacy_room_id":int(match.group(1),10),
+            "music_slot":int(match.group(2),10),
+            "line_sha256":hashlib.sha256(stripped.encode("ascii","strict")).hexdigest(),
+        })
+
     explicit=[]
     ambiguous=[]
     for row in rows:
@@ -157,6 +209,28 @@ def main() -> int:
                                   "room_count":len(row["explicit_demo_rooms"]),
                                   "xmi_count":len(row["xmi"])})
 
+    for row in numeric_rows:
+        legacy_room_id=row["legacy_room_id"]
+        if legacy_room_id not in DEMO_ROOM_NUMERIC_MAP:
+            continue
+        room=DEMO_ROOM_NUMERIC_MAP[legacy_room_id]
+        slot=row["music_slot"]
+        if 0<=slot<len(GM_SLOT_TABLE):
+            explicit.append({
+                "room":room,
+                "xmi":GM_SLOT_TABLE[slot],
+                "line":row["line"],
+                "binding_method":"BOUND_NUMERIC_ROOM_AND_R_EXE_GM_SLOT_TABLE",
+                "legacy_room_id":legacy_room_id,
+                "music_slot":slot,
+            })
+        else:
+            ambiguous.append({
+                "line":row["line"],"room_count":1,"xmi_count":0,
+                "binding_method":"BOUND_NUMERIC_SLOT_OUT_OF_RANGE",
+                "legacy_room_id":legacy_room_id,"music_slot":slot,
+            })
+
     by_room={room:sorted({m["xmi"] for m in explicit if m["room"]==room}) for room in ("R1","R7","R8")}
     route_music=sorted({x for vals in by_room.values() for x in vals})
 
@@ -167,7 +241,7 @@ def main() -> int:
     route_ambiguous=any(row.get("room_count",0)>0 for row in ambiguous)
     if route_complete and not route_ambiguous:
         status="PASS"; resolution="REQUIRES_RUNTIME_MUSIC"
-        reason="COMPLETE_EXPLICIT_ACCEPTED_ROUTE_MUSIC_BINDINGS_RECOVERED"
+        reason="COMPLETE_BOUND_ACCEPTED_ROUTE_MUSIC_BINDINGS_RECOVERED"
     else:
         status="HOLD"; resolution="UNKNOWN"
         reason="MUSIC_TABLE_ROUTE_MAPPING_INCOMPLETE_OR_AMBIGUOUS"
@@ -183,12 +257,14 @@ def main() -> int:
             "music_dat_bytes":len(raw),
             "nonempty_line_count":len(nonempty),
             "bound_rexe_sha256":rexe_sha,
+            "bound_numeric_evidence":bound_evidence,
         },
         "canonical_xmi":{
             "expected_count":24,
             "verified_count":len(xmi_rows),
             "recognized_in_music_dat_count":len(recognized),
             "recognized_in_music_dat":sorted(recognized),
+            "derived_via_bound_numeric_route":route_music,
         },
         "accepted_demo_route":{
             "rooms":["R1","R7","R8"],
@@ -197,11 +273,12 @@ def main() -> int:
             "required_xmi":route_music,
             "complete_one_binding_per_room":route_complete,
             "ambiguous_rows":ambiguous,
+            "numeric_rows_for_accepted_rooms":[row for row in numeric_rows if row["legacy_room_id"] in DEMO_ROOM_NUMERIC_MAP],
         },
         "source_safe":True,
         "raw_music_dat_emitted":False,
         "raw_xmi_emitted":False,
-        "policy":"Bare numeric fields are metadata only and are never interpreted as room IDs without independent evidence.",
+        "policy":"Bare numeric fields are metadata only unless resolved through independently bound room-ID evidence and the exact bound R.EXE GM slot table.",
     }
     out.write_text(json.dumps(payload,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(payload,indent=2))

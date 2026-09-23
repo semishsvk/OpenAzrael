@@ -137,6 +137,42 @@ class SourceRegistryTests(unittest.TestCase):
             )
             self.assertEqual(verification["status"], "PASS")
 
+    def test_demo_nested_zip_chain_materializes_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload = root / "nested-payload"
+            game = payload / "ATDEMO"
+            textures = game / "TEXTURES"
+            textures.mkdir(parents=True)
+            (game / "PUZZLES.DAT").write_bytes(b"puzzles")
+            (game / "OBJECTS.DAT").write_bytes(b"objects")
+            (game / "S001.WAV").write_bytes(b"RIFF")
+            (textures / "A.AZF").write_bytes(b"a")
+            (textures / "B.AZF").write_bytes(b"b")
+            (textures / "R1.XAF").write_bytes(b"x")
+
+            resource = root / "RESOURCE.000"
+            with zipfile.ZipFile(resource, "w") as handle:
+                for path in sorted(game.rglob("*")):
+                    if path.is_file():
+                        handle.write(path, Path("ATDEMO") / path.relative_to(game))
+
+            self_extract = root / "atdemo.exe"
+            with zipfile.ZipFile(self_extract, "w") as handle:
+                handle.write(resource, "RESOURCE.000")
+                handle.writestr("INSTALL.BAT", "echo install")
+
+            archive = root / "atdemo-test.zip"
+            with zipfile.ZipFile(archive, "w") as handle:
+                handle.write(self_extract, "atdemo.exe")
+
+            contract = self._write_contract(root, demo_zip=archive)
+            home = root / "source-home"
+            register_source("demo", archive, contract_path=contract, home=home)
+            resolved = resolve_source("demo", contract_path=contract, home=home)
+            self.assertTrue((resolved / "PUZZLES.DAT").is_file())
+            self.assertTrue((resolved / "TEXTURES/R1.XAF").is_file())
+
     def test_wrong_demo_archive_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

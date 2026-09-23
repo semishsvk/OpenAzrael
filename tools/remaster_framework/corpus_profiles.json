@@ -8,11 +8,16 @@
       "edition": "demo",
       "evidence": [
         "tools/legacy_export/export_legacy_world_v21.py",
-        "Audio Lab AL-POC-01 canonical demo corpus: 30 WAV assets"
+        "Audio Lab AL-POC-01 canonical demo corpus: 30 WAV assets",
+        "Canonical atdemo.zip materialization contains no OBJECTS.DAT; demo runtime evidence is recovered from WORLD/ROOMS/XAF sources."
       ],
       "required_exact": [
         "PUZZLES.DAT",
-        "OBJECTS.DAT"
+        "ROOMS.DAT",
+        "WORLD.DAT",
+        "MUSIC.DAT",
+        "R.EXE",
+        "CHARACTE.DAT"
       ],
       "required_patterns": [
         {

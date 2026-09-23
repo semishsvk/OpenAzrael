@@ -238,6 +238,34 @@ def _safe_extract_zip(source: Path, destination: Path) -> None:
         archive.extractall(destination)
 
 
+def _extract_until_shape(
+    source: Path,
+    destination: Path,
+    shape: dict[str, Any],
+    *,
+    max_nested_archives: int = 3,
+) -> Path:
+    current_archive=source
+    for depth in range(max_nested_archives+1):
+        layer=destination/f"layer{depth}"
+        layer.mkdir(parents=True,exist_ok=True)
+        _safe_extract_zip(current_archive,layer)
+        try:
+            return _find_extracted_root(layer,shape)
+        except ValueError:
+            pass
+        nested=[path for path in _iter_files(layer) if zipfile.is_zipfile(path)]
+        if len(nested)!=1:
+            raise ValueError(
+                "materialized archive does not match corpus shape and "
+                f"nested ZIP candidate count is {len(nested)} at depth {depth}"
+            )
+        current_archive=nested[0]
+    raise ValueError(
+        "materialized archive does not match corpus shape after nested ZIP materialization"
+    )
+
+
 def _mirror_directory(
     source: Path,
     home: Path,
@@ -498,8 +526,8 @@ def resolve_source(
     if destination.exists():
         shutil.rmtree(destination)
     destination.mkdir(parents=True, exist_ok=True)
-    _safe_extract_zip(path, destination)
-    root = _find_extracted_root(
+    root = _extract_until_shape(
+        path,
         destination,
         spec.get("extracted_shape", {}),
     )
