@@ -26,7 +26,7 @@ Run:
 python tools/capture_candidate4_proof_video.py
 ```
 
-The tool launches `pppv_playthrough_runner.gd` graphically with Godot Movie Maker, at 1280x720 and 30 fps by default. The production player camera remains active. **Audio comes from that same runtime run** (ambient, triggered SFX and Candidate 4 music when the accepted route produces it); no replacement soundtrack or post-production music is added. A small evidence overlay shows the exact Git SHA, freeze receipt hash prefix, current room, PPPV step and current step status.
+The tool launches `pppv_playthrough_runner.gd` graphically with Godot Movie Maker, at 1280x720 and 30 fps by default. The Godot Movie Maker runtime mix is captured with the picture; ambient/triggered game audio and Candidate 4 music are retained whenever the production runtime routes them. The production player camera remains active. **Audio comes from that same runtime run** (ambient, triggered SFX and Candidate 4 music when the accepted route produces it); no replacement soundtrack or post-production music is added. A small evidence overlay shows the exact Git SHA, freeze receipt hash prefix, current room, PPPV step and current step status.
 
 The chained route is the accepted demo route:
 
@@ -40,7 +40,7 @@ Recording alone is not PASS.
 
 Before gameplay evidence is accepted, ffprobe must find an audio stream in the raw Godot movie and ffmpeg `volumedetect` must observe a non-silent signal (max volume above -96 dB). The captured run is then independently fed through `tools.remaster_framework.evaluate_playthrough`. Its semantic replay SHA-256 and final-state SHA-256 must match the already-PASS deterministic PPPV baseline. If either differs, the final MP4 is deleted/fails closed.
 
-Only after that check does ffmpeg create:
+Audio is fail-closed too: the raw AVI must contain an audio stream, decoding it to 48 kHz stereo PCM must yield non-zero samples, and the final MP4 must contain a decodable non-silent AAC stream. The receipt stores hashes and non-silence metrics for both raw-capture PCM and final-MP4 PCM.\n\nOnly after those checks does ffmpeg create:
 
 `.tmp/kg001_proof_capture/OpenAzrael_KG001_Candidate4_Proof.mp4`
 

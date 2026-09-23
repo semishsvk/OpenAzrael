@@ -97,6 +97,73 @@ def display_path(path: Path) -> str:
         return str(path.resolve())
 
 
+def probe_media(ffprobe: str, path: Path) -> dict:
+    proc = run([
+        ffprobe, "-v", "error",
+        "-show_streams", "-show_format",
+        "-of", "json", str(path),
+    ])
+    if proc.returncode != 0:
+        return {"status": "FAIL", "output": proc.stdout[-12000:]}
+    try:
+        payload = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        return {"status": "FAIL", "output": proc.stdout[-12000:]}
+    if not isinstance(payload, dict):
+        return {"status": "FAIL"}
+    payload["status"] = "PASS"
+    return payload
+
+
+def decode_audio_pcm(ffmpeg: str, media: Path, out_pcm: Path) -> dict:
+    out_pcm.unlink(missing_ok=True)
+    proc = run([
+        ffmpeg, "-hide_banner", "-loglevel", "error", "-y",
+        "-i", str(media),
+        "-map", "0:a:0", "-vn",
+        "-ac", "2", "-ar", "48000",
+        "-f", "s16le", str(out_pcm),
+    ])
+    if proc.returncode != 0 or not out_pcm.is_file() or out_pcm.stat().st_size < 4:
+        return {
+            "status": "FAIL",
+            "returncode": proc.returncode,
+            "output_tail": proc.stdout[-12000:],
+        }
+    samples = array.array("h")
+    with out_pcm.open("rb") as handle:
+        samples.fromfile(handle, out_pcm.stat().st_size // 2)
+    if sys.byteorder != "little":
+        samples.byteswap()
+    max_abs = max((abs(int(v)) for v in samples), default=0)
+    nonzero = sum(1 for v in samples if v != 0)
+    duration_seconds = len(samples) / (48000.0 * 2.0)
+    return {
+        "status": "PASS" if max_abs > 0 and nonzero > 0 else "FAIL",
+        "path": display_path(out_pcm),
+        "sha256": sha256(out_pcm),
+        "bytes": out_pcm.stat().st_size,
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "sample_format": "s16le",
+        "sample_count_interleaved": len(samples),
+        "nonzero_sample_count": nonzero,
+        "max_abs_sample": max_abs,
+        "duration_seconds": duration_seconds,
+        "digital_silence": max_abs == 0 or nonzero == 0,
+    }
+
+
+def audio_streams(probe: dict) -> list[dict]:
+    rows = probe.get("streams", []) if isinstance(probe, dict) else []
+    if not isinstance(rows, list):
+        return []
+    return [
+        row for row in rows
+        if isinstance(row, dict) and row.get("codec_type") == "audio"
+    ]
+
+
 def fail(reason: str, details: dict | None = None, *, final_video: Path | None = None) -> int:
     RECEIPT.unlink(missing_ok=True)
     if final_video is not None:
@@ -131,7 +198,10 @@ def main() -> int:
     final_video.parent.mkdir(parents=True, exist_ok=True)
     raw_avi.parent.mkdir(parents=True, exist_ok=True)
 
-    for stale in (RUNTIME, EVALUATION, RECEIPT, raw_avi, final_video):
+    for stale in (
+        RUNTIME, EVALUATION, RECEIPT, raw_avi, final_video,
+        RAW_AUDIO_PCM, MP4_AUDIO_PCM,
+    ):
         stale.unlink(missing_ok=True)
 
     if not git_clean():
@@ -207,6 +277,12 @@ def main() -> int:
     ffmpeg = resolve_executable(args.ffmpeg, ["ffmpeg"])
     if not ffmpeg:
         return fail("FFMPEG_NOT_FOUND", final_video=final_video)
+    ffprobe = resolve_executable(
+        None,
+        [str(Path(ffmpeg).with_name("ffprobe")), "ffprobe"],
+    )
+    if not ffprobe:
+        return fail("FFPROBE_NOT_FOUND", final_video=final_video)
     ffmpeg_path = Path(ffmpeg)
     sibling_ffprobe = ffmpeg_path.with_name(
         "ffprobe.exe" if ffmpeg_path.name.lower().endswith(".exe") else "ffprobe"
@@ -317,6 +393,22 @@ def main() -> int:
             final_video=final_video,
         )
 
+    raw_probe = probe_media(ffprobe, raw_avi)
+    raw_audio_streams = audio_streams(raw_probe)
+    if raw_probe.get("status") != "PASS" or not raw_audio_streams:
+        return fail(
+            "RAW_PROOF_CAPTURE_AUDIO_STREAM_MISSING",
+            {"probe": raw_probe},
+            final_video=final_video,
+        )
+    raw_audio = decode_audio_pcm(ffmpeg, raw_avi, RAW_AUDIO_PCM)
+    if raw_audio.get("status") != "PASS":
+        return fail(
+            "RAW_PROOF_CAPTURE_AUDIO_SILENT_OR_UNDECODABLE",
+            raw_audio,
+            final_video=final_video,
+        )
+
     evaluator = run([
         sys.executable,
         "-m", "tools.remaster_framework.evaluate_playthrough",
@@ -417,6 +509,22 @@ def main() -> int:
             final_video=final_video,
         )
 
+    mp4_probe = probe_media(ffprobe, final_video)
+    mp4_audio_streams = audio_streams(mp4_probe)
+    if mp4_probe.get("status") != "PASS" or not mp4_audio_streams:
+        return fail(
+            "FINAL_MP4_AUDIO_STREAM_MISSING",
+            {"probe": mp4_probe},
+            final_video=final_video,
+        )
+    mp4_audio = decode_audio_pcm(ffmpeg, final_video, MP4_AUDIO_PCM)
+    if mp4_audio.get("status") != "PASS":
+        return fail(
+            "FINAL_MP4_AUDIO_SILENT_OR_UNDECODABLE",
+            mp4_audio,
+            final_video=final_video,
+        )
+
     godot_ver = run([godot, "--version"])
     ffmpeg_ver = run([ffmpeg, "-version"])
     ffmpeg_first = ffmpeg_ver.stdout.splitlines()[0] if ffmpeg_ver.stdout else ""
@@ -471,6 +579,17 @@ def main() -> int:
             "viewport": [1280, 720],
             "camera": "production_player_camera",
             "overlay": "git_sha+freeze_sha+room+pppv_step+status",
+        },
+        "audio_evidence": {
+            "required": True,
+            "raw_capture_stream_count": len(raw_audio_streams),
+            "raw_capture_primary_stream": raw_audio_streams[0],
+            "raw_capture_pcm": raw_audio,
+            "final_mp4_stream_count": len(mp4_audio_streams),
+            "final_mp4_primary_stream": mp4_audio_streams[0],
+            "final_mp4_pcm": mp4_audio,
+            "digital_silence_forbidden": True,
+            "source": "Godot Movie Maker runtime mix",
         },
         "raw_movie": {
             "path": display_path(raw_avi),

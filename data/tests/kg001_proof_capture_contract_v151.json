@@ -15,7 +15,8 @@
     "PPPV determinism PASS with at least two identical runs",
     "graphical Godot Movie Maker support",
     "ffmpeg available for MP4 transcode",
-    "ffprobe available for mandatory audio-stream verification"
+    "ffprobe available for mandatory audio-stream verification",
+    "Godot Movie Maker raw AVI contains a decodable non-silent runtime audio stream"
   ],
   "execution": {
     "route": [
@@ -48,7 +49,20 @@
     ],
     "forbid_ai_generated_visuals": true,
     "forbid_noclip_camera": true,
-    "original_runtime_render_only": true
+    "original_runtime_render_only": true,
+    "audio": {
+      "required": true,
+      "source": "Godot Movie Maker runtime mix",
+      "includes": [
+        "ambient audio",
+        "triggered gameplay audio",
+        "Candidate 4 music when routed by runtime"
+      ],
+      "raw_capture_audio_stream_required": true,
+      "digital_silence_forbidden": true,
+      "final_mp4_audio_codec": "AAC",
+      "final_mp4_audio_stream_required": true
+    }
   },
   "outputs": [
     ".tmp/kg001_proof_capture/OpenAzrael_KG001_Candidate4_Proof_raw.avi",
@@ -67,13 +81,15 @@
     "semantic replay SHA-256",
     "final state SHA-256",
     "raw AVI SHA-256",
+    "raw AVI decoded PCM SHA-256 and non-silence metrics",
+    "final MP4 decoded PCM SHA-256 and non-silence metrics",
     "final MP4 SHA-256",
     "raw runtime audio stream metadata + max-volume verification",
     "final MP4 audio stream metadata",
     "Godot version",
     "ffmpeg version"
   ],
-  "evidence_boundary": "The MP4 is supplemental exact-source graphical runtime evidence. It does not prove packaged EXE/PCK parity and does not replace manual G10.",
+  "evidence_boundary": "The MP4 is supplemental exact-source graphical runtime evidence. It does not prove packaged EXE/PCK parity and does not replace manual G10. Audio is captured from the same real runtime run and is mandatory; a missing or digitally silent track fails closed.",
   "audio_evidence": {
     "source": "Godot Movie Maker runtime audio captured from the same PPPV run",
     "runtime_audio_only": true,
@@ -85,4 +101,4 @@
     "final_audio_codec": "AAC",
     "ffprobe_metadata_bound_in_receipt": true
   }
-}
+}\n

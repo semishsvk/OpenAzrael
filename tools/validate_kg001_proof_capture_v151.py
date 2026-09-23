@@ -80,6 +80,11 @@ def main() -> int:
         errors.append("ai_visual_boundary")
     if visual.get("forbid_noclip_camera") is not True:
         errors.append("noclip_boundary")
+    audio = visual.get("audio", {})
+    if not isinstance(audio, dict) or audio.get("required") is not True:
+        errors.append("audio_required_boundary")
+    if isinstance(audio, dict) and audio.get("digital_silence_forbidden") is not True:
+        errors.append("audio_silence_boundary")
     audio = contract.get("audio_evidence", {})
     if not isinstance(audio, dict):
         audio = {}
