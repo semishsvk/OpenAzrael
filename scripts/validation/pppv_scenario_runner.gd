@@ -275,6 +275,7 @@ func _run() -> void:
 
     var scene = packed.instantiate()
     root.add_child(scene)
+    current_scene = scene
     await _settle(3)
 
     var manager = scene.get_node_or_null("RoomManager")
