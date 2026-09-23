@@ -14,11 +14,19 @@ checks = {
     "pixel_exact_inventory_rect": 'Rect2(70, 345, 103, 69)' in menu,
     "source_of_truth": "DemoState.inventory" in menu and "inventory_changed" in menu,
     "no_parallel_inventory_state": "var inventory: Dictionary" not in menu,
-    "demo_labels": all(token in menu for token in ('"Rusty tongs"', '"Well Key"', '"Lens"', '"Shield"')),
+    "demo_labels": all(token in menu for token in ('"Rusty tongs"', '"Key"', '"Lens"', '"Shield"')),
     "known_ids": all(token in menu for token in ('"rusty_tongs"', '"well_key"', '"r8_lens"', '"shield"')),
     "unknown_ids_not_rendered": "_inventory_unknown_ids" in menu and "INVENTORY_ITEM_LABELS.has" in menu,
     "scroll_keys": "KEY_UP" in menu and "KEY_DOWN" in menu and "_scroll_inventory" in menu,
-    "font_hold_explicit": "COMPATIBILITY_FONT__INVFONT_GLYPH_MAP_HOLD" in menu,
+    "source_invfont_renderer": all(token in menu for token in (
+        '"INVFONT"', "AtlasTexture.new()", "Vector2(10, 12)",
+        "INVENTORY_FONT_FIRST_CODEPOINT := 35", "INVENTORY_FONT_CELL_COUNT := 138",
+        '"SOURCE_INVFONT_FIXED_CELL_MAP"'
+    )),
+    "arrow_scroll_preserves_movement": (
+        "_scroll_inventory(-1 if event.keycode == KEY_UP else 1)" in menu
+        and "Scroll without consuming the event" in menu
+    ),
     "canonical_state_inventory": "_canonical_pairs(inventory)" in state and "inventory_changed.emit()" in state,
     "lens_remove_event": any(a.get("op") == "remove_inventory" and a.get("key") == "r8_lens" for a in events["graphs"]["R8_LENS_PLACE"]["actions"]),
     "shield_add_event": any(a.get("op") == "add_inventory" and a.get("key") == "shield" for a in events["graphs"]["R8_TAKE_SHIELD"]["actions"]),
