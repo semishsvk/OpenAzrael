@@ -1,0 +1,34 @@
+{
+  "schema": "openazrael.kg001.save_compat_contract",
+  "version": 150,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "target": "scripts/legacy_save_system_v145.gd",
+  "save_schema": "openazrael.demo_save",
+  "save_version": 145,
+  "migration_available": false,
+  "filename_pattern": "SAVE%d.dat",
+  "slot_names": [
+    "FILE ALPHA",
+    "FILE BETA",
+    "FILE GAMMA",
+    "FILE DELTA",
+    "FILE EPSILON"
+  ],
+  "version_policy": "EXACT_CURRENT_VERSION_ONLY_UNTIL_EXPLICIT_MIGRATION_EXISTS",
+  "negative_cases": [
+    "older_version",
+    "unknown_version",
+    "corrupt_json",
+    "wrong_schema",
+    "incompatible_state_payload"
+  ],
+  "pass_requires": [
+    "current version save/load preserves canonical DemoState, room and player pose",
+    "older and unknown versions fail closed before state restoration",
+    "corrupt JSON and wrong schema fail closed",
+    "incompatible canonical state payload fails without mutating live state",
+    "SAVE%d.dat filename pattern and slot names are unchanged",
+    "rejections emit diagnostics without claiming migration support"
+  ],
+  "evidence_boundary": "This gate proves compatibility policy and fail-closed behavior for the current v145 save format. It does not claim migration support for historical or future save versions."
+}

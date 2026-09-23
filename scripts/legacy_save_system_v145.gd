@@ -18,6 +18,17 @@ static func _record_event(name: String, payload: Dictionary) -> void:
     if diagnostics != null and diagnostics.has_method("record_event"):
         diagnostics.call("record_event", name, payload)
 
+static func _reject_load(index: int, reason: String, details: Dictionary = {}) -> bool:
+    var payload := {
+        "slot": clampi(index, 0, SLOT_NAMES.size() - 1),
+        "name": slot_name(index),
+        "reason": reason,
+    }
+    for key in details.keys():
+        payload[key] = details[key]
+    _record_event("legacy_menu_load_rejected", payload)
+    return false
+
 static func slot_path(index: int) -> String:
     return "user://SAVE%d.dat" % clampi(index, 0, SLOT_NAMES.size() - 1)
 
@@ -55,16 +66,40 @@ static func save_slot(index: int, room_manager: Node, player: CharacterBody3D) -
 static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -> bool:
     var demo_state := _demo_state()
     var path := slot_path(index)
-    if not FileAccess.file_exists(path) or room_manager == null or player == null or demo_state == null:
-        return false
+    if not FileAccess.file_exists(path):
+        return _reject_load(index, "MISSING_SAVE_FILE")
+    if room_manager == null or player == null or demo_state == null:
+        return _reject_load(index, "RUNTIME_CONTEXT_UNAVAILABLE")
+
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
     if not parsed is Dictionary:
-        return false
+        return _reject_load(index, "INVALID_JSON_OR_ROOT_TYPE")
     if String(parsed.get("schema", "")) != SCHEMA:
-        return false
+        return _reject_load(index, "INCOMPATIBLE_SCHEMA", {
+            "observed_schema": String(parsed.get("schema", "")),
+            "expected_schema": SCHEMA,
+        })
+
+    var raw_version = parsed.get("version", null)
+    var version_type := typeof(raw_version)
+    if version_type != TYPE_INT and version_type != TYPE_FLOAT:
+        return _reject_load(index, "MISSING_OR_INVALID_VERSION")
+    var observed_version := int(raw_version)
+    if observed_version != VERSION:
+        return _reject_load(index, "UNSUPPORTED_SAVE_VERSION", {
+            "observed_version": observed_version,
+            "supported_version": VERSION,
+            "migration_available": false,
+        })
+
     var state = parsed.get("state", [])
-    if not state is Array or not bool(demo_state.call("restore_canonical_state_payload", state)):
-        return false
+    if not state is Array:
+        return _reject_load(index, "INCOMPATIBLE_STATE_PAYLOAD")
+    # DemoState validates the complete canonical payload before mutating its
+    # dictionaries, so a rejected payload leaves the live state unchanged.
+    if not bool(demo_state.call("restore_canonical_state_payload", state)):
+        return _reject_load(index, "INCOMPATIBLE_STATE_PAYLOAD")
+
     var room := String(parsed.get("room", "R1"))
     room_manager.load_room(room, false)
     room_manager.transition_cooldown = 1.0
@@ -78,5 +113,5 @@ static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -
     var camera := player.get_node_or_null("Camera3D") as Camera3D
     if camera != null:
         camera.rotation.x = pitch
-    _record_event("legacy_menu_load", {"slot": index, "name": slot_name(index), "room": room})
+    _record_event("legacy_menu_load", {"slot": index, "name": slot_name(index), "room": room, "version": VERSION})
     return true

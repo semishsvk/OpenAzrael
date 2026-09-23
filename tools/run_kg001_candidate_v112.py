@@ -161,7 +161,7 @@ def main():
         else:
             import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
-            if name in ("v110","trigger_v137","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121","geometry_v122","visibility_v123","material_v124","transform_v125","reachable_visibility_v127","portal_v129","interaction_v130") and not all(asset_present.values()):
+            if name in ("v110","trigger_v137","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121","geometry_v122","visibility_v123","material_v124","transform_v125","reachable_visibility_v127","portal_v129","interaction_v130","save_compat_v150") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
             proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
@@ -252,6 +252,7 @@ def main():
             TMP/"kg001_menu_v145_runtime.json":ROOT/"data/tests/kg001_legacy_menu_runtime_v145.json",
             TMP/"kg001_menu_cursor_v146_runtime.json":ROOT/"data/tests/kg001_menu_cursor_context_runtime_v146.json",
             TMP/"kg001_classic_v147_runtime.json":ROOT/"data/tests/kg001_classic_presentation_runtime_v147.json",
+            TMP/"kg001_save_compat_v150_runtime.json":ROOT/"data/tests/kg001_save_compat_runtime_v150.json",
             TMP/"kg001_menu_toggle_v149_runtime.json":ROOT/"data/tests/kg001_legacy_menu_toggle_runtime_v149.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
