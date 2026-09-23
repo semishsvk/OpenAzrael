@@ -494,6 +494,9 @@ func _run() -> void:
         evidence,
         runtime_guard
     )
+    navigator.configure_presentation_profile(
+        _arg_value("--pppv-presentation-profile=", "strict")
+    )
 
     var step_results: Array = []
     for raw_step in plan.get("steps", []):
