@@ -18,6 +18,7 @@ checks={
  "event_schedule_hash":'"event_schedule_sha256"' in tool and "sort_keys=True" in tool,
  "pcm_hash":'"pcm_f32le_sha256"' in tool and 'astype("<f4"' in tool,
  "honest_codec_boundary":'"cross_platform_pcm_bit_identity_guaranteed":False' in tool and '"cross_platform_ogg_bit_identity_guaranteed":False' in tool,
+ "runtime_manifest_cli":"--runtime-manifest" in tool and "DEFAULT_MANIFEST" in tool and "args.runtime_manifest" in tool,
  "godot_runtime_pending":'"runtime_playback_test":"PENDING_GODOT"' in tool,
  "no_raw_commit":'"source_safe_receipt":True' in tool,
 }

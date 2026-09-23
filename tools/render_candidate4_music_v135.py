@@ -27,6 +27,7 @@ IR=ROOT/"data/audio/legacy_world_ir.json"
 DEFAULT_ROUTE=ROOT/".tmp/kg001/candidate4_music_route_v133.json"
 DEFAULT_RECEIPT=ROOT/".tmp/kg001/candidate4_music_runtime_v135.json"
 DEFAULT_OUTPUT=ROOT/"assets/audio/music"
+DEFAULT_MANIFEST=ROOT/"data/runtime_generated/candidate4_music_manifest_v135.json"
 CLOCK_HZ=120.0
 
 def sha256(path: Path) -> str:
@@ -211,6 +212,7 @@ def main():
     ap.add_argument("--route-evidence",type=Path,default=DEFAULT_ROUTE)
     ap.add_argument("--out-dir",type=Path,default=DEFAULT_OUTPUT)
     ap.add_argument("--receipt",type=Path,default=DEFAULT_RECEIPT)
+    ap.add_argument("--runtime-manifest",type=Path,default=DEFAULT_MANIFEST)
     ap.add_argument("--fluidsynth-lib")
     ap.add_argument("--sample-rate",type=int,default=44100)
     ap.add_argument("--gain",type=float,default=0.5)
