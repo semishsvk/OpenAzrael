@@ -49,6 +49,15 @@ func _run() -> void:
         _finish(scene)
         return
 
+    var font_path := "res://assets/ui/legacy_menu/INVFONT.png"
+    _check("source_font_exists", ResourceLoader.exists(font_path))
+    if ResourceLoader.exists(font_path):
+        var font_tex := load(font_path) as Texture2D
+        _check("source_font_texture", font_tex != null)
+        if font_tex != null:
+            _check("source_font_width", font_tex.get_width() == 1380)
+            _check("source_font_height", font_tex.get_height() == 12)
+
     var initial: Dictionary = menu.call("debug_inventory_snapshot")
     _check("inventory_rect", initial.get("rect", []) == [70.0, 345.0, 103.0, 69.0])
     _check("source_font_cell", initial.get("font_cell", []) == [10.0, 12.0])
@@ -60,11 +69,13 @@ func _run() -> void:
     state.acquire("rusty_tongs")
     await _settle()
     _check("tongs_visible", _ids(menu) == ["rusty_tongs"] and _labels(menu) == ["Rusty tongs"])
+    _check("tongs_source_glyph_count", int(menu.call("debug_inventory_snapshot").get("glyph_node_count", -1)) == 10)
 
     state.remove("rusty_tongs")
     state.acquire("well_key")
     await _settle()
     _check("tongs_removed_key_visible", _ids(menu) == ["well_key"] and _labels(menu) == ["Key"])
+    _check("key_source_glyph_count", int(menu.call("debug_inventory_snapshot").get("glyph_node_count", -1)) == 3)
 
     state.acquire("r8_lens")
     await _settle()
@@ -78,6 +89,7 @@ func _run() -> void:
     await _settle()
     _check("shield_added_by_event", _ids(menu) == ["well_key", "shield"])
     _check("shield_label", _labels(menu) == ["Key", "Shield"])
+    _check("key_shield_source_glyph_count", int(menu.call("debug_inventory_snapshot").get("glyph_node_count", -1)) == 9)
 
     manager.call("load_room", "R8", false)
     await _settle()
