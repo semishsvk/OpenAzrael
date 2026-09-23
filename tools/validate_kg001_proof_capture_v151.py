@@ -20,6 +20,12 @@ REQUIRED_CAPTURE_TOKENS = (
     "semantic_replay_sha256",
     "final_state_sha256",
     "libx264",
+    "ffprobe",
+    "volumedetect",
+    "RAW_MOVIE_AUDIO_STREAM_MISSING",
+    "RAW_MOVIE_AUDIO_SILENT_OR_UNVERIFIED",
+    "FINAL_MP4_AUDIO_STREAM_MISSING",
+    "audio_required",
     "ai_generated_visuals",
 )
 REQUIRED_RUNNER_TOKENS = (
@@ -74,6 +80,19 @@ def main() -> int:
         errors.append("ai_visual_boundary")
     if visual.get("forbid_noclip_camera") is not True:
         errors.append("noclip_boundary")
+    audio = contract.get("audio_evidence", {})
+    if not isinstance(audio, dict):
+        audio = {}
+    if audio.get("runtime_audio_only") is not True:
+        errors.append("runtime_audio_only")
+    if audio.get("added_postproduction_music") is not False:
+        errors.append("postproduction_audio_boundary")
+    if audio.get("raw_movie_audio_stream_required") is not True:
+        errors.append("raw_audio_required")
+    if audio.get("raw_movie_non_silent_signal_required") is not True:
+        errors.append("non_silent_audio_required")
+    if audio.get("final_mp4_audio_stream_required") is not True:
+        errors.append("final_audio_required")
 
     capture_text = CAPTURE.read_text(encoding="utf-8")
     runner_text = RUNNER.read_text(encoding="utf-8")

@@ -13,6 +13,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -115,6 +116,7 @@ def fail(reason: str, details: dict | None = None, *, final_video: Path | None =
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ffmpeg", help="ffmpeg executable; otherwise ffmpeg from PATH is used.")
+    parser.add_argument("--ffprobe", help="ffprobe executable; otherwise sibling/PATH ffprobe is used.")
     parser.add_argument("--output", type=Path, default=DEFAULT_MP4, help="Final MP4 path.")
     parser.add_argument("--raw-avi", type=Path, default=DEFAULT_AVI, help="Godot Movie Maker AVI path.")
     parser.add_argument("--fps", type=int, default=30, help="Deterministic capture frame rate (24-60).")
@@ -205,6 +207,16 @@ def main() -> int:
     ffmpeg = resolve_executable(args.ffmpeg, ["ffmpeg"])
     if not ffmpeg:
         return fail("FFMPEG_NOT_FOUND", final_video=final_video)
+    ffmpeg_path = Path(ffmpeg)
+    sibling_ffprobe = ffmpeg_path.with_name(
+        "ffprobe.exe" if ffmpeg_path.name.lower().endswith(".exe") else "ffprobe"
+    )
+    ffprobe = resolve_executable(
+        args.ffprobe,
+        [str(sibling_ffprobe), "ffprobe"],
+    )
+    if not ffprobe:
+        return fail("FFPROBE_NOT_FOUND", final_video=final_video)
 
     proof_env = os.environ.copy()
     proof_env["OPENAZRAEL_PROOF_GIT_SHA"] = head
@@ -238,6 +250,70 @@ def main() -> int:
                 "runtime_exists": RUNTIME.is_file(),
                 "output_tail": movie.stdout[-16000:],
             },
+            final_video=final_video,
+        )
+
+    raw_probe_proc = run([
+        ffprobe,
+        "-v", "error",
+        "-show_streams",
+        "-show_format",
+        "-of", "json",
+        str(raw_avi),
+    ])
+    try:
+        raw_probe = json.loads(raw_probe_proc.stdout)
+    except (json.JSONDecodeError, TypeError):
+        raw_probe = {}
+    raw_streams = raw_probe.get("streams", []) if isinstance(raw_probe, dict) else []
+    raw_audio_streams = [
+        row for row in raw_streams
+        if isinstance(row, dict) and row.get("codec_type") == "audio"
+    ]
+    if raw_probe_proc.returncode != 0 or not raw_audio_streams:
+        return fail(
+            "RAW_MOVIE_AUDIO_STREAM_MISSING",
+            {
+                "returncode": raw_probe_proc.returncode,
+                "probe": raw_probe,
+                "output_tail": raw_probe_proc.stdout[-12000:],
+            },
+            final_video=final_video,
+        )
+
+    volume_proc = run([
+        ffmpeg,
+        "-hide_banner", "-nostats",
+        "-i", str(raw_avi),
+        "-map", "0:a:0",
+        "-af", "volumedetect",
+        "-f", "null", "-",
+    ])
+    max_volume_match = re.search(
+        r"max_volume:\s*(-?inf|-?\d+(?:\.\d+)?)\s*dB",
+        volume_proc.stdout,
+        re.IGNORECASE,
+    )
+    max_volume_text = max_volume_match.group(1) if max_volume_match else ""
+    if (
+        volume_proc.returncode != 0
+        or not max_volume_text
+        or max_volume_text.lower() in {"-inf", "inf"}
+    ):
+        return fail(
+            "RAW_MOVIE_AUDIO_SILENT_OR_UNVERIFIED",
+            {
+                "returncode": volume_proc.returncode,
+                "max_volume_db": max_volume_text,
+                "output_tail": volume_proc.stdout[-12000:],
+            },
+            final_video=final_video,
+        )
+    max_volume_db = float(max_volume_text)
+    if max_volume_db <= -96.0:
+        return fail(
+            "RAW_MOVIE_AUDIO_EFFECTIVELY_SILENT",
+            {"max_volume_db": max_volume_db},
             final_video=final_video,
         )
 
@@ -292,7 +368,7 @@ def main() -> int:
         "-hide_banner", "-loglevel", "error", "-y",
         "-i", str(raw_avi),
         "-map", "0:v:0",
-        "-map", "0:a?",
+        "-map", "0:a:0",
         "-c:v", "libx264",
         "-preset", "medium",
         "-crf", "18",
@@ -309,6 +385,34 @@ def main() -> int:
             {
                 "returncode": transcode.returncode,
                 "output_tail": transcode.stdout[-12000:],
+            },
+            final_video=final_video,
+        )
+
+    final_probe_proc = run([
+        ffprobe,
+        "-v", "error",
+        "-show_streams",
+        "-show_format",
+        "-of", "json",
+        str(final_video),
+    ])
+    try:
+        final_probe = json.loads(final_probe_proc.stdout)
+    except (json.JSONDecodeError, TypeError):
+        final_probe = {}
+    final_streams = final_probe.get("streams", []) if isinstance(final_probe, dict) else []
+    final_audio_streams = [
+        row for row in final_streams
+        if isinstance(row, dict) and row.get("codec_type") == "audio"
+    ]
+    if final_probe_proc.returncode != 0 or not final_audio_streams:
+        return fail(
+            "FINAL_MP4_AUDIO_STREAM_MISSING",
+            {
+                "returncode": final_probe_proc.returncode,
+                "probe": final_probe,
+                "output_tail": final_probe_proc.stdout[-12000:],
             },
             final_video=final_video,
         )
@@ -355,7 +459,14 @@ def main() -> int:
             "container": "mp4",
             "video_codec": "h264/libx264",
             "pixel_format": "yuv420p",
-            "audio_codec": "aac-if-source-audio-present",
+            "audio_codec": "aac",
+            "audio_required": True,
+            "audio_stream": {
+                "codec_name": final_audio_streams[0].get("codec_name", ""),
+                "sample_rate": final_audio_streams[0].get("sample_rate", ""),
+                "channels": final_audio_streams[0].get("channels", 0),
+                "channel_layout": final_audio_streams[0].get("channel_layout", ""),
+            },
             "fps": args.fps,
             "viewport": [1280, 720],
             "camera": "production_player_camera",
@@ -366,10 +477,20 @@ def main() -> int:
             "sha256": sha256(raw_avi),
             "bytes": raw_avi.stat().st_size,
             "writer": "Godot Movie Maker AVI",
+            "audio_required": True,
+            "audio_stream": {
+                "codec_name": raw_audio_streams[0].get("codec_name", ""),
+                "sample_rate": raw_audio_streams[0].get("sample_rate", ""),
+                "channels": raw_audio_streams[0].get("channels", 0),
+                "channel_layout": raw_audio_streams[0].get("channel_layout", ""),
+                "max_volume_db": max_volume_db,
+                "non_silent_signal_verified": True,
+            },
         },
         "toolchain": {
             "godot": godot_ver.stdout.strip(),
             "ffmpeg": ffmpeg_first,
+            "ffprobe": run([ffprobe, "-version"]).stdout.splitlines()[0],
         },
         "evidence_boundary": (
             "Supplemental exact-source runtime evidence only. It proves that this "
