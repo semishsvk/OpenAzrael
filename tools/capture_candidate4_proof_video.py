@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import argparse
+import array
 import hashlib
 import json
 import os
@@ -34,6 +35,8 @@ EVALUATION = OUT_DIR / "kg001_pppv_proof_evaluation.json"
 RECEIPT = OUT_DIR / "kg001_proof_capture_receipt_v151.json"
 DEFAULT_AVI = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof_raw.avi"
 DEFAULT_MP4 = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof.mp4"
+RAW_AUDIO_PCM = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof_raw_audio.s16le"
+MP4_AUDIO_PCM = OUT_DIR / "OpenAzrael_KG001_Candidate4_Proof_mp4_audio.s16le"
 
 
 def run(cmd: list[str], *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:

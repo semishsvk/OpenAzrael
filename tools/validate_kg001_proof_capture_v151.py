@@ -26,6 +26,9 @@ REQUIRED_CAPTURE_TOKENS = (
     "RAW_MOVIE_AUDIO_SILENT_OR_UNVERIFIED",
     "FINAL_MP4_AUDIO_STREAM_MISSING",
     "audio_required",
+    "import array",
+    "RAW_AUDIO_PCM",
+    "MP4_AUDIO_PCM",
     "ai_generated_visuals",
 )
 REQUIRED_RUNNER_TOKENS = (
