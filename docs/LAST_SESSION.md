@@ -28,3 +28,5 @@ Candidate 4 and KG-001 therefore remain **NOT Known Good**.
 Run final source VERIFY on the resulting exact SHA. If all source checks pass, use that exact SHA for the private asset-backed Candidate 4 preflight, freeze the resulting source/runtime identity, then export and perform G10. Do not create a Candidate 4 export merely to validate source-only changes.
 
 Final source VERIFY is required on the exact resulting HEAD; this documentation line deliberately does not promote runtime/export/G10 evidence.
+
+- 2026-09-23: exact-head Candidate 4 validation closure cycle requested; no runtime scope change.
