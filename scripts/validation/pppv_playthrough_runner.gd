@@ -361,6 +361,11 @@ func _finish(
                 "step_failed:" + String(result.get("step_id", ""))
             )
 
+    var diagnostics = root.get_node_or_null("CandidateDiagnostics")
+    var audio_mix: Dictionary = {}
+    if diagnostics != null and diagnostics.has_method("audio_mix_snapshot"):
+        audio_mix = diagnostics.call("audio_mix_snapshot")
+
     var payload := {
         "schema": "remaster.runtime_playthrough_bundle",
         "version": 1,
@@ -377,6 +382,7 @@ func _finish(
         "runtime_guard_failures": (
             runtime_guard.failure_list() if runtime_guard != null else []
         ),
+        "audio_mix": audio_mix,
         "replay": (
             runtime_guard.replay_bundle() if runtime_guard != null else {}
         ),

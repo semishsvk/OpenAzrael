@@ -2,6 +2,7 @@ extends Node
 
 const MANIFEST_PATH := "res://data/runtime_generated/candidate4_music_manifest_v135.json"
 const SILENCE_ID := "BLANK.XMI"
+const MUSIC_BUS := "OA_Music"
 
 var _manifest: Dictionary = {}
 var _player: AudioStreamPlayer
@@ -12,14 +13,26 @@ var _last_error := ""
 func _ready() -> void:
     _player = AudioStreamPlayer.new()
     _player.name = "CandidateMusicPlayer"
-    _player.bus = &"Master"
+    _player.bus = _ensure_music_bus()
     add_child(_player)
     _load_manifest()
+
+func _ensure_music_bus() -> StringName:
+    var idx := AudioServer.get_bus_index(MUSIC_BUS)
+    if idx < 0:
+        AudioServer.add_bus()
+        idx = AudioServer.get_bus_count() - 1
+        AudioServer.set_bus_name(idx, MUSIC_BUS)
+        AudioServer.set_bus_send(idx, "Master")
+    return StringName(MUSIC_BUS)
 
 func _load_manifest() -> void:
     _manifest = {}
     _last_error = ""
     if not FileAccess.file_exists(MANIFEST_PATH):
+        _last_error = "missing_candidate4_music_manifest"
+        push_error("OpenAzrael Candidate 4 music: " + _last_error)
+        CandidateDiagnostics.record_event("music_error", {"reason": _last_error})
         return
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
     if not parsed is Dictionary or String(parsed.get("status", "")) != "PASS":

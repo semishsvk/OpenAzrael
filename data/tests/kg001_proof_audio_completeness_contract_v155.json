@@ -1,0 +1,28 @@
+{
+  "schema": "openazrael.kg001.proof_audio_completeness_contract",
+  "version": 155,
+  "status": "ACCEPTED",
+  "purpose": "Prevent proof-video capture from passing when the container has non-silent SFX but required music or ambient layers are missing.",
+  "requirements": {
+    "candidate_music_manifest_required": true,
+    "route_music_resources_required": [
+      "res://assets/audio/music/INGAME2.ogg",
+      "res://assets/audio/music/AWEMYST.ogg",
+      "res://assets/audio/music/INGAME.ogg"
+    ],
+    "music_runtime_preflight_required": true,
+    "ambient_runtime_preflight_required": true,
+    "music_bus": "OA_Music",
+    "ambient_bus": "OA_Ambient",
+    "minimum_observed_peak_db": -60.0,
+    "both_layers_must_exceed_threshold": true,
+    "final_container_audio_stream_required": true,
+    "digital_silence_forbidden": true
+  },
+  "accepted_demo_route": {
+    "R1": "INGAME2.XMI",
+    "R7": "AWEMYST.XMI",
+    "R8": "INGAME.XMI"
+  },
+  "evidence_boundary": "Layer peak evidence proves music and ambient reached the Godot mixer during proof capture. It does not assert exact original Miles per-frame pan/attenuation parity or replace manual audibility QA."
+}
