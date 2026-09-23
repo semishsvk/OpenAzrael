@@ -21,13 +21,22 @@ import sys
 import atexit
 from types import SimpleNamespace
 
-from tools.remaster_framework.capture_safety import (
-    CaptureLease,
-    CaptureSafetyError,
-    assert_no_conflicting_movie_capture,
-    audit_visual_stability,
-    run_monitored_capture,
-)
+try:
+    from tools.remaster_framework.capture_safety import (
+        CaptureLease,
+        CaptureSafetyError,
+        assert_no_conflicting_movie_capture,
+        audit_visual_stability,
+        run_monitored_capture,
+    )
+except ModuleNotFoundError:
+    from remaster_framework.capture_safety import (
+        CaptureLease,
+        CaptureSafetyError,
+        assert_no_conflicting_movie_capture,
+        audit_visual_stability,
+        run_monitored_capture,
+    )
 
 ROOT = Path(__file__).resolve().parents[1]
 KG_TMP = ROOT / ".tmp/kg001"
