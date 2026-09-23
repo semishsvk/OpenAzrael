@@ -5,6 +5,9 @@ var player: CharacterBody3D
 var interaction_probe: Node
 var evidence: PPPVEvidenceBus
 var runtime_guard = null
+var presentation_profile := "strict"
+var _turn_pixels_state := 0.0
+var _pitch_pixels_state := 0.0
 
 func _init(
     production_player: CharacterBody3D,
@@ -16,6 +19,39 @@ func _init(
     interaction_probe = production_interaction_probe
     evidence = evidence_bus
     runtime_guard = guard
+
+func configure_presentation_profile(profile: String) -> void:
+    var normalized := profile.strip_edges().to_lower()
+    presentation_profile = normalized if normalized in ["strict", "balanced"] else "strict"
+    _turn_pixels_state = 0.0
+    _pitch_pixels_state = 0.0
+    evidence.record("presentation_profile", {
+        "profile": presentation_profile,
+        "strict_validation_unchanged": presentation_profile == "strict",
+        "physical_navigation": true,
+        "teleport": false
+    })
+
+func _balanced_presentation() -> bool:
+    return presentation_profile == "balanced"
+
+func _forward_yaw_limit() -> float:
+    # Balanced presentation keeps walking through ordinary bends instead of
+    # repeatedly stopping to make tiny heading corrections.
+    return 0.72 if _balanced_presentation() else 0.45
+
+func _smoothed_mouse_pixels(target_pixels: float, state: float, max_pixels: float) -> float:
+    if not _balanced_presentation():
+        return clampf(target_pixels, -max_pixels, max_pixels)
+    var balanced_cap := minf(max_pixels, 10.0)
+    var capped_target := clampf(target_pixels, -balanced_cap, balanced_cap)
+    # Avoid rapid left/right sign flips around the desired heading.
+    if absf(capped_target) < 0.75:
+        capped_target = 0.0
+    var next := move_toward(state, capped_target, 1.75)
+    if signf(state) != 0.0 and signf(capped_target) != 0.0 and signf(state) != signf(capped_target):
+        next = move_toward(state, 0.0, 2.75)
+    return next
 
 func _find_named(root: Node, wanted: String) -> Node3D:
     if root is Node3D and String(root.name) == wanted:
@@ -55,11 +91,9 @@ func _turn_toward(target_position: Vector3, max_pixels: float = 90.0) -> float:
 
     var desired_yaw := atan2(-flat.x, -flat.z)
     var delta_yaw := wrapf(desired_yaw - player.rotation.y, -PI, PI)
-    var pixels := clampf(
-        -delta_yaw / _mouse_sensitivity(),
-        -max_pixels,
-        max_pixels
-    )
+    var target_pixels := -delta_yaw / _mouse_sensitivity()
+    var pixels := _smoothed_mouse_pixels(target_pixels, _turn_pixels_state, max_pixels)
+    _turn_pixels_state = pixels
     var event := InputEventMouseMotion.new()
     event.relative = Vector2(pixels, 0.0)
     Input.parse_input_event(event)
@@ -117,7 +151,7 @@ func approach_interactable(
             break
 
         var yaw_error := _turn_toward(target_position)
-        if absf(yaw_error) <= 0.45:
+        if absf(yaw_error) <= _forward_yaw_limit():
             Input.action_press(&"move_forward", 1.0)
         else:
             Input.action_release(&"move_forward")
@@ -238,7 +272,7 @@ func approach_world_point(
             break
 
         var yaw_error := _turn_toward(target_position)
-        if absf(yaw_error) <= 0.45:
+        if absf(yaw_error) <= _forward_yaw_limit():
             Input.action_press(&"move_forward", 1.0)
         else:
             Input.action_release(&"move_forward")
@@ -367,11 +401,13 @@ func aim_at_interactable(
                 else camera.rotation.x
             )
             var pitch_error := desired_pitch - current_pitch
-            var vertical_pixels := clampf(
-                -pitch_error / _mouse_sensitivity(),
-                -70.0,
-                70.0
+            var target_vertical_pixels := -pitch_error / _mouse_sensitivity()
+            var vertical_pixels := _smoothed_mouse_pixels(
+                target_vertical_pixels,
+                _pitch_pixels_state,
+                18.0 if _balanced_presentation() else 70.0
             )
+            _pitch_pixels_state = vertical_pixels
             var event := InputEventMouseMotion.new()
             event.relative = Vector2(0.0, vertical_pixels)
             Input.parse_input_event(event)
