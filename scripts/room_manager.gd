@@ -86,12 +86,10 @@ func _ready() -> void:
         get_tree().quit(2)
         return
 
-    load_room("R1", false)
-    CandidateMusic.bind_room_manager(self)
-    if not is_instance_valid(current_room):
+    if not load_room_at_portal("R1", "spaview", false):
         get_tree().quit(2)
         return
-    _spawn_at_portal("R1", "spaview")
+    CandidateMusic.bind_room_manager(self)
     transition_cooldown = 1.0
 
 func _walk(node: Node, out: Array[Node]) -> void:
@@ -614,6 +612,38 @@ func _spawn_at_portal(room_id: String, view_name: String) -> void:
         n
     )
 
+func load_room_at_portal(
+    room_id: String,
+    view_name: String,
+    announce := true
+) -> bool:
+    # Single production-faithful room-entry path for runtime and validation.
+    # Callers must never emulate a production transition with load_room() alone:
+    # portal semantics select both the destination position and heading.
+    load_room(room_id, announce)
+    if current_room_id != room_id or not is_instance_valid(current_room):
+        return false
+    var view := _view_record(room_id, view_name)
+    if view.is_empty():
+        CandidateDiagnostics.record_event("portal_spawn_failed", {
+            "room": room_id,
+            "portal": view_name,
+            "reason": "destination_portal_missing"
+        })
+        return false
+    _spawn_at_portal(room_id, view_name)
+    CandidateDiagnostics.record_event("portal_spawn_applied", {
+        "room": room_id,
+        "portal": view_name,
+        "player_position": [
+            player.global_position.x,
+            player.global_position.y,
+            player.global_position.z
+        ],
+        "player_yaw": player.rotation.y
+    })
+    return true
+
 func _inside_trigger(p: Vector3, t: Dictionary) -> bool:
     var mn := _v3(t["bounds"][0])
     var mx := _v3(t["bounds"][1])
@@ -728,16 +758,21 @@ func _process(delta: float) -> void:
             var dest := String(tr["destination_room"])
             var dest_view := String(tr["destination_view"])
             CandidateDiagnostics.record_transition(source, trigger_name, dest)
-            load_room(dest)
-            _spawn_at_portal(dest, dest_view)
+            if not load_room_at_portal(dest, dest_view):
+                CandidateDiagnostics.record_event("transition_spawn_failed", {
+                    "source_room": source,
+                    "trigger": trigger_name,
+                    "destination_room": dest,
+                    "destination_portal": dest_view
+                })
+                return
             transition_cooldown = 1.0
             return
 
 func _debug_jump(room_id: String, view_name: String) -> void:
     CandidateDiagnostics.record_event("debug_room_jump", {"room": room_id, "view": view_name})
-    load_room(room_id)
-    _spawn_at_portal(room_id, view_name)
-    transition_cooldown = 1.0
+    if load_room_at_portal(room_id, view_name):
+        transition_cooldown = 1.0
 
 func _unhandled_key_input(event: InputEvent) -> void:
     if not event.pressed or event.echo:
