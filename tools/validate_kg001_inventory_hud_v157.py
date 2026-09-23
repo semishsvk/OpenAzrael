@@ -38,6 +38,11 @@ checks = {
         'glyph_node_count'
     )),
     "frame_clean_glyph_refresh": "inventory_text_layer.remove_child(child)" in menu,
+    "clean_audio_teardown": all(token in runner for token in (
+        'manager.get("legacy_audio")',
+        'music_player.stream = null',
+        'await create_timer(0.5).timeout'
+    )),
 }
 failed = [name for name, ok in checks.items() if not ok]
 print(json.dumps({
