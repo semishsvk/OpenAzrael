@@ -9,6 +9,8 @@ checks={
  "all_targets":sum(len(v) for v in contract.get("rooms",{}).values())==16,
  "route_policy":contract.get("r8_route_policy",{}).get("waypoint_count")==11 and contract.get("r8_route_policy",{}).get("teleport_forbidden") is True,
  "production_navigator":"pppv_navigator.gd" in runner and "approach_interactable" in runner and "aim_at_interactable" in runner,
+ "production_driver":"pppv_player_driver.gd" in runner and "interact_via_probe" in runner,
+ "r1_audited_corridor":"R1_ROUTE" in runner and "_walk_r1_corridor" in runner and "R1_ROUTE.size()-1" in runner,
  "production_probe":"Camera3D/InteractionProbe" in runner,
  "production_spawn":"load_room_at_portal" in runner and "ROOM_VIEWS" in runner and "_spawn_at_portal" not in runner,
  "r8_source_ingress":"R8_INGRESS_ROUTE" in runner and "_route_r8_ingress" in runner and "approach_world_point" in runner,
