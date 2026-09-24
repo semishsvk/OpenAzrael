@@ -16,6 +16,9 @@ class GodotPPPVTransitionNavigationSourceTests(unittest.TestCase):
         self.runner = (
             root / "scripts" / "validation" / "pppv_scenario_runner.gd"
         ).read_text(encoding="utf-8")
+        self.manager = (root / "scripts" / "room_manager.gd").read_text(
+            encoding="utf-8"
+        )
 
     def test_world_point_navigation_uses_input_not_teleport(self) -> None:
         section = self.navigator.split("func approach_world_point", 1)[1]
@@ -52,6 +55,21 @@ class GodotPPPVTransitionNavigationSourceTests(unittest.TestCase):
         self.assertIn("transition_not_observed", execute)
         self.assertIn("verify_transition_spawn", execute)
         self.assertIn("transition_spawn_validation_failed", execute)
+
+    def test_production_transition_preserves_portal_relative_pose(self) -> None:
+        process = self.manager.split("func _process", 1)[1]
+        process = process.split("func _debug_jump", 1)[0]
+        self.assertIn("_transition_room_through_portal(tr)", process)
+        self.assertNotIn("load_room_at_portal(dest, dest_view)", process)
+        self.assertIn('transition.get("source_view"', self.manager)
+        self.assertIn('transition.get("destination_view"', self.manager)
+        self.assertIn("source_depth", self.manager)
+        self.assertIn("desired_lateral", self.manager)
+        self.assertIn("-source_lateral", self.manager)
+        self.assertIn('"continuity_depth_delta"', self.manager)
+        self.assertIn('"continuity_lateral_delta"', self.manager)
+        self.assertIn('"continuity_logical_jump"', self.manager)
+        self.assertIn('"continuity_fallback"', self.manager)
 
     def test_scenario_runner_has_only_shared_action_executor_path(self) -> None:
         self.assertIn("ActionExecutorScript.new", self.runner)

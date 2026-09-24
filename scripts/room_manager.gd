@@ -18,6 +18,10 @@ const PORTAL_SPAWN_DISTANCE_CANDIDATES := [120.0, 115.0, 125.0, 110.0, 130.0, 10
 const PORTAL_SUPPORT_RAY_UP := 8.0
 const PORTAL_SUPPORT_RAY_DOWN := 48.0
 const PORTAL_SUPPORT_CLEARANCE := 0.2
+const PORTAL_TRANSITION_FLOOR_CLEARANCE := 0.35
+const PORTAL_TRANSITION_MIN_DEPTH := 32.0
+const PORTAL_TRANSITION_MAX_DEPTH := 160.0
+const PORTAL_TRANSITION_DISTANCE_OFFSETS := [0.0, 2.0, -2.0, 5.0, -5.0, 10.0, -10.0, 15.0, -15.0, 20.0, -20.0, 30.0, -30.0]
 const TRIGGER_EVENT_IR_PATH := "res://data/trigger_event_ir_v137.json"
 
 const PICKUPS := {
@@ -50,6 +54,7 @@ var legacy_audio: Node3D
 var _diagnostic_inside: Dictionary = {}
 var _trigger_hold_reported: Dictionary = {}
 var _character_animation_status: Dictionary = {}
+var _last_transition_spawn_expectation: Dictionary = {}
 @onready var player = get_node("../Player")
 
 func _ready() -> void:
@@ -597,6 +602,237 @@ func _portal_spawn_distance(c: Vector3, n: Vector3) -> float:
 
     return PORTAL_SPAWN_DISTANCE
 
+func _portal_tangent(normal: Vector3) -> Vector3:
+    var tangent := Vector3(-normal.z, 0.0, normal.x).normalized()
+    if tangent.length_squared() < 0.001:
+        tangent = Vector3.RIGHT
+    return tangent
+
+func _portal_bottom_y(view: Dictionary) -> float:
+    var bounds = view.get("bounds", [])
+    if bounds is Array and bounds.size() >= 2:
+        var a := _v3(bounds[0])
+        var b := _v3(bounds[1])
+        return minf(a.y, b.y)
+    return _v3(view.get("centroid", [0.0, 0.0, 0.0])).y
+
+func _portal_half_width(view: Dictionary, normal: Vector3) -> float:
+    var bounds = view.get("bounds", [])
+    if not bounds is Array or bounds.size() < 2:
+        return 48.0
+    var a := _v3(bounds[0])
+    var b := _v3(bounds[1])
+    var tangent := _portal_tangent(normal)
+    var corners := [
+        Vector3(a.x, 0.0, a.z),
+        Vector3(a.x, 0.0, b.z),
+        Vector3(b.x, 0.0, a.z),
+        Vector3(b.x, 0.0, b.z),
+    ]
+    var lo := INF
+    var hi := -INF
+    for corner in corners:
+        var projected: float = corner.dot(tangent)
+        lo = minf(lo, projected)
+        hi = maxf(hi, projected)
+    return maxf((hi - lo) * 0.5, 0.0)
+
+func _supported_transition_spawn(
+    view: Dictionary,
+    preferred_depth: float,
+    preferred_lateral: float
+) -> Dictionary:
+    var collision_shape := player.get_node_or_null("CollisionShape3D") as CollisionShape3D
+    if collision_shape == null or collision_shape.shape == null:
+        return {}
+
+    var centroid := _v3(view["centroid"])
+    var normal := _v3(view["normal"]).normalized()
+    var tangent := _portal_tangent(normal)
+    var half_width := _portal_half_width(view, normal)
+    var lateral_limit := maxf(
+        half_width - float((collision_shape.shape as CapsuleShape3D).radius) - 2.0
+        if collision_shape.shape is CapsuleShape3D
+        else half_width - 14.0,
+        0.0
+    )
+    var lateral := clampf(preferred_lateral, -lateral_limit, lateral_limit)
+    var nominal_foot_y := centroid.y + PORTAL_SPAWN_CLEARANCE - float(player.eye_height)
+    var space := get_world_3d().direct_space_state
+
+    for offset in PORTAL_TRANSITION_DISTANCE_OFFSETS:
+        var distance := clampf(
+            preferred_depth + float(offset),
+            PORTAL_TRANSITION_MIN_DEPTH,
+            PORTAL_TRANSITION_MAX_DEPTH
+        )
+        var xz := centroid + normal * distance + tangent * lateral
+        var floor_query := PhysicsRayQueryParameters3D.create(
+            Vector3(xz.x, nominal_foot_y + PORTAL_SUPPORT_RAY_UP, xz.z),
+            Vector3(xz.x, nominal_foot_y - PORTAL_SUPPORT_RAY_DOWN, xz.z),
+            int(player.collision_mask)
+        )
+        floor_query.hit_back_faces = true
+        var floor_hit: Dictionary = space.intersect_ray(floor_query)
+        if floor_hit.is_empty():
+            continue
+        var floor_normal := floor_hit.get("normal", Vector3.ZERO) as Vector3
+        if absf(floor_normal.y) < cos(float(player.floor_max_angle)):
+            continue
+
+        var floor_position := floor_hit.get("position", Vector3.ZERO) as Vector3
+        var shape_query := PhysicsShapeQueryParameters3D.new()
+        shape_query.shape = collision_shape.shape
+        shape_query.collision_mask = int(player.collision_mask)
+        shape_query.transform = Transform3D(
+            Basis.IDENTITY,
+            Vector3(
+                xz.x,
+                floor_position.y + PORTAL_TRANSITION_FLOOR_CLEARANCE + collision_shape.position.y,
+                xz.z
+            )
+        )
+        var support_collider = floor_hit.get("collider")
+        var blocked := false
+        for row in space.intersect_shape(shape_query, 16):
+            if not (row is Dictionary):
+                continue
+            if row.get("collider") != support_collider:
+                blocked = true
+                break
+        if blocked:
+            continue
+
+        var player_position := Vector3(
+            xz.x,
+            floor_position.y + PORTAL_TRANSITION_FLOOR_CLEARANCE,
+            xz.z
+        )
+        return {
+            "distance": distance,
+            "lateral": lateral,
+            "player_position": player_position,
+            "eye_position": player_position + Vector3.UP * float(player.eye_height),
+            "floor_position": floor_position,
+            "used_fallback": false,
+        }
+    return {}
+
+func _transition_room_through_portal(transition: Dictionary) -> bool:
+    var source_room := String(transition.get("source_room", current_room_id))
+    var source_view_name := String(transition.get("source_view", ""))
+    var destination_room := String(transition.get("destination_room", ""))
+    var destination_view_name := String(transition.get("destination_view", ""))
+    if source_room != current_room_id or source_view_name.is_empty() or destination_room.is_empty() or destination_view_name.is_empty():
+        return false
+
+    var source_view := _view_record(source_room, source_view_name)
+    if source_view.is_empty():
+        return false
+    var source_centroid := _v3(source_view["centroid"])
+    var source_normal := _v3(source_view["normal"]).normalized()
+    var source_tangent := _portal_tangent(source_normal)
+    var source_eye: Vector3 = player.global_position + Vector3.UP * float(player.eye_height)
+    var source_rel: Vector3 = source_eye - source_centroid
+    var source_depth := clampf(
+        absf(source_rel.dot(source_normal)),
+        PORTAL_TRANSITION_MIN_DEPTH,
+        PORTAL_TRANSITION_MAX_DEPTH
+    )
+    var source_lateral: float = source_rel.dot(source_tangent)
+    var source_vertical_from_bottom: float = source_eye.y - _portal_bottom_y(source_view)
+    var source_velocity: Vector3 = player.velocity
+    var source_pitch: float = float(player.get("pitch"))
+
+    load_room(destination_room, true)
+    if current_room_id != destination_room or not is_instance_valid(current_room):
+        return false
+    var destination_view := _view_record(destination_room, destination_view_name)
+    if destination_view.is_empty():
+        return false
+
+    var destination_centroid := _v3(destination_view["centroid"])
+    var destination_normal := _v3(destination_view["normal"]).normalized()
+    var destination_tangent := _portal_tangent(destination_normal)
+    var desired_lateral: float = -source_lateral
+    var solution := _supported_transition_spawn(
+        destination_view,
+        source_depth,
+        desired_lateral
+    )
+    var used_fallback := solution.is_empty()
+    if used_fallback:
+        _spawn_at_portal(destination_room, destination_view_name)
+        solution = {
+            "distance": _portal_spawn_distance(destination_centroid, destination_normal),
+            "lateral": 0.0,
+            "player_position": player.global_position,
+            "eye_position": player.global_position + Vector3.UP * float(player.eye_height),
+            "used_fallback": true,
+        }
+    else:
+        player.teleport_eye_to(
+            solution["eye_position"] as Vector3,
+            destination_normal
+        )
+
+    # Preserve the traversal flow through the portal. The coordinate system
+    # changes with the room, so map forward/lateral velocity components into
+    # the destination portal frame instead of forcing an artificial stop.
+    var crossing_speed: float = maxf(source_velocity.dot(-source_normal), 0.0)
+    var lateral_speed: float = source_velocity.dot(source_tangent)
+    var mapped_velocity: Vector3 = (
+        destination_normal * crossing_speed
+        - destination_tangent * lateral_speed
+        + Vector3.UP * source_velocity.y
+    )
+    player.velocity = mapped_velocity
+    player.set("pitch", source_pitch)
+    var camera := player.get_node_or_null("Camera3D") as Camera3D
+    if camera != null:
+        camera.rotation.x = source_pitch
+
+    var destination_eye: Vector3 = player.global_position + Vector3.UP * float(player.eye_height)
+    var destination_rel: Vector3 = destination_eye - destination_centroid
+    var destination_depth: float = absf(destination_rel.dot(destination_normal))
+    var destination_lateral: float = destination_rel.dot(destination_tangent)
+    var destination_vertical_from_bottom: float = destination_eye.y - _portal_bottom_y(destination_view)
+    var depth_delta: float = absf(destination_depth - source_depth)
+    var lateral_delta: float = absf(destination_lateral + source_lateral)
+    var vertical_delta: float = absf(destination_vertical_from_bottom - source_vertical_from_bottom)
+    var logical_jump: float = sqrt(
+        depth_delta * depth_delta
+        + lateral_delta * lateral_delta
+        + vertical_delta * vertical_delta
+    )
+    var flat := Vector3(destination_normal.x, 0.0, destination_normal.z).normalized()
+    if flat.length_squared() < 0.001:
+        flat = Vector3.FORWARD
+    _last_transition_spawn_expectation = {
+        "room": destination_room,
+        "portal": destination_view_name,
+        "spawn_distance": float(solution.get("distance", destination_depth)),
+        "eye_position": [destination_eye.x, destination_eye.y, destination_eye.z],
+        "player_position": [player.global_position.x, player.global_position.y, player.global_position.z],
+        "forward": [destination_normal.x, destination_normal.y, destination_normal.z],
+        "yaw": atan2(-flat.x, -flat.z),
+        "continuity_source_depth": source_depth,
+        "continuity_destination_depth": destination_depth,
+        "continuity_depth_delta": depth_delta,
+        "continuity_source_lateral": source_lateral,
+        "continuity_destination_lateral": destination_lateral,
+        "continuity_lateral_delta": lateral_delta,
+        "continuity_vertical_delta": vertical_delta,
+        "continuity_logical_jump": logical_jump,
+        "continuity_fallback": used_fallback,
+        "mapped_velocity": [mapped_velocity.x, mapped_velocity.y, mapped_velocity.z],
+    }
+    CandidateDiagnostics.record_event(
+        "portal_transition_continuity_applied",
+        _last_transition_spawn_expectation.duplicate(true)
+    )
+    return true
+
 func _spawn_at_portal(room_id: String, view_name: String) -> void:
     var v := _view_record(room_id, view_name)
     if v.is_empty():
@@ -620,6 +856,7 @@ func load_room_at_portal(
     # Single production-faithful room-entry path for runtime and validation.
     # Callers must never emulate a production transition with load_room() alone:
     # portal semantics select both the destination position and heading.
+    _last_transition_spawn_expectation.clear()
     load_room(room_id, announce)
     if current_room_id != room_id or not is_instance_valid(current_room):
         return false
@@ -649,6 +886,11 @@ func portal_spawn_expectation(room_id: String, view_name: String) -> Dictionary:
     # uses this instead of duplicating nominal offsets or guessing coordinates.
     if current_room_id != room_id or not is_instance_valid(current_room):
         return {}
+    if (
+        String(_last_transition_spawn_expectation.get("room", "")) == room_id
+        and String(_last_transition_spawn_expectation.get("portal", "")) == view_name
+    ):
+        return _last_transition_spawn_expectation.duplicate(true)
     var view := _view_record(room_id, view_name)
     if view.is_empty():
         return {}
@@ -796,7 +1038,7 @@ func _process(delta: float) -> void:
             var dest := String(tr["destination_room"])
             var dest_view := String(tr["destination_view"])
             CandidateDiagnostics.record_transition(source, trigger_name, dest)
-            if not load_room_at_portal(dest, dest_view):
+            if not _transition_room_through_portal(tr):
                 CandidateDiagnostics.record_event("transition_spawn_failed", {
                     "source_room": source,
                     "trigger": trigger_name,

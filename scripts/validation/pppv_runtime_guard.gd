@@ -6,6 +6,7 @@ const MAX_VERTICAL_DROP_PER_FRAME := 24.0
 const MAX_ACTION_VERTICAL_DROP := 96.0
 const DEFAULT_SPAWN_POSITION_TOLERANCE := 14.0
 const DEFAULT_SPAWN_YAW_TOLERANCE := 0.35
+const DEFAULT_MAX_TRANSITION_LOGICAL_JUMP := 8.0
 const MOVEMENT_ACTIONS := [
     &"move_forward",
     &"move_back",
@@ -370,13 +371,38 @@ func verify_transition_spawn(
     )
     var expected_yaw := float(expectation.get("yaw", 0.0))
     var spawn_distance := float(expectation.get("spawn_distance", 0.0))
+    var continuity_jump := float(
+        expectation.get("continuity_logical_jump", 0.0)
+    )
+    var continuity_fallback := bool(
+        expectation.get("continuity_fallback", false)
+    )
+    var continuity_observed: bool = expectation.has("continuity_logical_jump")
+    var continuity_ok: bool = (
+        not continuity_observed
+        or (
+            not continuity_fallback
+            and continuity_jump <= DEFAULT_MAX_TRANSITION_LOGICAL_JUMP
+        )
+    )
 
-    # A portal spawn may naturally settle a few units onto the authored floor.
-    # Treat that as healthy only when actual collision support exists. Require
-    # thirty consecutive production physics frames with support instead of
-    # interpreting absolute Y drift as fall-through.
+    # Position/yaw are checked immediately when validation starts. Production
+    # transition mapping preserves traversal velocity, so the avatar is allowed
+    # to keep walking naturally during the following support window instead of
+    # being required to remain frozen at the spawn coordinate for 30 frames.
+    var initial_position := player.global_position
+    var initial_position_error := initial_position.distance_to(
+        expected_position
+    )
+    var initial_yaw := player.rotation.y
+    var initial_yaw_error := absf(
+        wrapf(initial_yaw - expected_yaw, -PI, PI)
+    )
+
+    # A portal transition must remain physically supported after the coordinate
+    # frame swap. Require thirty consecutive production physics frames.
     var support_samples: Array[Dictionary] = []
-    var support_ok := true
+    var support_ok: bool = true
     for support_frame in range(30):
         await player.get_tree().physics_frame
         sample(action_id)
@@ -388,21 +414,16 @@ func verify_transition_spawn(
             support_ok = false
             break
 
-    var position_error := player.global_position.distance_to(
-        expected_position
-    )
-    var yaw_error := absf(
-        wrapf(player.rotation.y - expected_yaw, -PI, PI)
-    )
-    var room_ok := (
+    var room_ok: bool = (
         String(manager.get("current_room_id")) == destination_room
     )
-    var ok := (
+    var ok: bool = (
         room_ok
-        and position_error <= position_tolerance
-        and yaw_error <= yaw_tolerance
+        and initial_position_error <= position_tolerance
+        and initial_yaw_error <= yaw_tolerance
         and support_ok
         and support_samples.size() == 30
+        and continuity_ok
     )
 
     var final_support := (
@@ -417,18 +438,24 @@ func verify_transition_spawn(
         "destination_room": destination_room,
         "destination_view": destination_view,
         "spawn_distance": spawn_distance,
-        "actual_position": _v3(player.global_position),
+        "initial_position": _v3(initial_position),
         "expected_position": _v3(expected_position),
-        "position_error": position_error,
+        "initial_position_error": initial_position_error,
         "position_tolerance": position_tolerance,
-        "actual_yaw": player.rotation.y,
+        "initial_yaw": initial_yaw,
         "expected_yaw": expected_yaw,
-        "yaw_error": yaw_error,
+        "initial_yaw_error": initial_yaw_error,
         "yaw_tolerance": yaw_tolerance,
+        "continuity_observed": continuity_observed,
+        "continuity_logical_jump": continuity_jump,
+        "continuity_max_logical_jump": DEFAULT_MAX_TRANSITION_LOGICAL_JUMP,
+        "continuity_fallback": continuity_fallback,
+        "continuity_ok": continuity_ok,
         "floor_support_consecutive_frames": support_samples.size(),
         "floor_support_required_frames": 30,
         "floor_support_ok": support_ok and support_samples.size() == 30,
         "floor_probe_final": final_support,
+        "final_position": _v3(player.global_position),
         "match": ok
     })
     if not ok:
@@ -438,9 +465,11 @@ func verify_transition_spawn(
             "destination_room": destination_room,
             "destination_view": destination_view,
             "player_position": _v3(player.global_position),
-            "position_error": position_error,
-            "yaw_error": yaw_error,
+            "initial_position_error": initial_position_error,
+            "initial_yaw_error": initial_yaw_error,
             "spawn_distance": spawn_distance,
+            "continuity_logical_jump": continuity_jump,
+            "continuity_fallback": continuity_fallback,
             "floor_support_consecutive_frames": support_samples.size(),
             "floor_probe_final": final_support
         })

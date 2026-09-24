@@ -62,11 +62,15 @@ class GodotPPPVRuntimeGuardSourceTests(unittest.TestCase):
         self.assertIn('"current_room_node_invalid"', self.guard)
         self.assertIn('"movement_input_stuck_after_action"', self.guard)
 
-    def test_transition_spawn_uses_production_expectation_and_support(self) -> None:
+    def test_transition_spawn_uses_production_continuity_and_support(self) -> None:
         self.assertIn("verify_transition_spawn", self.guard)
         self.assertIn('runtime_evidence.get("demo_transitions"', self.guard)
         self.assertIn('manager.has_method("portal_spawn_expectation")', self.guard)
         self.assertIn('"portal_spawn_expectation"', self.guard)
+        self.assertIn('"continuity_logical_jump"', self.guard)
+        self.assertIn('"continuity_fallback"', self.guard)
+        self.assertIn("DEFAULT_MAX_TRANSITION_LOGICAL_JUMP := 8.0", self.guard)
+        self.assertIn("initial_position_error", self.guard)
         self.assertIn("for support_frame in range(30)", self.guard)
         self.assertIn('"floor_support_required_frames": 30', self.guard)
         self.assertIn('"floor_probe_final"', self.guard)
