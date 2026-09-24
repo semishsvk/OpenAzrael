@@ -46,7 +46,11 @@ class OpenAzraelR8PPPVTests(unittest.TestCase):
     def test_optical_sequence_requires_trigger_aim_audio_and_visual_effects(self) -> None:
         scenario = self.scenarios["openazrael.r8.optical_sequence"]
         self.assertEqual(
-            [row.execution_mode for row in scenario.actions],
+            [row.execution_mode for row in scenario.actions[:len(R8_LENS_INGRESS_ROUTE)]],
+            [ExecutionMode.INPUT] * len(R8_LENS_INGRESS_ROUTE),
+        )
+        self.assertEqual(
+            [row.execution_mode for row in scenario.actions[-4:]],
             [
                 ExecutionMode.INPUT,
                 ExecutionMode.INPUT,
@@ -97,7 +101,9 @@ class OpenAzraelR8PPPVTests(unittest.TestCase):
 
     def test_lens_route_uses_source_derived_broken_mirror_ingress(self) -> None:
         self.assertEqual(len(R8_LENS_INGRESS_ROUTE), 11)
-        self.assertEqual(R8_LENS_INGRESS_ROUTE[1][0], -254.067350)\n        self.assertEqual(R8_LENS_INGRESS_ROUTE[4][0], -222.866992)\n        self.assertEqual(R8_LENS_INGRESS_ROUTE[5][0], -208.866992)
+        self.assertEqual(R8_LENS_INGRESS_ROUTE[1][0], -254.067350)
+        self.assertEqual(R8_LENS_INGRESS_ROUTE[4][0], -222.866992)
+        self.assertEqual(R8_LENS_INGRESS_ROUTE[5][0], -208.866992)
         self.assertAlmostEqual(R8_LENS_INGRESS_ROUTE[6][0], -101.798, places=3)
         self.assertGreater(R8_LENS_INGRESS_ROUTE[6][2], 149.087)
         self.assertLess(R8_LENS_INGRESS_ROUTE[7][2], 147.440)
