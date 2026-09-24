@@ -30,9 +30,13 @@ class OpenAzraelR7PPPVTests(unittest.TestCase):
             [row.execution_mode for row in scenario.actions],
             [
                 ExecutionMode.INPUT,
-                ExecutionMode.INTERACTION_PROBE,
                 ExecutionMode.INPUT,
                 ExecutionMode.INTERACTION_PROBE,
+                ExecutionMode.INPUT,
+                ExecutionMode.INPUT,
+                ExecutionMode.INTERACTION_PROBE,
+                ExecutionMode.INPUT,
+                ExecutionMode.INPUT,
                 ExecutionMode.INPUT,
                 ExecutionMode.INTERACTION_PROBE,
             ],
@@ -45,6 +49,20 @@ class OpenAzraelR7PPPVTests(unittest.TestCase):
                 "Interact_well_lev02",
             ],
         )
+
+    def test_positive_explicitly_aims_and_physically_disambiguates_final_lever(self) -> None:
+        scenario = self.scenarios["openazrael.r7.water_switchboard"]
+        ids = [row.action_id for row in scenario.actions]
+        self.assertEqual(
+            [row for row in ids if row.startswith("aim_switch_")],
+            ["aim_switch_1", "aim_switch_2", "aim_switch_3"],
+        )
+        side_step = next(
+            row for row in scenario.actions
+            if row.action_id == "separate_switch_targets"
+        )
+        self.assertEqual(side_step.execution_mode, ExecutionMode.INPUT)
+        self.assertEqual(side_step.parameters["goal_world_point"], [65.0, -41.45, 85.0])
 
     def test_positive_requires_source_backed_flags_audio_and_water_state(self) -> None:
         scenario = self.scenarios["openazrael.r7.water_switchboard"]
