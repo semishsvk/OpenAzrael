@@ -30,6 +30,14 @@ class GodotPPPVPlaythroughRunnerSourceTests(unittest.TestCase):
         self.assertNotIn('state.call("set_puzzle_node"', check_section)
         self.assertIn("_precondition_value", check_section)
 
+    def test_chained_context_may_add_physical_entry_actions_or_skip_redundant_route_prefixes(self) -> None:
+        self.assertIn("func _contextualize_scenario", self.source)
+        self.assertIn('"playthrough_entry_actions"', self.source)
+        self.assertIn('"skip_action_prefixes"', self.source)
+        self.assertIn('action_id.begins_with(prefix)', self.source)
+        self.assertIn('runtime_scenario["actions"] = actions', self.source)
+        self.assertNotIn("player.global_position =", self.source)
+
     def test_only_explicit_checkpoint_resets_state(self) -> None:
         occurrences = self.source.count('state.call("reset_all")')
         self.assertEqual(occurrences, 2)
