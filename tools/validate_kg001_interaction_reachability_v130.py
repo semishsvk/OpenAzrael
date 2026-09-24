@@ -7,9 +7,11 @@ contract=json.loads((ROOT/"data/tests/kg001_interaction_reachability_contract_v1
 checks={
  "schema":contract.get("schema")=="openazrael.kg001.interaction_reachability_contract" and contract.get("version")==130,
  "all_targets":sum(len(v) for v in contract.get("rooms",{}).values())==16,
+ "route_policy":contract.get("r8_route_policy",{}).get("waypoint_count")==7 and contract.get("r8_route_policy",{}).get("teleport_forbidden") is True,
  "production_navigator":"pppv_navigator.gd" in runner and "approach_interactable" in runner and "aim_at_interactable" in runner,
  "production_probe":"Camera3D/InteractionProbe" in runner,
- "natural_spawn":"_spawn_at_portal" in runner and "ROOM_VIEWS" in runner,
+ "production_spawn":"load_room_at_portal" in runner and "ROOM_VIEWS" in runner and "_spawn_at_portal" not in runner,
+ "r8_source_ingress":"R8_INGRESS_ROUTE" in runner and "_route_r8_ingress" in runner and "approach_world_point" in runner,
  "hidden_interaction_negative":"R8_hidden_shield_area_disabled" in runner,
  "no_direct_mutators":all(x not in runner for x in (".interact()","set_flag(","set_puzzle_node(","velocity.x =","velocity.z =")),
  "marker":"OPENAZRAEL_KG001_INTERACTION_REACHABILITY_V130" in runner,
