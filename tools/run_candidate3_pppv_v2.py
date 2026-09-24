@@ -139,6 +139,7 @@ def run_well_pppv(godot):
         proc=run([
             godot,
             "--headless",
+            "--fixed-fps","60",
             "--path",str(ROOT),
             "--script","res://scripts/validation/pppv_scenario_runner.gd",
             "--",
@@ -336,6 +337,7 @@ def run_pppv_scenario_suite(godot):
         proc=run([
             godot,
             "--headless",
+            "--fixed-fps","60",
             "--path",str(ROOT),
             "--script","res://scripts/validation/pppv_scenario_runner.gd",
             "--",
@@ -433,6 +435,7 @@ def _run_full_pppv_once(godot, runtime_path, evaluation_path):
     proc=run([
         godot,
         "--headless",
+        "--fixed-fps","60",
         "--path",str(ROOT),
         "--script","res://scripts/validation/pppv_playthrough_runner.gd",
         "--",
