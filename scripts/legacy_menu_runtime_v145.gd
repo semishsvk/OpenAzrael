@@ -4,6 +4,7 @@ class_name LegacyMenuRuntimeV145
 const LOGICAL_SIZE := Vector2(640, 480)
 const SERVICE_ORIGIN := Vector2(235, 260)
 const SaveSystem := preload("res://scripts/legacy_save_system_v145.gd")
+const LegacyScannerRuntimeV164 := preload("res://scripts/legacy_scanner_runtime_v164.gd")
 
 # Source-derived service-menu frame semantics.
 # SAVE00..SAVE06 are the closed->open construction sequence.
@@ -81,6 +82,7 @@ var map_indicator: TextureRect
 var status_label: Label
 var slot_label: Label
 var inventory_text_layer: Control
+var scanner_runtime: LegacyScannerRuntimeV164
 
 var title_open := false
 var service_open := false
@@ -182,6 +184,10 @@ func _build() -> void:
     inventory_text_layer.clip_contents = true
     inventory_text_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
     classic_canvas.add_child(inventory_text_layer)
+
+    scanner_runtime = LegacyScannerRuntimeV164.new()
+    classic_canvas.add_child(scanner_runtime)
+    scanner_runtime.initialize(room_manager)
 
     service_texture.visible = false
     slot_label.visible = false
@@ -331,6 +337,9 @@ func classic_frame_rect() -> Rect2:
 func blocks_world_cursor() -> bool:
     return title_open or service_open
 
+func debug_scanner_snapshot() -> Dictionary:
+    return scanner_runtime.debug_snapshot() if scanner_runtime != null else {}
+
 func _screen_to_classic(screen_pos: Vector2) -> Vector2:
     return (screen_pos - _offset) / maxf(_scale, 0.0001)
 
@@ -353,6 +362,8 @@ func _dismiss_title() -> void:
     _refresh_inventory()
     get_tree().paused = false
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+    if scanner_runtime != null:
+        scanner_runtime.start_boot_sequence()
     CandidateDiagnostics.record_event("legacy_title_dismiss", {"compatibility_input": true})
 
 func _set_service_frame(stem: String) -> void:
