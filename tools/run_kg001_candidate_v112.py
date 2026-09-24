@@ -78,17 +78,20 @@ def parse_marker(output, marker):
     return {"status":"FAIL","error":"result marker missing"}
 
 def engine_errors(output):
-    teardown_resource_re = re.compile(
-        r"ERROR: \\d+ resources still in use at exit \\(run with --verbose for details\\)\\."
-    )
     errors=[]
     for line in output.splitlines():
         stripped=line.lstrip()
-        if not stripped.startswith(("ERROR:", "SCRIPT ERROR:")):
+        # Godot 4.7.2 can report reference-counted resources still alive during
+        # immediate headless shutdown even when the runtime marker and process
+        # return code are clean. Treat only this exact teardown diagnostic as
+        # non-fatal; all other ERROR/SCRIPT ERROR lines remain fail-closed.
+        if re.fullmatch(
+            r"ERROR: \d+ resources still in use at exit \(run with --verbose for details\)\.",
+            stripped,
+        ):
             continue
-        if teardown_resource_re.fullmatch(stripped):
-            continue
-        errors.append(line)
+        if stripped.startswith(("ERROR:", "SCRIPT ERROR:")):
+            errors.append(line)
     return errors
 
 def ignored(path):
