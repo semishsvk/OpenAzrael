@@ -98,6 +98,25 @@ class OpenAzraelDemoPlaythroughPlanTests(unittest.TestCase):
             "openazrael.r7.water_switchboard",
         )
 
+    def test_chained_r7_steps_carry_physical_context_routes(self) -> None:
+        root = Path(__file__).resolve().parents[3]
+        plan = build_openazrael_demo_playthrough_plan(
+            _default_scenario_bundle(root)
+        )
+        rows = {row["step_id"]: row for row in plan["steps"]}
+        self.assertEqual(
+            len(rows["S05_SWITCHBOARD"]["metadata"]["playthrough_entry_actions"]),
+            5,
+        )
+        self.assertEqual(
+            len(rows["T07_R7_TO_R1"]["metadata"]["playthrough_entry_actions"]),
+            6,
+        )
+        self.assertEqual(
+            rows["S13_TAKE_SHIELD"]["metadata"]["skip_action_prefixes"],
+            ["route_to_shield_"],
+        )
+
     def test_v118_well_positive_is_reused_as_ready_segment(self) -> None:
         root = Path(__file__).resolve().parents[3]
         scenarios = _default_scenario_bundle(root)
