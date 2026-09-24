@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - integration/kg001-candidate3-pppv-v2
       - "tooling/**"
       - "test/**"
   pull_request:
