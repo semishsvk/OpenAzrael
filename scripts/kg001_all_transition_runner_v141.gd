@@ -30,6 +30,22 @@ const R1_ROUTE := [
     Vector3(529.295811, -84.205500, -513.041569),
 ]
 
+# Source-geometry-backed physical route from the well side back toward the
+# R7->R1 transition. Shared with the chained full-demo PPPV context route.
+const R7_WELL_TO_EXIT_ROUTE := [
+    Vector3(-21.4, -47.57, 51.4),
+    Vector3(-24.0, -47.57, 78.0),
+    Vector3(-8.0, -41.45, 78.0),
+    Vector3(25.0, -41.45, 70.0),
+    Vector3(45.0, -41.45, 80.0),
+    Vector3(45.0, -41.45, 60.0),
+    Vector3(38.0, -41.45, 30.0),
+    Vector3(30.0, -41.45, 0.0),
+    Vector3(30.0, -41.45, -35.0),
+    Vector3(50.0, -41.56, -55.0),
+    Vector3(65.0, -41.56, -85.0),
+]
+
 var failures: Array[String] = []
 var checks := 0
 var crossed: Array[String] = []
@@ -284,7 +300,7 @@ func _run() -> void:
     ):
         _finish(scene, guard)
         return
-    await _settle(70)
+    await _settle(30)
 
     if not await _approach_and_interact(
         "take_well_key", "Interact_WellKey", manager, nav, driver, guard
@@ -294,13 +310,17 @@ func _run() -> void:
     _check("well_key_in_inventory", state.has("well_key"))
     _check("tongs_consumed", not state.has("rusty_tongs"))
 
+    if not await _walk_waypoints("R7_well_to_exit", R7_WELL_TO_EXIT_ROUTE, nav, guard):
+        _finish(scene, guard)
+        return
+
     if not await _cross_transition(
         "transition_R7_R1", "R7", "zxwell2R6", "R1",
         manager, nav, guard, scene, player
     ):
         _finish(scene, guard)
         return
-    await _settle(70)
+    await _settle(30)
 
     if not await _walk_waypoints("R1_to_door2", r1_pre_door2, nav, guard):
         _finish(scene, guard)
@@ -326,7 +346,7 @@ func _run() -> void:
     ):
         _finish(scene, guard)
         return
-    await _settle(70)
+    await _settle(30)
 
     if not await _cross_transition(
         "transition_R8_R1", "R8", "zxorrery", "R1",
