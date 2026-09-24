@@ -1,0 +1,52 @@
+name: Candidate 4 exact-SHA validation launcher
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: "Exact OpenAzrael source SHA to validate"
+        required: true
+        default: "e9de18a794bba187201c9865dbf897454610857c"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact Candidate source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          fetch-depth: 1
+      - name: Prove exact source binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ inputs.source_sha }}"
+          git rev-parse HEAD | tee candidate4-source-head.txt
+          git rev-parse HEAD^{tree} | tee candidate4-source-tree.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: FAST source validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.remaster_framework.cli validate
+          python -m unittest discover -s tools/remaster_framework/tests -v
+          python -m tools.openazrael_adapters.runtime_capabilities . --require-core
+          python tools/validate_candidate_diagnostics_v116.py
+          python tools/validate_kg001_candidate_v112.py
+          python tools/validate_kg001_physical_traversal_v117.py
+          python tools/validate_kg001_well_tongs_animation_v118.py
+      - name: Upload exact-SHA FAST evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate4-exact-sha-fast-evidence
+          path: |
+            candidate4-source-head.txt
+            candidate4-source-tree.txt
+          if-no-files-found: error
+          retention-days: 90
