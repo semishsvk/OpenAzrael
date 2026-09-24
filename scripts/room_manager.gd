@@ -196,6 +196,13 @@ func _create_world_collision(room_id: String) -> void:
         var exclude_collision := (
             obj_name.begins_with("ZQ")
             or obj_name in ["Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]
+            # R8's right-hand baptistery mirror is source-authored as broken
+            # enough to walk through. mirror01 is the pane centered in that
+            # opening; broken3 is its alpha-cutout shard overlay. Treating
+            # either visual mesh as solid trimesh collision seals the only
+            # authored passage into the rear baptistery. The surrounding
+            # mirrors/mirrors01 wall and its low sill remain collidable.
+            or (room_id == "R8" and obj_name in ["mirror01", "broken3"])
             or (obj_name == "Object02" and room_id != "R1")
         )
         if exclude_collision:

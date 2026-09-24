@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from tools.openazrael_adapters.r8_pppv import (
+    R8_LENS_INGRESS_ROUTE,
     build_r8_interaction_scenarios,
 )
 from tools.remaster_framework.validation import ExecutionMode
@@ -92,6 +94,36 @@ class OpenAzraelR8PPPVTests(unittest.TestCase):
         paths = {row.path for row in scenario.state_expectations}
         self.assertIn("inventory.r8_lens", paths)
         self.assertIn("puzzle.R8LensPlace", paths)
+
+    def test_lens_route_uses_source_derived_broken_mirror_ingress(self) -> None:
+        self.assertGreaterEqual(len(R8_LENS_INGRESS_ROUTE), 7)
+        self.assertEqual(R8_LENS_INGRESS_ROUTE[1][0], -208.866992)
+        self.assertAlmostEqual(R8_LENS_INGRESS_ROUTE[2][0], -101.798, places=3)
+        self.assertGreater(R8_LENS_INGRESS_ROUTE[2][2], 149.087)
+        self.assertLess(R8_LENS_INGRESS_ROUTE[3][2], 147.440)
+
+        scenario = self.scenarios["openazrael.r8.take_lens"]
+        world_points = [
+            row for row in scenario.actions
+            if "goal_world_point" in row.parameters
+        ]
+        self.assertEqual(len(world_points), len(R8_LENS_INGRESS_ROUTE))
+        self.assertEqual(
+            [row.kind.value for row in scenario.actions[-3:]],
+            ["move", "look", "interact"],
+        )
+        self.assertEqual(
+            scenario.actions[-2].parameters["goal_target"],
+            "Interact_R8Lens",
+        )
+
+    def test_broken_right_mirror_is_not_world_collision(self) -> None:
+        source = Path("scripts/room_manager.gd").read_text(encoding="utf-8")
+        self.assertIn(
+            'room_id == "R8" and obj_name in ["mirror01", "broken3"]',
+            source,
+        )
+        self.assertIn("surrounding", source)
 
     def test_submerged_lens_negative_cannot_acquire_lens(self) -> None:
         scenario = self.scenarios[
