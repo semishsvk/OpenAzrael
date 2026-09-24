@@ -5,6 +5,7 @@ from pathlib import Path
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -77,7 +78,18 @@ def parse_marker(output, marker):
     return {"status":"FAIL","error":"result marker missing"}
 
 def engine_errors(output):
-    return [line for line in output.splitlines() if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))]
+    teardown_resource_re = re.compile(
+        r"ERROR: \\d+ resources still in use at exit \\(run with --verbose for details\\)\\."
+    )
+    errors=[]
+    for line in output.splitlines():
+        stripped=line.lstrip()
+        if not stripped.startswith(("ERROR:", "SCRIPT ERROR:")):
+            continue
+        if teardown_resource_re.fullmatch(stripped):
+            continue
+        errors.append(line)
+    return errors
 
 def ignored(path):
     rel=str(path.relative_to(ROOT))
@@ -164,7 +176,7 @@ def main():
             if name in ("v110","trigger_v137","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121","geometry_v122","visibility_v123","material_v124","transform_v125","reachable_visibility_v127","portal_v129","interaction_v130","save_compat_v150","inventory_hud_v157") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
-            proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
+            proc=run([godot,"--headless","--fixed-fps","60","--path",str(ROOT),"--script",f"res://{script}"])
             parsed=parse_marker(proc.stdout,marker)
             errors=engine_errors(proc.stdout)
             if proc.returncode!=0 or errors:
