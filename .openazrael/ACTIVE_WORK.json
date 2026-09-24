@@ -6,7 +6,7 @@
   "owner": "OpenAzrael Candidate 4 finalization thread",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "4fa8a208e55b4a840defe8fc341a4f79a235d470",
-  "last_authorized_integration_head": "6d1b5551be2f119f5c2355d601daff41026fd5a4",
+  "last_authorized_integration_head": "47e784264bc4f7192a2de4d77e2ac00ca4583747",
   "policy_commit_integration": "08c0a3c097714c69c8cba37d82a5adaee36d0314",
   "policy_commit_main": "0a6770883bec9d285f9ac397f455b9dbf85be191",
   "acquired_on": "2026-09-24",
@@ -19,5 +19,8 @@
     "R7->R1",
     "R1->R8",
     "R8->R1"
-  ]
+  ],
+  "last_verified_scanner_gate": "kg001_legacy_scanner_v164:PASS",
+  "last_verified_scanner_checks": 18,
+  "last_verified_menu_gate": "kg001_legacy_menu_v145:PASS"
 }
