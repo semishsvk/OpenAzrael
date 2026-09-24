@@ -11,6 +11,8 @@ checks={
  "godot_discovery":all(x in source for x in ("GODOT_BIN","godot4","godot")),
  "source_validators":all(x in manifest for x in ("validate_public_release_safety.py","validate_project_context.py","validate_demo_runtime_ir.py","kg001_state_space_v108.py","validate_kg001_full_demo_v111.py")),
  "godot_import_step":'"--import"' in source and "import_status" in source,
+ "deterministic_runtime_fixed_fps":'"--fixed-fps","60"' in source,
+ "shutdown_resource_leak_filter":"resources still in use at exit" in source and "re.fullmatch" in source,
  "runtime_v109":"kg001_headless_runner_v109.gd" in manifest,
  "runtime_v110":"kg001_room_trigger_runner_v110.gd" in manifest,
  "runtime_v111":"kg001_full_demo_runner_v111.gd" in manifest,
