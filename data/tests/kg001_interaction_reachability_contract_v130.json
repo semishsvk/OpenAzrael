@@ -30,6 +30,7 @@
   "requires": [
     "production-faithful load_room_at_portal spawn per room",
     "movement to every listed interaction uses production movement input through PPPVNavigator",
+    "R1 fresh-state corridor targets open Door1 through production InteractionProbe/PlayerDriver and traverse the audited v119/v141 R1 route",
     "R8 targets first traverse the source-derived eleven-waypoint broken-mirror ingress",
     "production InteractionProbe must acquire the exact Area3D target",
     "target Area3D must be active when its object is supposed to be interactable",
@@ -41,11 +42,18 @@
     "direct interact() calls",
     "direct gameplay flag mutation"
   ],
-  "boundary": "v130 proves route-aware physical approach/raycast reachability for the listed fresh-state interactions. R8 targets use the source-derived tread-by-tread broken-mirror ingress before direct target approach; state-gated positive interactions remain covered by chained PPPV/full-demo tests.",
+  "boundary": "v130 proves route-aware physical approach/raycast reachability for the listed fresh-state interactions. R1 corridor targets use production Door1 interaction plus the audited v119/v141 physical corridor; R8 targets use the source-derived tread-by-tread broken-mirror ingress. State-gated positive interactions remain covered by chained PPPV/full-demo tests.",
   "r8_route_policy": {
     "source": "source-derived R8 Object14 -> step011 tread centers -> right-hand broken mirror ingress shared with openazrael.r8.take_lens",
     "waypoint_count": 11,
     "collision_semantics": "production CharacterBody3D + room collision + step-up",
+    "teleport_forbidden": true,
+    "direct_state_mutation_forbidden": true
+  },
+  "r1_route_policy": {
+    "source": "audited v119/v141 R1 corridor from canonical spaview through Door1 toward Door2/TONG6",
+    "door1_interaction": "production PPPVNavigator + InteractionProbe + PlayerDriver",
+    "collision_semantics": "production CharacterBody3D + room collision",
     "teleport_forbidden": true,
     "direct_state_mutation_forbidden": true
   }
