@@ -155,6 +155,19 @@ checks = {
         and 'player.has_method("clear_step_debug")' in runner
         and 'debug_player.has_method("step_debug_snapshot")' in runner
     ),
+    "runtime_bridges_real_measurements_into_pppv_evidence": all(
+        value in runner
+        for value in (
+            "pppv_evidence_bus.gd",
+            'record_player_action("r1_forward", "input"',
+            'record("collision_support"',
+            'record("movement"',
+            'record_player_action("ascend", "input"',
+            'record_player_action("descend", "input"',
+            'record("stair_traversal"',
+            '"pppv_evidence": pppv_evidence.bundle()',
+        )
+    ),
     "natural_portal_spawn_regression": all(
         value in runner
         for value in (
