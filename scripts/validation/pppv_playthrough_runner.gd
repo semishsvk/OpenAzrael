@@ -186,6 +186,53 @@ func _runtime_evidence_bundle(events: Array) -> Dictionary:
         "events": events
     }
 
+func _contextualize_scenario(step: Dictionary, scenario: Dictionary) -> Dictionary:
+    var runtime_scenario: Dictionary = scenario.duplicate(true)
+    var metadata = step.get("metadata", {})
+    if not metadata is Dictionary:
+        return runtime_scenario
+
+    var source_actions = runtime_scenario.get("actions", [])
+    if not source_actions is Array:
+        source_actions = []
+    var skip_prefixes = metadata.get("skip_action_prefixes", [])
+    if not skip_prefixes is Array:
+        skip_prefixes = []
+    var actions: Array = []
+
+    var entry_actions = metadata.get("playthrough_entry_actions", [])
+    if entry_actions is Array:
+        for raw_entry in entry_actions:
+            if raw_entry is Dictionary:
+                actions.append(raw_entry.duplicate(true))
+
+    for raw_action in source_actions:
+        if not raw_action is Dictionary:
+            actions.append(raw_action)
+            continue
+        var action_id := String(raw_action.get("action_id", ""))
+        var skip := false
+        for raw_prefix in skip_prefixes:
+            var prefix := String(raw_prefix)
+            if not prefix.is_empty() and action_id.begins_with(prefix):
+                skip = true
+                break
+        if not skip:
+            actions.append(raw_action.duplicate(true))
+
+    runtime_scenario["actions"] = actions
+    var runtime_meta = runtime_scenario.get("metadata", {})
+    if not runtime_meta is Dictionary:
+        runtime_meta = {}
+    runtime_meta = runtime_meta.duplicate(true)
+    runtime_meta["playthrough_contextualized"] = true
+    runtime_meta["playthrough_entry_action_count"] = (
+        entry_actions.size() if entry_actions is Array else 0
+    )
+    runtime_meta["playthrough_skip_action_prefixes"] = skip_prefixes.duplicate()
+    runtime_scenario["metadata"] = runtime_meta
+    return runtime_scenario
+
 func _run_scenario_step(
     step: Dictionary,
     scenario: Dictionary,
@@ -524,9 +571,13 @@ func _run() -> void:
             )
             break
 
+        var runtime_scenario := _contextualize_scenario(
+            raw_step,
+            scenarios[scenario_id]
+        )
         var result: Dictionary = await _run_scenario_step(
             raw_step,
-            scenarios[scenario_id],
+            runtime_scenario,
             manager,
             state,
             evidence,
