@@ -2,11 +2,7 @@ name: OpenAzrael single-writer guard
 
 on:
   push:
-    branches:
-      - 'integration/kg001-candidate3-pppv-v2'
   pull_request:
-    branches:
-      - 'integration/kg001-candidate3-pppv-v2'
 
 permissions:
   contents: read
