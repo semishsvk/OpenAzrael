@@ -5,6 +5,20 @@ const Navigator = preload("res://scripts/validation/pppv_navigator.gd")
 const PlayerDriver = preload("res://scripts/validation/pppv_player_driver.gd")
 const RuntimeGuard = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
+const R7_WELL_TO_EXIT_ROUTE := [
+    Vector3(-21.4, -47.57, 51.4),
+    Vector3(-24.0, -47.57, 78.0),
+    Vector3(-8.0, -41.45, 78.0),
+    Vector3(25.0, -41.45, 70.0),
+    Vector3(45.0, -41.45, 80.0),
+    Vector3(45.0, -41.45, 60.0),
+    Vector3(38.0, -41.45, 30.0),
+    Vector3(30.0, -41.45, 0.0),
+    Vector3(30.0, -41.45, -35.0),
+    Vector3(50.0, -41.56, -55.0),
+    Vector3(65.0, -41.56, -85.0),
+]
+
 const R1_ROUTE := [
     Vector3(-203.801173, -84.921990, 300.265764),
     Vector3(-168.693718, -91.949649, 281.939643),
@@ -28,22 +42,6 @@ const R1_ROUTE := [
     Vector3(449.221720, -93.255052, -498.865461),
     Vector3(476.420000, -85.030000, -514.950000),
     Vector3(529.295811, -84.205500, -513.041569),
-]
-
-# Source-geometry-backed physical route from the well side back toward the
-# R7->R1 transition. Shared with the chained full-demo PPPV context route.
-const R7_WELL_TO_EXIT_ROUTE := [
-    Vector3(-21.4, -47.57, 51.4),
-    Vector3(-24.0, -47.57, 78.0),
-    Vector3(-8.0, -41.45, 78.0),
-    Vector3(25.0, -41.45, 70.0),
-    Vector3(45.0, -41.45, 80.0),
-    Vector3(45.0, -41.45, 60.0),
-    Vector3(38.0, -41.45, 30.0),
-    Vector3(30.0, -41.45, 0.0),
-    Vector3(30.0, -41.45, -35.0),
-    Vector3(50.0, -41.56, -55.0),
-    Vector3(65.0, -41.56, -85.0),
 ]
 
 var failures: Array[String] = []
