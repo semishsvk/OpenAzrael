@@ -96,18 +96,24 @@ class OpenAzraelR8PPPVTests(unittest.TestCase):
         self.assertIn("puzzle.R8LensPlace", paths)
 
     def test_lens_route_uses_source_derived_broken_mirror_ingress(self) -> None:
-        self.assertGreaterEqual(len(R8_LENS_INGRESS_ROUTE), 7)
-        self.assertEqual(R8_LENS_INGRESS_ROUTE[1][0], -208.866992)
-        self.assertAlmostEqual(R8_LENS_INGRESS_ROUTE[2][0], -101.798, places=3)
-        self.assertGreater(R8_LENS_INGRESS_ROUTE[2][2], 149.087)
-        self.assertLess(R8_LENS_INGRESS_ROUTE[3][2], 147.440)
+        self.assertEqual(len(R8_LENS_INGRESS_ROUTE), 11)
+        self.assertEqual(R8_LENS_INGRESS_ROUTE[1][0], -254.067350)\n        self.assertEqual(R8_LENS_INGRESS_ROUTE[4][0], -222.866992)\n        self.assertEqual(R8_LENS_INGRESS_ROUTE[5][0], -208.866992)
+        self.assertAlmostEqual(R8_LENS_INGRESS_ROUTE[6][0], -101.798, places=3)
+        self.assertGreater(R8_LENS_INGRESS_ROUTE[6][2], 149.087)
+        self.assertLess(R8_LENS_INGRESS_ROUTE[7][2], 147.440)
+
+        for routed_scenario in self.scenarios.values():
+            world_points = [
+                row for row in routed_scenario.actions
+                if "goal_world_point" in row.parameters
+            ]
+            self.assertEqual(
+                len(world_points),
+                len(R8_LENS_INGRESS_ROUTE),
+                routed_scenario.scenario_id,
+            )
 
         scenario = self.scenarios["openazrael.r8.take_lens"]
-        world_points = [
-            row for row in scenario.actions
-            if "goal_world_point" in row.parameters
-        ]
-        self.assertEqual(len(world_points), len(R8_LENS_INGRESS_ROUTE))
         self.assertEqual(
             [row.kind.value for row in scenario.actions[-3:]],
             ["move", "look", "interact"],
@@ -123,7 +129,10 @@ class OpenAzraelR8PPPVTests(unittest.TestCase):
             'room_id == "R8" and obj_name in ["mirror01", "broken3"]',
             source,
         )
-        self.assertIn("surrounding", source)
+        self.assertIn("_r8_broken_mirror_wall_collision", source)
+        self.assertIn('obj_name in ["mirrors", "mirrors01"]', source)
+        self.assertIn("_clip_world_polygon_x", source)
+        self.assertIn("source mirror aperture", source)
 
     def test_submerged_lens_negative_cannot_acquire_lens(self) -> None:
         scenario = self.scenarios[

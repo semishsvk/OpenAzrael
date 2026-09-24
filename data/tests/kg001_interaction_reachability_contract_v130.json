@@ -30,7 +30,7 @@
   "requires": [
     "production-faithful load_room_at_portal spawn per room",
     "movement to every listed interaction uses production movement input through PPPVNavigator",
-    "R8 targets first traverse the source-derived seven-waypoint broken-mirror ingress",
+    "R8 targets first traverse the source-derived eleven-waypoint broken-mirror ingress",
     "production InteractionProbe must acquire the exact Area3D target",
     "target Area3D must be active when its object is supposed to be interactable",
     "hidden Shield Area3D must be disabled before DoorR8"
@@ -41,10 +41,10 @@
     "direct interact() calls",
     "direct gameplay flag mutation"
   ],
-  "boundary": "v130 proves route-aware physical approach/raycast reachability for the listed fresh-state interactions. R8 targets use the source-derived broken-mirror ingress before direct target approach; state-gated positive interactions remain covered by chained PPPV/full-demo tests.",
+  "boundary": "v130 proves route-aware physical approach/raycast reachability for the listed fresh-state interactions. R8 targets use the source-derived tread-by-tread broken-mirror ingress before direct target approach; state-gated positive interactions remain covered by chained PPPV/full-demo tests.",
   "r8_route_policy": {
-    "source": "source-derived R8 Object14 -> step011 -> right-hand broken mirror ingress shared with openazrael.r8.take_lens",
-    "waypoint_count": 7,
+    "source": "source-derived R8 Object14 -> step011 tread centers -> right-hand broken mirror ingress shared with openazrael.r8.take_lens",
+    "waypoint_count": 11,
     "collision_semantics": "production CharacterBody3D + room collision + step-up",
     "teleport_forbidden": true,
     "direct_state_mutation_forbidden": true

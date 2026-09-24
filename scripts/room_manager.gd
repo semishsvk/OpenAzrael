@@ -159,11 +159,133 @@ func _transparent_trigger_names(room_id: String) -> Dictionary:
                 out[String(t["name"])] = true
     return out
 
+func _clip_world_polygon_x(
+    polygon: Array[Vector3],
+    boundary_x: float,
+    keep_less_equal: bool
+) -> Array[Vector3]:
+    var out: Array[Vector3] = []
+    if polygon.is_empty():
+        return out
+    for i in range(polygon.size()):
+        var a := polygon[i]
+        var b := polygon[(i + 1) % polygon.size()]
+        var a_inside := a.x <= boundary_x if keep_less_equal else a.x >= boundary_x
+        var b_inside := b.x <= boundary_x if keep_less_equal else b.x >= boundary_x
+        if a_inside:
+            out.append(a)
+        if a_inside != b_inside:
+            var dx := b.x - a.x
+            if absf(dx) > 0.000001:
+                var t := clampf((boundary_x - a.x) / dx, 0.0, 1.0)
+                out.append(a.lerp(b, t))
+    return out
+
+func _append_world_polygon_as_local_faces(
+    polygon: Array[Vector3],
+    world_to_local: Transform3D,
+    faces: PackedVector3Array
+) -> void:
+    if polygon.size() < 3:
+        return
+    var origin := world_to_local * polygon[0]
+    for i in range(1, polygon.size() - 1):
+        faces.append(origin)
+        faces.append(world_to_local * polygon[i])
+        faces.append(world_to_local * polygon[i + 1])
+
+func _r8_broken_mirror_wall_collision(
+    mi: MeshInstance3D,
+    aperture_bounds: AABB
+) -> ConcavePolygonShape3D:
+    # The source mesh has two parallel mirror-wall layers. Above the low sill,
+    # the broken right-hand mirror already forms a genuine opening. The legacy
+    # wall sill is represented only by vertical zero-thickness triangles, so
+    # Godot cannot step onto it. Preserve every authored wall triangle except
+    # the portion of that low sill directly beneath the source mirror aperture.
+    var faces := PackedVector3Array()
+    var world_to_local := mi.global_transform.affine_inverse()
+    var aperture_min_x := aperture_bounds.position.x
+    var aperture_max_x := aperture_bounds.end.x
+    var aperture_bottom_y := aperture_bounds.position.y
+    var sill_y_cutoff := aperture_bottom_y + 0.25
+
+    for surface in range(mi.mesh.get_surface_count()):
+        var arrays := mi.mesh.surface_get_arrays(surface)
+        var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+        var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+        var triangle_count := (
+            int(indices.size() / 3)
+            if not indices.is_empty()
+            else int(vertices.size() / 3)
+        )
+        for triangle in range(triangle_count):
+            var ia := indices[triangle * 3] if not indices.is_empty() else triangle * 3
+            var ib := indices[triangle * 3 + 1] if not indices.is_empty() else triangle * 3 + 1
+            var ic := indices[triangle * 3 + 2] if not indices.is_empty() else triangle * 3 + 2
+            var world_triangle: Array[Vector3] = [
+                mi.global_transform * vertices[ia],
+                mi.global_transform * vertices[ib],
+                mi.global_transform * vertices[ic],
+            ]
+            var max_y := maxf(
+                world_triangle[0].y,
+                maxf(world_triangle[1].y, world_triangle[2].y)
+            )
+            var min_x := minf(
+                world_triangle[0].x,
+                minf(world_triangle[1].x, world_triangle[2].x)
+            )
+            var max_x := maxf(
+                world_triangle[0].x,
+                maxf(world_triangle[1].x, world_triangle[2].x)
+            )
+            var low_sill := max_y <= sill_y_cutoff
+            var overlaps_aperture := (
+                max_x > aperture_min_x and min_x < aperture_max_x
+            )
+            if not low_sill or not overlaps_aperture:
+                _append_world_polygon_as_local_faces(
+                    world_triangle,
+                    world_to_local,
+                    faces
+                )
+                continue
+
+            var left := _clip_world_polygon_x(
+                world_triangle,
+                aperture_min_x,
+                true
+            )
+            var right := _clip_world_polygon_x(
+                world_triangle,
+                aperture_max_x,
+                false
+            )
+            _append_world_polygon_as_local_faces(left, world_to_local, faces)
+            _append_world_polygon_as_local_faces(right, world_to_local, faces)
+
+    var shape := ConcavePolygonShape3D.new()
+    shape.set_faces(faces)
+    shape.backface_collision = true
+    return shape
+
 func _create_world_collision(room_id: String) -> void:
     var hidden := _transparent_trigger_names(room_id)
     var pickup_names: Dictionary = PICKUPS.get(room_id, {})
     var nodes: Array[Node] = []
     _walk(current_room, nodes)
+    var r8_broken_mirror_bounds := AABB()
+    var has_r8_broken_mirror_bounds := false
+    if room_id == "R8":
+        for source_node in nodes:
+            if not (source_node is MeshInstance3D):
+                continue
+            var source_mesh := source_node as MeshInstance3D
+            if _object_name_for_mesh(source_mesh) == "mirror01":
+                r8_broken_mirror_bounds = _node_global_bounds(source_mesh)
+                has_r8_broken_mirror_bounds = true
+                break
     for n in nodes:
         if not (n is MeshInstance3D):
             continue
@@ -209,7 +331,18 @@ func _create_world_collision(room_id: String) -> void:
             continue
         if mi.mesh == null:
             continue
-        var shape := mi.mesh.create_trimesh_shape()
+        var shape: Shape3D = null
+        if (
+            room_id == "R8"
+            and obj_name in ["mirrors", "mirrors01"]
+            and has_r8_broken_mirror_bounds
+        ):
+            shape = _r8_broken_mirror_wall_collision(
+                mi,
+                r8_broken_mirror_bounds
+            )
+        else:
+            shape = mi.mesh.create_trimesh_shape()
         if shape == null:
             continue
         # Legacy XAF/GLB triangle winding is not guaranteed to face the playable

@@ -12,6 +12,10 @@ const TARGETS={
 # movement input and normal collision/step-up semantics.
 const R8_INGRESS_ROUTE=[
     [-278.067350,-87.124025,394.941924],
+    [-254.067350,-79.249800,394.941936],
+    [-243.696350,-74.195030,394.941940],
+    [-233.238082,-69.118450,394.941948],
+    [-222.866992,-64.063640,394.941952],
     [-208.866992,-63.785391,394.941959],
     [-101.798000,-63.785391,160.000000],
     [-101.798000,-63.572091,136.000000],
@@ -37,7 +41,7 @@ func _route_r8_ingress(nav)->bool:
     for i in range(R8_INGRESS_ROUTE.size()):
         var raw:Array=R8_INGRESS_ROUTE[i]
         var point:=Vector3(float(raw[0]),float(raw[1]),float(raw[2]))
-        var reach:=1.0 if i==2 or i==3 else 12.0
+        var reach:=3.0 if i>=1 and i<=4 else (1.0 if i==6 or i==7 else 12.0)
         var result:Dictionary=await nav.approach_world_point(
             "reach_R8_ingress_%02d"%i,
             point,
