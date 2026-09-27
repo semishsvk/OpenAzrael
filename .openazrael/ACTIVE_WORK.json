@@ -3,7 +3,7 @@
   "scope": "global_mutating_work",
   "status": "active",
   "lease_id": "candidate4-finalization-20260924",
-  "owner": "OpenAzrael Candidate 4 finalization thread",
+  "owner": "OpenAzrael Candidate 4 rejection repair thread 01a0e211-6bc3-7462-ae3a-f697836d21d0",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "4fa8a208e55b4a840defe8fc341a4f79a235d470",
   "last_authorized_integration_head": "e9de18a794bba187201c9865dbf897454610857c",
@@ -12,7 +12,7 @@
   "acquired_on": "2026-09-24",
   "expires": null,
   "takeover_policy": "No automatic takeover. A different thread must stop before any write/build/validation and may take over only after explicit user authorization plus repository-state reconciliation.",
-  "note": "Candidate 4 finalization active; committed source is byte-aligned with the runtime-validated v141 R7 route and narrow Godot teardown matcher; Candidate runtime remains fixed at 60 Hz.",
+  "note": "Authorized rejection repair continuation under existing lease. Integration HEAD reconciled at e9de18a794bba187201c9865dbf897454610857c; no local Godot/OpenAzrael validation process or in-progress GitHub workflow found. Candidate 4 remains REJECTED. No candidate promotion before fresh packaged production E2E.",
   "last_verified_transition_gate": "kg001_transition_continuity_v163:PASS",
   "last_verified_transition_directions": [
     "R1->R7",
@@ -22,5 +22,7 @@
   ],
   "last_verified_scanner_gate": "kg001_legacy_scanner_v164:PASS",
   "last_verified_scanner_checks": 18,
-  "last_verified_menu_gate": "kg001_legacy_menu_v145:PASS"
+  "last_verified_menu_gate": "kg001_legacy_menu_v145:PASS",
+  "takeover_authorized_on": "2026-09-27",
+  "takeover_authorization": "User explicitly authorized takeover in this thread: Autorizujem."
 }
