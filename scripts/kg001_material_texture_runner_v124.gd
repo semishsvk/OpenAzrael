@@ -3,6 +3,44 @@ const H = preload("res://scripts/validation/room_fidelity_helpers.gd")
 var failures:Array[String]=[]
 var checks:=0
 var summary:Dictionary={}
+var orientation_sentinels := 0
+const UPRIGHT_SENTINELS := {
+    "R1/doorcor2__1KEYHOLE": "keyhole#.gif",
+    "R8/leftwall__mesh": "bapleft1.gif",
+    "R8/backwall01__mesh": "baprght1.gif",
+    "R8/crack__mesh": "bapback1.gif",
+    "R8/leftwall01__mesh": "bapleft1.gif",
+    "R8/backwall02__mesh": "baprght1.gif",
+    "R8/backwall03__mesh": "bapback1.gif",
+    "R8/mirrors01__mesh": "bapfrnt1.gif",
+    "R8/mirrors__mesh": "bapfrnt1.gif",
+    "R8/exit__mesh": "bapback1.gif",
+    "R8/exit01__mesh": "bapback1.gif",
+}
+
+func _upright_world_uv(mi: MeshInstance3D, material: BaseMaterial3D) -> bool:
+    var arrays := mi.mesh.surface_get_arrays(0)
+    var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+    var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+    if vertices.size() != uv.size() or uv.size() < 3 or material.uv1_triplanar:
+        return false
+    var sy := 0.0
+    var sv := 0.0
+    var syy := 0.0
+    var svv := 0.0
+    var syv := 0.0
+    for i in range(vertices.size()):
+        var y := (mi.global_transform * vertices[i]).y
+        var v := uv[i].y * material.uv1_scale.y + material.uv1_offset.y
+        sy += y
+        sv += v
+        syy += y * y
+        svv += v * v
+        syv += y * v
+    var n := float(vertices.size())
+    var denominator := sqrt(maxf((n * syy - sy * sy) * (n * svv - sv * sv), 0.0))
+    # Source v133 oracle: upward world Y maps toward image top (decreasing V).
+    return denominator > 0.000001 and (n * syv - sy * sv) / denominator < -0.75
 
 func _check(name:String,ok:bool)->void:
     checks+=1
@@ -101,6 +139,10 @@ func _run()->void:
                                     == H.texture_rgba_sha(rbm.albedo_texture)
                                 )
                             _check(room_id+"/"+name+"_non_metallic",is_zero_approx(bm.metallic))
+                            if UPRIGHT_SENTINELS.has(room_id+"/"+name):
+                                orientation_sentinels += 1
+                                _check(room_id+"/"+name+"_source_texture_binding", String(spec.get("texture", "")) == UPRIGHT_SENTINELS[room_id+"/"+name])
+                                _check(room_id+"/"+name+"_source_upright_in_production", _upright_world_uv(mi, bm))
                             if bool(spec.get("legacy_colorkey",false)):
                                 _check(
                                     room_id+"/"+name+"_colorkey_enabled",
@@ -108,6 +150,7 @@ func _run()->void:
                                 )
         direct_root.free()
         summary[room_id]=room_result
+    _check("keyhole_and_all_ten_window_sentinels", orientation_sentinels == 11)
     _finish(scene)
 
 func _finish(scene:Node=null)->void:

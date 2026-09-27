@@ -23,6 +23,9 @@ var capture_notice := ""
 var state_dump_notice := ""
 
 func _ready() -> void:
+    # The source pointer must keep following the mouse while title/service UI
+    # pauses gameplay. Player and room processing remain paused independently.
+    process_mode = Node.PROCESS_MODE_ALWAYS
     var legacy_classic_mode_active := is_instance_valid(legacy_menu)
     if legacy_classic_mode_active and is_instance_valid(label):
         var legacy_overlay := label.get_parent()

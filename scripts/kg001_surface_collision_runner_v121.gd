@@ -40,7 +40,9 @@ const GLOBAL_EXEMPT := {
 }
 const ROOM_EXEMPT := {
     "R7": {"Object02": true},
-    "R8": {"Object02": true},
+    # Source pane/shard overlays have horizontal edges but are not floors.
+    # Production deliberately excludes them to keep the mirror opening usable.
+    "R8": {"Object02": true, "mirror01": true, "broken3": true},
 }
 
 var failures: Array[String] = []

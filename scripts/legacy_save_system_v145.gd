@@ -71,7 +71,12 @@ static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -
     if room_manager == null or player == null or demo_state == null:
         return _reject_load(index, "RUNTIME_CONTEXT_UNAVAILABLE")
 
-    var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+    # Corrupt user saves are an expected rejected input, not an engine error.
+    # JSON.parse_string logs an ERROR before our rejection can handle it.
+    var parser := JSON.new()
+    if parser.parse(FileAccess.get_file_as_string(path)) != OK:
+        return _reject_load(index, "INVALID_JSON_OR_ROOT_TYPE")
+    var parsed = parser.data
     if not parsed is Dictionary:
         return _reject_load(index, "INVALID_JSON_OR_ROOT_TYPE")
     if String(parsed.get("schema", "")) != SCHEMA:

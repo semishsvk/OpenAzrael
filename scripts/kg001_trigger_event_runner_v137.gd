@@ -97,7 +97,9 @@ func _run() -> void:
     var niamh_body = manager.call("_find_node", "nibody")
     _check("R7_niamh_body_exists", niamh_body != null)
     if niamh_body != null:
-        _check("R7_niamh_hidden_before_activation", not niamh_body.visible)
+        # R7_NIAMH_ACTIVATE has no hide/show opcode. The production source
+        # contract preserves the authored visible body before animation.
+        _check("R7_niamh_source_visible_before_activation", niamh_body.visible)
 
     if not ghost.is_empty():
         var mn := _v3(ghost["bounds"][0])

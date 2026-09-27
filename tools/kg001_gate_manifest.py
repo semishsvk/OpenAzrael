@@ -107,6 +107,7 @@ PPPV_EVIDENCE_FILES = {
 PPPV_REQUIRED_EVIDENCE = tuple(PPPV_EVIDENCE_FILES)
 
 CANDIDATE4_SOURCE_VALIDATORS = (
+    "tools/test_rejection_export_v165.py",
     "tools/validate_kg001_trigger_events_v137.py",
     "tools/validate_candidate4_release_contract_v132.py",
     "tools/validate_candidate4_music_route_v133.py",

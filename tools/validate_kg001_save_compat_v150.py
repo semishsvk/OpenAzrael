@@ -15,7 +15,10 @@ checks={
         '"UNSUPPORTED_SAVE_VERSION"','observed_version != VERSION','"migration_available": false'
     )),
     "schema_guard":'"INCOMPATIBLE_SCHEMA"' in save and 'String(parsed.get("schema", "")) != SCHEMA' in save,
-    "json_guard":'"INVALID_JSON_OR_ROOT_TYPE"' in save and "JSON.parse_string" in save,
+    "json_guard": all(token in save for token in (
+        '"INVALID_JSON_OR_ROOT_TYPE"', 'var parser := JSON.new()',
+        'parser.parse(FileAccess.get_file_as_string(path)) != OK', 'var parsed = parser.data'
+    )),
     "state_guard":'"INCOMPATIBLE_STATE_PAYLOAD"' in save and "restore_canonical_state_payload" in save,
     "diagnostic_rejection":'"legacy_menu_load_rejected"' in save and "_reject_load" in save,
     "current_roundtrip":all(token in runner for token in (
