@@ -67,6 +67,7 @@ RUNTIMES = [
     ("v109", "scripts/kg001_headless_runner_v109.gd", "OPENAZRAEL_KG001_V109"),
     ("v110", "scripts/kg001_room_trigger_runner_v110.gd", "OPENAZRAEL_KG001_V110"),
     ("trigger_v137", "scripts/kg001_trigger_event_runner_v137.gd", "OPENAZRAEL_KG001_V137"),
+    ("character_animation_v166", "scripts/kg001_trigger_event_runner_v137.gd", "OPENAZRAEL_KG001_V137"),
     ("localization_v139", "scripts/localization_runtime_runner_v139.gd", "OPENAZRAEL_LOCALIZATION_V139"),
     ("v111", "scripts/kg001_full_demo_runner_v111.gd", "OPENAZRAEL_KG001_V111"),
     ("audio_v116", "scripts/kg001_audio_runtime_runner_v116.gd", "OPENAZRAEL_KG001_AUDIO_V116"),
