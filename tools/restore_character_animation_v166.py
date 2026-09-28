@@ -138,7 +138,7 @@ def main():
     report={"schema":"openazrael.character_animation_restore","version":166,"status":"PASS",
       "source_xaf":"NIAMH.XAF","source_xaf_sha256":hashlib.sha256(xaf.read_bytes()).hexdigest(),
       "source_ani":"NIAMH.ANI","source_ani_sha256":hashlib.sha256(ani.read_bytes()).hexdigest(),
-      "animated_nodes":19,"tracks":57,"keyframes":268,"fps":a.fps,"fps_status":"CALIBRATABLE_FRAME_CLOCK",
+      "animated_nodes":19,"tracks":57,"keyframes":268,"fps":a.fps,"fps_status":"PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN",
       "clips":clips,"model":"assets/characters/Niamh/Niamh.glb",
       "sequence":{"activation":["NOLOOP1","REST"],"conversation":"1A"},
       "note":"Frame ranges and transforms are source-exact; --fps remains an explicit calibration parameter."}
