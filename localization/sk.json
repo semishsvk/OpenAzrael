@@ -1,0 +1,18 @@
+{
+  "schema": "openazrael.localization_pack",
+  "version": 139,
+  "locale": "sk",
+  "source_locale": "en",
+  "generated_from_registry_version": 139,
+  "translation_status": "EXPERIMENTAL",
+  "strings": {
+    "dialog.demo.niamh.0001": "Dobrý Bože. Čo si zač?",
+    "ui.menu.title": "Nastavenia",
+    "ui.menu.language": "Jazyk",
+    "ui.menu.close": "Späť",
+    "ui.hud.demo_complete": "DEMO DOKONČENÉ — štít získaný",
+    "ui.hud.bath_drained": "Baptistérium: nádrž vypustená",
+    "ui.hud.empty": "(prázdne)",
+    "ui.hud.controls": "WASD pohyb | Shift beh | Myš rozhľad | E interakcia | Esc menu | F6 triggery | F7 diagnostika buildu | F8 audio | F9 parita | F10 stav | F11 hlásenie chyby | 1/2/3 debug miestnosť"
+  }
+}

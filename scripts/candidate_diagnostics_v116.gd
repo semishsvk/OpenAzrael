@@ -12,6 +12,9 @@ const BUG_REPORT_SCHEMA := "openazrael.bug_report"
 const BUG_REPORT_SCHEMA_VERSION := 2
 const RUNTIME_BUILD_IDENTITY_PATH := "res://data/runtime_build_identity.json"
 const BUG_REPORT_EVENT_TAIL_LINES := 500
+const BugReportFrameworkContextScript = preload(
+    "res://scripts/validation/bug_report_framework_context.gd"
+)
 
 const REQUIRED_CORE_RESOURCES := [
     "res://assets/rooms/R1.glb",
@@ -532,6 +535,12 @@ func capture_bug_report() -> String:
     var screenshot_ok := not screenshot_bytes.is_empty()
     var system_info := _system_info()
     var state := _state_snapshot(context, last_game_event)
+    var framework_context: Dictionary = BugReportFrameworkContextScript.new().collect()
+    var framework_entries = framework_context.get("entries", [])
+    if not (framework_entries is Array):
+        framework_entries = []
+    var framework_public := framework_context.duplicate(true)
+    framework_public.erase("entries")
     var build_identity: Dictionary = {}
     var identity_value = system_info.get("runtime_build_identity", {})
     if identity_value is Dictionary:
@@ -580,7 +589,8 @@ func capture_bug_report() -> String:
         ["report.txt", _bug_report_text(report)],
         ["state.json", JSON.stringify(state, "  ") + "\n"],
         ["system_info.json", JSON.stringify(system_info, "  ") + "\n"],
-        ["events_tail.jsonl", _event_log_tail()]
+        ["events_tail.jsonl", _event_log_tail()],
+        ["framework_context.json", JSON.stringify(framework_public, "  ") + "\n"]
     ]
     for entry in entries:
         if _zip_add_text(packer, String(entry[0]), String(entry[1])):
@@ -594,6 +604,27 @@ func capture_bug_report() -> String:
         else:
             entry_errors.append("screenshot.png")
 
+    var framework_artifacts: Array[Dictionary] = []
+    for raw_entry in framework_entries:
+        if not (raw_entry is Dictionary):
+            continue
+        var artifact_entry := raw_entry as Dictionary
+        var zip_name := "framework/" + String(artifact_entry.get("zip_name", ""))
+        var artifact_text := String(artifact_entry.get("text", ""))
+        var artifact_sha256 := String(artifact_entry.get("sha256", ""))
+        var artifact_schema := String(artifact_entry.get("schema", ""))
+        if zip_name == "framework/" or artifact_text.is_empty():
+            continue
+        if _zip_add_text(packer, zip_name, artifact_text):
+            included.append(zip_name)
+            framework_artifacts.append({
+                "path": zip_name,
+                "sha256": artifact_sha256,
+                "schema": artifact_schema
+            })
+        else:
+            entry_errors.append(zip_name)
+
     var manifest := {
         "schema": "openazrael.bug_report_manifest",
         "version": 2,
@@ -601,6 +632,8 @@ func capture_bug_report() -> String:
         "checkpoint": BUILD_CHECKPOINT,
         "files": included,
         "entry_errors": entry_errors,
+        "framework_context": framework_public,
+        "framework_artifacts": framework_artifacts,
         "source_safe": true,
         "commercial_assets_included": false
     }

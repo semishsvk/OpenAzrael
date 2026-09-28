@@ -1,0 +1,127 @@
+name: Remaster framework foundation
+
+on:
+  push:
+    branches:
+      - main
+      - integration/kg001-candidate3-pppv-v2
+      - "tooling/**"
+      - "test/**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  registry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate tool registry
+        run: python -m tools.remaster_framework.cli validate
+
+  framework-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install framework test dependencies
+        run: python -m pip install numpy pillow
+      - name: Run framework unit tests
+        run: python -m unittest discover -s tools/remaster_framework/tests -v
+
+  runtime-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Require generic PPPV runtime hooks
+        run: python -m tools.openazrael_adapters.runtime_capabilities . --require-core
+
+  candidate-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate Candidate Diagnostics F11 contract
+        run: python tools/validate_candidate_diagnostics_v116.py
+      - name: Validate v112 candidate runner contract
+        run: python tools/validate_kg001_candidate_v112.py
+      - name: Validate v117 physical traversal source contract
+        run: python tools/validate_kg001_physical_traversal_v117.py
+      - name: Validate v118 Well+Tongs source contract
+        run: python tools/validate_kg001_well_tongs_animation_v118.py
+
+
+  source-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - name: Archive tracked source only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD > candidate4-source-head.txt
+          git ls-files -z | tar --null -T - -czf candidate4-source.tar.gz
+          sha256sum candidate4-source.tar.gz > candidate4-source.tar.gz.sha256
+      - name: Upload Candidate 4 source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate4-source
+          path: |
+            candidate4-source.tar.gz
+            candidate4-source.tar.gz.sha256
+            candidate4-source-head.txt
+          if-no-files-found: error
+          retention-days: 7
+
+
+  godot-linux-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - name: Download official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            -o Godot_v4.7.2-stable_linux.x86_64.zip \
+            https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          sha256sum Godot_v4.7.2-stable_linux.x86_64.zip > Godot_v4.7.2-stable_linux.x86_64.zip.sha256
+          unzip -q Godot_v4.7.2-stable_linux.x86_64.zip
+          chmod +x Godot_v4.7.2-stable_linux.x86_64
+      - name: Run InteractionProbe deterministic overlap regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 45s ./Godot_v4.7.2-stable_linux.x86_64 \
+            --headless --path . --quit-after 300 \
+            --script res://scripts/kg001_interaction_probe_determinism_runner_v148.gd \
+            2>&1 | tee interaction-probe-v148.log
+          grep -F 'OPENAZRAEL_KG001_INTERACTION_PROBE_DETERMINISM_V148' interaction-probe-v148.log
+          grep -F '"status":"PASS"' interaction-probe-v148.log
+      - name: Upload Godot runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-4.7.2-linux-x86_64
+          path: |
+            Godot_v4.7.2-stable_linux.x86_64.zip
+            Godot_v4.7.2-stable_linux.x86_64.zip.sha256
+          if-no-files-found: error
+          retention-days: 90

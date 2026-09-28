@@ -1,0 +1,73 @@
+{
+  "schema": "openazrael.kg001.menu_cursor_context_contract",
+  "version": 146,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "purpose": "Keep the source-derived interaction cursor aligned with the actual mouse target and visibly above the classic menu/HUD while preventing world actions from leaking through modal menu states.",
+  "layering": {
+    "classic_menu_layer": 50,
+    "interaction_cursor_layer": 100,
+    "requirement": "interaction cursor layer must render above classic menu layer"
+  },
+  "context_rules": [
+    "graphical mode: source cursor follows actual viewport mouse position",
+    "headless PPPV: deterministic center-position fallback remains",
+    "title screen open: cursor forced to POINTER",
+    "service menu open: cursor forced to POINTER",
+    "gameplay: cursor id comes from InteractionProbe current target",
+    "menu modal state must never expose TAKE/USE/PULL/ROT/CANT from world geometry behind it"
+  ],
+  "service_action_policy": {
+    "source_asset": "SAVE13.PCX",
+    "region_status": "EVIDENCE_CONSTRAINED_SOURCE_LABEL_REGIONS_NON_OVERLAPPING__HOLD_EXACT_1996_HITBOXES",
+    "actions": {
+      "LOAD": [
+        45,
+        24,
+        60,
+        25
+      ],
+      "MUSIC": [
+        112,
+        35,
+        44,
+        24
+      ],
+      "QUIT": [
+        70,
+        52,
+        38,
+        30
+      ],
+      "SFX": [
+        110,
+        66,
+        38,
+        31
+      ],
+      "SAVE": [
+        48,
+        91,
+        58,
+        26
+      ],
+      "CONFIRM": [
+        22,
+        124,
+        69,
+        22
+      ]
+    },
+    "exact_hitbox_boundary": "Exact original 1996 hitbox extents remain HOLD until executable/runtime capture evidence resolves them."
+  },
+  "pass_requires": [
+    "cursor is drawn in a dedicated CanvasLayer above LegacyMenuV145",
+    "cursor follows get_viewport().get_mouse_position() in graphical visible-mouse mode",
+    "title/service modal menu forces POINTER independent of 3D ray target",
+    "gameplay still uses dynamic v143 context actions from InteractionProbe",
+    "all six service action regions are pairwise non-overlapping",
+    "existing v145 LOAD SAVE MUSIC SFX QUIT CONFIRM sample points remain mapped to the intended action",
+    "existing v143 cursor asset/runtime checks remain valid after layer migration"
+  ],
+  "boundary": "Source validation proves wiring and non-overlap. Asset-backed Godot v146 PASS is required to prove actual scene-tree layering and modal cursor behavior."
+}

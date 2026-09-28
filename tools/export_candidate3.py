@@ -21,6 +21,8 @@ RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/rooms",
     ROOT / "assets/audio",
     ROOT / "assets/textures/classic",
+    ROOT / "assets/ui/mice",
+    ROOT / "assets/ui/legacy_menu",
 )
 
 
@@ -41,6 +43,24 @@ def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
+
+def parse_marker(output: str, marker: str) -> dict:
+    for line in reversed(output.splitlines()):
+        if marker in line:
+            payload = line.split(marker, 1)[1].strip()
+            try:
+                return json.loads(payload)
+            except json.JSONDecodeError:
+                return {"status": "FAIL", "parse_error": payload}
+    return {"status": "FAIL", "error": "result marker missing"}
+
+
+def engine_errors(output: str) -> list[str]:
+    return [
+        line for line in output.splitlines()
+        if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))
+    ]
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -116,6 +136,38 @@ def main() -> int:
         if not p.is_file() or sha256(p) != expected:
             return fail("PREFLIGHT_EVIDENCE_CHANGED", {"evidence": key})
 
+    visual_meta = receipt.get("evidence", {}).get("visual_v126", {})
+    visual_path = ROOT / str(visual_meta.get("path", ""))
+    if (
+        receipt.get("visual_v126") != "PASS"
+        or not visual_path.is_file()
+        or sha256(visual_path) != visual_meta.get("sha256")
+    ):
+        return fail("VISUAL_V126_EVIDENCE_CHANGED_OR_MISSING")
+
+    generated_meta = receipt.get("evidence", {}).get("generated_metadata", {})
+    if not isinstance(generated_meta, dict) or not generated_meta:
+        return fail("GENERATED_FIDELITY_METADATA_MISSING")
+    for key, meta in generated_meta.items():
+        p = ROOT / str(meta.get("path", ""))
+        if not p.is_file() or sha256(p) != meta.get("sha256"):
+            return fail("GENERATED_FIDELITY_METADATA_CHANGED", {"evidence": key})
+
+    pppv_receipt = receipt.get("evidence", {}).get("pppv_v2", {})
+    if not isinstance(pppv_receipt, dict) or not pppv_receipt:
+        return fail("PPPV_PREFLIGHT_EVIDENCE_MISSING")
+    for key, meta in pppv_receipt.items():
+        if not isinstance(meta, dict):
+            return fail("PPPV_PREFLIGHT_EVIDENCE_INVALID", {"evidence": key})
+        rel = meta.get("path")
+        expected = meta.get("sha256")
+        p = ROOT / str(rel)
+        if not p.is_file() or not expected or sha256(p) != expected:
+            return fail(
+                "PPPV_EVIDENCE_CHANGED_SINCE_PREFLIGHT",
+                {"evidence": key, "path": str(rel)},
+            )
+
     receipt_assets = receipt.get("runtime_assets", {})
     current_asset_paths = {
         str(p.relative_to(ROOT)) for p in runtime_asset_files()
@@ -164,6 +216,7 @@ def main() -> int:
         "godot_version": godot_version,
         "preset": args.preset,
         "preflight_receipt_sha256": sha256(RECEIPT),
+        "pppv_v2_evidence": receipt.get("evidence", {}).get("pppv_v2", {}),
     }
     RUNTIME_BUILD_IDENTITY.write_text(
         json.dumps(runtime_identity, indent=2) + "\n",
@@ -208,10 +261,7 @@ def main() -> int:
         "--quit-after",
         "120",
     ])
-    smoke_errors = [
-        line for line in smoke.stdout.splitlines()
-        if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))
-    ]
+    smoke_errors = engine_errors(smoke.stdout)
     if smoke.returncode != 0 or smoke_errors:
         return fail(
             "EXPORTED_STARTUP_SMOKE_FAILED",
@@ -220,6 +270,52 @@ def main() -> int:
                 "engine_errors": smoke_errors,
                 "output_tail": smoke.stdout[-20000:],
             },
+        )
+
+    packaged = run([
+        str(out),
+        "--headless",
+        "--script",
+        "res://scripts/kg001_packaged_parity_runner_v128.gd",
+    ])
+    packaged_errors = engine_errors(packaged.stdout)
+    packaged_result = parse_marker(
+        packaged.stdout,
+        "OPENAZRAEL_KG001_PACKAGED_PARITY_V128",
+    )
+    if (
+        packaged.returncode != 0
+        or packaged_errors
+        or packaged_result.get("status") != "PASS"
+    ):
+        return fail(
+            "PACKAGED_PARITY_V128_FAILED",
+            {
+                "returncode": packaged.returncode,
+                "status": packaged_result.get("status"),
+                "engine_errors": packaged_errors,
+                "output_tail": packaged.stdout[-20000:],
+            },
+        )
+
+    packaged_evidence = TMP / "kg001_packaged_v128_runtime.json"
+    packaged_evidence.write_text(
+        json.dumps(packaged_result, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    forensic_package = TMP / "room_forensic_report_v131_package.json"
+    forensic_run = run([
+        sys.executable,
+        "tools/build_room_forensic_report_v131.py",
+        "--phase",
+        "package",
+        "--out",
+        str(forensic_package),
+    ])
+    if forensic_run.returncode != 0 or not forensic_package.is_file():
+        return fail(
+            "ROOM_FORENSIC_PACKAGE_V131_FAILED",
+            {"output_tail": forensic_run.stdout[-20000:]},
         )
 
     RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)
@@ -254,6 +350,12 @@ def main() -> int:
             "quit_after": 120,
             "returncode": smoke.returncode,
             "engine_errors": smoke_errors,
+        },
+        "packaged_parity_v128": packaged_result,
+        "room_forensic_v131": {
+            "path": str(forensic_package.relative_to(ROOT)),
+            "sha256": sha256(forensic_package),
+            "status": "PASS",
         },
         "manual_gate": "G10_PENDING_USER",
     }

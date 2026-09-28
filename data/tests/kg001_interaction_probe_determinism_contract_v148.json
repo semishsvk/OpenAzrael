@@ -1,0 +1,24 @@
+{
+  "schema": "openazrael.kg001.interaction_probe_determinism_contract",
+  "version": 148,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "target": "scripts/interaction_probe.gd",
+  "raycast_remains_primary": true,
+  "fallback": "camera-origin Area3D overlap only after primary ray miss",
+  "selection_order": [
+    "interaction_priority_desc",
+    "view_angle_asc",
+    "distance_asc",
+    "stable_path_asc"
+  ],
+  "explicit_priority_default": 0,
+  "repeated_runtime_runs": 64,
+  "pass_requires": [
+    "two overlapping interactable Area3D volumes contain the camera",
+    "production current_interactive path chooses the same explicitly preferred target on every repeated run",
+    "reversed overlap input order produces the same target",
+    "equal priority falls through to view angle before distance/path",
+    "existing raycast remains the primary path"
+  ],
+  "evidence_boundary": "This regression proves deterministic fallback selection. It does not change or re-rank a successful primary raycast."
+}

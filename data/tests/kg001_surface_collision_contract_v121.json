@@ -1,0 +1,56 @@
+{
+  "schema": "openazrael.kg001.surface_collision_coverage_contract",
+  "version": 121,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "scope": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "purpose": "detect collision holes inside otherwise valid floor-like meshes by physics-sampling the actual runtime collision surface",
+  "geometry_policy": {
+    "walkable_normal_abs_y_min": 0.65,
+    "minimum_projected_triangle_area": 1,
+    "samples_per_triangle": 4,
+    "support_tolerance_y": 1,
+    "ray_half_height": 3,
+    "legacy_winding_policy": "absolute normal Y; runtime ray uses hit_back_faces=true",
+    "support_semantics": "nearest runtime collision may be at or above the visual surface; only support more than 1.0 Y unit below the visual triangle is a fall-through-class failure"
+  },
+  "runtime_policy": {
+    "actual_room_manager_collision": true,
+    "synthetic_collision_forbidden": true,
+    "player_recovery_teleport_forbidden": true,
+    "hidden_r8_object01_support_included": true,
+    "explicit_non_solid_exemptions": true,
+    "above_surface_collision_is_obstruction_not_hole": true,
+    "explicit_non_walkable_semantic_exemptions": [
+      "save",
+      "nibody",
+      "well_pzpi1",
+      "well_pzpi2",
+      "r8s1",
+      "door",
+      "door01",
+      "bible",
+      "fontbot02"
+    ]
+  },
+  "pass_requires": [
+    "R1/R7/R8 load with restored assets",
+    "every non-exempt floor-like triangle produces four interior support samples",
+    "zero missing support samples",
+    "no nearest runtime support lies more than 1.0 Y unit below the visual triangle",
+    "collision above a visual triangle is classified as occupied/obstructed player space rather than a floor hole",
+    "known interactable/decorative horizontal faces are explicitly non-walkable semantics, not silently ignored by area/normal thresholds",
+    "no engine/script errors"
+  ],
+  "complements": [
+    "v117 physical CharacterBody3D floor/stair traversal",
+    "v119 R1/Object02 exact bug-route regression",
+    "v120 generic floor-like mesh/collision-body parity",
+    "PPPV v2 input-driven room transition scenarios"
+  ],
+  "evidence_boundary": "Source contract does not prove runtime collision coverage. Candidate 4 preflight requires asset-backed Godot v121 PASS at the exact build SHA."
+}

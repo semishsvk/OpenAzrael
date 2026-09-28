@@ -1,0 +1,28 @@
+{
+  "schema": "openazrael.kg001.material_texture_parity_contract",
+  "version": 124,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "scope": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "canonical_manifest": "data/runtime_generated/demo_room_fidelity_v124.json",
+  "requires": [
+    "exact mesh-name set and triangle counts match the pinned source-derived manifest",
+    "source XAF -> canonical GLB material/texture/UV identity is independently enforced by v133",
+    "production RoomManager loading matches direct Godot import of the same pinned GLB for UV layout, material representation and texture pixels",
+    "textured surfaces keep an albedo texture",
+    "legacy # textures retain cutout transparency",
+    "production materials remain non-metallic"
+  ],
+  "forbids": [
+    "missing texture fallback",
+    "silent UV replacement",
+    "global UV correction",
+    "invented material substitution",
+    "treating Godot importer-internal vertex ordering or generated material names as source-format identity"
+  ],
+  "evidence_boundary": "Candidate 4 requires both source-exact v133 PASS and asset-backed Godot v124 PASS; v124 verifies runtime import parity without confusing Godot importer representation with raw GLB/XAF identity."
+}

@@ -5,12 +5,22 @@ var state_flag := ""
 var piece_visual: Node3D
 var frame_visual: Node3D
 
-const TAP_SOUND = preload("res://assets/audio/797TAP.WAV")
+const TAP_SOUND_PATH := "res://assets/audio/797TAP.WAV"
 
-func _play_one_shot(stream: AudioStream) -> void:
+func _play_one_shot_path(path: String) -> void:
+    # State-only synthetic runners set LegacyEvents.capture_only. Defer loading
+    # the source WAV until physical playback is actually required.
+    if LegacyEvents != null and bool(LegacyEvents.get("capture_only")):
+        return
+    if not ResourceLoader.exists(path):
+        push_warning("OpenAzrael: missing tapestry sound " + path)
+        return
     var p := AudioStreamPlayer.new()
-    p.stream = stream
-    get_tree().current_scene.add_child(p)
+    p.stream = load(path)
+    var host: Node = get_tree().current_scene
+    if host == null:
+        host = get_tree().root
+    host.add_child(p)
     p.finished.connect(p.queue_free)
     p.play()
 
@@ -62,9 +72,14 @@ func interact() -> void:
     _align_piece_to_frame()
     if is_instance_valid(piece_visual):
         piece_visual.visible = true
-    _play_one_shot(TAP_SOUND)
+    _play_one_shot_path(TAP_SOUND_PATH)
     if DemoState.flag("R8Tap1") and DemoState.flag("R8Tap3") and DemoState.flag("R8Tap4"):
         DemoState.set_flag("R8TapestryComplete")
         print("All three loose tapestry pieces are back in their frames.")
     else:
         print("Placed tapestry piece in its frame.")
+
+func interaction_cursor_id() -> String:
+    if DemoState.flag(state_flag):
+        return "CANT"
+    return "USE" if DemoState.has(required_item) else "CANT"

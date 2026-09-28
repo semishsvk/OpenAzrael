@@ -1,0 +1,32 @@
+{
+  "schema": "openazrael.localization_manifest",
+  "version": 139,
+  "fallback_locale": "en",
+  "default_locale": "en",
+  "locales": [
+    {
+      "code": "en",
+      "native_name": "English",
+      "english_name": "English",
+      "file": "localization/en.json",
+      "direction": "ltr"
+    },
+    {
+      "code": "sk",
+      "native_name": "Slovenčina",
+      "english_name": "Slovak",
+      "file": "localization/sk.json",
+      "direction": "ltr"
+    }
+  ],
+  "policy": {
+    "add_language_without_code_change": true,
+    "fallback_for_missing_strings": true,
+    "runtime_switching": true,
+    "persist_user_selection": true,
+    "external_user_manifest": "user://localization/languages.json",
+    "external_languages_may_extend_but_not_override_builtin": true,
+    "bcp47_locale_codes": true,
+    "rtl_layout_direction": true
+  }
+}

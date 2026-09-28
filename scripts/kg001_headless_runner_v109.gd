@@ -29,7 +29,9 @@ func _run() -> void:
 
     state.acquire("rusty_tongs")
     state.set_flag("R1Door1Open")
-    events.run("R7_WELL_TONGS_USE")\n    _check("retrieve_well_key", state.retrieve_well_key())\n    _check("tongs_consumed", not state.has("rusty_tongs"))
+    events.run("R7_WELL_TONGS_USE")
+    _check("retrieve_well_key", state.retrieve_well_key())
+    _check("tongs_consumed", not state.has("rusty_tongs"))
     _check("switch_1", state.switchboard_step("well_lev02") == "correct")
     _check("switch_2", state.switchboard_step("well_weel3") == "correct")
     _check("switch_3", state.switchboard_step("well_lev02") == "solved")

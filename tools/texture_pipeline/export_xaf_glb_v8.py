@@ -1,5 +1,5 @@
 from pathlib import Path
-import re, sys, json
+import re, sys, json, hashlib
 from collections import defaultdict
 import numpy as np
 import trimesh
@@ -90,21 +90,25 @@ def resolve_texture(tex_name,idx):
     return idx.get(Path(tex_name).stem.upper()) if tex_name else None
 
 
-def corrected_uvs(tex_name, uvs):
-    """Apply narrowly-scoped legacy presentation corrections.
+UV_EXPORT_CORRECTION = "TRIMESH_PRE_FLIP_V_PRESERVE_XAF_GLTF"
 
-    Candidate 3 manual evidence showed KEYHOLE# vertically inverted while the
-    rest of the audited cutout corpus retained the expected orientation. Keep
-    the correction texture-specific rather than changing the global XAF UV
-    convention and record it in the export manifest for regression auditing.
+def corrected_uvs(tex_name, uvs):
+    """Preserve the original XAF UVs in the exported raw glTF/GLB.
+
+    The recovered XAF corpus already uses the same semantic V direction as
+    glTF: V=0 is the top of an image.  Trimesh's TextureVisuals uses the
+    opposite internal image convention and flips V again while writing glTF.
+    Therefore we pre-flip V once *for the exporter adapter only*.  The raw GLB
+    TEXCOORD_0 values then match the original XAF authored UVs exactly.
+
+    This is deliberately global and content-neutral.  Do not add per-texture
+    orientation hacks here; source-authored back-face/state geometry is handled
+    by the object transform/state logic, not by changing its UV data.
     """
     corrected=np.array(uvs,float,copy=True)
-    correction='NONE'
-    if tex_name and Path(tex_name).stem.upper()=='KEYHOLE#' and len(corrected):
+    if len(corrected):
         corrected[:,1]=1.0-corrected[:,1]
-        correction='FLIP_V_CANDIDATE3_KEYHOLE'
-    return corrected,correction
-
+    return corrected,UV_EXPORT_CORRECTION
 
 def face_records(fs):
     out=[]
@@ -218,8 +222,15 @@ def parse(src,texture_dir):
             if not of: continue
             tex=mats.get(mn,{}).get('texture')
             material=get_material(mn)
-            corrected_uv,uv_correction=corrected_uvs(tex,ouv)
-            visual=trimesh.visual.TextureVisuals(uv=corrected_uv,material=material)
+            source_uv=np.asarray(ouv,dtype="<f4")
+            corrected_uv,uv_correction=corrected_uvs(tex,source_uv)
+            # Preserve adapter precision until trimesh applies its matching V flip
+            # and performs the final float32 glTF cast. Quantizing the pre-flipped
+            # values here makes the round-trip non-bit-exact for authored XAF UVs.
+            export_uv=np.asarray(corrected_uv,dtype="<f8")
+            source_uv_sha256=hashlib.sha256(source_uv.tobytes()).hexdigest()
+            export_input_uv_sha256=hashlib.sha256(export_uv.tobytes()).hexdigest()
+            visual=trimesh.visual.TextureVisuals(uv=export_uv,material=material)
             mesh=trimesh.Trimesh(vertices=np.array(ov),faces=np.array(of),vertex_normals=np.array(on),visual=visual,process=False)
             mesh.metadata.update({'xaf_object':nod['name'],'xaf_material':mn,'xaf_texture':tex})
             # Object transform lives on parent object node; geometry is identity child.
@@ -230,6 +241,9 @@ def parse(src,texture_dir):
                                     'material':mn,'texture':tex,'resolved_png':resolve_texture(tex,tex_idx).name if resolve_texture(tex,tex_idx) else None,
                                     'legacy_colorkey':material_alpha.get(mn)=='MASK','alpha_mode':material_alpha.get(mn,'OPAQUE'),
                                     'uv_correction':uv_correction,
+                                    'source_uv_count':len(source_uv),
+                                    'source_uv_sha256':source_uv_sha256,
+                                    'export_input_uv_sha256':export_input_uv_sha256,
                                     'corner_vertices':len(ov),'triangles':len(of),'bad_uv_corners':bad_uv,'bad_normal_corners':bad_normal})
             objrec['primitive_count']+=1; objrec['corner_vertices']+=len(ov); objrec['triangles']+=len(of)
             objrec['bad_uv_corners']+=bad_uv; objrec['bad_normal_corners']+=bad_normal

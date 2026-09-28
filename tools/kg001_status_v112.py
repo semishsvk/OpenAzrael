@@ -28,6 +28,12 @@ physical=load_optional(ROOT/"data/tests/kg001_physical_traversal_runtime_v117.js
 well_tongs=load_optional(ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json")
 r1_route=load_optional(ROOT/"data/tests/kg001_r1_route_runtime_v119.json")
 collision=load_optional(ROOT/"data/tests/kg001_collision_parity_runtime_v120.json")
+surface=load_optional(ROOT/"data/tests/kg001_surface_collision_runtime_v121.json")
+pppv_suite=load_optional(ROOT/"data/tests/kg001_pppv_scenario_suite.json")
+pppv_suite_integrity=load_optional(ROOT/"data/tests/pppv_scenario_suite_integrity.json")
+pppv_playthrough=load_optional(ROOT/"data/tests/kg001_pppv_playthrough_evaluation.json")
+pppv_determinism=load_optional(ROOT/"data/tests/kg001_pppv_determinism.json")
+pppv_determinism_integrity=load_optional(ROOT/"data/tests/pppv_determinism_integrity.json")
 fresh=load_optional(ROOT/"data/tests/kg001_fresh_checkout.json")
 manual=load_optional(ROOT/"data/tests/kg001_manual_sanity.json")
 
@@ -53,6 +59,12 @@ physical_pass=is_current_pass(physical)
 well_tongs_pass=is_current_pass(well_tongs)
 r1_route_pass=is_current_pass(r1_route)
 collision_pass=is_current_pass(collision)
+surface_pass=is_current_pass(surface)
+pppv_suite_pass=is_current_pass(pppv_suite)
+pppv_suite_integrity_pass=is_current_pass(pppv_suite_integrity)
+pppv_playthrough_pass=is_current_pass(pppv_playthrough)
+pppv_determinism_pass=is_current_pass(pppv_determinism)
+pppv_determinism_integrity_pass=is_current_pass(pppv_determinism_integrity)
 fresh_pass=is_current_pass(fresh)
 manual_pass=is_current_pass(manual)
 
@@ -61,12 +73,12 @@ gates={
  "G01":{"name":"data_validation","status":"PASS" if source_pass else "PENDING_RECORDED_SOURCE_VALIDATION"},
  "G02":{"name":"unit_gameplay_logic","status":"PASS" if source_pass and v109_pass else "RUNTIME_PENDING"},
  "G03":{"name":"puzzle_state_space","status":"PASS" if source_pass and v108.get("status")=="PASS" else "PENDING"},
- "G04":{"name":"room_transition_and_physical_traversal","status":"PASS" if v110_pass and physical_pass and r1_route_pass and collision_pass else "RUNTIME_PENDING"},
- "G05":{"name":"trigger_semantics_and_well_tongs_animation","status":"PASS" if v110_pass and well_tongs_pass else "RUNTIME_PENDING"},
+ "G04":{"name":"room_transition_and_physical_traversal","status":"PASS" if v110_pass and physical_pass and r1_route_pass and collision_pass and surface_pass and pppv_suite_pass and pppv_suite_integrity_pass else "RUNTIME_PENDING"},
+ "G05":{"name":"trigger_semantics_and_well_tongs_animation","status":"PASS" if v110_pass and well_tongs_pass and pppv_suite_pass and pppv_suite_integrity_pass else "RUNTIME_PENDING"},
  "G06":{"name":"audio_event_stream","status":"PASS" if v109_pass and v111_pass and audio_pass else "RUNTIME_PENDING"},
  "G07":{"name":"save_load_state_hash","status":"PASS" if v109_pass else "RUNTIME_PENDING"},
- "G08":{"name":"synthetic_full_demo_playthrough","status":"PASS" if v111_pass else "RUNTIME_PENDING"},
- "G09":{"name":"fresh_checkout_build","status":"PASS" if fresh_pass else "PENDING"},
+ "G08":{"name":"synthetic_full_demo_playthrough","status":"PASS" if v111_pass and pppv_playthrough_pass and pppv_determinism_pass and pppv_determinism_integrity_pass else "RUNTIME_PENDING"},
+ "G09":{"name":"fresh_checkout_build","status":"PASS" if fresh_pass and pppv_suite_integrity_pass and pppv_determinism_pass and pppv_determinism_integrity_pass else "PENDING"},
  "G10":{"name":"manual_sanity","status":"PASS" if manual_pass else "PENDING_MANUAL_USER"}
 }
 release_blockers=sorted([
@@ -77,7 +89,7 @@ defect_clear=not release_blockers
 all_gates_pass=all(x["status"]=="PASS" for x in gates.values())
 all_pass=all_gates_pass and defect_clear
 failed=[]
-for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("audio_v116",audio),("physical_v117",physical),("well_tongs_v118",well_tongs),("r1_route_v119",r1_route),("collision_v120",collision),("fresh",fresh),("manual",manual)):
+for gid,obj in (("source",source),("v109",r109),("v110",r110),("v111",r111),("audio_v116",audio),("physical_v117",physical),("well_tongs_v118",well_tongs),("r1_route_v119",r1_route),("collision_v120",collision),("surface_v121",surface),("pppv_suite",pppv_suite),("pppv_suite_integrity",pppv_suite_integrity),("pppv_playthrough",pppv_playthrough),("pppv_determinism",pppv_determinism),("pppv_determinism_integrity",pppv_determinism_integrity),("fresh",fresh),("manual",manual)):
     if (
         isinstance(obj,dict)
         and obj.get("status")=="FAIL"
@@ -94,7 +106,7 @@ out={
  "current_commit":HEAD,
  "known_release_blockers":release_blockers,
  "gates":gates,
- "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS and no recorded KG-001 release blocker remains."
+ "release_boundary":"demo-known-good-001 is allowed only when every G00-G10 gate is literal PASS for current HEAD; G04 requires v117/v119/v120/v121 plus PPPV v2 suite integrity; G05 requires PPPV v2 suite integrity, G08 requires repeated guarded PPPV determinism/integrity, G09 requires both PPPV integrity oracles, and no recorded KG-001 release blocker remains."
 }
 print(json.dumps(out,indent=2))
 sys.exit(1 if failed else 0)

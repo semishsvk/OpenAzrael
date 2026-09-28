@@ -1,0 +1,9 @@
+{
+  "schema":"openazrael.kg001.portal_geometry_closure_contract",
+  "version":129,
+  "status":"SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target":"KG-001 Candidate 4",
+  "scope":["R1->R7","R7->R1","R1->R8","R8->R1"],
+  "requires":["exact four-edge transition topology","source trigger and destination portal-view records exist","R1 physical doors are adjacent to their transition triggers","production destination spawn settles on authored collision support","spawn does not fall below authored support"],
+  "boundary":"This geometry closure supplements, and does not replace, PPPV input-driven transition traversal."
+}

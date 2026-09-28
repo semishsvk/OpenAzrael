@@ -29,7 +29,8 @@
     "git_baseline": "docs/GIT_BASELINE.md",
     "gameplay_event_graph": "GAMEPLAY_EVENT_GRAPH_V87.md",
     "localization_architecture": "docs/LOCALIZATION_ARCHITECTURE.md",
-    "bug_reporting": "docs/BUG_REPORTING.md"
+    "bug_reporting": "docs/BUG_REPORTING.md",
+    "source_corpus_bootstrap": "docs/SOURCE_CORPUS_BOOTSTRAP.md"
   },
   "current_forensics": {
     "world_runtime_loader": "VERIFIED",
@@ -473,5 +474,24 @@
     ],
     "runtime_asset_path_set_binding": true,
     "exported_startup_smoke_required": true
+  },
+  "source_corpora": {
+    "contract": "data/source_corpora_contract_v1.json",
+    "bootstrap": "tools/bootstrap_openazrael_sources.py",
+    "registry_module": "tools/remaster_framework/source_registry.py",
+    "demo": {
+      "corpus_id": "openazrael_demo_atdemo_v1",
+      "canonical_archive_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+      "canonical_archive_bytes": 5243364,
+      "persistence": "PRIVATE_LOCAL_REGISTRY_OPTIONAL_MIRROR",
+      "preflight_auto_resolve": true
+    },
+    "retail": {
+      "corpus_id": "openazrael_retail_v1",
+      "persistence": "PRIVATE_FULL_SHA256_INVENTORY_PIN",
+      "canonicalization": "FIRST_VERIFIED_LOCAL_REGISTRATION",
+      "status": "READY_FOR_REGISTRATION"
+    },
+    "policy": "NO_DISK_REDISCOVERY_IN_BUILD_TOOLS__RESOLVE_REGISTRY_OR_REQUIRE_EXPLICIT_PATH"
   }
 }

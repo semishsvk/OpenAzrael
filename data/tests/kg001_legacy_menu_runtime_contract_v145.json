@@ -1,0 +1,154 @@
+{
+  "schema": "openazrael.kg001.legacy_menu_runtime_contract",
+  "version": 145,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "logical_size": [
+    640,
+    480
+  ],
+  "title": {
+    "asset": "TITLE.PCX",
+    "source_size": [
+      631,
+      474
+    ],
+    "reconstructed_center_origin": [
+      4,
+      3
+    ],
+    "dismiss_input": "COMPATIBILITY_LEFT_CLICK_OR_ENTER_PENDING_EXACT_CAPTURE"
+  },
+  "hud": {
+    "asset": "HUD3.PCX",
+    "source_size": [
+      640,
+      480
+    ],
+    "buttons": [
+      {
+        "id": "SCAN",
+        "asset_on": "NBUT0ON.PCX",
+        "asset_off": "NBUT0OFF.PCX",
+        "rect": [
+          235,
+          343,
+          83,
+          36
+        ],
+        "evidence": "pixel-exact ON sprite occurrence in HUD3 + README top-left scan role"
+      },
+      {
+        "id": "MAP",
+        "asset_on": "NBUT1ON.PCX",
+        "asset_off": "NBUT1OFF.PCX",
+        "rect": [
+          213,
+          381,
+          77,
+          42
+        ],
+        "evidence": "pixel-exact ON sprite occurrence in HUD3 + README button-below scan map role"
+      },
+      {
+        "id": "SERVICE",
+        "asset_on": "NBUT2ON.PCX",
+        "asset_off": "NBUT2OFF.PCX",
+        "rect": [
+          363,
+          386,
+          90,
+          43
+        ],
+        "evidence": "pixel-exact ON sprite occurrence in HUD3 + README right-hand load/save/volume role"
+      }
+    ]
+  },
+  "service_menu": {
+    "asset": "SAVE13.PCX",
+    "source_size": [
+      206,
+      170
+    ],
+    "reconstructed_origin": [
+      235,
+      260
+    ],
+    "origin_status": "EVIDENCE_CONSTRAINED_HOLD_EXACT_CAPTURE",
+    "actions": {
+      "LOAD": [
+        45,
+        24,
+        60,
+        25
+      ],
+      "MUSIC": [
+        112,
+        35,
+        44,
+        24
+      ],
+      "QUIT": [
+        70,
+        52,
+        38,
+        30
+      ],
+      "SFX": [
+        110,
+        66,
+        38,
+        31
+      ],
+      "SAVE": [
+        48,
+        91,
+        58,
+        26
+      ],
+      "CONFIRM": [
+        22,
+        124,
+        69,
+        22
+      ]
+    },
+    "save_slots": [
+      "FILE ALPHA",
+      "FILE BETA",
+      "FILE GAMMA",
+      "FILE DELTA",
+      "FILE EPSILON"
+    ],
+    "save_filename_pattern": "SAVE%d.dat",
+    "confirm_required": [
+      "LOAD",
+      "SAVE",
+      "QUIT"
+    ],
+    "action_region_status": "EVIDENCE_CONSTRAINED_SOURCE_LABEL_REGIONS_NON_OVERLAPPING__HOLD_EXACT_1996_HITBOXES"
+  },
+  "context_actions": {
+    "SCAN": "use current mouse-ray interactive target; otherwise source generic surface-scan status",
+    "MAP": "toggle source map-mode state/indicator; reconstructed map geometry remains HOLD",
+    "LOAD": "select one of five source-named slots then CONFIRM",
+    "SAVE": "select one of five source-named slots then CONFIRM",
+    "MUSIC": "select Music bus volume control",
+    "SFX": "select SFX/Master effects volume control",
+    "QUIT": "set pending quit then CONFIRM"
+  },
+  "pass_requires": [
+    "HUD button rectangles are bound to pixel-exact source sprite locations",
+    "SCAN MAP SERVICE button roles match README evidence",
+    "service actions are clickable only inside their source-label regions",
+    "LOAD SAVE QUIT require CONFIRM",
+    "exactly five source-named slots FILE ALPHA through FILE EPSILON are available",
+    "save files use source-compatible SAVE%d.dat names under user://",
+    "save payload preserves DemoState room player position yaw and pitch",
+    "load restores state before room construction then restores player pose",
+    "M toggles map mode",
+    "graphical mouse interaction uses mouse ray while headless PPPV keeps center ray",
+    "original 1996 PCX-derived PNG art is required; no AI/generated menu artwork",
+    "unknown exact service-panel origin title-dismiss gesture and original font glyph map remain explicitly HOLD"
+  ],
+  "boundary": "v145 provides a functional source-constrained classic menu/HUD. Pixel-perfect service-panel origin, exact title-dismiss gesture, map renderer and original font glyph map still require original runtime capture/executable evidence."
+}

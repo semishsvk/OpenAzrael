@@ -18,6 +18,14 @@ const GLOBAL_EXEMPT := {
     "tapestry1": true,
     "tapestry3": true,
     "tapestry4": true,
+    # Pickups/interactables are intentionally Area3D-driven and are not
+    # structural world-floor collision, even when their authored triangles
+    # happen to be near-horizontal.
+    "TONG6": true,
+    "r1p1": true,
+    "r3t1": true,
+    "r8t3": true,
+    "r8t4": true,
 }
 const ROOM_EXEMPT := {
     "R7": {"Object02": true},
@@ -102,9 +110,27 @@ func _walkable_projected_area(mi: MeshInstance3D) -> Dictionary:
         "max_projected_triangle_area": max_triangle,
     }
 
-func _collision_child(mi: MeshInstance3D, object_name: String) -> StaticBody3D:
-    var candidate := mi.get_node_or_null("Collision_" + object_name)
-    return candidate as StaticBody3D if candidate is StaticBody3D else null
+func _find_named(node: Node, wanted: String) -> Node:
+    if String(node.name) == wanted:
+        return node
+    for child in node.get_children():
+        var found := _find_named(child, wanted)
+        if found != null:
+            return found
+    return null
+
+func _collision_body(mi: MeshInstance3D, object_name: String) -> StaticBody3D:
+    # Simple legacy objects own Collision_<object> directly. Multipart objects
+    # (for example stairs/STAIR2 or dorwall06/1FLOOR*) share one collision body
+    # named after the parent legacy object and attached under one child mesh.
+    var exact := mi.get_node_or_null("Collision_" + object_name)
+    if exact is StaticBody3D:
+        return exact as StaticBody3D
+    var parent := mi.get_parent()
+    if parent == null:
+        return null
+    var grouped := _find_named(parent, "Collision_" + String(parent.name))
+    return grouped as StaticBody3D if grouped is StaticBody3D else null
 
 func _collision_shape(body: StaticBody3D) -> CollisionShape3D:
     if body == null:
@@ -142,7 +168,7 @@ func _audit_room(manager, room_id: String) -> void:
 
         candidate_count += 1
         var exempt := _is_explicit_exempt(room_id, object_name)
-        var body := _collision_child(mi, object_name)
+        var body := _collision_body(mi, object_name)
         var cs := _collision_shape(body)
         var shape = cs.shape if cs != null else null
         var reasons: Array[String] = []
@@ -203,7 +229,7 @@ func _finish(scene: Node = null) -> void:
         if not (row is Dictionary):
             continue
         var reasons_value = row.get("fail_reasons", [])
-        var row_failed := (
+        var row_failed: bool = (
             reasons_value is Array and not reasons_value.is_empty()
         )
         if not bool(row.get("explicit_exempt", false)) and row_failed:

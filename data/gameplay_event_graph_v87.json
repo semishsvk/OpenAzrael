@@ -156,11 +156,59 @@
         "0x09 remove inventory TONG6 / section0 1265"
       ],
       "note": "Dispatcher executes the five action records in one pending-group pass; no transform/rotation animation opcode occurs in this recovered event."
+    },
+    "R7_NIAMH_ACTIVATE": {
+      "source": [
+        "R7.XAF: zxactghost / nibody",
+        "ROOMS.DAT: standalone R7NiamhAZ identifier",
+        "PUZZLES.DAT: Niamh/Conv action family at 0x24E,0x3CA,0x488,0x546,0x604,0x6C2",
+        "CHARACTE.DAT -> Niamh -> NIAMH.DAT"
+      ],
+      "actions": [
+        {
+          "op": "set_flag",
+          "key": "R7NiamhActivated",
+          "value": true,
+          "confidence": "RECONSTRUCTED",
+          "note": "OpenAzrael persistence latch for the source-backed one-shot activation; not claimed as an original flag name."
+        },
+        {
+          "op": "set_puzzle_node",
+          "key": "R7NiamhAZ",
+          "value": true,
+          "confidence": "MEDIUM-HIGH",
+          "note": "Original room identifier is verified; runtime-state role reconstructed."
+        },
+        {
+          "op": "request_character_animation",
+          "character": "Niamh",
+          "family": "Conv",
+          "target_object": "nibody",
+          "source_required": true,
+          "confidence": "HIGH",
+          "note": "Niamh/Conv action family is source-backed. Exact original character-ANI keyframes/timing remain HOLD; no fallback animation is permitted."
+        },
+        {
+          "op": "request_conversation",
+          "character": "Niamh",
+          "family": "Conv",
+          "source_required": true,
+          "confidence": "HIGH",
+          "note": "NIAMH.DAT character/conversation data is verified. Exact trigger-associated spoken line remains HOLD until source-bound."
+        }
+      ],
+      "acceptance": {
+        "trigger": "R7/zxactghost",
+        "one_shot_flag": "R7NiamhActivated",
+        "no_invented_animation_fallback": true,
+        "animation_runtime_requires_source_clip": true
+      }
     }
   },
   "hold": [
     "Exact R8RaiseTimer duration remains HOLD; current animation uses S121.WAV duration proxy.",
     "DoorR8 +90 degree animation is geometry-supported but original runtime angle/timing remain HOLD.",
-    "Opcode 0x0e R8Counter semantics remain UNKNOWN."
+    "Opcode 0x0e R8Counter semantics remain UNKNOWN.",
+    "Niamh/Conv trigger binding is source-backed, but exact original character-ANI keyframes/timing and exact trigger-associated spoken line remain HOLD until recovered."
   ]
 }

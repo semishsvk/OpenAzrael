@@ -1,0 +1,200 @@
+{
+  "schema": "openazrael.kg001.candidate4_release_contract",
+  "version": 132,
+  "status": "ACCEPTED_TARGET",
+  "candidate": "KG-001 Candidate 4",
+  "purpose": "First fully playable end-to-end demo release candidate.",
+  "release_policy": {
+    "zero_known_critical_bugs": true,
+    "zero_reproducible_softlocks": true,
+    "zero_failed_required_gates": true,
+    "exact_head_evidence_binding": true,
+    "fresh_checkout_required": true,
+    "asset_backed_runtime_required": true,
+    "manual_end_to_end_required": true,
+    "export_fail_closed": true
+  },
+  "geometry": {
+    "rooms": [
+      "R1",
+      "R7",
+      "R8"
+    ],
+    "source_counts": {
+      "R1": {
+        "primitives": 69,
+        "triangles": 593,
+        "textured_primitives": 62
+      },
+      "R7": {
+        "primitives": 48,
+        "triangles": 689,
+        "textured_primitives": 40
+      },
+      "R8": {
+        "primitives": 87,
+        "triangles": 1050,
+        "textured_primitives": 74
+      }
+    },
+    "required_runtime_layers": [
+      "geometry_v122",
+      "visibility_v123",
+      "material_v124",
+      "transform_v125",
+      "visual_v126",
+      "reachable_visibility_v127",
+      "portal_v129",
+      "interaction_v130",
+      "room_forensic_v131"
+    ],
+    "visible_authored_object_omission_allowed": false,
+    "walkable_surface_without_collision_allowed": false,
+    "required_room_transition_failure_is_critical": true
+  },
+  "audio": {
+    "canonical_wav_count": 30,
+    "canonical_xmi_count": 24,
+    "wav_name_and_source_sha_required": true,
+    "runtime_asset_set_bound_to_restore_receipt": true,
+    "ambient_and_triggered_audio_runtime_tests_required": true,
+    "manual_audibility_required": true,
+    "music_policy": "REQUIRE_RUNTIME_OR_PROVEN_NOT_USED_ON_ACCEPTED_DEMO_ROUTE",
+    "music_route_evidence": "data/audio/candidate4_music_route_evidence.json",
+    "music_reproducibility": {
+      "renderer_identity_required": true,
+      "fluidsynth_version_required": true,
+      "native_library_sha256": "RECORD_WHEN_STABLE_RESOLVED_FILE_IS_AVAILABLE",
+      "libsndfile_version_required": true,
+      "event_schedule_sha256_required": true,
+      "pcm_f32le_sha256_required": true,
+      "ogg_output_sha256_required": true,
+      "cross_platform_pcm_bit_identity_guaranteed": false,
+      "cross_platform_ogg_bit_identity_guaranteed": false,
+      "evidence_boundary": "Event/timing identity and produced PCM are hashed independently of the OGG container. OGG SHA-256 is exact-artifact evidence for one invocation, not a cross-platform canonical byte identity."
+    }
+  },
+  "gameplay": {
+    "all_required_puzzles_use_production_interactions": true,
+    "all_required_transitions_use_real_player_input": true,
+    "save_load_roundtrip_required": true,
+    "pppv_v2_required": true,
+    "minimum_identical_end_to_end_runs": 2,
+    "direct_gameplay_state_injection_forbidden": true
+  },
+  "required_preflight": [
+    "v109",
+    "v110",
+    "trigger_v137",
+    "localization_v139",
+    "v111",
+    "audio_v116",
+    "physical_v117",
+    "well_tongs_v118",
+    "r1_route_v119",
+    "collision_v120",
+    "surface_v121",
+    "geometry_v122",
+    "visibility_v123",
+    "material_v124",
+    "transform_v125",
+    "reachable_visibility_v127",
+    "portal_v129",
+    "interaction_v130",
+    "all_transitions_v141",
+    "cursor_v143",
+    "menu_v145",
+    "legacy_scanner_v164",
+    "menu_cursor_v146",
+    "classic_v147",
+    "interaction_probe_v148",
+    "menu_toggle_v149",
+    "save_compat_v150",
+    "inventory_hud_v157",
+    "visual_v126",
+    "room_forensic_v131",
+    "pppv_v2:scenario_suite",
+    "pppv_v2:scenario_suite_integrity",
+    "pppv_v2:playthrough_evaluation",
+    "pppv_v2:determinism",
+    "pppv_v2:determinism_integrity",
+    "candidate4_music_route_v133",
+    "candidate4_music_render_v135",
+    "candidate4_music_godot_v136",
+    "candidate4_audio_v132"
+  ],
+  "g10": {
+    "required": true,
+    "complete_demo_route": true,
+    "stop_on_critical_failure": true,
+    "must_cover": [
+      "R1 full traversal including former Object02 hole",
+      "R8 both stair profiles up and down",
+      "R1<->R7 and R1<->R8 transitions",
+      "all demo puzzles and required interactions",
+      "well+tongs exact sequence",
+      "ambient and triggered audio",
+      "all required Candidate 4 music",
+      "transparency and keyhole orientation",
+      "save/load during route",
+      "successful end-of-demo state"
+    ]
+  },
+  "inherited_candidate3": {
+    "canonical_gate_manifest": "tools/kg001_gate_manifest.py",
+    "required_runtime_pass": [
+      "v109",
+      "v110",
+      "trigger_v137",
+      "localization_v139",
+      "v111",
+      "audio_v116",
+      "physical_v117",
+      "well_tongs_v118",
+      "r1_route_v119",
+      "collision_v120",
+      "surface_v121",
+      "geometry_v122",
+      "visibility_v123",
+      "material_v124",
+      "transform_v125",
+      "reachable_visibility_v127",
+      "portal_v129",
+      "interaction_v130",
+      "all_transitions_v141",
+      "cursor_v143",
+      "menu_v145",
+      "legacy_scanner_v164",
+      "menu_cursor_v146",
+      "classic_v147",
+      "interaction_probe_v148",
+      "menu_toggle_v149",
+      "save_compat_v150",
+      "inventory_hud_v157"
+    ],
+    "required_additional_runtime_evidence_pass": [
+      "visual_v126",
+      "room_forensic_v131"
+    ],
+    "required_pppv_v2_pass": [
+      "scenario_suite",
+      "scenario_suite_integrity",
+      "playthrough_evaluation",
+      "determinism",
+      "determinism_integrity"
+    ],
+    "contract_runner_consistency": "EXACT_ORDERED_MATCH_REQUIRED"
+  },
+  "frozen_release": {
+    "required": true,
+    "command": "python tools/freeze_candidate4_release.py",
+    "receipt": ".tmp/kg001/candidate4_frozen_release_receipt.json",
+    "source_tree_sha_required": true,
+    "preflight_receipt_sha256_required": true,
+    "complete_runtime_asset_identity_digest_required": true,
+    "commercial_payload_bytes_embedded": false,
+    "export_requires_matching_freeze_receipt": true,
+    "mutation_policy": "FAIL_CLOSED",
+    "cloud_source_snapshot": ".github/workflows/candidate4-source-snapshot.yml"
+  }
+}

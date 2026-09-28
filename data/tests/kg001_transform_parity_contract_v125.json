@@ -1,0 +1,29 @@
+{
+  "schema": "openazrael.kg001.transform_parity_contract",
+  "version": 125,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "scope": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "canonical_manifest": "data/runtime_generated/demo_room_fidelity_v124.json",
+  "bounds_tolerance": 0.001,
+  "requires": [
+    "all mesh world transforms match the pinned source-derived GLB manifest within the declared Float32 absolute/relative tolerance",
+    "all local mesh AABBs match within bounds_tolerance",
+    "no undeclared scale/rotation/translation correction"
+  ],
+  "forbids": [
+    "manual object repositioning",
+    "runtime geometry alignment by eye",
+    "silent coordinate compensation"
+  ],
+  "evidence_boundary": "Candidate 4 requires asset-backed Godot v125 PASS at the exact build SHA.",
+  "transform_tolerance": {
+    "absolute": 0.0001,
+    "relative": 1e-7,
+    "rationale": "Godot imports transforms as Float32; use absolute tolerance near zero and scale-aware relative tolerance for large authored coordinates without permitting visible/manual repositioning."
+  }
+}

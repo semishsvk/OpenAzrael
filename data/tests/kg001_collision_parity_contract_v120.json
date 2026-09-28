@@ -15,7 +15,7 @@
     "require_visible_mesh": true,
     "inspect_all_mesh_surfaces": true,
     "legacy_winding_policy": "absolute normal Y; do not trust source winding",
-    "collision_body_name": "Collision_<legacy object name>",
+    "collision_body_name": "Collision_<legacy object name> for simple objects, or one Collision_<parent legacy object name> shared by multipart child meshes",
     "required_collision_layer": 1,
     "required_collision_mask": 4,
     "required_shape": "ConcavePolygonShape3D",
@@ -31,7 +31,12 @@
       "zxwater",
       "tapestry1",
       "tapestry3",
-      "tapestry4"
+      "tapestry4",
+      "TONG6",
+      "r1p1",
+      "r3t1",
+      "r8t3",
+      "r8t4"
     ],
     "prefixes": [
       "ZQ"
@@ -44,7 +49,7 @@
         "Object02"
       ]
     },
-    "rationale": "known view/helper/water/decorative semantics; exemptions are explicit and audited rather than inherited from room_manager collision exclusions"
+    "rationale": "known view/helper/water/decorative/pickup semantics; multipart structural child meshes inherit only their authored parent object collision; exemptions are explicit and audited rather than inherited from room_manager collision exclusions"
   },
   "candidate3_regression": {
     "required_object": "R1/Object02",
@@ -54,10 +59,10 @@
   },
   "runtime_pass_requires": [
     "all R1/R7/R8 assets load",
-    "every non-exempt visible floor-like mesh above threshold has Collision_<object>",
-    "each collision body is layer 1 / mask 4",
-    "each collision shape is ConcavePolygonShape3D with backface_collision=true",
-    "R1/Object02 is independently discovered by the generic geometry rule and has Collision_Object02",
+    "every non-exempt visible floor-like mesh above threshold resolves to an exact or authored parent-object runtime collision body",
+    "each resolved collision body is layer 1 / mask 4",
+    "each resolved collision shape is ConcavePolygonShape3D with backface_collision=true",
+    "R1/Object02 is independently discovered by the generic geometry rule and has exact Collision_Object02",
     "no engine/script errors"
   ],
   "evidence_boundary": "The source contract only proves the generic auditor and policy are present. Asset-backed Godot execution is required; no Candidate 4 preflight may pass without v120 runtime PASS."

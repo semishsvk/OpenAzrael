@@ -1,0 +1,40 @@
+{
+  "schema": "openazrael.kg001.character_animation_contract",
+  "version": 138,
+  "runtime_resource_pattern": "res://assets/characters/{character}/{family}.tres",
+  "source_audit_tool": "tools/audit_character_animation_sources_v138.py",
+  "production_dispatch": {
+    "event_op": "request_character_animation",
+    "fields": [
+      "character",
+      "family",
+      "target_object",
+      "source_required"
+    ],
+    "allowed_sources": [
+      "ROOM_IMPORTED_ANIMATION",
+      "SOURCE_DERIVED_TRES"
+    ],
+    "synthetic_fallback": false
+  },
+  "provenance": {
+    "original_payload_tracked_in_git": false,
+    "source_derived_runtime_root": "assets/characters/",
+    "promotion_requires": [
+      "source file fingerprint",
+      "decoded animation resource",
+      "asset-backed Godot playback",
+      "trigger-to-animation runtime evidence"
+    ]
+  },
+  "current_demo_binding": {
+    "trigger": "R7/zxactghost",
+    "character": "Niamh",
+    "family": "Conv",
+    "target_object": "nibody",
+    "source_identifier": "R7NiamhAZ",
+    "exact_keyframes": "HOLD_UNTIL_SOURCE_DECODE",
+    "exact_trigger_line": "HOLD_UNTIL_SOURCE_BOUND"
+  },
+  "invariant": "A missing or undecoded source clip is BLOCKED/HOLD, never replaced by a guessed tween, procedural animation, AI-generated animation, or unrelated room animation."
+}

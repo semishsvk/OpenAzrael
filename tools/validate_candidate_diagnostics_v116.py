@@ -18,8 +18,11 @@ diag=read("scripts/candidate_diagnostics_v116.gd")
 trigger=read("scripts/kg001_trigger_debug_v116.gd")
 room=read("scripts/room_manager.gd")
 hud=read("scripts/hud.gd")
+locale_en=read("localization/en.json")
+locale_sk=read("localization/sk.json")
 probe=read("scripts/interaction_probe.gd")
 runner=read("tools/run_kg001_candidate_v112.py")
+gate_manifest=read("tools/kg001_gate_manifest.py")
 bug_capture=diag.split("# v116-context-v32: observational one-key bug-report capture.",1)[-1]
 bugdoc=read("docs/BUG_REPORTING.md")
 issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
@@ -36,7 +39,13 @@ checks={
     "trigger_edges": '_update_diagnostic_trigger_states' in room and 'CandidateDiagnostics.observe_trigger' in room,
     "quiet_initial_trigger_state": 'if not _trigger_states.has(key)' in diag and 'if not inside:' in diag,
     "room_transition_log": 'CandidateDiagnostics.record_transition' in room,
-    "interaction_log": 'CandidateDiagnostics.record_interaction' in probe and 'interaction_miss' in probe,
+    "interaction_log": (
+        'get_node_or_null("CandidateDiagnostics")' in probe
+        and 'has_method("record_interaction")' in probe
+        and 'call("record_interaction"' in probe
+        and 'has_method("record_event")' in probe
+        and 'interaction_miss' in probe
+    ),
     "event_log": 'user://openazrael_candidate3_events.jsonl' in diag and '_append_event_log' in diag,
     "state_dump": 'canonical_state_hash' in diag and 'openazrael_kg001_state_dump_' in diag,
     "golden_audio_assets": all(x in diag for x in ["S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV","S174ELP1.WAV","S174ELP2.WAV","S186.WAV"]) and "data/audio/legacy_world_ir.json" in diag,
@@ -77,11 +86,19 @@ checks={
     "bug_report_source_safe": '"commercial_assets_included": false' in diag and '"source_safe": true' in diag,
     "bug_report_observational": all(x not in bug_capture for x in ["DemoState.acquire(","DemoState.set_flag(","DemoState.set_puzzle_node(","DemoState.restore_canonical_state_payload(","LegacyEvents.run(","load_room("]),
     "bug_report_no_commercial_asset_reads": all(x not in bug_capture for x in ["res://assets/rooms/","res://assets/audio/","res://assets/textures/classic/"]),
-    "bug_hud_surface": "F11 bug report" in hud and "CandidateDiagnostics.last_bug_report" in hud,
+    "bug_hud_surface": (
+        'LocalizationManager.tr_key("ui.hud.controls")' in hud
+        and "CandidateDiagnostics.last_bug_report" in hud
+        and "F11 bug report" in locale_en
+        and "F11 hlásenie chyby" in locale_sk
+    ),
     "issue_template": 'name: OpenAzrael bug report' in issuetpl and 'Diagnostic package' in issuetpl,
     "bug_reporting_doc": 'F11' in bugdoc and 'Critical' in bugdoc and 'regression' in bugdoc.lower(),
     "watermark": 'CandidateDiagnostics.BUILD_ID' in hud and 'CandidateDiagnostics.BUILD_CHECKPOINT' in hud,
-    "runner_includes_validator": 'tools/validate_candidate_diagnostics_v116.py' in runner,
+    "runner_includes_validator": (
+        'from tools.kg001_gate_manifest import SOURCE_COMMANDS, RUNTIMES' in runner
+        and 'tools/validate_candidate_diagnostics_v116.py' in gate_manifest
+    ),
 }
 for k,v in checks.items():
     if not v: errors.append("check failed: "+k)

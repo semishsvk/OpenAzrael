@@ -1,0 +1,109 @@
+{
+  "schema": "openazrael.legacy_scanner.source_manifest",
+  "version": 164,
+  "status": "SOURCE_CONTRACT_READY",
+  "source": "official ATDEMO corpus",
+  "files": {
+    "R.EXE": {
+      "bytes": 1703907,
+      "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+    },
+    "HUDMES.DAT": {
+      "bytes": 8328,
+      "sha256": "e9aed34500a30f671c964b8f239b9418c1217f396983a74fe6798dac866316f0"
+    },
+    "HUD3.WAV": {
+      "bytes": 46972,
+      "sha256": "ee560595c5c67d4d6aeb902bb2b681533e314e6d08f2047e5d9f9e173c131dcb",
+      "sample_rate": 22050,
+      "frames": 46928,
+      "duration_seconds": 2.128253968253968
+    },
+    "SCAN.WAV": {
+      "bytes": 25510,
+      "sha256": "daad59672c9788b06b551cbadf32380ff9d8e85d8be243ad218f5157c2741667",
+      "sample_rate": 22222,
+      "frames": 25466,
+      "duration_seconds": 1.145981459814598
+    },
+    "RUSGLD2.PCX": {
+      "bytes": 8356,
+      "sha256": "abc746358829c953b5bc8330614ac0c3d4c126d91c8cf97a1c8a0d8a23a13679",
+      "width": 1380,
+      "height": 12
+    }
+  },
+  "hudmes_format": {
+    "table_offset": 30,
+    "entry_size": 6,
+    "payload_offset_type": "uint32_le",
+    "payload_length_type": "uint16_le"
+  },
+  "boot_message_ids": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "scan_status": "Updating Environment Scan....",
+  "demo_room_message_binding": {
+    "R1": {
+      "hud_message_id": 87,
+      "provenance": "HIGH_ROOM_SEMANTIC_AND_EXIT_COUNT"
+    },
+    "R7": {
+      "hud_message_id": 101,
+      "provenance": "HIGH_WELLROOM_SEMANTIC_AND_EXIT_COUNT"
+    },
+    "R8": {
+      "hud_message_id": 97,
+      "provenance": "HIGH_BAPTISTRY_SEMANTIC_AND_EXIT_COUNT"
+    }
+  },
+  "presentation": {
+    "logical_frame": [
+      640,
+      480
+    ],
+    "upper_right_readout_rect": [
+      452,
+      54,
+      172,
+      246
+    ],
+    "rect_provenance": "SCREENSHOT_CALIBRATED_NOT_CLAIMED_PIXEL_EXACT",
+    "font": "RUSGLD2.PCX",
+    "font_cell": [
+      10,
+      12
+    ],
+    "font_first_codepoint": 35,
+    "font_cell_count": 138,
+    "timing_policy": "SOURCE_AUDIO_EVENT_BOUNDARIES_ONLY_NO_GUESSED_PER_LINE_OR_PER_CHARACTER_TIMING"
+  },
+  "policy": "Restore only source-owned ATDEMO scanner assets. No AI imagery, synthetic wireframes, guessed per-character timing, or unrelated EUGENE/EUGENB object-scan animation may be substituted for the environment scanner.",
+  "evidence_boundary": {
+    "room_entry_behavior": "HUDMES room ENVSCAN readout + source SCAN.WAV boundary; helmet room-scan behavior corroborated by original-game screenshots",
+    "boot_behavior": "HUDMES boot rows 3..15 + source HUD3.WAV boundary",
+    "unresolved_exactness": [
+      "per-line/per-character boot timing",
+      "exact original glyph advance metrics",
+      "pixel-exact text origin/wrap width"
+    ],
+    "explicit_non_substitutions": [
+      "REPLAY0-7.PCX",
+      "RANIM0-4.ANM",
+      "EUGENE/EUGENB object-scan sequences",
+      "HUDTOP.RES/HUDBOT.RES until their scanner role is directly proven"
+    ]
+  }
+}

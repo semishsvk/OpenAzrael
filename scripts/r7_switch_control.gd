@@ -14,3 +14,12 @@ func interact() -> void:
             print("That is not the plaque sequence. The switchboard resets.")
         "already_solved":
             print("The switchboard is already configured.")
+
+func interaction_cursor_id() -> String:
+    if DemoState.flag("R8BathDrain"):
+        return "CANT"
+    if control_id == "well_lev02":
+        return "PULL"
+    if control_id == "well_weel3":
+        return "ROT"
+    return "USE"

@@ -1,0 +1,62 @@
+{
+  "schema": "remaster.corpus_profiles",
+  "version": 1,
+  "profiles": [
+    {
+      "profile_id": "openazrael_demo_v1",
+      "game_id": "azraels_tear",
+      "edition": "demo",
+      "evidence": [
+        "tools/legacy_export/export_legacy_world_v21.py",
+        "Audio Lab AL-POC-01 canonical demo corpus: 30 WAV assets",
+        "Canonical atdemo.zip materialization contains no OBJECTS.DAT; demo runtime evidence is recovered from WORLD/ROOMS/XAF sources."
+      ],
+      "required_exact": [
+        "PUZZLES.DAT",
+        "ROOMS.DAT",
+        "WORLD.DAT",
+        "MUSIC.DAT",
+        "R.EXE",
+        "CHARACTE.DAT"
+      ],
+      "required_patterns": [
+        {
+          "pattern": "AMB*.SND",
+          "min_count": 1
+        },
+        {
+          "pattern": "NPC*.DAT",
+          "min_count": 1
+        }
+      ],
+      "expected_counts": [
+        {
+          "pattern": "*.WAV",
+          "count": 30
+        }
+      ]
+    },
+    {
+      "profile_id": "openazrael_retail_v1",
+      "game_id": "azraels_tear",
+      "edition": "retail",
+      "evidence": [
+        "tools/compare_demo_retail_rooms.py",
+        "data/localization/extraction_config_v139.json",
+        "docs/RETAIL_ROOM_GEOMETRY_ATLAS_V1.md"
+      ],
+      "required_exact": [
+        "PUZZLES.DAT",
+        "OBJECTS.DAT",
+        "ROOMS.DAT",
+        "CHARACTE.DAT"
+      ],
+      "required_patterns": [],
+      "expected_counts": []
+    }
+  ],
+  "hold": [
+    "Retail profile proves evidence-backed corpus shape only; canonical retail identity is the complete local SHA-256 inventory pinned by the private source registry.",
+    "Profiles identify corpus shape only; they do not prove semantic correctness of extracted data."
+  ]
+}

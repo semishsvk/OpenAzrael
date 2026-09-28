@@ -5,48 +5,23 @@ from pathlib import Path
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 TMP=ROOT/".tmp/kg001"
 ROOMS=[ROOT/"assets/rooms/R1.glb",ROOT/"assets/rooms/R7.glb",ROOT/"assets/rooms/R8.glb"]
 FORBIDDEN_TRACKED_PREFIXES=(
     "original/","raw/","source_original/","data/audio/original_audio/",
-    "assets/audio/","assets/rooms/","assets/textures/classic/"
+    "assets/audio/","assets/characters/","assets/rooms/","assets/textures/classic/","assets/ui/mice/","assets/ui/legacy_menu/"
 )
 FORBIDDEN_TRACKED_NAMES={"R.EXE","r.exe"}
 
-SOURCE_COMMANDS=[
-    [sys.executable,"tools/validate_public_release_safety.py"],
-    [sys.executable,"tools/validate_project_context.py"],
-    [sys.executable,"tools/validate_demo_runtime_ir.py"],
-    [sys.executable,"tools/audit_gameplay_event_graph_v87.py","--source-only"],
-    [sys.executable,"tools/kg001_state_space_v108.py"],
-    [sys.executable,"tools/validate_kg001_headless_v109.py"],
-    [sys.executable,"tools/validate_kg001_room_trigger_v110.py"],
-    [sys.executable,"tools/validate_kg001_full_demo_v111.py"],
-    [sys.executable,"tools/validate_candidate_diagnostics_v116.py"],
-    [sys.executable,"tools/validate_kg001_audio_runtime_v116.py"],
-    [sys.executable,"tools/validate_kg001_texture_colorkey_v116.py"],
-    [sys.executable,"tools/validate_kg001_physical_traversal_v117.py"],
-    [sys.executable,"tools/validate_kg001_well_tongs_animation_v118.py"],
-    [sys.executable,"tools/validate_kg001_r1_route_v119.py"],
-    [sys.executable,"tools/validate_kg001_collision_parity_v120.py"],
-    [sys.executable,"tools/validate_candidate3_preflight.py"],
-]
-
-RUNTIMES=[
-    ("v109","scripts/kg001_headless_runner_v109.gd","OPENAZRAEL_KG001_V109"),
-    ("v110","scripts/kg001_room_trigger_runner_v110.gd","OPENAZRAEL_KG001_V110"),
-    ("v111","scripts/kg001_full_demo_runner_v111.gd","OPENAZRAEL_KG001_V111"),
-    ("audio_v116","scripts/kg001_audio_runtime_runner_v116.gd","OPENAZRAEL_KG001_AUDIO_V116"),
-    ("physical_v117","scripts/kg001_physical_traversal_runner_v117.gd","OPENAZRAEL_KG001_PHYSICAL_V117"),
-    ("well_tongs_v118","scripts/kg001_well_tongs_animation_runner_v118.gd","OPENAZRAEL_KG001_WELL_TONGS_V118"),
-    ("r1_route_v119","scripts/kg001_r1_route_runner_v119.gd","OPENAZRAEL_KG001_R1_ROUTE_V119"),
-    ("collision_v120","scripts/kg001_collision_parity_runner_v120.gd","OPENAZRAEL_KG001_COLLISION_PARITY_V120"),
-]
+from tools.kg001_gate_manifest import SOURCE_COMMANDS, RUNTIMES
 
 def run(cmd, check=False):
     try:
@@ -103,7 +78,21 @@ def parse_marker(output, marker):
     return {"status":"FAIL","error":"result marker missing"}
 
 def engine_errors(output):
-    return [line for line in output.splitlines() if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))]
+    errors=[]
+    for line in output.splitlines():
+        stripped=line.lstrip()
+        # Godot 4.7.2 can report reference-counted resources still alive during
+        # immediate headless shutdown even when the runtime marker and process
+        # return code are clean. Treat only this exact teardown diagnostic as
+        # non-fatal; all other ERROR/SCRIPT ERROR lines remain fail-closed.
+        if re.fullmatch(
+            r"ERROR: \d+ resources still in use at exit \(run with --verbose for details\)\.",
+            stripped,
+        ):
+            continue
+        if stripped.startswith(("ERROR:", "SCRIPT ERROR:")):
+            errors.append(line)
+    return errors
 
 def ignored(path):
     rel=str(path.relative_to(ROOT))
@@ -117,7 +106,7 @@ def write_json(path,data):
 def main():
     ap=argparse.ArgumentParser(description="Run the OpenAzrael KG-001 candidate suite.")
     ap.add_argument("--godot",help="Godot executable path/name. Otherwise GODOT_BIN, godot4, godot are tried.")
-    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-v117, well-tongs-v118 and R1-route-v119 and collision-parity-v120 runtime PASS.")
+    ap.add_argument("--fresh-checkout",action="store_true",help="Require clean Git state before/after and v109-v111, audio-v116, physical-v117, well-tongs-v118 and R1-route-v119, collision-parity-v120, surface-coverage-v121 and geometry-render-parity-v122 object-visibility-v123, material/UV-v124, transform-v125 and reachable-state-visibility-v127 runtime PASS.")
     ap.add_argument("--promote-results",action="store_true",help="After verification, copy runtime/fresh-checkout summaries into data/tests for review/commit.")
     ap.add_argument("--source-only",action="store_true",help="Run source-safe validators and repository tracking checks only; do not require Godot or local commercial assets.")
     args=ap.parse_args()
@@ -153,6 +142,22 @@ def main():
         print(json.dumps(source_receipt,indent=2))
         sys.exit(0 if source_receipt["status"]=="PASS" else 1)
 
+    generated_inputs={}
+    generation_commands=[
+        ("fidelity_v124",[sys.executable,"tools/build_demo_room_fidelity_manifest_v124.py"]),
+        ("state_matrix_v127",[sys.executable,"tools/kg001_state_matrix_v127.py"]),
+        ("asset_manifest_v128",[sys.executable,"tools/build_runtime_asset_manifest_v128.py"]),
+        ("texture_orientation_v133",[sys.executable,"tools/audit_demo_texture_orientation_v133.py"]),
+    ]
+    for name,cmd in generation_commands:
+        proc=run(cmd)
+        generated_inputs[name]={
+            "status":"PASS" if proc.returncode==0 else "FAIL",
+            "returncode":proc.returncode,
+            "output":proc.stdout[-12000:],
+        }
+    generated_ok=all(item["status"]=="PASS" for item in generated_inputs.values())
+
     godot=find_godot(args.godot)
     godot_version=""
     import_status="NOT_RUN"
@@ -171,10 +176,10 @@ def main():
         else:
             import_status="BLOCKED_MISSING_ASSETS"
         for name,script,marker in RUNTIMES:
-            if name in ("v110","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120") and not all(asset_present.values()):
+            if name in ("v110","trigger_v137","v111","audio_v116","physical_v117","well_tongs_v118","r1_route_v119","collision_v120","surface_v121","geometry_v122","visibility_v123","material_v124","transform_v125","reachable_visibility_v127","portal_v129","interaction_v130","save_compat_v150","inventory_hud_v157") and not all(asset_present.values()):
                 runtimes[name]={"status":"BLOCKED_MISSING_ASSETS","missing":[p for p,v in asset_present.items() if not v]}
                 continue
-            proc=run([godot,"--headless","--path",str(ROOT),"--script",f"res://{script}"])
+            proc=run([godot,"--headless","--fixed-fps","60","--path",str(ROOT),"--script",f"res://{script}"])
             parsed=parse_marker(proc.stdout,marker)
             errors=engine_errors(proc.stdout)
             if proc.returncode!=0 or errors:
@@ -201,7 +206,7 @@ def main():
     fresh_pass=(
         args.fresh_checkout and clean_before and clean_after and not bad_tracked and source_ok
         and godot is not None and import_status=="PASS" and full_runtime_pass
-        and all(asset_present.values()) and all(asset_ignored.values())
+        and all(asset_present.values()) and all(asset_ignored.values()) and generated_ok
     )
 
     fresh={
@@ -216,6 +221,8 @@ def main():
         "clean_after":clean_after,
         "forbidden_tracked_files":bad_tracked,
         "source_validators_pass":source_ok,
+        "generated_inputs":generated_inputs,
+        "generated_inputs_pass":generated_ok,
         "room_assets_present":asset_present,
         "room_assets_git_ignored":asset_ignored,
         "runtime_status":{k:v.get("status","") for k,v in runtimes.items()}
@@ -240,12 +247,31 @@ def main():
         mapping={
             TMP/"kg001_v109_runtime.json":ROOT/"data/tests/kg001_headless_runtime_v109.json",
             TMP/"kg001_v110_runtime.json":ROOT/"data/tests/kg001_room_trigger_runtime_v110.json",
+            TMP/"kg001_trigger_v137_runtime.json":ROOT/"data/tests/kg001_trigger_event_runtime_v137.json",
+            TMP/"kg001_localization_v139_runtime.json":ROOT/"data/tests/localization_runtime_v139.json",
             TMP/"kg001_v111_runtime.json":ROOT/"data/tests/kg001_full_demo_runtime_v111.json",
             TMP/"kg001_audio_v116_runtime.json":ROOT/"data/tests/kg001_audio_runtime_v116.json",
             TMP/"kg001_physical_v117_runtime.json":ROOT/"data/tests/kg001_physical_traversal_runtime_v117.json",
             TMP/"kg001_well_tongs_v118_runtime.json":ROOT/"data/tests/kg001_well_tongs_animation_runtime_v118.json",
             TMP/"kg001_r1_route_v119_runtime.json":ROOT/"data/tests/kg001_r1_route_runtime_v119.json",
             TMP/"kg001_collision_v120_runtime.json":ROOT/"data/tests/kg001_collision_parity_runtime_v120.json",
+            TMP/"kg001_surface_v121_runtime.json":ROOT/"data/tests/kg001_surface_collision_runtime_v121.json",
+            TMP/"kg001_geometry_v122_runtime.json":ROOT/"data/tests/kg001_geometry_render_parity_runtime_v122.json",
+            TMP/"kg001_visibility_v123_runtime.json":ROOT/"data/tests/kg001_object_visibility_runtime_v123.json",
+            TMP/"kg001_material_v124_runtime.json":ROOT/"data/tests/kg001_material_texture_runtime_v124.json",
+            TMP/"kg001_transform_v125_runtime.json":ROOT/"data/tests/kg001_transform_parity_runtime_v125.json",
+            TMP/"kg001_reachable_visibility_v127_runtime.json":ROOT/"data/tests/kg001_reachable_visibility_runtime_v127.json",
+            TMP/"kg001_portal_v129_runtime.json":ROOT/"data/tests/kg001_portal_geometry_runtime_v129.json",
+            TMP/"kg001_interaction_v130_runtime.json":ROOT/"data/tests/kg001_interaction_reachability_runtime_v130.json",
+            TMP/"kg001_all_transitions_v141_runtime.json":ROOT/"data/tests/kg001_all_transition_traversal_runtime_v141.json",
+            TMP/"kg001_cursor_v143_runtime.json":ROOT/"data/tests/kg001_interaction_cursor_runtime_v143.json",
+            TMP/"kg001_menu_v145_runtime.json":ROOT/"data/tests/kg001_legacy_menu_runtime_v145.json",
+            TMP/"kg001_menu_cursor_v146_runtime.json":ROOT/"data/tests/kg001_menu_cursor_context_runtime_v146.json",
+            TMP/"kg001_classic_v147_runtime.json":ROOT/"data/tests/kg001_classic_presentation_runtime_v147.json",
+            TMP/"kg001_interaction_probe_v148_runtime.json":ROOT/"data/tests/kg001_interaction_probe_determinism_runtime_v148.json",
+            TMP/"kg001_save_compat_v150_runtime.json":ROOT/"data/tests/kg001_save_compat_runtime_v150.json",
+            TMP/"kg001_inventory_hud_v157_runtime.json":ROOT/"data/tests/kg001_inventory_hud_runtime_v157.json",
+            TMP/"kg001_menu_toggle_v149_runtime.json":ROOT/"data/tests/kg001_legacy_menu_toggle_runtime_v149.json",
             TMP/"kg001_source_validation_v112.json":ROOT/"data/tests/kg001_source_validation_v112.json",
             TMP/"kg001_fresh_checkout.json":ROOT/"data/tests/kg001_fresh_checkout.json",
         }

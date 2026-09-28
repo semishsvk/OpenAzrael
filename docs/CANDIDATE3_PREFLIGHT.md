@@ -44,7 +44,18 @@ PASS for:
 - physical-traversal-v117;
 - well-tongs-v118;
 - r1-route-v119 (Candidate 3 R1/Object02 regression and audited R1 route traversal);
-- collision-parity-v120 (generic visible floor-like mesh/runtime collision parity across R1/R7/R8).
+- collision-parity-v120 (generic visible floor-like mesh/runtime collision parity across R1/R7/R8);
+- surface-coverage-v121 (triangle-interior collision support sampling);
+- geometry-render-parity-v122 (complete pinned room mesh parity);
+- object-visibility-v123 (fresh and persistent object visibility);
+- material/texture/UV-v124;
+- transform/bounds-v125;
+- graphical direct-GLB vs runtime census-v126;
+- all-reachable-state visibility-v127;
+- portal/door geometry closure-v129;
+- physical interaction reachability-v130.
+
+The guarded export then requires packaged EXE/PCK parity-v128 and emits the final layered room-forensic report-v131.
 
 It also requires a fresh Godot import, clean Git before/after, no forbidden
 commercial payload tracked by Git, and the restored room assets to remain

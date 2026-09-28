@@ -14,6 +14,7 @@ extends CharacterBody3D
 @export var max_step_height := 14.0
 @export var step_probe_distance := 14.0
 @export var step_clearance := 0.35
+@export var step_surface_epsilon := 0.75
 @export var traversal_safe_margin := 0.25
 
 @onready var camera: Camera3D = $Camera3D
@@ -43,7 +44,9 @@ func step_debug_snapshot() -> Array[Dictionary]:
     return out
 
 func _ready() -> void:
-    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    # Original demo keeps a free HUD cursor and uses held RMB for head look.
+    # Headless PPPV keeps captured-style synthetic mouse motion unchanged.
+    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if DisplayServer.get_name() == "headless" else Input.MOUSE_MODE_VISIBLE
     # Keep support while descending the same discrete stair profiles that the
     # step-up helper can climb. Godot floor snapping only acts downward; it
     # therefore complements rather than replaces explicit step-up handling.
@@ -64,12 +67,14 @@ func teleport_eye_to(eye_pos: Vector3, forward: Vector3) -> void:
     camera.rotation.x = pitch
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+    var allow_head_look := (
+        DisplayServer.get_name() == "headless"
+        or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
+    )
+    if event is InputEventMouseMotion and allow_head_look:
         rotation.y -= event.relative.x * mouse_sensitivity
         pitch = clamp(pitch - event.relative.y * mouse_sensitivity, -1.35, 1.35)
         camera.rotation.x = pitch
-    elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-        Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
 
 func _step_floor_probe(direction: Vector3, horizontal_motion: Vector3) -> Dictionary:
     # Legacy tread winding is inconsistent and the two R8 stair profiles have
@@ -130,7 +135,7 @@ func _step_floor_probe(direction: Vector3, horizontal_motion: Vector3) -> Dictio
         # either legacy winding. The production tread oracle must do the same.
         if absf(normal.y) < cos(floor_max_angle):
             continue
-        if step_height <= 0.05 or step_height > max_step_height + 0.05:
+        if step_height <= step_surface_epsilon or step_height > max_step_height + 0.05:
             continue
         if step_height < best_step_height:
             best_step_height = step_height
@@ -172,7 +177,7 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
         return false
 
     var step_height := float(floor_hit.get("_step_height", 0.0))
-    if step_height <= 0.05 or step_height > max_step_height + 0.05:
+    if step_height <= step_surface_epsilon or step_height > max_step_height + 0.05:
         _record_step_debug("step_reject_height", {
             "step_height": step_height,
         })
@@ -198,9 +203,10 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
 
     var raised := global_transform
     raised.origin += lift
+    var settle_motion := direction * maxf(horizontal_motion.length(), 2.0)
     if test_move(
         raised,
-        horizontal_motion,
+        settle_motion,
         null,
         traversal_safe_margin,
         false
@@ -212,7 +218,9 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
         return false
 
     global_position += lift
+    global_position += settle_motion
     velocity.y = 0.0
+    apply_floor_snap()
     _record_step_debug("step_success", {
         "step_height": step_height,
         "probe_distance": float(floor_hit.get("_probe_distance", 0.0)),
@@ -235,6 +243,13 @@ func _physics_process(delta: float) -> void:
 
     if stepped_up:
         velocity.y = 0.0
+        var saved_horizontal := Vector2(velocity.x, velocity.z)
+        velocity.x = 0.0
+        velocity.z = 0.0
+        move_and_slide()
+        velocity.x = saved_horizontal.x
+        velocity.z = saved_horizontal.y
+        return
     elif not is_on_floor():
         velocity.y -= gravity * delta
     else:

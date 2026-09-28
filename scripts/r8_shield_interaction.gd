@@ -13,3 +13,8 @@ func interact() -> void:
         shield_visual.visible = false
     print("Shield acquired — playable demo section complete.")
     queue_free()
+
+func interaction_cursor_id() -> String:
+    if not DemoState.puzzle_node("DoorR8") or DemoState.flag("demo_complete"):
+        return "CANT"
+    return "TAKE"

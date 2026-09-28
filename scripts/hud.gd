@@ -3,6 +3,13 @@ extends CanvasLayer
 @onready var label: Label = $Panel/Label
 @onready var room_manager = get_node("../RoomManager")
 @onready var player = get_node("../Player")
+@onready var interaction_probe = get_node("../Player/Camera3D/InteractionProbe")
+@onready var legacy_menu = get_node_or_null("../LegacyMenuV145")
+const LegacyCursorCatalogV143 := preload("res://scripts/legacy_cursor_catalog_v143.gd")
+var interaction_cursor_layer: CanvasLayer
+var interaction_cursor: TextureRect
+var interaction_cursor_cache: Dictionary = {}
+var interaction_cursor_id := ""
 var audio_debug_visible := false
 var audio_debug_panel: PanelContainer
 var audio_debug_label: Label
@@ -16,8 +23,17 @@ var capture_notice := ""
 var state_dump_notice := ""
 
 func _ready() -> void:
+    # The source pointer must keep following the mouse while title/service UI
+    # pauses gameplay. Player and room processing remain paused independently.
+    process_mode = Node.PROCESS_MODE_ALWAYS
+    var legacy_classic_mode_active := is_instance_valid(legacy_menu)
+    if legacy_classic_mode_active and is_instance_valid(label):
+        var legacy_overlay := label.get_parent()
+        if legacy_overlay is CanvasItem:
+            (legacy_overlay as CanvasItem).visible = false
     _build_candidate_debug_panel()
     _build_audio_debug_panel()
+    _build_interaction_cursor()
 
 func _unhandled_key_input(event: InputEvent) -> void:
     if not event is InputEventKey or not event.pressed or event.echo:
@@ -40,6 +56,55 @@ func _unhandled_key_input(event: InputEvent) -> void:
         var path := CandidateDiagnostics.dump_state(room_manager.current_room_id, player.global_position)
         state_dump_notice = "F10 state dump: " + (path if not path.is_empty() else "FAILED")
         get_viewport().set_input_as_handled()
+
+func _build_interaction_cursor() -> void:
+    interaction_cursor_layer = CanvasLayer.new()
+    interaction_cursor_layer.name = "InteractionCursorLayerV146"
+    interaction_cursor_layer.layer = 100
+    add_child(interaction_cursor_layer)
+
+    interaction_cursor = TextureRect.new()
+    interaction_cursor.name = "InteractionCursorV143"
+    interaction_cursor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    interaction_cursor.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    interaction_cursor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    interaction_cursor.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    interaction_cursor.size = LegacyCursorCatalogV143.DISPLAY_SIZE
+    interaction_cursor.z_index = 1000
+    interaction_cursor_layer.add_child(interaction_cursor)
+    _update_interaction_cursor()
+
+func _cursor_texture(cursor_id: String) -> Texture2D:
+    var normalized := LegacyCursorCatalogV143.normalize_id(cursor_id)
+    if interaction_cursor_cache.has(normalized):
+        return interaction_cursor_cache[normalized] as Texture2D
+    var texture := LegacyCursorCatalogV143.load_texture(normalized)
+    if texture == null and normalized != LegacyCursorCatalogV143.FALLBACK:
+        texture = LegacyCursorCatalogV143.load_texture(LegacyCursorCatalogV143.FALLBACK)
+    interaction_cursor_cache[normalized] = texture
+    return texture
+
+func _update_interaction_cursor() -> void:
+    if not is_instance_valid(interaction_cursor):
+        return
+    var next_id := "POINTER"
+    var menu_blocks_world := (
+        is_instance_valid(legacy_menu)
+        and legacy_menu.has_method("blocks_world_cursor")
+        and bool(legacy_menu.call("blocks_world_cursor"))
+    )
+    if not menu_blocks_world and is_instance_valid(interaction_probe) and interaction_probe.has_method("current_cursor_id"):
+        next_id = String(interaction_probe.call("current_cursor_id"))
+    var normalized := LegacyCursorCatalogV143.normalize_id(next_id)
+    if normalized != interaction_cursor_id or interaction_cursor.texture == null:
+        interaction_cursor_id = normalized
+        interaction_cursor.texture = _cursor_texture(normalized)
+    interaction_cursor.visible = interaction_cursor.texture != null
+    var viewport_size := get_viewport().get_visible_rect().size
+    if DisplayServer.get_name() != "headless" and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+        interaction_cursor.position = get_viewport().get_mouse_position() - interaction_cursor.size * 0.5
+    else:
+        interaction_cursor.position = (viewport_size - interaction_cursor.size) * 0.5
 
 func _capture_audio_parity() -> void:
     var la = room_manager.legacy_audio
@@ -129,21 +194,23 @@ func _true_keys(source: Dictionary) -> String:
     return ", ".join(out) if not out.is_empty() else "(none)"
 
 func _process(_delta: float) -> void:
+    _update_interaction_cursor()
     var inv: Array[String] = []
     for k in DemoState.inventory.keys():
         inv.append(String(k))
     inv.sort()
     var status := ""
     if DemoState.flag("demo_complete"):
-        status = "\nDEMO COMPLETE — Shield acquired"
+        status = "\n" + LocalizationManager.tr_key("ui.hud.demo_complete")
     elif DemoState.flag("R8BathDrain"):
-        status = "\nBaptistery bath: DRAINED"
-    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\nWASD move | Shift sprint | Mouse look | E interact | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room" % [
+        status = "\n" + LocalizationManager.tr_key("ui.hud.bath_drained")
+    label.text = "%s | %s\nRoom: %s\nInventory: %s%s\n%s" % [
         CandidateDiagnostics.BUILD_ID,
         CandidateDiagnostics.BUILD_CHECKPOINT,
         room_manager.current_room_id,
-        ", ".join(inv) if not inv.is_empty() else "(empty)",
-        status
+        ", ".join(inv) if not inv.is_empty() else LocalizationManager.tr_key("ui.hud.empty"),
+        status,
+        LocalizationManager.tr_key("ui.hud.controls")
     ]
 
     if candidate_debug_visible and is_instance_valid(candidate_debug_label):

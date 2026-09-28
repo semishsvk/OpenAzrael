@@ -5,8 +5,9 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 import argparse, hashlib, json, sys
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_EVENT_GRAPHS={"R7_WELL_TONGS_USE","R7_WATER_SWITCHBOARD_SOLVED","R8_LENS_PLACE","R8_OPTICAL_START","R8_SECRET_DOOR_OPEN","R8_TAKE_SHIELD"}
-ALLOWED_EVENT_OPS={"set_flag","set_puzzle_node","add_inventory","remove_inventory","play_sound"}
+EXPECTED_EVENT_GRAPHS={"R7_WELL_TONGS_USE","R7_WATER_SWITCHBOARD_SOLVED","R7_NIAMH_ACTIVATE","R8_LENS_PLACE","R8_OPTICAL_START","R8_SECRET_DOOR_OPEN","R8_TAKE_SHIELD"}
+REQUEST_EVENT_OPS={"request_character_animation","request_conversation"}
+ALLOWED_EVENT_OPS={"set_flag","set_puzzle_node","add_inventory","remove_inventory","play_sound"}|REQUEST_EVENT_OPS
 SWITCH_SOLUTION=("well_lev02","well_weel3","well_lev02")
 EXPECTED_ROOM_EDGES={("R1","zxcoriR5","R7"),("R1","zxcoriR2","R8"),("R7","zxwell2R6","R1"),("R8","zxorrery","R1")}
 ACTION_NAMES=("pickup_rusty_tongs","open_r1_door1","open_r1_door2","transition_R1_R7","transition_R1_R8","transition_R7_R1","transition_R8_R1","retrieve_well_key","switch_well_lev02","switch_well_weel3","retrieve_r8_lens","place_r8_lens","start_optical_sequence","finish_optical_sequence","take_shield")
@@ -45,6 +46,11 @@ def apply_event_graph(state,graph,graph_id):
         elif op=="add_inventory": state=state.add_inventory(key)
         elif op=="remove_inventory": state=state.remove_inventory(key)
         elif op=="play_sound": audio.append(action["asset"])
+        elif op in REQUEST_EVENT_OPS:
+            # Source-required animation/conversation requests have no persistent
+            # logical-state mutation in the v108 progression model. Their
+            # runtime dispatch is validated independently by v137/v138.
+            pass
         else: raise ValueError(f"unsupported Event IR op: {op}")
     return state,tuple(audio)
 
@@ -70,7 +76,14 @@ class Model:
         elif a=="transition_R8_R1":
             if s.room=="R8" and self.edge("R8","zxorrery","R1"): return replace(s,room="R1",sequence_running=False),audio
         elif a=="retrieve_well_key":
-            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"):\n                s,audio=apply_event_graph(s,self.event_graph,"R7_WELL_TONGS_USE")\n                return s.add_inventory("well_key").remove_inventory("rusty_tongs").set_puzzle("R7KeyTake").set_flag("R7key"),audio
+            if s.room=="R7" and s.has("rusty_tongs") and not s.has("well_key"):
+                # The production physical route from the R7 portal to WellKey
+                # crosses zxactghost before the key interaction. Preserve that
+                # source-backed persistent side effect in the success oracle.
+                if not s.flag("R7NiamhActivated"):
+                    s,_=apply_event_graph(s,self.event_graph,"R7_NIAMH_ACTIVATE")
+                s,audio=apply_event_graph(s,self.event_graph,"R7_WELL_TONGS_USE")
+                return s.add_inventory("well_key").remove_inventory("rusty_tongs").set_puzzle("R7KeyTake").set_flag("R7key"),audio
         elif a in ("switch_well_lev02","switch_well_weel3"):
             if s.room=="R7" and not s.flag("R8BathDrain"):
                 control=a.removeprefix("switch_"); step=int(s.value("R7SwitchStep",0))
@@ -100,7 +113,16 @@ def validate_inputs(event_graph,trigger_ir):
     if set(graphs)!=EXPECTED_EVENT_GRAPHS: errors.append(f"Event IR graph set drift: {sorted(graphs)}")
     for gid,g in graphs.items():
         for i,a in enumerate(g.get("actions",[])):
-            if a.get("op") not in ALLOWED_EVENT_OPS: errors.append(f"unsupported Event IR op: {gid}[{i}]={a.get('op')}")
+            op=a.get("op")
+            if op not in ALLOWED_EVENT_OPS:
+                errors.append(f"unsupported Event IR op: {gid}[{i}]={op}")
+            elif op in REQUEST_EVENT_OPS:
+                if a.get("source_required") is not True:
+                    errors.append(f"request Event IR op is not source-required: {gid}[{i}]")
+                if not str(a.get("character","")).strip() or not str(a.get("family","")).strip():
+                    errors.append(f"incomplete request Event IR identity: {gid}[{i}]")
+                if op=="request_character_animation" and not str(a.get("target_object","")).strip():
+                    errors.append(f"missing request animation target: {gid}[{i}]")
     edges={(e.get("source_room"),e.get("trigger"),e.get("destination_room")) for e in trigger_ir.get("demo_transitions",[])}
     if edges!=EXPECTED_ROOM_EDGES: errors.append(f"room edge set drift: {sorted(edges)}")
     return errors

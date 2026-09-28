@@ -14,3 +14,8 @@ func interact() -> void:
         lens_visual.visible = false
     print("Retrieved the lens from the drained bath.")
     queue_free()
+
+func interaction_cursor_id() -> String:
+    if DemoState.has("r8_lens"):
+        return "CANT"
+    return "TAKE" if DemoState.flag("R8BathDrain") else "CANT"

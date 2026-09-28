@@ -1,0 +1,265 @@
+{
+  "schema": "openazrael.localization_source_registry",
+  "version": 139,
+  "generated_from": "currently retained source-safe character/dialog/animation evidence",
+  "source_locale": "en",
+  "completeness": "AVAILABLE_EVIDENCE_ONLY",
+  "policy": {
+    "exact_source_text_only": true,
+    "fragments_not_runtime_localizable": true,
+    "technical_identifiers_not_translatable": true,
+    "guessed_dialogue_forbidden": true,
+    "commercial_payload_embedded": false
+  },
+  "entries": [
+    {
+      "id": "dialog.demo.niamh.0001",
+      "domain": "dialogue",
+      "source": "NIAMH.DAT",
+      "source_hash": "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71",
+      "text": "Good Lord. What are you?",
+      "status": "VERIFIED_COMPLETE",
+      "localizable": true,
+      "speaker": "UNKNOWN",
+      "context": "demo Niamh character-data conversation block"
+    },
+    {
+      "id": "dialog.demo.niamh.0002.fragment",
+      "domain": "dialogue",
+      "source": "NIAMH.DAT",
+      "source_hash": "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71",
+      "text": "What do you mean? I'm",
+      "status": "VERIFIED_FRAGMENT",
+      "localizable": false,
+      "speaker": "UNKNOWN",
+      "context": "retained evidence ends mid-line; recover full source before runtime use"
+    },
+    {
+      "id": "char.demo.name.niamh",
+      "domain": "character",
+      "source": "CHARACTE.DAT",
+      "source_hash": "5a1a67f5cfba790a543c7548e86f4d03c219e98cc20e5827927ddb7326fa8088",
+      "text": "Niamh",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false
+    },
+    {
+      "id": "anim.demo.niamh.family.conv",
+      "domain": "animation",
+      "source": "PUZZLES.DAT",
+      "text": "Conv",
+      "status": "VERIFIED_ACTION_FAMILY",
+      "localizable": false,
+      "evidence_offsets": [
+        590,
+        970,
+        1160,
+        1350,
+        1540,
+        1730
+      ],
+      "character": "Niamh"
+    },
+    {
+      "id": "event.demo.r7.niamh_az",
+      "domain": "event",
+      "source": "ROOMS.DAT",
+      "text": "R7NiamhAZ",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false
+    },
+    {
+      "id": "event.retail.r7.oisin_call_done",
+      "domain": "event",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R7OisinCallDone",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "source_offset": 299498
+    },
+    {
+      "id": "event.retail.r7.niamh_call.raw",
+      "domain": "event",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "7NiamhCall",
+      "status": "RAW_TOKEN_NEEDS_RECORD_RECONSTRUCTION",
+      "localizable": false,
+      "source_offset": 298787
+    },
+    {
+      "id": "engine.format.conversation",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "con%d.dat",
+      "status": "VERIFIED_FORMAT_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.loader.character_animation",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "ICharacterAnim",
+      "status": "HIGH_CONFIDENCE_DIAGNOSTIC_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.format.room_animation",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "RANIM%d.ANM",
+      "status": "HIGH_CONFIDENCE_FORMAT_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.file.character_list",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "characte.dat",
+      "status": "VERIFIED_FILENAME_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "ui.menu.title",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Options",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true,
+      "context": "in-game options menu title"
+    },
+    {
+      "id": "ui.menu.language",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Language",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true,
+      "context": "language selector label"
+    },
+    {
+      "id": "ui.menu.close",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Back",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true,
+      "context": "close/back button"
+    },
+    {
+      "id": "ui.hud.demo_complete",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "DEMO COMPLETE — Shield acquired",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "ui.hud.bath_drained",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "Baptistery bath: DRAINED",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "ui.hud.empty",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "(empty)",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "ui.hud.controls",
+      "domain": "ui",
+      "source": "OPENAZRAEL_UI",
+      "text": "WASD move | Shift sprint | Mouse look | E interact | Esc menu | F6 triggers | F7 candidate debug | F8 audio | F9 parity | F10 state dump | F11 bug report | 1/2/3 debug room",
+      "status": "AUTHORED_COMPLETE",
+      "localizable": true
+    },
+    {
+      "id": "event.retail.r6.speech",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R6Speech",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 10,
+      "opcodes": [
+        "0x0e",
+        "0x0f"
+      ],
+      "first_offset": "0x5db2"
+    },
+    {
+      "id": "event.retail.r6.edgar_conv",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R6EdgarConv",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x131bb"
+    },
+    {
+      "id": "event.retail.r11.tobias_conv",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R11TobiasConv",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0x85625"
+    },
+    {
+      "id": "event.retail.r62.tobias_conv",
+      "domain": "dialogue_state",
+      "source": "retail PUZZLES-derived action corpus",
+      "text": "R62TobiasConv",
+      "status": "VERIFIED_IDENTIFIER",
+      "localizable": false,
+      "occurrences": 1,
+      "opcodes": [
+        "0x04"
+      ],
+      "first_offset": "0xf5727"
+    },
+    {
+      "id": "event.retail.rooms.niamh_call_concat",
+      "domain": "dialogue_state",
+      "source": "retail ROOMS string corpus",
+      "text": "R4WaR8PlR7NiamhCallAZ",
+      "status": "RAW_CONCATENATED_PRINTABLE_RUN",
+      "localizable": false,
+      "context": "Do not promote R7NiamhCallAZ as a standalone symbol until record structure proves it."
+    },
+    {
+      "id": "engine.file.character_state",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "%s.dat",
+      "status": "VERIFIED_FORMAT_REFERENCE",
+      "localizable": false
+    },
+    {
+      "id": "engine.file.npc_state",
+      "domain": "engine_reference",
+      "source": "R.EXE",
+      "text": "npc%d.dat",
+      "status": "VERIFIED_FORMAT_REFERENCE",
+      "localizable": false
+    }
+  ],
+  "holds": [
+    "The retained NIAMH.DAT evidence contains only the first 96 bytes; the second dialogue line is truncated.",
+    "No exact 'Oisin...' spoken line has been recovered from the retained corpus yet.",
+    "CON%d.DAT payloads and original character ANI payloads are not present in the current source-safe repository evidence and must be scanned from the official local corpus.",
+    "RANIM room-animation data is a separate format and must never be substituted for ICharacterAnim."
+  ]
+}

@@ -25,6 +25,15 @@ checks = {
         and contract.get("geometry_policy", {}).get("legacy_winding_policy")
         == "absolute normal Y; do not trust source winding"
     ),
+    "pickup_exemptions_bound": all(
+        token in runner for token in (
+            '"TONG6": true', '"r1p1": true', '"r3t1": true',
+            '"r8t3": true', '"r8t4": true'
+        )
+    ) and all(
+        name in contract.get("explicit_non_solid_exemptions", {}).get("all_rooms", [])
+        for name in ("TONG6","r1p1","r3t1","r8t3","r8t4")
+    ),
     "independent_exemptions": (
         "GLOBAL_EXEMPT" in runner
         and "ROOM_EXEMPT" in runner
@@ -47,10 +56,13 @@ checks = {
         "not mi.visible" in runner
         and "projected_area >= MIN_TOTAL_PROJECTED_AREA" in runner
     ),
-    "runtime_collision_child": (
+    "runtime_collision_owner": (
         '"Collision_" + object_name' in runner
-        and "_collision_child" in runner
+        and '"Collision_" + String(parent.name)' in runner
+        and "_collision_body" in runner
+        and "_find_named" in runner
         and "_collision_shape" in runner
+        and "var grouped := _find_named(parent" in runner
     ),
     "collision_contract": all(
         token in runner

@@ -13,15 +13,28 @@ const ROUTE := [
     Vector3(-168.693718, -91.949649, 281.939643),
     Vector3(-113.787899, -107.514682, 201.650247),
     Vector3(-72.816896, -114.240783, 116.816224),
-    Vector3(-23.152938, -114.276132, 32.386421),
+    # Runtime-verified capsule corridor around authored Collision_save.
+    Vector3(-75.0, -114.300000, 70.0),
+    Vector3(-75.0, -114.300000, 20.0),
+    Vector3(-50.0, -114.300000, -20.0),
+    Vector3(0.0, -115.000000, -50.0),
+    # From here use centers of actual walkable floor faces, not centroids of
+    # steep side faces that the earlier route incorrectly treated as floor.
     Vector3(38.260757, -115.691564, -50.391974),
     Vector3(95.934301, -117.355663, -127.453640),
     Vector3(141.988445, -115.622030, -209.540090),
-    Vector3(238.319320, -104.616944, -303.747184),
-    Vector3(309.006074, -104.581536, -377.312400),
-    Vector3(379.407590, -102.654593, -442.602868),
+    Vector3(119.250000, -114.455000, -261.236000),
+    Vector3(156.921000, -114.276000, -313.508000),
+    Vector3(203.566000, -114.275000, -324.678000),
+    Vector3(210.088000, -114.364000, -410.699000),
+    Vector3(266.328000, -114.240000, -415.593000),
+    Vector3(299.061000, -110.726000, -486.612000),
+    Vector3(356.752000, -108.708000, -475.156000),
+    Vector3(405.288000, -99.161000, -522.654000),
     Vector3(449.221720, -93.255052, -498.865461),
-    Vector3(476.230757, -84.616455, -504.152640),
+    # wall01 face 10 is the walkable threshold into tunnel07. The former
+    # wall01 centroid targeted a steep side face and caused a false stall.
+    Vector3(476.420000, -85.030000, -514.950000),
     Vector3(529.295811, -84.205500, -513.041569),
 ]
 

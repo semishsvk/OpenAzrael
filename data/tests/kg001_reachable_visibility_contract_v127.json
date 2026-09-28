@@ -1,0 +1,23 @@
+{
+  "schema": "openazrael.kg001.reachable_visibility_contract",
+  "version": 127,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "source_model_version": 108,
+  "expected_reachable_states": 104,
+  "state_matrix": "data/runtime_generated/kg001_state_matrix_v127.json",
+  "replay_path": "DemoState.restore_canonical_state_payload + production RoomManager load",
+  "requires": [
+    "all source-model reachable states enumerated deterministically",
+    "canonical state hash roundtrip",
+    "room-specific object visibility oracle holds for every state",
+    "no direct runtime flag mutation in the v127 runner",
+    "cross-language canonical state hashes normalize JSON numeric values without changing gameplay state"
+  ],
+  "evidence_boundary": "v127 validates persistent visibility across every currently reachable source-model state; transient animation/timing remains covered by v111/v118/v126.",
+  "numeric_hash_semantics": {
+    "python_model": "retains original integer/float value types",
+    "godot_runtime": "JSON.parse_string materializes numeric state values as float",
+    "matrix_rule": "persistent_sha256 is computed from a runtime-canonical payload that converts non-boolean numeric values to float; model_persistent_sha256 remains recorded separately"
+  }
+}

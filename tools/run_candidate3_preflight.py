@@ -17,30 +17,49 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from tools.remaster_framework.source_registry import resolve_source
+from tools.kg001_gate_manifest import (
+    CANDIDATE3_REQUIRED_RUNTIME,
+    CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE,
+    PPPV_EVIDENCE_FILES,
+)
 TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
 FRESH_RESULT = TMP / "kg001_fresh_checkout.json"
-REQUIRED_RUNTIME = (
-    "v109",
-    "v110",
-    "v111",
-    "audio_v116",
-    "physical_v117",
-    "well_tongs_v118",
-    "r1_route_v119",
-    "collision_v120",
-)
+VISUAL_RESULT = TMP / "kg001_visual_v126_runtime.json"
+FORENSIC_PREFLIGHT = TMP / "room_forensic_report_v131_preflight.json"
+GENERATED_METADATA = {
+    "fidelity_v124": ROOT / "data/runtime_generated/demo_room_fidelity_v124.json",
+    "state_matrix_v127": ROOT / "data/runtime_generated/kg001_state_matrix_v127.json",
+    "asset_manifest_v128": ROOT / "data/runtime_generated/runtime_asset_manifest_v128.json",
+    "texture_orientation_v133": ROOT / "data/runtime_generated/demo_texture_orientation_v133.json",
+}
+PPPV_REQUIRED_EVIDENCE = {
+    name: ROOT / rel_path
+    for name, rel_path in PPPV_EVIDENCE_FILES.items()
+}
+REQUIRED_RUNTIME = CANDIDATE3_REQUIRED_RUNTIME
+
 REQUIRED_SENTINELS = (
     ROOT / "assets/rooms/R1.glb",
     ROOT / "assets/rooms/R7.glb",
     ROOT / "assets/rooms/R8.glb",
     ROOT / "assets/audio/979TONGS.WAV",
+    ROOT / "assets/ui/mice/POINTER.png",
+    ROOT / "assets/ui/mice/TAKE.png",
+    ROOT / "assets/ui/legacy_menu/HUD3.png",
+    ROOT / "assets/ui/legacy_menu/SAVE13.png",
+    ROOT / "assets/ui/legacy_menu/TITLE.png",
 )
 RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/rooms",
     ROOT / "assets/audio",
     ROOT / "assets/textures/classic",
+    ROOT / "assets/ui/mice",
+    ROOT / "assets/ui/legacy_menu",
 )
 
 def runtime_asset_files() -> list[Path]:
@@ -60,6 +79,21 @@ def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
+
+def parse_marker(output: str, marker: str) -> dict:
+    for line in reversed(output.splitlines()):
+        if marker in line:
+            payload = line.split(marker, 1)[1].strip()
+            try:
+                return json.loads(payload)
+            except json.JSONDecodeError:
+                return {"status": "FAIL", "parse_error": payload}
+    return {"status": "FAIL", "error": "result marker missing"}
+
+
+def engine_errors(output: str) -> list[str]:
+    return [line for line in output.splitlines() if line.lstrip().startswith(("ERROR:", "SCRIPT ERROR:"))]
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -96,7 +130,7 @@ def fail(reason: str, details: dict | None = None) -> int:
     RECEIPT.unlink(missing_ok=True)
     payload = {
         "schema": "openazrael.kg001.candidate3_preflight",
-        "version": 1,
+        "version": 2,
         "status": "FAIL",
         "export_allowed": False,
         "reason": reason,
@@ -126,11 +160,30 @@ def main() -> int:
     if not head_before:
         return fail("GIT_HEAD_UNAVAILABLE")
 
-    if args.demo_dir is not None:
+    restore_source = args.demo_dir.resolve() if args.demo_dir is not None else None
+    sentinels_missing_before_restore = any(
+        not path.is_file() for path in REQUIRED_SENTINELS
+    )
+    if restore_source is None and sentinels_missing_before_restore:
+        try:
+            restore_source = resolve_source("demo")
+        except Exception as exc:
+            return fail(
+                "DEMO_SOURCE_NOT_REGISTERED_OR_INVALID",
+                {
+                    "error": str(exc),
+                    "hint": (
+                        "Run: python tools/bootstrap_openazrael_sources.py "
+                        "register demo <atdemo.zip-or-extracted-dir>"
+                    ),
+                },
+            )
+
+    if restore_source is not None:
         restore = run([
             sys.executable,
             "tools/restore_candidate_assets.py",
-            str(args.demo_dir.resolve()),
+            str(restore_source),
         ])
         if restore.returncode != 0:
             return fail(
@@ -160,13 +213,23 @@ def main() -> int:
         p for p in asset_files
         if p.parent == ROOT / "assets/audio"
     ]
-    if len(classic_pngs) != 86 or len(room_glbs) < 3 or not audio_files:
+    cursor_pngs = [
+        p for p in asset_files
+        if p.parent == ROOT / "assets/ui/mice" and p.suffix.lower() == ".png"
+    ]
+    menu_pngs = [
+        p for p in asset_files
+        if p.parent == ROOT / "assets/ui/legacy_menu" and p.suffix.lower() == ".png"
+    ]
+    if len(classic_pngs) != 86 or len(room_glbs) < 3 or not audio_files or len(cursor_pngs) != 35 or len(menu_pngs) != 42:
         return fail(
             "RUNTIME_ASSET_CORPUS_INCOMPLETE",
             {
                 "classic_png_count": len(classic_pngs),
                 "room_glb_count": len(room_glbs),
                 "audio_file_count": len(audio_files),
+                "cursor_png_count": len(cursor_pngs),
+                "menu_png_count": len(menu_pngs),
             },
         )
 
@@ -190,6 +253,100 @@ def main() -> int:
 
     if not CANDIDATE_RESULT.is_file() or not FRESH_RESULT.is_file():
         return fail("PREFLIGHT_EVIDENCE_MISSING")
+
+    missing_generated = [
+        str(path.relative_to(ROOT))
+        for path in GENERATED_METADATA.values()
+        if not path.is_file()
+    ]
+    if missing_generated:
+        return fail("GENERATED_FIDELITY_METADATA_MISSING", {"missing": missing_generated})
+
+    visual_run = run([
+        godot,
+        "--path",
+        str(ROOT),
+        "--script",
+        "res://scripts/kg001_visual_census_runner_v126.gd",
+    ])
+    visual_result = parse_marker(
+        visual_run.stdout,
+        "OPENAZRAEL_KG001_VISUAL_CENSUS_V126",
+    )
+    visual_errors = engine_errors(visual_run.stdout)
+    if visual_run.returncode != 0 or visual_errors or visual_result.get("status") != "PASS":
+        return fail(
+            "GRAPHICAL_VISUAL_CENSUS_V126_FAILED",
+            {
+                "returncode": visual_run.returncode,
+                "status": visual_result.get("status"),
+                "engine_errors": visual_errors,
+                "output_tail": visual_run.stdout[-20000:],
+            },
+        )
+    VISUAL_RESULT.write_text(
+        json.dumps(visual_result, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    forensic_run = run([
+        sys.executable,
+        "tools/build_room_forensic_report_v131.py",
+        "--phase",
+        "preflight",
+        "--out",
+        str(FORENSIC_PREFLIGHT),
+    ])
+    if forensic_run.returncode != 0 or not FORENSIC_PREFLIGHT.is_file():
+        return fail(
+            "ROOM_FORENSIC_REPORT_V131_FAILED",
+            {"output_tail": forensic_run.stdout[-20000:]},
+        )
+    try:
+        forensic_payload = json.loads(FORENSIC_PREFLIGHT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return fail("ROOM_FORENSIC_REPORT_V131_INVALID", {"error": str(exc)})
+    if (
+        forensic_payload.get("status") != "PASS"
+        or any(
+            forensic_payload.get("rooms", {}).get(room, {}).get("status") != "PASS"
+            for room in ("R1", "R7", "R8")
+        )
+    ):
+        return fail("ROOM_FORENSIC_REPORT_V131_NOT_PASS", forensic_payload)
+
+    pppv_cmd = [
+        sys.executable,
+        "tools/run_candidate3_pppv_v2.py",
+        "--fresh-checkout",
+        "--godot",
+        godot,
+    ]
+    pppv_run = run(pppv_cmd)
+    if pppv_run.returncode != 0:
+        return fail(
+            "PPPV_V2_RUNTIME_FAILED",
+            {"returncode": pppv_run.returncode, "output_tail": pppv_run.stdout[-20000:]},
+        )
+
+    missing_pppv = [
+        str(p.relative_to(ROOT))
+        for p in PPPV_REQUIRED_EVIDENCE.values()
+        if not p.is_file()
+    ]
+    if missing_pppv:
+        return fail("PPPV_V2_EVIDENCE_MISSING", {"missing": missing_pppv})
+
+    pppv_evidence = {
+        name: json.loads(p.read_text(encoding="utf-8"))
+        for name, p in PPPV_REQUIRED_EVIDENCE.items()
+    }
+    pppv_status = {
+        name: str(payload.get("status", "UNKNOWN"))
+        for name, payload in pppv_evidence.items()
+    }
+    if not all(status == "PASS" for status in pppv_status.values()):
+        return fail("PPPV_V2_INVARIANT_FAILED", {"status": pppv_status})
 
     candidate = json.loads(CANDIDATE_RESULT.read_text(encoding="utf-8"))
     fresh = json.loads(FRESH_RESULT.read_text(encoding="utf-8"))
@@ -232,7 +389,7 @@ def main() -> int:
 
     receipt = {
         "schema": "openazrael.kg001.candidate3_preflight",
-        "version": 1,
+        "version": 2,
         "status": "PASS",
         "candidate": "KG-001 Candidate 3",
         "export_allowed": True,
@@ -243,17 +400,46 @@ def main() -> int:
         "source_validators": "PASS",
         "godot_import": "PASS",
         "runtime_status": {name: runtime_status[name] for name in REQUIRED_RUNTIME},
+        "visual_v126": "PASS",
+        "additional_runtime_evidence": {
+            name: "PASS" for name in CANDIDATE3_ADDITIONAL_RUNTIME_EVIDENCE
+        },
+        "pppv_v2_status": pppv_status,
         "evidence": {
             "candidate_result": str(CANDIDATE_RESULT.relative_to(ROOT)),
             "candidate_result_sha256": sha256(CANDIDATE_RESULT),
             "fresh_checkout": str(FRESH_RESULT.relative_to(ROOT)),
             "fresh_checkout_sha256": sha256(FRESH_RESULT),
+            "visual_v126": {
+                "path": str(VISUAL_RESULT.relative_to(ROOT)),
+                "sha256": sha256(VISUAL_RESULT),
+            },
+            "room_forensic_v131": {
+                "path": str(FORENSIC_PREFLIGHT.relative_to(ROOT)),
+                "sha256": sha256(FORENSIC_PREFLIGHT),
+            },
+            "generated_metadata": {
+                name: {
+                    "path": str(path.relative_to(ROOT)),
+                    "sha256": sha256(path),
+                }
+                for name, path in GENERATED_METADATA.items()
+            },
+            "pppv_v2": {
+                name: {
+                    "path": str(path.relative_to(ROOT)),
+                    "sha256": sha256(path),
+                }
+                for name, path in PPPV_REQUIRED_EVIDENCE.items()
+            },
         },
         "runtime_asset_summary": {
             "total_files": len(asset_files),
             "classic_png_count": len(classic_pngs),
             "room_glb_count": len(room_glbs),
             "audio_file_count": len(audio_files),
+            "cursor_png_count": len(cursor_pngs),
+            "menu_png_count": len(menu_pngs),
         },
         "runtime_assets": {
             str(p.relative_to(ROOT)): {
@@ -264,7 +450,7 @@ def main() -> int:
         },
         "build_rule": (
             "Export is permitted only while Git HEAD, clean worktree, Godot version, "
-            "candidate/fresh evidence and restored runtime asset hashes still match this receipt."
+            "candidate/fresh evidence, v126 graphical evidence, generated fidelity metadata, PPPV v2 evidence and restored runtime asset hashes still match this receipt."
         ),
     }
     RECEIPT.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")

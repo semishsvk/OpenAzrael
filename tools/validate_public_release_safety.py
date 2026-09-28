@@ -19,6 +19,8 @@ FORBIDDEN_PREFIXES = (
     "assets/audio/",
     "assets/rooms/",
     "assets/textures/classic/",
+    "assets/ui/mice/",
+    "assets/ui/legacy_menu/",
     "exports/",
     "export/",
     "build/",

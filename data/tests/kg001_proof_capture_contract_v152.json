@@ -1,0 +1,39 @@
+{
+  "schema": "openazrael.kg001.proof_capture_contract",
+  "version": 152,
+  "status": "ACCEPTED",
+  "supersedes": 151,
+  "purpose": "Make proof-video capture fail closed on duplicate writers, output replacement/unlinking, audio failure, gameplay mismatch, and severe temporal flicker or isolated full-frame flashes.",
+  "supplemental_evidence": true,
+  "required_for_candidate4_export": false,
+  "required_for_known_good": false,
+  "replaces_manual_g10": false,
+  "capture_safety": {
+    "single_writer_lock_required": true,
+    "conflicting_movie_maker_process_forbidden": true,
+    "lock_must_remain_owned_for_capture": true,
+    "raw_output_inode_must_remain_stable": true,
+    "raw_output_size_must_be_monotonic": true,
+    "deleted_or_replaced_output_fails_closed": true
+  },
+  "visual_stability": {
+    "required": true,
+    "analysis_resolution": [
+      160,
+      90
+    ],
+    "p99_frame_mad_max": 28,
+    "p99_luma_jump_max": 14,
+    "isolated_flash_score_max": 45,
+    "final_mp4_deleted_on_failure": true,
+    "hotspot_timestamps_bound_in_receipt": true
+  },
+  "gameplay_and_audio": {
+    "captured_run_must_evaluate_pass": true,
+    "semantic_replay_must_match_deterministic_baseline": true,
+    "final_state_must_match_deterministic_baseline": true,
+    "real_runtime_audio_required": true,
+    "digital_silence_forbidden": true
+  },
+  "evidence_boundary": "The proof video remains supplemental exact-source runtime evidence and does not replace packaged parity or manual G10."
+}

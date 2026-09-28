@@ -23,32 +23,62 @@ is allowed or created. Original Miles parity and complete original renderer
 transparency semantics remain HOLD. See `docs/CANDIDATE2_WINDOWS.md` and
 `data/tests/kg001_candidate2_windows.json` for details.
 
-## Current status — v116-context-v32 / Candidate 3 hardening
+## Current status — Candidate 4 hardening
 
-**Technical base:** `openazrael_godot_poc_v116`  
+**Historical technical checkpoint:** `openazrael_godot_poc_v116` (internal provenance, not project version)  
 **Runtime:** Godot 4  
-**Active slice:** R1 -> R7 -> R8  
-**Current candidate:** KG-001 Candidate 3  
-**Candidate source status:** HARDENED_SOURCE / source CI + exact-SHA asset-backed preflight required  
-**Historical Candidate 2 status:** automated Windows evidence PASS, subsequent manual traversal FAIL; evidence retained but stale for current source  
-**Candidate 3 runtime status:** NOT EXECUTED AT CURRENT HEAD  
-**Known-good tag:** `demo-known-good-001` — NOT ALLOWED until G00-G10 all pass
+**Active demo slice:** R1 -> R7 -> R8  
+**Next build:** KG-001 Candidate 4  
+**Source status:** Candidate 4 hard release contract PASS at source level  
+**Runtime status:** NOT YET ELIGIBLE FOR EXPORT — exact-head asset-backed preflight still required  
+**Known-good tag:** `demo-known-good-001` — NOT ALLOWED until all automated gates and G10 pass
+
+### Candidate 4 release intent
+
+Candidate 4 is the first build intended to be fully playable end to end, with zero
+known critical bugs, zero reproducible softlocks, complete restored demo room
+geometry, complete required audio, deterministic synthetic-player coverage and
+a full manual G10 pass on the exact exported EXE/PCK pair.
+
+The Candidate 4 gate requires the v117-v131 traversal/fidelity stack, PPPV v2,
+the fail-closed room forensic report, and the canonical 30/30 WAV demo corpus.
+The demo package also contains 24 XMI music assets; Candidate 4 is fail-closed
+until route evidence proves either tested runtime support for the music required
+by the accepted demo route or proves that XMI music is not used on that route.
 
 ### Immediate priority
-1. Require the Candidate 3 Python 3.11/3.12 source gate to PASS at the exact build SHA.
-2. Restore the ignored Candidate room/audio/texture assets and run `python tools/run_candidate3_preflight.py --godot <Godot> [--demo-dir <ATDEMO>]`.
-3. Require literal PASS for v109/v110/v111/audio-v116/physical-v117/well-tongs-v118. v117 now exercises winding-safe near-to-far stair probing and preserves a bounded step-debug trace.
-4. Export only with `tools/export_candidate3.py`; the exporter rejects changed HEAD/evidence/Godot, mutations **or additions/removals** in the bound runtime asset set, and requires exported-EXE startup smoke before writing a PASS receipt.
-5. Complete G10 on that exact EXE/PCK pair: R1 floor, both R8 stair profiles, well+tongs + triggered audio, ambient audio, color-key transparency, upright KEYHOLE orientation, full route and save/load. `demo-known-good-001` remains blocked until then.
+1. Close the XMI route-usage question and implement/test required music playback if needed.
+2. Restore the full canonical asset set from the official demo and run `python tools/run_candidate4_preflight.py --godot <Godot> --demo-dir <ATDEMO>`.
+3. Require PASS for all inherited runtime gates, v117-v131 fidelity/geometry checks, 30/30 WAV validation and PPPV v2 repeated deterministic end-to-end playthroughs.
+4. Export only through `python tools/export_candidate4.py --godot <Godot>`.
+5. Complete G10 on that exact Candidate 4 EXE/PCK pair, including full traversal, all required transitions/puzzles, stairs, audio, visuals and save/load.
+
+See `docs/CANDIDATE4_RELEASE_CRITERIA.md` and
+`data/tests/kg001_candidate4_release_contract_v132.json`.
+
+### Persistent demo / retail source bootstrap
+
+Commercial source payloads are now resolved through a private persistent source registry instead of being rediscovered for every build:
+
+```bash
+python tools/bootstrap_openazrael_sources.py register demo /private/atdemo.zip --mirror
+python tools/bootstrap_openazrael_sources.py register retail /private/azraels-tear-retail
+python tools/bootstrap_openazrael_sources.py verify all
+python tools/bootstrap_openazrael_sources.py prepare demo --restore-demo-runtime
+```
+
+Candidate preflights auto-resolve the registered demo corpus when no `--demo-dir` is supplied. See `docs/SOURCE_CORPUS_BOOTSTRAP.md`.
 
 ### Current architectural decisions
 - Evidence-first flow remains `original data -> forensic/import tools -> OpenAzrael IR -> Godot runtime`.
 - Candidate diagnostics are observational only; they do not directly mutate gameplay state.
 - F11 captures a source-safe diagnostic ZIP for GitHub Issues; see `docs/BUG_REPORTING.md`.
-- Localization architecture is approved: stable semantic IDs, POT/PO authoring, built-in English fallback, external versioned PCK language packs, no core-resource replacement. Runtime implementation is deliberately deferred until after the first clean Candidate 3 runtime/manual validation.
-- Existing forensic HOLDs remain HOLD; documentation cleanup does not promote any unresolved claim.
+- Localization architecture remains deferred until after the first clean Candidate 4 runtime/manual validation.
+- Existing forensic HOLDs remain HOLD; documentation cleanup does not promote unresolved claims.
 
-For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md`, `docs/LAST_SESSION.md`, and `data/project_context.json`.
+For canonical context start with `OPENAZRAEL_CONTEXT.md`, `docs/PROJECT_STATE.md`,
+`docs/LAST_SESSION.md`, `docs/VERSIONING.md`, and `data/project_context.json`.
+Internal `vNNN` labels are evidence/tool revisions, not the project version.
 
 ---
 

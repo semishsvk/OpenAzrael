@@ -1,0 +1,54 @@
+{
+  "schema": "openazrael.kg001.trigger_event_contract",
+  "version": 137,
+  "rooms": [
+    "R1",
+    "R7",
+    "R8"
+  ],
+  "expected_trigger_counts": {
+    "R1": 7,
+    "R7": 8,
+    "R8": 14
+  },
+  "expected_total_triggers": 29,
+  "transition_triggers": [
+    "R1/zxcoriR2",
+    "R1/zxcoriR5",
+    "R7/zxwell2R6",
+    "R8/zxorrery"
+  ],
+  "required_active_bindings": {
+    "R7/zxactghost": {
+      "class": "activation_enter",
+      "graph": "R7_NIAMH_ACTIVATE",
+      "one_shot_flag": "R7NiamhActivated",
+      "required_actions": [
+        "set_flag",
+        "set_puzzle_node",
+        "request_character_animation",
+        "request_conversation"
+      ],
+      "animation": {
+        "character": "Niamh",
+        "family": "Conv",
+        "target_object": "nibody",
+        "source_required": true
+      },
+      "no_synthetic_fallback": true,
+      "visibility_policy": "PRESERVE_AUTHORED_XAF_VISIBILITY_NO_TRIGGER_VISIBILITY_OPCODE"
+    }
+  },
+  "required_condition_zones": {
+    "R8/zxplate": "scripts/r8_bible_interaction.gd"
+  },
+  "runtime_acceptance": [
+    "Every authored XAF trigger/helper record has exactly one explicit IR classification.",
+    "Entering R7/zxactghost after an outside state dispatches R7_NIAMH_ACTIVATE exactly once.",
+    "The Niamh body preserves authored XAF visibility; activation changes animation/conversation state only because the recovered event graph contains no visibility opcode.",
+    "A source-provided AnimationPlayer clip named Conv is played when present.",
+    "If the original Conv clip is unavailable, runtime reports HOLD_SOURCE_CLIP_MISSING and never synthesizes substitute motion.",
+    "Re-entering zxactghost after R7NiamhActivated does not replay the one-shot event.",
+    "UNKNOWN_HOLD/hazard_HOLD records produce diagnostics but no guessed gameplay side effect."
+  ]
+}

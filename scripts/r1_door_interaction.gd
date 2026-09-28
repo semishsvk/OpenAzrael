@@ -37,3 +37,10 @@ func interact() -> void:
     tw.tween_property(door_visual, "rotation:y", target, 0.75)
     opened = true
     print("Opened Entry Corridor door %d." % door_id)
+
+func interaction_cursor_id() -> String:
+    if opened or DemoState.flag(_open_flag()):
+        return "CANT"
+    if door_id == 2 and not DemoState.has("well_key"):
+        return "CANT"
+    return "USE"

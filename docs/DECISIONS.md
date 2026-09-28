@@ -166,3 +166,51 @@ Candidate 2 Windows automation remains immutable historical evidence, but its la
 Candidate 3 export provenance is fail-closed: the preflight receipt binds exact Git HEAD, Godot version, evidence hashes, the exact runtime asset path set and per-asset hashes. Any runtime asset mutation, addition or removal invalidates export. A PASS export receipt additionally requires exported-EXE startup smoke.
 
 The manual upside-down R1 keyhole observation is fixed through a narrowly-scoped `KEYHOLE#` V-orientation compatibility correction with TONG6/MINETON# as a negative control. This correction is OpenAzrael presentation compatibility evidence, not recovery of a global original-renderer UV rule; final orientation remains a G10 visual check.
+
+## ADR-031 — Candidate 3 requires PPPV v2 as a release oracle
+
+Candidate 3 remains the authoritative runtime tree for KG-001 traversal, collision, audio, transparency, well+tongs and export hardening. Remaster Framework / PPPV v2 is layered on top as a mandatory validation oracle rather than replacing Candidate 3 runtime code. Exact-head preflight must require the current-bundle PPPV scenario suite plus integrity, a guarded chained playthrough, repeated deterministic semantic replay and determinism integrity. G04/G05/G08/G09 cannot pass from legacy v110/v111/v117/v118/v119/v120 evidence alone. Any required broken room transition is critical and blocks KG-001.
+
+## ADR-032 — Separate project versions from internal evidence revisions
+
+Project versions use the approved pre-1.0 semantic form `0.MAJOR.MINOR-dev`, `0.MAJOR.MINOR-rc.N`, and `0.MAJOR.MINOR`. KG-001 Candidate numbers are integration labels, while `v109`…`v120` and historical `v116-context-v32` are internal test/context/evidence revisions only. `demo-known-good-001` remains a separate immutable acceptance checkpoint. The exact Git SHA and receipts are authoritative build identity. See `docs/VERSIONING.md`.
+
+
+## ADR-033 — Runtime room geometry is source-exact and complete
+
+**Status:** ACCEPTED — 2026-09-22
+
+Every playable OpenAzrael room must be derived from the original game/demo room geometry and imported completely. Partial room imports, hand-built approximations, AI-generated architecture, procedural substitutes, placeholder runtime meshes, or geometry invented to fill missing source data are forbidden. Missing source geometry is fail-closed and blocks the room/build rather than degrading to an approximation.
+
+Engine-compatibility corrections may repair materials, alpha handling, triangle winding, normals, collision generation or reversible coordinate conversion, but must not change the authored room shape. State-dependent rooms require each original authored geometry state independently.
+
+A geometry mismatch is a **critical build defect** and blocks Candidate export, KG promotion and release. The demo slice is guarded by geometry-render-parity v122; the same invariant applies to all future retail rooms. Schematic topology placeholders are permitted only in documentation and must never enter runtime assets.
+
+See `docs/SOURCE_GEOMETRY_FIDELITY.md` and `data/source_geometry_policy.json`.
+
+
+## ADR-034 — Candidate fidelity closure is layered and fail-closed
+
+**Status:** ACCEPTED — 2026-09-22
+
+Candidate 4 extends source-exact geometry policy ADR-033 with a layered room-fidelity pipeline:
+
+- v124 validates material, texture presence, legacy cutout behavior and quantized UV parity for every imported demo mesh.
+- v125 validates source-derived transforms and local bounds for every mesh.
+- v126 performs a graphical geometry-only census by rendering the canonical direct GLB and the production RoomManager version from identical deterministic cameras; AI/hand-authored reference imagery is forbidden.
+- v127 replays all 104 currently reachable source-model states through production canonical save/restore and checks state-dependent visibility.
+- v128 executes from the exported EXE/PCK and verifies every packaged runtime asset by bytes/SHA-256 plus room geometry/material/UV/transform/visibility parity.
+- v129 validates transition/portal geometry closure and authored destination floor support.
+- v130 physically approaches visible interaction targets through production player input/PPPVNavigator and requires the production InteractionProbe to acquire them. Hidden objects must not leave active invisible interaction areas.
+- v131 produces a fail-closed per-room forensic report spanning source through packaged build.
+
+No layer may promote a Candidate when required evidence is missing. These mechanisms are implemented so their generic fidelity/reporting primitives can be reused by future retail OpenAzrael and other remaster projects.
+
+
+## ADR-035 — Control renders use paired original and neutral lighting
+
+**Status:** ACCEPTED — 2026-09-22
+
+Every future OpenAzrael control render is emitted as a pair using identical source-exact geometry, textures/UVs, state and camera. The **ORIGINAL-1996** version uses only recovered/documented original-lighting or original-renderer evidence. If that evidence is incomplete, the result is explicitly marked `ORIGINAL-LIGHTING-PENDING`; artistic approximation is forbidden. The **NEUTRAL-QA** version uses even inspection lighting to expose geometry, UV, material, alpha, clipping and object-visibility defects. Neutral lighting is QA-only and must not be confused with historical visual fidelity.
+
+See `docs/CONTROL_RENDERING_STANDARD.md`.

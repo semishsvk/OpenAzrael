@@ -18,6 +18,7 @@ Thumbs.db
 
 # Build/export output
 data/runtime_build_identity.json
+data/runtime_generated/
 build/
 dist/
 exports/
@@ -31,6 +32,15 @@ backups/
 snapshots/
 *.bak
 
+# Persistent private source registry/cache. Never commit mounted commercial corpora.
+.openazrael/
+source_corpora/
+ATDEMO/
+atdemo.zip
+retail_original/
+retail_corpus/
+data/source_registry.local.json
+
 # Raw/original commercial game payloads: keep out of Git.
 # Their fingerprints may be committed under data/backup/.
 original/
@@ -39,6 +49,7 @@ source_original/
 data/audio/original_audio/
 data/*.DAT
 assets/audio/
+assets/characters/
 *.iso
 *.cue
 *.mdf
@@ -73,3 +84,12 @@ data/puzzle_action_opcode_retail_corpus_v19.json
 data/audio/le_fixups_v27.json
 data/audio/trusted_object_relative_xrefs_v33.json
 data/audio/canonical_object_relative_xrefs_v36.json
+
+# Original demo cursor artwork restored locally from ATDEMO/MICE.
+assets/ui/mice/
+
+# Original 1996 menu/HUD artwork restored locally from ATDEMO.
+assets/ui/legacy_menu/
+
+# Godot 4.x generated script UID sidecars (recreated by pinned editor import).
+*.gd.uid

@@ -1,0 +1,45 @@
+{
+  "schema": "openazrael.source_geometry_policy",
+  "version": 1,
+  "status": "NON_NEGOTIABLE",
+  "fail_closed": true,
+  "runtime_rules": {
+    "source_derived_only": true,
+    "complete_room_required": true,
+    "partial_import_forbidden": true,
+    "invented_geometry_forbidden": true,
+    "approximate_geometry_forbidden": true,
+    "ai_generated_runtime_geometry_forbidden": true,
+    "procedural_substitute_geometry_forbidden": true,
+    "missing_source_action": "BLOCKED_MISSING_SOURCE_GEOMETRY",
+    "replacement_floor_to_mask_missing_geometry_forbidden": true,
+    "engine_compatibility_fixes_may_change_shape": false,
+    "state_variants_require_original_authored_geometry": true
+  },
+  "documentation_rules": {
+    "schematic_missing_geometry_allowed": true,
+    "must_be_marked_schematic": true,
+    "schematic_geometry_must_never_enter_runtime": true
+  },
+  "candidate_gate": {
+    "geometry_parity_required_for_every_included_room": true,
+    "geometry_defect_severity": "CRITICAL",
+    "blocks_known_good": true,
+    "blocks_release": true
+  },
+  "demo_expected": {
+    "R1": {
+      "mesh_instances": 69,
+      "triangles": 593,
+      "critical_visible_mesh": "save__mesh"
+    },
+    "R7": {
+      "mesh_instances": 48,
+      "triangles": 689
+    },
+    "R8": {
+      "mesh_instances": 87,
+      "triangles": 1050
+    }
+  }
+}

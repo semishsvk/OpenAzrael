@@ -1,0 +1,69 @@
+{
+  "schema": "openazrael.kg001.texture_orientation_contract",
+  "version": 133,
+  "status": "SOURCE_CONTRACT_READY_ASSET_AUDIT_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "gltf_texture_origin": "upper_left",
+  "expected_classic_texture_count": 86,
+  "expected_used_texture_count": 75,
+  "expected_textured_primitive_count": 176,
+  "expected_unused_textures": [
+    "BLOOD2#.png",
+    "BLOOD5#.png",
+    "BLOOD6#.png",
+    "BLOOS3#.png",
+    "BLOOS4#.png",
+    "EUEYE.png",
+    "EUFRNT.png",
+    "EUSIDE.png",
+    "EUTOP.png",
+    "NIABOD.png",
+    "NIAHED.png"
+  ],
+  "pass_requires": [
+    "all 86 restored PNGs are bound to the original AZF source hashes recorded during restore",
+    "exactly 75 textures are referenced by R1/R7/R8 and exactly 176 primitives are textured",
+    "every referenced texture resolves; zero missing bindings",
+    "embedded GLB texture pixels are identical to the restored decoded PNG",
+    "raw GLB TEXCOORD_0 float32 fingerprints match original XAF source UV fingerprints for all 176 textured primitives",
+    "every textured primitive has finite UVs and UV count equals vertex count",
+    "no per-texture or per-object UV orientation hack is permitted",
+    "85 of 87 strong vertical source mappings are directly upright; the only two source-authored variants are BAPMSG back-face state and broken01 BAPBROK# shard",
+    "R8 window textures BAPBACK1/BAPFRNT1/BAPLEFT1/BAPRGHT1 are upright in raw GLB",
+    "R1 KEYHOLE# is upright in raw GLB",
+    "BAPMSG becomes upright only through the source-consistent tapestry2 horizontal X-axis 180-degree reveal transform",
+    "KEYHOLE# remains source-UV exact with no exporter correction and is upright in world space"
+  ],
+  "evidence_boundary": "Asset-backed v133 PASS requires a clean restore from the original ATDEMO AZF/XAF corpus, raw-GLB UV comparison, embedded-image comparison and runtime-state orientation policy. Source-only CI proves wiring only.",
+  "uv_export_adapter": {
+    "mode": "TRIMESH_PRE_FLIP_V_PRESERVE_XAF_GLTF",
+    "rationale": "Original XAF V coordinates are already authored in the same semantic top-to-bottom direction as glTF. Trimesh uses the opposite internal texture convention, so the adapter pre-flips V once before export so raw GLB TEXCOORD_0 equals source XAF UV exactly."
+  },
+  "expected_strong_vertical_mappings": 87,
+  "expected_direct_upright_vertical_mappings": 85,
+  "source_authored_state_variants": [
+    {
+      "room": "R8",
+      "node": "tapestry2a__mesh",
+      "texture": "BAPMSG",
+      "initial_source_orientation": "BACK_FACE_VERTICALLY_REVERSED",
+      "required_reveal_transform": "tapestry2 rotation:x += PI",
+      "expected_revealed_orientation": "UPRIGHT",
+      "rationale": "BAPMSG is the nested hidden back face of tapestry2. Its source UV reverses world Y; a 180-degree horizontal-axis reveal flips both facing and vertical orientation."
+    },
+    {
+      "room": "R8",
+      "node": "broken01__mesh",
+      "texture": "BAPBROK#",
+      "initial_source_orientation": "SOURCE_AUTHORED_VARIANT",
+      "required_reveal_transform": null,
+      "expected_revealed_orientation": "NON_SEMANTIC_SHARD",
+      "rationale": "Broken cutout shard has no semantic upright reading direction; preserve its original XAF mapping exactly."
+    }
+  ],
+  "required_uv_corrections": {},
+  "source_preserved_orientation": {
+    "KEYHOLE#": "Original R1.XAF mapping is already upright; no UV correction permitted."
+  },
+  "orientation_policy": "Preserve every XAF UV exactly in raw glTF through the global Trimesh adapter; no texture/object-specific UV correction is permitted."
+}

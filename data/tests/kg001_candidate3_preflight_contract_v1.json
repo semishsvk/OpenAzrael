@@ -3,7 +3,7 @@
   "version": 1,
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "candidate": "KG-001 Candidate 3",
-  "source_branch": "test/kg001-physical-traversal",
+  "source_branch": "integration/kg001-candidate3-pppv-v2",
   "source_ci": {
     "workflow": ".github/workflows/kg001-candidate3-source-gate.yml",
     "python_versions": [
@@ -22,18 +22,39 @@
     "required_runtime_pass": [
       "v109",
       "v110",
+      "trigger_v137",
+      "localization_v139",
       "v111",
       "audio_v116",
       "physical_v117",
       "well_tongs_v118",
       "r1_route_v119",
-      "collision_v120"
+      "collision_v120",
+      "surface_v121",
+      "geometry_v122",
+      "visibility_v123",
+      "material_v124",
+      "transform_v125",
+      "reachable_visibility_v127",
+      "portal_v129",
+      "interaction_v130",
+      "all_transitions_v141",
+      "cursor_v143",
+      "menu_v145",
+      "legacy_scanner_v164",
+      "menu_cursor_v146",
+      "classic_v147",
+      "interaction_probe_v148",
+      "menu_toggle_v149",
+      "save_compat_v150",
+      "inventory_hud_v157"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",
       "Godot version",
       "fresh-checkout evidence SHA-256",
       "candidate result SHA-256",
+      "PPPV v2 evidence SHA-256 set",
       "complete restored assets/rooms corpus SHA-256",
       "complete restored assets/audio corpus SHA-256",
       "complete restored assets/textures/classic corpus SHA-256",
@@ -44,7 +65,21 @@
       "room_glb_minimum": 3,
       "audio_files_required": true,
       "mutation_after_preflight": "FAIL_CLOSED"
-    }
+    },
+    "required_pppv_v2_pass": [
+      "scenario_suite",
+      "scenario_suite_integrity",
+      "playthrough_evaluation",
+      "determinism",
+      "determinism_integrity"
+    ],
+    "pppv_v2_runner": "python tools/run_candidate3_pppv_v2.py --fresh-checkout --godot <Godot>",
+    "required_additional_runtime_evidence_pass": [
+      "visual_v126",
+      "room_forensic_v131"
+    ],
+    "canonical_gate_manifest": "tools/kg001_gate_manifest.py",
+    "contract_runner_consistency": "EXACT_ORDERED_MATCH_REQUIRED"
   },
   "export": {
     "command": "python tools/export_candidate3.py --godot <Godot>",
@@ -76,15 +111,17 @@
     "manual_gate": "G10_PENDING_USER",
     "known_good_tag_allowed": false,
     "first_manual_checks": [
-      "R1 natural spawn and floor traversal",
+      "R1 natural spawn and full floor traversal including former Object02 hole",
+      "R7/R8 floor support sanity",
       "R8 stairs up/down on both real stair profiles",
+      "all four required room transitions R1<->R7 and R1<->R8",
       "R7 well+tongs exact interaction plus audible 979TONGS",
       "ambient plus triggered audio",
       "KEYHOLE#/TONG6 transparency and correct KEYHOLE orientation",
       "complete demo route"
     ]
   },
-  "evidence_boundary": "Historical Candidate 3 failed manual G10 on R1/Object02. Any guarded rebuild must additionally pass v119 and generic collision-parity v120; no historical Candidate 3 PASS evidence may be reused.",
+  "evidence_boundary": "Historical Candidate 3 G10 evidence is stale for this integration. Any new build must pass v119, generic v120 collision parity, the mandatory PPPV v2 scenario suite, repeated chained playthrough determinism/integrity, guarded export startup smoke, and then fresh G10.",
   "historical_candidate3_result": {
     "status": "G10_FAIL",
     "blocker": "R1/Object02 missing collision under zxcoriR5",

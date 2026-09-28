@@ -24,11 +24,14 @@
       "step_clearance": 0.35,
       "safe_margin": 0.25,
       "floor_snap_length": 16,
-      "strategy": "only when normal horizontal test_move is blocked; near-to-far downward rays resolve the nearest valid tread independent of legacy winding; vertical lift and raised forward path must both pass collision tests",
-      "probe_strategy": "near-to-far multi-probe; choose smallest valid positive rise",
+      "strategy": "only when normal horizontal test_move is blocked; near-to-far downward rays resolve the nearest valid tread independent of legacy winding; sub-epsilon surface noise is ignored; vertical lift and a minimum collision-tested forward settle must both pass before the body advances; floor snap resolves the resulting tread contact",
+      "probe_strategy": "near-to-far multi-probe; choose smallest valid positive rise above step_surface_epsilon",
       "probe_distances": "dynamic motion+1, motion+4, motion+8, then configured max probe",
       "backface_policy": "explicit hit_back_faces=true; horizontal tread acceptance uses abs(normal.y) because legacy winding is not semantic",
-      "runtime_diagnostics": "bounded step_debug trace with probe hit/miss, face index, normal, height, rejection reason and success"
+      "runtime_diagnostics": "bounded step_debug trace with probe hit/miss, face index, normal, height, rejection reason and success",
+      "step_surface_epsilon": 0.75,
+      "minimum_forward_settle": 2,
+      "post_step_floor_snap": true
     }
   },
   "floor_regression": {
@@ -77,9 +80,9 @@
     "R1 active traversal makes real horizontal progress",
     "R1 maintains meaningful floor contact",
     "R8 step011 lower-to-upper traversal passes with production stair assist",
-    "R8 step011 upper-to-lower traversal passes with production floor snap",
+    "R8 step011 upper-to-lower traversal reaches a stable supported lower landing after input release",
     "R8 stairs__STAIR2 lower-to-upper traversal passes with production stair assist",
-    "R8 stairs__STAIR2 upper-to-lower traversal passes with production floor snap",
+    "R8 stairs__STAIR2 upper-to-lower traversal reaches a stable supported lower landing after input release",
     "no engine/script errors",
     "v117 result preserves production step-debug trace so a failed stair gate identifies probe/rejection cause"
   ],
@@ -118,5 +121,22 @@
       "pre_fix_penetration": false,
       "clearance_added": 4
     }
-  ]
+  ],
+  "portal_spawn_policy": {
+    "default_normal_offset": 120,
+    "candidate_offsets": [
+      120,
+      115,
+      125,
+      110,
+      130,
+      105,
+      135,
+      100
+    ],
+    "vertical_clearance": 4,
+    "selection": "nearest deterministic candidate whose eventual floor-resting capsule overlaps only its support collider",
+    "r8_object14_expected_offset": 115,
+    "hardcoded_per_portal_offsets_forbidden": true
+  }
 }

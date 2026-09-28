@@ -1,0 +1,31 @@
+{
+  "schema": "openazrael.kg001.all_transition_traversal_contract",
+  "version": 141,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "candidate_target": "KG-001 Candidate 4",
+  "route": [
+    "R1/spaview -> open door 1 -> traverse audited v119 corridor to TONG6 -> pick up TONG6 -> traverse audited corridor back -> zxcoriR5 -> R7/view",
+    "R7/view -> obtain Well Key with TONG6 -> zxwell2R6 -> R1/spaview",
+    "R1/spaview -> traverse audited v119 corridor to door 2 -> open door 2 with Well Key -> traverse final corridor waypoint -> zxcoriR2 -> R8/Object14",
+    "R8/Object14 -> zxorrery -> R1/entcori"
+  ],
+  "movement_policy": {
+    "setup_teleport": "Only canonical initial portal spawn is allowed; no teleport to a target/trigger during route traversal.",
+    "horizontal_movement": "Production Input through PPPVNavigator / CharacterBody3D.",
+    "interactions": "Production InteractionProbe + interact input.",
+    "state_mutation": "No direct pickup, door, key, or puzzle state injection in the route.",
+    "interaction_approach": "Movement may stop at a safe standoff; exact InteractionProbe acquisition is validated separately before interact input."
+  },
+  "pass_requires": [
+    "all four directed transitions are crossed by avatar movement",
+    "R1 door 1 is opened by production interaction",
+    "TONG6 is picked up by production interaction",
+    "Well Key is obtained by production interaction in R7",
+    "R1 door 2 is opened by production interaction using the acquired Well Key",
+    "all three rooms are visited and R1 is re-entered from both R7 and R8",
+    "no fall-through, unsupported-fall, non-finite state, stuck movement input, or softlock watchdog violation",
+    "every transition ends on supported destination geometry",
+    "interaction probing remains valid when the camera starts inside an authored interaction Area3D"
+  ],
+  "evidence_boundary": "A tracked contract is not runtime proof. Candidate 4 requires an asset-backed Godot v141 PASS at the exact build SHA."
+}

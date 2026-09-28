@@ -12,3 +12,6 @@ func interact() -> void:
         visual_node.visible = false
     print("Picked up: ", display_name if not display_name.is_empty() else item_id)
     queue_free()
+
+func interaction_cursor_id() -> String:
+    return "TAKE"

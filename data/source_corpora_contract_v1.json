@@ -1,0 +1,113 @@
+{
+  "schema": "openazrael.source_corpora_contract",
+  "version": 1,
+  "project_id": "openazrael",
+  "local_registry": {
+    "env": "OPENAZRAEL_SOURCE_HOME",
+    "default": "~/.openazrael/sources",
+    "registry_file": "registry.json",
+    "policy": "Registry and commercial payloads are local/private and MUST NOT be committed."
+  },
+  "corpora": {
+    "demo": {
+      "corpus_id": "openazrael_demo_atdemo_v1",
+      "kind": "demo",
+      "edition": "official_demo",
+      "status": "CANONICAL_IDENTITY_VERIFIED",
+      "accepted_source_types": [
+        "zip",
+        "directory"
+      ],
+      "canonical_archive": {
+        "name": "atdemo.zip",
+        "bytes": 5243364,
+        "sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+        "evidence": "data/tests/kg001_colorkey_corpus_audit_v116.json"
+      },
+      "extracted_shape": {
+        "required_exact": [
+          "PUZZLES.DAT",
+          "ROOMS.DAT",
+          "WORLD.DAT",
+          "MUSIC.DAT",
+          "R.EXE",
+          "CHARACTE.DAT"
+        ],
+        "required_patterns": [
+          {
+            "pattern": "AMB*.SND",
+            "min_count": 1
+          },
+          {
+            "pattern": "NPC*.DAT",
+            "min_count": 1
+          }
+        ],
+        "expected_counts": [
+          {
+            "pattern": "TEXTURES/*.AZF",
+            "count": 86
+          },
+          {
+            "pattern": "TEXTURES/*.XAF",
+            "count": 8
+          },
+          {
+            "pattern": "*.WAV",
+            "count": 30
+          }
+        ]
+      },
+      "runtime_restore": {
+        "tool": "tools/restore_candidate_assets.py",
+        "expected_trimesh": "5.1.0",
+        "nested_archive_materialization": "Fail-closed single-candidate ZIP chain, max depth 3, required for canonical atdemo.zip -> atdemo.exe -> RESOURCE.000 -> ATDEMO."
+      }
+    },
+    "retail": {
+      "corpus_id": "openazrael_retail_v1",
+      "kind": "retail",
+      "edition": "retail",
+      "status": "LOCAL_CANONICALIZATION_REQUIRED_ON_FIRST_REGISTRATION",
+      "accepted_source_types": [
+        "directory"
+      ],
+      "identity_mode": "FULL_LOCAL_SHA256_INVENTORY_PIN",
+      "extracted_shape": {
+        "required_exact": [
+          "PUZZLES.DAT",
+          "OBJECTS.DAT",
+          "ROOMS.DAT",
+          "CHARACTE.DAT"
+        ],
+        "evidence_patterns": [
+          "NIAMH.DAT",
+          "CON*.DAT",
+          "*.ANI",
+          "RANIM*.ANM"
+        ]
+      },
+      "evidence": [
+        "tools/compare_demo_retail_rooms.py",
+        "data/localization/extraction_config_v139.json",
+        "docs/RETAIL_ROOM_GEOMETRY_ATLAS_V1.md"
+      ],
+      "note": "The repository does not guess a retail corpus hash. First verified local registration pins the complete deterministic SHA-256 inventory outside Git; every later verify must match it exactly."
+    }
+  },
+  "source_safety": {
+    "never_commit": [
+      "original commercial binaries",
+      "ATDEMO payload",
+      "retail payload",
+      "local source registry",
+      "mirrored private source bundles"
+    ],
+    "allowed_in_git": [
+      "SHA-256 fingerprints",
+      "counts and sizes",
+      "source-safe contracts",
+      "derived validation metadata"
+    ]
+  }
+}

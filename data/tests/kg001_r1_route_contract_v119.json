@@ -96,15 +96,39 @@
       ]
     },
     {
-      "name": "floorbit03",
+      "name": "save_west_north",
       "point": [
-        -23.152938,
-        -114.276132,
-        32.386421
+        -75,
+        -114.3,
+        70
       ]
     },
     {
-      "name": "floorbit",
+      "name": "save_west_mid",
+      "point": [
+        -75,
+        -114.3,
+        20
+      ]
+    },
+    {
+      "name": "save_west_south",
+      "point": [
+        -50,
+        -114.3,
+        -20
+      ]
+    },
+    {
+      "name": "save_south_exit",
+      "point": [
+        0,
+        -115,
+        -50
+      ]
+    },
+    {
+      "name": "floorbit_face0",
       "point": [
         38.260757,
         -115.691564,
@@ -112,7 +136,7 @@
       ]
     },
     {
-      "name": "floorbit01",
+      "name": "floorbit01_face0",
       "point": [
         95.934301,
         -117.355663,
@@ -120,7 +144,7 @@
       ]
     },
     {
-      "name": "floorbit02",
+      "name": "floorbit02_face0",
       "point": [
         141.988445,
         -115.62203,
@@ -128,31 +152,71 @@
       ]
     },
     {
-      "name": "floorbit07",
+      "name": "floorbit02_face1",
       "point": [
-        238.31932,
-        -104.616944,
-        -303.747184
+        119.25,
+        -114.455,
+        -261.236
       ]
     },
     {
-      "name": "floorbit06",
+      "name": "floorbit07_face1",
       "point": [
-        309.006074,
-        -104.581536,
-        -377.3124
+        156.921,
+        -114.276,
+        -313.508
       ]
     },
     {
-      "name": "floorbit05",
+      "name": "floorbit07_face0",
       "point": [
-        379.40759,
-        -102.654593,
-        -442.602868
+        203.566,
+        -114.275,
+        -324.678
       ]
     },
     {
-      "name": "floorbit04",
+      "name": "floorbit06_face1",
+      "point": [
+        210.088,
+        -114.364,
+        -410.699
+      ]
+    },
+    {
+      "name": "floorbit06_face0",
+      "point": [
+        266.328,
+        -114.24,
+        -415.593
+      ]
+    },
+    {
+      "name": "floorbit05_face1",
+      "point": [
+        299.061,
+        -110.726,
+        -486.612
+      ]
+    },
+    {
+      "name": "floorbit05_face0",
+      "point": [
+        356.752,
+        -108.708,
+        -475.156
+      ]
+    },
+    {
+      "name": "floorbit04_face1",
+      "point": [
+        405.288,
+        -99.161,
+        -522.654
+      ]
+    },
+    {
+      "name": "floorbit04_face0",
       "point": [
         449.22172,
         -93.255052,
@@ -160,11 +224,11 @@
       ]
     },
     {
-      "name": "wall01",
+      "name": "wall01_face10",
       "point": [
-        476.230757,
-        -84.616455,
-        -504.15264
+        476.42,
+        -85.03,
+        -514.95
       ]
     },
     {
@@ -189,7 +253,7 @@
     "production CharacterBody3D reaches exact bug-report X/Z using gameplay move_forward input",
     "player crosses onto the second Object02 floor triangle without fall-through",
     "player returns to tunnel03 support",
-    "player follows every canonical route waypoint to tunnel07 with continuous support",
+    "player follows every runtime-verified walkable canonical route waypoint to tunnel07 with continuous support",
     "no segment stalls before its waypoint",
     "no fall recovery teleport or synthetic floor is used",
     "no engine/script errors"
@@ -205,9 +269,35 @@
     ],
     "tunnel03_spawn_floor_face_index": 0,
     "tunnel03_object02_projected_gap": 0.09813844622236,
-    "canonical_route_graph_nodes": 15,
-    "canonical_route_segments": 14,
+    "canonical_route_graph_nodes": 23,
+    "canonical_route_segments": 22,
     "all_main_segments_covered_by_walkable_floor_union_with_0_5_buffer": true,
-    "derivation": "shortest connected floor-triangle-center path from natural spaview-side tunnel03 support to entcori-side tunnel07 support in restored R1.glb, with Object02 Candidate-3 detour added explicitly"
+    "derivation": "asset-backed Godot 4.7.2 route rebuilt after runtime diagnostics rejected the old Collision_save crossing and steep side-face centroids; uses the verified save detour, actual walkable floor-face centers, walkable wall01 face 10 threshold, and production CharacterBody3D input to tunnel07",
+    "runtime_rebuild": {
+      "old_collision_save_crossing_rejected": true,
+      "old_floorbit07_steep_side_face_rejected": true,
+      "old_floorbit06_steep_side_face_rejected": true,
+      "old_wall01_steep_centroid_rejected": true,
+      "wall01_threshold_face_index": 10,
+      "wall01_threshold_normal_y_approx": 0.797,
+      "local_godot_4_7_2_result": "PASS",
+      "local_checks": 138
+    }
+  },
+  "player_space_route_policy": {
+    "capsule_radius": 11,
+    "mesh_centers_are_not_implicitly_player_waypoints": true,
+    "known_authored_obstacles_avoided": [
+      "Collision_save",
+      "steep side faces of floorbit07/floorbit06"
+    ],
+    "non_player_space_mesh_centers_removed": [
+      "old floorbit07 steep side-face centroid",
+      "old floorbit06 steep side-face centroid",
+      "old wall01 steep-face centroid"
+    ],
+    "movement": "production CharacterBody3D + move_forward only",
+    "teleport_between_waypoints_forbidden": true,
+    "walkable_threshold": "wall01 face 10"
   }
 }

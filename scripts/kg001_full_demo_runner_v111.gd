@@ -125,7 +125,8 @@ func _run() -> void:
 
     _check("well_key_interaction", _interact_named(manager, "Interact_WellKey"))
     await _settle(1)
-    _check("well_key_acquired", state.has("well_key"))\n    _check("well_tongs_consumed", not state.has("rusty_tongs"))
+    _check("well_key_acquired", state.has("well_key"))
+    _check("well_tongs_consumed", not state.has("rusty_tongs"))
 
     _check("switch_lever_exists", _find_named(manager.current_room, "Interact_well_lev02") != null)
     _check("switch_wheel_exists", _find_named(manager.current_room, "Interact_well_weel3") != null)
