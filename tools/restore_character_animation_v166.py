@@ -116,6 +116,9 @@ def main():
     a=ap.parse_args()
     src=a.demo_dir.resolve(); xaf=src/"TEXTURES/NIAMH.XAF"; ani=src/"NIAMH.ANI"
     if not xaf.is_file() or not ani.is_file(): raise FileNotFoundError("NIAMH.XAF/NIAMH.ANI")
+    expected={"NIAMH.XAF":"6208e8831aa196b328b1c0f526765955e3eb0816e4a706f5c6c337c6c2708692","NIAMH.ANI":"36192765d8ecc4b61d5084efcf6ccb20cc8d3032ec4b415297a75af34f0e008c"}
+    if hashlib.sha256(xaf.read_bytes()).hexdigest()!=expected["NIAMH.XAF"] or hashlib.sha256(ani.read_bytes()).hexdigest()!=expected["NIAMH.ANI"]:
+        raise ValueError("canonical Niamh source fingerprint mismatch")
     text=xaf.read_text("latin1"); aset=animation_set(text); paths=node_paths(text); rr=ranges(ani)
     if (len(aset),sum(bool(r[s]) for r in aset.values() for s in ("rotate_keys","scale_keys","position_keys")),
         sum(len(r[s]) for r in aset.values() for s in ("rotate_keys","scale_keys","position_keys"))) != (19,57,268):
