@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "candidate4-finalization-20260924",
   "owner": "OpenAzrael Candidate 4 rejection repair thread 01a0e211-6bc3-7462-ae3a-f697836d21d0",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,7 +12,7 @@
   "acquired_on": "2026-09-24",
   "expires": null,
   "takeover_policy": "No automatic takeover. A different thread must stop before any write/build/validation and may take over only after explicit user authorization plus repository-state reconciliation.",
-  "note": "Rejection repair synchronized at 0c1cc86353d449ffac3487c0f8e4d9a2f5032186. Source gates 57/57 PASS; unit tests 231 PASS; runtime gates 27/28 PASS with required Niamh Conv gate BLOCKED_SOURCE_ANIMATION. Fresh restore/import verified, 277 PNG/GLB/WAV hashes identical. No build exported or Candidate promoted. Candidate 4 remains REJECTED. Local source trees CLEAN; validation processes stopped.",
+  "note": "User requested continued rejection repair to a result. Same authorized owner investigating original Niamh animation mapping and restoration. Candidate promotion remains blocked until required gates and packaged E2E pass.",
   "last_verified_transition_gate": "kg001_transition_continuity_v163:PASS",
   "last_verified_transition_directions": [
     "R1->R7",
@@ -25,7 +25,7 @@
   "last_verified_menu_gate": "kg001_legacy_menu_v145:PASS",
   "takeover_authorized_on": "2026-09-27",
   "takeover_authorization": "User explicitly authorized takeover in this thread: Autorizujem.",
-  "released_on": "2026-09-28",
   "last_repair_verdict": "BUILD BLOCKED",
-  "last_repair_blocker": "Required Niamh Conv clip is source-identified but not decoded/restored; v137 BLOCKED_SOURCE_ANIMATION."
+  "last_repair_blocker": "Required Niamh Conv clip is source-identified but not decoded/restored; v137 BLOCKED_SOURCE_ANIMATION.",
+  "resumed_on": "2026-09-28"
 }
