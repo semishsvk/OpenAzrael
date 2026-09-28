@@ -162,7 +162,9 @@
         "R7.XAF: zxactghost / nibody",
         "ROOMS.DAT: standalone R7NiamhAZ identifier",
         "PUZZLES.DAT: Niamh/Conv action family at 0x24E,0x3CA,0x488,0x546,0x604,0x6C2",
-        "CHARACTE.DAT -> Niamh -> NIAMH.DAT"
+        "CHARACTE.DAT -> Niamh -> NIAMH.DAT",
+        "NIAMH.ANI: NOLOOP1 0-14; REST 15-41; NOLOOP2 42-57",
+        "NIAMH.XAF: 19 animated nodes / 57 transform tracks / 268 keys"
       ],
       "actions": [
         {
@@ -182,19 +184,20 @@
         {
           "op": "request_character_animation",
           "character": "Niamh",
-          "family": "Conv",
+          "family": "NOLOOP1",
           "target_object": "nibody",
           "source_required": true,
           "confidence": "HIGH",
-          "note": "Niamh/Conv action family is source-backed. Exact original character-ANI keyframes/timing remain HOLD; no fallback animation is permitted."
+          "note": "NIAMH.ANI source sequence: NOLOOP1 frames 0-14, then REST frames 15-41. XAF transform tracks are restored by v166.",
+          "next_family": "REST"
         },
         {
           "op": "request_conversation",
           "character": "Niamh",
-          "family": "Conv",
+          "family": "1A",
           "source_required": true,
           "confidence": "HIGH",
-          "note": "NIAMH.DAT character/conversation data is verified. Exact trigger-associated spoken line remains HOLD until source-bound."
+          "note": "NIAMH.DAT begins with conversation identifier 1A; do not alias conversation state to an invented Conv animation clip."
         }
       ],
       "acceptance": {
@@ -208,7 +211,6 @@
   "hold": [
     "Exact R8RaiseTimer duration remains HOLD; current animation uses S121.WAV duration proxy.",
     "DoorR8 +90 degree animation is geometry-supported but original runtime angle/timing remain HOLD.",
-    "Opcode 0x0e R8Counter semantics remain UNKNOWN.",
-    "Niamh/Conv trigger binding is source-backed, but exact original character-ANI keyframes/timing and exact trigger-associated spoken line remain HOLD until recovered."
+    "Opcode 0x0e R8Counter semantics remain UNKNOWN."
   ]
 }
