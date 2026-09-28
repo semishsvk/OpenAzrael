@@ -123,9 +123,9 @@ func _run() -> void:
         _check("R7_niamh_source_model_bound", String(first_status.get("model", "")) == "res://assets/characters/Niamh/Niamh.glb")
         _check("R7_niamh_source_clip_bound", String(first_status.get("source", "")) == "res://assets/characters/Niamh/NOLOOP1.tres")
         _check("R7_niamh_rest_queued", String(first_status.get("next_family", "")) == "REST")
-        var source_root = manager.get_node_or_null(String(first_status.get("animation_player", "")).get_base_dir())
-        _check("R7_niamh_source_hierarchy_instantiated", source_root != null)
         var source_player = manager.get_node_or_null(String(first_status.get("animation_player", ""))) as AnimationPlayer
+        var source_root = source_player.get_parent() if source_player != null else null
+        _check("R7_niamh_source_hierarchy_instantiated", source_root != null)
         _check("R7_niamh_source_player_exists", source_player != null)
         if source_player != null:
             _check("R7_niamh_noloop1_loaded", source_player.has_animation(&"NOLOOP1"))
@@ -136,7 +136,8 @@ func _run() -> void:
                 var bad_paths: Array[String] = []
                 for track_index in source_clip.get_track_count():
                     var node_path := source_clip.track_get_path(track_index)
-                    if source_player.get_node_or_null(source_player.root_node).get_node_or_null(node_path.get_concatenated_names()) == null:
+                    var animation_root = source_player.get_node_or_null(source_player.root_node)
+                    if animation_root == null or animation_root.get_node_or_null(node_path.get_concatenated_names()) == null:
                         bad_paths.append(String(node_path))
                 _check("R7_niamh_track_paths_resolve", bad_paths.is_empty())
 
