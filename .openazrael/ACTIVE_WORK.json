@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "candidate4-finalization-20260924",
   "owner": "OpenAzrael Candidate 4 rejection repair thread 01a0e211-6bc3-7462-ae3a-f697836d21d0",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,7 +12,7 @@
   "acquired_on": "2026-09-24",
   "expires": null,
   "takeover_policy": "No automatic takeover. A different thread must stop before any write/build/validation and may take over only after explicit user authorization plus repository-state reconciliation.",
-  "note": "User requested continued rejection repair to a result. Same authorized owner investigating original Niamh animation mapping and restoration. Candidate promotion remains blocked until required gates and packaged E2E pass.",
+  "note": "Forensic follow-up finished; no source mutation or running build. Integration remains clean at 0c1cc86353d449ffac3487c0f8e4d9a2f5032186. Local audit 21/21 checks PASS; no runtime repair or new candidate claimed.",
   "last_verified_transition_gate": "kg001_transition_continuity_v163:PASS",
   "last_verified_transition_directions": [
     "R1->R7",
@@ -26,6 +26,7 @@
   "takeover_authorized_on": "2026-09-27",
   "takeover_authorization": "User explicitly authorized takeover in this thread: Autorizujem.",
   "last_repair_verdict": "BUILD BLOCKED",
-  "last_repair_blocker": "Required Niamh Conv clip is source-identified but not decoded/restored; v137 BLOCKED_SOURCE_ANIMATION.",
-  "resumed_on": "2026-09-28"
+  "last_repair_blocker": "Original NIAMH.XAF has 19 animated nodes/57 tracks/268 keys; restore ignores the character hierarchy and runtime targets static nibody. Conv suffix is after NUL, not a proven clip name. WORLD enqueues NOLOOP1 (16), parameter10, REST (1), parameter0, starts queue and requests conversation1A. Timing/placement and production restoration remain unverified.",
+  "resumed_on": "2026-09-28",
+  "last_animation_audit_sha256": "74038986ed770441799df70bb8e4b2897499849b90fd56bbcd2e2108da2dc62a"
 }
