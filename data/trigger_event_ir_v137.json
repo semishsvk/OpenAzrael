@@ -71,13 +71,34 @@
           "ROOMS.DAT standalone identifier R7NiamhAZ",
           "PUZZLES.DAT Niamh/Conv action family at source offsets 590, 970, 1160, 1350, 1540, 1730",
           "CHARACTE.DAT -> Niamh -> NIAMH.DAT verified character data path",
-          "ROOMS printable corpus contains a NiamhCallAZ substring only in concatenated context; it is not promoted as a standalone symbol"
+          "ROOMS printable corpus contains a NiamhCallAZ substring only in concatenated context; it is not promoted as a standalone symbol",
+          "NIAMH.ANI: NOLOOP1 0-14, REST 15-41, NOLOOP2 42-57",
+          "NIAMH.XAF animation_set: 19 nodes, 57 tracks, 268 keyframes"
         ],
         "animation_requirement": {
           "character": "Niamh",
-          "family": "Conv",
+          "family": "NOLOOP1",
+          "next_family": "REST",
           "target_object": "nibody",
-          "exact_original_keyframes": "HOLD",
+          "source_ranges": {
+            "NOLOOP1": [
+              0,
+              14
+            ],
+            "REST": [
+              15,
+              41
+            ],
+            "NOLOOP2": [
+              42,
+              57
+            ]
+          },
+          "source_census": {
+            "animated_nodes": 19,
+            "tracks": 57,
+            "keyframes": 268
+          },
           "fallback": "NONE"
         }
       },
@@ -209,7 +230,6 @@
     ]
   },
   "holds": [
-    "Original Niamh character-ANI keyframes/timing are not decoded in the tracked source-safe corpus; do not synthesize a tween or substitute AI-generated animation.",
     "The user-provided 'Oisin...' wording is a research hint only. The exact zxactghost-associated spoken string must be recovered from source conversation data before any canonical text is implemented.",
     "R1 zxentry/textwall, R7 death-family action semantics, and R8 zxminehd/zxsecret/zxsound* remain explicit HOLD until original action bindings are recovered."
   ]
