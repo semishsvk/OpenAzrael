@@ -77,7 +77,7 @@ def clipped(keys,start,end):
 def write_clip(path,name,start,end,tracks,fps):
     lines=['[gd_resource type="Animation" format=3]','',
            '[resource]',f'resource_name = "{name}"',
-           f'length = {fmt((end-start)/fps)}','loop_mode = 0']
+           f'length = {fmt((end-start)/fps)}',f'loop_mode = {1 if name == "REST" else 0}']
     ti=0
     for obj,rec in tracks.items():
         np=rec["path"]
