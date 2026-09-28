@@ -461,25 +461,56 @@ func _on_character_animation_requested(request: Dictionary) -> void:
             result["source"] = "ROOM_IMPORTED_ANIMATION"
             break
 
-    # Generic source-derived character animation bridge. The converter may
-    # restore a Godot Animation resource under this ignored runtime root;
-    # production code never embeds or invents commercial animation payloads.
+    # Source-derived character bridge. The authored room object is only the
+    # placement proxy; NIAMH.XAF owns the actual 19-node animated hierarchy.
     if result["status"] != "PLAYING_SOURCE_CLIP" and target != null:
+        var model_path := "res://assets/characters/%s/%s.glb" % [character, character]
         var source_path := "res://assets/characters/%s/%s.tres" % [character, family]
-        if ResourceLoader.exists(source_path):
-            var clip := load(source_path) as Animation
-            if clip != null:
-                var source_player := AnimationPlayer.new()
-                source_player.name = "SourceCharacterAnimation_" + character + "_" + family
-                source_player.root_node = NodePath("..")
-                target.add_child(source_player)
-                var library := AnimationLibrary.new()
-                library.add_animation(StringName(family), clip)
-                source_player.add_animation_library(&"", library)
-                source_player.play(StringName(family))
-                result["status"] = "PLAYING_SOURCE_CLIP"
-                result["animation_player"] = String(source_player.get_path())
-                result["source"] = source_path
+        if ResourceLoader.exists(model_path) and ResourceLoader.exists(source_path):
+            var character_root := target.get_parent().get_node_or_null("SourceCharacter_" + character)
+            if character_root == null:
+                var packed := load(model_path) as PackedScene
+                if packed != null:
+                    character_root = packed.instantiate()
+                    character_root.name = "SourceCharacter_" + character
+                    target.get_parent().add_child(character_root)
+                    character_root.transform = target.transform
+                    # The R7 nibody mesh is a static placement proxy. Do not
+                    # render it together with the restored source character.
+                    target.visible = false
+            if character_root != null:
+                var clip := load(source_path) as Animation
+                if clip != null:
+                    var source_player := character_root.get_node_or_null("SourceCharacterAnimation") as AnimationPlayer
+                    if source_player == null:
+                        source_player = AnimationPlayer.new()
+                        source_player.name = "SourceCharacterAnimation"
+                        source_player.root_node = NodePath("..")
+                        character_root.add_child(source_player)
+                    var library := source_player.get_animation_library(&"")
+                    if library == null:
+                        library = AnimationLibrary.new()
+                        source_player.add_animation_library(&"", library)
+                    if library.has_animation(StringName(family)):
+                        library.remove_animation(StringName(family))
+                    library.add_animation(StringName(family), clip)
+                    var next_family := String(request.get("next_family", ""))
+                    if not next_family.is_empty():
+                        var next_path := "res://assets/characters/%s/%s.tres" % [character, next_family]
+                        if ResourceLoader.exists(next_path):
+                            var next_clip := load(next_path) as Animation
+                            if next_clip != null:
+                                if library.has_animation(StringName(next_family)):
+                                    library.remove_animation(StringName(next_family))
+                                library.add_animation(StringName(next_family), next_clip)
+                    source_player.play(StringName(family))
+                    if not next_family.is_empty() and library.has_animation(StringName(next_family)):
+                        source_player.queue(StringName(next_family))
+                    result["status"] = "PLAYING_SOURCE_CLIP"
+                    result["animation_player"] = String(source_player.get_path())
+                    result["source"] = source_path
+                    result["model"] = model_path
+                    result["next_family"] = next_family
 
     _character_animation_status[character] = result
     CandidateDiagnostics.record_event("character_animation_request", result)
