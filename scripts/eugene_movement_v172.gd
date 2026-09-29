@@ -5,10 +5,11 @@ const SOURCE_SPEED := 12.0
 const SOURCE_CANDIDATE_DISTANCE := 80.0
 const SOURCE_RUN_MIN := 2
 const SOURCE_RUN_MAX := 7
+const SOURCE_RECOVERY_UPDATES := 50
 
 var source_direction := Vector3.ZERO
 var remaining_run_steps := 0
-var prng_status := "ENTRY_NO_RAND_CONSUMPTION_V191_SHARED_GLOBAL_STREAM_REQUIRED_LATER"
+var prng_status := "GLOBAL_WATCOM_STREAM_V192_NO_LOCAL_RESET"
 var model_front_calibration := "SOURCE_XAF_V188_LOCAL_PLUS_X_ROOT_TRANSFORM"
 
 func configure(direction: Vector3) -> void:
@@ -53,7 +54,10 @@ func can_autogenerate_heading() -> bool:
     return false
 
 func startup_random_movement_status() -> String:
-    return "R_EXE_V191_COUNTDOWN_0_NO_ENTRY_RAND"
+    return "R_EXE_V192_COUNTDOWN_0_DEFAULT_RECOVERY_50_SHARED_GLOBAL_RAND"
+
+func source_recovery_update_count() -> int:
+    return SOURCE_RECOVERY_UPDATES
 
 func random_heading_from_shared_stream(legacy_rand: Node) -> Vector3:
     # Invoke only from a source-backed RandomMovement path; never reset here.
