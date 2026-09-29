@@ -96,7 +96,7 @@
     "parameter_semantics": "UNKNOWN_SOURCE_SEMANTICS"
   },
   "holds": {
-    "model_front": "HOLD_SOURCE_PROOF",
+    "model_front": "RESOLVED_SOURCE_XAF_V188_LOCAL_PLUS_X",
     "global_rand_call_index": "HOLD_GLOBAL_RAND_CALL_INDEX_AND_BRANCH_STATE_AT_EUGENE_ENTRY",
     "animation_clock": "HOLD_SOURCE_CLOCK_PROOF",
     "trigger_parameter_200": "HOLD_SOURCE_SEMANTICS"
@@ -108,5 +108,11 @@
     "MAP_TRIGGER_PARAMETER_200_WITHOUT_SOURCE_PROOF",
     "PRESENT_15_FPS_AS_SOURCE_EXACT",
     "SYNTHETIC_EUGENE_ASSET"
-  ]
+  ],
+  "model_front": {
+    "status": "SOURCE_GEOMETRY_VERIFIED",
+    "contract": "data/tests/kg001_eugene_model_front_contract_v188.json",
+    "local_axis": "+X",
+    "policy": "SOURCE_ROOT_TRANSFORM_NO_ARBITRARY_YAW"
+  }
 }
