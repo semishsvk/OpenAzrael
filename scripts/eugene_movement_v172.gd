@@ -8,7 +8,7 @@ const SOURCE_RUN_MAX := 7
 
 var source_direction := Vector3.ZERO
 var remaining_run_steps := 0
-var prng_status := "GLOBAL_CALL_INDEX_AND_BRANCH_STATE_HOLD"
+var prng_status := "ENTRY_NO_RAND_CONSUMPTION_V191_SHARED_GLOBAL_STREAM_REQUIRED_LATER"
 var model_front_calibration := "SOURCE_XAF_V188_LOCAL_PLUS_X_ROOT_TRANSFORM"
 
 func configure(direction: Vector3) -> void:
@@ -51,3 +51,11 @@ func can_autogenerate_heading() -> bool:
     # LCG/default next=1 are source-backed, but Eugene's exact position in the
     # shared global rand() call stream is not yet proven. Never reset per NPC.
     return false
+
+func startup_random_movement_status() -> String:
+    return "R_EXE_V191_COUNTDOWN_0_NO_ENTRY_RAND"
+
+func random_heading_from_shared_stream(legacy_rand: Node) -> Vector3:
+    # Invoke only from a source-backed RandomMovement path; never reset here.
+    var degrees := heading_degrees_from_legacy_rand(legacy_rand)
+    return Vector3.ZERO if degrees < 0 else heading_direction_from_degrees(degrees)
