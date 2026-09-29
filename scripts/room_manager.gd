@@ -488,7 +488,7 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                         # character_root is the instantiated source GLB itself.
                         # XAF-derived clip paths are relative to that hierarchy,
                         # so the player must resolve tracks from its parent GLB.
-                        source_player.root_node = NodePath("..")
+                        source_player.root_node = NodePath("../world")
                         character_root.add_child(source_player)
                     var library := source_player.get_animation_library(&"")
                     if library == null:
@@ -654,7 +654,7 @@ func _setup_r1_eugene_spawns() -> void:
         # v179 clips address the XAF hierarchy from its authored top-level
         # object. The GLB is a child of the runtime wrapper, so bind the
         # AnimationPlayer root directly to that model subtree.
-        source_player.root_node = NodePath("../" + character + "_Model")
+        source_player.root_node = NodePath("../" + character + "_Model/world")
         root.add_child(source_player)
         var source_library := AnimationLibrary.new()
         source_player.add_animation_library(&"", source_library)
