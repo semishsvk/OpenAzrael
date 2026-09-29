@@ -48,7 +48,12 @@ def main():
                 raise ValueError((character,name,rr.get(name),bounds))
         stats=key_stats(aset)
         if spec["census"] is not None and stats!=spec["census"]: raise ValueError((character,"census",stats,spec["census"]))
+        for name,(start,end) in rr.items():
+            if start < stats["frame_min"] or end > stats["frame_max"] or end < start:
+                raise ValueError((character,"ANI_RANGE_OUTSIDE_XAF",name,(start,end),(stats["frame_min"],stats["frame_max"])))
         out_root=ROOT/"assets/characters"/character; out_root.mkdir(parents=True,exist_ok=True)
+        for stale in out_root.glob("*.tres"):
+            stale.unlink()
         scene,objs,prims,mats,resolved,missing=parse(xaf,ROOT/"assets/textures/classic")
         if missing: raise ValueError((character,"missing textures",missing))
         glb=out_root/(character+".glb"); scene.export(glb)
@@ -62,7 +67,10 @@ def main():
             "source_xaf":spec["xaf"],"source_xaf_sha256":hashlib.sha256(xaf.read_bytes()).hexdigest(),
             "source_ani":spec["ani"],"source_ani_sha256":hashlib.sha256(ani.read_bytes()).hexdigest(),
             "source_fingerprint_status":"OBSERVED_FROM_REGISTERED_CANONICAL_CORPUS_NOT_YET_PINNED_IN_GIT",
-            "census":stats,"ani_ranges":{k:list(v) for k,v in sorted(rr.items())},"model":str(glb.relative_to(ROOT)).replace("\\","/"),
+            "census":stats,"ani_ranges":{k:list(v) for k,v in sorted(rr.items())},
+            "stale_clip_policy":"DELETE_BEFORE_SOURCE_EXPORT",
+            "ani_xaf_range_validation":"PASS",
+            "model":str(glb.relative_to(ROOT)).replace("\\","/"),
             "model_sha256":hashlib.sha256(glb.read_bytes()).hexdigest(),"clips":clips}
     a.manifest.parent.mkdir(parents=True,exist_ok=True)
     a.manifest.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
