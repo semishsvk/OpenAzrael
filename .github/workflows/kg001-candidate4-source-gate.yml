@@ -39,6 +39,7 @@ jobs:
           python tools/validate_kg001_eugene_animation_audio_v173.py
           python tools/validate_kg001_eugene_restore_v179.py
           python tools/validate_kg001_eugene_fidelity_v181.py
+          python tools/validate_kg001_eugene_random_movement_re_v185.py
           python tools/validate_kg001_eugene_executable_re_v182.py
           python tools/validate_kg001_eugene_executable_character_controller_v183.py
           python tools/validate_kg001_eugene_prng_v174.py
@@ -52,6 +53,7 @@ jobs:
             tools/restore_eugene_animation_v179.py \
             tools/validate_kg001_eugene_restore_v179.py \
             tools/validate_kg001_eugene_fidelity_v181.py \
+            tools/validate_kg001_eugene_random_movement_re_v185.py \
             tools/validate_kg001_eugene_executable_re_v182.py \
             tools/validate_kg001_eugene_executable_character_controller_v183.py \
             tools/validate_kg001_niamh_conversation_v180.py
