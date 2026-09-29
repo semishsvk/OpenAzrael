@@ -31,6 +31,20 @@ jobs:
         run: |
           python tools/validate_kg001_character_animation_v138.py
           python -m py_compile tools/restore_character_animation_v166.py
+      - name: Validate R1 Eugene source character chain
+        run: |
+          python tools/validate_kg001_eugene_spawn_v171.py
+          python tools/validate_kg001_eugene_movement_v172.py
+          python tools/validate_kg001_eugene_animation_audio_v173.py
+          python tools/validate_kg001_eugene_prng_v174.py
+          python tools/validate_kg001_r1_r7_character_integration_v175.py
+          python -m py_compile \
+            tools/validate_kg001_eugene_spawn_v171.py \
+            tools/validate_kg001_eugene_movement_v172.py \
+            tools/validate_kg001_eugene_animation_audio_v173.py \
+            tools/validate_kg001_eugene_prng_v174.py \
+            tools/validate_kg001_r1_r7_character_integration_v175.py
+
       - name: Validate Candidate 4 hard release contract
         run: python tools/validate_candidate4_release_contract_v132.py
       - name: Validate Candidate 4 MUSIC.DAT route contract
