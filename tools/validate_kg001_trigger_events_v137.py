@@ -14,6 +14,7 @@ def main():
     contract = load_json("data/tests/kg001_trigger_event_contract_v137.json")
     room_manager = (ROOT / "scripts/room_manager.gd").read_text(encoding="utf-8")
     event_runner = (ROOT / "scripts/legacy_event_runner_v87.gd").read_text(encoding="utf-8")
+    runtime_runner = (ROOT / "scripts/kg001_trigger_event_runner_v137.gd").read_text(encoding="utf-8")
 
     checks = {}
     checks["schema"] = (
@@ -144,6 +145,16 @@ def main():
         and "HOLD_SOURCE_CLIP_MISSING" in room_manager
         and "create_tween()" not in room_manager[room_manager.find("func _on_character_animation_requested("):room_manager.find("func _setup_r7_switchboard()")]
     )
+    checks["runtime_playback_completion_evidence"] = all(marker in runtime_runner for marker in [
+        "R7_niamh_noloop1_initially_active",
+        "R7_niamh_source_motion_observed",
+        "R7_niamh_transitions_to_rest",
+        "R7_niamh_rest_looping",
+        "R7_niamh_rest_playback_advances",
+        "HOLD_ORIGINAL_RUNTIME_ORACLE",
+        '"playback_evidence"',
+    ])
+
     checks["event_runner_requests"] = all(marker in event_runner for marker in [
         "signal character_animation_requested(request: Dictionary)",
         "signal conversation_requested(request: Dictionary)",
