@@ -40,6 +40,7 @@ jobs:
           python tools/validate_kg001_eugene_restore_v179.py
           python tools/validate_kg001_eugene_fidelity_v181.py
           python tools/validate_kg001_eugene_executable_re_v182.py
+          python tools/validate_kg001_eugene_executable_character_controller_v183.py
           python tools/validate_kg001_eugene_prng_v174.py
           python tools/validate_kg001_r1_r7_character_integration_v175.py
           python -m py_compile \
@@ -52,6 +53,7 @@ jobs:
             tools/validate_kg001_eugene_restore_v179.py \
             tools/validate_kg001_eugene_fidelity_v181.py \
             tools/validate_kg001_eugene_executable_re_v182.py \
+            tools/validate_kg001_eugene_executable_character_controller_v183.py \
             tools/validate_kg001_niamh_conversation_v180.py
 
       - name: Validate Candidate 4 hard release contract
