@@ -1,0 +1,62 @@
+{
+  "schema": "openazrael.kg001.eugene_le_mapping_contract",
+  "version": 184,
+  "status": "STRUCTURAL_VERIFIED",
+  "source": {
+    "file": "R.EXE",
+    "bytes": 1703907,
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "le": {
+    "header_file_offset": 228684,
+    "header_hex": "0x37D4C",
+    "cpu": "80386",
+    "os": "OS2_LE_FIELD_USED_BY_DOS4G",
+    "module_pages": 305,
+    "page_size": 4096,
+    "object_count": 2,
+    "objects": [
+      {
+        "index": 1,
+        "virtual_size": 1173723,
+        "reloc_base": 65536,
+        "flags": 8261,
+        "page_map_index": 1,
+        "page_count": 287
+      },
+      {
+        "index": 2,
+        "virtual_size": 356960,
+        "reloc_base": 1245184,
+        "flags": 8259,
+        "page_map_index": 288,
+        "page_count": 18
+      }
+    ],
+    "data_pages_header_relative_offset": 238592,
+    "data_pages_file_offset": 467276,
+    "entry": {
+      "object": 1,
+      "offset": 188124,
+      "file_offset": 655400
+    },
+    "fixup": {
+      "section_size": 225990,
+      "page_table_header_relative": 1475,
+      "record_table_header_relative": 2699
+    }
+  },
+  "proof": [
+    "LE signature + byte/word order + CPU/object/page fields are internally consistent.",
+    "Interpreting data-page offset relative to LE header yields coherent 32-bit x86 at the mapped entry point.",
+    "Treating data-page offset as an absolute file offset yields non-code for the same entry mapping."
+  ],
+  "next": [
+    "PARSE_FIXUP_PAGE_TABLE",
+    "PARSE_FIXUP_RECORDS",
+    "BUILD_RELOCATED_XREF_INDEX",
+    "TRACE_RANDOMMOVEMENT",
+    "TRACE_CHARACTER_TIMER_TRIGGER_PATH"
+  ],
+  "policy": "Do not derive executable xrefs from raw file offsets. Resolve LE objects/pages/fixups first."
+}
