@@ -41,8 +41,11 @@ def main():
         xaf=src/"TEXTURES"/spec["xaf"]; ani=src/spec["ani"]
         if not xaf.is_file() or not ani.is_file(): raise FileNotFoundError(f"{spec['xaf']}/{spec['ani']}")
         text=xaf.read_text("latin1"); aset=animation_set(text); paths=node_paths(text); rr=ranges(ani)
+        if not rr:
+            raise ValueError((character,"ANI_HAS_NO_RANGES"))
         for name,bounds in REQUIRED.items():
-            if rr.get(name)!=bounds: raise ValueError((character,name,rr.get(name),bounds))
+            if name in rr and rr[name]!=bounds:
+                raise ValueError((character,name,rr.get(name),bounds))
         stats=key_stats(aset)
         if spec["census"] is not None and stats!=spec["census"]: raise ValueError((character,"census",stats,spec["census"]))
         out_root=ROOT/"assets/characters"/character; out_root.mkdir(parents=True,exist_ok=True)
@@ -51,7 +54,7 @@ def main():
         glb=out_root/(character+".glb"); scene.export(glb)
         tracks={k:{**v,"path":paths[k]} for k,v in aset.items()}
         clips={}
-        for name,(start,end) in REQUIRED.items():
+        for name,(start,end) in rr.items():
             out=out_root/(name+".tres")
             clips[name]={"range":[start,end],"track_count":write_clip(out,name,start,end,tracks,a.fps),
                          "sha256":hashlib.sha256(out.read_bytes()).hexdigest()}
@@ -59,7 +62,7 @@ def main():
             "source_xaf":spec["xaf"],"source_xaf_sha256":hashlib.sha256(xaf.read_bytes()).hexdigest(),
             "source_ani":spec["ani"],"source_ani_sha256":hashlib.sha256(ani.read_bytes()).hexdigest(),
             "source_fingerprint_status":"OBSERVED_FROM_REGISTERED_CANONICAL_CORPUS_NOT_YET_PINNED_IN_GIT",
-            "census":stats,"model":str(glb.relative_to(ROOT)).replace("\\","/"),
+            "census":stats,"ani_ranges":{k:list(v) for k,v in sorted(rr.items())},"model":str(glb.relative_to(ROOT)).replace("\\","/"),
             "model_sha256":hashlib.sha256(glb.read_bytes()).hexdigest(),"clips":clips}
     a.manifest.parent.mkdir(parents=True,exist_ok=True)
     a.manifest.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
