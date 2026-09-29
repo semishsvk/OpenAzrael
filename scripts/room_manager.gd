@@ -524,12 +524,31 @@ func _on_character_animation_requested(request: Dictionary) -> void:
         )
 
 func _on_conversation_requested(request: Dictionary) -> void:
-    # Conversation dispatch is explicit even while the exact trigger-associated
-    # line remains HOLD. Never substitute a remembered or guessed line.
+    var character := String(request.get("character", ""))
+    var family := String(request.get("family", ""))
+    if character == "Niamh" and family == "1A":
+        var contract_path := "res://data/tests/kg001_niamh_conversation_1a_contract_v180.json"
+        var parsed = JSON.parse_string(FileAccess.get_file_as_string(contract_path))
+        if parsed is Dictionary and String(parsed.get("opening", "")) != "":
+            CandidateDiagnostics.record_event("conversation_request", {
+                "room": current_room_id,
+                "character": character,
+                "family": family,
+                "source_required": bool(request.get("source_required", false)),
+                "status": "SOURCE_TEXT_READY",
+                "opening": String(parsed.get("opening", "")),
+                "audio_status": String(parsed.get("audio", {}).get("status", ""))
+            })
+            return
+        CandidateDiagnostics.record_event("conversation_request", {
+            "room": current_room_id, "character": character, "family": family,
+            "status": "FAIL_SOURCE_CONVERSATION_CONTRACT"
+        })
+        return
     CandidateDiagnostics.record_event("conversation_request", {
         "room": current_room_id,
-        "character": String(request.get("character", "")),
-        "family": String(request.get("family", "")),
+        "character": character,
+        "family": family,
         "source_required": bool(request.get("source_required", false)),
         "status": "HOLD_EXACT_TRIGGER_LINE"
     })
