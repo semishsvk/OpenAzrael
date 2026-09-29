@@ -124,5 +124,14 @@
     "ANIMATION_CLOCK_SOURCE_PROOF",
     "EUGROAR_TRIGGER_PARAMETER_200_SEMANTICS"
   ],
-  "policy": "STRUCTURAL evidence only; parser token proximity does not establish runtime units, clock rate, coordinate transform, or trigger parameter semantics."
+  "policy": "STRUCTURAL evidence only; parser token proximity does not establish runtime units, clock rate, coordinate transform, trigger parameter semantics, or code xrefs. Parse DOS/4G LE mapping before executable control-flow claims.",
+  "executable_format": {
+    "status": "SOURCE_TOOLCHAIN_DOCUMENTED",
+    "observed": [
+      "DOS/4G loader strings in canonical R.EXE",
+      "WATCOM loader/runtime strings in canonical R.EXE"
+    ],
+    "documented_format": "32-bit DOS/4G uses OS/2 Linear Executable (LE) format with flat 386 protected-mode address space",
+    "implication": "Future Eugene code xrefs must parse the DOS/4G LE image/object/fixup tables; raw file offsets are not equivalent to runtime linear addresses."
+  }
 }
