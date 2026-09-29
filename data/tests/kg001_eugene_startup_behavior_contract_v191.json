@@ -1,0 +1,29 @@
+{
+  "schema": "openazrael.kg001.eugene_startup_behavior_contract",
+  "version": 191,
+  "status": "EXECUTABLE_CODE_VERIFIED",
+  "initialization": {
+    "random_movement_countdown_field": "character+0x25A",
+    "value": 0,
+    "init_file_offsets": [
+      "0x80E81",
+      "0x82D67"
+    ]
+  },
+  "autonomous_random_movement": {
+    "caller": "0x848BD",
+    "guard": "character+0x25A != 0",
+    "post_call": "decrement character+0x25A",
+    "entry_behavior": "NO_RANDOM_MOVEMENT_AT_CHARACTER_INITIALIZATION"
+  },
+  "random_movement": {
+    "function": "0x86780",
+    "shared_global_rand": true,
+    "reset_per_character": false,
+    "heading_modulus": 360,
+    "candidate_distance": 80,
+    "max_heading_attempts": 20
+  },
+  "implication": "Eugene does not consume rand() merely by being spawned. RandomMovement begins only after another source path arms/requests it; the global rand stream must remain shared when that happens.",
+  "remaining_hold": "EXACT_GLOBAL_RAND_STATE_AT_LATER_EXPLICIT_OR_ARMED_RANDOMMOVEMENT_INVOCATION"
+}
