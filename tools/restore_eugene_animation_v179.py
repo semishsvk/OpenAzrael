@@ -14,10 +14,10 @@ from tools.restore_character_animation_v166 import ranges, animation_set, node_p
 from export_xaf_glb_v8 import parse
 
 SPECS={
- "EugenB":{"xaf":"EUGBLD.XAF","ani":"EUGENB.ANI","census":{"animated_nodes":30,"frame_min":0,"frame_max":163,"rotation_keys":849,"scale_keys":199,"position_keys":275}},
- "Eugene":{"xaf":"EUGENE.XAF","ani":"EUGENE.ANI","census":None},
+ "EugenB":{"xaf":"EUGBLD.XAF","xaf_sha256":"0004eaac87202d2487c72f43008cf5c6cec15241d07a95dc550737889d5bb62f","ani":"EUGENB.ANI","ani_sha256":"4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636","census":{"animated_nodes":30,"frame_min":0,"frame_max":163,"rotation_keys":849,"scale_keys":199,"position_keys":275}},
+ "Eugene":{"xaf":"EUGENE.XAF","xaf_sha256":"1533e24af2729f6a9ccbc4e791fec92617b44f709a3f1dc31ce7a71763be51af","ani":"EUGENE.ANI","ani_sha256":"4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636","census":None},
 }
-REQUIRED={"RUN":(2,7),"ATTACK":(53,70),"SHOT":(130,163),"DEATH_TWITCH":(160,163),"DEAD":(163,163)}
+REQUIRED={"REST":(0,0),"RUN":(2,7),"ATTACK":(53,70),"SHOT":(130,163),"DEATH_TWITCH":(160,163),"DEAD":(163,163)}
 
 def key_stats(aset):
     frames=[]
@@ -40,6 +40,10 @@ def main():
     for character,spec in SPECS.items():
         xaf=src/"TEXTURES"/spec["xaf"]; ani=src/spec["ani"]
         if not xaf.is_file() or not ani.is_file(): raise FileNotFoundError(f"{spec['xaf']}/{spec['ani']}")
+        observed_xaf_sha=hashlib.sha256(xaf.read_bytes()).hexdigest()
+        observed_ani_sha=hashlib.sha256(ani.read_bytes()).hexdigest()
+        if observed_xaf_sha != spec["xaf_sha256"] or observed_ani_sha != spec["ani_sha256"]:
+            raise ValueError((character,"CANONICAL_SOURCE_FINGERPRINT_MISMATCH",observed_xaf_sha,observed_ani_sha))
         text=xaf.read_text("latin1"); aset=animation_set(text); paths=node_paths(text); rr=ranges(ani)
         if not rr:
             raise ValueError((character,"ANI_HAS_NO_RANGES"))
@@ -64,9 +68,9 @@ def main():
             clips[name]={"range":[start,end],"track_count":write_clip(out,name,start,end,tracks,a.fps),
                          "sha256":hashlib.sha256(out.read_bytes()).hexdigest()}
         report["characters"][character]={
-            "source_xaf":spec["xaf"],"source_xaf_sha256":hashlib.sha256(xaf.read_bytes()).hexdigest(),
-            "source_ani":spec["ani"],"source_ani_sha256":hashlib.sha256(ani.read_bytes()).hexdigest(),
-            "source_fingerprint_status":"OBSERVED_FROM_REGISTERED_CANONICAL_CORPUS_NOT_YET_PINNED_IN_GIT",
+            "source_xaf":spec["xaf"],"source_xaf_sha256":observed_xaf_sha,
+            "source_ani":spec["ani"],"source_ani_sha256":observed_ani_sha,
+            "source_fingerprint_status":"PINNED_CANONICAL_ATDEMO",
             "census":stats,"ani_ranges":{k:list(v) for k,v in sorted(rr.items())},
             "stale_clip_policy":"DELETE_BEFORE_SOURCE_EXPORT",
             "ani_xaf_range_validation":"PASS",
