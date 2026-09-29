@@ -9,6 +9,8 @@ var current_family := ""
 var previous_frame := -1
 var roar_fired_for_cycle := false
 var audio_player: AudioStreamPlayer3D
+var source_player: AnimationPlayer
+var source_fps := 15.0
 
 func _ready() -> void:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(CONTRACT_PATH))
@@ -16,6 +18,32 @@ func _ready() -> void:
     audio_player = AudioStreamPlayer3D.new()
     audio_player.name = "EugeneSourceAudio"
     add_child(audio_player)
+    set_process(false)
+
+func bind_source_player(player: AnimationPlayer, fps: float = 15.0) -> bool:
+    if player == null or fps <= 0.0:
+        return false
+    source_player = player
+    source_fps = fps
+    set_process(true)
+    return true
+
+func _process(_delta: float) -> void:
+    if source_player == null or not is_instance_valid(source_player):
+        return
+    if not source_player.is_playing():
+        return
+    var family := String(source_player.current_animation)
+    if family != current_family:
+        if not begin_source_family(family):
+            current_family = ""
+            return
+    var bounds: Array = contract.get("families", {}).get(current_family, [])
+    if bounds.size() != 2:
+        return
+    var frame := int(bounds[0]) + int(floor(source_player.current_animation_position * source_fps))
+    frame = clampi(frame, int(bounds[0]), int(bounds[1]))
+    observe_source_frame(frame)
 
 func begin_source_family(family: String) -> bool:
     if not contract.get("families", {}).has(family):
