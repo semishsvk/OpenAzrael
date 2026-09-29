@@ -320,6 +320,31 @@ def main() -> int:
             },
         )
 
+    packaged_origin_run = run([
+        str(out),
+        "--headless",
+        "--script",
+        "res://scripts/kg001_packaged_origin_runner_v178.gd",
+    ])
+    packaged_origin_errors = engine_errors(packaged_origin_run.stdout)
+    packaged_origin = parse_marker(
+        packaged_origin_run.stdout,
+        "OPENAZRAEL_KG001_PACKAGED_ORIGIN_V178",
+    )
+    if (
+        packaged_origin_run.returncode != 0
+        or packaged_origin_errors
+        or packaged_origin.get("status") != "PASS"
+        or packaged_origin.get("identity", {}).get("commit_sha") != head
+        or packaged_origin.get("identity", {}).get("preset") != args.preset
+    ):
+        return fail("PACKAGED_EXECUTION_BOUNDARY_NOT_PROVEN", {
+            "returncode": packaged_origin_run.returncode,
+            "result": packaged_origin,
+            "engine_errors": packaged_origin_errors,
+            "output_tail": packaged_origin_run.stdout[-12000:],
+        })
+
     smoke = run([
         str(out),
         "--headless",
@@ -463,6 +488,7 @@ def main() -> int:
         "preflight_receipt_sha256": sha256(RECEIPT),
         "runtime_build_identity_embedded": true,
         "runtime_build_identity": runtime_identity,
+        "packaged_execution_origin_v178": packaged_origin,
         "preset": args.preset,
         "artifacts": artifacts,
         "export_smoke": {
