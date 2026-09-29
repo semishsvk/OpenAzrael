@@ -589,6 +589,11 @@ func _setup_r1_eugene_spawns() -> void:
         var source_direction := Vector3(float(direction_values[0]), float(direction_values[1]), float(direction_values[2])).normalized()
         root.set_meta("source_direction", source_direction)
         root.set_meta("model_front_calibration", "HOLD_SOURCE_PROOF")
+        var movement := Node.new()
+        movement.name = "SourceMovement"
+        movement.set_script(preload("res://scripts/eugene_movement_v172.gd"))
+        root.add_child(movement)
+        movement.call("configure", source_direction)
         var model := packed.instantiate()
         model.name = character + "_Model"
         root.add_child(model)
