@@ -188,6 +188,7 @@ def main():
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_menu_v144.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_scanner_v164.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_character_animation_v166.py'), str(src)], check=True)
+    subprocess.run([sys.executable, str(ROOT/'tools/restore_eugene_animation_v179.py'), str(src)], check=True)
     identity=_asset_identity()
     RESTORE_RECEIPT.write_text(json.dumps({
         'schema':'openazrael.kg001.candidate_asset_restore',
