@@ -33,7 +33,7 @@ func state_u32() -> int:
     return _next
 
 func initialization_status() -> String:
-    # R.EXE/Open Watcom default static state is source-backed.  What remains
-    # unresolved is the global rand() call index when Eugene first requests a
-    # heading; do not reset this stream per NPC or per room.
-    return "DEFAULT_NEXT_1_SOURCE_BACKED_GLOBAL_CALL_INDEX_HOLD"
+    # R.EXE/Open Watcom default static state is source-backed. Runtime fidelity
+    # requires one process-global stream whose call index advances only through
+    # reconstructed source events. Never reset this service per NPC or room.
+    return "DEFAULT_NEXT_1_SOURCE_BACKED_SHARED_GLOBAL_STREAM_V192"
