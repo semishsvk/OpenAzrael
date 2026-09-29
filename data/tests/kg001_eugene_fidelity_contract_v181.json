@@ -49,7 +49,14 @@
     "run_steps": [
       2,
       7
-    ]
+    ],
+    "executable_verification": {
+      "status": "VERIFIED_R_EXE_V185",
+      "random_movement_function_file_offset": "0x86780",
+      "rand_function_file_offset": "0x97F85",
+      "candidate_distance": 80,
+      "heading_modulus": 360
+    }
   },
   "animation": {
     "ranges": {
@@ -90,7 +97,7 @@
   },
   "holds": {
     "model_front": "HOLD_SOURCE_PROOF",
-    "global_rand_call_index": "HOLD_GLOBAL_RAND_CALL_INDEX_AT_EUGENE_ENTRY",
+    "global_rand_call_index": "HOLD_GLOBAL_RAND_CALL_INDEX_AND_BRANCH_STATE_AT_EUGENE_ENTRY",
     "animation_clock": "HOLD_SOURCE_CLOCK_PROOF",
     "trigger_parameter_200": "HOLD_SOURCE_SEMANTICS"
   },
