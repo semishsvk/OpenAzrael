@@ -95,12 +95,13 @@
     "sha256": "031b0282fba55d9a5446c6ea51e2328e8586ffa3b14042105ef663e56a443cb1",
     "trigger_frame": 60,
     "trigger_parameter": 200,
-    "parameter_semantics": "PLAYER_STATE_EFFECT_SUBTRACT_200_EXECUTABLE_VERIFIED_V190",
-    "effect_order": "PLAY_EUGROAR_THEN_SUBTRACT_200_FROM_PLAYER_STATE_PLUS_0x18"
+    "parameter_semantics": "PLAYER_HEALTH_DAMAGE_200_EXECUTABLE_VERIFIED_V190",
+    "effect_order": "PLAY_EUGROAR_THEN_SUBTRACT_200_FROM_PLAYER_STATE_PLUS_0x18",
+    "player_health_initial": 500
   },
   "holds": {
     "model_front": "RESOLVED_SOURCE_XAF_V188_LOCAL_PLUS_X",
-    "global_rand_call_index": "HOLD_GLOBAL_RAND_CALL_INDEX_AND_BRANCH_STATE_AT_EUGENE_ENTRY",
+    "global_rand_call_index": "ENTRY_RESOLVED_NO_RAND_V191_LATER_RANDOMMOVEMENT_MUST_USE_SHARED_GLOBAL_STATE",
     "animation_clock": "RESOLVED_FRAME_DOMAIN_V190_WALL_CLOCK_CADENCE_NOT_REQUIRED_FOR_SOURCE_FRAME_ORDER",
     "trigger_parameter_200": "RESOLVED_PLAYER_STATE_EFFECT_V190"
   },
@@ -118,5 +119,6 @@
     "local_axis": "+X",
     "policy": "SOURCE_ROOT_TRANSFORM_NO_ARBITRARY_YAW"
   },
-  "frame_trigger_contract": "data/tests/kg001_eugene_frame_trigger_re_contract_v190.json"
+  "frame_trigger_contract": "data/tests/kg001_eugene_frame_trigger_re_contract_v190.json",
+  "startup_behavior_contract": "data/tests/kg001_eugene_startup_behavior_contract_v191.json"
 }
