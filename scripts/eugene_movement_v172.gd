@@ -9,7 +9,7 @@ const SOURCE_RUN_MAX := 7
 var source_direction := Vector3.ZERO
 var remaining_run_steps := 0
 var prng_status := "GLOBAL_CALL_INDEX_AND_BRANCH_STATE_HOLD"
-var model_front_calibration := "HOLD_SOURCE_PROOF"
+var model_front_calibration := "SOURCE_XAF_V188_LOCAL_PLUS_X_ROOT_TRANSFORM"
 
 func configure(direction: Vector3) -> void:
     source_direction = direction.normalized()
