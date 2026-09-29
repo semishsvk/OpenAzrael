@@ -575,6 +575,16 @@ func _on_eugene_source_effect(value: int, source: String) -> void:
     if player != null and player.has_method("apply_legacy_damage"):
         player.call("apply_legacy_damage", value, source)
 
+func _eugene_shared_rand() -> Node:
+    var rng := get_node_or_null("LegacyGlobalRand")
+    if rng != null:
+        return rng
+    rng = Node.new()
+    rng.name = "LegacyGlobalRand"
+    rng.set_script(preload("res://scripts/legacy_rand_v174.gd"))
+    add_child(rng)
+    return rng
+
 func _setup_r1_eugene_spawns() -> void:
     if current_room_id != "R1":
         return
@@ -608,8 +618,18 @@ func _setup_r1_eugene_spawns() -> void:
             result["status"] = "FAIL_MODEL_LOAD"
             CandidateDiagnostics.record_event("eugene_spawn", result)
             continue
-        var root := Node3D.new()
+        var root := CharacterBody3D.new()
         root.name = "SourceCharacter_" + character
+        root.collision_layer = 8
+        root.collision_mask = 1
+        root.set_script(preload("res://scripts/eugene_controller_v193.gd"))
+        var source_shape := CollisionShape3D.new()
+        source_shape.name = "SourceCharacterCollision"
+        var source_capsule := CapsuleShape3D.new()
+        source_capsule.radius = 6.0
+        source_capsule.height = 15.0
+        source_shape.shape = source_capsule
+        root.add_child(source_shape)
         current_room.add_child(root)
         root.position = Vector3(float(spawn_values[0]), float(spawn_values[1]), float(spawn_values[2]))
         var source_direction := Vector3(float(direction_values[0]), float(direction_values[1]), float(direction_values[2])).normalized()
@@ -620,6 +640,7 @@ func _setup_r1_eugene_spawns() -> void:
         movement.set_script(preload("res://scripts/eugene_movement_v172.gd"))
         root.add_child(movement)
         movement.call("configure", source_direction)
+        root.call("configure", source_direction, _eugene_shared_rand(), movement)
         var animation_audio := Node.new()
         animation_audio.name = "SourceAnimationAudio"
         animation_audio.set_script(preload("res://scripts/eugene_animation_audio_v173.gd"))
@@ -660,6 +681,9 @@ func _setup_r1_eugene_spawns() -> void:
         result["spawn"] = root.position
         result["source_direction"] = source_direction
         result["model_front_calibration"] = "SOURCE_XAF_V188_LOCAL_PLUS_X_ROOT_TRANSFORM"
+        result["movement_controller"] = "EUGENE_CONTROLLER_V193_PRODUCTION_COLLISION"
+        result["rng_service"] = "ROOM_MANAGER_PROCESS_GLOBAL_LEGACY_RAND"
+        result["recovery_updates"] = 50
         CandidateDiagnostics.record_event("eugene_spawn", result)
 
 func _setup_r1_doors() -> void:
