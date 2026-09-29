@@ -633,7 +633,7 @@ func _setup_r1_eugene_spawns() -> void:
         var source_library := AnimationLibrary.new()
         source_player.add_animation_library(&"", source_library)
         var restored_families: Array[String] = []
-        for family in ["RUN", "ATTACK", "SHOT", "DEATH_TWITCH", "DEAD"]:
+        for family in ["REST", "RUN", "ATTACK", "SHOT", "DEATH_TWITCH", "DEAD"]:
             var clip_path := "res://assets/characters/%s/%s.tres" % [character, family]
             if not ResourceLoader.exists(clip_path):
                 continue
@@ -646,6 +646,8 @@ func _setup_r1_eugene_spawns() -> void:
             result["animation_audio_binding"] = "HOLD_SOURCE_CLIPS_MISSING"
         else:
             animation_audio.call("bind_source_player", source_player, 15.0)
+            result["animation_clock_fps"] = 15.0
+            result["animation_clock_status"] = "PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN"
             result["source_animation_player"] = String(source_player.get_path())
             result["source_animation_families"] = restored_families
             result["animation_audio_binding"] = "SOURCE_PLAYER_BOUND"
