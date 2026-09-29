@@ -485,6 +485,9 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                     if source_player == null:
                         source_player = AnimationPlayer.new()
                         source_player.name = "SourceCharacterAnimation"
+                        # character_root is the instantiated source GLB itself.
+                        # XAF-derived clip paths are relative to that hierarchy,
+                        # so the player must resolve tracks from its parent GLB.
                         source_player.root_node = NodePath("..")
                         character_root.add_child(source_player)
                     var library := source_player.get_animation_library(&"")
