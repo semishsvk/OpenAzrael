@@ -8,7 +8,7 @@ const SOURCE_RUN_MAX := 7
 
 var source_direction := Vector3.ZERO
 var remaining_run_steps := 0
-var prng_status := "HOLD_EXACT_INITIALIZATION"
+var prng_status := "GLOBAL_CALL_INDEX_HOLD"
 var model_front_calibration := "HOLD_SOURCE_PROOF"
 
 func configure(direction: Vector3) -> void:
@@ -35,7 +35,16 @@ func consume_source_step() -> Vector3:
     remaining_run_steps -= 1
     return source_step_delta()
 
+func heading_degrees_from_legacy_rand(legacy_rand: Node) -> int:
+    if legacy_rand == null or not legacy_rand.has_method("rand_mod"):
+        return -1
+    return int(legacy_rand.call("rand_mod", 360))
+
+func heading_direction_from_degrees(degrees: int) -> Vector3:
+    var radians := deg_to_rad(float(degrees))
+    return Vector3(cos(radians), 0.0, sin(radians)).normalized()
+
 func can_autogenerate_heading() -> bool:
-    # Exact legacy PRNG initialization is not source-proven yet.  Never replace
-    # it with Godot RNG or a guessed seed because that changes NPC trajectories.
+    # LCG/default next=1 are source-backed, but Eugene's exact position in the
+    # shared global rand() call stream is not yet proven. Never reset per NPC.
     return false
