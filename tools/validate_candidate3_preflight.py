@@ -16,6 +16,7 @@ import tools.run_kg001_candidate_v112 as candidate_runner
 import tools.run_candidate3_preflight as candidate3_preflight
 preflight = (ROOT / "tools/run_candidate3_preflight.py").read_text(encoding="utf-8")
 exporter = (ROOT / "tools/export_candidate3.py").read_text(encoding="utf-8")
+candidate4_exporter = (ROOT / "tools/export_candidate4.py").read_text(encoding="utf-8")
 runner = (ROOT / "tools/run_kg001_candidate_v112.py").read_text(encoding="utf-8")
 pppv_runner = (ROOT / "tools/run_candidate3_pppv_v2.py").read_text(encoding="utf-8")
 presets = (ROOT / "export_presets.cfg").read_text(encoding="utf-8")
@@ -126,6 +127,7 @@ checks = {
         and '"assets/characters/Niamh/REST.tres"' in preflight
         and '"assets/characters/Niamh/NOLOOP2.tres"' in preflight
         and '"assets/characters"' in exporter
+        and '"assets/characters"' in candidate4_exporter
         and "len(classic_pngs) != 86" in preflight
         and '"runtime_asset_summary": {' in preflight
         and '"runtime_assets": {' in preflight
