@@ -1,0 +1,21 @@
+{
+  "schema": "openazrael.persistent_toolchain",
+  "version": 1,
+  "godot": {
+    "required_version": "4.7.2.stable.official.ed1daf0bf",
+    "platform": "linux.x86_64",
+    "drive_folder_id": "1y_a46JB8wl1_yH4h5c4IcYj3FkTSs19n",
+    "drive_file_id": "1w6de416siM_c6xVgsA3gY2BmlnW0ruSo",
+    "archive_name": "Godot_v4.7.2-stable_linux.x86_64.zip",
+    "archive_size_bytes": 77860424,
+    "archive_sha256": "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4",
+    "binary_name": "Godot_v4.7.2-stable_linux.x86_64",
+    "cache_policy": "reuse verified local cache; fetch from pinned Drive file only when absent or hash mismatch",
+    "repository_policy": "do not commit Godot binary or archive"
+  },
+  "openazrael": {
+    "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
+    "runtime_mode": "local-first/offline-first",
+    "pre_work_requirement": "verify cached toolchain and manifest before runtime/build work"
+  }
+}
