@@ -1,0 +1,77 @@
+{
+  "schema": "openazrael.kg001.eugene_model_front_contract",
+  "version": 188,
+  "status": "SOURCE_GEOMETRY_VERIFIED",
+  "source": {
+    "xaf": "TEXTURES/EUGENE.XAF",
+    "sha256": "0004eaac87202d2487c72f43008cf5c6cec15241d07a95dc550737889d5bb62f",
+    "animated_xaf": "TEXTURES/EUGBLD.XAF"
+  },
+  "evidence": {
+    "bilateral_axis": {
+      "basis": "named right/left stump, thigh and foot pivots",
+      "local_axis": "+Z",
+      "samples_unit": [
+        [
+          0.021798,
+          -0.023895,
+          0.999477
+        ],
+        [
+          0.113096,
+          -0.072762,
+          0.990916
+        ],
+        [
+          0.035053,
+          -0.01728,
+          0.999236
+        ]
+      ]
+    },
+    "vertical_axis": {
+      "basis": "EUNECK02 -> EUHEAD pivot chain",
+      "local_axis": "+Y",
+      "unit": [
+        0.192727,
+        0.98116,
+        -0.013466
+      ]
+    },
+    "longitudinal_sign": {
+      "basis": "central named chain EUBUM -> EUTAIL -> EUBODY -> EUNECK02 -> EUNECK01 -> EUHEAD -> EUJAW",
+      "local_axis": "+X",
+      "x_progression": [
+        -1.5919,
+        35.9208,
+        61.7041,
+        130.1631,
+        135.4976,
+        139.943,
+        150.612
+      ]
+    },
+    "root_matrix_forward": {
+      "local_axis": "+X",
+      "exported_parent_space_unit": [
+        0.0697573,
+        -1e-7,
+        0.997564
+      ]
+    }
+  },
+  "conclusion": {
+    "model_front_local_axis": "+X",
+    "exported_model_front_axis": "root(EUBUM) maps +X to approximately +Z with +4 degree X component",
+    "calibration_policy": "Use source XAF root transform and +X anatomical front. Do not add arbitrary 90/180 degree yaw correction."
+  },
+  "caveats": [
+    "EUEYE transform is a pathological outlier and must not be used for aggregate PCA/front inference.",
+    "NPC direction vectors are world-facing state evidence, not geometry waypoints."
+  ],
+  "holds": [
+    "ANIMATION_CLOCK_SOURCE_PROOF",
+    "EUGROAR_TRIGGER_PARAMETER_200_SEMANTICS",
+    "GLOBAL_RAND_CALL_INDEX_AND_BRANCH_STATE_AT_EUGENE_ENTRY"
+  ]
+}
