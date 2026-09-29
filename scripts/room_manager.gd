@@ -601,15 +601,29 @@ func _setup_r1_eugene_spawns() -> void:
         var model := packed.instantiate()
         model.name = character + "_Model"
         root.add_child(model)
-        var source_players: Array[AnimationPlayer] = []
-        _collect_animation_players(model, source_players)
-        if not source_players.is_empty():
-            var source_player := source_players[0]
+        var source_player := AnimationPlayer.new()
+        source_player.name = "SourceCharacterAnimation"
+        source_player.root_node = NodePath("..")
+        root.add_child(source_player)
+        var source_library := AnimationLibrary.new()
+        source_player.add_animation_library(&"", source_library)
+        var restored_families: Array[String] = []
+        for family in ["RUN", "ATTACK", "SHOT", "DEATH_TWITCH", "DEAD"]:
+            var clip_path := "res://assets/characters/%s/%s.tres" % [character, family]
+            if not ResourceLoader.exists(clip_path):
+                continue
+            var clip := load(clip_path) as Animation
+            if clip == null:
+                continue
+            source_library.add_animation(StringName(family), clip)
+            restored_families.append(family)
+        if restored_families.is_empty():
+            result["animation_audio_binding"] = "HOLD_SOURCE_CLIPS_MISSING"
+        else:
             animation_audio.call("bind_source_player", source_player, 15.0)
             result["source_animation_player"] = String(source_player.get_path())
+            result["source_animation_families"] = restored_families
             result["animation_audio_binding"] = "SOURCE_PLAYER_BOUND"
-        else:
-            result["animation_audio_binding"] = "HOLD_SOURCE_ANIMATION_PLAYER_MISSING"
         result["status"] = "SOURCE_MODEL_SPAWNED"
         result["spawn"] = root.position
         result["source_direction"] = source_direction
