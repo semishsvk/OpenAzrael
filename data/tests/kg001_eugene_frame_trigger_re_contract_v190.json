@@ -28,7 +28,7 @@
     "frame": 60,
     "sound": "EUGROAR.WAV",
     "effect_value": 200,
-    "semantics": "PLAY_SOUND_THEN_SUBTRACT_EFFECT_VALUE_FROM_GLOBAL_PLAYER_STATE_PLUS_0x18",
+    "semantics": "PLAY_EUGROAR_THEN_SUBTRACT_200_FROM_PLAYER_HEALTH",
     "audio_parameter": false
   },
   "runtime_policy": {
@@ -36,5 +36,12 @@
     "map_200_to_audio_volume": false,
     "map_200_to_audio_radius": false,
     "arbitrary_fps_as_source_exact": false
+  },
+  "player_health": {
+    "field": "global_player_state+0x18",
+    "initial_value": 500,
+    "initialization_file_offset": "0x74688",
+    "trigger_effect": "SUBTRACT_INT16_EFFECT_VALUE",
+    "zero_floor": "EXECUTABLE_DEATH_PATH"
   }
 }
