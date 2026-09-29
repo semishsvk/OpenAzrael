@@ -10,6 +10,8 @@ checks={
  "source_files":all(x in restore for x in ["EUGBLD.XAF","EUGENB.ANI","EUGENE.XAF","EUGENE.ANI"]),
  "known_eugbld_census":all(x in restore for x in ['"animated_nodes":30','"rotation_keys":849','"scale_keys":199','"position_keys":275']),
  "source_ranges":all(x in restore for x in ['"RUN":(2,7)','"ATTACK":(53,70)','"SHOT":(130,163)','"DEATH_TWITCH":(160,163)','"DEAD":(163,163)']),
+ "per_ani_source_ranges":'for name,(start,end) in rr.items()' in restore and '"ani_ranges"' in restore,
+ "no_assumed_eugene_eugenb_symmetry":'if name in rr and rr[name]!=bounds' in restore,
  "no_invented_pinned_hashes":'OBSERVED_FROM_REGISTERED_CANONICAL_CORPUS_NOT_YET_PINNED_IN_GIT' in restore,
  "atomic_restore_binding":'restore_eugene_animation_v179.py' in candidate,
  "runtime_models":all(x in room for x in ['SourceCharacter_" + character','runtime_model']),
