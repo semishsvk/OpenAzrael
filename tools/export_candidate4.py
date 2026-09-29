@@ -151,6 +151,18 @@ def main() -> int:
     if not git_clean():
         return fail("DIRTY_GIT_AFTER_PREFLIGHT")
 
+    semantic_gate = run([
+        sys.executable,
+        "tools/validate_release_runtime_evidence_v176.py",
+        str(RECEIPT),
+        head,
+    ])
+    if semantic_gate.returncode != 0:
+        return fail(
+            "RELEASE_RUNTIME_EVIDENCE_NOT_CURRENT_PASS",
+            {"output_tail": semantic_gate.stdout[-16000:]},
+        )
+
     for key in ("candidate_result", "fresh_checkout"):
         rel = receipt.get("evidence", {}).get(key)
         expected = receipt.get("evidence", {}).get(key + "_sha256")
