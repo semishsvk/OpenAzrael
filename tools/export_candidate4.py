@@ -389,6 +389,36 @@ def main() -> int:
             },
         )
 
+    packaged_critical_specs = [
+        ("all_transitions_v141", "res://scripts/kg001_all_transition_runner_v141.gd", "OPENAZRAEL_KG001_ALL_TRANSITIONS_V141"),
+        ("cursor_v143", "res://scripts/kg001_interaction_cursor_runner_v143.gd", "OPENAZRAEL_KG001_CURSOR_V143"),
+        ("menu_v145", "res://scripts/kg001_legacy_menu_runner_v145.gd", "OPENAZRAEL_KG001_MENU_V145"),
+        ("menu_cursor_v146", "res://scripts/kg001_menu_cursor_context_runner_v146.gd", "OPENAZRAEL_KG001_MENU_CURSOR_V146"),
+        ("menu_toggle_v149", "res://scripts/kg001_legacy_menu_toggle_runner_v149.gd", "OPENAZRAEL_KG001_MENU_TOGGLE_V149"),
+        ("inventory_hud_v157", "res://scripts/kg001_inventory_hud_runner_v157.gd", "OPENAZRAEL_KG001_INVENTORY_HUD_V157"),
+    ]
+    packaged_critical = {}
+    for name, script, marker in packaged_critical_specs:
+        critical_run = run([str(out), "--headless", "--script", script])
+        critical_errors = engine_errors(critical_run.stdout)
+        critical_result = parse_marker(critical_run.stdout, marker)
+        packaged_critical[name] = critical_result
+        if (
+            critical_run.returncode != 0
+            or critical_errors
+            or critical_result.get("status") != "PASS"
+        ):
+            return fail(
+                "PACKAGED_CRITICAL_GAMEPLAY_FAILED",
+                {
+                    "test": name,
+                    "returncode": critical_run.returncode,
+                    "status": critical_result.get("status"),
+                    "engine_errors": critical_errors,
+                    "output_tail": critical_run.stdout[-20000:],
+                },
+            )
+
     packaged_evidence = TMP / "kg001_packaged_v128_runtime.json"
     packaged_evidence.write_text(
         json.dumps(packaged_result, indent=2) + "\n",
@@ -444,6 +474,7 @@ def main() -> int:
         },
         "packaged_parity_v128": packaged_result,
         "packaged_music_v136": packaged_music_result,
+        "packaged_critical_gameplay": packaged_critical,
         "room_forensic_v131": {
             "path": str(forensic_package.relative_to(ROOT)),
             "sha256": sha256(forensic_package),
