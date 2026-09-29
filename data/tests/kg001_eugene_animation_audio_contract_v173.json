@@ -33,7 +33,8 @@
     "sound": "EUGROAR.WAV",
     "parameter": 200,
     "semantics": "ANIMATION_FRAME_TRIGGER",
-    "parameter_semantics": "UNKNOWN_SOURCE_SEMANTICS_DO_NOT_MAP_TO_VOLUME_OR_RADIUS"
+    "parameter_semantics": "PLAYER_STATE_EFFECT_SUBTRACT_200_EXECUTABLE_VERIFIED_V190",
+    "effect_apply_order": "PLAY_SOUND_THEN_APPLY_EFFECT"
   },
   "audio": {
     "source_path": "EUGROAR.WAV",
@@ -58,8 +59,11 @@
     "missing_audio": "HOLD_SOURCE_ASSET"
   },
   "timing": {
-    "fps": 15,
-    "status": "PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN",
-    "policy": "DO_NOT_PRESENT_AS_SOURCE_EXACT"
+    "domain": "INTEGER_SOURCE_FRAME",
+    "advance": "PLUS_ONE_PER_MOVECHARACTERS_UPDATE",
+    "xaf_mapping": "DIRECT_FRAME_TO_FLOAT_XAF_TIME",
+    "wall_clock_fps": null,
+    "status": "EXECUTABLE_FRAME_DOMAIN_VERIFIED_V190",
+    "policy": "DO_NOT_INVENT_WALL_CLOCK_FPS"
   }
 }
