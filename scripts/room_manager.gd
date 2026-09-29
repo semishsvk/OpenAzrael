@@ -603,7 +603,10 @@ func _setup_r1_eugene_spawns() -> void:
         root.add_child(model)
         var source_player := AnimationPlayer.new()
         source_player.name = "SourceCharacterAnimation"
-        source_player.root_node = NodePath("..")
+        # v179 clips address the XAF hierarchy from its authored top-level
+        # object. The GLB is a child of the runtime wrapper, so bind the
+        # AnimationPlayer root directly to that model subtree.
+        source_player.root_node = NodePath("../" + character + "_Model")
         root.add_child(source_player)
         var source_library := AnimationLibrary.new()
         source_player.add_animation_library(&"", source_library)
