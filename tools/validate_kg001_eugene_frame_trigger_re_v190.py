@@ -12,7 +12,7 @@ def main():
   c["frame_domain"]["rule"]=="CURRENT_FRAME_INT16_CONVERTED_DIRECTLY_TO_FLOAT_XAF_TIME",
   c["frame_domain"]["increment_rule"]=="CURRENT_FRAME_PLUS_ONE_PER_CHARACTER_UPDATE",
   c["trigger"]["frame"]==60,c["trigger"]["sound"]=="EUGROAR.WAV",
-  c["trigger"]["effect_value"]==200,c["trigger"]["audio_parameter"] is False,
+  c["trigger"]["effect_value"]==200,c["trigger"]["audio_parameter"] is False,\n  c["trigger"]["semantics"]=="PLAY_EUGROAR_THEN_SUBTRACT_200_FROM_PLAYER_HEALTH",\n  c["player_health"]["initial_value"]==500,
   c["runtime_policy"]["trigger_order"]=="EVALUATE_FRAME_THEN_TRIGGER_THEN_INCREMENT",
  ]
  if len(sys.argv)>1:
