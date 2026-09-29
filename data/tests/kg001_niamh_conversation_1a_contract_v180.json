@@ -1,0 +1,28 @@
+{
+  "schema": "openazrael.kg001.niamh_conversation_1a_contract",
+  "version": 180,
+  "status": "SOURCE_TEXT_VERIFIED",
+  "source": {
+    "file": "NIAMH.DAT",
+    "family": "1A",
+    "canonical_demo_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652"
+  },
+  "opening": "Good Lord. What are you?",
+  "branches": {
+    "Ni1A_30": {
+      "display": "What do you mean? I'm a girl, of course. Who is that? You're not Oisin."
+    },
+    "Ni1A_999": {
+      "display": "Please look for Oisin for me.",
+      "preceded_by": "I have to go. I'm sorry."
+    },
+    "Ni1A_A": {
+      "display": "Oisin? Is that you at last?",
+      "source_control_text": "DO NOT DISPLAY"
+    }
+  },
+  "audio": {
+    "status": "NOT_PRESENT_AS_STANDALONE_NIAMH_VOICE_WAV_IN_CANONICAL_DEMO",
+    "policy": "DO_NOT_INVENT_VOICE_AUDIO"
+  }
+}
