@@ -8,7 +8,7 @@ const SOURCE_RUN_MAX := 7
 
 var source_direction := Vector3.ZERO
 var remaining_run_steps := 0
-var prng_status := "GLOBAL_CALL_INDEX_HOLD"
+var prng_status := "GLOBAL_CALL_INDEX_AND_BRANCH_STATE_HOLD"
 var model_front_calibration := "HOLD_SOURCE_PROOF"
 
 func configure(direction: Vector3) -> void:
@@ -43,6 +43,9 @@ func heading_degrees_from_legacy_rand(legacy_rand: Node) -> int:
 func heading_direction_from_degrees(degrees: int) -> Vector3:
     var radians := deg_to_rad(float(degrees))
     return Vector3(cos(radians), 0.0, sin(radians)).normalized()
+
+func executable_movement_proof_status() -> String:
+    return "R_EXE_V185_RANDOMMOVEMENT_0x86780_RAND_0x97F85_HEADING_MOD_360_VERIFIED"
 
 func can_autogenerate_heading() -> bool:
     # LCG/default next=1 are source-backed, but Eugene's exact position in the
