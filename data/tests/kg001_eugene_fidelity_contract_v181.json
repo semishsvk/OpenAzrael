@@ -1,0 +1,105 @@
+{
+  "schema": "openazrael.kg001.eugene_fidelity_contract",
+  "version": 181,
+  "status": "SOURCE_BOUNDED",
+  "canonical_demo": {
+    "archive_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652"
+  },
+  "characters": {
+    "Eugene": {
+      "xaf": "TEXTURES/EUGENE.XAF",
+      "xaf_sha256": "1533e24af2729f6a9ccbc4e791fec92617b44f709a3f1dc31ce7a71763be51af",
+      "ani": "EUGENE.ANI",
+      "ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636",
+      "spawn": [
+        387.180725,
+        -93.206253,
+        -472.210327
+      ],
+      "direction": [
+        0.77322,
+        0,
+        -0.634137
+      ]
+    },
+    "EugenB": {
+      "xaf": "TEXTURES/EUGBLD.XAF",
+      "xaf_sha256": "0004eaac87202d2487c72f43008cf5c6cec15241d07a95dc550737889d5bb62f",
+      "ani": "EUGENB.ANI",
+      "ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636",
+      "spawn": [
+        362.298431,
+        -90.386177,
+        -533.626587
+      ],
+      "direction": [
+        0.573576,
+        0,
+        -0.819152
+      ]
+    }
+  },
+  "collision": {
+    "height": 15,
+    "width": 12
+  },
+  "movement": {
+    "speed": 12,
+    "candidate_distance": 80,
+    "run_steps": [
+      2,
+      7
+    ]
+  },
+  "animation": {
+    "ranges": {
+      "REST": [
+        0,
+        0
+      ],
+      "RUN": [
+        2,
+        7
+      ],
+      "ATTACK": [
+        53,
+        70
+      ],
+      "SHOT": [
+        130,
+        163
+      ],
+      "DEATH_TWITCH": [
+        160,
+        163
+      ],
+      "DEAD": [
+        163,
+        163
+      ]
+    },
+    "clock_fps": 15,
+    "clock_status": "PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN"
+  },
+  "audio": {
+    "file": "EUGROAR.WAV",
+    "sha256": "031b0282fba55d9a5446c6ea51e2328e8586ffa3b14042105ef663e56a443cb1",
+    "trigger_frame": 60,
+    "trigger_parameter": 200,
+    "parameter_semantics": "UNKNOWN_SOURCE_SEMANTICS"
+  },
+  "holds": {
+    "model_front": "HOLD_SOURCE_PROOF",
+    "global_rand_call_index": "HOLD_GLOBAL_RAND_CALL_INDEX_AT_EUGENE_ENTRY",
+    "animation_clock": "HOLD_SOURCE_CLOCK_PROOF",
+    "trigger_parameter_200": "HOLD_SOURCE_SEMANTICS"
+  },
+  "forbidden": [
+    "INVENT_MODEL_FRONT_ROTATION",
+    "RESET_PRNG_PER_NPC",
+    "GODOT_RANDOM_FALLBACK",
+    "MAP_TRIGGER_PARAMETER_200_WITHOUT_SOURCE_PROOF",
+    "PRESENT_15_FPS_AS_SOURCE_EXACT",
+    "SYNTHETIC_EUGENE_ASSET"
+  ]
+}
