@@ -10,11 +10,27 @@ var source_direction := Vector3.ZERO
 var recovery_updates := 0
 var shared_rand: Node = null
 var movement: Node = null
+var source_animation_player: AnimationPlayer = null
+var _source_animation_family := ""
 
 func configure(direction: Vector3, rand_service: Node, movement_helper: Node) -> void:
     source_direction = direction.normalized()
     shared_rand = rand_service
     movement = movement_helper
+
+func bind_source_animation_player(player: AnimationPlayer) -> void:
+    source_animation_player = player
+    _play_source_family("REST")
+
+func _play_source_family(family: String) -> void:
+    if source_animation_player == null or not is_instance_valid(source_animation_player):
+        return
+    if _source_animation_family == family and source_animation_player.is_playing():
+        return
+    if not source_animation_player.has_animation(StringName(family)):
+        return
+    source_animation_player.play(StringName(family))
+    _source_animation_family = family
 
 func _horizontal_motion(direction: Vector3, distance: float) -> Vector3:
     var d := Vector3(direction.x, 0.0, direction.z).normalized()
@@ -61,15 +77,18 @@ func _physics_process(_delta: float) -> void:
     if source_direction.length_squared() <= 0.0:
         return
     if recovery_updates > 0:
+        _play_source_family("REST")
         _source_recovery_update()
         return
     var motion := _horizontal_motion(source_direction, SOURCE_STEP)
     if test_move(global_transform, motion):
+        _play_source_family("REST")
         _arm_recovery()
         return
     # Use CharacterBody3D collision-aware movement even after the preflight
     # test.  Direct global_position writes would bypass the production physics
     # path and cannot be accepted as Eugene runtime evidence.
+    _play_source_family("RUN")
     move_and_collide(motion)
 
 func recovery_updates_remaining() -> int:
