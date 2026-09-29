@@ -42,6 +42,7 @@ jobs:
           python tools/validate_kg001_eugene_random_movement_re_v185.py
           python tools/validate_kg001_eugene_animation_state_re_v189.py
           python tools/validate_kg001_eugene_frame_trigger_re_v190.py
+          python tools/validate_kg001_eugene_startup_behavior_v191.py
           python tools/validate_kg001_eugene_model_front_v188.py
           python tools/validate_kg001_eugene_random_movement_callflow_v186.py
           python tools/validate_kg001_eugene_executable_re_v182.py
@@ -60,6 +61,7 @@ jobs:
             tools/validate_kg001_eugene_random_movement_re_v185.py \
             tools/validate_kg001_eugene_animation_state_re_v189.py \
             tools/validate_kg001_eugene_frame_trigger_re_v190.py \
+            tools/validate_kg001_eugene_startup_behavior_v191.py \
             tools/validate_kg001_eugene_model_front_v188.py \
             tools/validate_kg001_eugene_random_movement_callflow_v186.py \
             tools/validate_kg001_eugene_executable_re_v182.py \
