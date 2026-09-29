@@ -414,6 +414,33 @@ def main() -> int:
             },
         )
 
+    asset_files_after = runtime_asset_files()
+    observed_assets_after = {
+        str(p.relative_to(ROOT)).replace("\\\\","/"): {
+            "bytes": p.stat().st_size,
+            "sha256": sha256(p),
+        } for p in asset_files_after
+    }
+    observed_digest_after = hashlib.sha256(
+        json.dumps(observed_assets_after, sort_keys=True, separators=(",",":")).encode("utf-8")
+    ).hexdigest()
+    if (
+        observed_assets_after != observed_restore_assets
+        or observed_digest_after != observed_restore_digest
+    ):
+        return fail("RUNTIME_ASSETS_CHANGED_DURING_PREFLIGHT", {
+            "before_file_count": len(observed_restore_assets),
+            "after_file_count": len(observed_assets_after),
+            "before_sha256": observed_restore_digest,
+            "after_sha256": observed_digest_after,
+            "added": sorted(set(observed_assets_after)-set(observed_restore_assets)),
+            "removed": sorted(set(observed_restore_assets)-set(observed_assets_after)),
+            "changed": sorted(
+                key for key in set(observed_assets_after)&set(observed_restore_assets)
+                if observed_assets_after[key] != observed_restore_assets[key]
+            ),
+        })
+
     ver = run([godot, "--version"])
     godot_version = ver.stdout.strip()
     if ver.returncode != 0 or not godot_version:
@@ -465,8 +492,9 @@ def main() -> int:
                 for name, path in PPPV_REQUIRED_EVIDENCE.items()
             },
         },
+        "runtime_asset_identity_sha256": observed_digest_after,
         "runtime_asset_summary": {
-            "total_files": len(asset_files),
+            "total_files": len(asset_files_after),
             "classic_png_count": len(classic_pngs),
             "room_glb_count": len(room_glbs),
             "audio_file_count": len(audio_files),
@@ -478,7 +506,7 @@ def main() -> int:
                 "bytes": p.stat().st_size,
                 "sha256": sha256(p),
             }
-            for p in asset_files
+            for p in asset_files_after
         },
         "build_rule": (
             "Export is permitted only while Git HEAD, clean worktree, Godot version, "
