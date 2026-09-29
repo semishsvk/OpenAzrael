@@ -601,6 +601,15 @@ func _setup_r1_eugene_spawns() -> void:
         var model := packed.instantiate()
         model.name = character + "_Model"
         root.add_child(model)
+        var source_players: Array[AnimationPlayer] = []
+        _collect_animation_players(model, source_players)
+        if not source_players.is_empty():
+            var source_player := source_players[0]
+            animation_audio.call("bind_source_player", source_player, 15.0)
+            result["source_animation_player"] = String(source_player.get_path())
+            result["animation_audio_binding"] = "SOURCE_PLAYER_BOUND"
+        else:
+            result["animation_audio_binding"] = "HOLD_SOURCE_ANIMATION_PLAYER_MISSING"
         result["status"] = "SOURCE_MODEL_SPAWNED"
         result["spawn"] = root.position
         result["source_direction"] = source_direction
