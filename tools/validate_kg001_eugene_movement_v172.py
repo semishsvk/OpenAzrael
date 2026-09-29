@@ -9,7 +9,7 @@ checks={
  "source_speed": "SOURCE_SPEED := 12.0" in movement and "source_direction * SOURCE_SPEED" in movement,
  "candidate_distance": "SOURCE_CANDIDATE_DISTANCE := 80.0" in movement,
  "run_range": "SOURCE_RUN_MIN := 2" in movement and "SOURCE_RUN_MAX := 7" in movement,
- "prng_hold": 'prng_status := "HOLD_EXACT_INITIALIZATION"' in movement and "can_autogenerate_heading()" in movement and "return false" in movement,
+ "prng_hold": 'prng_status := "GLOBAL_CALL_INDEX_HOLD"' in movement and "can_autogenerate_heading()" in movement and "return false" in movement,
  "front_hold": 'model_front_calibration := "HOLD_SOURCE_PROOF"' in movement,
  "no_godot_rng": all(x not in movement for x in ["RandomNumberGenerator", "randf(", "randi(", "randomize("]),
  "no_move_and_slide_fallback": "move_and_slide" not in movement,
@@ -19,5 +19,5 @@ failed=[k for k,v in checks.items() if not v]
 print(json.dumps({"schema":"openazrael.kg001.eugene_movement_validation","version":172,
  "status":"SOURCE_CORE_PASS" if not failed else "FAIL","checks":checks,"failed":failed,
  "runtime_status":"NOT_EXECUTED",
- "holds":["EXACT_PRNG_INITIALIZATION","MODEL_FRONT_CALIBRATION"]},indent=2))
+ "holds":["GLOBAL_RAND_CALL_INDEX_AT_EUGENE_ENTRY","MODEL_FRONT_SOURCE_PROOF"]},indent=2))
 sys.exit(1 if failed else 0)
