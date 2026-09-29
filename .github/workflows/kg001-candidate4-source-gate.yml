@@ -52,6 +52,7 @@ jobs:
           grep -q "validate_release_runtime_evidence_v176.py" tools/export_candidate4.py
           grep -q "candidate_asset_restore_v177.json" tools/restore_candidate_assets.py
           grep -q "RUNTIME_ASSETS_CHANGED_OR_MIXED_SINCE_RESTORE" tools/run_candidate3_preflight.py
+          grep -q "RUNTIME_ASSETS_CHANGED_DURING_PREFLIGHT" tools/run_candidate3_preflight.py
       - name: Validate Candidate 4 MUSIC.DAT route contract
         run: python tools/validate_candidate4_music_route_v133.py
       - name: Validate XMIDI converter and music renderer contracts
