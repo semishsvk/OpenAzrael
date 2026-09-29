@@ -22,6 +22,28 @@ func _settle(frames: int = 3) -> void:
     for _i in range(frames):
         await process_frame
 
+func _snapshot_node3d_transforms(root_node: Node) -> Dictionary:
+    var out: Dictionary = {}
+    if root_node == null:
+        return out
+    var stack: Array[Node] = [root_node]
+    while not stack.is_empty():
+        var node: Node = stack.pop_back()
+        if node is Node3D:
+            out[String(root_node.get_path_to(node))] = (node as Node3D).transform
+        for child in node.get_children():
+            stack.append(child)
+    return out
+
+func _node3d_motion_changed(before: Dictionary, after: Dictionary) -> bool:
+    for key in before:
+        if after.has(key):
+            var a: Transform3D = before[key]
+            var b: Transform3D = after[key]
+            if not a.is_equal_approx(b):
+                return true
+    return false
+
 func _run() -> void:
     var missing: Array[String] = []
     for path in REQUIRED_ROOMS:
@@ -140,6 +162,45 @@ func _run() -> void:
                     if animation_root == null or animation_root.get_node_or_null(node_path.get_concatenated_names()) == null:
                         bad_paths.append(String(node_path))
                 _check("R7_niamh_track_paths_resolve", bad_paths.is_empty())
+
+                var animation_root = source_player.get_node_or_null(source_player.root_node)
+                var playback_evidence := {
+                    "functional_status": "FAIL",
+                    "initial_family": String(source_player.current_animation),
+                    "successor_family": "",
+                    "motion_observed": false,
+                    "track_paths_resolved": bad_paths.is_empty(),
+                    "noloop1_resource_seconds": float(source_clip.length),
+                    "observed_transition_seconds": -1.0,
+                    "rest_looping": false,
+                    "temporal_fidelity": "HOLD_ORIGINAL_RUNTIME_ORACLE",
+                }
+                _check("R7_niamh_noloop1_initially_active", source_player.current_animation == &"NOLOOP1")
+                var before_motion := _snapshot_node3d_transforms(animation_root)
+                var motion_deadline := Time.get_ticks_msec() + int(max(0.5, min(float(source_clip.length), 2.0)) * 1000.0)
+                while Time.get_ticks_msec() < motion_deadline and not bool(playback_evidence["motion_observed"]):
+                    await process_frame
+                    playback_evidence["motion_observed"] = _node3d_motion_changed(before_motion, _snapshot_node3d_transforms(animation_root))
+                _check("R7_niamh_source_motion_observed", bool(playback_evidence["motion_observed"]))
+
+                var transition_started_ms := Time.get_ticks_msec()
+                var transition_deadline := transition_started_ms + int((float(source_clip.length) + 1.0) * 1000.0)
+                while Time.get_ticks_msec() < transition_deadline and source_player.current_animation != &"REST":
+                    await process_frame
+                playback_evidence["observed_transition_seconds"] = float(Time.get_ticks_msec() - transition_started_ms) / 1000.0
+                playback_evidence["successor_family"] = String(source_player.current_animation)
+                _check("R7_niamh_transitions_to_rest", source_player.current_animation == &"REST")
+
+                var rest_clip := source_player.get_animation(&"REST")
+                playback_evidence["rest_looping"] = rest_clip != null and rest_clip.loop_mode != Animation.LOOP_NONE
+                _check("R7_niamh_rest_looping", bool(playback_evidence["rest_looping"]))
+                if source_player.current_animation == &"REST":
+                    var rest_position_before := source_player.current_animation_position
+                    await process_frame
+                    await process_frame
+                    _check("R7_niamh_rest_playback_advances", source_player.current_animation == &"REST" and source_player.current_animation_position != rest_position_before)
+                playback_evidence["functional_status"] = "PASS" if failures.is_empty() else "FAIL"
+                first_status["playback_evidence"] = playback_evidence
 
     # One-shot rule: exit and re-enter must not generate a second event graph.
     var flags_before: Dictionary = state.flags.duplicate(true)
