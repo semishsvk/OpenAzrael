@@ -3,17 +3,37 @@
   "version": 173,
   "status": "SOURCE_CONTRACT_READY",
   "families": {
-    "RUN": [2, 7],
-    "ATTACK": [53, 70],
-    "SHOT": [130, 163],
-    "DEATH_TWITCH": [160, 163],
-    "DEAD": [163, 163]
+    "REST": [
+      0,
+      0
+    ],
+    "RUN": [
+      2,
+      7
+    ],
+    "ATTACK": [
+      53,
+      70
+    ],
+    "SHOT": [
+      130,
+      163
+    ],
+    "DEATH_TWITCH": [
+      160,
+      163
+    ],
+    "DEAD": [
+      163,
+      163
+    ]
   },
   "trigger": {
     "frame": 60,
     "sound": "EUGROAR.WAV",
     "parameter": 200,
-    "semantics": "ANIMATION_FRAME_TRIGGER"
+    "semantics": "ANIMATION_FRAME_TRIGGER",
+    "parameter_semantics": "UNKNOWN_SOURCE_SEMANTICS_DO_NOT_MAP_TO_VOLUME_OR_RADIUS"
   },
   "audio": {
     "source_path": "EUGROAR.WAV",
@@ -36,5 +56,10 @@
     "synthetic_roar_trigger": "FORBIDDEN",
     "missing_clip": "HOLD_SOURCE_ASSET",
     "missing_audio": "HOLD_SOURCE_ASSET"
+  },
+  "timing": {
+    "fps": 15,
+    "status": "PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN",
+    "policy": "DO_NOT_PRESENT_AS_SOURCE_EXACT"
   }
 }
