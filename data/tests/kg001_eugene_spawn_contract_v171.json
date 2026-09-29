@@ -1,0 +1,41 @@
+{
+  "schema": "openazrael.kg001.eugene_spawn_contract",
+  "version": 171,
+  "status": "SOURCE_CONTRACT_READY",
+  "room": "R1",
+  "coordinate_mapping": "IDENTITY_XYZ_TO_GODOT_VECTOR3",
+  "collision": {
+    "height": 15.0,
+    "width": 12.0
+  },
+  "movement": {
+    "speed": 12.0,
+    "status": "DEFERRED_TO_K_E2"
+  },
+  "model_front_calibration": "HOLD_SOURCE_PROOF",
+  "npcs": [
+    {
+      "character": "EugenB",
+      "source_xaf": "TEXTURES/EUGBLD.XAF",
+      "source_ani": "EUGENB.ANI",
+      "runtime_model": "res://assets/characters/EugenB/EugenB.glb",
+      "spawn": [362.298431, -90.386177, -533.626587],
+      "direction": [0.573576, 0.0, -0.819152]
+    },
+    {
+      "character": "Eugene",
+      "source_xaf": "TEXTURES/EUGENE.XAF",
+      "source_ani": "EUGENE.ANI",
+      "runtime_model": "res://assets/characters/Eugene/Eugene.glb",
+      "spawn": [387.180725, -93.206253, -472.210327],
+      "direction": [0.773220, 0.0, -0.634137]
+    }
+  ],
+  "runtime_policy": {
+    "placeholder_model": "FORBIDDEN",
+    "missing_source_model": "FAIL_CLOSED_DIAGNOSTIC",
+    "roaming": "DEFERRED_TO_K_E2",
+    "audio": "DEFERRED_TO_K_E3",
+    "prng": "DEFERRED_TO_K_E4"
+  }
+}
