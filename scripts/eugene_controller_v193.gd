@@ -36,8 +36,6 @@ func _arm_recovery() -> void:
 func _try_source_random_heading() -> void:
     if shared_rand == null:
         return
-    # R.EXE v185: RandomMovement probes headings from the process-global
-    # Watcom rand stream and limits heading-search work to 20 attempts.
     for _attempt in range(SOURCE_MAX_HEADING_ATTEMPTS):
         var degrees := int(shared_rand.call("rand_mod", 360))
         var radians := deg_to_rad(float(degrees))
@@ -69,7 +67,10 @@ func _physics_process(_delta: float) -> void:
     if test_move(global_transform, motion):
         _arm_recovery()
         return
-    global_position += motion
+    # Use CharacterBody3D collision-aware movement even after the preflight
+    # test.  Direct global_position writes would bypass the production physics
+    # path and cannot be accepted as Eugene runtime evidence.
+    move_and_collide(motion)
 
 func recovery_updates_remaining() -> int:
     return recovery_updates
