@@ -1,6 +1,8 @@
 extends Node
 class_name EugeneAnimationAudioV173
 
+signal source_effect_requested(value: int, source: String)
+
 const CONTRACT_PATH := "res://data/tests/kg001_eugene_animation_audio_contract_v173.json"
 const AUDIO_PATH := "res://assets/audio/EUGROAR.WAV"
 
@@ -10,7 +12,7 @@ var previous_frame := -1
 var roar_fired_for_cycle := false
 var audio_player: AudioStreamPlayer3D
 var source_player: AnimationPlayer
-var source_fps := 15.0
+var source_fps := 15.0 # wall-clock adapter only; source frame semantics are v190 integer-frame based
 
 func _ready() -> void:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(CONTRACT_PATH))
@@ -68,6 +70,8 @@ func observe_source_frame(frame: int) -> void:
         and String(trigger.get("sound", "")) == "EUGROAR.WAV"
     ):
         _play_source_roar()
+        source_effect_requested.emit(int(trigger.get("parameter", 0)), "EUGROAR_FRAME_60")
+        CandidateDiagnostics.record_event("eugene_trigger_effect", {"status":"SOURCE_PLAYER_HEALTH_DAMAGE_REQUESTED", "frame":trigger_frame, "value":int(trigger.get("parameter", 0))})
         roar_fired_for_cycle = true
     previous_frame = frame
 
