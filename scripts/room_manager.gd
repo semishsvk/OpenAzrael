@@ -450,16 +450,21 @@ func _on_character_animation_requested(request: Dictionary) -> void:
         "target_object": target_name,
         "status": "HOLD_SOURCE_CLIP_MISSING"
     }
-    var players: Array[AnimationPlayer] = []
-    if is_instance_valid(current_room):
-        _collect_animation_players(current_room, players)
-    for animation_player in players:
-        if animation_player.has_animation(StringName(family)):
-            animation_player.play(StringName(family))
-            result["status"] = "PLAYING_SOURCE_CLIP"
-            result["animation_player"] = String(animation_player.get_path())
-            result["source"] = "ROOM_IMPORTED_ANIMATION"
-            break
+    # A source-required request must never bind by clip name alone. Multiple
+    # room AnimationPlayers may expose the same family name, so only use the
+    # broad imported-room lookup for non-source-required requests. Source-backed
+    # characters are bound explicitly by the bridge below.
+    if not bool(request.get("source_required", false)):
+        var players: Array[AnimationPlayer] = []
+        if is_instance_valid(current_room):
+            _collect_animation_players(current_room, players)
+        for animation_player in players:
+            if animation_player.has_animation(StringName(family)):
+                animation_player.play(StringName(family))
+                result["status"] = "PLAYING_SOURCE_CLIP"
+                result["animation_player"] = String(animation_player.get_path())
+                result["source"] = "ROOM_IMPORTED_ANIMATION"
+                break
 
     # Source-derived character bridge. The authored room object is only the
     # placement proxy; NIAMH.XAF owns the actual 19-node animated hierarchy.
@@ -672,11 +677,13 @@ func _setup_r1_eugene_spawns() -> void:
             result["animation_audio_binding"] = "HOLD_SOURCE_CLIPS_MISSING"
         else:
             animation_audio.call("bind_source_player", source_player, 15.0)
+            root.call("bind_source_animation_player", source_player)
             result["animation_clock_adapter_fps"] = 15.0
             result["animation_clock_status"] = "SOURCE_FRAME_DOMAIN_V190_WALL_CLOCK_ADAPTER_PROVISIONAL"
             result["source_animation_player"] = String(source_player.get_path())
             result["source_animation_families"] = restored_families
             result["animation_audio_binding"] = "SOURCE_PLAYER_BOUND"
+            result["animation_state_binding"] = "PRODUCTION_MOVEMENT_STATE_BOUND"
         result["status"] = "SOURCE_MODEL_SPAWNED"
         result["spawn"] = root.position
         result["source_direction"] = source_direction
