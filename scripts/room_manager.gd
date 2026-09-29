@@ -571,6 +571,10 @@ func _setup_r7_switchboard() -> void:
         area.set("control_id", object_name)
         area.set("visual_node", obj)
 
+func _on_eugene_source_effect(value: int, source: String) -> void:
+    if player != null and player.has_method("apply_legacy_damage"):
+        player.call("apply_legacy_damage", value, source)
+
 func _setup_r1_eugene_spawns() -> void:
     if current_room_id != "R1":
         return
@@ -610,7 +614,7 @@ func _setup_r1_eugene_spawns() -> void:
         root.position = Vector3(float(spawn_values[0]), float(spawn_values[1]), float(spawn_values[2]))
         var source_direction := Vector3(float(direction_values[0]), float(direction_values[1]), float(direction_values[2])).normalized()
         root.set_meta("source_direction", source_direction)
-        root.set_meta("model_front_calibration", "HOLD_SOURCE_PROOF")
+        root.set_meta("model_front_calibration", "SOURCE_XAF_V188_LOCAL_PLUS_X_ROOT_TRANSFORM")
         var movement := Node.new()
         movement.name = "SourceMovement"
         movement.set_script(preload("res://scripts/eugene_movement_v172.gd"))
@@ -620,6 +624,7 @@ func _setup_r1_eugene_spawns() -> void:
         animation_audio.name = "SourceAnimationAudio"
         animation_audio.set_script(preload("res://scripts/eugene_animation_audio_v173.gd"))
         root.add_child(animation_audio)
+        animation_audio.source_effect_requested.connect(_on_eugene_source_effect)
         var model := packed.instantiate()
         model.name = character + "_Model"
         root.add_child(model)
@@ -646,15 +651,15 @@ func _setup_r1_eugene_spawns() -> void:
             result["animation_audio_binding"] = "HOLD_SOURCE_CLIPS_MISSING"
         else:
             animation_audio.call("bind_source_player", source_player, 15.0)
-            result["animation_clock_fps"] = 15.0
-            result["animation_clock_status"] = "PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN"
+            result["animation_clock_adapter_fps"] = 15.0
+            result["animation_clock_status"] = "SOURCE_FRAME_DOMAIN_V190_WALL_CLOCK_ADAPTER_PROVISIONAL"
             result["source_animation_player"] = String(source_player.get_path())
             result["source_animation_families"] = restored_families
             result["animation_audio_binding"] = "SOURCE_PLAYER_BOUND"
         result["status"] = "SOURCE_MODEL_SPAWNED"
         result["spawn"] = root.position
         result["source_direction"] = source_direction
-        result["model_front_calibration"] = "HOLD_SOURCE_PROOF"
+        result["model_front_calibration"] = "SOURCE_XAF_V188_LOCAL_PLUS_X_ROOT_TRANSFORM"
         CandidateDiagnostics.record_event("eugene_spawn", result)
 
 func _setup_r1_doors() -> void:
