@@ -54,6 +54,10 @@ REQUIRED_SENTINELS = (
     ROOT / "assets/ui/legacy_menu/HUD3.png",
     ROOT / "assets/ui/legacy_menu/SAVE13.png",
     ROOT / "assets/ui/legacy_menu/TITLE.png",
+    ROOT / "assets/characters/Niamh/Niamh.glb",
+    ROOT / "assets/characters/Niamh/NOLOOP1.tres",
+    ROOT / "assets/characters/Niamh/REST.tres",
+    ROOT / "assets/characters/Niamh/NOLOOP2.tres",
 )
 RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/rooms",
@@ -61,6 +65,7 @@ RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/textures/classic",
     ROOT / "assets/ui/mice",
     ROOT / "assets/ui/legacy_menu",
+    ROOT / "assets/characters",
 )
 
 def runtime_asset_files() -> list[Path]:
