@@ -46,7 +46,10 @@ jobs:
             tools/validate_kg001_r1_r7_character_integration_v175.py
 
       - name: Validate Candidate 4 hard release contract
-        run: python tools/validate_candidate4_release_contract_v132.py
+        run: |
+          python tools/validate_candidate4_release_contract_v132.py
+          python -m py_compile tools/validate_release_runtime_evidence_v176.py
+          grep -q "validate_release_runtime_evidence_v176.py" tools/export_candidate4.py
       - name: Validate Candidate 4 MUSIC.DAT route contract
         run: python tools/validate_candidate4_music_route_v133.py
       - name: Validate XMIDI converter and music renderer contracts
