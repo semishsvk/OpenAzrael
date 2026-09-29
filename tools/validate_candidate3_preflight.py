@@ -120,6 +120,12 @@ checks = {
         and '"assets/rooms"' in preflight
         and '"assets/audio"' in preflight
         and '"assets/textures/classic"' in preflight
+        and '"assets/characters"' in preflight
+        and '"assets/characters/Niamh/Niamh.glb"' in preflight
+        and '"assets/characters/Niamh/NOLOOP1.tres"' in preflight
+        and '"assets/characters/Niamh/REST.tres"' in preflight
+        and '"assets/characters/Niamh/NOLOOP2.tres"' in preflight
+        and '"assets/characters"' in exporter
         and "len(classic_pngs) != 86" in preflight
         and '"runtime_asset_summary": {' in preflight
         and '"runtime_assets": {' in preflight
