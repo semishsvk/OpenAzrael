@@ -17,7 +17,9 @@ checks={
  "no_invented_pinned_hashes":'OBSERVED_FROM_REGISTERED_CANONICAL_CORPUS_NOT_YET_PINNED_IN_GIT' in restore,
  "atomic_restore_binding":'restore_eugene_animation_v179.py' in candidate,
  "runtime_models":all(x in room for x in ['SourceCharacter_" + character','runtime_model']),
- "source_animation_binding":'bind_source_player' in room and '_collect_animation_players(model' in room,
+ "source_animation_binding":'bind_source_player' in room and 'SourceCharacterAnimation' in room and 'source_library.add_animation' in room,
+ "runtime_track_root":'NodePath("../" + character + "_Model")' in room,
+ "runtime_fail_closed_clips":'HOLD_SOURCE_CLIPS_MISSING' in room,
 }
 failed=[k for k,v in checks.items() if not v]
 print(json.dumps({"schema":"openazrael.kg001.eugene_restore_validation","version":179,
