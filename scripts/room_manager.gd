@@ -594,6 +594,10 @@ func _setup_r1_eugene_spawns() -> void:
         movement.set_script(preload("res://scripts/eugene_movement_v172.gd"))
         root.add_child(movement)
         movement.call("configure", source_direction)
+        var animation_audio := Node.new()
+        animation_audio.name = "SourceAnimationAudio"
+        animation_audio.set_script(preload("res://scripts/eugene_animation_audio_v173.gd"))
+        root.add_child(animation_audio)
         var model := packed.instantiate()
         model.name = character + "_Model"
         root.add_child(model)
