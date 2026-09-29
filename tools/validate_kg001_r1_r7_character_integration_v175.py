@@ -13,12 +13,12 @@ checks={
  "r7_niamh_hook":"_setup_r7_character_state()" in room,
  "r7_event_graph":"R7_NIAMH_ACTIVATE" in graph.get("graphs",{}),
  "r7_source_animation_bridge":'"res://assets/characters/%s/%s.glb"' in room and '"res://assets/characters/%s/%s.tres"' in room,
- "conversation_fail_closed":"HOLD_EXACT_TRIGGER_LINE" in room,
+ "niamh_source_conversation_ready":"SOURCE_TEXT_READY" in room and "kg001_niamh_conversation_1a_contract_v180.json" in room,
  "eugene_missing_asset_fail_closed":"EUGENE_SOURCE_MODEL_MISSING" in room,
 }
 failed=[k for k,v in checks.items() if not v]
 print(json.dumps({"schema":"openazrael.kg001.r1_r7_character_integration_validation","version":175,
  "status":"STATIC_INTEGRATION_PASS" if not failed else "FAIL","checks":checks,"failed":failed,
  "runtime_status":"NOT_EXECUTED",
- "holds":["RAW_ATDEMO_ASSETS","EUGENE_GLOBAL_RAND_CALL_INDEX","NIAMH_EXACT_CONVERSATION_LINE"]},indent=2))
+ "holds":["EUGENE_GLOBAL_RAND_CALL_INDEX","EUGENE_MODEL_FRONT_SOURCE_PROOF","EUGENE_ANIMATION_CLOCK_SOURCE_PROOF"]},indent=2))
 sys.exit(1 if failed else 0)
