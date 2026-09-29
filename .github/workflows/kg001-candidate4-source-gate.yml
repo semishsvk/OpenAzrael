@@ -51,6 +51,8 @@ jobs:
           python -m py_compile tools/validate_release_runtime_evidence_v176.py tools/restore_candidate_assets.py tools/run_candidate3_preflight.py
           grep -q "validate_release_runtime_evidence_v176.py" tools/export_candidate4.py
           grep -q "PACKAGED_CRITICAL_GAMEPLAY_FAILED" tools/export_candidate4.py
+          grep -q "PACKAGED_EXECUTION_BOUNDARY_NOT_PROVEN" tools/export_candidate4.py
+          grep -q "kg001_packaged_origin_runner_v178.gd" tools/export_candidate4.py
           grep -q "kg001_all_transition_runner_v141.gd" tools/export_candidate4.py
           grep -q "kg001_inventory_hud_runner_v157.gd" tools/export_candidate4.py
           grep -q "candidate_asset_restore_v177.json" tools/restore_candidate_assets.py
