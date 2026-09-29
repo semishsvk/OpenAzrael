@@ -19,7 +19,7 @@ checks={
  "rest_runtime_loaded":'for family in ["REST", "RUN", "ATTACK", "SHOT", "DEATH_TWITCH", "DEAD"]' in room,
  "clock_hold":c["animation"]["clock_status"]=="PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN" and "animation_clock_status" in room,
  "model_front_hold":'model_front_calibration := "HOLD_SOURCE_PROOF"' in move and '"HOLD_SOURCE_PROOF"' in room,
- "global_prng_hold":'prng_status := "GLOBAL_CALL_INDEX_AND_BRANCH_STATE_HOLD"' in move and "can_autogenerate_heading()" in move and "return false" in move,
+ "global_prng_hold":'prng_status := "ENTRY_NO_RAND_CONSUMPTION_V191_SHARED_GLOBAL_STREAM_REQUIRED_LATER"' in move and "can_autogenerate_heading()" in move and "return false" in move,
  "watcom_lcg":all(x in rng for x in ["0x41C64E6D","0x3039","(_next >> 16) & 0x7FFF"]),
  "trigger_parameter_hold":anim.get("trigger",{}).get("parameter_semantics")=="UNKNOWN_SOURCE_SEMANTICS_DO_NOT_MAP_TO_VOLUME_OR_RADIUS",
  "no_godot_rng":all(x not in move+rng for x in ["RandomNumberGenerator","randomize(","randi(","randf("]),
