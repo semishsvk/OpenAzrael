@@ -30,6 +30,7 @@ jobs:
       - name: Validate recovered Niamh animation source contract
         run: |
           python tools/validate_kg001_character_animation_v138.py
+          python tools/validate_kg001_niamh_conversation_v180.py
           python -m py_compile tools/restore_character_animation_v166.py
       - name: Validate R1 Eugene source character chain
         run: |
@@ -47,6 +48,7 @@ jobs:
             tools/validate_kg001_r1_r7_character_integration_v175.py \
             tools/restore_eugene_animation_v179.py \
             tools/validate_kg001_eugene_restore_v179.py
+            tools/validate_kg001_niamh_conversation_v180.py
 
       - name: Validate Candidate 4 hard release contract
         run: |
