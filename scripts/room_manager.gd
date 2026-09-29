@@ -549,6 +549,55 @@ func _setup_r7_switchboard() -> void:
         area.set("control_id", object_name)
         area.set("visual_node", obj)
 
+func _setup_r1_eugene_spawns() -> void:
+    if current_room_id != "R1":
+        return
+    var contract_path := "res://data/tests/kg001_eugene_spawn_contract_v171.json"
+    var parsed = JSON.parse_string(FileAccess.get_file_as_string(contract_path))
+    if not parsed is Dictionary:
+        CandidateDiagnostics.record_event("eugene_spawn_contract", {"room":"R1", "status":"FAIL_CONTRACT_PARSE"})
+        push_error("OpenAzrael v171: invalid Eugene spawn contract")
+        return
+    for spec in parsed.get("npcs", []):
+        var character := String(spec.get("character", ""))
+        var model_path := String(spec.get("runtime_model", ""))
+        var spawn_values: Array = spec.get("spawn", [])
+        var direction_values: Array = spec.get("direction", [])
+        var result := {
+            "room": "R1",
+            "character": character,
+            "model": model_path,
+            "status": "EUGENE_SOURCE_MODEL_MISSING"
+        }
+        if spawn_values.size() != 3 or direction_values.size() != 3:
+            result["status"] = "FAIL_CONTRACT_VECTOR"
+            CandidateDiagnostics.record_event("eugene_spawn", result)
+            continue
+        if not ResourceLoader.exists(model_path):
+            CandidateDiagnostics.record_event("eugene_spawn", result)
+            push_warning("OpenAzrael v171: source Eugene model not restored: " + model_path)
+            continue
+        var packed := load(model_path) as PackedScene
+        if packed == null:
+            result["status"] = "FAIL_MODEL_LOAD"
+            CandidateDiagnostics.record_event("eugene_spawn", result)
+            continue
+        var root := Node3D.new()
+        root.name = "SourceCharacter_" + character
+        current_room.add_child(root)
+        root.position = Vector3(float(spawn_values[0]), float(spawn_values[1]), float(spawn_values[2]))
+        var source_direction := Vector3(float(direction_values[0]), float(direction_values[1]), float(direction_values[2])).normalized()
+        root.set_meta("source_direction", source_direction)
+        root.set_meta("model_front_calibration", "HOLD_SOURCE_PROOF")
+        var model := packed.instantiate()
+        model.name = character + "_Model"
+        root.add_child(model)
+        result["status"] = "SOURCE_MODEL_SPAWNED"
+        result["spawn"] = root.position
+        result["source_direction"] = source_direction
+        result["model_front_calibration"] = "HOLD_SOURCE_PROOF"
+        CandidateDiagnostics.record_event("eugene_spawn", result)
+
 func _setup_r1_doors() -> void:
     if current_room_id != "R1":
         return
@@ -698,6 +747,7 @@ func load_room(id: String, announce := true) -> void:
     _setup_well_key()
     _setup_r7_character_state()
     _setup_r7_switchboard()
+    _setup_r1_eugene_spawns()
     _setup_r1_doors()
     _setup_r8()
     if is_instance_valid(legacy_audio):
