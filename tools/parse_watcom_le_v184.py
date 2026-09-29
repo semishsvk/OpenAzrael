@@ -29,6 +29,34 @@ def parse(path):
  "data_pages_header_relative_offset":datapage,"data_pages_file_offset":data_file,
  "entry":{"object":entry_obj,"offset":entry_off,"file_offset":entry_file},
  "fixup":{"section_size":u32(b,h+48),"page_table_header_relative":u32(b,h+104),"record_table_header_relative":u32(b,h+108)}}
+ # Parse variable-length LE fixups and require exact per-page boundaries.
+ fp=h+u32(b,h+104); fr=h+u32(b,h+108)
+ po=[u32(b,fp+4*i) for i in range(pages+1)]
+ total=0; types={}; targets={}
+ for pg in range(pages):
+  pos,end=fr+po[pg],fr+po[pg+1]
+  while pos<end:
+   start=pos; src=b[pos]; flags=b[pos+1]; pos+=2
+   if src&0x20: cnt=b[pos]; pos+=1
+   else: pos+=2; cnt=None
+   targ=flags&3; osz=2 if flags&0x40 else 1
+   if targ==0:
+    pos+=osz
+    if (src&0x0f)!=2: pos+=4 if flags&0x10 else 2
+   elif targ==1:
+    pos+=osz
+    pos+=1 if flags&0x80 else (4 if flags&0x10 else 2)
+   elif targ==2:
+    pos+=osz; pos+=4 if flags&0x10 else 2
+   else:
+    pos+=osz
+   if flags&0x04: pos+=4 if flags&0x20 else 2
+   if src&0x20: pos+=2*cnt
+   if pos>end or pos<=start: raise SystemExit("FIXUP_RECORD_BOUNDARY_MISMATCH")
+   total+=1; types[str(src&0x0f)]=types.get(str(src&0x0f),0)+1; targets[str(targ)]=targets.get(str(targ),0)+1
+  if pos!=end: raise SystemExit("FIXUP_PAGE_BOUNDARY_MISMATCH")
+ result["fixup"].update({"page_count":pages,"record_count":total,"source_type_counts":types,"target_type_counts":targets,"record_bytes":po[-1]})
+ return result
 def main():
  a=argparse.ArgumentParser();a.add_argument("exe",type=Path);x=a.parse_args();print(json.dumps(parse(x.exe),indent=2))
 if __name__=="__main__": main()
