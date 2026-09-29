@@ -50,6 +50,9 @@ jobs:
           python tools/validate_candidate4_release_contract_v132.py
           python -m py_compile tools/validate_release_runtime_evidence_v176.py tools/restore_candidate_assets.py tools/run_candidate3_preflight.py
           grep -q "validate_release_runtime_evidence_v176.py" tools/export_candidate4.py
+          grep -q "PACKAGED_CRITICAL_GAMEPLAY_FAILED" tools/export_candidate4.py
+          grep -q "kg001_all_transition_runner_v141.gd" tools/export_candidate4.py
+          grep -q "kg001_inventory_hud_runner_v157.gd" tools/export_candidate4.py
           grep -q "candidate_asset_restore_v177.json" tools/restore_candidate_assets.py
           grep -q "RUNTIME_ASSETS_CHANGED_OR_MIXED_SINCE_RESTORE" tools/run_candidate3_preflight.py
           grep -q "RUNTIME_ASSETS_CHANGED_DURING_PREFLIGHT" tools/run_candidate3_preflight.py
