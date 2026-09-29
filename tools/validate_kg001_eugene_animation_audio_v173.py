@@ -15,6 +15,11 @@ checks={
  "source_audio_only":'AUDIO_PATH := "res://assets/audio/EUGROAR.WAV"' in runtime and "ResourceLoader.exists(AUDIO_PATH)" in runtime,
  "no_synthetic_animation":"can_synthesize_missing_animation()" in runtime and "return false" in runtime,
  "r1_binding":'preload("res://scripts/eugene_animation_audio_v173.gd")' in room and 'animation_audio.name = "SourceAnimationAudio"' in room,
+ "source_player_binding":'func bind_source_player' in runtime and 'animation_audio.call("bind_source_player", source_player, 15.0)' in room,
+ "playback_frame_observation":'current_animation_position' in runtime and 'observe_source_frame(frame)' in runtime,
+ "dedicated_source_player":'source_player.name = "SourceCharacterAnimation"' in room and 'AnimationLibrary.new()' in room,
+ "source_track_root_binding":'NodePath("../" + character + "_Model")' in room,
+ "source_clip_loading":'res://assets/characters/%s/%s.tres' in room and 'source_library.add_animation' in room,
 }
 failed=[k for k,v in checks.items() if not v]
 print(json.dumps({"schema":"openazrael.kg001.eugene_animation_audio_validation","version":173,
