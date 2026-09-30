@@ -12,11 +12,24 @@ var shared_rand: Node = null
 var movement: Node = null
 var source_animation_player: AnimationPlayer = null
 var _source_animation_family := ""
+var source_movement_armed := false
 
 func configure(direction: Vector3, rand_service: Node, movement_helper: Node) -> void:
+    # NPC*.DAT direction is source-authored facing/state.  It is not, by
+    # itself, executable proof that autonomous movement begins at spawn.
     source_direction = direction.normalized()
     shared_rand = rand_service
     movement = movement_helper
+    source_movement_armed = false
+
+func arm_source_movement() -> void:
+    # Call only from an executable/source-backed movement action.  Spawn does
+    # not arm autonomous movement (R.EXE v191/v192 evidence).
+    source_movement_armed = true
+
+func disarm_source_movement() -> void:
+    source_movement_armed = false
+    _play_source_family("REST")
 
 func bind_source_animation_player(player: AnimationPlayer) -> void:
     source_animation_player = player
@@ -74,11 +87,14 @@ func _source_recovery_update() -> void:
         })
 
 func _physics_process(_delta: float) -> void:
-    if source_direction.length_squared() <= 0.0:
-        return
     if recovery_updates > 0:
         _play_source_family("REST")
         _source_recovery_update()
+        return
+    if not source_movement_armed:
+        _play_source_family("REST")
+        return
+    if source_direction.length_squared() <= 0.0:
         return
     var motion := _horizontal_motion(source_direction, SOURCE_STEP)
     if test_move(global_transform, motion):
@@ -86,13 +102,15 @@ func _physics_process(_delta: float) -> void:
         _arm_recovery()
         return
     # Use CharacterBody3D collision-aware movement even after the preflight
-    # test.  Direct global_position writes would bypass the production physics
-    # path and cannot be accepted as Eugene runtime evidence.
+    # test. Direct global_position writes would bypass production physics.
     _play_source_family("RUN")
     move_and_collide(motion)
 
 func recovery_updates_remaining() -> int:
     return recovery_updates
+
+func movement_is_armed() -> bool:
+    return source_movement_armed
 
 func shared_rng_call_index() -> int:
     if shared_rand == null or not shared_rand.has_method("call_index"):
