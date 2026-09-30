@@ -111,3 +111,38 @@ jobs:
       - name: Verify tracked checkout stayed clean
         shell: bash
         run: test -z "$(git status --porcelain --untracked-files=normal)"
+
+  source-snapshot:
+    name: Exact HEAD source snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact workflow SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+      - name: Verify checkout identity and build deterministic archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -z "$(git status --porcelain --untracked-files=normal)"
+          mkdir -p .tmp/kg001-source-snapshot
+          git archive --format=tar --prefix=OpenAzrael/ "${GITHUB_SHA}" > .tmp/kg001-source-snapshot/openazrael-source.tar
+          sha256sum .tmp/kg001-source-snapshot/openazrael-source.tar > .tmp/kg001-source-snapshot/openazrael-source.tar.sha256
+          {
+            printf 'git_sha=%s\n' "${GITHUB_SHA}"
+            printf 'git_tree=%s\n' "$(git rev-parse "${GITHUB_SHA}^{tree}")"
+            printf 'tracked_files=%s\n' "$(git ls-tree -r --name-only "${GITHUB_SHA}" | wc -l | tr -d ' ')"
+          } > .tmp/kg001-source-snapshot/source-identity.txt
+      - name: Upload immutable source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: kg001-source-${{ github.sha }}
+          path: |
+            .tmp/kg001-source-snapshot/openazrael-source.tar
+            .tmp/kg001-source-snapshot/openazrael-source.tar.sha256
+            .tmp/kg001-source-snapshot/source-identity.txt
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
