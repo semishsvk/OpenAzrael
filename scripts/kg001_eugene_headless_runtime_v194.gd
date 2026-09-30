@@ -46,9 +46,17 @@ func _run() -> void:
     world.add_child(eugene)
     eugene.call("configure", Vector3.RIGHT, rng, movement)
 
+    var spawn_position := eugene.global_position
+    await physics_frame
     await physics_frame
     _check(int(eugene.call("shared_rng_call_index")) == 0, "spawn_consumed_rng")
-    # First production physics update faces the wall and must arm recovery.
+    _check(not bool(eugene.call("movement_is_armed")), "spawn_armed_movement")
+    _check(eugene.global_position.is_equal_approx(spawn_position), "spawn_direction_caused_movement")
+
+    # The harness explicitly arms the movement input under test.  This is not
+    # evidence that spawn itself arms movement; v191/v192 prove the opposite.
+    eugene.call("arm_source_movement")
+    _check(bool(eugene.call("movement_is_armed")), "explicit_movement_arm_failed")
     await physics_frame
     _check(int(eugene.call("recovery_updates_remaining")) == 50, "collision_did_not_arm_50")
     var before := int(eugene.call("shared_rng_call_index"))
@@ -63,6 +71,7 @@ func _run() -> void:
         "schema": "openazrael.kg001.eugene_headless_runtime_v194",
         "status": "PASS" if failed.is_empty() else "FAIL",
         "failed": failed,
+        "spawn_stationary": eugene.global_position.is_equal_approx(spawn_position),
         "rng_before_recovery": before,
         "rng_after_recovery": after,
         "recovery_updates": 50,
