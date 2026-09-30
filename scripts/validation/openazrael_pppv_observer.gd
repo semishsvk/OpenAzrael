@@ -185,3 +185,7 @@ func _on_candidate_event(entry: Dictionary) -> void:
             })
         "room_transition":
             evidence.record("room_transition", data.duplicate(true))
+        "character_animation_request":
+            evidence.record("character_animation_request", data.duplicate(true))
+        "conversation_request":
+            evidence.record("conversation_request", data.duplicate(true))
