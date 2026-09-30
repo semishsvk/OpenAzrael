@@ -382,6 +382,40 @@ func _run_checkpoint(
         "persistence_kind": "canonical_state_roundtrip"
     }
 
+func _validate_niamh_source_fidelity(state: Node, evidence) -> Array[String]:
+    var errors: Array[String] = []
+    var activated := bool(state.call("flag", "R7NiamhActivated"))
+    var animation_ok := false
+    var conversation_ok := false
+    for event in evidence.events():
+        if not event is Dictionary:
+            continue
+        var kind := String(event.get("kind", ""))
+        var payload = event.get("payload", {})
+        if not payload is Dictionary:
+            continue
+        if kind == "character_animation_request" and String(payload.get("character", "")) == "Niamh":
+            var family := String(payload.get("family", ""))
+            if family == "Conv":
+                errors.append("niamh_invented_conv_animation")
+            if (
+                family == "NOLOOP1"
+                and String(payload.get("next_family", "")) == "REST"
+                and String(payload.get("status", "")) == "PLAYING_SOURCE_CLIP"
+            ):
+                animation_ok = true
+        elif kind == "conversation_request" and String(payload.get("character", "")) == "Niamh":
+            if (
+                String(payload.get("family", "")) == "1A"
+                and String(payload.get("status", "")) == "SOURCE_TEXT_READY"
+            ):
+                conversation_ok = true
+    if activated and not animation_ok:
+        errors.append("niamh_activation_missing_source_noloop1_rest")
+    if activated and not conversation_ok:
+        errors.append("niamh_activation_missing_source_conversation_1a")
+    return errors
+
 func _finish(
     output_path: String,
     plan: Dictionary,
@@ -396,6 +430,9 @@ func _finish(
         for failure in runtime_guard.failure_list():
             if not failures.has(String(failure)):
                 failures.append(String(failure))
+    for failure in _validate_niamh_source_fidelity(state, evidence):
+        if not failures.has(String(failure)):
+            failures.append(String(failure))
     var final_hash := String(state.call("canonical_state_hash"))
     var expected_hash := String(plan.get("success_state_sha256", ""))
     if not expected_hash.is_empty() and final_hash != expected_hash:
