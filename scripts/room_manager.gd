@@ -676,10 +676,14 @@ func _setup_r1_eugene_spawns() -> void:
         if restored_families.is_empty():
             result["animation_audio_binding"] = "HOLD_SOURCE_CLIPS_MISSING"
         else:
-            animation_audio.call("bind_source_player", source_player, 15.0)
+            # v190 proves integer source-frame trigger semantics, but not the
+            # wall-clock cadence of MoveCharacters updates. Do not convert
+            # AnimationPlayer seconds through an invented 15 FPS adapter.
+            # Frame-60 EUGROAR/-200 HP stays fail-closed until that cadence is
+            # source-proven or driven directly by reconstructed source updates.
             root.call("bind_source_animation_player", source_player)
-            result["animation_clock_adapter_fps"] = 15.0
-            result["animation_clock_status"] = "SOURCE_FRAME_DOMAIN_V190_WALL_CLOCK_ADAPTER_PROVISIONAL"
+            result["animation_clock_adapter_fps"] = null
+            result["animation_clock_status"] = "HOLD_SOURCE_UPDATE_CADENCE_V190"
             result["source_animation_player"] = String(source_player.get_path())
             result["source_animation_families"] = restored_families
             result["animation_audio_binding"] = "SOURCE_PLAYER_BOUND"
