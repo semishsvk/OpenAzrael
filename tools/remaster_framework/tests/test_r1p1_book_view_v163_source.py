@@ -15,7 +15,9 @@ def test_r1p1_runtime_is_look_book_view():
     src=read("scripts/readable_book_interaction_v162.gd")
     assert 'return "LOOK"' in src
     assert 'DemoState.acquire' not in src
-    assert 'SOURCE_TEXTURE := "res://assets/source_books/1_1_0.png"' in src
+    assert 'BookPresentation.open(get_tree().current_scene, PRESENTATION_ID)' in src
+    adapter=read("scripts/book_presentation_v172.gd")
+    assert '"R1/r1p1": "res://assets/source_books/1_1_0.png"' in adapter
 
 def test_book_view_has_source_verified_rmb_exit_and_modal_guards():
     host=read("scripts/interaction_presentation_host_v158.gd")
