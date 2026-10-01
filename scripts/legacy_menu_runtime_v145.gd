@@ -39,7 +39,6 @@ const INVENTORY_FONT_CELL_SIZE := Vector2(10, 12)
 const INVENTORY_FONT_FIRST_CODEPOINT := 35
 const INVENTORY_FONT_CELL_COUNT := 138
 const INVENTORY_SPACE_ADVANCE := 3.0
-const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield"]
 const INVENTORY_ITEM_LABELS := {
     "rusty_tongs": "Rusty tongs",
     "parchment_r1": "Page - Apr 1194",
