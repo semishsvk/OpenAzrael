@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c5-cloud-execution-eb4ccc15-20261001",
   "owner": "OpenAzrael C5 cloud bootstrap and runtime capture",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -9,5 +9,25 @@
   "acquired_on": "2026-10-01",
   "expires": null,
   "previous_lease_id": "video-recovery-65d57ab9-20260930",
-  "note": "User requested continuation: retry materialization using authenticated file transfer; frozen source unchanged, fail closed."
+  "note": "C5 transport recovery succeeded using exact registered upstream Godot URL and hash-verified Git API checkout. Toolchain bootstrap PASS; asset restore exit 0. Preflight FAIL closed on frozen-source Python SyntaxError. All processes stopped. Frozen source unchanged; no runtime, capture, export or Actions run.",
+  "released_on": "2026-10-01",
+  "last_execution": {
+    "status": "BLOCKED_SOURCE_CONTRACT",
+    "source_head": "eb4ccc15e19a388980c483318465b6dbb0c448e1",
+    "source_tree": "9264af94c8e2726944133d62a29bdb4fbc87a07c",
+    "source_clean": true,
+    "bootstrap_ref": "f68563c670adcef9863d3850e37c388177fcd5ee",
+    "toolchain_bootstrap": "PASS",
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "asset_restore_exit": 0,
+    "preflight_exit": 1,
+    "reason": "CANDIDATE4_SOURCE_CONTRACT_FAILED",
+    "failed_tool": "tools/validate_kg001_trigger_events_v137.py",
+    "line": 77,
+    "error": "SyntaxError: unexpected character after line continuation character; literal backslash-n between conditions",
+    "runtime_validation": "NOT_RUN",
+    "flythrough_capture": "NOT_RUN",
+    "export_allowed": false,
+    "checkpoint": "OpenAzrael_C5_execution_checkpoint_20261001.zip"
+  }
 }
