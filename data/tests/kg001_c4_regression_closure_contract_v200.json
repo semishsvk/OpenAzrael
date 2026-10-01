@@ -1,0 +1,64 @@
+{
+  "schema": "openazrael.kg001.c4_regression_closure",
+  "version": 200,
+  "status": "SOURCE_CLOSURE_PRESENT_RUNTIME_ATTESTATION_REQUIRED",
+  "policy": {
+    "candidate_allowed_only_when": "ALL_REQUIRED_EVIDENCE_PASS",
+    "source_presence_is_not_runtime_proof": true,
+    "historical_candidate4_proof_is_not_current_head_proof": true,
+    "animation_reference_pacing_is_not_source_authority": true
+  },
+  "regressions": [
+    {
+      "id": "menu_hud",
+      "source": ["main.tscn", "scripts/legacy_menu_runtime_v145.gd"],
+      "source_validator": "tools/validate_kg001_legacy_menu_runtime_v145.py",
+      "required_evidence": ["SOURCE_CONTRACT", "HEADLESS_RUNTIME", "CURRENT_HEAD_VISUAL_RUNTIME"]
+    },
+    {
+      "id": "cursor",
+      "source": ["scripts/player.gd", "scripts/interaction_probe.gd", "data/ui/legacy_cursor_manifest_v143.json"],
+      "source_validator": "tools/validate_kg001_interaction_cursors_v143.py",
+      "required_evidence": ["SOURCE_CONTRACT", "HEADLESS_RUNTIME", "CURRENT_HEAD_VISUAL_RUNTIME"]
+    },
+    {
+      "id": "inventory_rendering",
+      "source": ["scripts/legacy_menu_runtime_v145.gd"],
+      "source_validator": "tools/validate_kg001_inventory_hud_v157.py",
+      "required_evidence": ["SOURCE_CONTRACT", "HEADLESS_RUNTIME", "CURRENT_HEAD_VISUAL_RUNTIME"]
+    },
+    {
+      "id": "animation",
+      "source": ["scripts/source_frame_animation_driver_v195.gd", "scripts/legacy_scene_update_clock_v198.gd"],
+      "source_validator": "tools/validate_kg001_legacy_scene_update_reference_profile_v198.py",
+      "required_evidence": ["SOURCE_CONTRACT", "HEADLESS_RUNTIME", "ORIGINAL_RUNTIME_PACING_CAPTURE", "CURRENT_HEAD_RUNTIME"]
+    },
+    {
+      "id": "keyhole_and_windows_orientation",
+      "source": ["tools/texture_pipeline/export_xaf_glb_v8.py"],
+      "source_validator": "tools/validate_kg001_texture_orientation_v133.py",
+      "required_evidence": ["SOURCE_CONTRACT", "CURRENT_HEAD_VISUAL_RUNTIME"],
+      "invariant": "NO_PER_TEXTURE_ORIENTATION_HACK"
+    },
+    {
+      "id": "stairs_collision",
+      "source": ["scripts/player.gd"],
+      "source_validator": "tools/validate_kg001_collision_parity_v120.py",
+      "required_evidence": ["SOURCE_CONTRACT", "HEADLESS_RUNTIME", "CURRENT_HEAD_RUNTIME"]
+    },
+    {
+      "id": "room_transitions",
+      "source": ["data/xaf_trigger_evidence.json", "scripts/room_manager.gd", "scripts/validation/pppv_navigator.gd"],
+      "source_validator": "tools/validate_kg001_all_transition_v141.py",
+      "required_evidence": ["SOURCE_CONTRACT", "HEADLESS_RUNTIME", "PPPV_CURRENT_HEAD_RUNTIME"],
+      "critical": true,
+      "transition_count": 4
+    }
+  ],
+  "known_blockers": [
+    "ORIGINAL_RUNTIME_PACING_CAPTURE",
+    "CURRENT_HEAD_VISUAL_RUNTIME",
+    "PPPV_CURRENT_HEAD_RUNTIME"
+  ],
+  "candidate_gate": "BLOCKED"
+}
