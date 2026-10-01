@@ -1,0 +1,49 @@
+{
+  "checks": {
+    "exe_hash": true,
+    "fixup_parse_complete": true,
+    "frame_callback_fixup_exact": true,
+    "invoker_loads_user_then_indirect_calls": true,
+    "invoker_reads_array": true,
+    "invoker_reads_count": true,
+    "no_direct_ail_delay_from_outer_loop": true,
+    "normal_gameplay_scene_update_call": true,
+    "normal_gameplay_scene_update_gate_a": true,
+    "normal_gameplay_scene_update_gate_b": true,
+    "normal_path_world_timer_before_scene_update": true,
+    "outer_loop_backedge": true,
+    "registration_calls_generic_registry": true,
+    "registration_immediate": true,
+    "registry_appends_callback": true,
+    "registry_type_770c": true,
+    "scene_update_calls_wrapper": true,
+    "scene_update_enumerates_770c": true,
+    "wrapper_calls_invoker": true,
+    "wrapper_type_770c": true
+  },
+  "conclusion": {
+    "fixed_source_hz": null,
+    "production_policy": "DO_NOT_MAP_TO_GODOT_PROCESS_OR_PHYSICS_RATE_AS_SOURCE_EXACT_WITHOUT_PACING_PROOF",
+    "reachability": "EXECUTABLE_CODE_VERIFIED",
+    "source_update_event": "REGISTERED_SCENE_CALLBACK_DISPATCH_ON_ELIGIBLE_GAMEPLAY_UPDATE_PASS",
+    "wall_clock_pacing": "HOLD_NOT_PROVEN"
+  },
+  "failed": [],
+  "fixup_records": 28547,
+  "frame_callback": {
+    "fixup_source_actual": "0x106FD",
+    "fixup_target_encoded": "0x12E7C",
+    "invoker": "object1:0x3E5C4",
+    "le_bias": "0x2AA8",
+    "normal_gameplay_call_site": "object1:0x15EE",
+    "outer_loop_backedge": "object1:0x346F -> 0xFBB",
+    "registered_function": "object1:0x103D4",
+    "registration_function": "object1:0x106E4",
+    "registry": "object1:0x30A68",
+    "scene_update": "object1:0x2ABA8",
+    "wrapper": "object1:0x44B58"
+  },
+  "schema": "openazrael.kg001.source_update_dispatch_validation",
+  "status": "PASS",
+  "version": 197
+}
