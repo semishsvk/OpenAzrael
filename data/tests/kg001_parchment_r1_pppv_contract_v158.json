@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.kg001.parchment_r1_pppv_contract",
-  "version": 162,
+  "version": 165,
   "status": "SOURCE_BEHAVIOR_VERIFIED_RUNTIME_ASSET_STAGING_REQUIRED",
   "scenario_id": "openazrael.r1.look_at_parchment",
   "room": "R1",
@@ -57,7 +57,10 @@
     "invented_art_forbidden": true,
     "candidate_gate": "FAIL_UNTIL_VERIFIED_SOURCE_PAGE_IS_STAGED_AND_PRESENTATION_LIFECYCLE_PASSES"
   },
-  "source_holds": [
-    "exact SPAPER.WAV playback timing relative to StartBookViewMode"
-  ]
+  "source_holds": [],
+  "audio": {
+    "expected_event_audio": [],
+    "status": "VERIFIED_NONE_BOUND_TO_R1P1",
+    "correction": "SPAPER.WAV belongs to R7/r7p1 via verified WORLD opcode-0x28 record, not R1/r1p1."
+  }
 }
