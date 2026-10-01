@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.kg001.candidate3_pppv_integration_contract",
-  "version": 162,
+  "version": 173,
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "candidate": "KG-001 Candidate 3",
   "integration_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,7 +26,7 @@
     "G08",
     "G09"
   ],
-  "evidence_boundary": "Source-contract PASS does not claim asset-backed PPPV/runtime PASS or G10. Readable interactions additionally require source-backed presentation lifecycle; canonical state mutation alone cannot satisfy the gate.",
+  "evidence_boundary": "Source-contract PASS does not claim runtime PASS or G10. Readable carried objects require verified world removal/carry state plus source-backed presentation OPEN/CLOSE; state-only success cannot satisfy the gate.",
   "next_build": "KG-001 Candidate 4",
   "required_transition_scenarios": [
     "openazrael.transition.r1_to_r7",
@@ -45,11 +45,14 @@
     ]
   },
   "required_interaction_presentation": [
-    "openazrael.r1.look_at_parchment"
+    "openazrael.r1.look_at_parchment",
+    "openazrael.tapestry_pickup_book_view_family"
   ],
   "interaction_presentation_gate": {
     "status": "SOURCE_BEHAVIOR_VERIFIED_RUNTIME_ASSET_STAGING_REQUIRED",
     "state_only_pass_forbidden": true,
-    "contract": "data/tests/kg001_parchment_r1_pppv_contract_v158.json"
+    "contract": "data/tests/kg001_parchment_r1_pppv_contract_v158.json",
+    "additional_contract": "data/tests/kg001_tapestry_book_pppv_contract_v172.json",
+    "lifecycle_evidence": "data/tests/kg001_object_carry_book_opcode_evidence_v173.json"
   }
 }
