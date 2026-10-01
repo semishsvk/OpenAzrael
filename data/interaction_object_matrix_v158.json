@@ -1,0 +1,52 @@
+{
+  "schema": "openazrael.interaction_object_matrix",
+  "version": 158,
+  "status": "PARTIAL_EVIDENCE",
+  "rows": [
+    {
+      "room": "R1",
+      "object": "r1p1",
+      "authored_material": "PAPER",
+      "runtime_item": "parchment_r1",
+      "world_action": "PICKUP",
+      "world_cursor": "TAKE",
+      "canonical_effect": "DemoState.acquire(parchment_r1)",
+      "presentation_required": true,
+      "presentation_kind": "READ_INSPECT",
+      "source_payload": null,
+      "source_payload_status": "HOLD",
+      "retail_cross_refs": ["Parchment", "IParchment", "IPapers"],
+      "retail_cross_ref_status": "STRUCTURAL_NAMES_ONLY",
+      "notes": "Do not infer demo payload or behavior from retail names alone."
+    },
+    {
+      "room": "R1",
+      "object": "TONG6",
+      "runtime_item": "rusty_tongs",
+      "world_action": "PICKUP",
+      "world_cursor": "TAKE",
+      "canonical_effect": "DemoState.acquire(rusty_tongs)",
+      "presentation_required": false,
+      "presentation_status": "NO_READABLE_PRESENTATION_EVIDENCE"
+    },
+    {
+      "room": "R7",
+      "object": "nibdyky01",
+      "runtime_item": "well_key",
+      "world_action": "PICKUP_USE",
+      "canonical_effect": "source-event/state driven",
+      "presentation_required": false,
+      "presentation_status": "NO_READABLE_PRESENTATION_EVIDENCE"
+    },
+    {
+      "room": "R8",
+      "object": "lens",
+      "runtime_item": "r8_lens",
+      "world_action": "PICKUP_PLACE",
+      "canonical_effect": "acquire then R8_LENS_PLACE remove",
+      "presentation_required": true,
+      "presentation_kind": "PLACE_COMBINE",
+      "presentation_status": "EXISTING_RUNTIME_REQUIRES_SEQUENCE_VALIDATION"
+    }
+  ]
+}
