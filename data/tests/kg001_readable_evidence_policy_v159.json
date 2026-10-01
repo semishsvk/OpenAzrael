@@ -1,27 +1,31 @@
 {
-  "schema":"openazrael.kg001.readable_evidence_policy",
-  "version":159,
-  "status":"ACTIVE",
-  "binding_threshold":{
-    "minimum_independent_links":2,
-    "allowed_link_classes":[
+  "schema": "openazrael.kg001.readable_evidence_policy",
+  "version": 173,
+  "status": "ACTIVE",
+  "binding_threshold": {
+    "minimum_independent_links": 2,
+    "allowed_link_classes": [
       "object/action-record association",
       "executable dispatch/xref",
       "source asset/resource reference",
       "runtime capture from original",
       "serialized room/world/puzzle structure"
     ],
-    "filename_similarity_alone":"INSUFFICIENT",
-    "byte_proximity_alone":"INSUFFICIENT",
-    "retail-name similarity alone":"INSUFFICIENT"
+    "filename_similarity_alone": "INSUFFICIENT",
+    "byte_proximity_alone": "INSUFFICIENT",
+    "retail-name similarity alone": "INSUFFICIENT"
   },
-  "current_r1p1":{
-    "object_identity":"SUPPORTED",
-    "pickup_lifecycle":"SUPPORTED",
-    "presentation_required":"SUPPORTED",
-    "payload_identity":"HOLD",
-    "close_semantics":"HOLD",
-    "drive_negative_search":["PAPER.PCX","PARCHMENT.PCX"],
-    "candidate_status":"BLOCKED_SOURCE_PAYLOAD"
+  "current_r1p1": {
+    "object_identity": "VERIFIED",
+    "pickup_lifecycle": "VERIFIED_07_REMOVE_08_CARRY_21_BOOK",
+    "presentation_required": "VERIFIED",
+    "payload_identity": "VERIFIED",
+    "close_semantics": "VERIFIED_RIGHT_MOUSE_BUTTON_FROM_SOURCE_PAGE",
+    "candidate_status": "READY_FOR_RUNTIME_VALIDATION",
+    "evidence": [
+      "data/tests/kg001_object_carry_book_opcode_evidence_v173.json",
+      "data/tests/kg001_book_descriptor_family_v169.json",
+      "data/tests/kg001_parchment_r1_pppv_contract_v158.json"
+    ]
   }
 }
