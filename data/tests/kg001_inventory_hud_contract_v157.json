@@ -1,7 +1,7 @@
 {
   "schema": "openazrael.kg001.inventory_hud_contract",
-  "version": 157,
-  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "version": 173,
+  "status": "SOURCE_CARRIED_SET_SEMANTICS_VERIFIED_RUNTIME_PENDING",
   "scope": "Classic HUD carried-object list bound directly to canonical DemoState.inventory",
   "source_evidence": {
     "README.TXT": "left HUD box lists carried objects with arrow-key scrolling",
@@ -47,6 +47,26 @@
       "source": "ROOMS.DAT"
     },
     {
+      "id": "parchment_r1",
+      "label": "Page - Apr 1194",
+      "source": "WORLD.DAT r1p1 display label; carried via verified opcode 0x08"
+    },
+    {
+      "id": "tapestry_piece_1",
+      "label": "Tapestry Piece",
+      "source": "WORLD.DAT r3t1 display label; carried via verified opcode 0x08"
+    },
+    {
+      "id": "tapestry_piece_3",
+      "label": "Tapestry Piece",
+      "source": "WORLD.DAT r8t3 display label; carried via verified opcode 0x08"
+    },
+    {
+      "id": "tapestry_piece_4",
+      "label": "Tapestry Piece",
+      "source": "WORLD.DAT r8t4 display label; carried via verified opcode 0x08"
+    },
+    {
       "id": "well_key",
       "label": "Key",
       "source": "WORLD.DAT"
@@ -63,6 +83,7 @@
     }
   ],
   "runtime_rules": [
+    "carried-object display order follows acquisition order because original opcode 0x08 appends object indices to the carried set",
     "DemoState.inventory is the only inventory source of truth",
     "inventory_changed refreshes the HUD immediately",
     "remove_inventory removes the item from the HUD immediately",
@@ -80,6 +101,8 @@
     "r8_lens appears after acquisition and disappears after R8_LENS_PLACE",
     "shield appears after R8_TAKE_SHIELD",
     "save/reset/load restores the same visible inventory labels",
-    "DemoState canonical payload remains the save/load source"
+    "DemoState canonical payload remains the save/load source",
+    "parchment_r1 and tapestry piece IDs render their source WORLD labels when carried",
+    "carried-object HUD preserves acquisition order rather than a fixed invented item order"
   ]
 }
