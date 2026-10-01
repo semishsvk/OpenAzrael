@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.kg001.candidate3_pppv_integration_contract",
-  "version": 158,
+  "version": 162,
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "candidate": "KG-001 Candidate 3",
   "integration_branch": "integration/kg001-candidate3-pppv-v2",
@@ -45,10 +45,10 @@
     ]
   },
   "required_interaction_presentation": [
-    "openazrael.r1.pickup_and_read_parchment"
+    "openazrael.r1.look_at_parchment"
   ],
   "interaction_presentation_gate": {
-    "status": "BLOCKED_SOURCE_PAYLOAD",
+    "status": "SOURCE_BEHAVIOR_VERIFIED_RUNTIME_ASSET_STAGING_REQUIRED",
     "state_only_pass_forbidden": true,
     "contract": "data/tests/kg001_parchment_r1_pppv_contract_v158.json"
   }
