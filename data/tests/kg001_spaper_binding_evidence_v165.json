@@ -1,0 +1,29 @@
+{
+  "schema":"openazrael.kg001.spaper_binding_evidence",
+  "version":165,
+  "status":"VERIFIED_R7_BINDING",
+  "source_evidence":{
+    "world_sound_record_fields":"data/world_sound_record_fields_v113.json",
+    "opcode":"0x28",
+    "token":"spaper",
+    "section0_index":1150,
+    "section0_name":"r7p1",
+    "section0_type":"Scroll",
+    "room_context_id":1,
+    "openazrael_room":"R7",
+    "runtime_handler":"WORLD opcode-0x28 dynamic 3D sample-start path"
+  },
+  "audio_asset":{
+    "filename":"SPAPER.WAV",
+    "sha256":"028ac28fa3ce9f24fe4a06e412f5cbe2b5d7c294a14772bb954a1fae53a0efbf",
+    "sample_rate":22050,
+    "channels":1,
+    "frames":9088,
+    "duration_seconds":0.4121541950113379
+  },
+  "conclusions":{
+    "R1/r1p1":"NO_SPAPER_BINDING",
+    "R7/r7p1":"SPAPER_WORLD_ACTION_BOUND"
+  },
+  "boundary":"This proves the R7 scroll sound action identity and runtime object/context binding. It does not by itself prove the complete R7 scroll visual/book-view sequencing."
+}
