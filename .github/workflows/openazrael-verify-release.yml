@@ -2,6 +2,9 @@ name: OpenAzrael Verify Release Orchestrator
 
 on:
   pull_request:
+  push:
+    branches:
+      - integration/kg001-candidate3-pppv-v2
   workflow_dispatch:
     inputs:
       expected_sha:
