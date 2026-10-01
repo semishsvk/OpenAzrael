@@ -42,6 +42,10 @@ const INVENTORY_SPACE_ADVANCE := 3.0
 const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield"]
 const INVENTORY_ITEM_LABELS := {
     "rusty_tongs": "Rusty tongs",
+    "parchment_r1": "Page - Apr 1194",
+    "tapestry_piece_1": "Tapestry Piece",
+    "tapestry_piece_3": "Tapestry Piece",
+    "tapestry_piece_4": "Tapestry Piece",
     "well_key": "Key",
     "r8_lens": "Lens",
     "shield": "Shield",
@@ -195,9 +199,12 @@ func _build() -> void:
 
 func _inventory_item_ids() -> Array[String]:
     var out: Array[String] = []
-    for item_id in INVENTORY_ITEM_ORDER:
-        if DemoState.has(String(item_id)):
-            out.append(String(item_id))
+    # Original opcode 0x08 appends object indices to the carried set.
+    # Preserve acquisition order from the canonical DemoState dictionary.
+    for raw_id in DemoState.inventory.keys():
+        var item_id := String(raw_id)
+        if bool(DemoState.inventory.get(raw_id, false)) and INVENTORY_ITEM_LABELS.has(item_id):
+            out.append(item_id)
     return out
 
 func _inventory_unknown_ids() -> Array[String]:
