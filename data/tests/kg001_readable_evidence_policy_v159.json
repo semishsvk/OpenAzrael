@@ -1,0 +1,27 @@
+{
+  "schema":"openazrael.kg001.readable_evidence_policy",
+  "version":159,
+  "status":"ACTIVE",
+  "binding_threshold":{
+    "minimum_independent_links":2,
+    "allowed_link_classes":[
+      "object/action-record association",
+      "executable dispatch/xref",
+      "source asset/resource reference",
+      "runtime capture from original",
+      "serialized room/world/puzzle structure"
+    ],
+    "filename_similarity_alone":"INSUFFICIENT",
+    "byte_proximity_alone":"INSUFFICIENT",
+    "retail-name similarity alone":"INSUFFICIENT"
+  },
+  "current_r1p1":{
+    "object_identity":"SUPPORTED",
+    "pickup_lifecycle":"SUPPORTED",
+    "presentation_required":"SUPPORTED",
+    "payload_identity":"HOLD",
+    "close_semantics":"HOLD",
+    "drive_negative_search":["PAPER.PCX","PARCHMENT.PCX"],
+    "candidate_status":"BLOCKED_SOURCE_PAYLOAD"
+  }
+}
