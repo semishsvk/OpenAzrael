@@ -1,0 +1,37 @@
+{
+  "schema": "openazrael.kg001.legacy_scene_update_clock_headless_evidence",
+  "version": 198,
+  "status": "PASS",
+  "runtime": {
+    "engine": "Godot",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "archive_sha256": "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4",
+    "mode": "HEADLESS_ISOLATED_HARNESS"
+  },
+  "clock": {
+    "script": "scripts/legacy_scene_update_clock_v198.gd",
+    "ownership": "EXTERNAL_DISPATCH_ONLY",
+    "automatic_process_tick": false,
+    "automatic_physics_tick": false,
+    "timer_tick": false
+  },
+  "result": {
+    "explicit_passes_dispatched": 10,
+    "source_updates_advanced": 9,
+    "frames": [
+      "ATTACK:53",
+      "ATTACK:54",
+      "ATTACK:55",
+      "ATTACK:56",
+      "ATTACK:57",
+      "ATTACK:58",
+      "ATTACK:59",
+      "ATTACK:60",
+      "ATTACK:61"
+    ],
+    "finished_driver_advanced_on_pass_10": false
+  },
+  "scope": "CLOCK_INTERFACE_AND_SOURCE_FRAME_DRIVER_HARNESS_NOT_R1_E2E",
+  "wall_clock_pacing": "NOT_ASSERTED",
+  "source_update_semantics": "ONE_INTEGER_SOURCE_FRAME_ADVANCE_PER_EXPLICIT_EQUIVALENT_LEGACY_SCENE_UPDATE_PASS"
+}

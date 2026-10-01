@@ -1,0 +1,24 @@
+{
+  "checks": {
+    "contract_status": true,
+    "dosbox_cycles": true,
+    "dosbox_frameskip": true,
+    "dosbox_machine": true,
+    "driver_source_update": true,
+    "explicit_dispatch_api": true,
+    "external_only": true,
+    "no_delta_clock": true,
+    "no_fixed_hz": true,
+    "no_physics_clock": true,
+    "no_process_clock": true,
+    "no_timer_clock": true,
+    "one_per_pass": true,
+    "reference_measurement_pending": true,
+    "reference_not_authority": true,
+    "v197_event": true
+  },
+  "failed": [],
+  "schema": "openazrael.kg001.legacy_scene_update_reference_profile_validation",
+  "status": "PASS",
+  "version": 198
+}

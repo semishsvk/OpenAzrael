@@ -1,0 +1,66 @@
+{
+  "schema": "openazrael.kg001.legacy_scene_update_reference_profile_contract",
+  "version": 198,
+  "status": "REFERENCE_PROFILE_DEFINED_RUNTIME_MEASUREMENT_PENDING",
+  "source_semantics": {
+    "r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "readme_sha256": "2976197be180e90d9370c580d5f07491c84d459d9f1e26ada58e993a1230adc2",
+    "source_update_event": "REGISTERED_SCENE_CALLBACK_DISPATCH_ON_ELIGIBLE_GAMEPLAY_UPDATE_PASS",
+    "updates_per_eligible_pass": 1,
+    "fixed_source_hz": null,
+    "wall_clock_status": "NOT_INTRINSIC_TO_FRAME_CALLBACK_PATH",
+    "readme_observation": "Resolution keys change movement speed: highest resolution is slowest, lowest resolution is fastest.",
+    "evidence_contract": "data/tests/kg001_source_update_dispatch_re_contract_v197.json"
+  },
+  "reference_runtime_profile": {
+    "name": "AZRAEL_DOSBOX_0_74_3_REFERENCE",
+    "authority": "REPRODUCIBILITY_REFERENCE_NOT_SOURCE_AUTHORITY",
+    "measurement_status": "PENDING_ORIGINAL_RUNTIME_CAPTURE",
+    "base_config": {
+      "drive_file_id": "1m-T4nnWeT_ArkK95Iiaef1mSLlRZ2WWL",
+      "sha256": "cc002232c243031dcf0227addb241357b3c34d5bafe22e08690c3953faca99bf",
+      "machine": "svga_s3",
+      "frameskip": 0,
+      "core": "dynamic",
+      "cputype": "auto",
+      "cycles": "max limit 280000",
+      "memsize_mb": 16
+    },
+    "graphics_config": {
+      "drive_file_id": "1-x3-hh11ETcrmqqnq9yx8Ypppn2OlrHc",
+      "sha256": "45b67e573da299d639ef5057c81feab95320b108066902529854bbea041437f2",
+      "fullscreen": true,
+      "fullresolution": "desktop",
+      "output": "overlay",
+      "aspect": true,
+      "scaler": "normal2x forced"
+    },
+    "game_config": {
+      "drive_file_id": "1RkDyjt33PBIKl8gpsz_KLGT4NBR66n27",
+      "sha256": "df54432beca8257d0d87267a206d72d7337d6f25a97665a1b7ea1e6bacc98bb2",
+      "performance_hint": "If a room feels slow, you can speed it up by pressing 1,2,1"
+    },
+    "capture_requirements": [
+      "record resolution mode/key state",
+      "record DOSBox cycles/core/machine",
+      "record host/emulator version",
+      "measure eligible scene-update passes per wall-clock interval",
+      "bind measurement to corpus and runtime hashes"
+    ]
+  },
+  "godot_bridge": {
+    "script": "res://scripts/legacy_scene_update_clock_v198.gd",
+    "clock_ownership": "EXTERNAL_DISPATCH_ONLY",
+    "automatic_process_tick": false,
+    "automatic_physics_tick": false,
+    "timer_tick": false,
+    "production_autotick": "FORBIDDEN_UNTIL_REFERENCE_PACING_MEASURED_OR_EXPLICIT_POLICY_APPROVED",
+    "v195_driver_api": "source_update()"
+  },
+  "policy": [
+    "Do not claim 15 FPS or any fixed Hz as source exact.",
+    "Do not map source_update() directly to Godot _process or _physics_process as source exact.",
+    "Preserve exactly one integer source-frame advance per dispatched equivalent legacy scene-update pass.",
+    "Keep reference runtime profile separate from source authority."
+  ]
+}
