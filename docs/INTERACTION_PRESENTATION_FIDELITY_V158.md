@@ -1,55 +1,41 @@
-# KG-001 Interaction Presentation Fidelity v158
+# KG-001 Interaction Presentation Fidelity v173
 
-## Problem
+## Verified model
 
-The current runtime can prove that an interaction changed canonical state while still failing to reproduce what the original player saw. Generic `pickup.gd` currently acquires the item, hides its world visual and frees the interaction area. That is correct state plumbing but not a complete fidelity contract for readable/inspectable objects.
+Readable/inspectable demo objects are no longer modeled as state-only generic pickups. R.EXE and serialized WORLD actions establish a generic carried-object/book subsystem.
 
-## First vertical slice: R1 r1p1
+The relevant dispatcher semantics are:
 
-Existing room reconstruction identifies `r1p1` as a `PAPER` family object and maps it to runtime item `parchment_r1`. Existing object-lifecycle work already establishes that it is visible in fresh R1 and removed from the authored location after pickup.
+- `0x07` — remove/deactivate the WORLD object. The normal-object path marks object byte `+0x12 = 1`; when the action location matches the current location it invokes the scene-object removal helper.
+- `0x08` — add the WORLD object index to the carried-object set and UI. The set helper deduplicates and appends, so display order is acquisition order.
+- `0x09` — paired inverse of `0x08`: remove from carried set/UI.
+- `0x21` — open the generic source-backed book view. It resolves `BOOKS/<object>.BOK`, then the descriptor-selected `TEXTURES/BOOKS/<prefix><page>.PCX`.
 
-The source cursor corpus contains dedicated LOOK-family cursors in addition to TAKE/USE, so presentation/inspection is modeled separately from state mutation.
+## Demo readable action groups
 
-### Current evidence boundary
+Serialized WORLD records preserve the original order:
 
-Supported:
-- world object: `R1/r1p1`
-- source family: `PAPER`
-- canonical runtime item: `parchment_r1`
-- pickup cursor: `TAKE`
-- pickup changes canonical inventory
-- authored world visual disappears after pickup
+- R1/r1p1: `07 -> 08 -> 21`
+- R1/r3t1: `07 -> 08 -> 21`
+- R7/r7p1: `08 -> 07 -> 21`
+- R8/r8t3: `08 -> 07 -> 21`
+- R8/r8t4: `08 -> 07 -> 21`
 
-Not yet source-bound:
-- exact readable image/text shown by the original
-- exact trigger relationship between TAKE and first READ/LOOK presentation
-- whether the parchment can be reopened from carried inventory
-- exact close/advance input and cursor animation
+R1/r1p1 therefore does **not** remain in the world after inspection. The earlier v162/v165 non-pickup interpretation was falsified by executable control flow plus the serialized action records. Its source page remains `1_1_0.PCX`; the carried label in WORLD is `Page - Apr 1194`.
 
-Those unknowns are HOLDs. They must not be replaced by invented text, generic parchment artwork or modern modal UI.
+R3T1/R8T3/R8T4 have verified 640x480 source pages and the WORLD display label `Tapestry Piece`.
+
+R7/r7p1 has verified carried/remove/book intent and SPAPER evidence, but the supplied ATDEMO corpus contains no R7P1.BOK/page. That presentation remains `SOURCE_INCOMPLETE`; no replacement art or text may be fabricated.
 
 ## Runtime architecture
 
-Interaction fidelity is split into two layers:
+The runtime preserves two coupled layers:
 
-1. **canonical effect** — acquire/remove item, flags, puzzle nodes, save/load;
-2. **presentation effect** — source-backed modal/inspect/read view, cursor state, audio/animation and return-to-world behavior.
+1. canonical state: world-object removal/deactivation and DemoState carried state;
+2. presentation: source-backed book page, modal input guard, RMB close, and return to world.
 
-An interaction is fidelity-complete only when both layers required by its object contract pass.
+The classic HUD now follows carried acquisition order rather than a fixed invented order, matching the append behavior of the original `0x08` set helper.
 
-## Validation extension
+## Validation gate
 
-PPPV must eventually observe the sequence:
-
-`target acquired -> expected cursor -> interact -> canonical state delta -> expected presentation opens -> source-backed presentation identity -> expected close input -> presentation closes -> world control/cursor restored`.
-
-This is intentionally stricter than checking only `DemoState.inventory` or flags.
-
-## Next evidence tasks
-
-1. Locate the exact r1p1 readable payload in the authoritative demo corpus and/or executable references.
-2. Trace PAPER/r1p1 references through ROOMS/WORLD/PUZZLES/action records.
-3. Associate any source PCX/bitmap/text payload with hashes and provenance.
-4. Determine TAKE -> READ/LOOK sequencing and close semantics from executable/data evidence.
-5. Only then bind the payload into the runtime presentation layer.
-6. Extend the same matrix to every demo object with LOOK/READ/PHOTO or multi-stage USE behavior.
+Source invariants can validate bindings and ordering statically, but KG-001 does not receive a runtime PASS until a Godot-capable VERIFY worker executes the PPPV cases with restored source pages. Required observations include carried-state delta, world-object disappearance, presentation OPEN/CLOSED, source identity, RMB close, modal movement/interaction suppression, room reload persistence, and save/load persistence.
