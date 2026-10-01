@@ -14,7 +14,7 @@ def test_r1p1_is_not_generic_pickup():
 def test_r1p1_runtime_is_look_book_view():
     src=read("scripts/readable_book_interaction_v162.gd")
     assert 'return "LOOK"' in src
-    assert 'DemoState.acquire' not in src
+    assert 'DemoState.acquire(ITEM_ID)' in src\n    assert src.index('visual_node.visible = false') < src.index('DemoState.acquire(ITEM_ID)') < src.index('BookPresentation.open')
     assert 'BookPresentation.open(get_tree().current_scene, PRESENTATION_ID)' in src
     adapter=read("scripts/book_presentation_v172.gd")
     assert '"R1/r1p1": "res://assets/source_books/1_1_0.png"' in adapter
@@ -29,9 +29,10 @@ def test_pppv_observes_presentation_lifecycle():
     runner=read("scripts/validation/pppv_scenario_runner.gd")
     assert 'attach_presentation(scene.get_node_or_null("InteractionPresentationV158"))' in runner
 
-def test_parchment_contract_preserves_inventory_and_world_object():
+def test_parchment_contract_preserves_verified_remove_carry_book_lifecycle():
     c=json.loads(read("data/tests/kg001_parchment_r1_pppv_contract_v158.json"))
     assert c["scenario_id"]=="openazrael.r1.look_at_parchment"
     seq=c["required_sequence"]
-    assert any(x.get("kind")=="state_invariant" and x.get("before") is False and x.get("after") is False for x in seq)
-    assert any(x.get("kind")=="world_object" and x.get("visible") is True for x in seq)
+    assert any(x.get("kind")=="state_transition" and x.get("before") is False and x.get("after") is True and x.get("source_opcode")=="0x08" for x in seq)
+    assert any(x.get("kind")=="world_object" and x.get("visible_after") is False and x.get("source_opcode")=="0x07" for x in seq)
+    assert any(x.get("kind")=="presentation" and x.get("state")=="OPEN" and x.get("source_opcode")=="0x21" for x in seq)
