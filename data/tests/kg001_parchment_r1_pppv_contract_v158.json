@@ -1,30 +1,63 @@
 {
   "schema": "openazrael.kg001.parchment_r1_pppv_contract",
-  "version": 158,
-  "status": "BLOCKED_SOURCE_PAYLOAD",
-  "scenario_id": "openazrael.r1.pickup_and_read_parchment",
+  "version": 162,
+  "status": "SOURCE_BEHAVIOR_VERIFIED_RUNTIME_ASSET_STAGING_REQUIRED",
+  "scenario_id": "openazrael.r1.look_at_parchment",
   "room": "R1",
   "target": "Interact_r1p1",
-  "runtime_item": "parchment_r1",
+  "runtime_item": null,
   "required_sequence": [
-    {"kind":"interaction_probe","target":"Interact_r1p1","reachable":true},
-    {"kind":"trigger","target":"Interact_r1p1","activated":true},
-    {"kind":"state_change","path":"inventory.parchment_r1","before":false,"after":true},
-    {"kind":"presentation","presentation_id":"R1/r1p1","state":"OPEN"},
-    {"kind":"presentation_identity","source_backed":true},
-    {"kind":"presentation","presentation_id":"R1/r1p1","state":"CLOSED"}
+    {
+      "kind": "interaction_probe",
+      "target": "Interact_r1p1",
+      "reachable": true,
+      "cursor": "LOOK"
+    },
+    {
+      "kind": "trigger",
+      "target": "Interact_r1p1",
+      "activated": true
+    },
+    {
+      "kind": "state_invariant",
+      "path": "inventory.parchment_r1",
+      "before": false,
+      "after": false
+    },
+    {
+      "kind": "presentation",
+      "presentation_id": "R1/r1p1",
+      "state": "OPEN"
+    },
+    {
+      "kind": "presentation_identity",
+      "source_backed": true,
+      "source_sha256": "b17ec230b56fbcacdbe51cb2dd50bb584dc477f543a6999ff5fedfa8a9cc9dae"
+    },
+    {
+      "kind": "input",
+      "button": "RIGHT_MOUSE_BUTTON",
+      "action": "CLOSE_BOOK_VIEW"
+    },
+    {
+      "kind": "presentation",
+      "presentation_id": "R1/r1p1",
+      "state": "CLOSED"
+    },
+    {
+      "kind": "world_object",
+      "target": "r1p1",
+      "visible": true
+    }
   ],
   "candidate_policy": {
     "state_only_pass_forbidden": true,
     "placeholder_payload_forbidden": true,
     "invented_text_forbidden": true,
     "invented_art_forbidden": true,
-    "candidate_gate": "FAIL_UNTIL_SOURCE_PAYLOAD_AND_CLOSE_SEMANTICS_VERIFIED"
+    "candidate_gate": "FAIL_UNTIL_VERIFIED_SOURCE_PAGE_IS_STAGED_AND_PRESENTATION_LIFECYCLE_PASSES"
   },
   "source_holds": [
-    "exact original readable payload",
-    "TAKE-to-READ/LOOK sequencing",
-    "inventory re-inspect behavior",
-    "close/advance input semantics"
+    "exact SPAPER.WAV playback timing relative to StartBookViewMode"
   ]
 }
