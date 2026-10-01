@@ -1,0 +1,36 @@
+{
+  "schema": "openazrael.kg001.interaction_presentation_contract",
+  "version": 158,
+  "status": "EVIDENCE_READY_IMPLEMENTATION_PENDING_SOURCE_CONTENT",
+  "scope": "Source-faithful player-visible interaction presentation layered on canonical gameplay state",
+  "rules": [
+    "A successful state mutation alone is insufficient for interaction fidelity.",
+    "Presentation must be driven by source-backed per-object evidence; missing content must HOLD rather than invent text or art.",
+    "Pickup/read flows preserve DemoState as the canonical inventory and save/load source.",
+    "World interaction cursor, modal presentation, close input, inventory visibility and post-close cursor state are independently validated."
+  ],
+  "interaction_classes": ["PICKUP","READ_INSPECT","USE","ACTIVATE","OPEN_CLOSE","PUSH_PULL_ROTATE","PLACE_COMBINE","TRANSITION"],
+  "objects": {
+    "R1/r1p1": {
+      "source_object": "r1p1",
+      "source_family": "PAPER",
+      "runtime_item_id": "parchment_r1",
+      "world_cursor": "TAKE",
+      "pickup_state": "SUPPORTED",
+      "world_visibility_lifecycle": "SUPPORTED",
+      "presentation_class": "READ_INSPECT",
+      "presentation_trigger": "ON_PICKUP",
+      "presentation_content": "SOURCE_REQUIRED",
+      "presentation_content_status": "HOLD_SOURCE_CONTENT_NOT_YET_BOUND",
+      "inventory_reinspect": "UNVERIFIED",
+      "close_semantics": "UNVERIFIED"
+    }
+  },
+  "acceptance": [
+    "r1p1 is visible in a fresh R1 state and disappears from its authored world location after pickup.",
+    "pickup acquires parchment_r1 through DemoState without a second inventory state.",
+    "the original readable presentation is shown only after its exact source content has been identified and bound.",
+    "no placeholder transcription, modern dialog, invented parchment art or guessed close behavior is accepted.",
+    "PPPV records both canonical state change and presentation-open/presentation-close observations."
+  ]
+}
