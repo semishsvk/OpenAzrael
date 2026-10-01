@@ -1,0 +1,26 @@
+{
+  "schema":"openazrael.kg001.object_carry_book_opcode_evidence",
+  "version":173,
+  "status":"VERIFIED",
+  "exe_sha256":"381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+  "opcode_handlers":{
+    "0x07":{"handler":"0x1882B","semantics":"REMOVE_OR_DEACTIVATE_WORLD_OBJECT","evidence":["normal object path resolves WORLD object index","sets object byte +0x12 to 1","when record +3 matches current location/state, passes object name +0x34 to scene removal helper 0x17A98"]},
+    "0x08":{"handler":"0x18904","semantics":"ADD_OBJECT_TO_CARRIED_SET_AND_UI","evidence":["calls set-add helper 0x35F08 on current-state structure +2","0x35F08 deduplicates uint16 object index and appends it","calls UI/object-list add helper 0x162BE with object index and object +0x3F data","paired opcode 0x09 calls set-remove helper 0x35F8C and UI remove helper 0x16320"]},
+    "0x09":{"handler":"0x18947","semantics":"REMOVE_OBJECT_FROM_CARRIED_SET_AND_UI","confidence":"VERIFIED_AS_PAIRED_INVERSE"},
+    "0x21":{"handler":"0x19049","semantics":"OPEN_BOOK_VIEW_FOR_WORLD_OBJECT","confidence":"VERIFIED"}
+  },
+  "serialized_action_groups":[
+    {"object":"r1p1","index":325,"record_offsets":["0x11652","0x1166D","0x11688"],"opcodes":["0x07","0x08","0x21"]},
+    {"object":"r3t1","index":1296,"record_offsets":["0x116CE","0x116E9","0x11704"],"opcodes":["0x07","0x08","0x21"]},
+    {"object":"r7p1","index":1150,"record_offsets":["0x15A86","0x15AA1","0x15ABC"],"opcodes":["0x08","0x07","0x21"]},
+    {"object":"r8t3","index":1298,"record_offsets":["0x15C5E","0x15C79","0x15C94"],"opcodes":["0x08","0x07","0x21"]},
+    {"object":"r8t4","index":1299,"record_offsets":["0x15CF5","0x15D10","0x15D2B"],"opcodes":["0x08","0x07","0x21"]}
+  ],
+  "conclusions":[
+    "R1/r1p1 is not a non-pickup persistent world parchment: its original action group removes/deactivates it, adds it to the carried-object set/UI, then opens book view.",
+    "R3/r3t1 has the same 07->08->21 lifecycle.",
+    "R8/r8t3 and R8/r8t4 use 08->07->21; final observable state before book view is carried and removed from world.",
+    "R7/r7p1 also uses carried+removed+book lifecycle, but its required BOK/page payload is absent from supplied ATDEMO."
+  ],
+  "cursor_boundary":"Action lifecycle does not by itself prove the user-facing cursor. Preserve independently evidenced cursor bindings until cursor dispatch is separately resolved."
+}
