@@ -1,7 +1,7 @@
 {
   "schema": "openazrael.kg001.interaction_presentation_contract",
-  "version": 161,
-  "status": "SOURCE_PAYLOAD_VERIFIED_TRIGGER_FLOW_PENDING",
+  "version": 162,
+  "status": "R1P1_CLASS_AND_PAYLOAD_VERIFIED_SOURCE_ASSET_STAGING_PENDING",
   "scope": "Source-faithful player-visible interaction presentation layered on canonical gameplay state",
   "rules": [
     "A successful state mutation alone is insufficient for interaction fidelity.",
@@ -23,15 +23,15 @@
     "R1/r1p1": {
       "source_object": "r1p1",
       "source_family": "PAPER",
-      "runtime_item_id": "parchment_r1",
-      "world_cursor": "TAKE",
-      "pickup_state": "SUPPORTED",
-      "world_visibility_lifecycle": "SUPPORTED",
+      "runtime_item_id": null,
+      "world_cursor": "LOOK",
+      "pickup_state": "FALSIFIED_NOT_A_PICKUP",
+      "world_visibility_lifecycle": "PERSISTENT_READABLE_OBJECT",
       "presentation_class": "READ_INSPECT",
-      "presentation_trigger": "HOLD_ACTION_FLOW_PENDING",
+      "presentation_trigger": "DIRECT_WORLD_LOOK_INTERACTION",
       "presentation_content": "TEXTURES/BOOKS/1_1_0.PCX",
       "presentation_content_status": "VERIFIED_SOURCE_PAYLOAD",
-      "inventory_reinspect": "UNVERIFIED",
+      "inventory_reinspect": "NOT_APPLICABLE_NO_INVENTORY_ACQUIRE",
       "close_semantics": {
         "input": "RIGHT_MOUSE_BUTTON",
         "status": "VERIFIED",
@@ -50,8 +50,7 @@
     }
   },
   "acceptance": [
-    "r1p1 is visible in a fresh R1 state and disappears from its authored world location after pickup.",
-    "pickup acquires parchment_r1 through DemoState without a second inventory state.",
+    "r1p1 remains at its authored R1 world location after inspection and is not acquired into inventory.",
     "the original readable presentation is shown only after its exact source content has been identified and bound.",
     "no placeholder transcription, modern dialog, invented parchment art or guessed close behavior is accepted.",
     "PPPV records both canonical state change and presentation-open/presentation-close observations."
