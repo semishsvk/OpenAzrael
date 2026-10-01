@@ -1,0 +1,35 @@
+from pathlib import Path
+import json
+ROOT=Path(__file__).resolve().parents[3]
+
+def read(p): return (ROOT/p).read_text(encoding="utf-8")
+
+def test_r1p1_is_not_generic_pickup():
+    room=read("scripts/room_manager.gd")
+    pickup_block=room[room.index("const PICKUPS :="):room.index("var current_room_id")]
+    assert '"r1p1"' not in pickup_block
+    assert '_setup_readable_objects(id)' in room
+    assert 'Interact_r1p1' in room
+
+def test_r1p1_runtime_is_look_book_view():
+    src=read("scripts/readable_book_interaction_v162.gd")
+    assert 'return "LOOK"' in src
+    assert 'DemoState.acquire' not in src
+    assert 'SOURCE_TEXTURE := "res://assets/source_books/1_1_0.png"' in src
+
+def test_book_view_has_source_verified_rmb_exit_and_modal_guards():
+    host=read("scripts/interaction_presentation_host_v158.gd")
+    assert "MOUSE_BUTTON_RIGHT" in host and "close()" in host
+    assert "_presentation_open()" in read("scripts/player.gd")
+    assert "_presentation_open()" in read("scripts/interaction_probe.gd")
+
+def test_pppv_observes_presentation_lifecycle():
+    runner=read("scripts/validation/pppv_scenario_runner.gd")
+    assert 'attach_presentation(scene.get_node_or_null("InteractionPresentationV158"))' in runner
+
+def test_parchment_contract_preserves_inventory_and_world_object():
+    c=json.loads(read("data/tests/kg001_parchment_r1_pppv_contract_v158.json"))
+    assert c["scenario_id"]=="openazrael.r1.look_at_parchment"
+    seq=c["required_sequence"]
+    assert any(x.get("kind")=="state_invariant" and x.get("before") is False and x.get("after") is False for x in seq)
+    assert any(x.get("kind")=="world_object" and x.get("visible") is True for x in seq)
