@@ -1,0 +1,27 @@
+{
+  "schema":"openazrael.r1p1_interaction_class_evidence",
+  "version":162,
+  "status":"VERIFIED_CLASSIFICATION",
+  "sources":{
+    "demo_archive_sha256":"bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+    "world_sha256":"f055948e302fa2f6ba364f7ebd3b4bc45f20ef4445af4946c63e4e313a084ae9",
+    "readme_sha256":"2976197be180e90d9370c580d5f07491c84d459d9f1e26ada58e993a1230adc2",
+    "r_exe_sha256":"381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "independent_links":[
+    "README starting-point text calls it a parchment to look at, separately from tapestry piece and tongs.",
+    "BOOKS/R1P1.BOK resolves to the original 640x480 TEXTURES/BOOKS/1_1_0.PCX page.",
+    "R.EXE contains books\\%s.bok, StartBookViewMode and %s\\books\\%s%d.pcx.",
+    "WORLD r1p1 record has a different interaction-field signature from TONG6/r3t1/r8t3/r8t4 pickup-family records."
+  ],
+  "classification":{
+    "r1p1":"READ_INSPECT_BOOK_VIEW",
+    "cursor":"LOOK",
+    "inventory_acquire":false,
+    "world_object_removed_after_interaction":false,
+    "presentation":"TEXTURES/BOOKS/1_1_0.PCX",
+    "close_input":"RIGHT_MOUSE_BUTTON"
+  },
+  "falsified_runtime_assumption":"r1p1 is a generic TAKE pickup that acquires parchment_r1",
+  "hold":["exact SPAPER.WAV playback timing relative to StartBookViewMode"]
+}
