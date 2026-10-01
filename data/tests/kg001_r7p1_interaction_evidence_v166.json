@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.kg001.r7p1_interaction_evidence",
-  "version": 173,
+  "version": 174,
   "status": "BOOK_ACTION_VERIFIED_SOURCE_PAYLOAD_INCOMPLETE",
   "object": {
     "source_object": "r7p1",
@@ -54,7 +54,7 @@
       "room_context_id": 1
     },
     "status": "VERIFIED",
-    "sequence_boundary": "SPAPER object binding is verified. Exact placement of opcode 0x28 relative to the serialized 08->07->21 pending group remains HOLD until its containing WORLD group/order is reconstructed."
+    "sequence_boundary": "RESOLVED: SPAPER opcode-0x28 record at WORLD 0x15A6B immediately precedes the contiguous 0x08/0x07/0x21 records; original group order is sound -> carry -> remove -> book."
   },
   "runtime_policy": {
     "implement_now": false,
@@ -65,18 +65,26 @@
       "silent generic pickup replacement"
     ]
   },
-  "next_falsification": "Search other authoritative original demo/retail provenance layers for R7P1.BOK or a source-equivalent R7 scroll payload; keep demo reconstruction blocked for this presentation until found.",
+  "next_falsification": "Search other authoritative original demo/retail provenance layers for R7P1.BOK or source-equivalent R7 scroll payload. Lifecycle and audio order are verified; presentation content is the remaining blocker.",
   "world_action_group": {
     "record_offsets": [
+      "0x15A6B",
       "0x15A86",
       "0x15AA1",
       "0x15ABC"
     ],
     "opcodes": [
+      "0x28",
       "0x08",
       "0x07",
       "0x21"
     ],
-    "status": "VERIFIED_SERIALIZED_ORDER"
+    "semantics": [
+      "PLAY_SPAPER",
+      "ADD_TO_CARRIED_SET_AND_UI",
+      "REMOVE_OR_DEACTIVATE_WORLD_OBJECT",
+      "OPEN_BOOK_VIEW"
+    ],
+    "status": "VERIFIED_CONTIGUOUS_SERIALIZED_ORDER"
   }
 }
