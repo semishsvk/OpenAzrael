@@ -1,0 +1,81 @@
+{
+  "schema": "openazrael.kg001.c5_flythrough_capture_contract",
+  "version": 1,
+  "status": "SPEC_READY_EXECUTION_PENDING",
+  "source_identity": {
+    "repository": "semishsvk/OpenAzrael",
+    "commit_sha": "eb4ccc15e19a388980c483318465b6dbb0c448e1"
+  },
+  "authority": {
+    "video": "REAL_GODOT_RUNTIME_ONLY",
+    "ai_generated_video": false,
+    "teleport_or_direct_state_injection": false,
+    "debug_bypass": false,
+    "presentation_capture_is_fidelity_evidence": false,
+    "validation_capture_is_fidelity_evidence_when_all_assertions_pass": true
+  },
+  "modes": {
+    "validation": {
+      "camera": "PRODUCTION_PLAYER_CAMERA",
+      "route_driver": "PPPV_PRODUCTION_INTERACTION",
+      "deterministic": true,
+      "required_state_trace": true,
+      "required_checkpoint_frames": true
+    },
+    "presentation": {
+      "camera": "SMOOTH_PRESENTATION_CAMERA_OVER_SAME_AUTHENTIC_RUNTIME_ROUTE",
+      "gameplay_state": "IDENTICAL_TO_VALIDATION_ROUTE",
+      "may_hide_test_overlay": true,
+      "must_not_change_world_state_or_collision": true
+    }
+  },
+  "route": [
+    {"id":"C5F-01","room":"R1","action":"START_AND_ESTABLISH_ROOM","checkpoint":true},
+    {"id":"C5F-02","room":"R1","action":"TRAVERSE_FULL_R1_ROUTE_AND_OBJECT02_STAIRS","checkpoint":true},
+    {"id":"C5F-03","room":"R1","action":"ACQUIRE_RUSTY_TONGS_AND_OPEN_DOOR1","checkpoint":true},
+    {"id":"C5F-04","room":"R1->R7","action":"PHYSICAL_TRANSITION","checkpoint":true},
+    {"id":"C5F-05","room":"R7","action":"NIAMH_AND_WELL_KEY_ROUTE_USING_PRODUCTION_INTERACTIONS","checkpoint":true},
+    {"id":"C5F-06","room":"R7->R1","action":"PHYSICAL_TRANSITION","checkpoint":true},
+    {"id":"C5F-07","room":"R1","action":"OPEN_DOOR2","checkpoint":true},
+    {"id":"C5F-08","room":"R1->R8","action":"PHYSICAL_TRANSITION","checkpoint":true},
+    {"id":"C5F-09","room":"R8","action":"TRAVERSE_BOTH_STAIR_PROFILES_AND_LENS_BIBLE_SHIELD_ROUTE","checkpoint":true},
+    {"id":"C5F-10","room":"R8->R1","action":"PHYSICAL_TRANSITION_IF_ROUTE_STATE_PERMITS_WITHOUT_BYPASS","checkpoint":true},
+    {"id":"C5F-11","room":"demo_complete","action":"CAPTURE_SUCCESS_STATE","checkpoint":true}
+  ],
+  "visual_assertions": [
+    "menu_hud_visible",
+    "cursor_visible_and_contextual",
+    "inventory_items_visible",
+    "keyhole_orientation_matches_reference",
+    "room3_windows_orientation_matches_reference",
+    "stairs_traversal_observed",
+    "character_animation_source_backed"
+  ],
+  "audio_assertions": ["ambient_audio_present","triggered_audio_present","required_music_present"],
+  "required_receipt_bindings": [
+    "c5_toolchain_receipt",
+    "candidate4_preflight_receipt",
+    "pppv_playthrough_evaluation",
+    "pppv_determinism",
+    "current_head_visual_runtime",
+    "original_runtime_pacing_validation",
+    "runtime_build_identity"
+  ],
+  "outputs": [
+    "validation_video_with_audio",
+    "presentation_video_with_audio",
+    "route_manifest",
+    "capture_receipt",
+    "checkpoint_screenshots",
+    "runtime_state_trace",
+    "build_corpus_scenario_hashes",
+    "renderer_gpu_metadata"
+  ],
+  "encoding_policy": {
+    "capture_resolution": "NATIVE_RUNTIME_OR_INTEGER_SCALE_WITHOUT_RESAMPLING_GAME_SURFACE",
+    "frame_rate": "CAPTURE_HOST_RECORDED_NOT_SOURCE_TIMING_AUTHORITY",
+    "video_codec": "LOSSLESS_OR_HIGH_QUALITY_INTERMEDIATE_THEN_H264_DELIVERY",
+    "audio": "CAPTURE_RUNTIME_OUTPUT_WITHOUT_REPLACEMENT"
+  },
+  "gate": "FAIL_CLOSED"
+}
