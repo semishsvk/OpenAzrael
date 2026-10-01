@@ -1,26 +1,83 @@
 {
-  "schema":"remaster.pppv.contract",
-  "version":172,
-  "scenario_id":"openazrael.tapestry_pickup_book_view_family",
-  "status":"READY_FOR_RUNTIME_VALIDATION",
-  "source_evidence":"data/tests/kg001_book_opcode_evidence_v170.json",
-  "cases":[
-    {"room":"R1","object":"r3t1","item":"tapestry_piece_1","presentation":"R1/r3t1","source_page":"assets/source_books/r3t1_0.png"},
-    {"room":"R8","object":"r8t3","item":"tapestry_piece_3","presentation":"R8/r8t3","source_page":"assets/source_books/r8t3_0.png"},
-    {"room":"R8","object":"r8t4","item":"tapestry_piece_4","presentation":"R8/r8t4","source_page":"assets/source_books/r8t4_0.png"}
+  "schema": "remaster.pppv.contract",
+  "version": 173,
+  "scenario_id": "openazrael.tapestry_pickup_book_view_family",
+  "status": "READY_FOR_RUNTIME_VALIDATION",
+  "source_evidence": "data/tests/kg001_object_carry_book_opcode_evidence_v173.json",
+  "cases": [
+    {
+      "room": "R1",
+      "object": "r3t1",
+      "item": "tapestry_piece_1",
+      "presentation": "R1/r3t1",
+      "source_page": "assets/source_books/r3t1_0.png",
+      "opcode_order": [
+        "0x07",
+        "0x08",
+        "0x21"
+      ]
+    },
+    {
+      "room": "R8",
+      "object": "r8t3",
+      "item": "tapestry_piece_3",
+      "presentation": "R8/r8t3",
+      "source_page": "assets/source_books/r8t3_0.png",
+      "opcode_order": [
+        "0x08",
+        "0x07",
+        "0x21"
+      ]
+    },
+    {
+      "room": "R8",
+      "object": "r8t4",
+      "item": "tapestry_piece_4",
+      "presentation": "R8/r8t4",
+      "source_page": "assets/source_books/r8t4_0.png",
+      "opcode_order": [
+        "0x08",
+        "0x07",
+        "0x21"
+      ]
+    }
   ],
-  "required_sequence":[
-    {"kind":"cursor","value":"TAKE"},
-    {"kind":"interaction","action":"activate world object"},
-    {"kind":"state","assert":"inventory item becomes present before presentation open"},
-    {"kind":"world_object","assert":"loose source object becomes hidden/removed"},
-    {"kind":"presentation","assert":"OPEN with matching presentation id and source-backed 640x480 page"},
-    {"kind":"input","button":"RIGHT_MOUSE_BUTTON"},
-    {"kind":"presentation","assert":"CLOSED"},
-    {"kind":"modal_guard","assert":"player movement/look and world interaction do not execute while presentation is open"}
+  "required_sequence": [
+    {
+      "kind": "cursor",
+      "value": "TAKE"
+    },
+    {
+      "kind": "interaction",
+      "action": "activate world object"
+    },
+    {
+      "kind": "state",
+      "assert": "inventory item becomes present before presentation open"
+    },
+    {
+      "kind": "world_object",
+      "assert": "loose source object becomes hidden/removed"
+    },
+    {
+      "kind": "presentation",
+      "assert": "OPEN with matching presentation id and source-backed 640x480 page"
+    },
+    {
+      "kind": "input",
+      "button": "RIGHT_MOUSE_BUTTON"
+    },
+    {
+      "kind": "presentation",
+      "assert": "CLOSED"
+    },
+    {
+      "kind": "modal_guard",
+      "assert": "player movement/look and world interaction do not execute while presentation is open"
+    }
   ],
-  "hold":{
-    "exact_0x07_0x08_semantics":"Existing DemoState pickup adapter is compatibility behavior. Byte-exact semantics of the sibling WORLD state actions are not promoted by this contract.",
-    "runtime_result":"No PASS until executed in a Godot-capable worker with restored source pages."
+  "hold": {
+    "exact_0x07_0x08_semantics": "RESOLVED_VERIFIED: 0x07 world remove/deactivate; 0x08 carried-set/UI add; paired 0x09 removes from carried set/UI.",
+    "runtime_result": "No PASS until executed in a Godot-capable worker with restored source pages."
   }
 }
