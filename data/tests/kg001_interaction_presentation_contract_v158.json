@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.kg001.interaction_presentation_contract",
-  "version": 162,
+  "version": 165,
   "status": "R1P1_CLASS_AND_PAYLOAD_VERIFIED_SOURCE_ASSET_STAGING_PENDING",
   "scope": "Source-faithful player-visible interaction presentation layered on canonical gameplay state",
   "rules": [
@@ -46,6 +46,10 @@
           640,
           480
         ]
+      },
+      "audio": {
+        "status": "NO_SPAPER_BINDING",
+        "evidence": "data/tests/kg001_spaper_binding_evidence_v165.json"
       }
     }
   },
@@ -62,5 +66,13 @@
     "rooms_sha256": "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b",
     "world_sha256": "f055948e302fa2f6ba364f7ebd3b4bc45f20ef4445af4946c63e4e313a084ae9",
     "puzzles_sha256": "b8131cf823edb184f04740d5af0a457f4d684e7b0be654b529ec7cdfde1739d1"
-  }
+  },
+  "evidence_corrections": [
+    {
+      "version": 165,
+      "claim": "SPAPER.WAV was previously held as possible R1/r1p1 timing evidence.",
+      "result": "FALSIFIED",
+      "replacement": "Verified WORLD opcode-0x28 binding is R7/r7p1 (Scroll), room context 1."
+    }
+  ]
 }
