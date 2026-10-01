@@ -1,7 +1,7 @@
 {
   "schema": "openazrael.kg001.interaction_presentation_contract",
-  "version": 158,
-  "status": "EVIDENCE_READY_IMPLEMENTATION_PENDING_SOURCE_CONTENT",
+  "version": 161,
+  "status": "SOURCE_PAYLOAD_VERIFIED_TRIGGER_FLOW_PENDING",
   "scope": "Source-faithful player-visible interaction presentation layered on canonical gameplay state",
   "rules": [
     "A successful state mutation alone is insufficient for interaction fidelity.",
@@ -9,7 +9,16 @@
     "Pickup/read flows preserve DemoState as the canonical inventory and save/load source.",
     "World interaction cursor, modal presentation, close input, inventory visibility and post-close cursor state are independently validated."
   ],
-  "interaction_classes": ["PICKUP","READ_INSPECT","USE","ACTIVATE","OPEN_CLOSE","PUSH_PULL_ROTATE","PLACE_COMBINE","TRANSITION"],
+  "interaction_classes": [
+    "PICKUP",
+    "READ_INSPECT",
+    "USE",
+    "ACTIVATE",
+    "OPEN_CLOSE",
+    "PUSH_PULL_ROTATE",
+    "PLACE_COMBINE",
+    "TRANSITION"
+  ],
   "objects": {
     "R1/r1p1": {
       "source_object": "r1p1",
@@ -19,11 +28,25 @@
       "pickup_state": "SUPPORTED",
       "world_visibility_lifecycle": "SUPPORTED",
       "presentation_class": "READ_INSPECT",
-      "presentation_trigger": "ON_PICKUP",
-      "presentation_content": "SOURCE_REQUIRED",
-      "presentation_content_status": "HOLD_SOURCE_CONTENT_NOT_YET_BOUND",
+      "presentation_trigger": "HOLD_ACTION_FLOW_PENDING",
+      "presentation_content": "TEXTURES/BOOKS/1_1_0.PCX",
+      "presentation_content_status": "VERIFIED_SOURCE_PAYLOAD",
       "inventory_reinspect": "UNVERIFIED",
-      "close_semantics": "UNVERIFIED"
+      "close_semantics": {
+        "input": "RIGHT_MOUSE_BUTTON",
+        "status": "VERIFIED",
+        "evidence": "instruction rendered in source page"
+      },
+      "presentation_mode": "BOOK_VIEW",
+      "payload": {
+        "descriptor": "BOOKS/R1P1.BOK",
+        "descriptor_sha256": "69525535f529aa4ce37e826d90b6bbaa0bdb85a6a18cf689529c33a7d6ae0d18",
+        "page_sha256": "b17ec230b56fbcacdbe51cb2dd50bb584dc477f543a6999ff5fedfa8a9cc9dae",
+        "dimensions": [
+          640,
+          480
+        ]
+      }
     }
   },
   "acceptance": [
@@ -32,5 +55,13 @@
     "the original readable presentation is shown only after its exact source content has been identified and bound.",
     "no placeholder transcription, modern dialog, invented parchment art or guessed close behavior is accepted.",
     "PPPV records both canonical state change and presentation-open/presentation-close observations."
-  ]
+  ],
+  "source_provenance": {
+    "demo_archive": "OpenAzrael/atdemo.zip",
+    "demo_archive_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+    "r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "rooms_sha256": "5a07f3ef65662378543105f46f17d1fffef5efe88d24be31d89ff13a4541c91b",
+    "world_sha256": "f055948e302fa2f6ba364f7ebd3b4bc45f20ef4445af4946c63e4e313a084ae9",
+    "puzzles_sha256": "b8131cf823edb184f04740d5af0a457f4d684e7b0be654b529ec7cdfde1739d1"
+  }
 }
