@@ -1,0 +1,23 @@
+{
+  "schema":"openazrael.kg001.look_family_evidence",
+  "version":160,
+  "status":"PARTIAL",
+  "source":"official ATDEMO/MICE corpus plus current R.EXE plain-string reference census",
+  "artwork_present":["LOOK.PCX","BLOOK.PCX","LOOK1.PCX","LOOK2.PCX","LOOK3.PCX","PHOTO.PCX"],
+  "r_exe_plain_string_refs":["LOOK.PCX","BLOOK.PCX"],
+  "present_but_not_plain_string_ref":["LOOK1.PCX","LOOK2.PCX","LOOK3.PCX","PHOTO.PCX"],
+  "interpretation":{
+    "LOOK.PCX":"EXECUTABLE_STRING_REF_SUPPORTED",
+    "BLOOK.PCX":"EXECUTABLE_STRING_REF_SUPPORTED",
+    "LOOK1.PCX":"ARTWORK_ONLY_FOR_CURRENT_EVIDENCE",
+    "LOOK2.PCX":"ARTWORK_ONLY_FOR_CURRENT_EVIDENCE",
+    "LOOK3.PCX":"ARTWORK_ONLY_FOR_CURRENT_EVIDENCE",
+    "PHOTO.PCX":"ARTWORK_ONLY_FOR_CURRENT_EVIDENCE"
+  },
+  "r1p1_binding":"HOLD_UNVERIFIED",
+  "forbids":[
+    "inferring r1p1 presentation from cursor artwork name alone",
+    "treating LOOK1/2/3 or PHOTO as executable-dispatch proof",
+    "activating a runtime presentation without source-backed payload identity"
+  ]
+}
