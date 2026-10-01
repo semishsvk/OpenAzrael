@@ -414,10 +414,14 @@ func _setup_readable_objects(room_id: String) -> void:
     if parchment == null:
         push_warning("OpenAzrael v162: source readable object r1p1 not found")
         return
+    if DemoState.has("parchment_r1"):
+        parchment.visible = false
+        return
     parchment.visible = true
     var area := _add_area_for_object(parchment)
     area.name = "Interact_r1p1"
     area.set_script(preload("res://scripts/readable_book_interaction_v162.gd"))
+    area.set("visual_node", parchment)
 
 func _setup_well_key() -> void:
     if current_room_id != "R7":
