@@ -115,6 +115,18 @@ func _run() -> void:
     _check("source_font_fidelity", String(initial.get("font_fidelity", "")) == "SOURCE_INVFONT_FIXED_CELL_MAP")
     _check("initial_empty", _labels(menu).is_empty())
 
+    state.acquire("parchment_r1")
+    state.acquire("tapestry_piece_1")
+    await _settle()
+    _check(
+        "readable_carried_source_labels",
+        _ids(menu) == ["parchment_r1", "tapestry_piece_1"]
+        and _labels(menu) == ["Page - Apr 1194", "Tapestry Piece"]
+    )
+    state.reset_all()
+    await _settle()
+    _check("readable_reset_clears_hud", _labels(menu).is_empty())
+
     state.acquire("rusty_tongs")
     await _settle()
     _check("tongs_visible", _ids(menu) == ["rusty_tongs"] and _labels(menu) == ["Rusty tongs"])
