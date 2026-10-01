@@ -375,7 +375,7 @@ func _add_area_for_object(obj: Node3D, radius_min: float = 10.0) -> Area3D:
 func _setup_pickups(room_id: String) -> void:
     if not PICKUPS.has(room_id):
         return
-    var pickup_script = preload("res://scripts/pickup.gd")
+    var pickup_script = preload("res://scripts/pickup.gd")\n    var book_pickup_script = preload("res://scripts/book_pickup_interaction_v172.gd")
     for object_name in PICKUPS[room_id].keys():
         var spec: Array = PICKUPS[room_id][object_name]
         var item_id := String(spec[0])
