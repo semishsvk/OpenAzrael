@@ -1,0 +1,39 @@
+{
+  "checks": {
+    "addtimer_calls": true,
+    "exe_hash": true,
+    "fixup_parse_complete": true,
+    "frame_increment_duplicate": true,
+    "frame_increment_primary": true,
+    "movecharacters_single_immediate_xref": true,
+    "movecharacters_text": true,
+    "no_direct_edge_duplicate": true,
+    "no_direct_edge_primary": true,
+    "no_internal_fixup_target_duplicate": true,
+    "no_internal_fixup_target_primary": true,
+    "removetimer_calls": true,
+    "timer_drain_mainloop": true,
+    "timer_drain_operates_timer_ids": true
+  },
+  "conclusion": {
+    "fixed_source_hz": null,
+    "movecharacters_classification": "SCRIPT_ACTION_INTERPRETER_COMMAND_NOT_MAIN_LOOP_CLOCK",
+    "source_update_cadence": "HOLD_NOT_PROVEN",
+    "world_timer_classification": "WORLD_SCRIPT_TIMER_SCHEDULER"
+  },
+  "failed": [],
+  "fixup_records": 28547,
+  "frame_update": {
+    "direct_control_flow_xrefs": {
+      "0x103D4": 0,
+      "0x11AB8": 0
+    },
+    "internal_le_fixup_targets": {
+      "0x103D4": 0,
+      "0x11AB8": 0
+    }
+  },
+  "schema": "openazrael.kg001.source_update_cadence_validation",
+  "status": "PASS",
+  "version": 196
+}
