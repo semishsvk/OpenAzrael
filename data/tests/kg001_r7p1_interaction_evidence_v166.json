@@ -1,35 +1,68 @@
 {
-  "schema":"openazrael.kg001.r7p1_interaction_evidence",
-  "version":166,
-  "status":"STRUCTURAL_ACTION_FLOW_PARTIAL",
-  "object":{
-    "source_object":"r7p1",
-    "display_type":"Scroll",
-    "room":"R7",
-    "world_section0_index":1150
+  "schema": "openazrael.kg001.r7p1_interaction_evidence",
+  "version": 170,
+  "status": "BOOK_ACTION_VERIFIED_SOURCE_PAYLOAD_INCOMPLETE",
+  "object": {
+    "source_object": "r7p1",
+    "display_type": "Scroll",
+    "room": "R7",
+    "world_section0_index": 1150
   },
-  "book_payload":{
-    "R7P1_BOK_present":false,
-    "R7P1_book_page_present":false,
-    "corpus_statement":"Official ATDEMO BOOKS contains R1P1.BOK, R3T1.BOK, R8T3.BOK and R8T4.BOK only.",
-    "conclusion":"DO_NOT_COPY_R1_BOOK_VIEW_BEHAVIOR"
+  "book_payload": {
+    "R7P1_BOK_present": false,
+    "R7P1_book_page_present": false,
+    "corpus_statement": "Official ATDEMO BOOKS contains R1P1.BOK, R3T1.BOK, R8T3.BOK and R8T4.BOK only.",
+    "conclusion": "SOURCE_INCOMPLETE: opcode 0x21 proves book-view intent, but R7P1.BOK/page payload is absent from supplied ATDEMO."
   },
-  "puzzles_actions":[
-    {"offset":"0x15154","opcode":"0x28","token":"spaper","semantics":"PLAY_SOUND_SAMPLE","status":"VERIFIED"},
-    {"offset":"0x15212","opcode":"0x08","token":"R7P1","semantics":"REMOVE_ROOM_OBJECT_FAMILY","status":"HIGH_FROM_RECOVERED_R7_KEY_TONGS_SEQUENCE"},
-    {"offset":"0x152d0","opcode":"0x07","token":"R7P1","semantics":"ADD_ROOM_OBJECT_FAMILY","status":"HIGH_FROM_RECOVERED_R7_KEY_TONGS_SEQUENCE"},
-    {"offset":"0x1538e","opcode":"0x21","token":"R7P1","semantics":"UNKNOWN","status":"HOLD"}
+  "puzzles_actions": [
+    {
+      "offset": "0x15154",
+      "opcode": "0x28",
+      "token": "spaper",
+      "semantics": "PLAY_SOUND_SAMPLE",
+      "status": "VERIFIED"
+    },
+    {
+      "offset": "0x15212",
+      "opcode": "0x08",
+      "token": "R7P1",
+      "semantics": "REMOVE_ROOM_OBJECT_FAMILY",
+      "status": "HIGH_FROM_RECOVERED_R7_KEY_TONGS_SEQUENCE"
+    },
+    {
+      "offset": "0x152d0",
+      "opcode": "0x07",
+      "token": "R7P1",
+      "semantics": "ADD_ROOM_OBJECT_FAMILY",
+      "status": "HIGH_FROM_RECOVERED_R7_KEY_TONGS_SEQUENCE"
+    },
+    {
+      "offset": "0x1538e",
+      "opcode": "0x21",
+      "token": "R7P1",
+      "semantics": "OPEN_BOOK_VIEW_FOR_WORLD_OBJECT",
+      "status": "VERIFIED_EXECUTABLE_HANDLER"
+    }
   ],
-  "audio":{
-    "asset":"SPAPER.WAV",
-    "sha256":"028ac28fa3ce9f24fe4a06e412f5cbe2b5d7c294a14772bb954a1fae53a0efbf",
-    "world_binding":{"opcode":"0x28","section0_index":1150,"section0_name":"r7p1","room_context_id":1},
-    "status":"VERIFIED"
+  "audio": {
+    "asset": "SPAPER.WAV",
+    "sha256": "028ac28fa3ce9f24fe4a06e412f5cbe2b5d7c294a14772bb954a1fae53a0efbf",
+    "world_binding": {
+      "opcode": "0x28",
+      "section0_index": 1150,
+      "section0_name": "r7p1",
+      "room_context_id": 1
+    },
+    "status": "VERIFIED"
   },
-  "runtime_policy":{
-    "implement_now":false,
-    "reason":"Opcode 0x21 semantics and exact action-group ordering/trigger remain unresolved.",
-    "forbid":["R1-style BOOK_VIEW fallback","invented scroll artwork","generic TAKE binding without action-flow proof"]
+  "runtime_policy": {
+    "implement_now": false,
+    "reason": "Original book action is verified but the required R7P1.BOK/page source payload is absent. Preserve a fidelity blocker rather than fabricate content.",
+    "forbid": [
+      "invented scroll artwork",
+      "R1 page substitution",
+      "silent generic pickup replacement"
+    ]
   },
-  "next_falsification":"Recover opcode 0x21 runtime handler and group ordering for the R7P1 actions."
+  "next_falsification": "Search other authoritative original demo/retail provenance layers for R7P1.BOK or a source-equivalent R7 scroll payload; keep demo reconstruction blocked for this presentation until found."
 }
