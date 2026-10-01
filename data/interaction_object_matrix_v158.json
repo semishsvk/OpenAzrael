@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.interaction_object_matrix",
-  "version": 158,
+  "version": 160,
   "status": "PARTIAL_EVIDENCE",
   "rows": [
     {
@@ -15,9 +15,15 @@
       "presentation_kind": "READ_INSPECT",
       "source_payload": null,
       "source_payload_status": "HOLD",
-      "retail_cross_refs": ["Parchment", "IParchment", "IPapers"],
+      "retail_cross_refs": [
+        "Parchment",
+        "IParchment",
+        "IPapers"
+      ],
       "retail_cross_ref_status": "STRUCTURAL_NAMES_ONLY",
-      "notes": "Do not infer demo payload or behavior from retail names alone."
+      "notes": "Do not infer demo payload or behavior from retail names alone.",
+      "presentation_confidence": "HOLD",
+      "look_binding": "UNVERIFIED"
     },
     {
       "room": "R1",
@@ -47,6 +53,18 @@
       "presentation_required": true,
       "presentation_kind": "PLACE_COMBINE",
       "presentation_status": "EXISTING_RUNTIME_REQUIRES_SEQUENCE_VALIDATION"
+    }
+  ],
+  "evidence_notes": [
+    {
+      "id": "LOOK_FAMILY_BOUNDARY_V160",
+      "status": "SUPPORTED_BOUNDARY",
+      "facts": [
+        "LOOK.PCX and BLOOK.PCX are present in the official ATDEMO/MICE corpus and in the current R.EXE plain-string reference census.",
+        "LOOK1.PCX, LOOK2.PCX, LOOK3.PCX and PHOTO.PCX are present in the MICE corpus but are not in that plain-string reference census.",
+        "Cursor-art presence alone does not bind r1p1 to any LOOK-family dispatch."
+      ],
+      "consequence": "r1p1 presentation mechanism remains HOLD until object/action/resource evidence provides the required independent links."
     }
   ]
 }
