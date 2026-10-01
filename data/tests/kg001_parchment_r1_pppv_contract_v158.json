@@ -1,0 +1,30 @@
+{
+  "schema": "openazrael.kg001.parchment_r1_pppv_contract",
+  "version": 158,
+  "status": "BLOCKED_SOURCE_PAYLOAD",
+  "scenario_id": "openazrael.r1.pickup_and_read_parchment",
+  "room": "R1",
+  "target": "Interact_r1p1",
+  "runtime_item": "parchment_r1",
+  "required_sequence": [
+    {"kind":"interaction_probe","target":"Interact_r1p1","reachable":true},
+    {"kind":"trigger","target":"Interact_r1p1","activated":true},
+    {"kind":"state_change","path":"inventory.parchment_r1","before":false,"after":true},
+    {"kind":"presentation","presentation_id":"R1/r1p1","state":"OPEN"},
+    {"kind":"presentation_identity","source_backed":true},
+    {"kind":"presentation","presentation_id":"R1/r1p1","state":"CLOSED"}
+  ],
+  "candidate_policy": {
+    "state_only_pass_forbidden": true,
+    "placeholder_payload_forbidden": true,
+    "invented_text_forbidden": true,
+    "invented_art_forbidden": true,
+    "candidate_gate": "FAIL_UNTIL_SOURCE_PAYLOAD_AND_CLOSE_SEMANTICS_VERIFIED"
+  },
+  "source_holds": [
+    "exact original readable payload",
+    "TAKE-to-READ/LOOK sequencing",
+    "inventory re-inspect behavior",
+    "close/advance input semantics"
+  ]
+}
