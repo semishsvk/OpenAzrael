@@ -406,6 +406,7 @@ func _setup_pickups(room_id: String) -> void:
         area.set("visual_node", obj)
         if not book_presentation_id.is_empty():
             area.set("presentation_id", book_presentation_id)
+            area.set("remove_before_acquire", object_name == "r3t1")
 
 func _setup_readable_objects(room_id: String) -> void:
     if room_id != "R1":
