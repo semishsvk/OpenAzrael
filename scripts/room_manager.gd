@@ -27,7 +27,6 @@ const TRIGGER_EVENT_IR_PATH := "res://data/trigger_event_ir_v137.json"
 const PICKUPS := {
     "R1": {
         "TONG6": ["rusty_tongs", "Tongs"],
-        "r1p1": ["parchment_r1", "Parchment"],
         "r3t1": ["tapestry_piece_1", "Tapestry piece 1"]
     },
     "R8": {
