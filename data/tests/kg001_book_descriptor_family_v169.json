@@ -1,0 +1,27 @@
+{
+  "schema": "openazrael.kg001.book_descriptor_family",
+  "version": 169,
+  "status": "SOURCE_PAYLOAD_FAMILY_VERIFIED_TRIGGER_CLASSIFICATION_PENDING_FOR_TAPESTRY",
+  "descriptor_grammar": {
+    "observed_records": 4,
+    "layout": ["page_prefix CRLF", "decimal_page_count CRLF", "DOS_EOF_0x1A"],
+    "all_page_counts": 1,
+    "page_lookup": "TEXTURES/BOOKS/<prefix><zero_based_page>.PCX",
+    "dos_case_semantics": "Descriptor lowercase prefixes resolve to uppercase archive filenames in the original DOS corpus.",
+    "confidence": "VERIFIED_FOR_DEMO_CORPUS"
+  },
+  "objects": [
+    {"object":"R1P1","descriptor_sha256":"69525535f529aa4ce37e826d90b6bbaa0bdb85a6a18cf689529c33a7d6ae0d18","prefix":"1_1_","page":"1_1_0.PCX","page_sha256":"b17ec230b56fbcacdbe51cb2dd50bb584dc477f543a6999ff5fedfa8a9cc9dae","dimensions":[640,480],"trigger":"VERIFIED_DIRECT_WORLD_LOOK"},
+    {"object":"R3T1","descriptor_sha256":"79eda3dff3fd663f76117955d94d97270b88b3b24291f04f760edc6fa913c771","prefix":"r3t1_","page":"R3T1_0.PCX","page_sha256":"2b39a403187b724a13e89ec2b65bf9940cb6781cc33d7152eba2996caac5c161","dimensions":[640,480],"trigger":"HOLD"},
+    {"object":"R8T3","descriptor_sha256":"d1286dfc12ac8169aff367408056b9770c9e70b511ecad604c91f22f936ce608","prefix":"r8t3_","page":"R8T3_0.PCX","page_sha256":"196ab58f3f31fcd71714b4008dd3a27de47baf220e2d5fde9d9025554c2c0689","dimensions":[640,480],"trigger":"HOLD"},
+    {"object":"R8T4","descriptor_sha256":"62eba9574a87bc7ddb48df990c5f3d779fbe603e88ad3343bd542a9e7c96d22b","prefix":"r8t4_","page":"R8T4_0.PCX","page_sha256":"8b5d3736e50b3821aa91b5984704483a5390ba90be93476f7b905082aef52043","dimensions":[640,480],"trigger":"HOLD"}
+  ],
+  "tapestry_findings": {
+    "world_object_type": "Tapestry Piece",
+    "puzzles_direct_token_actions": "NOT_OBSERVED for r3t1/r8t3/r8t4",
+    "presentation_assets": "PRESENT_VERIFIED",
+    "current_runtime": "generic PICKUP/TAKE",
+    "fidelity_risk": "Current runtime does not expose the source-backed 640x480 inspect presentations.",
+    "implementation_boundary": "Do not change TAKE/LOOK sequencing until generic object/book dispatch or original runtime capture proves when these pages are opened."
+  }
+}
