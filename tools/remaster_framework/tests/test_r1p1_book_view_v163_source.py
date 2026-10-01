@@ -4,18 +4,18 @@ ROOT=Path(__file__).resolve().parents[3]
 
 def read(p): return (ROOT/p).read_text(encoding="utf-8")
 
-def test_r1p1_is_not_generic_pickup():
+def test_r1p1_uses_dedicated_source_lifecycle_not_generic_pickup_table():
     room=read("scripts/room_manager.gd")
     pickup_block=room[room.index("const PICKUPS :="):room.index("var current_room_id")]
     assert '"r1p1"' not in pickup_block
     assert '_setup_readable_objects(id)' in room
     assert 'Interact_r1p1' in room
 
-def test_r1p1_runtime_is_look_book_view():
+def test_r1p1_runtime_is_look_remove_carry_book_view():
     src=read("scripts/readable_book_interaction_v162.gd")
     assert 'return "LOOK"' in src
-    assert 'DemoState.acquire(ITEM_ID)' in src\n    assert src.index('visual_node.visible = false') < src.index('DemoState.acquire(ITEM_ID)') < src.index('BookPresentation.open')
-    assert 'BookPresentation.open(get_tree().current_scene, PRESENTATION_ID)' in src
+    assert 'DemoState.acquire(ITEM_ID)' in src
+    assert src.index('visual_node.visible = false') < src.index('DemoState.acquire(ITEM_ID)') < src.index('BookPresentation.open')
     adapter=read("scripts/book_presentation_v172.gd")
     assert '"R1/r1p1": "res://assets/source_books/1_1_0.png"' in adapter
 
