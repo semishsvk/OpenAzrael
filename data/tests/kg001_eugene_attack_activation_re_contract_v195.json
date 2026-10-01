@@ -1,0 +1,64 @@
+{
+  "schema": "openazrael.kg001.eugene_attack_activation_re_contract",
+  "version": 195,
+  "status": "EXECUTABLE_CODE_VERIFIED",
+  "source": {
+    "r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "eugene_ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636"
+  },
+  "ani_fields": {
+    "HEALTH": {
+      "field": "character+0x0C",
+      "eugene_value": 2
+    },
+    "RANGED": {
+      "field": "character+0x18",
+      "eugene_value": 30
+    }
+  },
+  "animation_enum": {
+    "basis": "parser initializes token code at 1 and scans 13-byte token slots from REST table",
+    "REST": 1,
+    "RUN": 5,
+    "SHOT": 12,
+    "ATTACK": 13,
+    "DEATH_TWITCH": 14,
+    "DEAD": 15,
+    "NOLOOP1": 16,
+    "SHOT_RECOVER": 21
+  },
+  "attack_player_action": {
+    "action_interpreter_object1_branch": "0x13E9D..0x13EFF",
+    "diagnostic_anchor_encoded_immediate": "0x25DB",
+    "diagnostic_anchor": "AttackPlayer",
+    "initial_animation_request": {
+      "code": 5,
+      "name": "RUN",
+      "call_site": "0x13EEB"
+    },
+    "sets_character_field_0x08": "-1",
+    "attack_helper_call_site": "0x13EFA",
+    "attack_helper": "0x144DC"
+  },
+  "attack_helper": {
+    "object1_function": "0x144DC",
+    "distance_test": "horizontal distance squared is compared against square(character+0x18 RANGED); attack path requires inside range",
+    "attack_code": 13,
+    "attack_name": "ATTACK",
+    "attack_request_call_site": "0x145A6",
+    "attack_active_field": "character+0x22",
+    "attack_active_value": 1,
+    "previous_animation_saved_field": "character+0x261",
+    "out_of_range_behavior": "when attack_active is set, restore saved previous animation then call movement helper 0x12714",
+    "out_of_range_restore_call_site": "0x145D0",
+    "movement_helper_call_site": "0x145D9"
+  },
+  "negative_proofs": [
+    "ATTACK enum is 0x0D, not 0x0C",
+    "function 0x12584 is not the AttackPlayer helper; its only direct callers are 0x2F88 and 0x300F"
+  ],
+  "runtime_policy": [
+    "Do not map AttackPlayer directly to an immediate ATTACK frame without evaluating the source range/state path.",
+    "Do not use AnimationPlayer wall-clock position as source-frame authority."
+  ]
+}

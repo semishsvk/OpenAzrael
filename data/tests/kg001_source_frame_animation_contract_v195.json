@@ -1,0 +1,42 @@
+{
+  "schema": "openazrael.kg001.source_frame_animation_contract",
+  "version": 195,
+  "status": "CORE_RUNTIME_VERIFIED_PRODUCTION_CADENCE_HOLD",
+  "authority": {
+    "source_frame": "INTEGER_SOURCE_FRAME",
+    "update_order": "RENDER_POSE_THEN_EMIT_FRAME_THEN_ADVANCE",
+    "wall_clock_source_authority": false,
+    "source_update_cadence": "HOLD_NOT_PROVEN"
+  },
+  "render_adapter": {
+    "purpose": "Map authoritative integer source frame to the seconds coordinate of the currently generated Animation resource only.",
+    "clock_authority": false,
+    "encoding_seconds_per_frame_must_be_supplied": true,
+    "hardcoded_fps_in_driver": false
+  },
+  "eugene": {
+    "family": "ATTACK",
+    "bounds": [53, 70],
+    "trigger_frame": 60,
+    "test_sequence": [53, 54, 55, 56, 57, 58, 59, 60, 61],
+    "expected_frame60_observations": 1
+  },
+  "niamh": {
+    "sequence": ["NOLOOP1", "REST"],
+    "NOLOOP1": [0, 14],
+    "REST": [15, 41],
+    "transition_rule": "emit NOLOOP1 frame 14, transition state, emit REST frame 15 on next explicit source_update"
+  },
+  "fail_closed": {
+    "missing_family_contract": true,
+    "missing_render_animation": true
+  },
+  "forbidden": [
+    "_process source clock",
+    "_physics_process source clock",
+    "Timer source clock",
+    "AnimationPlayer.current_animation_position as source-frame authority",
+    "hardcoded gameplay FPS in SourceFrameAnimationDriverV195"
+  ],
+  "production_activation": "HOLD_UNTIL_SOURCE_UPDATE_CADENCE_IS_PROVEN_OR_RECONSTRUCTED"
+}
