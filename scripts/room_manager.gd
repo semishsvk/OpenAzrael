@@ -394,10 +394,17 @@ func _setup_pickups(room_id: String) -> void:
         obj.visible = true
         var area := _add_area_for_object(obj)
         area.name = "Interact_" + object_name
-        area.set_script(pickup_script)
+        var book_presentation_id := ""
+        if object_name in ["r3t1", "r8t3", "r8t4"]:
+            book_presentation_id = room_id + "/" + object_name
+            area.set_script(book_pickup_script)
+        else:
+            area.set_script(pickup_script)
         area.set("item_id", item_id)
         area.set("display_name", String(spec[1]))
         area.set("visual_node", obj)
+        if not book_presentation_id.is_empty():
+            area.set("presentation_id", book_presentation_id)
 
 func _setup_readable_objects(room_id: String) -> void:
     if room_id != "R1":
