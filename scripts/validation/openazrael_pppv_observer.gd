@@ -54,6 +54,32 @@ func attach() -> void:
         Callable(self, "_on_candidate_event")
     )
 
+func attach_presentation(presentation: Node) -> void:
+    if presentation == null:
+        return
+    _connect_once(
+        presentation,
+        "presentation_opened",
+        Callable(self, "_on_presentation_opened")
+    )
+    _connect_once(
+        presentation,
+        "presentation_closed",
+        Callable(self, "_on_presentation_closed")
+    )
+
+func _on_presentation_opened(presentation_id: String) -> void:
+    evidence.record("presentation", {
+        "presentation_id": presentation_id,
+        "state": "OPEN"
+    })
+
+func _on_presentation_closed(presentation_id: String) -> void:
+    evidence.record("presentation", {
+        "presentation_id": presentation_id,
+        "state": "CLOSED"
+    })
+
 func attach_interaction(interaction: Node) -> void:
     if interaction == null:
         return
