@@ -31,7 +31,7 @@ class InteractionPresentationHostV158SourceTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[3]
         policy=json.loads((root/"data/tests/kg001_readable_evidence_policy_v159.json").read_text(encoding="utf-8"))
         self.assertGreaterEqual(policy["binding_threshold"]["minimum_independent_links"], 2)
-        self.assertIn(policy["current_r1p1"]["payload_identity"], ["HOLD", "VERIFIED"])
+        self.assertEqual(policy["current_r1p1"]["payload_identity"], "VERIFIED")
 
     def test_source_texture_uses_nearest_filtering(self):
         self.assertIn("TEXTURE_FILTER_NEAREST", self.src)
