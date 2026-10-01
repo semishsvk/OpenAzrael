@@ -1,0 +1,39 @@
+{
+  "schema":"openazrael.kg001.book_opcode_evidence",
+  "version":170,
+  "status":"VERIFIED",
+  "executable":{
+    "sha256":"381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "dispatcher_offset":"0x18708",
+    "jump_table_linear":"0x1B09C",
+    "opcode_0x21_fixup_target":"0x1BAF1",
+    "code_mapping_bias":"0x2AA8",
+    "opcode_0x21_handler_offset":"0x19049",
+    "control_check":{"opcode":"0x28","fixup_target":"0x1BC91","handler_offset":"0x191E9","known_semantics":"PLAY_3D_SOUND"}
+  },
+  "handler_0x19049":{
+    "object_index_field":"action record +1, uint16",
+    "section0_pointer_array":"0x43890",
+    "object_name_field_offset":"0x34",
+    "book_loader_call":"0x3654",
+    "state_effects":["current interaction flag +0x0A = 1","current object index +0x08 = action object index"],
+    "semantics":"OPEN_BOOK_VIEW_FOR_WORLD_OBJECT",
+    "confidence":"VERIFIED"
+  },
+  "book_loader_0x3654":{
+    "descriptor_format":"books\\%s.bok",
+    "page_renderer":"0x3744",
+    "page_format":"%s\\books\\%s%d.pcx",
+    "descriptor_drives_page_prefix_and_count":true,
+    "confidence":"VERIFIED"
+  },
+  "world_correlations":[
+    {"object":"r1p1","section0_index":325,"opcode_0x21_present":true,"BOK":"PRESENT"},
+    {"object":"r3t1","section0_index":1296,"opcode_0x21_present":true,"BOK":"PRESENT"},
+    {"object":"r8t3","section0_index":1298,"opcode_0x21_present":true,"BOK":"PRESENT"},
+    {"object":"r8t4","section0_index":1299,"opcode_0x21_present":true,"BOK":"PRESENT"},
+    {"object":"r7p1","section0_index":1150,"opcode_0x21_present":true,"BOK":"ABSENT_FROM_ATDEMO"}
+  ],
+  "conclusion":"Opcode 0x21 is the original generic source-backed book/inspect presentation action. R1 and all three tapestry pieces have both the action and payload. R7/r7p1 has the action but its descriptor payload is absent from the supplied ATDEMO corpus.",
+  "r7_boundary":"Classify missing R7P1.BOK as SOURCE_INCOMPLETE / ABSENT_VERIFIED_IN_CORPUS, not as evidence that r7p1 is not a book-view object."
+}
