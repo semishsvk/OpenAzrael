@@ -1,11 +1,11 @@
 {
   "schema": "openazrael.kg001.parchment_r1_pppv_contract",
-  "version": 165,
-  "status": "SOURCE_BEHAVIOR_VERIFIED_RUNTIME_ASSET_STAGING_REQUIRED",
+  "version": 173,
+  "status": "SOURCE_LIFECYCLE_VERIFIED_RUNTIME_VALIDATION_PENDING",
   "scenario_id": "openazrael.r1.look_at_parchment",
   "room": "R1",
   "target": "Interact_r1p1",
-  "runtime_item": null,
+  "runtime_item": "parchment_r1",
   "required_sequence": [
     {
       "kind": "interaction_probe",
@@ -19,15 +19,24 @@
       "activated": true
     },
     {
-      "kind": "state_invariant",
+      "kind": "world_object",
+      "target": "r1p1",
+      "visible_before": true,
+      "visible_after": false,
+      "source_opcode": "0x07"
+    },
+    {
+      "kind": "state_transition",
       "path": "inventory.parchment_r1",
       "before": false,
-      "after": false
+      "after": true,
+      "source_opcode": "0x08"
     },
     {
       "kind": "presentation",
       "presentation_id": "R1/r1p1",
-      "state": "OPEN"
+      "state": "OPEN",
+      "source_opcode": "0x21"
     },
     {
       "kind": "presentation_identity",
@@ -45,9 +54,8 @@
       "state": "CLOSED"
     },
     {
-      "kind": "world_object",
-      "target": "r1p1",
-      "visible": true
+      "kind": "reload_invariant",
+      "assert": "r1p1 remains absent from authored R1 location while parchment_r1 is carried"
     }
   ],
   "candidate_policy": {
@@ -55,7 +63,7 @@
     "placeholder_payload_forbidden": true,
     "invented_text_forbidden": true,
     "invented_art_forbidden": true,
-    "candidate_gate": "FAIL_UNTIL_VERIFIED_SOURCE_PAGE_IS_STAGED_AND_PRESENTATION_LIFECYCLE_PASSES"
+    "candidate_gate": "FAIL_UNTIL_SOURCE_PAGE_STAGED_AND_REMOVE_CARRY_BOOK_RUNTIME_SEQUENCE_PASSES"
   },
   "source_holds": [],
   "audio": {
