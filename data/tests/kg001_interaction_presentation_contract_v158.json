@@ -1,7 +1,7 @@
 {
   "schema": "openazrael.kg001.interaction_presentation_contract",
-  "version": 165,
-  "status": "R1P1_CLASS_AND_PAYLOAD_VERIFIED_SOURCE_ASSET_STAGING_PENDING",
+  "version": 173,
+  "status": "R1P1_REMOVE_CARRY_BOOK_SOURCE_VERIFIED_RUNTIME_PENDING",
   "scope": "Source-faithful player-visible interaction presentation layered on canonical gameplay state",
   "rules": [
     "A successful state mutation alone is insufficient for interaction fidelity.",
@@ -23,15 +23,15 @@
     "R1/r1p1": {
       "source_object": "r1p1",
       "source_family": "PAPER",
-      "runtime_item_id": null,
+      "runtime_item_id": "parchment_r1",
       "world_cursor": "LOOK",
-      "pickup_state": "FALSIFIED_NOT_A_PICKUP",
-      "world_visibility_lifecycle": "PERSISTENT_READABLE_OBJECT",
+      "pickup_state": "VERIFIED_CARRIED_SET_ADD_OPCODE_0x08",
+      "world_visibility_lifecycle": "VERIFIED_REMOVE_DEACTIVATE_OPCODE_0x07",
       "presentation_class": "READ_INSPECT",
-      "presentation_trigger": "DIRECT_WORLD_LOOK_INTERACTION",
+      "presentation_trigger": "VERIFIED_OPCODE_0x21_AFTER_07_08_ACTIONS",
       "presentation_content": "TEXTURES/BOOKS/1_1_0.PCX",
       "presentation_content_status": "VERIFIED_SOURCE_PAYLOAD",
-      "inventory_reinspect": "NOT_APPLICABLE_NO_INVENTORY_ACQUIRE",
+      "inventory_reinspect": "HOLD_NOT_REQUIRED_FOR_WORLD_ACTION_ACCEPTANCE",
       "close_semantics": {
         "input": "RIGHT_MOUSE_BUTTON",
         "status": "VERIFIED",
@@ -54,7 +54,7 @@
     }
   },
   "acceptance": [
-    "r1p1 remains at its authored R1 world location after inspection and is not acquired into inventory.",
+    "r1p1 is removed/deactivated from its authored R1 location, added to carried state/UI, then opens the source book presentation.",
     "the original readable presentation is shown only after its exact source content has been identified and bound.",
     "no placeholder transcription, modern dialog, invented parchment art or guessed close behavior is accepted.",
     "PPPV records both canonical state change and presentation-open/presentation-close observations."
@@ -73,6 +73,12 @@
       "claim": "SPAPER.WAV was previously held as possible R1/r1p1 timing evidence.",
       "result": "FALSIFIED",
       "replacement": "Verified WORLD opcode-0x28 binding is R7/r7p1 (Scroll), room context 1."
+    },
+    {
+      "version": 173,
+      "claim": "v165 classified r1p1 as non-pickup persistent readable object.",
+      "result": "FALSIFIED_BY_EXECUTABLE_AND_SERIALIZED_WORLD_ACTIONS",
+      "replacement": "WORLD records 0x07 -> 0x08 -> 0x21; R.EXE verifies remove/deactivate -> carried-set/UI add -> book view."
     }
   ]
 }
