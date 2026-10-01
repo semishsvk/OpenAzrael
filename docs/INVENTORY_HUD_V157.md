@@ -33,3 +33,17 @@ The v157 runtime runner checks:
 5. `R8_TAKE_SHIELD` acquisition,
 6. save -> reset -> load inventory restoration,
 7. unmapped IDs remain hidden but diagnosable.
+
+
+## v173 carried-object correction
+
+Executable dispatcher analysis verifies that opcode 0x08 appends a WORLD object index to the carried-object set and updates the carried UI; opcode 0x09 is its paired inverse. The HUD therefore follows canonical acquisition order rather than a fixed runtime item order.
+
+Additional source-backed demo labels are now bound from WORLD:
+
+- `parchment_r1` -> `Page - Apr 1194` (r1p1)
+- `tapestry_piece_1` -> `Tapestry Piece` (r3t1)
+- `tapestry_piece_3` -> `Tapestry Piece` (r8t3)
+- `tapestry_piece_4` -> `Tapestry Piece` (r8t4)
+
+These objects participate in verified remove/carry/book action groups. Their carried-state must therefore be visible in the source HUD rather than hidden as unmapped runtime IDs.
