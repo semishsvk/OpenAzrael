@@ -1,6 +1,6 @@
 {
   "schema": "openazrael.kg001.r7p1_interaction_evidence",
-  "version": 170,
+  "version": 173,
   "status": "BOOK_ACTION_VERIFIED_SOURCE_PAYLOAD_INCOMPLETE",
   "object": {
     "source_object": "r7p1",
@@ -26,15 +26,15 @@
       "offset": "0x15212",
       "opcode": "0x08",
       "token": "R7P1",
-      "semantics": "REMOVE_ROOM_OBJECT_FAMILY",
-      "status": "HIGH_FROM_RECOVERED_R7_KEY_TONGS_SEQUENCE"
+      "semantics": "ADD_OBJECT_TO_CARRIED_SET_AND_UI",
+      "status": "VERIFIED_EXECUTABLE_HANDLER"
     },
     {
       "offset": "0x152d0",
       "opcode": "0x07",
       "token": "R7P1",
-      "semantics": "ADD_ROOM_OBJECT_FAMILY",
-      "status": "HIGH_FROM_RECOVERED_R7_KEY_TONGS_SEQUENCE"
+      "semantics": "REMOVE_OR_DEACTIVATE_WORLD_OBJECT",
+      "status": "VERIFIED_EXECUTABLE_HANDLER"
     },
     {
       "offset": "0x1538e",
@@ -53,16 +53,30 @@
       "section0_name": "r7p1",
       "room_context_id": 1
     },
-    "status": "VERIFIED"
+    "status": "VERIFIED",
+    "sequence_boundary": "SPAPER object binding is verified. Exact placement of opcode 0x28 relative to the serialized 08->07->21 pending group remains HOLD until its containing WORLD group/order is reconstructed."
   },
   "runtime_policy": {
     "implement_now": false,
-    "reason": "Original book action is verified but the required R7P1.BOK/page source payload is absent. Preserve a fidelity blocker rather than fabricate content.",
+    "reason": "Original carried/remove/book lifecycle is verified, but the required R7P1.BOK/page source payload is absent. Preserve a fidelity blocker rather than mutate state without the required presentation.",
     "forbid": [
       "invented scroll artwork",
       "R1 page substitution",
       "silent generic pickup replacement"
     ]
   },
-  "next_falsification": "Search other authoritative original demo/retail provenance layers for R7P1.BOK or a source-equivalent R7 scroll payload; keep demo reconstruction blocked for this presentation until found."
+  "next_falsification": "Search other authoritative original demo/retail provenance layers for R7P1.BOK or a source-equivalent R7 scroll payload; keep demo reconstruction blocked for this presentation until found.",
+  "world_action_group": {
+    "record_offsets": [
+      "0x15A86",
+      "0x15AA1",
+      "0x15ABC"
+    ],
+    "opcodes": [
+      "0x08",
+      "0x07",
+      "0x21"
+    ],
+    "status": "VERIFIED_SERIALIZED_ORDER"
+  }
 }
