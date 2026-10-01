@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c5-cloud-execution-eb4ccc15-20261001",
   "owner": "OpenAzrael C5 cloud bootstrap and runtime capture",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -9,5 +9,22 @@
   "acquired_on": "2026-10-01",
   "expires": null,
   "previous_lease_id": "video-recovery-65d57ab9-20260930",
-  "note": "Explicit user-approved takeover. Reconciled integration HEAD matches frozen commit; repository Actions API reports zero runs. Bootstrap ref f68563c670adcef9863d3850e37c388177fcd5ee. Frozen source must not change; fail closed."
+  "note": "Authorized takeover completed; execution stopped fail closed. No build, runtime, workflow, or capture remains running. Frozen integration HEAD rechecked unchanged. Only coordination branch was written.",
+  "released_on": "2026-10-01",
+  "last_execution": {
+    "status": "BLOCKED_TOOLCHAIN_UNAVAILABLE",
+    "bootstrap_ref": "f68563c670adcef9863d3850e37c388177fcd5ee",
+    "bootstrap_blob": "c0156f659b4b3b642d481075dcd8904fce467599",
+    "bootstrap_exit_code": 2,
+    "bootstrap_error": "Godot archive cache miss",
+    "demo_bytes": 5243364,
+    "demo_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+    "demo_hash_verified": true,
+    "godot_drive_metadata_bytes": 77860424,
+    "godot_transfer_error": "HTTP 403 transferring streamed Drive output into execution workspace",
+    "git_checkout_error": "could not read Username for https://github.com: No such device or address",
+    "runtime_validation": "NOT_RUN",
+    "flythrough_capture": "NOT_RUN",
+    "frozen_source_unchanged": true
+  }
 }
