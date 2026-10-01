@@ -29,9 +29,10 @@ def strings_with_offsets(data,minlen=4):
 maps=parse_maps(root/'data/MAPS.DAT')
 data=(root/'data/ROOMS.DAT').read_bytes()
 ss=strings_with_offsets(data)
-markers=['R1Demo','R7Demo','R1DemoTapPiece1','EntryCoordSpaRoom','EntryCoordWashRoom','R1Entry','R1FromR2','R1FromR5','corridordoor1','corridordoor2','R7NiamhAZ']
+markers=['R1Demo','R7Demo','R1DemoTapPiece1','EntryCoordSpaRoom','EntryCoordWashRoom','R1Entry','R1FromR2','R1FromR5','corridordoor1','corridordoor2','R7NiamhAZ','r1p1','PAPER','Parchment']
 found={k:[{'offset':o,'text':s} for o,s in ss if k.lower() in s.lower()] for k in markers}
 result={'source':'Azrael\'s Tear playable demo (internal resources dated Feb 1996)','maps':maps,'rooms_dat_demo_markers':found,
         'notes':['MAPS.DAT is plain-text and parsed structurally.','ROOMS.DAT is a binary/runtime-oriented structure; markers are offset evidence, not yet a claimed full parse.']}
 (root/'data/demo_metadata.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
 print(root/'data/demo_metadata.json')
+
