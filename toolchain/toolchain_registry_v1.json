@@ -1,0 +1,43 @@
+{
+  "schema": "openazrael.toolchain_registry",
+  "version": 1,
+  "policy": {
+    "discovery": "FORBIDDEN_AFTER_REGISTRATION",
+    "resolution_order": ["EXPLICIT_PATH", "LOCAL_CAS", "PINNED_UPSTREAM"],
+    "cache_miss": "FETCH_VERIFY_INSTALL",
+    "hash_mismatch": "FAIL_CLOSED"
+  },
+  "toolchains": {
+    "godot-4.7.2-linux-x86_64": {
+      "version": "4.7.2.stable",
+      "drive_file_id": "1w6de416siM_c6xVgsA3gY2BmlnW0ruSo",
+      "archive": "Godot_v4.7.2-stable_linux.x86_64.zip",
+      "archive_bytes": 77860424,
+      "archive_sha256": "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4",
+      "executable": "Godot_v4.7.2-stable_linux.x86_64"
+    },
+    "godot-4.7.2-export-templates": {
+      "version": "4.7.2.stable",
+      "archive": "Godot_v4.7.2-stable_export_templates.tpz",
+      "sha256": null,
+      "status": "PIN_HASH_REQUIRED_BEFORE_RELEASE_EXPORT",
+      "required_target": "windows-x86_64"
+    },
+    "fluidsynth": {
+      "version": "2.3.1-2",
+      "distribution": "Debian bookworm",
+      "required_library": "libfluidsynth3",
+      "status": "VERIFY_NATIVE_LIBRARY_SHA_AT_EXECUTION"
+    },
+    "soundfont-fluidr3-gm": {
+      "name": "FluidR3_GM.sf2",
+      "family_version": "3.1",
+      "status": "PIN_FILE_SHA256_AT_MATERIALIZATION"
+    },
+    "python-audio": {
+      "required_modules": ["numpy", "soundfile"],
+      "required_native": ["libsndfile"],
+      "status": "VERIFY_VERSIONS_AT_EXECUTION"
+    }
+  }
+}
