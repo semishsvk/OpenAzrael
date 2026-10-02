@@ -25,6 +25,10 @@ def main():
   return p
  if run(["git","status","--porcelain","--untracked-files=normal"]).stdout.strip():
   print(json.dumps({"status":"BLOCKED","reason":"DIRTY_GIT","commit_sha":head},indent=2));return 2
+ preset=(ROOT/"export_presets.cfg").read_text(encoding="utf-8")
+ project=(ROOT/"project.godot").read_text(encoding="utf-8")
+ if 'name="Windows Candidate 5"' not in preset or 'config/name="OpenAzrael KG-001 Candidate 5"' not in project or 'config/version="KG001-Candidate-5"' not in project:
+  return finish(head,stages,"CANDIDATE5_EXPORT_IDENTITY_INVALID")
  p=stage("candidate4_preflight",[sys.executable,"tools/run_candidate4_preflight.py","--godot",a.godot]+(["--demo-dir",a.demo_dir] if a.demo_dir else [])+(["--soundfont",a.soundfont] if a.soundfont else [])+(["--fluidsynth-lib",a.fluidsynth_lib] if a.fluidsynth_lib else []))
  if p.returncode: return finish(head,stages,"CANDIDATE4_PREFLIGHT_FAILED")
  p=stage("pppv_current_head",[sys.executable,"tools/run_candidate3_pppv_v2.py","--godot",a.godot,"--fresh-checkout"])
