@@ -1,0 +1,33 @@
+{
+  "schema": "openazrael.retail_k001.gate.v1",
+  "milestone": "Retail-RE-K001 — Corpus + Room Graph",
+  "authority": "canonical original retail corpus",
+  "status": "IN_PROGRESS_EXECUTABLE",
+  "gates": {
+    "source_provenance": "READY_RUNNER_FAIL_CLOSED",
+    "rooms_dat_byte_evidence": "VERIFIED",
+    "world_dat_byte_evidence": "VERIFIED",
+    "retail_only_R8FromR6": "VERIFIED_IN_RETAIL_ROOMS_DAT",
+    "xaf_decoder_toolchain": "PINNED",
+    "xaf_sample_structure": "STRUCTURAL",
+    "full_xaf_azf_census": "PENDING_EXECUTION",
+    "maps_dat_topology": "PENDING_EXECUTION",
+    "exact_room_geometry_bindings": "PENDING_EXECUTION",
+    "k002_scene_selection": "BLOCKED_UNTIL_EXACT_BINDING"
+  },
+  "exit_criteria": [
+    "canonical AZT.BIN attestation passes",
+    "pinned decoder blob hashes pass",
+    "full XAF/AZF census recorded",
+    "MAPS.DAT room and directed-edge topology recorded",
+    "all decoder failures classified with zero unexplained failures",
+    "room geometry binding uses exact MAPS asset stem only",
+    "at least one exact-bound room is eligible for K002"
+  ],
+  "forbidden_shortcuts": [
+    "retail_install or extracted CD promoted to authority",
+    "room identity inferred from XAF filename alone",
+    "hand-authored or AI-generated replacement geometry",
+    "unexplained decoder failures treated as success"
+  ]
+}
