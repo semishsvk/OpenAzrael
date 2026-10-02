@@ -23,6 +23,7 @@ def main():
     ap.add_argument("--determinism")
     ap.add_argument("--visual")
     ap.add_argument("--pacing")
+    ap.add_argument("--pppv-identity")
     ap.add_argument("--out",default=".tmp/kg001_c4_closure/c4_runtime_evidence_v201.json")
     a=ap.parse_args()
     c=load(CONTRACT); h=head()
@@ -31,17 +32,20 @@ def main():
       "pppv":ROOT/(a.pppv or defaults["pppv"]),
       "determinism":ROOT/(a.determinism or defaults["pppv_determinism"]),
       "visual":ROOT/(a.visual or defaults["visual"]),
-      "pacing":ROOT/(a.pacing or defaults["pacing"])
+      "pacing":ROOT/(a.pacing or defaults["pacing"]),
+      "pppv_identity":ROOT/(a.pppv_identity or defaults["pppv_identity"])
     }
     docs={k:load(v) if v.is_file() else None for k,v in paths.items()}
     checks={}
     checks["head_resolved"]=bool(h)
     checks["all_receipts_present"]=all(v is not None for v in docs.values())
-    p=docs["pppv"] or {}; d=docs["determinism"] or {}; v=docs["visual"] or {}; pc=docs["pacing"] or {}
+    p=docs["pppv"] or {}; d=docs["determinism"] or {}; v=docs["visual"] or {}; pc=docs["pacing"] or {}; ident=docs["pppv_identity"] or {}
+    checks["pppv_identity_pass"]=ident.get("status")=="PASS"
+    checks["pppv_identity_head_bound"]=ident.get("commit_sha")==h
     checks["pppv_pass"]=p.get("status")=="PASS"
-    checks["pppv_head_bound"]=p.get("commit_sha")==h
+    checks["pppv_head_bound"]=ident.get("commit_sha")==h
     checks["determinism_pass"]=d.get("status")=="PASS"
-    checks["determinism_head_bound"]=d.get("commit_sha")==h
+    checks["determinism_head_bound"]=ident.get("commit_sha")==h
     checks["four_transitions"]=d.get("transition_scenario_count")==4 or p.get("transition_scenario_count")==4
     checks["visual_pass"]=v.get("status")=="PASS"
     checks["visual_head_bound"]=v.get("commit_sha")==h
