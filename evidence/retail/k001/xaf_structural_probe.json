@@ -1,0 +1,15 @@
+{
+  "schema": "openazrael.retail_k001.xaf_structural_probe.v1",
+  "evidence_state": "STRUCTURAL",
+  "source_role": "derived CD extraction backed by canonical retail corpus",
+  "method": "direct XAF material/object/mesh/vertex/face parsing; no invented geometry",
+  "samples": [
+    {"file":"ZIGURRAT.XAF","bytes":256054,"sha256":"791f6214beeaeb84b7c82233e4ebe6d0d4febf3ca8bc8c359f38927e7af3d442","materials":30,"texture_refs":29,"unique_textures":29,"mesh_objects":101,"vertices_total":1712,"triangles_total":1753},
+    {"file":"R36.XAF","bytes":166493,"sha256":"b542835adda16da2f6f9a945a255cee2cf52ccf5017450e978b6874bcae91c5e","materials":12,"texture_refs":11,"unique_textures":11,"mesh_objects":52,"vertices_total":1084,"triangles_total":1452},
+    {"file":"EXEC_R.XAF","bytes":261394,"sha256":"a6df97e3857880e616a293f9c212fc778f484870cece3e1ac8be995f343c399a","materials":42,"texture_refs":41,"unique_textures":39,"mesh_objects":63,"vertices_total":1786,"triangles_total":1337}
+  ],
+  "limitations": [
+    "World-space bounds are intentionally excluded until parent-transform composition is validated against the pinned exporter.",
+    "Room identity is not inferred from filenames; K002 requires MAPS.DAT exact asset-stem binding."
+  ]
+}
