@@ -1,8 +1,8 @@
 [application]
 
 config/icon="res://assets/branding/OpenAzrael_Sigil_256x256.png"
-config/name="OpenAzrael KG-001 Candidate 3"
-config/version="KG001-Candidate-3"
+config/name="OpenAzrael KG-001 Candidate 5"
+config/version="KG001-Candidate-5"
 run/main_scene="res://main.tscn"
 
 [display]
