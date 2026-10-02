@@ -42,6 +42,8 @@ def main():
     p=docs["pppv"] or {}; d=docs["determinism"] or {}; v=docs["visual"] or {}; pc=docs["pacing"] or {}; ident=docs["pppv_identity"] or {}
     checks["pppv_identity_pass"]=ident.get("status")=="PASS"
     checks["pppv_identity_head_bound"]=ident.get("commit_sha")==h
+    checks["pppv_receipt_hash_bound"]=bool(paths["pppv"].is_file()) and ident.get("pppv_evaluation_sha256")==sha(paths["pppv"])
+    checks["determinism_receipt_hash_bound"]=bool(paths["determinism"].is_file()) and ident.get("pppv_determinism_sha256")==sha(paths["determinism"])
     checks["pppv_pass"]=p.get("status")=="PASS"
     checks["pppv_head_bound"]=ident.get("commit_sha")==h
     checks["determinism_pass"]=d.get("status")=="PASS"
