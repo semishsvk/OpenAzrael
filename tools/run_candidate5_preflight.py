@@ -48,7 +48,7 @@ def main():
         p = run([sys.executable, tool])
         source_rows.append({"tool": tool, "returncode": p.returncode, "status": "PASS" if p.returncode == 0 else "FAIL", "output_tail": p.stdout[-8000:]})
     if any(x["status"] != "PASS" for x in source_rows):
-        payload = {"schema":"openazrael.kg001.candidate5_preflight","version":206,"status":"FAIL","build_allowed":False,"commit_sha":head(),"stage":"SOURCE_GATES","source":source_rows}
+        payload = {"schema":"openazrael.kg001.candidate5_preflight","version":207,"status":"FAIL","build_allowed":False,"commit_sha":head(),"stage":"SOURCE_GATES","source":source_rows}
         OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(payload, indent=2)); return 1
     try:
@@ -90,13 +90,16 @@ def main():
     if args.fluidsynth_lib: base += ["--fluidsynth-lib", args.fluidsynth_lib]
     inherited = run(base)
     v201 = run([sys.executable, "tools/validate_kg001_c4_runtime_evidence_v201.py"])
-    allowed = inherited.returncode == 0 and v201.returncode == 0
+    c4_receipt = ROOT / ".tmp/kg001/candidate4_preflight_receipt.json"
+    v201_receipt = ROOT / ".tmp/kg001_c4_closure/c4_runtime_evidence_v201.json"
+    allowed = inherited.returncode == 0 and v201.returncode == 0 and c4_receipt.is_file() and v201_receipt.is_file()
     payload = {
         "schema":"openazrael.kg001.candidate5_preflight","version":205,
         "status":"PASS" if allowed else "BLOCKED","build_allowed":allowed,"commit_sha":head(),
         "source":source_rows,"asset_backed_re":re_rows,"c5_headless_runtime":runtime_rows,
         "candidate4_preflight_returncode":inherited.returncode,"candidate4_preflight_output_tail":inherited.stdout[-12000:],
-        "v201_returncode":v201.returncode,"v201_output_tail":v201.stdout[-12000:],
+        "candidate4_preflight_receipt_sha256":sha256(c4_receipt) if c4_receipt.is_file() else None,
+        "v201_returncode":v201.returncode,"v201_receipt_sha256":sha256(v201_receipt) if v201_receipt.is_file() else None,"v201_output_tail":v201.stdout[-12000:],
         "rule":"C5 build requires inherited C4 preflight plus exact-current-HEAD v201 runtime evidence."
     }
     OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
