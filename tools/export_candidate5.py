@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import argparse,json,subprocess,sys
+import argparse,hashlib,json,subprocess,sys
 ROOT=Path(__file__).resolve().parents[1]; TMP=ROOT/".tmp/kg001"; P=TMP/"candidate5_preflight_receipt.json"; F=TMP/"candidate5_frozen_release_receipt.json"; ID=ROOT/"data/runtime_build_identity.json"
 def run(c):return subprocess.run(c,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-def marker(s,m):
+def sha(p):\n h=hashlib.sha256()\n with p.open("rb") as f:\n  for b in iter(lambda:f.read(1048576),b""):h.update(b)\n return h.hexdigest()\ndef marker(s,m):
  for line in reversed(s.splitlines()):
   if m in line:
    try:return json.loads(line.split(m,1)[1].strip())
@@ -13,7 +13,7 @@ def main():
  ap=argparse.ArgumentParser();ap.add_argument("--godot");ap.add_argument("--out",default="exports/OpenAzrael-KG001-Candidate5.exe");a=ap.parse_args()
  if not P.is_file() or not F.is_file(): print('{"status":"FAIL","reason":"C5_PREFLIGHT_OR_FREEZE_MISSING"}');return 1
  p=json.loads(P.read_text());f=json.loads(F.read_text());head=run(["git","rev-parse","HEAD"]).stdout.strip()
- if p.get("status")!="PASS" or p.get("build_allowed") is not True or f.get("status")!="PASS" or f.get("commit_sha")!=head: print('{"status":"FAIL","reason":"C5_GATE_NOT_OPEN"}');return 1
+ if p.get("status")!="PASS" or p.get("build_allowed") is not True or p.get("commit_sha")!=head or f.get("status")!="PASS" or f.get("commit_sha")!=head or f.get("preflight_receipt_sha256")!=sha(P): print('{"status":"FAIL","reason":"C5_GATE_NOT_OPEN"}');return 1
  if run(["git","status","--porcelain","--untracked-files=normal"]).stdout.strip(): print('{"status":"FAIL","reason":"DIRTY_GIT"}');return 1
  if not a.godot: print('{"status":"FAIL","reason":"GODOT_REQUIRED"}');return 1
  ident={"schema":"openazrael.runtime_build_identity","version":1,"candidate":"KG-001 Candidate 5","commit_sha":head,"preset":"Windows Candidate 5"}
@@ -36,5 +36,5 @@ def main():
   if q.returncode or z.get("status")!="PASS":
    ID.unlink(missing_ok=True);print(json.dumps({"status":"FAIL","reason":"PACKAGED_RUNTIME_FAILED","test":name,"result":z,"output_tail":q.stdout[-12000:]},indent=2));return 1
  ID.unlink(missing_ok=True)
- print(json.dumps({"schema":"openazrael.kg001.candidate5_export","version":203,"status":"PASS","commit_sha":head,"artifact":str(out.relative_to(ROOT)),"packaged":results},indent=2));return 0
+ print(json.dumps({"schema":"openazrael.kg001.candidate5_export","version":204,"status":"PASS","commit_sha":head,"preflight_receipt_sha256":sha(P),"freeze_receipt_sha256":sha(F),"artifacts":{str(out.relative_to(ROOT)):{"bytes":out.stat().st_size,"sha256":sha(out)},str(out.with_suffix(".pck").relative_to(ROOT)):{"bytes":out.with_suffix(".pck").stat().st_size,"sha256":sha(out.with_suffix(".pck"))}},"packaged":results},indent=2));return 0
 if __name__=="__main__":sys.exit(main())
