@@ -20,6 +20,9 @@ def digest(p:Path,algo='sha256'):
   for b in iter(lambda:f.read(4*1024*1024),b''): h.update(b)
  return h.hexdigest()
 
+def git_blob_sha(p:Path):
+ d=p.read_bytes(); return hashlib.sha1(b'blob '+str(len(d)).encode()+b'\0'+d).hexdigest()
+
 def die(msg): raise SystemExit('BLOCKED: '+msg)
 
 def main():
@@ -40,7 +43,9 @@ def main():
  for name,blob_sha in PINNED_TOOLS.items():
   p=tools/name
   if not p.is_file(): die(f'missing pinned tool {p}')
-  tool_att[name]={'git_blob_sha':blob_sha,'sha256':digest(p),'bytes':p.stat().st_size}
+  actual_blob=git_blob_sha(p)
+  if actual_blob!=blob_sha: die(f'tool blob mismatch {name}: {actual_blob} != {blob_sha}')
+  tool_att[name]={'git_blob_sha':actual_blob,'sha256':digest(p),'bytes':p.stat().st_size}
  out.mkdir(parents=True,exist_ok=True); meta=out/'metadata'; meta.mkdir(exist_ok=True)
  att={'schema':'openazrael.retail_k001.source_attestation.v1','authority':'original-retail-corpus','derived_inputs_are_not_authority':True,
       'source_root':str(src),'azt_bin':{'bytes':binp.stat().st_size,'md5':md5,'sha256':digest(binp)},
