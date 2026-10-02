@@ -15,7 +15,7 @@ def main():
  x=json.loads(P.read_text()); 
  if x.get("status")!="PASS" or x.get("build_allowed") is not True: print('{"status":"FAIL","reason":"C5_PREFLIGHT_NOT_PASS"}'); return 1
  head=run(["git","rev-parse","HEAD"]).stdout.strip(); tree=run(["git","rev-parse","HEAD^{tree}"]).stdout.strip()
- if x.get("commit_sha") not in (None,head): print('{"status":"FAIL","reason":"HEAD_CHANGED"}'); return 1
+ if x.get("commit_sha")!=head: print('{"status":"FAIL","reason":"HEAD_CHANGED"}'); return 1
  if run(["git","status","--porcelain","--untracked-files=normal"]).stdout.strip(): print('{"status":"FAIL","reason":"DIRTY_GIT"}'); return 1
  files=sorted([p for r in ROOTS if r.is_dir() for p in r.rglob("*") if p.is_file()],key=lambda p:str(p))
  ident={str(p.relative_to(ROOT)):{"bytes":p.stat().st_size,"sha256":sha(p)} for p in files}
