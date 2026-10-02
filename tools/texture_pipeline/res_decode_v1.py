@@ -75,7 +75,7 @@ def main():
         rendered,ck=render_indexed_colorkey(indices,palette,rgb,ref)
         mode="RGBA" if rendered.shape[-1]==4 else "RGB"
         safe=re.sub(r'[^A-Za-z0-9_.#-]+','_',Path(ref).name)
-        out=a.output_dir/f"{idx:03d}_{Path(safe).stem}.png"
+        out=a.output_dir/f"{Path(safe).stem}.png"
         Image.fromarray(rendered,mode).save(out)
         manifest["records"].append({"record":idx,"offset":off,"declared_size":declared,"physical_size":declared+4,
           "texture_ref":ref,"width":w,"height":h,"palette_count":pc,"raw_size":raw_size,"root":root,
