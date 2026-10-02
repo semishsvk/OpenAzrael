@@ -23,8 +23,6 @@
   },
   "additional_source_gates": [
     "tools/validate_kg001_source_frame_animation_v195.py",
-    "tools/validate_kg001_source_update_cadence_v196.py",
-    "tools/validate_kg001_source_update_dispatch_v197.py",
     "tools/validate_kg001_legacy_scene_update_reference_profile_v198.py",
     "tools/validate_kg001_c4_regression_closure_v200.py"
   ],
@@ -46,5 +44,15 @@
     "production_clock_binding_requires_v199_pass": true
   },
   "candidate5_build_allowed_when": "ALL_INHERITED_AND_ADDITIONAL_SOURCE_GATES_PASS_AND_ALL_REQUIRED_RUNTIME_EVIDENCE_PASS",
-  "candidate_gate": "BLOCKED"
+  "candidate_gate": "BLOCKED",
+  "asset_backed_re_gates": [
+    {
+      "tool": "tools/validate_kg001_source_update_cadence_v196.py",
+      "requires": "ORIGINAL_R_EXE"
+    },
+    {
+      "tool": "tools/validate_kg001_source_update_dispatch_v197.py",
+      "requires": "ORIGINAL_R_EXE"
+    }
+  ]
 }
