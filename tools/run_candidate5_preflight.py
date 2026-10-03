@@ -72,6 +72,12 @@ def main():
         payload = {"schema":"openazrael.kg001.candidate5_preflight","version":205,"status":"BLOCKED","build_allowed":False,"commit_sha":head(),"stage":"GODOT_RUNTIME_REQUIRED","source":source_rows,"asset_backed_re":re_rows}
         OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(payload, indent=2)); return 2
+    godot_probe = run([args.godot, "--version"])
+    godot_version = godot_probe.stdout.strip()
+    if godot_probe.returncode != 0 or not godot_version:
+        payload = {"schema":"openazrael.kg001.candidate5_preflight","version":207,"status":"FAIL","build_allowed":False,"commit_sha":head(),"stage":"GODOT_VERSION_PROBE","source":source_rows,"asset_backed_re":re_rows,"godot_probe_returncode":godot_probe.returncode,"godot_probe_output_tail":godot_probe.stdout[-8000:]}
+        OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        print(json.dumps(payload, indent=2)); return 1
     runtime_rows = []
     for name, script in [
         ("SOURCE_FRAME_HEADLESS_V195", "res://tools/validate_kg001_source_frame_animation_v195.gd"),
@@ -97,6 +103,7 @@ def main():
         "schema":"openazrael.kg001.candidate5_preflight","version":205,
         "status":"PASS" if allowed else "BLOCKED","build_allowed":allowed,"commit_sha":head(),
         "source":source_rows,"asset_backed_re":re_rows,"c5_headless_runtime":runtime_rows,
+        "godot_version":godot_version,
         "candidate4_preflight_returncode":inherited.returncode,"candidate4_preflight_output_tail":inherited.stdout[-12000:],
         "candidate4_preflight_receipt_sha256":sha256(c4_receipt) if c4_receipt.is_file() else None,
         "v201_returncode":v201.returncode,"v201_receipt_sha256":sha256(v201_receipt) if v201_receipt.is_file() else None,"v201_output_tail":v201.stdout[-12000:],
