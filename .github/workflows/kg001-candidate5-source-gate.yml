@@ -1,0 +1,33 @@
+name: KG-001 Candidate 5 source gate
+
+on:
+  push:
+    branches:
+      - integration/kg001-candidate3-pppv-v2
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate5-source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Candidate 5 orchestration
+        run: |
+          python -m py_compile \
+            tools/run_candidate5_build_v208.py \
+            tools/run_candidate5_preflight.py \
+            tools/freeze_candidate5_release.py \
+            tools/export_candidate5.py \
+            tools/build_c4_current_head_visual_attestation_v207.py
+      - name: Validate Candidate 5 release contract
+        run: python tools/validate_candidate5_release_contract_v202.py
+      - name: Verify tracked checkout stayed clean
+        shell: bash
+        run: test -z "$(git status --porcelain --untracked-files=normal)"
