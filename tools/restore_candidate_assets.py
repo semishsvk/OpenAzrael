@@ -197,7 +197,7 @@ def main():
         'asset_file_count':len(identity),
         'asset_identity_sha256':_identity_digest(identity),
         'assets':identity,
-    },indent=2)+'\\n',encoding='utf-8')
+    },indent=2)+'\n',encoding='utf-8')
     print('KG-001 Candidate assets restored; complete restore receipt v177 written only after all source restorers and validators passed.')
 
 if __name__ == '__main__': main()
