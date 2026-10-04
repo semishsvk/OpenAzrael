@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """Fail-closed Candidate 5 build preparation/orchestration."""
 from pathlib import Path
-import argparse,json,subprocess,sys,hashlib
+import argparse,json,subprocess,sys,hashlib,tempfile
 ROOT=Path(__file__).resolve().parents[1]
 TMP=ROOT/".tmp/kg001_candidate5"
 def run(cmd):
- p=subprocess.run(cmd,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
- return p
+ TMP.mkdir(parents=True,exist_ok=True)
+ with tempfile.NamedTemporaryFile(mode="w+",encoding="utf-8",errors="replace",dir=TMP,delete=False) as log:
+  log_path=Path(log.name)
+  p=subprocess.run(cmd,cwd=ROOT,text=True,stdout=log,stderr=subprocess.STDOUT)
+ try:
+  output=log_path.read_text(encoding="utf-8",errors="replace")
+ finally:
+  log_path.unlink(missing_ok=True)
+ return subprocess.CompletedProcess(cmd,p.returncode,output,None)
 def sha(p):
  h=hashlib.sha256()
  with p.open("rb") as f:
