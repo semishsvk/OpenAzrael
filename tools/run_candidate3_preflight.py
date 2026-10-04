@@ -61,6 +61,7 @@ RUNTIME_ASSET_ROOTS = (
     ROOT / "assets/textures/classic",
     ROOT / "assets/ui/mice",
     ROOT / "assets/ui/legacy_menu",
+    ROOT / "assets/characters",
 )
 
 def runtime_asset_files() -> list[Path]:

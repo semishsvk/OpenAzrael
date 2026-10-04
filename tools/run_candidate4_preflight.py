@@ -156,7 +156,14 @@ def main():
             "output_tail":render.stdout[-16000:],
         })
 
-    # Now snapshot/test the complete asset set, including rendered OGG music.
+    # Refresh the complete runtime identity after music rendering, without mutating assets.
+    snapshot=run([sys.executable,"tools/restore_candidate_assets.py","--snapshot-only"])
+    if snapshot.returncode!=0:
+        return fail("CANDIDATE4_COMPLETE_ASSET_SNAPSHOT_FAILED",{
+            "returncode":snapshot.returncode,"output_tail":snapshot.stdout[-12000:]
+        })
+
+    # Now test the complete asset set, including rendered OGG music.
     cmd=[sys.executable,"tools/run_candidate3_preflight.py"]
     if args.godot:cmd += ["--godot",args.godot]
     cmd += ["--demo-dir",str(demo)]

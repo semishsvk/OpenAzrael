@@ -31,6 +31,19 @@ def _asset_identity():
 
 def _identity_digest(identity):
     return hashlib.sha256(json.dumps(identity,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+def _write_restore_receipt():
+    identity=_asset_identity()
+    RESTORE_RECEIPT.parent.mkdir(parents=True, exist_ok=True)
+    RESTORE_RECEIPT.write_text(json.dumps({
+        'schema':'openazrael.kg001.candidate_asset_restore',
+        'version':177,
+        'status':'PASS',
+        'asset_file_count':len(identity),
+        'asset_identity_sha256':_identity_digest(identity),
+        'assets':identity,
+    },indent=2)+'\n',encoding='utf-8')
+
 from export_xaf_glb_v8 import parse
 from prepare_candidate_audio import prepare
 
@@ -52,7 +65,16 @@ def main():
         type=Path,
         help='Optional OPENAZRAEL_SOURCE_HOME override.',
     )
+    ap.add_argument(
+        '--snapshot-only',
+        action='store_true',
+        help='Refresh the v177 identity receipt from the current complete runtime assets without mutating assets.',
+    )
     a = ap.parse_args()
+    if a.snapshot_only:
+        _write_restore_receipt()
+        print('KG-001 Candidate asset identity receipt v177 refreshed without mutating runtime assets.')
+        return
     src = (
         a.demo_dir.resolve()
         if a.demo_dir is not None
@@ -189,15 +211,7 @@ def main():
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_scanner_v164.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_character_animation_v166.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_eugene_animation_v179.py'), str(src)], check=True)
-    identity=_asset_identity()
-    RESTORE_RECEIPT.write_text(json.dumps({
-        'schema':'openazrael.kg001.candidate_asset_restore',
-        'version':177,
-        'status':'PASS',
-        'asset_file_count':len(identity),
-        'asset_identity_sha256':_identity_digest(identity),
-        'assets':identity,
-    },indent=2)+'\n',encoding='utf-8')
+    _write_restore_receipt()
     print('KG-001 Candidate assets restored; complete restore receipt v177 written only after all source restorers and validators passed.')
 
 if __name__ == '__main__': main()
