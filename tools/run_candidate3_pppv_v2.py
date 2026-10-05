@@ -45,7 +45,18 @@ RUNTIMES=[
 ]
 
 def run(cmd, check=False):
-    proc=subprocess.run(cmd,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    # Spool long validator/runtime output to disk. Keeping every child stdout
+    # pipe open can make remote orchestration fragile during the full PPPV suite.
+    TMP.mkdir(parents=True, exist_ok=True)
+    import tempfile
+    with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8", errors="replace", dir=TMP, delete=False) as log:
+        log_path=Path(log.name)
+        result=subprocess.run(cmd,cwd=ROOT,text=True,stdout=log,stderr=subprocess.STDOUT)
+    try:
+        output=log_path.read_text(encoding="utf-8",errors="replace")
+    finally:
+        log_path.unlink(missing_ok=True)
+    proc=subprocess.CompletedProcess(cmd,result.returncode,output,None)
     if check and proc.returncode!=0:
         raise RuntimeError(f"command failed ({proc.returncode}): {' '.join(cmd)}\n{proc.stdout}")
     return proc
