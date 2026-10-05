@@ -8,9 +8,22 @@
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
-  "note": "User explicitly requested preventing recurring lease conflicts. Scope: coordination branch lifecycle tooling/policy only; Candidate 6 remains paused awaiting Framework Phase 2. No integration source changes or build runs.",
+  "note": "Writer lifecycle v2 is active. Before mutation read .openazrael/WRITER_PROTOCOL.md on coordination/single-writer. A resumed turn with the same owner_thread_id + lease_id is the same owner. Foreign active writer => enqueue and retry later; do not ask for takeover of live work. Waiting/completion must release with reconciliation and stopped task processes. No time-based stealing. Use the installed lease.py foreground run guard. Candidate 6 target HEAD unchanged; it waits for Framework Phase 2.",
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-05T14:05:10.641438+00:00"
+  "last_seen_at": "2026-10-05T14:05:10.641438+00:00",
+  "protocol": {
+    "version": 2,
+    "branch": "coordination/single-writer",
+    "path": ".openazrael/WRITER_PROTOCOL.md",
+    "tool": ".openazrael/lease.py",
+    "owner_identity": [
+      "owner_thread_id",
+      "lease_id"
+    ],
+    "contention": "enqueue-and-retry-without-takeover",
+    "waiting": "release-and-record-dependency-ticket",
+    "expiry": "never-auto-steal"
+  }
 }
