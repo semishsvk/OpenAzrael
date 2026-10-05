@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,7 +26,7 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T18:47:46.317434+00:00",
+  "released_at": "2026-10-05T19:03:48.803013+00:00",
   "reconciliation": {
     "head": "9832d26787c9c796bf5ec851de880cf548bcfe17",
     "git_status": "",
@@ -35,8 +35,8 @@
     "task_processes_stopped": true,
     "primary_blocker": "R1_ORIGINAL_CONTEXTUAL_DOOR_MARKER_ABSENT_IN_CANDIDATE",
     "final": false,
-    "visual_sha256": "f1cabd52fceb261bd8cccb2ee5132f3f32832e86d4d4ddbe0d35c01662321978",
-    "capture_sha256": "d8c5d7d19b20f07ad2e99d0f4877b4d3f3bc3fe7fdf3529e5b87a1aa75e463f1"
+    "source_session_stopped": true,
+    "visual_sha256": "efaddd0c677a875e8e5f7ebad66d73f95f86780629f402e94ec309e7a88886a1"
   },
   "acquired_at": "2026-10-05T18:56:25.103743+00:00"
 }
