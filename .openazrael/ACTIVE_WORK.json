@@ -11,7 +11,22 @@
   "note": "Writer lifecycle v2 is active. Before mutation read .openazrael/WRITER_PROTOCOL.md on coordination/single-writer. A resumed turn with the same owner_thread_id + lease_id is the same owner. Foreign active writer => enqueue and retry later; do not ask for takeover of live work. Waiting/completion must release with reconciliation and stopped task processes. No time-based stealing. Use the installed lease.py foreground run guard. Candidate 6 target HEAD unchanged; it waits for Framework Phase 2.",
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
-  "active_run": null,
+  "active_run": {
+    "run_id": "4de09595-e904-4615-8409-a49350dfd320",
+    "host": "HomePC",
+    "supervisor_pid": 53068,
+    "started_at": "2026-10-05T15:38:55.835455+00:00",
+    "cwd": "F:\\OpenRemaster\\OpenAzrael",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "F:\\OpenRemaster\\OpenAzrael",
+      "--script",
+      "F:\\OpenRemaster\\OpenAzrael\\.runtime\\work\\coordination\\c6_pose_diagnostic.gd",
+      "--log-file",
+      "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\source_pose_diagnostic.log"
+    ]
+  },
   "last_seen_at": "2026-10-05T15:37:34.101376+00:00",
   "protocol": {
     "version": 2,
