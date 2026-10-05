@@ -24,7 +24,7 @@
     "0x1c8d"
   ],
   "source_regeneration_disabled_global": "0x6ac4",
-  "unverified_scope": "Non-demo scripted global 0x6ac4 modes not bound; production normal gameplay and blocking menu pause only. No whole-game fidelity claim.",
+  "unverified_scope": "Scripted global 0x6ac4 modes are not bound. Normal gameplay verified; production blocking-menu pause behavior is not source-attested. No whole-game fidelity claim.",
   "palette_rgb6_expanded": [
     [
       0,
@@ -4475,5 +4475,6 @@
       ]
     }
   },
-  "original_full_bar_rgb_sha256": "4ef2c301dfbd7edbb98cdf1143cc50cf6ad2dbfbaa53e0eeafe83bd7a4d5442a"
+  "original_full_bar_rgb_sha256": "4ef2c301dfbd7edbb98cdf1143cc50cf6ad2dbfbaa53e0eeafe83bd7a4d5442a",
+  "source_palette6_sha256": "9ff213185d467e26f463391ba6ccccf2a231fa635e54301a9c46848603e6dd4e"
 }
