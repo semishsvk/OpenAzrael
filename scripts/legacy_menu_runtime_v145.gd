@@ -155,6 +155,10 @@ func _build() -> void:
     root_control.add_child(classic_canvas)
 
     hud_texture = _make_tex("HUD3", "HUD3", Vector2.ZERO, LOGICAL_SIZE)
+    var compass := preload("res://scripts/legacy_compass_runtime_v204.gd").new()
+    compass.name = "CanonicalCompassV204"
+    compass.camera = player.get_node("Camera3D")
+    classic_canvas.add_child(compass)
     title_texture = _make_tex("Title1996", "TITLE", Vector2(4, 3), Vector2(631, 474))
     service_texture = _make_tex("ServiceMenu", SERVICE_BASE_FRAME, SERVICE_ORIGIN, Vector2(206, 170))
     map_indicator = _make_tex("MapIndicator", "MAPOFF", Vector2(0, 0), Vector2(639, 47))
