@@ -22,6 +22,14 @@ var pitch := 0.0
 
 # R.EXE v190: global player-state +0x18 is initialized to 500 at 0x74688.
 var legacy_health := 500
+var legacy_health_poll_counter := 0
+
+func advance_legacy_health_poll() -> void:
+    # Source 0x1c3a..0x1c8d: normal live gameplay, one increment every four presentation polls.
+    # This is a poll rule, not an assertion about original wall-clock Hz.
+    if legacy_health_poll_counter == 0 and legacy_health > 0 and legacy_health < 1000:
+        legacy_health += 1
+    legacy_health_poll_counter = 3 if legacy_health_poll_counter == 0 else legacy_health_poll_counter - 1
 
 func apply_legacy_damage(amount: int, source: String = "") -> int:
     if amount <= 0:

@@ -157,6 +157,11 @@ func _build() -> void:
 
     # Canonical normal-mode framebuffer uses HUDOFF; index zero exposes the world.
     hud_texture = _make_tex("HUD3", "HUDOFF", Vector2.ZERO, LOGICAL_SIZE)
+    var health_hud := preload("res://scripts/legacy_health_hud_v217.gd").new()
+    health_hud.name = "SourceHealthHudV217"
+    health_hud.player = player
+    health_hud.menu = self
+    classic_canvas.add_child(health_hud)
     var compass := preload("res://scripts/legacy_compass_runtime_v204.gd").new()
     compass.name = "CanonicalCompassV204"
     compass.camera = player.get_node("Camera3D")
