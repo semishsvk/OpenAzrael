@@ -29,7 +29,9 @@ issuetpl=read(".github/ISSUE_TEMPLATE/bug_report.yml")
 
 checks={
     "autoload": 'CandidateDiagnostics="*res://scripts/candidate_diagnostics_v116.gd"' in project,
-    "candidate_version": 'config/version="KG001-Candidate-3"' in project,
+    # Diagnostics v116 is inherited by later KG001 candidates. Require a
+    # candidate identity, but do not pin the validator to historical Candidate 3.
+    "candidate_version": 'config/version="KG001-Candidate-' in project,
     "trigger_node": 'path="res://scripts/kg001_trigger_debug_v116.gd"' in main and 'name="TriggerDebugV116"' in main,
     "no_room_glb_preload": 'preload("res://assets/rooms/' not in room,
     "dynamic_room_paths": 'const ROOM_SCENE_PATHS' in room and 'load(String(ROOM_SCENE_PATHS[id]))' in room,
