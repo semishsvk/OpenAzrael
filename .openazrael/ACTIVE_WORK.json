@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,13 +26,14 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T14:54:24.571554+00:00",
+  "released_at": "2026-10-05T15:10:09.773134+00:00",
   "reconciliation": {
-    "head": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
-    "git_status": "clean",
+    "blocker": "R1_PRODUCTION_START_CAMERA_DOES_NOT_MATCH_CANONICAL_ORIGINAL_RUNTIME",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "Local source unchanged ahead 11, no push. Original canonical demo now executes with CD mount; native R1 reference and comparison saved. Fidelity fails R1 production start camera comparison. No freeze/final export.",
-    "task_processes_stopped": true
+    "git_status": [],
+    "task_processes_stopped": true,
+    "sync_state": "local candidate HEAD remains ahead of remote; no integration commits pushed",
+    "head": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc"
   },
   "acquired_at": "2026-10-05T15:00:08.016883+00:00"
 }
