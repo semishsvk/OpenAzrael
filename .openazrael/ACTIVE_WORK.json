@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,81 +26,45 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T21:16:26.855438+00:00",
+  "released_at": "2026-10-05T21:29:21.719347+00:00",
   "reconciliation": {
-    "head": "eb133b4e67756d7906658c39620083a87f885985",
+    "head": "9f3fc70b2ff01fa5377d1ff98e9a23efb6dbd9ab",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
+    "status": "CANDIDATE_BUILD_PASS_FINAL_BLOCKED",
     "primary_blocker": "ROOM3_WINDOWS_MATCHED_ORIGINAL_RUNTIME_FRAMEBUFFER_REFERENCE_MISSING",
-    "final": false,
-    "visual_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-    "visual_sha256": "67b9c44f71a5f0bd74a749d61db9168c724b65bd40bd8c2b589983e7c3662c23",
-    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_eb133b4_v201.json",
-    "v201_sha256": "48e84d98b71375bcdc58f57001433341979449d49408ed4b9d2708522f0fbddd",
-    "v201_status": "BLOCKED",
-    "current_head_capture_sha256": "5370903dff3641d5a65021339ed80f33b269449757195f9d763845c5c002608d",
-    "hud_comparison": {
-      "direct_gpu_lower_hud_samples": 95873,
-      "direct_gpu_matching_original_pixels": 95873,
-      "health_region_samples": 1575,
-      "health_region_matches": 1575,
-      "capture_health": 1000
-    },
-    "scanner_gold_pixels": 2252,
-    "scanner_matching_gold_pixels": 2252,
-    "automated_gates": [
+    "evidence": [
       {
-        "runner": "kg001_full_demo_runner_v111",
-        "status": "PASS",
-        "checks": 34
+        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\pppv_v221_9f3fc70\\kg001_pppv_playthrough_evaluation.json",
+        "sha256": "b0829bfa66b0c1c90d1d484112f8c9a8ecf9a2092c1dc18c76b5b3586288cfe5"
       },
       {
-        "runner": "kg001_physical_traversal_runner_v117",
-        "status": "PASS",
-        "checks": 62
+        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\pppv_v221_9f3fc70\\kg001_pppv_determinism.json",
+        "sha256": "eca289b24d5920f468c3d209caa0f30ad2d4edd7afed3d876faef084f767c682"
       },
       {
-        "runner": "kg001_all_transition_runner_v141",
-        "status": "PASS",
-        "checks": 110
+        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\pppv_v221_9f3fc70\\current_head_identity.json",
+        "sha256": "ed8ed132a17fac16a00cc55291b8d3cd0b17c22961b865e963984d882a6c74d3"
       },
       {
-        "runner": "kg001_legacy_menu_runner_v145",
-        "status": "PASS",
-        "checks": 54
+        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_9f3fc70.json",
+        "sha256": "d77b4d9aefc2830ee2188ba6602ae7d9fdb914a18444543023e2fe0ed3f03fe8"
       },
       {
-        "runner": "kg001_legacy_scanner_runner_v164",
-        "status": "PASS",
-        "checks": 18
+        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_9f3fc70_v201.json",
+        "sha256": "0c65761fb5d78b2e84b898391e60bb4eb5a4155317d85d753778c92dda8b1e6a"
       },
       {
-        "runner": "kg001_hud_startup_runner_v215",
-        "status": "PASS",
-        "checks": 12
-      },
-      {
-        "runner": "kg001_health_hud_runner_v217",
-        "status": "PASS",
-        "checks": {
-          "all_1575_original_bar_rgb_pixels": true,
-          "blocking_menu_pauses_regeneration": true,
-          "eugene_damage_reaches_bar": true,
-          "no_dead_player_regeneration": true,
-          "no_fixed_source_hz_claim": true,
-          "source_bitmap_dimensions": true,
-          "source_four_poll_increment": true,
-          "source_maximum_1000": true,
-          "source_origin": true
-        }
+        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\candidate6_modern_export_v220.json",
+        "sha256": "9e9f30d4ef679704403f7df72b4d21f2b074071f480231af8e1d705a2cedbd6b"
       }
     ],
-    "gameplay_tested_head": "c77e5d68111038db4dd936b5a83e96b1e47efa68",
-    "gameplay_code_equivalence_verified": true,
-    "packaged_export_receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\candidate6_modern_export_v220.json",
-    "source_health_gating_scope": "Normal gameplay only; scripted source global and blocking-menu pause semantics not fully attested."
+    "other_unclosed_gates": [
+      "original-runtime visual checkpoints",
+      "original-runtime pacing reference"
+    ]
   },
   "acquired_at": "2026-10-05T21:19:09.555584+00:00"
 }
