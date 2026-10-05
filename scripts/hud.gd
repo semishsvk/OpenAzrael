@@ -100,6 +100,11 @@ func _update_interaction_cursor() -> void:
         interaction_cursor_id = normalized
         interaction_cursor.texture = _cursor_texture(normalized)
     interaction_cursor.visible = interaction_cursor.texture != null
+    # Source cursor pixels use the same 640x480 scale as the legacy HUD.
+    var cursor_scale := 1.0
+    if is_instance_valid(legacy_menu):
+        cursor_scale = float(legacy_menu.get("_scale"))
+    interaction_cursor.size = LegacyCursorCatalogV143.DISPLAY_SIZE * cursor_scale
     var viewport_size := get_viewport().get_visible_rect().size
     if DisplayServer.get_name() != "headless" and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
         interaction_cursor.position = get_viewport().get_mouse_position() - interaction_cursor.size * 0.5

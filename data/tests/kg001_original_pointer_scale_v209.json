@@ -1,0 +1,17 @@
+{
+  "schema": "openazrael.original_pointer_scale_v209",
+  "source_frame_sha256": "9f5808d96b93a983212c8b46d9e459b0273d67d3f973d17f085e7a861bb695c8",
+  "asset": "POINTER.PCX",
+  "logical_size": [
+    30,
+    30
+  ],
+  "source_top_left": [
+    305,
+    225
+  ],
+  "source_gold_pixels": 54,
+  "different_gold_pixels": 0,
+  "runtime_policy": "Multiply logical cursor size by legacy HUD scale",
+  "scope": "Neutral pointer only. Contextual target marker and other cursor states not attested."
+}

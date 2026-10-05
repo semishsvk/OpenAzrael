@@ -3,7 +3,7 @@ class_name LegacyCursorCatalogV143
 
 const ROOT := "res://assets/ui/mice/"
 const FALLBACK := "POINTER"
-const DISPLAY_SIZE := Vector2(60.0, 60.0)
+const DISPLAY_SIZE := Vector2(30.0, 30.0)
 const ACTIVE_IDS := {
     "POINTER": true,
     "TAKE": true,
