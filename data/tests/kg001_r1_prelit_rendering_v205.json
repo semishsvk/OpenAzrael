@@ -1,0 +1,15 @@
+{
+  "schema": "openazrael.kg001.r1_prelit_rendering",
+  "version": 205,
+  "scope": "R1 static textured surfaces only. Character and other-room lighting remain unverified.",
+  "source_xaf_sha256": "76ebdd2a8f50569b00a0abe44f0b5ba65ad9855b2f1b064c38bc270e5eebdfda",
+  "original_r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+  "rendering_rule": "Nearest authored texture colours, neutral tint, unshaded; preserve alpha and canonical decoded pixel data.",
+  "basis": "Source XAF textured materials include zero colour; export fallback 0.4 is not an original light value. Controlled native-original comparison improves materially using original texture colours without fallback tint/ambient attenuation. This is not a claim that all original lighting states are reproduced.",
+  "source_floor_luma_diagnostic": 41.00548671428571,
+  "production_candidate_before_luma": 19.769135285714285,
+  "neutral_unlit_diagnostic_floor_luma": 39.24057564285714,
+  "regional_measurements_sha256": "53c054fb484c1ee99ea9207ec4440c8a432555b9835913def2cba073dfabef06",
+  "native_source_jpeg_limitation": true,
+  "full_night_lighting_attestation": false
+}

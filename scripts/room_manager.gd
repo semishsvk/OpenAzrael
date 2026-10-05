@@ -865,6 +865,18 @@ func _apply_demo_texture_sampling() -> void:
             if source_material is BaseMaterial3D:
                 var material := source_material.duplicate() as BaseMaterial3D
                 material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+                # Canonical R1 textures carry their authored colour/shading.
+                # The exporter fallback tint and Godot ambient light attenuate twice.
+                var ancestor: Node = mesh_node
+                var is_character := false
+                while ancestor != current_room and ancestor != null:
+                    if String(ancestor.name).begins_with("SourceCharacter_"):
+                        is_character = true
+                        break
+                    ancestor = ancestor.get_parent()
+                if current_room_id == "R1" and not is_character and material.albedo_texture != null:
+                    material.albedo_color = Color(1, 1, 1, material.albedo_color.a)
+                    material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
                 mesh_node.set_surface_override_material(surface, material)
 
 func load_room(id: String, announce := true) -> void:

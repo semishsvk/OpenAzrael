@@ -49,6 +49,26 @@ func _check(name:String,ok:bool)->void:
 func _settle(n:int=2)->void:
     for _i in range(n): await process_frame
 
+func _static_room_mesh_map(room: Node) -> Dictionary:
+    # The pinned room GLB excludes separately instantiated character assets.
+    # Keep the exact static mesh-set assertion; do not filter by expected names.
+    var nodes: Array[Node] = []
+    H.walk(room, nodes)
+    var result := {}
+    for node in nodes:
+        if not node is MeshInstance3D:
+            continue
+        var ancestor: Node = node
+        var is_character := false
+        while ancestor != room and ancestor != null:
+            if String(ancestor.name).begins_with("SourceCharacter_"):
+                is_character = true
+                break
+            ancestor = ancestor.get_parent()
+        if not is_character:
+            result[String(node.name)] = node
+    return result
+
 func _run()->void:
     var manifest:=H.load_manifest()
     if manifest.is_empty():
@@ -64,7 +84,7 @@ func _run()->void:
     var quantum=float(manifest.get("quantization",0.00001))
     for room_id in ["R1","R7","R8"]:
         state.reset_all(); manager.load_room(room_id,false); await _settle()
-        var actual:=H.room_mesh_map(manager.current_room)
+        var actual:=_static_room_mesh_map(manager.current_room)
         # v133 proves source XAF -> canonical GLB identity. At runtime, compare
         # production RoomManager loading against a direct Godot import of the
         # exact same pinned GLB so importer-internal vertex/material rewrites do
