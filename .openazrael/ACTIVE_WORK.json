@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,7 +12,7 @@
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-05T21:16:16.942820+00:00",
+  "last_seen_at": "2026-10-05T21:19:09.555586+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -102,5 +102,5 @@
     "packaged_export_receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\candidate6_modern_export_v220.json",
     "source_health_gating_scope": "Normal gameplay only; scripted source global and blocking-menu pause semantics not fully attested."
   },
-  "acquired_at": "2026-10-05T21:05:06.550533+00:00"
+  "acquired_at": "2026-10-05T21:19:09.555584+00:00"
 }
