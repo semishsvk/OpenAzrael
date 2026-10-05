@@ -8,7 +8,10 @@ rng=(ROOT/"scripts/legacy_rand_v174.gd").read_text(encoding="utf-8")
 contract=json.loads((ROOT/"data/tests/kg001_eugene_runtime_controller_contract_v193.json").read_text())
 checks={
  "controller_character_body":"extends CharacterBody3D" in ctl,
- "source_step_12":"SOURCE_STEP := 12.0" in ctl,\n "spawn_disarmed":"source_movement_armed = false" in ctl,\n "explicit_arm":"func arm_source_movement()" in ctl,\n "physics_requires_arm":"if not source_movement_armed:" in ctl,
+ "source_step_12":"SOURCE_STEP := 12.0" in ctl,
+ "spawn_disarmed":"source_movement_armed = false" in ctl,
+ "explicit_arm":"func arm_source_movement()" in ctl,
+ "physics_requires_arm":"if not source_movement_armed:" in ctl,
  "recovery_50":"SOURCE_RECOVERY_UPDATES := 50" in ctl,
  "candidate_80":"SOURCE_CANDIDATE_DISTANCE := 80.0" in ctl,
  "attempts_20":"SOURCE_MAX_HEADING_ATTEMPTS := 20" in ctl,
