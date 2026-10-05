@@ -1,0 +1,40 @@
+{
+  "schema": "openazrael.kg001.original_projection",
+  "version": 203,
+  "source_r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+  "source_runtime_camera_xyz": [
+    0.0,
+    -69.44447326660156,
+    0.0
+  ],
+  "source_viewport": [
+    552,
+    282
+  ],
+  "source_viewport_origin": [
+    44,
+    49
+  ],
+  "hud_alignment_matches": 1971,
+  "hud_alignment_samples": 1971,
+  "hud_alignment_method": "Exact indexed HUD3.PCX opaque nonzero pixels at rows 290..344, columns 40..219, within 552x282 world buffer; offset search x32..56/y30..60",
+  "source_frame_sha256": "116c4c2e571476884fcb4763658eface2eb8076d01946a8f96728277aeaa7c60",
+  "source_hud_pcx_sha256": "f95e9647b943e68edccf96a11365eb923139dbef9c2832883e57571a0c1c2ec6",
+  "projection_memory_receipt_sha256": "7a8c51dbbfe277c198f2924a0255191aaaf7d44a1b817c5379f7b2dbedaacc4a",
+  "near": 1.0,
+  "far": 30000.0,
+  "source_near_plane_left": -0.800000011920929,
+  "source_near_plane_right": 0.800000011920929,
+  "source_camera_screen_scale": 276.0,
+  "focal_pixels": 345.0,
+  "logical_canvas": [
+    640,
+    480
+  ],
+  "projection_center": [
+    320,
+    190
+  ],
+  "remote_desktop_is_authority": false,
+  "scope": "Projection geometry and compositing origin only; remaining visual checkpoints need independent attestation"
+}

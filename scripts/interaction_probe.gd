@@ -59,13 +59,23 @@ func _select_overlap_candidate(overlaps: Array, from: Vector3, direction: Vector
     candidates.sort_custom(_candidate_less)
     return candidates[0]["collider"]
 
+func project_view_direction(screen_position: Vector2) -> Vector3:
+    if camera.projection != Camera3D.PROJECTION_FRUSTUM:
+        return camera.project_ray_normal(screen_position)
+    # Unproject the actual off-center frustum used by the renderer.
+    var viewport_size := get_viewport().get_visible_rect().size
+    var ndc := Vector4(2.0 * screen_position.x / viewport_size.x - 1.0, 1.0 - 2.0 * screen_position.y / viewport_size.y, -1.0, 1.0)
+    var point: Vector4 = camera.get_camera_projection().inverse() * ndc
+    var local_direction := Vector3(point.x, point.y, point.z) / point.w
+    return (camera.global_basis * local_direction).normalized()
+
 func _find_interactive() -> Object:
     var from := camera.global_position
     var direction := -camera.global_transform.basis.z
     if DisplayServer.get_name() != "headless" and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
         var mouse_pos := get_viewport().get_mouse_position()
-        from = camera.project_ray_origin(mouse_pos)
-        direction = camera.project_ray_normal(mouse_pos)
+        from = camera.global_position if camera.projection == Camera3D.PROJECTION_FRUSTUM else camera.project_ray_origin(mouse_pos)
+        direction = project_view_direction(mouse_pos)
     var to := from + (direction * max_distance)
     var q := PhysicsRayQueryParameters3D.create(from, to)
     q.collision_mask = 2

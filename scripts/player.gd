@@ -74,8 +74,18 @@ func _ready() -> void:
     # Keep support while descending the same discrete stair profiles that the
     # step-up helper can climb. Godot floor snapping only acts downward; it
     # therefore complements rather than replaces explicit step-up handling.
+    # R.EXE: 552x282 view at (44,49), half-frustum 0.8 at near=1.
+    # Extend its projection over the 640x480 HUD canvas; source center is (320,190).
+    _apply_source_projection()
+    get_viewport().size_changed.connect(_apply_source_projection)
     floor_snap_length = max_step_height + 2.0
     safe_margin = traversal_safe_margin
+
+func _apply_source_projection() -> void:
+    var viewport_size := get_viewport().get_visible_rect().size
+    var frame_scale := minf(viewport_size.x / 640.0, viewport_size.y / 480.0)
+    if frame_scale > 0.0:
+        camera.set_frustum(viewport_size.y / frame_scale / 345.0, Vector2(0.0, -50.0 / 345.0), 1.0, 30000.0)
 
 func apply_camera_pitch(value: float) -> void:
     # Preserve +X screen-right when pitch changes rebuild the camera basis.

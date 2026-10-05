@@ -847,6 +847,26 @@ func _setup_r8() -> void:
         farea.set("frame_visual", frame)
         farea.call("sync_from_state")
 
+func _apply_demo_texture_sampling() -> void:
+    if current_room_id not in ["R1", "R3", "R7", "R8"]:
+        return
+    # The original software frame retains discrete indexed texture pixels.
+    # glTF has no source sampler declaration and imports with linear filtering.
+    var nodes: Array[Node] = []
+    _walk(current_room, nodes)
+    for node in nodes:
+        if not node is MeshInstance3D:
+            continue
+        var mesh_node := node as MeshInstance3D
+        if mesh_node.mesh == null:
+            continue
+        for surface in range(mesh_node.mesh.get_surface_count()):
+            var source_material = mesh_node.get_active_material(surface)
+            if source_material is BaseMaterial3D:
+                var material := source_material.duplicate() as BaseMaterial3D
+                material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+                mesh_node.set_surface_override_material(surface, material)
+
 func load_room(id: String, announce := true) -> void:
     if not ROOM_SCENE_PATHS.has(id):
         push_error("OpenAzrael unknown room id: " + id)
@@ -873,6 +893,7 @@ func load_room(id: String, announce := true) -> void:
     _setup_r1_eugene_spawns()
     _setup_r1_doors()
     _setup_r8()
+    _apply_demo_texture_sampling()
     if is_instance_valid(legacy_audio):
         legacy_audio.call("setup_for_room", id)
     CandidateDiagnostics.record_room_loaded(id)
