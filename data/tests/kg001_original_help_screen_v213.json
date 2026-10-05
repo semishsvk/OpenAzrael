@@ -3,7 +3,7 @@
   "source_sha256": "2c1d4f7d27e20f3f072bde325f1e049256def4dbd36d2e72c64bad66f0b45020",
   "source_bytes": 79057,
   "source_path": "TEXTURES/MAPS/HELP.PCX",
-  "runtime_png_sha256": "bcc737f537df2f60dbc7753358af9d3b840387059017962ab7c50a428b102f2d",
+  "runtime_png_sha256": "69ce44ae60c11b2ebaa6672403554657c7196ed62105e12f1d1d270e88246830",
   "origin": [
     0,
     0
@@ -13,8 +13,10 @@
     480
   ],
   "key": "H",
-  "conversion": "Source PCX palette RGB preserved; no resampling; opaque full screen",
+  "conversion": "Source PCX indices with verified original-runtime RGB6 palette expanded by 4; no resampling; opaque full screen",
   "native_original_toggle_verified": true,
   "scope": "Source help art and H toggle. Full menu fidelity remains separately gated.",
-  "matching_rgb_pixels": 307200
+  "matching_rgb_pixels": 307200,
+  "original_runtime_reference_sha256": "69ce44ae60c11b2ebaa6672403554657c7196ed62105e12f1d1d270e88246830",
+  "runtime_palette6_sha256": "9ff213185d467e26f463391ba6ccccf2a231fa635e54301a9c46848603e6dd4e"
 }

@@ -37,7 +37,7 @@ def main()->int:
             destination=OUT_ROOT/(Path(spec["file"]).stem+".png")
             destination.parent.mkdir(parents=True,exist_ok=True)
             category=str(spec["category"])
-            if category == "hud_frame":
+            if (category == "hud_frame" or spec["file"] == "TEXTURES/MAPS/HELP.PCX"):
                 source_palette = json.loads((ROOT / "data/ui/legacy_health_hud_v217.json").read_text())["palette_rgb6_expanded"]
                 assert len(source_palette) == 256 and all(len(rgb) == 3 for rgb in source_palette)
                 indexed.putpalette([int(value) for rgb in source_palette for value in rgb])
@@ -62,7 +62,7 @@ def main()->int:
                 "width":indexed.width,
                 "height":indexed.height,
                 "alpha_policy":alpha_policy,
-                "palette_policy":"SOURCE_RUNTIME_RGB6_EXPANDED" if category == "hud_frame" else "SOURCE_PCX_RGB8",
+                "palette_policy":"SOURCE_RUNTIME_RGB6_EXPANDED" if (category == "hud_frame" or spec["file"] == "TEXTURES/MAPS/HELP.PCX") else "SOURCE_PCX_RGB8",
             })
     RECEIPT.parent.mkdir(parents=True,exist_ok=True)
     receipt={"schema":"openazrael.menu_lab.restore","version":144,"status":"PASS","asset_count":len(rows),"files":rows}
