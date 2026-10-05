@@ -1,0 +1,18 @@
+{
+  "schema": "openazrael.normal_hud_original_frame_v207",
+  "original_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+  "original_indexed_full_frame_sha256": "9f5808d96b93a983212c8b46d9e459b0273d67d3f973d17f085e7a861bb695c8",
+  "runtime_palette6_sha256": "9ff213185d467e26f463391ba6ccccf2a231fa635e54301a9c46848603e6dd4e",
+  "palette_binding": {
+    "rgb6_offset": "data_base+0x22bc4",
+    "rgba_offset": "data_base+0x22ec4",
+    "verified_entries": 256,
+    "conversion": "RGB6 << 2; parallel tag 1"
+  },
+  "source_frame_duplicate_buffers_identical": true,
+  "normal_hud_asset": "HUDOFF",
+  "transparent_source_index": 0,
+  "verified_alpha_pixels": 307200,
+  "classification_receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\original_host23\\hud_classification_v207.json",
+  "scope": "Normal R1 frame only; combat HUD, full menu, lighting and remaining graphical checkpoints are not attested."
+}

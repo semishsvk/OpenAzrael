@@ -154,7 +154,8 @@ func _build() -> void:
     classic_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
     root_control.add_child(classic_canvas)
 
-    hud_texture = _make_tex("HUD3", "HUD3", Vector2.ZERO, LOGICAL_SIZE)
+    # Canonical normal-mode framebuffer uses HUDOFF; index zero exposes the world.
+    hud_texture = _make_tex("HUD3", "HUDOFF", Vector2.ZERO, LOGICAL_SIZE)
     var compass := preload("res://scripts/legacy_compass_runtime_v204.gd").new()
     compass.name = "CanonicalCompassV204"
     compass.camera = player.get_node("Camera3D")
