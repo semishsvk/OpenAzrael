@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "coordination-lifecycle-20261005",
   "owner": "OpenAzrael coordination lifecycle repair",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -25,5 +25,13 @@
     "contention": "enqueue-and-retry-without-takeover",
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
+  },
+  "released_at": "2026-10-05T14:05:55.215981+00:00",
+  "reconciliation": {
+    "head": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
+    "git_status": "clean",
+    "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
+    "sync_state": "Integration unchanged, local ahead 11, no integration push. Coordination lifecycle files committed only on coordination/single-writer.",
+    "task_processes_stopped": true
   }
 }
