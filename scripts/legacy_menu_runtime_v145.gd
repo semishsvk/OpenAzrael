@@ -84,6 +84,7 @@ var slot_label: Label
 var inventory_text_layer: Control
 var scanner_runtime: LegacyScannerRuntimeV164
 
+var help_open := false
 var title_open := false
 var service_open := false
 var map_mode := false
@@ -165,6 +166,10 @@ func _build() -> void:
     orientation.player = player
     orientation.menu = self
     classic_canvas.add_child(orientation)
+    var help := preload("res://scripts/legacy_help_runtime_v213.gd").new()
+    help.name = "CanonicalHelpV213"
+    help.menu = self
+    classic_canvas.add_child(help)
     title_texture = _make_tex("Title1996", "TITLE", Vector2(4, 3), Vector2(631, 474))
     service_texture = _make_tex("ServiceMenu", SERVICE_BASE_FRAME, SERVICE_ORIGIN, Vector2(206, 170))
     map_indicator = _make_tex("MapIndicator", "MAPOFF", Vector2(0, 0), Vector2(639, 47))
@@ -345,7 +350,7 @@ func classic_frame_rect() -> Rect2:
     return Rect2(_offset, LOGICAL_SIZE * _scale)
 
 func blocks_world_cursor() -> bool:
-    return title_open or service_open
+    return title_open or service_open or help_open
 
 func debug_scanner_snapshot() -> Dictionary:
     return scanner_runtime.debug_snapshot() if scanner_runtime != null else {}

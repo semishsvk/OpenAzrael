@@ -391,6 +391,15 @@
       "bytes": 10474,
       "sha256": "30aed25537bdf74d906de0a9dfdc23646ddba55e6deddf7a995d6e67d3fa0d7e",
       "mode": "P"
+    },
+    {
+      "file": "TEXTURES/MAPS/HELP.PCX",
+      "category": "help_screen",
+      "width": 640,
+      "height": 480,
+      "bytes": 79057,
+      "sha256": "2c1d4f7d27e20f3f072bde325f1e049256def4dbd36d2e72c64bad66f0b45020",
+      "mode": "P"
     }
   ],
   "proven_behaviour": [
