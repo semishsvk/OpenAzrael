@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,91 +26,29 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T17:43:23.196172+00:00",
+  "released_at": "2026-10-05T18:01:32.368035+00:00",
   "reconciliation": {
     "head": "6298ddaedc3b4a18de2225094acd66c19f391ce1",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_UNPUBLISHED",
     "task_processes_stopped": true,
+    "source_session_stopped": true,
     "observed_game_processes": [],
-    "created_at": "2026-10-05T17:43:08.497428+00:00",
-    "primary_blocker": "R1_CHECKER_FLOOR_VISUAL_MISMATCH",
+    "primary_blocker": "R1_MATCHED_HUD_STATE_ORIGINAL_REFERENCE_MISSING",
     "final": false,
-    "regression_checks_passed": 2664,
-    "visual_receipt": {
+    "created_at": "2026-10-05T18:01:12.499733+00:00",
+    "diagnostics": {
+      "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\checker_diagnostics_v206.json",
+      "sha256": "2762035565f346e2c71abb2ca6bb671e3ea10a6b1b3095e5dd75abeaecec9234"
+    },
+    "visual": {
       "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-      "sha256": "d1e7c08049b598351339249f7b811ca79fecc44a6d522cbdfd8b8e350ee33183"
+      "sha256": "d564cdb65bbcaee3633d396eb701a7d8e4938da5ef084a3ea04d9e73c0705d63"
     },
-    "v201_receipt": {
+    "v201": {
       "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_6298dda_v201.json",
-      "sha256": "8da8e932cda2ca74b6088958f50862c86a7bb9f00d18f8c175b991f7e4c45da0"
-    },
-    "current_head_capture_sha256": "fd6670819f7ef76b11e99cd894c6658329a81c3da2578398db4a83dd46eed6a1",
-    "regional_comparison": {
-      "regions": {
-        "floor_stone": {
-          "logical_roi": [
-            80,
-            235,
-            220,
-            275
-          ],
-          "source_mean_rgb": [
-            37.988392857142856,
-            42.317321428571425,
-            36.894821428571426
-          ],
-          "candidate_mean_rgb": [
-            34.97035714285714,
-            40.80232142857143,
-            36.34428571428571
-          ],
-          "source_mean_luma": 41.00548671428571,
-          "candidate_mean_luma": 39.24057564285714
-        },
-        "checker_transition": {
-          "logical_roi": [
-            80,
-            290,
-            370,
-            325
-          ],
-          "source_mean_rgb": [
-            32.79812807881773,
-            34.05497536945813,
-            32.30935960591133
-          ],
-          "candidate_mean_rgb": [
-            20.98857142857143,
-            21.33024630541872,
-            22.073793103448274
-          ],
-          "source_mean_luma": 33.6617361773399,
-          "candidate_mean_luma": 21.31129030541872
-        },
-        "door": {
-          "logical_roi": [
-            72,
-            140,
-            90,
-            195
-          ],
-          "source_mean_rgb": [
-            50.61313131313131,
-            35.13535353535354,
-            22.993939393939392
-          ],
-          "candidate_mean_rgb": [
-            53.27474747474748,
-            37.29494949494949,
-            22.768686868686867
-          ],
-          "source_mean_luma": 37.54931898989899,
-          "candidate_mean_luma": 39.643458383838386
-        }
-      },
-      "scope": "Diagnostic regional RGB statistics, not exact photometric attestation; native source JPEG and scaling are retained limitations."
+      "sha256": "83c0f1ed62f66d340082d83b12429325750d99ae1abad858023abf4da5e54af8"
     }
   },
   "acquired_at": "2026-10-05T17:49:31.067678+00:00"
