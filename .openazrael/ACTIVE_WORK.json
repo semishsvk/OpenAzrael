@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,30 +26,20 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T18:01:32.368035+00:00",
+  "released_at": "2026-10-05T18:22:40.767173+00:00",
   "reconciliation": {
-    "head": "6298ddaedc3b4a18de2225094acd66c19f391ce1",
+    "head": "5750cc250f1c15c1e9e886e5321fa460894e6316",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "LOCAL_COMMITS_PRESERVED_UNPUBLISHED",
+    "sync_state": "LOCAL_COMMITS_NOT_PUSHED; no unrelated history published",
     "task_processes_stopped": true,
-    "source_session_stopped": true,
-    "observed_game_processes": [],
-    "primary_blocker": "R1_MATCHED_HUD_STATE_ORIGINAL_REFERENCE_MISSING",
+    "status": "BLOCKED",
+    "primary_blocker": "R1_CONTEXTUAL_CURSOR_MATCHED_STATE_ATTESTATION_PENDING",
     "final": false,
-    "created_at": "2026-10-05T18:01:12.499733+00:00",
-    "diagnostics": {
-      "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\checker_diagnostics_v206.json",
-      "sha256": "2762035565f346e2c71abb2ca6bb671e3ea10a6b1b3095e5dd75abeaecec9234"
-    },
-    "visual": {
-      "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-      "sha256": "d564cdb65bbcaee3633d396eb701a7d8e4938da5ef084a3ea04d9e73c0705d63"
-    },
-    "v201": {
-      "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_6298dda_v201.json",
-      "sha256": "83c0f1ed62f66d340082d83b12429325750d99ae1abad858023abf4da5e54af8"
-    }
+    "visual_receipt_sha256": "1f5971b35bb727f1eabc1c5ffdf3f80297878469b3d44e02bf0460a0ccf0d9f0",
+    "original_session_stopped": true,
+    "capture_completed": true,
+    "validation_completed": true
   },
   "acquired_at": "2026-10-05T18:05:14.532160+00:00"
 }
