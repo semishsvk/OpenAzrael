@@ -5,20 +5,13 @@ const Navigator = preload("res://scripts/validation/pppv_navigator.gd")
 const PlayerDriver = preload("res://scripts/validation/pppv_player_driver.gd")
 const RuntimeGuard = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
+# Key can be aimed from the east side within the production 145-unit probe range.
+# Return along that same supported corridor rather than crossing the well body.
 const R7_WELL_TO_EXIT_ROUTE := [
-    Vector3(-21.4, -47.57, 51.4),
-    Vector3(-24.0, -47.57, 78.0),
-    Vector3(-8.0, -41.45, 78.0),
-    Vector3(25.0, -41.45, 70.0),
-    Vector3(45.0, -41.45, 80.0),
-    Vector3(45.0, -41.45, 60.0),
-    Vector3(38.0, -41.45, 30.0),
-    Vector3(30.0, -41.45, 0.0),
     Vector3(30.0, -41.45, -35.0),
     Vector3(50.0, -41.56, -55.0),
     Vector3(65.0, -41.56, -85.0),
 ]
-
 const R1_ROUTE := [
     Vector3(-203.801173, -84.921990, 300.265764),
     Vector3(-168.693718, -91.949649, 281.939643),
@@ -231,6 +224,7 @@ func _run() -> void:
 
     var scene = packed.instantiate()
     root.add_child(scene)
+    current_scene = scene
     await _settle(8)
     var manager = scene.get_node_or_null("RoomManager")
     var player = scene.get_node_or_null("Player")

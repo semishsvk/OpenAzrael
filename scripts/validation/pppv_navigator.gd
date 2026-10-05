@@ -110,7 +110,7 @@ func _turn_toward(target_position: Vector3, max_pixels: float = 90.0) -> float:
     var desired_yaw := atan2(-flat.x, -flat.z)
     var delta_yaw := wrapf(desired_yaw - player.rotation.y, -PI, PI)
     var pixels := clampf(
-        -delta_yaw / _mouse_sensitivity(),
+        delta_yaw / _mouse_sensitivity(),
         -max_pixels,
         max_pixels
     )
@@ -170,7 +170,11 @@ func approach_interactable(
         # Exact cursor/probe acquisition is validated separately by
         # aim_at_interactable(), so do not keep walking into the target
         # merely because the current camera ray does not hit it yet.
+        # Stay outside the solid well body. The subsequent production 145-unit
+        # camera ray must still acquire the key before any interaction is sent.
         var standoff_distance := 64.0
+        if target_name == "Interact_WellKey":
+            standoff_distance = 128.0
         if distance <= standoff_distance:
             reached = true
             break
