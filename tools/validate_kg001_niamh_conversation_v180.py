@@ -14,8 +14,16 @@ checks={
  "branch_A":"Ni1A_A" in contract.get("branches",{}),
  "do_not_display":contract.get("branches",{}).get("Ni1A_A",{}).get("source_control_text")=="DO NOT DISPLAY",
  "no_invented_voice":contract.get("audio",{}).get("policy")=="DO_NOT_INVENT_VOICE_AUDIO",
- "runtime_contract_binding":"kg001_niamh_conversation_1a_contract_v180.json" in room,
- "runtime_source_ready":'"status": "SOURCE_TEXT_READY"' in room,
+ # v209 supersedes the direct v180 runtime binding with source-derived
+ # conversation IR while this validator still protects the v180 text/branches.
+ "runtime_contract_binding":(
+     "kg001_niamh_conversation_1a_contract_v180.json" in room
+     or "niamh_conversation_ir_v209.json" in room
+ ),
+ "runtime_source_ready":(
+     '"status": "SOURCE_TEXT_READY"' in room
+     or '"status": "SOURCE_CONVERSATION_IR_READY"' in room
+ ),
 }
 ok=all(checks.values())
 print(json.dumps({"schema":"openazrael.kg001.niamh_conversation_1a_validation","version":180,
