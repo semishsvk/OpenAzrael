@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,22 +26,49 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T19:35:08.233268+00:00",
+  "released_at": "2026-10-05T19:59:38.212926+00:00",
   "reconciliation": {
-    "head": "d8aa6ba7b183c71403dcbb8d803e265bc4df9fba",
+    "head": "f8c3a3cccbd70a62ca811778c000be26ce35319e",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
-    "primary_blocker": "MENU_HUD_SOURCE_STARTUP_BRIEFING_AND_HINT_SEQUENCE_MISSING",
+    "primary_blocker": "MENU_HUD_DYNAMIC_INDICATOR_SOURCE_STATE_NOT_REPRODUCED",
     "final": false,
-    "visual_sha256": "8e3f8ac90c6b507627b6202a44ef1bb1ac93c7a9dd26930f820f57dc35d32d88",
+    "visual_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
+    "visual_sha256": "eda789be78cb288e334bb9a2af7c34a3a8bf68294c05f9eb2e627bbbd9e1a00a",
+    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_f8c3a3c_v201.json",
+    "v201_sha256": "cf4755a5d75309960224e319025bbf9b6b9463188933d35cff507d4d35ee8cf0",
     "v201_status": "BLOCKED",
-    "feature_tests": {
-      "help_and_cursor_after_manifest": 35,
-      "orientation_and_menu_cursor_compass": 100,
-      "help_orientation_cursor_toggle_before_manifest": 75
-    }
+    "comparison": {
+      "original": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\original_host23\\host_indexed_full_frame_1013e020.png",
+      "original_sha256": "742483564786f34d1ef702bc012b1e72009d5d97f45a4817ba1af535774a43ae",
+      "candidate": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\R1_current_head_f8c3a3c.png",
+      "candidate_sha256": "647f4f5322cd11c59a318ff6e87a7fa4d6ee09072f4f308531870927a25ee874",
+      "source_canvas": [
+        640,
+        480
+      ],
+      "candidate_classic_canvas_bounds": [
+        160,
+        0,
+        1120,
+        720
+      ],
+      "remote_desktop_stream_used": false,
+      "observed_difference": "Dynamic source HUD indicator differs from candidate restored HUD base art.",
+      "opaque_lower_hud_samples": 95873,
+      "candidate_original_equal_samples": 95176,
+      "source_dynamic_pixels_vs_rgb6_base": 697,
+      "candidate_original_dynamic_equal": 0,
+      "dynamic_bounds": [
+        328,
+        360,
+        413,
+        382
+      ]
+    },
+    "startup_restoration": "PASS_CPU_AND_DIRECT_GPU_FEATURE_CHECKS"
   },
   "acquired_at": "2026-10-05T19:35:38.286792+00:00"
 }
