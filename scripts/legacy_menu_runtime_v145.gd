@@ -160,6 +160,11 @@ func _build() -> void:
     compass.name = "CanonicalCompassV204"
     compass.camera = player.get_node("Camera3D")
     classic_canvas.add_child(compass)
+    var orientation := preload("res://scripts/legacy_orientation_indicator_v212.gd").new()
+    orientation.name = "CanonicalOrientationV212"
+    orientation.player = player
+    orientation.menu = self
+    classic_canvas.add_child(orientation)
     title_texture = _make_tex("Title1996", "TITLE", Vector2(4, 3), Vector2(631, 474))
     service_texture = _make_tex("ServiceMenu", SERVICE_BASE_FRAME, SERVICE_ORIGIN, Vector2(206, 170))
     map_indicator = _make_tex("MapIndicator", "MAPOFF", Vector2(0, 0), Vector2(639, 47))
