@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,9 +26,9 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T20:34:47.282598+00:00",
+  "released_at": "2026-10-05T20:51:16.992971+00:00",
   "reconciliation": {
-    "head": "2bd701c27c1621bcb4c6e6ec7489f3ec7ecac016",
+    "head": "9c48826d1811b20260ab62aaf9885242833386fe",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
@@ -36,9 +36,9 @@
     "primary_blocker": "ROOM3_WINDOWS_MATCHED_ORIGINAL_RUNTIME_FRAMEBUFFER_REFERENCE_MISSING",
     "final": false,
     "visual_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-    "visual_sha256": "96729adf9c71bab1bdb5d50e18478340a69eae7e5a4195b784b63bb2c9b6bb0e",
-    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_2bd701c_v201.json",
-    "v201_sha256": "3b0f483537f67ffa9294fa425fb16f5ba5904338d514857b433e3b1036478c7a",
+    "visual_sha256": "7340196b51661cc9b75af6f6f566024518b570f17a2f71bbb7fa1c7b5090cc4c",
+    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_9c48826_v201.json",
+    "v201_sha256": "0c396927ba4ea4adff2d635af8b9d8711e4c5cbe8e5bb5caf2a5e964d39f86a8",
     "v201_status": "BLOCKED",
     "current_head_capture_sha256": "472ba91e2dc5c26e53d3eecd15e0afca19bd54ddba2f34ee630106456e1cc632",
     "hud_comparison": {
