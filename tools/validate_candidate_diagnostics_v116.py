@@ -48,7 +48,7 @@ checks={
         and 'has_method("record_event")' in probe
         and 'interaction_miss' in probe
     ),
-    "event_log": 'user://openazrael_candidate3_events.jsonl' in diag and '_append_event_log' in diag,
+    "event_log": 'user://openazrael_candidate6_events.jsonl' in diag and '_append_event_log' in diag,
     "state_dump": 'canonical_state_hash' in diag and 'openazrael_kg001_state_dump_' in diag,
     "golden_audio_assets": all(x in diag for x in ["S152V2.WAV","S137.WAV","S121.WAV","799SECDR.WAV","S174ELP1.WAV","S174ELP2.WAV","S186.WAV"]) and "data/audio/legacy_world_ir.json" in diag,
     "headless_audio_boundary": 'DisplayServer.get_name() != "headless"' in room,

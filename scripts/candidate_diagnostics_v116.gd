@@ -3,9 +3,9 @@ extends Node
 signal event_recorded(entry: Dictionary)
 signal bug_report_created(path: String)
 
-const BUILD_ID := "KG-001 Candidate 3"
+const BUILD_ID := "KG-001 Candidate 6"
 const BUILD_CHECKPOINT := "v116-context-v32"
-const EVENT_LOG_PATH := "user://openazrael_candidate3_events.jsonl"
+const EVENT_LOG_PATH := "user://openazrael_candidate6_events.jsonl"
 const STATE_DUMP_PREFIX := "user://openazrael_kg001_state_dump_"
 const BUG_REPORT_PREFIX := "user://openazrael_bugreport_"
 const BUG_REPORT_SCHEMA := "openazrael.bug_report"
