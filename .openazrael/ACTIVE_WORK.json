@@ -1,12 +1,15 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "c6-final-fidelity-20261005",
-  "owner": "Dokončiť OpenAzrael Candidate 6 (01a10c57-40a2-70e1-ab33-57554d5bb7aa)",
+  "status": "active",
+  "lease_id": "coordination-lifecycle-20261005",
+  "owner": "OpenAzrael coordination lifecycle repair",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
-  "note": "User requested waiting for Framework Phase 2 before completing Candidate 6. No project mutations, builds or validation runs performed; clean local bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc remains 11 commits ahead of remote 55207b3b666a91970c7c5008892e00ae91ce9447. No task-owned project processes running. Reacquire idle lease and reconcile state when Phase 2 completes."
+  "note": "User explicitly requested preventing recurring lease conflicts. Scope: coordination branch lifecycle tooling/policy only; Candidate 6 remains paused awaiting Framework Phase 2. No integration source changes or build runs.",
+  "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
+  "queue": [],
+  "active_run": null
 }
