@@ -11,18 +11,8 @@
   "note": "Writer lifecycle v2 is active. Before mutation read .openazrael/WRITER_PROTOCOL.md on coordination/single-writer. A resumed turn with the same owner_thread_id + lease_id is the same owner. Foreign active writer => enqueue and retry later; do not ask for takeover of live work. Waiting/completion must release with reconciliation and stopped task processes. No time-based stealing. Use the installed lease.py foreground run guard. Candidate 6 target HEAD unchanged; it waits for Framework Phase 2.",
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
-  "active_run": {
-    "run_id": "b4e4d5b0-7b8d-4265-a82a-942645dc5ca0",
-    "host": "HomePC",
-    "supervisor_pid": 58828,
-    "started_at": "2026-10-05T18:01:09.606358+00:00",
-    "cwd": "F:\\OpenRemaster\\OpenAzrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\OpenAzrael\\.runtime\\work\\coordination\\reconcile_checker_v206.py"
-    ]
-  },
-  "last_seen_at": "2026-10-05T18:00:24.808354+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-05T18:01:12.922629+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
