@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,7 +12,7 @@
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-05T14:20:12.115210+00:00",
+  "last_seen_at": "2026-10-05T14:25:21.626587+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -34,5 +34,5 @@
     "sync_state": "Local ahead 11; source unchanged; no push. Private current-head corpus/framebuffer/visual/v201/closure evidence saved in .tmp/kg001_c6_final_audit. BLOCKED_NOT_FINAL: no canonical paired original demo runtime reference.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-05T14:14:36.415075+00:00"
+  "acquired_at": "2026-10-05T14:25:21.626585+00:00"
 }
