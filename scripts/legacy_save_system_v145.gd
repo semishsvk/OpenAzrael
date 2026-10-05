@@ -117,6 +117,6 @@ static func load_slot(index: int, room_manager: Node, player: CharacterBody3D) -
     player.set("pitch", pitch)
     var camera := player.get_node_or_null("Camera3D") as Camera3D
     if camera != null:
-        camera.rotation.x = pitch
+        player.call("apply_camera_pitch", pitch)
     _record_event("legacy_menu_load", {"slot": index, "name": slot_name(index), "room": room, "version": VERSION})
     return true

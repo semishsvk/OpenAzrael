@@ -73,7 +73,7 @@ func _turn_toward(player: CharacterBody3D, target: Vector3) -> float:
     var desired := atan2(-flat.x, -flat.z)
     var delta := wrapf(desired - player.rotation.y, -PI, PI)
     var sensitivity := float(player.get("mouse_sensitivity"))
-    var pixels := clampf(-delta / sensitivity, -90.0, 90.0)
+    var pixels := clampf(delta / sensitivity, -90.0, 90.0)
     var event := InputEventMouseMotion.new()
     event.relative = Vector2(pixels, 0.0)
     Input.parse_input_event(event)

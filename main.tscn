@@ -49,7 +49,9 @@ position = Vector3(0, 26, 0)
 shape = SubResource("Capsule_player")
 
 [node name="Camera3D" type="Camera3D" parent="Player"]
-position = Vector3(0, 32, 0)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 45, 0)
+# Original retained-mode camera uses +Z forward and +X screen-right.
+# Preserve the calibrated world coordinates and convert its handedness here.
 current = true
 
 [node name="InteractionProbe" type="Node3D" parent="Player/Camera3D"]

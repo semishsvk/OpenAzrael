@@ -1,0 +1,93 @@
+{
+  "schema": "openazrael.kg001.original_start_camera",
+  "version": 202,
+  "source_head": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
+  "source_r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+  "original_memory_receipt_sha256": "9d864e52a364d501d6b15ea8bcfb2c7fd21083526a457a719674ad13ab5e3ad8",
+  "checkpoint": "canonical R1 after intro without movement",
+  "position": [
+    0.0,
+    -69.44447326660156,
+    0.0
+  ],
+  "source_local_matrix": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    -69.44447326660156,
+    0.0,
+    1.0
+  ],
+  "original_forward": [
+    0,
+    0,
+    1
+  ],
+  "original_screen_right": [
+    1,
+    0,
+    0
+  ],
+  "floor_at_origin_y": -114.4444,
+  "eye_height": 45.0,
+  "floor_evidence": "direct source geometry ray; original camera Y minus floor Y = 45 within 0.001",
+  "godot_camera_local_scale": [
+    -1,
+    1,
+    1
+  ],
+  "settled_position_tolerance": 0.35,
+  "scope": "startup pose, eye height, handedness; projection/lighting and remaining graphical checkpoints are UNVERIFIED",
+  "remote_desktop_is_authority": false,
+  "source_frame_header_float": -50.066410064697266,
+  "source_local_matrix_layout": "16 floats; frame header excluded",
+  "source_code_anchors": {
+    "startup_set_position": "R.EXE code object 0, 0xD18..0xD2C calls 0x2A8E8 with (0,-70,0)",
+    "camera_frame_query": "global 0x11980, object registry 0x42888, local matrix +0x4C and world matrix +0x90",
+    "camera_xyz": "local +0x7C; world +0xC0"
+  },
+  "independent_runtime_observations": [
+    {
+      "receipt_sha256": "9d864e52a364d501d6b15ea8bcfb2c7fd21083526a457a719674ad13ab5e3ad8",
+      "camera_xyz": [
+        0.0,
+        -69.44447326660156,
+        0.0
+      ]
+    },
+    {
+      "receipt_sha256": "b2f2ec7edb4ab13b5b6614e6998695534b90a0b681fa7e71dba293f24b2d40a2",
+      "camera_xyz": [
+        0.0,
+        -69.44447326660156,
+        0.0
+      ],
+      "viewport_width": 552,
+      "viewport_height": 282,
+      "projection_half_width": 276.0,
+      "near_plane_half_width": -0.800000011920929
+    },
+    {
+      "receipt_sha256": "17e1e639a65701b213d79a5035b883c93f3f48cd424c2b71b8174c9181216132",
+      "camera_xyz": [
+        0.0,
+        -69.44447326660156,
+        0.0
+      ],
+      "viewport_width": 552,
+      "viewport_height": 282,
+      "projection_half_width": 276.0,
+      "near_plane_half_width": -0.800000011920929
+    }
+  ]
+}

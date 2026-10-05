@@ -95,9 +95,13 @@ func _ready() -> void:
         get_tree().quit(2)
         return
 
-    if not load_room_at_portal("R1", "spaview", false):
+    # Canonical R.EXE starts at the world origin, not the R7 return portal.
+    # The bound original-runtime camera receipt is v202.
+    load_room("R1", false)
+    if current_room_id != "R1" or not is_instance_valid(current_room):
         get_tree().quit(2)
         return
+    player.teleport_eye_to(Vector3(0.0, -69.44447326660156, 0.0), Vector3(0.0, 0.0, 1.0))
     CandidateMusic.bind_room_manager(self)
     transition_cooldown = 1.0
 
@@ -901,7 +905,7 @@ func _portal_spawn_distance(c: Vector3, n: Vector3) -> float:
     for distance in PORTAL_SPAWN_DISTANCE_CANDIDATES:
         var xz := c + n * float(distance)
         var floor_query := PhysicsRayQueryParameters3D.create(
-            Vector3(xz.x, nominal_foot_y + PORTAL_SUPPORT_RAY_UP, xz.z),
+            Vector3(xz.x, nominal_foot_y + float(player.eye_height) + PORTAL_SUPPORT_RAY_UP, xz.z),
             Vector3(xz.x, nominal_foot_y - PORTAL_SUPPORT_RAY_DOWN, xz.z),
             int(player.collision_mask)
         )
@@ -1008,7 +1012,7 @@ func _supported_transition_spawn(
         )
         var xz := centroid + normal * distance + tangent * lateral
         var floor_query := PhysicsRayQueryParameters3D.create(
-            Vector3(xz.x, nominal_foot_y + PORTAL_SUPPORT_RAY_UP, xz.z),
+            Vector3(xz.x, nominal_foot_y + float(player.eye_height) + PORTAL_SUPPORT_RAY_UP, xz.z),
             Vector3(xz.x, nominal_foot_y - PORTAL_SUPPORT_RAY_DOWN, xz.z),
             int(player.collision_mask)
         )
@@ -1130,7 +1134,7 @@ func _transition_room_through_portal(transition: Dictionary) -> bool:
     player.set("pitch", source_pitch)
     var camera := player.get_node_or_null("Camera3D") as Camera3D
     if camera != null:
-        camera.rotation.x = source_pitch
+        player.call("apply_camera_pitch", source_pitch)
 
     var destination_eye: Vector3 = player.global_position + Vector3.UP * float(player.eye_height)
     var destination_rel: Vector3 = destination_eye - destination_centroid

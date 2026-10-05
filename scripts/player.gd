@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var sprint_multiplier := 1.65
 @export var acceleration := 9.0
 @export var gravity := 150.0
-@export var eye_height := 32.0
+@export var eye_height := 45.0
 @export var mouse_sensitivity := 0.0025
 
 # Candidate 2 traversal fix. The recovered demo geometry contains discrete
@@ -77,6 +77,12 @@ func _ready() -> void:
     floor_snap_length = max_step_height + 2.0
     safe_margin = traversal_safe_margin
 
+func apply_camera_pitch(value: float) -> void:
+    # Preserve +X screen-right when pitch changes rebuild the camera basis.
+    if camera == null:
+        camera = get_node("Camera3D") as Camera3D
+    camera.basis = Basis.from_euler(Vector3(value, 0.0, 0.0)) * Basis.from_scale(Vector3(-1.0, 1.0, 1.0))
+
 func teleport_eye_to(eye_pos: Vector3, forward: Vector3) -> void:
     # RoomManager can place the player before this sibling's _ready runs.
     if camera == null:
@@ -88,7 +94,7 @@ func teleport_eye_to(eye_pos: Vector3, forward: Vector3) -> void:
         f = Vector3.FORWARD
     rotation.y = atan2(-f.x, -f.z)
     pitch = clamp(asin(clamp(forward.normalized().y, -1.0, 1.0)), -1.35, 1.35)
-    camera.rotation.x = pitch
+    apply_camera_pitch(pitch)
 
 func _unhandled_input(event: InputEvent) -> void:
     var allow_head_look := (
@@ -96,9 +102,9 @@ func _unhandled_input(event: InputEvent) -> void:
         or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
     )
     if event is InputEventMouseMotion and allow_head_look:
-        rotation.y -= event.relative.x * mouse_sensitivity
+        rotation.y += event.relative.x * mouse_sensitivity
         pitch = clamp(pitch - event.relative.y * mouse_sensitivity, -1.35, 1.35)
-        camera.rotation.x = pitch
+        apply_camera_pitch(pitch)
 
 func _step_floor_probe(direction: Vector3, horizontal_motion: Vector3) -> Dictionary:
     # Legacy tread winding is inconsistent and the two R8 stair profiles have
@@ -254,7 +260,7 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
 
 func _physics_process(delta: float) -> void:
     var input2 := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-    var dir := (global_transform.basis * Vector3(input2.x, 0.0, input2.y))
+    var dir := (global_transform.basis * Vector3(-input2.x, 0.0, input2.y))
     dir.y = 0.0
     dir = dir.normalized()
     var speed := walk_speed * (sprint_multiplier if Input.is_action_pressed("sprint") else 1.0)
