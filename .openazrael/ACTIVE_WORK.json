@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,16 +26,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T19:24:45.689278+00:00",
+  "released_at": "2026-10-05T19:35:08.233268+00:00",
   "reconciliation": {
-    "head": "9f181fe4c334ede7861c769648009290aa15d56c",
+    "head": "d8aa6ba7b183c71403dcbb8d803e265bc4df9fba",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
-    "primary_blocker": "MENU_HUD_ORIGINAL_CONTROL_INSTRUCTIONS_REPLACED_BY_ENVSCAN",
+    "primary_blocker": "MENU_HUD_SOURCE_STARTUP_BRIEFING_AND_HINT_SEQUENCE_MISSING",
     "final": false,
-    "visual_sha256": "cae6c33e507bff5bbafa29a5f06a487fb644611be392db62f1bb7bc936e81498",
+    "visual_sha256": "8e3f8ac90c6b507627b6202a44ef1bb1ac93c7a9dd26930f820f57dc35d32d88",
     "v201_status": "BLOCKED",
     "feature_tests": {
       "help_and_cursor_after_manifest": 35,
