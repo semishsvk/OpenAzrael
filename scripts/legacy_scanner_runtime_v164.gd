@@ -41,6 +41,7 @@ func initialize(manager: Node) -> void:
     position = DEFAULT_RECT.position
     size = DEFAULT_RECT.size
     clip_contents = true
+    texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
     mouse_filter = Control.MOUSE_FILTER_IGNORE
     z_index = 30
     source = _load_source()
