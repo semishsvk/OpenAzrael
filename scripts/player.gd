@@ -134,7 +134,7 @@ func _unhandled_input(event: InputEvent) -> void:
         sync_pointer_mode()
         get_viewport().set_input_as_handled()
         return
-    if event is InputEventMouseMotion and not hud_cursor_active and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+    if event is InputEventMouseMotion and not hud_cursor_active and (DisplayServer.get_name() == "headless" or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED):
         rotation.y += event.relative.x * mouse_sensitivity
         pitch = clamp(pitch - event.relative.y * mouse_sensitivity, -1.35, 1.35)
         apply_camera_pitch(pitch)
