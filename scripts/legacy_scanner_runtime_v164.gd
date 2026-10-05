@@ -7,11 +7,13 @@ const DEFAULT_RECT := Rect2(452, 54, 172, 246)
 const FONT_CELL := Vector2(10, 12)
 const FIRST_CODEPOINT := 35
 const CELL_COUNT := 138
-const SPACE_ADVANCE := 5.0
+const SPACE_ADVANCE := 3.0
+const METRICS_PATH := "res://data/ui/legacy_scanner_font_v214.json"
 const LINE_ADVANCE := 12.0
 
 var room_manager: Node
 var source: Dictionary = {}
+var font_metrics: Dictionary = {}
 var font_texture: Texture2D
 var audio_player: AudioStreamPlayer
 var display_text := ""
@@ -30,6 +32,7 @@ func initialize(manager: Node) -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
     z_index = 30
     source = _load_source()
+    font_metrics = JSON.parse_string(FileAccess.get_file_as_string(METRICS_PATH))
     font_texture = load(SOURCE_FONT) as Texture2D if ResourceLoader.exists(SOURCE_FONT) else null
     audio_player = AudioStreamPlayer.new()
     audio_player.name = "LegacyScannerAudioV164"
@@ -187,7 +190,10 @@ func _show_environment_result(room_id: String) -> void:
     _set_display("environment_result", result, room_id)
 
 func _glyph_width(character: String) -> float:
-    return SPACE_ADVANCE if character == " " else FONT_CELL.x
+    if character == " ":
+        return SPACE_ADVANCE
+    var metric: Dictionary = font_metrics.get("glyphs", {}).get(str(character.unicode_at(0)), {})
+    return float(metric.get("advance", FONT_CELL.x))
 
 func _wrap_line(text: String) -> Array[String]:
     var out: Array[String] = []
@@ -223,13 +229,12 @@ func _draw_glyph(character: String, at: Vector2) -> float:
         return SPACE_ADVANCE
     if font_texture == null or character.is_empty():
         return FONT_CELL.x
-    var codepoint := character.unicode_at(0)
-    var cell := codepoint - FIRST_CODEPOINT
-    if cell < 0 or cell >= CELL_COUNT:
-        cell = 63 - FIRST_CODEPOINT
-    var source_rect := Rect2(float(cell) * FONT_CELL.x, 0.0, FONT_CELL.x, FONT_CELL.y)
-    draw_texture_rect_region(font_texture, Rect2(at, FONT_CELL), source_rect)
-    return FONT_CELL.x
+    var glyphs: Dictionary = font_metrics.get("glyphs", {})
+    var metric: Dictionary = glyphs.get(str(character.unicode_at(0)), glyphs.get("63", {}))
+    var width := float(metric.get("width", FONT_CELL.x))
+    var source_rect := Rect2(float(metric.get("x", 0)), 0.0, width, FONT_CELL.y)
+    draw_texture_rect_region(font_texture, Rect2(at, Vector2(width, FONT_CELL.y)), source_rect)
+    return float(metric.get("advance", width))
 
 func _draw() -> void:
     if font_texture == null or display_text.is_empty():

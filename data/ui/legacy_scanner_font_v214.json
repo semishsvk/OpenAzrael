@@ -1,0 +1,487 @@
+{
+  "schema": "openazrael.source_scanner_font_v214",
+  "source_sha256": "abc746358829c953b5bc8330614ac0c3d4c126d91c8cf97a1c8a0d8a23a13679",
+  "bitmap_matches_runtime_pixels": 16560,
+  "glyphs": {
+    "33": {
+      "x": 0,
+      "width": 4,
+      "advance": 3
+    },
+    "34": {
+      "x": 5,
+      "width": 4,
+      "advance": 3
+    },
+    "35": {
+      "x": 10,
+      "width": 8,
+      "advance": 7
+    },
+    "36": {
+      "x": 19,
+      "width": 8,
+      "advance": 7
+    },
+    "37": {
+      "x": 28,
+      "width": 11,
+      "advance": 10
+    },
+    "38": {
+      "x": 40,
+      "width": 9,
+      "advance": 8
+    },
+    "39": {
+      "x": 51,
+      "width": 4,
+      "advance": 3
+    },
+    "40": {
+      "x": 56,
+      "width": 5,
+      "advance": 4
+    },
+    "41": {
+      "x": 66,
+      "width": 5,
+      "advance": 4
+    },
+    "42": {
+      "x": 74,
+      "width": 6,
+      "advance": 5
+    },
+    "43": {
+      "x": 83,
+      "width": 8,
+      "advance": 7
+    },
+    "44": {
+      "x": 96,
+      "width": 4,
+      "advance": 3
+    },
+    "45": {
+      "x": 106,
+      "width": 5,
+      "advance": 4
+    },
+    "46": {
+      "x": 116,
+      "width": 4,
+      "advance": 3
+    },
+    "47": {
+      "x": 126,
+      "width": 6,
+      "advance": 5
+    },
+    "48": {
+      "x": 133,
+      "width": 8,
+      "advance": 7
+    },
+    "49": {
+      "x": 146,
+      "width": 5,
+      "advance": 4
+    },
+    "50": {
+      "x": 153,
+      "width": 8,
+      "advance": 7
+    },
+    "51": {
+      "x": 163,
+      "width": 8,
+      "advance": 7
+    },
+    "52": {
+      "x": 173,
+      "width": 8,
+      "advance": 7
+    },
+    "53": {
+      "x": 183,
+      "width": 8,
+      "advance": 7
+    },
+    "54": {
+      "x": 193,
+      "width": 8,
+      "advance": 7
+    },
+    "55": {
+      "x": 203,
+      "width": 8,
+      "advance": 7
+    },
+    "56": {
+      "x": 213,
+      "width": 8,
+      "advance": 7
+    },
+    "57": {
+      "x": 223,
+      "width": 8,
+      "advance": 7
+    },
+    "58": {
+      "x": 236,
+      "width": 4,
+      "advance": 3
+    },
+    "59": {
+      "x": 246,
+      "width": 4,
+      "advance": 3
+    },
+    "60": {
+      "x": 253,
+      "width": 8,
+      "advance": 7
+    },
+    "61": {
+      "x": 263,
+      "width": 8,
+      "advance": 7
+    },
+    "62": {
+      "x": 273,
+      "width": 8,
+      "advance": 7
+    },
+    "63": {
+      "x": 282,
+      "width": 8,
+      "advance": 7
+    },
+    "64": {
+      "x": 291,
+      "width": 10,
+      "advance": 9
+    },
+    "65": {
+      "x": 302,
+      "width": 9,
+      "advance": 8
+    },
+    "66": {
+      "x": 312,
+      "width": 9,
+      "advance": 8
+    },
+    "67": {
+      "x": 322,
+      "width": 9,
+      "advance": 8
+    },
+    "68": {
+      "x": 332,
+      "width": 9,
+      "advance": 8
+    },
+    "69": {
+      "x": 343,
+      "width": 8,
+      "advance": 7
+    },
+    "70": {
+      "x": 353,
+      "width": 8,
+      "advance": 7
+    },
+    "71": {
+      "x": 362,
+      "width": 9,
+      "advance": 8
+    },
+    "72": {
+      "x": 372,
+      "width": 9,
+      "advance": 8
+    },
+    "73": {
+      "x": 387,
+      "width": 4,
+      "advance": 3
+    },
+    "74": {
+      "x": 394,
+      "width": 7,
+      "advance": 6
+    },
+    "75": {
+      "x": 403,
+      "width": 8,
+      "advance": 7
+    },
+    "76": {
+      "x": 412,
+      "width": 7,
+      "advance": 6
+    },
+    "77": {
+      "x": 420,
+      "width": 11,
+      "advance": 10
+    },
+    "78": {
+      "x": 432,
+      "width": 9,
+      "advance": 8
+    },
+    "79": {
+      "x": 442,
+      "width": 9,
+      "advance": 8
+    },
+    "80": {
+      "x": 452,
+      "width": 9,
+      "advance": 8
+    },
+    "81": {
+      "x": 462,
+      "width": 9,
+      "advance": 8
+    },
+    "82": {
+      "x": 472,
+      "width": 9,
+      "advance": 8
+    },
+    "83": {
+      "x": 482,
+      "width": 9,
+      "advance": 8
+    },
+    "84": {
+      "x": 493,
+      "width": 8,
+      "advance": 7
+    },
+    "85": {
+      "x": 502,
+      "width": 9,
+      "advance": 8
+    },
+    "86": {
+      "x": 512,
+      "width": 8,
+      "advance": 7
+    },
+    "87": {
+      "x": 521,
+      "width": 12,
+      "advance": 11
+    },
+    "88": {
+      "x": 534,
+      "width": 9,
+      "advance": 8
+    },
+    "89": {
+      "x": 544,
+      "width": 8,
+      "advance": 7
+    },
+    "90": {
+      "x": 554,
+      "width": 8,
+      "advance": 7
+    },
+    "91": {
+      "x": 566,
+      "width": 5,
+      "advance": 4
+    },
+    "92": {
+      "x": 574,
+      "width": 8,
+      "advance": 7
+    },
+    "93": {
+      "x": 586,
+      "width": 5,
+      "advance": 4
+    },
+    "94": {
+      "x": 595,
+      "width": 8,
+      "advance": 7
+    },
+    "95": {
+      "x": 604,
+      "width": 8,
+      "advance": 7
+    },
+    "96": {
+      "x": 616,
+      "width": 5,
+      "advance": 4
+    },
+    "97": {
+      "x": 623,
+      "width": 8,
+      "advance": 7
+    },
+    "98": {
+      "x": 633,
+      "width": 8,
+      "advance": 7
+    },
+    "99": {
+      "x": 644,
+      "width": 7,
+      "advance": 6
+    },
+    "100": {
+      "x": 653,
+      "width": 8,
+      "advance": 7
+    },
+    "101": {
+      "x": 663,
+      "width": 8,
+      "advance": 7
+    },
+    "102": {
+      "x": 675,
+      "width": 6,
+      "advance": 5
+    },
+    "103": {
+      "x": 683,
+      "width": 8,
+      "advance": 7
+    },
+    "104": {
+      "x": 693,
+      "width": 8,
+      "advance": 7
+    },
+    "105": {
+      "x": 707,
+      "width": 4,
+      "advance": 3
+    },
+    "106": {
+      "x": 716,
+      "width": 5,
+      "advance": 4
+    },
+    "107": {
+      "x": 724,
+      "width": 8,
+      "advance": 7
+    },
+    "108": {
+      "x": 737,
+      "width": 4,
+      "advance": 3
+    },
+    "109": {
+      "x": 742,
+      "width": 10,
+      "advance": 9
+    },
+    "110": {
+      "x": 753,
+      "width": 8,
+      "advance": 7
+    },
+    "111": {
+      "x": 763,
+      "width": 8,
+      "advance": 7
+    },
+    "112": {
+      "x": 773,
+      "width": 8,
+      "advance": 7
+    },
+    "113": {
+      "x": 783,
+      "width": 8,
+      "advance": 7
+    },
+    "114": {
+      "x": 795,
+      "width": 6,
+      "advance": 5
+    },
+    "115": {
+      "x": 803,
+      "width": 8,
+      "advance": 7
+    },
+    "116": {
+      "x": 815,
+      "width": 6,
+      "advance": 5
+    },
+    "117": {
+      "x": 823,
+      "width": 8,
+      "advance": 7
+    },
+    "118": {
+      "x": 833,
+      "width": 8,
+      "advance": 7
+    },
+    "119": {
+      "x": 841,
+      "width": 10,
+      "advance": 9
+    },
+    "120": {
+      "x": 853,
+      "width": 8,
+      "advance": 7
+    },
+    "121": {
+      "x": 863,
+      "width": 8,
+      "advance": 7
+    },
+    "122": {
+      "x": 874,
+      "width": 7,
+      "advance": 6
+    },
+    "123": {
+      "x": 885,
+      "width": 6,
+      "advance": 5
+    },
+    "124": {
+      "x": 897,
+      "width": 4,
+      "advance": 3
+    },
+    "125": {
+      "x": 905,
+      "width": 6,
+      "advance": 5
+    },
+    "126": {
+      "x": 913,
+      "width": 8,
+      "advance": 7
+    }
+  },
+  "height": 12,
+  "space_advance": 3,
+  "reference_text": "Toggle MS7 Sniper sight -",
+  "reference_origin": [
+    425,
+    110
+  ],
+  "reference_matching_gold_pixels": 293,
+  "reference_different_gold_pixels": 0,
+  "scope": "Exact font metrics; complete scanner sequence and layout are separately gated."
+}
