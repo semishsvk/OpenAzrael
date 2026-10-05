@@ -157,10 +157,13 @@ checks.update({
         and "DoorR8" in str(v111.get("_output_tail", ""))
         and bool(v111.get("_commit_sha"))
     ),
-    "r1_entry_stays_hold": (
-        "R1/zxentry" in expected_holds
-        and "0x03" in contract["research_holds"]["R1/zxentry"]["reason"]
-        and "UNKNOWN/HOLD" in contract["research_holds"]["R1/zxentry"]["reason"]
+    "r1_entry_hud_source_bound": (
+        "R1/zxentry" not in expected_holds
+        and contract.get("partial_source_gates", {}).get("R1/zxentry", {}).get("non_hud_side_effects") == "NOT_FULLY_ATTESTED"
+        and next((row for room,row in ir_rows if room == "R1" and row.get("trigger") == "zxentry"), {}).get("class") == "hud_startup"
+        and load_json("data/ui/legacy_hud_startup_v215.json").get("startup_message_ids") == [86,138,136,137,139]
+        and load_json("data/ui/legacy_hud_startup_v215.json").get("different_source_buffer_pixels") == 0
+        and load_json("data/ui/legacy_hud_startup_v215.json").get("fixed_source_hz_claimed") is False
     ),
     "r7_death_stays_hold": (
         {"R7/death", "R7/zydeath", "R7/zxdeath"} <= expected_holds

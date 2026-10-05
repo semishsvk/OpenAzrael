@@ -122,7 +122,7 @@ def main():
         'trigger_class == "activation_enter"',
         "LegacyEvents.run(graph_id)",
         "_dispatch_trigger_edge(trigger_name, inside)",
-        "if had_state:",
+        "if had_state or (inside and bool(binding.get(\"initial_overlap\", false))):",
     ])
     setup_start = room_manager.find("func _setup_r7_character_state()")
     setup_end = room_manager.find("\nfunc ", setup_start + 1)

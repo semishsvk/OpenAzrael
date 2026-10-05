@@ -8,11 +8,12 @@
     "transition": 4,
     "activation_enter": 1,
     "condition_zone": 1,
-    "UNKNOWN_HOLD": 7,
+    "UNKNOWN_HOLD": 6,
     "hazard_HOLD": 3,
     "helper_geometry": 11,
     "state_visual": 1,
-    "support_collision": 1
+    "support_collision": 1,
+    "hud_startup": 1
   },
   "automatic_entry_actions": {
     "R7/zxactghost": {
@@ -45,18 +46,13 @@
     "R8/zxorrery->R1"
   ],
   "research_holds": {
-    "R1/zxentry": {
-      "evidence": [
-        "ROOMS.DAT contains R1Entry",
-        "PUZZLES-derived corpus contains R1Entry opcode 0x03 and R1Entered opcode 0x04"
-      ],
-      "reason": "0x04 is source-classified as a persistent flag operation, but opcode 0x03 has only one known R1Entry record and remains UNKNOWN/HOLD; do not guess the entry side effect."
-    },
     "R1/textwall": {
       "reason": "Authored transparent plane, but no exact source-bound demo side effect is decoded."
     },
     "R7/death": {
-      "evidence": ["ROOMS-derived corpus contains the R7WellDeathAZ identifier"],
+      "evidence": [
+        "ROOMS-derived corpus contains the R7WellDeathAZ identifier"
+      ],
       "reason": "Hazard family is strongly indicated, but exact death/reset/damage semantics are not decoded."
     },
     "R7/zydeath": {
@@ -92,5 +88,12 @@
     "automatic_trigger_requires_event_graph": true,
     "condition_zone_must_not_autofire": true,
     "physical_validation_required_for_candidate": true
+  },
+  "partial_source_gates": {
+    "R1/zxentry": {
+      "hud": "SOURCE_BOUND_V215",
+      "non_hud_side_effects": "NOT_FULLY_ATTESTED",
+      "authority": "data/ui/legacy_hud_startup_v215.json"
+    }
   }
 }
