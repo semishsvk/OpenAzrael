@@ -17,6 +17,26 @@ func _init(
     evidence = evidence_bus
     runtime_guard = guard
 
+# Complete the active source dialogue through the same keys used by a player.
+# Never unpause the tree or mutate conversation state from the navigator.
+func _handle_active_conversation(action_id: String) -> void:
+    var ui := player.get_tree().root.find_child("ConversationUIV208", true, false)
+    if ui == null or not bool(ui.get("active")):
+        return
+    Input.action_release(&"move_forward")
+    for key in [KEY_ENTER, KEY_ENTER, KEY_ESCAPE]:
+        var event := InputEventKey.new()
+        event.keycode = key
+        event.pressed = true
+        Input.parse_input_event(event)
+        await player.get_tree().process_frame
+        event = InputEventKey.new()
+        event.keycode = key
+        event.pressed = false
+        Input.parse_input_event(event)
+        await player.get_tree().process_frame
+        evidence.record("conversation_player_input", {"action_id": action_id, "keycode": key, "execution_mode": "input"})
+
 func _find_named(root: Node, wanted: String) -> Node3D:
     if root is Node3D and String(root.name) == wanted:
         return root as Node3D
@@ -155,6 +175,7 @@ func approach_interactable(
 
     Input.action_release(&"move_forward")
     for frame in range(max_frames):
+        await _handle_active_conversation(action_id)
         used_frames = frame + 1
         var visible_target := _probe_target_name()
         if visible_target == target_name:
@@ -333,6 +354,7 @@ func approach_world_point(
 
     Input.action_release(&"move_forward")
     for frame in range(max_frames):
+        await _handle_active_conversation(action_id)
         used_frames = frame + 1
 
         if stop_condition.is_valid() and bool(stop_condition.call()):
@@ -458,6 +480,7 @@ func aim_at_interactable(
     var acquired := false
     var used_frames := 0
     for frame in range(max_frames):
+        await _handle_active_conversation(action_id)
         used_frames = frame + 1
         if _probe_target_name() == target_name:
             acquired = true

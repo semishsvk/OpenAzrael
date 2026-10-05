@@ -17,12 +17,17 @@ COMPLETE_HASH = "b695fb49c389376c8815af54d743aba20e2f9753852342c8619187b2f4ab6b9
 
 # Runtime-derived, source-geometry-backed physical routes needed only when
 # scenarios are chained continuously instead of starting at canonical portals.
+# The key is acquired from the east side at the production probe standoff.
+# Stay in the supported east corridor instead of trying to cross the well body.
 R7_WELL_TO_SWITCHBOARD_ROUTE = (
-    (-21.4, -47.57, 51.4),
-    (-24.0, -47.57, 78.0),
-    (-8.0, -41.45, 78.0),
-    (25.0, -41.45, 70.0),
+    (30.0, -41.45, -35.0),
+    (30.0, -41.45, 0.0),
+    (38.0, -41.45, 30.0),
+    (45.0, -41.45, 60.0),
     (45.0, -41.45, 80.0),
+    (10.0, -41.45, 70.0),
+    (45.0, -41.45, 80.0),
+    (65.0, -41.45, 85.0),
 )
 R7_SWITCHBOARD_TO_EXIT_ROUTE = (
     (45.0, -41.45, 60.0),
