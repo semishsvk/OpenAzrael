@@ -2,11 +2,11 @@
   "schema_version": 1,
   "scope": "global_mutating_work",
   "status": "active",
-  "lease_id": "c5-exact-head-build-20261001",
-  "owner": "Candidate 5 exact-HEAD validation and Windows build (Codex)",
+  "lease_id": "c6-final-fidelity-20261005",
+  "owner": "Dokončiť OpenAzrael Candidate 6 (01a10c57-40a2-70e1-ab33-57554d5bb7aa)",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
-  "base_head_at_acquire": "f97cd7fbae7d52b66a65af58d69cee571c432123",
-  "acquired_on": "2026-10-01",
+  "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
+  "acquired_on": "2026-10-05",
   "expires": null,
-  "note": "Explicit user approval to take over previous c5-validator-newline-repair-20261001 lease. Prior chat idle; authoritative branch reconciled at f97cd7fbae7d52b66a65af58d69cee571c432123. Scope: evidence-backed fixes, exact-HEAD FAST/VERIFY, canonical assets, runtime/fidelity gates, freeze and Windows package only after complete PASS. No fabricated CI/runtime evidence."
+  "note": "Explicit user authorization in this chat to take over c5-exact-head-build-20261001. Prior OpenAzrael chat idle; no Godot/DOSBox/validation processes running. Clean local integration checkout bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc is 11 commits ahead of remote integration 55207b3b666a91970c7c5008892e00ae91ce9447. Scope: direct framebuffer and original oracle comparison, fail-closed current-HEAD visual/v201 evidence, freeze/export/package smoke/hash receipt after PASS. No fabricated fidelity authority."
 }
