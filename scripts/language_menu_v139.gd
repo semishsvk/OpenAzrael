@@ -105,7 +105,7 @@ func _on_locale_changed(_locale: String) -> void:
     _refresh_locales()
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+    if event is InputEventKey and event.pressed and not event.echo and ((event.keycode == KEY_ESCAPE and opened) or event.keycode == KEY_F2):
         toggle_menu()
         get_viewport().set_input_as_handled()
 
@@ -118,14 +118,14 @@ func toggle_menu() -> void:
 func open_menu() -> void:
     opened = true
     root_overlay.visible = true
-    Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+    get_node("../Player").sync_pointer_mode()
     _refresh_text()
     _refresh_locales()
 
 func close_menu() -> void:
     opened = false
     root_overlay.visible = false
-    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    get_node("../Player").sync_pointer_mode()
 
 func is_open() -> bool:
     return opened

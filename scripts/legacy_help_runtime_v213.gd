@@ -17,7 +17,9 @@ func _unhandled_key_input(event:InputEvent) -> void:
         if menu!=null and bool(menu.get("title_open")):return
         enabled=not enabled
         visible=enabled
-        if menu!=null:menu.set("help_open",enabled)
+        if menu!=null:
+            menu.set("help_open",enabled)
+            menu.player.sync_pointer_mode()
         get_viewport().set_input_as_handled()
 func _unhandled_input(event:InputEvent) -> void:
     if enabled and event is InputEventMouseButton:

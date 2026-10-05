@@ -19,6 +19,7 @@ extends CharacterBody3D
 
 @onready var camera: Camera3D = $Camera3D
 var pitch := 0.0
+var hud_cursor_active := false
 
 # R.EXE v190: global player-state +0x18 is initialized to 500 at 0x74688.
 var legacy_health := 500
@@ -76,9 +77,7 @@ func step_debug_snapshot() -> Array[Dictionary]:
     return out
 
 func _ready() -> void:
-    # Original demo keeps a free HUD cursor and uses held RMB for head look.
-    # Headless PPPV keeps captured-style synthetic mouse motion unchanged.
-    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if DisplayServer.get_name() == "headless" else Input.MOUSE_MODE_VISIBLE
+    sync_pointer_mode()
     # Keep support while descending the same discrete stair profiles that the
     # step-up helper can climb. Godot floor snapping only acts downward; it
     # therefore complements rather than replaces explicit step-up handling.
@@ -114,12 +113,28 @@ func teleport_eye_to(eye_pos: Vector3, forward: Vector3) -> void:
     pitch = clamp(asin(clamp(forward.normalized().y, -1.0, 1.0)), -1.35, 1.35)
     apply_camera_pitch(pitch)
 
+func _controls_blocked() -> bool:
+    var menu = get_node_or_null("../LegacyMenuV145")
+    var language = get_tree().get_first_node_in_group("language_menu")
+    return (menu != null and menu.blocks_world_cursor()) or (language != null and language.is_open())
+
+func sync_pointer_mode() -> void:
+    Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if hud_cursor_active or _controls_blocked() else Input.MOUSE_MODE_CAPTURED
+
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+        hud_cursor_active = true
+        Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
 func _unhandled_input(event: InputEvent) -> void:
-    var allow_head_look := (
-        DisplayServer.get_name() == "headless"
-        or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
-    )
-    if event is InputEventMouseMotion and allow_head_look:
+    if _controls_blocked():
+        return
+    if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_TAB:
+        hud_cursor_active = not hud_cursor_active
+        sync_pointer_mode()
+        get_viewport().set_input_as_handled()
+        return
+    if event is InputEventMouseMotion and not hud_cursor_active and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
         rotation.y += event.relative.x * mouse_sensitivity
         pitch = clamp(pitch - event.relative.y * mouse_sensitivity, -1.35, 1.35)
         apply_camera_pitch(pitch)
@@ -277,6 +292,9 @@ func _try_step_up(horizontal_motion: Vector3) -> bool:
     return true
 
 func _physics_process(delta: float) -> void:
+    if _controls_blocked() or hud_cursor_active:
+        velocity = Vector3.ZERO
+        return
     var input2 := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
     var dir := (global_transform.basis * Vector3(-input2.x, 0.0, input2.y))
     dir.y = 0.0

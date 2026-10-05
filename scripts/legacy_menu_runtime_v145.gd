@@ -381,7 +381,7 @@ func _dismiss_title() -> void:
     inventory_text_layer.visible = true
     _refresh_inventory()
     get_tree().paused = false
-    Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+    player.sync_pointer_mode()
     if scanner_runtime != null:
         scanner_runtime.start_boot_sequence()
     CandidateDiagnostics.record_event("legacy_title_dismiss", {"compatibility_input": true})
@@ -434,7 +434,7 @@ func _set_service(opened: bool) -> void:
         volume_target = ""
         slot_label.visible = false
         get_tree().paused = false
-        Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+        player.sync_pointer_mode()
     CandidateDiagnostics.record_event("legacy_service_menu", {"open": opened})
 
 func _refresh_slots() -> void:
@@ -531,6 +531,15 @@ func _unhandled_input(event: InputEvent) -> void:
         if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ENTER):
             _dismiss_title()
             get_viewport().set_input_as_handled()
+        return
+
+    if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+        var language = get_tree().get_first_node_in_group("language_menu")
+        if language != null and language.is_open():
+            language.close_menu()
+        elif not help_open:
+            _toggle_service()
+        get_viewport().set_input_as_handled()
         return
 
     if not service_open and event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_UP, KEY_DOWN]:

@@ -1,0 +1,16 @@
+{
+  "schema": "openazrael.modern_controls_v220",
+  "default_profile": "MODERN",
+  "authorization": "User: Alternativne sa bude pouzivat moderne ovladanie",
+  "bindings": {
+    "move": "WASD",
+    "look": "captured mouse; no held mouse button required",
+    "sprint": "Shift",
+    "interact": "E",
+    "hud_cursor": "Tab",
+    "service_menu": "Esc",
+    "help": "H"
+  },
+  "cursor_policy": "Menu/help/title or Tab free cursor releases pointer and blocks movement/look. Focus loss releases pointer; Tab resumes gameplay.",
+  "fidelity_scope": "Input modernization is explicitly authorized. Original-runtime visual references are still required; this profile does not waive any visual checkpoint."
+}
