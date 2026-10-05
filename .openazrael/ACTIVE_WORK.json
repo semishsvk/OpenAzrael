@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,27 +26,27 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T16:55:02.137035+00:00",
+  "released_at": "2026-10-05T17:20:03.587656+00:00",
   "reconciliation": {
-    "head": "316145fda437cc475a4e374f6d95f0728efd801f",
-    "tree": "6b314adbb8521f8379ff61cc0cf653a687f51103",
+    "head": "fd8745f777e06d49ea74e982a6e99bdfd215de72",
+    "tree": "db1eb181c5276e132b6983c9502fafe9ad96b8d0",
     "git_status": "clean",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "Local validated changes preserved, intentionally unpublished; existing local history is not pushed by this fidelity task.",
+    "sync_state": "Local tested commits preserved and intentionally unpublished; unrelated prior local history is not pushed by this fidelity task.",
     "task_processes_stopped": true,
     "observed_game_processes": [],
-    "primary_blocker": "SOURCE_COMPASS_MISSING_FROM_PRODUCTION_HUD",
+    "primary_blocker": "R1_LIGHTING_DARKER_THAN_CANONICAL_ORIGINAL_RUNTIME",
     "final_build": false,
-    "validation_checks_passed": 90,
+    "validation_checks_passed": 120,
     "visual_receipt": {
       "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-      "sha256": "97e63ea9947840905731b18277343c8934362bfcac00bc691232879999fcb7fe"
+      "sha256": "3f1062a0886d7ed0455ad5bc2db1a319bca7fffe7c4ece0b8a9bad1ad352bc5a"
     },
     "v201_receipt": {
-      "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_316145f_v201.json",
-      "sha256": "cc67561fdb783bd23afe4eb1e478ba4b92045d81f57bff1bd81fd18f34c5cc4b"
+      "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_fd8745f_v201.json",
+      "sha256": "829aa4cd407fb399bcdbb0d4b739585cc47db3a4df0171b46ff91c6776b65d42"
     },
-    "timestamp": "2026-10-05T16:54:43.976822+00:00"
+    "timestamp": "2026-10-05T17:19:35.010372+00:00"
   },
   "acquired_at": "2026-10-05T16:56:07.297572+00:00"
 }
