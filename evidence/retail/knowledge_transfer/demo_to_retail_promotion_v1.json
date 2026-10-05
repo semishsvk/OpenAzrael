@@ -1,0 +1,244 @@
+{
+  "schema": "openazrael.demo_to_retail_knowledge_promotion",
+  "version": 1,
+  "status": "ACTIVE_FAIL_CLOSED",
+  "principles": [
+    "promote game-generic contracts and runtime mechanisms",
+    "never promote demo room IDs, object IDs, executable addresses, hashes, or PASS status as retail evidence",
+    "retail corpus remains fidelity authority",
+    "all promoted gates require retail evidence before VERIFIED"
+  ],
+  "entries": [
+    {
+      "domain": "source_geometry",
+      "source_contract": "data/tests/kg001_geometry_render_parity_contract_v122.json",
+      "sha256": "1cbdbc45489a5a01d812ee241829ead3cf9cb343ae5a579880b67078bca64b39",
+      "promotion": "APPLIED_GENERIC_CONTRACT"
+    },
+    {
+      "domain": "source_geometry",
+      "source_contract": "data/tests/kg001_transform_parity_contract_v125.json",
+      "sha256": "3d318cc0b0c823c71b0e1b5d3b78692cc7c39da6672245ae8cc36d01cc50e00c",
+      "promotion": "APPLIED_GENERIC_CONTRACT"
+    },
+    {
+      "domain": "source_geometry",
+      "source_contract": "data/tests/kg001_material_texture_contract_v124.json",
+      "sha256": "0934a27c0929773df3f95fc2becf848a8fc8b49d83a65ed2aa91592ada1b37fb",
+      "promotion": "APPLIED_GENERIC_CONTRACT"
+    },
+    {
+      "domain": "source_geometry",
+      "source_contract": "data/tests/kg001_texture_orientation_contract_v133.json",
+      "sha256": "ca71b88f765dd8720d236b8f50838ec85073121ae357069dbe55b7a329f739f7",
+      "promotion": "APPLIED_GENERIC_CONTRACT"
+    },
+    {
+      "domain": "source_geometry",
+      "source_contract": "data/tests/kg001_object_visibility_contract_v123.json",
+      "sha256": "051f04169ce69735c62f319050611959e81780893526b8678443c0f615cbc524",
+      "promotion": "APPLIED_GENERIC_CONTRACT"
+    },
+    {
+      "domain": "source_geometry",
+      "source_contract": "data/tests/kg001_reachable_visibility_contract_v127.json",
+      "sha256": "8923c02b6d69650e24012c6f71cbc04d2bed7343c68cf3151fb85dc50084c51a",
+      "promotion": "APPLIED_GENERIC_CONTRACT"
+    },
+    {
+      "domain": "collision_traversal",
+      "source_contract": "data/tests/kg001_collision_parity_contract_v120.json",
+      "sha256": "91d3fd056331aa342ba007d73f9a521649cd0961a6921a62637820f549f7a1a1",
+      "promotion": "ADAPTED_RETAIL_COLLISIONIR_REQUIRED"
+    },
+    {
+      "domain": "collision_traversal",
+      "source_contract": "data/tests/kg001_surface_collision_contract_v121.json",
+      "sha256": "1fd8d80189af3693fcc39be755fa2de2a220a01a02fb11d3a39224c59daaa5d2",
+      "promotion": "ADAPTED_RETAIL_COLLISIONIR_REQUIRED"
+    },
+    {
+      "domain": "collision_traversal",
+      "source_contract": "data/tests/kg001_physical_traversal_contract_v117.json",
+      "sha256": "c50d6df179facd97f9cffd38dd4a662c2d65ab2af87ab1de81197a8931fc606d",
+      "promotion": "ADAPTED_RETAIL_COLLISIONIR_REQUIRED"
+    },
+    {
+      "domain": "portals_triggers",
+      "source_contract": "data/tests/kg001_portal_geometry_contract_v129.json",
+      "sha256": "f2050e2e75e5d61a7a19c839d3a8ca5db98c60ea68b0bd8841005901ccbecb7c",
+      "promotion": "ADAPTED_RETAIL_IDS_REQUIRED"
+    },
+    {
+      "domain": "portals_triggers",
+      "source_contract": "data/tests/kg001_trigger_event_contract_v137.json",
+      "sha256": "365a5e26bb246fa519f542fd7865387e1300131aaa4fe24765eccfe8702e61ac",
+      "promotion": "ADAPTED_RETAIL_IDS_REQUIRED"
+    },
+    {
+      "domain": "portals_triggers",
+      "source_contract": "data/tests/kg001_trigger_action_census_contract_v142.json",
+      "sha256": "f5797a7182ae0a4bae6d07a8fdca529579e0fc95ffdd373636696883ac7283e6",
+      "promotion": "ADAPTED_RETAIL_IDS_REQUIRED"
+    },
+    {
+      "domain": "portals_triggers",
+      "source_contract": "data/tests/kg001_all_transition_traversal_contract_v141.json",
+      "sha256": "b135f206a2e669ff25b63fac69c82020339413098ae8cbc4c70793ac57ae145b",
+      "promotion": "ADAPTED_RETAIL_IDS_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_interaction_reachability_contract_v130.json",
+      "sha256": "5f7b9175285fbf5f8c76ff44b4023977c5671c012a49ea50835218ef0a8a7568",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_interaction_cursor_contract_v143.json",
+      "sha256": "a7c901e5f046caa7ff127d5e61a4ba22df165e0385730635280b8e6fa2d0f75e",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_interaction_probe_determinism_contract_v148.json",
+      "sha256": "3bfb9af887e7b133bb81058d42e2247f5918719b9e79bbf0cc0900dbd123b40f",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_classic_presentation_contract_v147.json",
+      "sha256": "84783a11fcdba741276a4c450a8d52a6a364c50a06b0487e06d56a52985dca24",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_menu_cursor_context_contract_v146.json",
+      "sha256": "c5e114e75999fcf1968254fdaca2dd8e24b92db558006cc383ad39e49e898d1f",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_legacy_menu_runtime_contract_v145.json",
+      "sha256": "dd092fd864d4c98a3928b4410133951db5a741eea79d1580ae11074e626fa207",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_legacy_menu_toggle_contract_v149.json",
+      "sha256": "ea97987e7b34aa5e91aad89588320dfc4f5e0f289b08e642480c551cb2a1252f",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "interaction_ui",
+      "source_contract": "data/tests/kg001_inventory_hud_contract_v157.json",
+      "sha256": "49c5c2c914b9446dc0440823be35d0567f1606ded594a9f0470bff55b12f9ed3",
+      "promotion": "APPLIED_RUNTIME_MECHANISM_RETAIL_DATA_REQUIRED"
+    },
+    {
+      "domain": "persistence_capture",
+      "source_contract": "data/tests/kg001_save_compat_contract_v150.json",
+      "sha256": "8401fa91ee3941b4cea162d685f85e912096cb2c3ffb9b77804cf3e7cdcdf859",
+      "promotion": "APPLIED_POLICY_RETAIL_SCHEMA_REQUIRED"
+    },
+    {
+      "domain": "persistence_capture",
+      "source_contract": "data/tests/kg001_proof_capture_contract_v152.json",
+      "sha256": "cc38bf05934373561e1b5213f4279958f846d257caaea5131cfdb6392b54c441",
+      "promotion": "APPLIED_POLICY_RETAIL_SCHEMA_REQUIRED"
+    },
+    {
+      "domain": "persistence_capture",
+      "source_contract": "data/tests/kg001_packaged_parity_contract_v128.json",
+      "sha256": "8c2b5d11afc44207d95c1ba6ca1be940c87662949e72e1c6c0ff0fe791abac03",
+      "promotion": "APPLIED_POLICY_RETAIL_SCHEMA_REQUIRED"
+    },
+    {
+      "domain": "animation_clock",
+      "source_contract": "data/tests/kg001_character_animation_contract_v138.json",
+      "sha256": "613008919d8da751f036a239041be1869c7cfdd292db7f76b0b523a266227b16",
+      "promotion": "APPLIED_DRIVER_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "animation_clock",
+      "source_contract": "data/tests/kg001_source_frame_animation_contract_v195.json",
+      "sha256": "e2da449b775f2843582e9402d72fdee6d8fb82ab0112b2be75e10e9b913d0aff",
+      "promotion": "APPLIED_DRIVER_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "animation_clock",
+      "source_contract": "data/tests/kg001_source_update_cadence_re_contract_v196.json",
+      "sha256": "7a2edc49ed16e882f0089a37426aa774ddd920ea31057f34a7bfcddd73616837",
+      "promotion": "APPLIED_DRIVER_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "animation_clock",
+      "source_contract": "data/tests/kg001_source_update_dispatch_re_contract_v197.json",
+      "sha256": "1ec45df38433a0918f48ee7f752be178e4d6c171cea946ffff6c07fc4ca31d77",
+      "promotion": "APPLIED_DRIVER_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_eugene_fidelity_contract_v181.json",
+      "sha256": "08d244e70acb49bc8e0abd57ddc6b5bd7fb1a44e2afac1ee1876c2c407c5039a",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_eugene_executable_character_controller_contract_v183.json",
+      "sha256": "dcdbe473ec28eb244d6d6de839c867f3975cb0774d47f101ac406a709efd954e",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_eugene_random_movement_callflow_contract_v186.json",
+      "sha256": "648fc6f23e8cea4b35721b9eea72cd980bb0611152c9e815628e6fb156c3f6be",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_eugene_animation_state_re_contract_v189.json",
+      "sha256": "d4d92735e2c7b6a3168770d35abc3ac68fa58308bf12eb9b47f1ed21e8e03f15",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_eugene_frame_trigger_re_contract_v190.json",
+      "sha256": "32156ea0579032ccee59905dac357938cf8e1418b5e13d0660d50ba47361e040",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_niamh_conversation_1a_contract_v180.json",
+      "sha256": "5b8ab8c6dfd586c53222c402168203a94b9c4ad6e1d1b4a7f0b8ea50d3f30a33",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    },
+    {
+      "domain": "npc_dialogue",
+      "source_contract": "data/tests/kg001_niamh_conversation_fidelity_status_v210.json",
+      "sha256": "9bec2a60df4849169732df291942fa9d29b88be5e9d149392d0de5002868cc7c",
+      "promotion": "ADAPTED_RETAIL_REVERIFY_REQUIRED"
+    }
+  ],
+  "retail_overrides": {
+    "state_authority": "retail/engine-neutral canonical state; DemoState is not retail authority",
+    "collision": "source-backed CollisionIR supersedes all-visible-mesh heuristic",
+    "save": "retail schema/version required; demo save schema is not retail",
+    "executable": "retail R.EXE SHA256 8ee00be079fcb99f008c1f51ecbdbd04ffdf3bea5fdefc56775210fdda549eff; demo addresses non-transferable"
+  },
+  "mandatory_retail_gates": [
+    "source geometry completeness",
+    "transform/material/texture parity",
+    "CollisionIR + physical traversal",
+    "portal/transition graph",
+    "trigger/action classification",
+    "interaction determinism",
+    "Classic menu/cursor/HUD/inventory",
+    "retail save/load",
+    "source-frame animation/update dispatch",
+    "NPC/dialogue source binding",
+    "runtime-native proof capture",
+    "original-runtime/oracle fidelity diff"
+  ],
+  "fidelity": "NOT_VERIFIED"
+}

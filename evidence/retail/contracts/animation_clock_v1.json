@@ -1,0 +1,20 @@
+{
+  "schema": "openazrael.retail.animation_clock_contract",
+  "version": 1,
+  "origin": "validated demo subsystem generalized to retail",
+  "fail_closed": true,
+  "inherits": [
+    "v138",
+    "v195",
+    "v196",
+    "v197"
+  ],
+  "retail_rules": [
+    "integer source frame remains authority where format semantics match",
+    "render pose -> frame event -> advance ordering",
+    "no wall-clock/AnimationPlayer authority",
+    "retail cadence and dispatch require retail R.EXE/corpus proof"
+  ],
+  "status": "CONTRACT_APPLIED_RETAIL_REVERIFY",
+  "fidelity": "NOT_VERIFIED"
+}

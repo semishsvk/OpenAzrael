@@ -1,0 +1,85 @@
+{
+  "schema": "openazrael.retail.promoted_gate_status",
+  "version": 2,
+  "domains": {
+    "source_geometry": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\k001\\gate.json",
+        "evidence\\retail\\k001\\maps_dat_verified.json",
+        "evidence\\retail\\k001\\r36_collision_gate_v1.json",
+        "evidence\\retail\\k001\\retail_k001_byte_evidence.json",
+        "evidence\\retail\\k001\\rooms_xaf_candidate_bindings.json",
+        "evidence\\retail\\k001\\xaf_structural_probe.json",
+        "evidence\\retail\\k001\\xaf_visible_census.json",
+        "evidence\\retail\\k002\\entry_export_validation.json",
+        "evidence\\retail\\k002\\entry_geometry_probe.json",
+        "evidence\\retail\\k002\\entry_glb_roundtrip_validation.json",
+        "evidence\\retail\\k002\\entry_material_contract.json",
+        "evidence\\retail\\k002\\entry_res_probe.json",
+        "evidence\\retail\\k002\\entry_res_record_probe.json",
+        "evidence\\retail\\k002\\gate.json",
+        "evidence\\retail\\k002\\geometry_ir_attestation.json",
+        "evidence\\retail\\k002\\pinned_v8_attestation.json",
+        "evidence\\retail\\k002\\res_cross_differential.json",
+        "evidence\\retail\\k002\\res_decoder_validation.json",
+        "evidence\\retail\\k002\\res_record_framing_v2.json",
+        "evidence\\retail\\k002\\room35_world_contract.json",
+        "evidence\\retail\\k002\\scene_selection.json"
+      ],
+      "state": "RETAIL_EVIDENCE_PRESENT_REVERIFY"
+    },
+    "portals_triggers": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\k004\\legacy_transition_naming_contract.json",
+        "evidence\\retail\\k001\\r36_collision_gate_v1.json"
+      ],
+      "state": "RETAIL_EVIDENCE_PRESENT_REVERIFY"
+    },
+    "collision_traversal": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\contracts\\collision_traversal_v1.json",
+        "evidence\\retail\\k001\\r36_collision_gate_v1.json"
+      ],
+      "state": "BLOCKED_R36_EXECUTION_ASSET_AND_COLLISIONIR"
+    },
+    "interaction_ui": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\contracts\\interaction_ui_v1.json"
+      ],
+      "state": "CONTRACT_APPLIED_RETAIL_RUNTIME_EVIDENCE_PENDING"
+    },
+    "persistence_capture": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\contracts\\persistence_capture_v1.json"
+      ],
+      "state": "CONTRACT_APPLIED_RETAIL_RUNTIME_EVIDENCE_PENDING"
+    },
+    "animation_clock": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\contracts\\animation_clock_v1.json"
+      ],
+      "state": "CONTRACT_APPLIED_RETAIL_REVERIFY"
+    },
+    "npc_dialogue": {
+      "contract_or_evidence_present": true,
+      "files": [
+        "evidence\\retail\\contracts\\npc_dialogue_v1.json"
+      ],
+      "state": "CONTRACT_APPLIED_RETAIL_REVERIFY"
+    }
+  },
+  "overall": "CONTRACTS_INTEGRATED_RETAIL_EVIDENCE_IN_PROGRESS",
+  "critical_path": [
+    "stage/rehydrate source-derived R36 asset on execution host",
+    "complete source-backed R36 CollisionIR membership",
+    "production-capsule bidirectional PPPV",
+    "retail runtime/oracle diff"
+  ],
+  "fidelity": "NOT_VERIFIED"
+}

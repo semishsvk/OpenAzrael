@@ -1,0 +1,22 @@
+{
+  "schema": "openazrael.retail.interaction_ui_contract",
+  "version": 1,
+  "origin": "validated demo subsystem generalized to retail",
+  "fail_closed": true,
+  "inherits": [
+    "v130",
+    "v143",
+    "v146",
+    "v147",
+    "v148",
+    "v157"
+  ],
+  "retail_rules": [
+    "same deterministic interaction probe/cursor contexts",
+    "Classic HUD/menu runtime reusable",
+    "inventory authority must be retail canonical state",
+    "retail item labels/source bindings required"
+  ],
+  "status": "CONTRACT_APPLIED_EVIDENCE_PENDING",
+  "fidelity": "NOT_VERIFIED"
+}

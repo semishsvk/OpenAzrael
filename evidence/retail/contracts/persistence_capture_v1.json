@@ -1,0 +1,19 @@
+{
+  "schema": "openazrael.retail.persistence_capture_contract",
+  "version": 1,
+  "origin": "validated demo subsystem generalized to retail",
+  "fail_closed": true,
+  "inherits": [
+    "v128",
+    "v150",
+    "v152"
+  ],
+  "retail_rules": [
+    "retail save schema/version distinct from demo",
+    "atomic fail-closed restore",
+    "room/player/inventory/puzzle/NPC state coverage",
+    "runtime-native capture only; remote desktop pixels are not fidelity evidence"
+  ],
+  "status": "CONTRACT_APPLIED_EVIDENCE_PENDING",
+  "fidelity": "NOT_VERIFIED"
+}

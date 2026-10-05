@@ -1,0 +1,19 @@
+﻿{
+    "schema":  "openazrael.r36_one_sided_collision_integration.v1",
+    "evidence_state":  "IMPLEMENTED_STRUCTURAL_NOT_PHYSICALLY_VERIFIED",
+    "source_xaf_sha256":  "b542835adda16da2f6f9a945a255cee2cf52ccf5017450e978b6874bcae91c5e",
+    "winding_audit_sha256":  "225da6bcb63f97340bd447d82d037e5529f23e46fe3663ee2f6ddf17ed5d2de8",
+    "collision_query_evidence_sha256":  "c68f81c247fb7c2f3a16462120bfc28ab3f5a841da49f65eb5d6eb0b3e9ace94",
+    "runtime_asset":  "res://assets/retail_k001/R36.glb",
+    "runtime_asset_sha256":  "3fa6ff7560b577971523af17a0dbc4a6f9e091801f0a60cb4b2ef6f1c63b1490",
+    "godot_import":  "PASS",
+    "godot_policy":  "R34/R35/R36 ConcavePolygonShape3D backface_collision=false; demo rooms retain compatibility true",
+    "source_winding":  "PRESERVED_BY_EXPORTER",
+    "remaining":  [
+                      "exact two retail collision name exclusions unresolved",
+                      "R36 production capsule physical route not yet executed",
+                      "R34/R35 assets not yet exported/staged",
+                      "retail textures not yet decoded on persistent host"
+                  ],
+    "fidelity":  "NOT_VERIFIED"
+}

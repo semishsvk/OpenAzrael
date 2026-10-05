@@ -114,7 +114,9 @@ func _run() -> void:
     _check("R7_niamh_activation_flag", state.flag("R7NiamhActivated"))
     _check("R7_niamh_AZ_state", state.puzzle_node("R7NiamhAZ"))
     if niamh_body != null:
-        _check("R7_niamh_visible_after_activation", niamh_body.visible)
+        # Once the source hierarchy is instantiated, the static authored
+        # placement proxy must be hidden to avoid double-rendering Niamh.
+        _check("R7_niamh_proxy_hidden_after_source_bind", not niamh_body.visible)
 
     var first_status: Dictionary = manager.character_animation_status("Niamh")
     var animation_status := String(first_status.get("status", ""))
@@ -137,7 +139,7 @@ func _run() -> void:
                 for track_index in source_clip.get_track_count():
                     var node_path := source_clip.track_get_path(track_index)
                     var animation_root = source_player.get_node_or_null(source_player.root_node)
-                    if animation_root == null or animation_root.get_node_or_null(node_path.get_concatenated_names()) == null:
+                    if animation_root == null or animation_root.get_node_or_null(NodePath(String(node_path.get_concatenated_names()))) == null:
                         bad_paths.append(String(node_path))
                 _check("R7_niamh_track_paths_resolve", bad_paths.is_empty())
 

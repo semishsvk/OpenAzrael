@@ -1,0 +1,33 @@
+{
+  "schema": "openazrael.niamh_conversation_fidelity_status",
+  "version": 210,
+  "status": "PARTIAL_VERIFIED",
+  "runtime_authority": "data/runtime_generated/niamh_conversation_ir_v209.json",
+  "source": {
+    "file": "NIAMH.DAT",
+    "sha256": "a7c3f14d8a76c9c8255f26f77e31ca9a860263697376afaf042469d4eb0f671a",
+    "bytes": 10464
+  },
+  "verified": [
+    "source dialogue strings and Ni1A/Ni1B markers",
+    "speaker separation for playable source-backed rows",
+    "R7NiamhAZ activation",
+    "source NIAMH.XAF NOLOOP1 -> REST animation binding",
+    "hidden DO NOT DISPLAY row excluded",
+    "Answer text missing! rows excluded from playable UI"
+  ],
+  "hold": [
+    "typed prerequisite flag semantics",
+    "typed action flag semantics",
+    "variable post-response control fields",
+    "exact original availability ordering/state transitions",
+    "runtime-oracle visual/timing comparison"
+  ],
+  "evidence": {
+    "readflagdata_re": "Existing canonical-R.EXE-bound v102 RE proves a ReadFlagData parser domain 0..8 and variable integer payload widths.",
+    "canonical_r_exe_required_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "currently_available_r_exe_sha256": "8ee00be079fcb99f008c1f51ecbdbd04ffdf3bea5fdefc56775210fdda549eff",
+    "policy": "Do not infer gameplay semantics from the noncanonical executable or from numeric similarity alone."
+  },
+  "acceptance": "Do not mark NIAMH_DIALOG_FLOW VERIFIED until HOLD items are resolved or corroborated by an original-runtime oracle."
+}

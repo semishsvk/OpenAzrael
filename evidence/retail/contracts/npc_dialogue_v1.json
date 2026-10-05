@@ -1,0 +1,19 @@
+{
+  "schema": "openazrael.retail.npc_dialogue_contract",
+  "version": 1,
+  "origin": "validated demo subsystem generalized to retail",
+  "fail_closed": true,
+  "inherits": [
+    "v171-v197 Eugene family",
+    "v180",
+    "v210"
+  ],
+  "retail_rules": [
+    "reuse engine-neutral NPC/animation/dialogue IR",
+    "source strings/markers hidden-row policy reusable when corpus-confirmed",
+    "demo executable addresses/hashes forbidden",
+    "retail R.EXE controller/flag/action semantics require independent proof"
+  ],
+  "status": "CONTRACT_APPLIED_RETAIL_REVERIFY",
+  "fidelity": "NOT_VERIFIED"
+}

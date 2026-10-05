@@ -257,7 +257,7 @@ func _physics_process(delta: float) -> void:
     var dir := (global_transform.basis * Vector3(input2.x, 0.0, input2.y))
     dir.y = 0.0
     dir = dir.normalized()
-    var speed := walk_speed * (sprint_multiplier if Input.is_key_pressed(KEY_SHIFT) else 1.0)
+    var speed := walk_speed * (sprint_multiplier if Input.is_action_pressed("sprint") else 1.0)
     var target := dir * speed
     velocity.x = move_toward(velocity.x, target.x, acceleration * speed * delta)
     velocity.z = move_toward(velocity.z, target.z, acceleration * speed * delta)

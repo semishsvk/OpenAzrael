@@ -1,0 +1,46 @@
+﻿{
+    "schema":  "openazrael.local_persistent_execution_host.v1",
+    "evidence_state":  "VERIFIED_HOST_READY",
+    "execution_root":  "F:\\OpenRemaster\\OpenAzrael\\.runtime",
+    "rehydration_contract":  "F:\\OpenRemaster\\OpenAzrael\\.runtime\\manifests\\environment_v1.json",
+    "rehydration_manifest_sha256":  "9dbfc83e7ea27639c26bb124323a810f714485e695f256a800e0534bb3807601",
+    "rehydrate_script_sha256":  "a0588a6d6059ad535e7a6732abbbaed51db964ac111162b909daa648bdb30233",
+    "godot":  {
+                  "path":  "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64_console.exe",
+                  "bytes":  198152,
+                  "sha256":  "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+                  "version":  "4.7.2.stable.official.ed1daf0bf"
+              },
+    "retail_exe":  {
+                       "path":  "F:\\Remaster Framework\\source\\Azrael\u0027s Tear\\GAME\\AZRAEL\\R.EXE",
+                       "bytes":  1665875,
+                       "sha256":  "8ee00be079fcb99f008c1f51ecbdbd04ffdf3bea5fdefc56775210fdda549eff"
+                   },
+    "azt_bin":  {
+                    "path":  "F:\\Remaster Framework\\source\\Azrael\u0027s Tear\\AZT.BIN",
+                    "bytes":  511023744,
+                    "sha256":  "2f50431ebd60a7c5fdd756db7ca41755865b6c1da63b8bd51c08b5139843a01b"
+                },
+    "git_head":  "f109d44509da0c144dac1915a4498fe5a38c2375",
+    "smoke_tests":  [
+                        {
+                            "name":  "rehydration",
+                            "status":  "PASS"
+                        },
+                        {
+                            "name":  "godot_headless_editor_init",
+                            "status":  "PASS"
+                        }
+                    ],
+    "persistent_dirs":  [
+                            "cache/derived_source",
+                            "artifacts",
+                            "logs",
+                            "manifests",
+                            "work/retail_k001",
+                            "captures"
+                        ],
+    "source_policy":  "canonical F:\\Remaster Framework\\source is read-only; derived outputs only under .runtime",
+    "remaining_blocker":  "R36 room asset extraction/staging from canonical AZT.BIN/CD view",
+    "fidelity":  "NOT_VERIFIED"
+}

@@ -1,11 +1,15 @@
 extends Node3D
 
 signal room_changed(room_id: String)
+signal conversation_presented(payload: Dictionary)
 
 const ROOM_SCENE_PATHS := {
     "R1": "res://assets/rooms/R1.glb",
     "R7": "res://assets/rooms/R7.glb",
-    "R8": "res://assets/rooms/R8.glb"
+    "R8": "res://assets/rooms/R8.glb",
+    "R34": "res://assets/retail_k001/R34.glb",
+    "R35": "res://assets/retail_k001/R35.glb",
+    "R36": "res://assets/retail_k001/R36.glb"
 }
 const ROOM_NAMES := {
     "R1":"Entry Corridor (R1)",
@@ -315,9 +319,17 @@ func _create_world_collision(room_id: String) -> void:
         # -264.159/381.168) and must collide. Other rooms may contain helper
         # objects with the same generic Object02 name, so do not globally
         # re-enable every Object02.
+        var is_retail_k001 := room_id in ["R34", "R35", "R36"]
+        # Retail collision membership is governed by retail CollisionIR, never
+        # by demo generic ObjectXX exclusions. Prefix ZZ/ZQ is source-proven in
+        # the retail builder; the two exact-name retail exclusions remain HOLD.
         var exclude_collision := (
             obj_name.begins_with("ZQ")
-            or obj_name in ["Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]
+            or obj_name.begins_with("ZZ")
+            or (
+                not is_retail_k001
+                and obj_name in ["Object03", "view", "spaview", "entcori", "Object14", "zxwater", "tapestry1", "tapestry3", "tapestry4"]
+            )
             # R8's right-hand baptistery mirror is source-authored as broken
             # enough to walk through. mirror01 is the pane centered in that
             # opening; broken3 is its alpha-cutout shard overlay. Treating
@@ -325,7 +337,7 @@ func _create_world_collision(room_id: String) -> void:
             # authored passage into the rear baptistery. The surrounding
             # mirrors/mirrors01 wall and its low sill remain collidable.
             or (room_id == "R8" and obj_name in ["mirror01", "broken3"])
-            or (obj_name == "Object02" and room_id != "R1")
+            or (not is_retail_k001 and obj_name == "Object02" and room_id != "R1")
         )
         if exclude_collision:
             continue
@@ -345,11 +357,12 @@ func _create_world_collision(room_id: String) -> void:
             shape = mi.mesh.create_trimesh_shape()
         if shape == null:
             continue
-        # Legacy XAF/GLB triangle winding is not guaranteed to face the playable
-        # side consistently. Concave room collision must therefore accept both
-        # faces or floors can become non-colliding from above.
+        # Demo compatibility remains two-sided, but retail CollisionIR queries
+        # are source-winding/one-sided (dot(direction, normal) < 0). Preserve
+        # authored winding for the promoted retail K001 rooms.
         if shape is ConcavePolygonShape3D:
-            (shape as ConcavePolygonShape3D).backface_collision = true
+            var retail_one_sided := room_id in ["R34", "R35", "R36"]
+            (shape as ConcavePolygonShape3D).backface_collision = not retail_one_sided
         var body := StaticBody3D.new()
         body.name = "Collision_" + obj_name
         body.collision_layer = 1
@@ -493,9 +506,11 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                         # character_root is the instantiated source GLB itself.
                         # XAF-derived clip paths are relative to that hierarchy,
                         # so the player must resolve tracks from its parent GLB.
-                        source_player.root_node = NodePath("../world")
+                        source_player.root_node = NodePath("..")
                         character_root.add_child(source_player)
-                    var library := source_player.get_animation_library(&"")
+                    var library: AnimationLibrary = null
+                    if source_player.has_animation_library(&""):
+                        library = source_player.get_animation_library(&"")
                     if library == null:
                         library = AnimationLibrary.new()
                         source_player.add_animation_library(&"", library)
@@ -532,18 +547,20 @@ func _on_conversation_requested(request: Dictionary) -> void:
     var character := String(request.get("character", ""))
     var family := String(request.get("family", ""))
     if character == "Niamh" and family == "1A":
-        var contract_path := "res://data/tests/kg001_niamh_conversation_1a_contract_v180.json"
-        var parsed = JSON.parse_string(FileAccess.get_file_as_string(contract_path))
-        if parsed is Dictionary and String(parsed.get("opening", "")) != "":
-            CandidateDiagnostics.record_event("conversation_request", {
+        var ir_path := "res://data/runtime_generated/niamh_conversation_ir_v209.json"
+        var parsed = JSON.parse_string(FileAccess.get_file_as_string(ir_path))
+        if parsed is Dictionary and parsed.get("families", {}).has(family):
+            var payload := {
                 "room": current_room_id,
                 "character": character,
                 "family": family,
                 "source_required": bool(request.get("source_required", false)),
-                "status": "SOURCE_TEXT_READY",
-                "opening": String(parsed.get("opening", "")),
-                "audio_status": String(parsed.get("audio", {}).get("status", ""))
-            })
+                "status": "SOURCE_CONVERSATION_IR_READY",
+                "ir_version": int(parsed.get("version", 0)),
+                "source_sha256": String(parsed.get("source", {}).get("sha256", ""))
+            }
+            CandidateDiagnostics.record_event("conversation_request", payload)
+            conversation_presented.emit(payload)
             return
         CandidateDiagnostics.record_event("conversation_request", {
             "room": current_room_id, "character": character, "family": family,
@@ -659,7 +676,10 @@ func _setup_r1_eugene_spawns() -> void:
         # v179 clips address the XAF hierarchy from its authored top-level
         # object. The GLB is a child of the runtime wrapper, so bind the
         # AnimationPlayer root directly to that model subtree.
-        source_player.root_node = NodePath("../" + character + "_Model/world")
+        # XAF-derived tracks are authored relative to the GLB hierarchy root
+        # (EUBUM/...), not a guessed child named "world". Bind to the model
+        # instance itself so every restored family resolves deterministically.
+        source_player.root_node = NodePath("../" + character + "_Model")
         root.add_child(source_player)
         var source_library := AnimationLibrary.new()
         source_player.add_animation_library(&"", source_library)

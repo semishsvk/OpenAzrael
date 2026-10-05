@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/kg001_trigger_debug_v116.gd" id="5_trigger_debug"]
 [ext_resource type="Script" path="res://scripts/language_menu_v139.gd" id="6_language_menu"]
 [ext_resource type="Script" path="res://scripts/legacy_menu_runtime_v145.gd" id="7_legacy_menu"]
+[ext_resource type="Script" path="res://scripts/conversation_ui_v209.gd" id="8_conversation"]
 
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 1
@@ -75,3 +76,6 @@ script = ExtResource("6_language_menu")
 
 [node name="LegacyMenuV145" type="CanvasLayer" parent="."]
 script = ExtResource("7_legacy_menu")
+
+[node name="ConversationUIV208" type="CanvasLayer" parent="."]
+script = ExtResource("8_conversation")

@@ -1,0 +1,72 @@
+{
+  "schema": "openazrael.retail.promoted_gate_status",
+  "version": 1,
+  "promotion_sha256": "9170337a5f2a40d7e2eb03b71130c9d794226be0418bda7f0028f9e814b75bef",
+  "checks": [
+    {
+      "domain": "animation_clock",
+      "state": "RETAIL_EVIDENCE_MISSING",
+      "retail_evidence": []
+    },
+    {
+      "domain": "collision_traversal",
+      "state": "RETAIL_EVIDENCE_MISSING",
+      "retail_evidence": []
+    },
+    {
+      "domain": "interaction_ui",
+      "state": "RETAIL_EVIDENCE_MISSING",
+      "retail_evidence": []
+    },
+    {
+      "domain": "npc_dialogue",
+      "state": "RETAIL_EVIDENCE_MISSING",
+      "retail_evidence": []
+    },
+    {
+      "domain": "persistence_capture",
+      "state": "RETAIL_EVIDENCE_MISSING",
+      "retail_evidence": []
+    },
+    {
+      "domain": "portals_triggers",
+      "state": "RETAIL_EVIDENCE_PRESENT_REVERIFY",
+      "retail_evidence": [
+        "evidence\\retail\\k001\\gate.json",
+        "evidence\\retail\\k001\\maps_dat_verified.json",
+        "evidence\\retail\\k001\\retail_k001_byte_evidence.json",
+        "evidence\\retail\\k001\\rooms_xaf_candidate_bindings.json",
+        "evidence\\retail\\k001\\xaf_structural_probe.json",
+        "evidence\\retail\\k001\\xaf_visible_census.json"
+      ]
+    },
+    {
+      "domain": "source_geometry",
+      "state": "RETAIL_EVIDENCE_PRESENT_REVERIFY",
+      "retail_evidence": [
+        "evidence\\retail\\k001\\gate.json",
+        "evidence\\retail\\k001\\maps_dat_verified.json",
+        "evidence\\retail\\k001\\retail_k001_byte_evidence.json",
+        "evidence\\retail\\k001\\rooms_xaf_candidate_bindings.json",
+        "evidence\\retail\\k001\\xaf_structural_probe.json",
+        "evidence\\retail\\k001\\xaf_visible_census.json",
+        "evidence\\retail\\k002\\entry_export_validation.json",
+        "evidence\\retail\\k002\\entry_geometry_probe.json",
+        "evidence\\retail\\k002\\entry_glb_roundtrip_validation.json",
+        "evidence\\retail\\k002\\entry_material_contract.json",
+        "evidence\\retail\\k002\\entry_res_probe.json",
+        "evidence\\retail\\k002\\entry_res_record_probe.json",
+        "evidence\\retail\\k002\\gate.json",
+        "evidence\\retail\\k002\\geometry_ir_attestation.json",
+        "evidence\\retail\\k002\\pinned_v8_attestation.json",
+        "evidence\\retail\\k002\\res_cross_differential.json",
+        "evidence\\retail\\k002\\res_decoder_validation.json",
+        "evidence\\retail\\k002\\res_record_framing_v2.json",
+        "evidence\\retail\\k002\\room35_world_contract.json",
+        "evidence\\retail\\k002\\scene_selection.json"
+      ]
+    }
+  ],
+  "pass_policy": "No domain is VERIFIED merely because its demo contract passed. Retail-specific evidence and runtime/oracle validation are mandatory.",
+  "overall": "BLOCKED_MISSING_RETAIL_EVIDENCE"
+}

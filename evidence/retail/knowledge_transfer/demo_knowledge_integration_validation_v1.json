@@ -1,0 +1,30 @@
+{
+  "schema": "openazrael.retail.demo_knowledge_integration_validation",
+  "version": 1,
+  "promotion_entries": 35,
+  "promotion_hashes_valid": true,
+  "retail_contracts_required": [
+    "collision_traversal",
+    "interaction_ui",
+    "persistence_capture",
+    "animation_clock",
+    "npc_dialogue"
+  ],
+  "retail_contracts_missing": [],
+  "source_geometry_contract": "APPLIED",
+  "portals_triggers_contract": "APPLIED",
+  "collision_traversal_contract": "APPLIED_EVIDENCE_PENDING",
+  "interaction_ui_contract": "APPLIED_EVIDENCE_PENDING",
+  "persistence_capture_contract": "APPLIED_EVIDENCE_PENDING",
+  "animation_clock_contract": "APPLIED_RETAIL_REVERIFY",
+  "npc_dialogue_contract": "APPLIED_RETAIL_REVERIFY",
+  "forbidden_cross_promotion": [
+    "demo room/object IDs",
+    "demo R.EXE addresses",
+    "demo executable hash",
+    "demo PASS status",
+    "DemoState as retail state authority"
+  ],
+  "result": "PASS_CONTRACT_INTEGRATION",
+  "fidelity": "NOT_VERIFIED"
+}

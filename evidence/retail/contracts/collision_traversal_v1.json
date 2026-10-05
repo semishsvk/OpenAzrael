@@ -1,0 +1,20 @@
+{
+  "schema": "openazrael.retail.collision_traversal_contract",
+  "version": 1,
+  "origin": "validated demo subsystem generalized to retail",
+  "fail_closed": true,
+  "inherits": [
+    "v117",
+    "v120",
+    "v121",
+    "PPPV v2"
+  ],
+  "retail_rules": [
+    "source-backed CollisionIR only",
+    "production CharacterBody3D capsule",
+    "no teleport/recovery pass",
+    "bidirectional transition traversal"
+  ],
+  "status": "CONTRACT_APPLIED_EVIDENCE_PENDING",
+  "fidelity": "NOT_VERIFIED"
+}

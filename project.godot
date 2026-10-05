@@ -32,3 +32,4 @@ move_back={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":83)]
 move_left={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":65)]}
 move_right={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":68)]}
 interact={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":69)]}
+sprint={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":4194325)]}

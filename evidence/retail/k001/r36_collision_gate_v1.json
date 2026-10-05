@@ -1,0 +1,65 @@
+{
+  "schema": "openazrael.retail_k001.r36_collision_gate.v1",
+  "evidence_state": "BLOCKED_EXECUTION_ASSET_NOT_STAGED",
+  "room": {
+    "legacy_namespace": "R36",
+    "xaf": "R36.XAF",
+    "xaf_sha256": "b542835adda16da2f6f9a945a255cee2cf52ccf5017450e978b6874bcae91c5e"
+  },
+  "inherited_demo_contracts": [
+    "kg001_collision_parity_contract_v120",
+    "kg001_surface_collision_contract_v121",
+    "kg001_physical_traversal_contract_v117",
+    "PPPV v2"
+  ],
+  "retail_strengthening": {
+    "role_separation_required": [
+      "render",
+      "trigger/helper",
+      "collision",
+      "interaction/state"
+    ],
+    "collision_membership_authority": "source-backed retail CollisionIR",
+    "implicit_visible_mesh_to_collider": false,
+    "unknown_collision_role": "HOLD_NO_COLLIDER_UNTIL_EVIDENCE",
+    "teleport_or_recovery_pass": false
+  },
+  "known_r36": {
+    "transition_helpers": [
+      "zxr362R34",
+      "zxr362R35",
+      "zxr362C7",
+      "zyR34",
+      "zyR35",
+      "zyC7"
+    ],
+    "authored_tunnel_objects": [
+      "tun_05",
+      "tun_06",
+      "tun_conn01"
+    ],
+    "transition_namespace_contract": "VERIFIED_STRUCTURAL"
+  },
+  "execution_requirements": {
+    "production_player_capsule": {
+      "radius": 11.0,
+      "height": 52.0,
+      "shape_offset_y": 26.0
+    },
+    "required_routes": [
+      "R34->R36->R35",
+      "R35->R36->R34"
+    ],
+    "runtime_asset_required": "source-derived R36 GLB plus provenance",
+    "asset_currently_staged_on_homepc": false
+  },
+  "pass_requires": [
+    "R36 source asset hash/provenance verified",
+    "CollisionIR membership emitted without guessed exclusions",
+    "Godot collision instantiated only from proven membership",
+    "production CharacterBody3D completes both directions",
+    "zero floor-loss/recovery/teleport",
+    "runtime-native evidence receipt"
+  ],
+  "fidelity": "NOT_VERIFIED"
+}

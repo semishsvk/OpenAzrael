@@ -1,0 +1,24 @@
+﻿{
+    "schema":  "openazrael.retail_collision_query_semantics.v1",
+    "evidence_state":  "STRUCTURAL_HIGH",
+    "retail_exe_sha256":  "8ee00be079fcb99f008c1f51ecbdbd04ffdf3bea5fdefc56775210fdda549eff",
+    "routines":  {
+                     "0x1CAA8":  "iterates CollisionIR planes; rejects when direction dot normal is non-negative; computes plane intersection parameter; projection-class 0/1/2; inside-polygon test 0x30C50",
+                     "0x1CCB0":  "specialized directional query; rejects polygons by signed normal component before plane/inside-polygon test",
+                     "0x1CE70":  "segment query; direction=end-start; rejects when direction dot normal is non-negative; intersects only forward-facing plane crossings within segment length; projection-class 0/1/2; inside-polygon test 0x30C50"
+                 },
+    "findings":  [
+                     "Retail collision queries are direction-sensitive and one-sided at the polygon-plane test.",
+                     "0x1CAA8 and 0x1CE70 execute an explicit dot(direction,normal) \u003c 0 gate before intersection.",
+                     "Godot ConcavePolygonShape3D with backface_collision=true is therefore not semantically equivalent to the retail query path.",
+                     "Projection class byte 0/1/2 selects which two coordinates are used for projected inside-polygon testing.",
+                     "This closes the previous uncertainty over one-sided versus blanket two-sided collision for these query paths."
+                 ],
+    "godot_implication":  "Retail collider prototype must preserve source triangle winding and use one-sided collision semantics; blanket backface_collision=true is FALSIFIED_AS_SOURCE_SEMANTICS.",
+    "limitations":  [
+                        "Exact two name exclusions remain unresolved.",
+                        "Need builder-to-XAF face winding validation before production room_manager change.",
+                        "Need production-capsule runtime test after collider prototype."
+                    ],
+    "fidelity":  "NOT_VERIFIED"
+}
