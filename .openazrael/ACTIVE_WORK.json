@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,7 +12,7 @@
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-05T19:03:40.743556+00:00",
+  "last_seen_at": "2026-10-05T19:04:24.508963+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -38,5 +38,5 @@
     "source_session_stopped": true,
     "visual_sha256": "efaddd0c677a875e8e5f7ebad66d73f95f86780629f402e94ec309e7a88886a1"
   },
-  "acquired_at": "2026-10-05T18:56:25.103743+00:00"
+  "acquired_at": "2026-10-05T19:04:24.508959+00:00"
 }
