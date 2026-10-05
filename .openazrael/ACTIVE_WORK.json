@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,49 +26,78 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T19:59:38.212926+00:00",
+  "released_at": "2026-10-05T20:34:47.282598+00:00",
   "reconciliation": {
-    "head": "f8c3a3cccbd70a62ca811778c000be26ce35319e",
+    "head": "2bd701c27c1621bcb4c6e6ec7489f3ec7ecac016",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
-    "primary_blocker": "MENU_HUD_DYNAMIC_INDICATOR_SOURCE_STATE_NOT_REPRODUCED",
+    "primary_blocker": "ROOM3_WINDOWS_MATCHED_ORIGINAL_RUNTIME_FRAMEBUFFER_REFERENCE_MISSING",
     "final": false,
     "visual_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-    "visual_sha256": "eda789be78cb288e334bb9a2af7c34a3a8bf68294c05f9eb2e627bbbd9e1a00a",
-    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_f8c3a3c_v201.json",
-    "v201_sha256": "cf4755a5d75309960224e319025bbf9b6b9463188933d35cff507d4d35ee8cf0",
+    "visual_sha256": "96729adf9c71bab1bdb5d50e18478340a69eae7e5a4195b784b63bb2c9b6bb0e",
+    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_2bd701c_v201.json",
+    "v201_sha256": "3b0f483537f67ffa9294fa425fb16f5ba5904338d514857b433e3b1036478c7a",
     "v201_status": "BLOCKED",
-    "comparison": {
-      "original": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\original_host23\\host_indexed_full_frame_1013e020.png",
-      "original_sha256": "742483564786f34d1ef702bc012b1e72009d5d97f45a4817ba1af535774a43ae",
-      "candidate": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\R1_current_head_f8c3a3c.png",
-      "candidate_sha256": "647f4f5322cd11c59a318ff6e87a7fa4d6ee09072f4f308531870927a25ee874",
-      "source_canvas": [
-        640,
-        480
-      ],
-      "candidate_classic_canvas_bounds": [
-        160,
-        0,
-        1120,
-        720
-      ],
-      "remote_desktop_stream_used": false,
-      "observed_difference": "Dynamic source HUD indicator differs from candidate restored HUD base art.",
-      "opaque_lower_hud_samples": 95873,
-      "candidate_original_equal_samples": 95176,
-      "source_dynamic_pixels_vs_rgb6_base": 697,
-      "candidate_original_dynamic_equal": 0,
-      "dynamic_bounds": [
-        328,
-        360,
-        413,
-        382
-      ]
+    "current_head_capture_sha256": "472ba91e2dc5c26e53d3eecd15e0afca19bd54ddba2f34ee630106456e1cc632",
+    "hud_comparison": {
+      "direct_gpu_lower_hud_samples": 95873,
+      "direct_gpu_matching_original_pixels": 95873,
+      "health_region_samples": 1575,
+      "health_region_matches": 1575,
+      "capture_health": 1000
     },
-    "startup_restoration": "PASS_CPU_AND_DIRECT_GPU_FEATURE_CHECKS"
+    "scanner_gold_pixels": 2252,
+    "scanner_matching_gold_pixels": 2252,
+    "automated_gates": [
+      {
+        "runner": "kg001_full_demo_runner_v111",
+        "status": "PASS",
+        "checks": 34
+      },
+      {
+        "runner": "kg001_physical_traversal_runner_v117",
+        "status": "PASS",
+        "checks": 62
+      },
+      {
+        "runner": "kg001_all_transition_runner_v141",
+        "status": "PASS",
+        "checks": 110
+      },
+      {
+        "runner": "kg001_legacy_menu_runner_v145",
+        "status": "PASS",
+        "checks": 54
+      },
+      {
+        "runner": "kg001_legacy_scanner_runner_v164",
+        "status": "PASS",
+        "checks": 18
+      },
+      {
+        "runner": "kg001_hud_startup_runner_v215",
+        "status": "PASS",
+        "checks": 12
+      },
+      {
+        "runner": "kg001_health_hud_runner_v217",
+        "status": "PASS",
+        "checks": {
+          "all_1575_original_bar_rgb_pixels": true,
+          "blocking_menu_pauses_regeneration": true,
+          "eugene_damage_reaches_bar": true,
+          "no_dead_player_regeneration": true,
+          "no_fixed_source_hz_claim": true,
+          "source_bitmap_dimensions": true,
+          "source_four_poll_increment": true,
+          "source_maximum_1000": true,
+          "source_origin": true
+        }
+      }
+    ],
+    "source_health_gating_scope": "Normal gameplay only; scripted source global and blocking-menu pause semantics not fully attested."
   },
   "acquired_at": "2026-10-05T20:11:20.747600+00:00"
 }
