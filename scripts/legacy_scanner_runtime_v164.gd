@@ -3,13 +3,25 @@ class_name LegacyScannerRuntimeV164
 
 const SOURCE_JSON := "res://assets/ui/legacy_menu/legacy_scanner_v164.json"
 const SOURCE_FONT := "res://assets/ui/legacy_menu/RUSGLD2.png"
-const DEFAULT_RECT := Rect2(452, 54, 172, 246)
+const DEFAULT_RECT := Rect2(425, 84, 170, 206)
 const FONT_CELL := Vector2(10, 12)
 const FIRST_CODEPOINT := 35
 const CELL_COUNT := 138
 const SPACE_ADVANCE := 3.0
 const METRICS_PATH := "res://data/ui/legacy_scanner_font_v214.json"
 const LINE_ADVANCE := 12.0
+
+var panel_image: Image
+var panel_texture: ImageTexture
+var source_font_image: Image
+var pending_tokens: Array[String] = []
+var text_cursor := Vector2i.ZERO
+var startup_requested := false
+var startup_started := false
+var hint_timer_active := false
+var hint_polls := 0
+var hint_counter := 0
+const HINT_MESSAGES := [136, 137, 139]
 
 var room_manager: Node
 var source: Dictionary = {}
@@ -34,6 +46,10 @@ func initialize(manager: Node) -> void:
     source = _load_source()
     font_metrics = JSON.parse_string(FileAccess.get_file_as_string(METRICS_PATH))
     font_texture = load(SOURCE_FONT) as Texture2D if ResourceLoader.exists(SOURCE_FONT) else null
+    panel_image = Image.create(170, 206, false, Image.FORMAT_RGBA8)
+    panel_image.fill(Color.TRANSPARENT)
+    panel_texture = ImageTexture.create_from_image(panel_image)
+    source_font_image = font_texture.get_image() if font_texture != null else null
     audio_player = AudioStreamPlayer.new()
     audio_player.name = "LegacyScannerAudioV164"
     audio_player.bus = "SFX"
@@ -69,17 +85,10 @@ func _message_text(raw) -> String:
     return String(raw).strip_edges()
 
 func _boot_text() -> String:
-    var lines: Array[String] = []
-    for row in source.get("boot", []):
-        if not row is Dictionary:
-            continue
-        # HUDMES boot rows intentionally contain leading spaces (the source
-        # builds the stylized Model-7 glyph with them). Preserve those bytes;
-        # the restore step already removes only source trailing terminators.
-        var text := String(row.get("text", ""))
-        if not text.strip_edges().is_empty():
-            lines.append(text)
-    return "\n".join(lines)
+    var text := ""
+    for id in range(3, 16):
+        text += String(source.get("source_messages", {}).get(str(id), ""))
+    return text
 
 func _room_text(room_id: String) -> String:
     var rooms = source.get("rooms", {})
@@ -96,6 +105,7 @@ func _scan_status() -> String:
 func _set_display(mode: String, text: String, room_id: String = "") -> void:
     display_mode = mode
     display_text = text
+    _enqueue_source_text(text if text.ends_with("\n") else text + "\n\n")
     if not room_id.is_empty():
         _last_room = room_id
     visible = active and not display_text.is_empty() and DisplayServer.get_name() != "headless"
@@ -154,6 +164,7 @@ func _finish_boot(generation: int) -> void:
     if not room_id.is_empty():
         show_environment_scan(room_id)
 
+
 func _on_room_changed(room_id: String) -> void:
     pending_room = room_id
     if not active:
@@ -188,6 +199,8 @@ func _show_environment_result(room_id: String) -> void:
         _set_display("hold_missing_room_scan", "", room_id)
         return
     _set_display("environment_result", result, room_id)
+    if startup_requested:
+        _begin_source_startup()
 
 func _glyph_width(character: String) -> float:
     if character == " ":
@@ -237,18 +250,102 @@ func _draw_glyph(character: String, at: Vector2) -> float:
     return float(metric.get("advance", width))
 
 func _draw() -> void:
-    if font_texture == null or display_text.is_empty():
+    if panel_texture != null:
+        draw_texture(panel_texture, Vector2.ZERO)
+
+func _enqueue_source_text(text: String) -> void:
+    var regex := RegEx.new()
+    regex.compile("[^ \r\n]+|[ \r\n]")
+    for match in regex.search_all(text):
+        pending_tokens.append(match.get_string())
+
+func _source_scroll() -> void:
+    var amount := text_cursor.y + 12 - 206
+    if amount <= 0:
         return
-    var y := 0.0
-    for line in _wrapped_lines(display_text):
-        if y + FONT_CELL.y > size.y:
+    var moved := panel_image.get_region(Rect2i(0, amount, 170, 206 - amount))
+    panel_image.fill(Color.TRANSPARENT)
+    panel_image.blit_rect(moved, Rect2i(0, 0, 170, 206 - amount), Vector2i.ZERO)
+    text_cursor.y -= amount
+
+func _source_text_poll() -> void:
+    if source_font_image == null:
+        return
+    while not pending_tokens.is_empty():
+        var token := pending_tokens[0]
+        if token == "\r":
+            pending_tokens.pop_front()
+            continue
+        if token == "\n":
+            pending_tokens.pop_front()
+            text_cursor.x = 0
+            text_cursor.y += 12
+            _source_scroll()
             break
-        var x := 0.0
-        for character in line:
-            x += _draw_glyph(character, Vector2(x, y))
-            if x >= size.x:
-                break
-        y += LINE_ADVANCE
+        if token == " ":
+            pending_tokens.pop_front()
+            text_cursor.x += 3
+            continue
+        var advance := 0
+        for character in token:
+            advance += int(_glyph_width(character))
+        if text_cursor.x + advance >= 170:
+            text_cursor.x = 0
+            text_cursor.y += 12
+            _source_scroll()
+            break
+        pending_tokens.pop_front()
+        _source_scroll()
+        for character in token:
+            var glyphs: Dictionary = font_metrics.get("glyphs", {})
+            var metric: Dictionary = glyphs.get(str(character.unicode_at(0)), glyphs.get("63", {}))
+            for y in range(12):
+                for x in range(int(metric.get("width", 0))):
+                    var color := source_font_image.get_pixel(int(metric.get("x", 0)) + x, y)
+                    # Original VGA palette stores RGB6; native runtime expands by <<2.
+                    color = Color8(color.r8 & 252, color.g8 & 252, color.b8 & 252, color.a8)
+                    if color.a > 0 and text_cursor.x + x < 170:
+                        panel_image.set_pixel(text_cursor.x + x, text_cursor.y + y, color)
+            text_cursor.x += int(metric.get("advance", 0))
+    panel_texture.update(panel_image)
+    queue_redraw()
+
+func request_source_startup() -> void:
+    if startup_requested or startup_started:
+        return
+    startup_requested = true
+    if active and display_mode == "environment_result":
+        _begin_source_startup()
+
+func _begin_source_startup() -> void:
+    if startup_started:
+        return
+    startup_started = true
+    hint_counter = 1
+    hint_polls = 0
+    hint_timer_active = true
+    for id in [86, 138]:
+        _enqueue_source_text(String(source.get("source_messages", {}).get(str(id), "")))
+    display_mode = "source_startup"
+
+func _process(_delta: float) -> void:
+    if not active:
+        return
+    _source_text_poll()
+    if not hint_timer_active:
+        return
+    hint_polls += 1
+    if hint_polls < 100:
+        return
+    hint_polls = 0
+    # WORLD timer 2 and flag 29: source presentation polls, never inferred Hz.
+    if not pending_tokens.is_empty():
+        return
+    var id: int = HINT_MESSAGES[hint_counter - 1]
+    _enqueue_source_text(String(source.get("source_messages", {}).get(str(id), "")))
+    hint_counter += 1
+    if hint_counter > 3:
+        hint_timer_active = false
 
 func debug_snapshot() -> Dictionary:
     return {

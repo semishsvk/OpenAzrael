@@ -1333,6 +1333,11 @@ func _dispatch_trigger_edge(trigger_name: String, entered: bool) -> void:
         return
 
     var trigger_class := String(binding.get("class", "UNKNOWN_HOLD"))
+    if trigger_class == "hud_startup" and entered:
+        var menu = get_parent().get_node_or_null("LegacyMenuV145")
+        if menu != null and menu.scanner_runtime != null:
+            menu.scanner_runtime.request_source_startup()
+        return
     if trigger_class == "activation_enter" and entered:
         var one_shot_flag := String(binding.get("one_shot_flag", ""))
         if not one_shot_flag.is_empty() and DemoState.flag(one_shot_flag):
@@ -1383,7 +1388,13 @@ func _update_diagnostic_trigger_states() -> void:
         var trigger_name := String(trigger.get("name", ""))
         if trigger_name.is_empty():
             continue
-        var inside := _inside_trigger(player.global_position, trigger)
+        var contact_position: Vector3 = player.global_position
+        var binding := _trigger_binding(current_room_id, trigger_name)
+        if String(binding.get("class", "")) == "hud_startup":
+            var camera := player.get_node_or_null("Camera3D") as Camera3D
+            if camera != null:
+                contact_position = camera.global_position
+        var inside := _inside_trigger(contact_position, trigger)
         var had_state := _diagnostic_inside.has(trigger_name)
         var was_inside := bool(_diagnostic_inside.get(trigger_name, false))
         if not had_state or was_inside != inside:
@@ -1391,7 +1402,7 @@ func _update_diagnostic_trigger_states() -> void:
             CandidateDiagnostics.observe_trigger(current_room_id, trigger_name, inside)
             # Preserve the existing quiet-initial-state rule: room spawn seeds
             # overlap state but does not masquerade as a player crossing.
-            if had_state:
+            if had_state or (inside and bool(binding.get("initial_overlap", false))):
                 _dispatch_trigger_edge(trigger_name, inside)
 
 func _process(delta: float) -> void:

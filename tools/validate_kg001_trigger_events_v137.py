@@ -42,7 +42,7 @@ def main():
     )
 
     allowed = {
-        "transition", "activation_enter", "condition_zone", "state_visual",
+        "transition", "activation_enter", "hud_startup", "condition_zone", "state_visual",
         "helper_geometry", "support_collision", "UNKNOWN_HOLD", "hazard_HOLD"
     }
     checks["classes_explicit"] = all(

@@ -36,7 +36,7 @@ def verify_file(root: Path, name: str, spec: dict) -> Path:
     return path
 
 
-def hud_message(blob: bytes, index: int, fmt: dict) -> str:
+def hud_message(blob: bytes, index: int, fmt: dict, preserve_layout: bool = False) -> str:
     table_offset = int(fmt["table_offset"])
     entry_size = int(fmt["entry_size"])
     record = table_offset + index * entry_size
@@ -46,7 +46,8 @@ def hud_message(blob: bytes, index: int, fmt: dict) -> str:
     payload_length = struct.unpack_from("<H", blob, record + 4)[0]
     if payload_offset + payload_length > len(blob):
         raise ValueError(f"HUDMES index {index}: payload out of range")
-    return blob[payload_offset : payload_offset + payload_length].rstrip(b"\x00").decode("cp437").rstrip()
+    text = blob[payload_offset : payload_offset + payload_length].rstrip(b"\x00").decode("cp437")
+    return text if preserve_layout else text.rstrip()
 
 
 def wav_metadata(path: Path) -> dict:
@@ -122,6 +123,7 @@ def main() -> int:
         "status": "PASS",
         "scan_status": scan_status,
         "boot": boot,
+        "source_messages": {str(idx): hud_message(hud_blob, idx, fmt, preserve_layout=True) for idx in list(range(3,16))+[86,136,137,138,139]},
         "rooms": rooms,
         "audio": {
             "hud_boot": {"path": "res://assets/ui/legacy_menu/HUD3.wav", **hud_meta},

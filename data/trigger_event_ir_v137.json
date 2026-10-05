@@ -24,9 +24,10 @@
       },
       {
         "trigger": "zxentry",
-        "class": "UNKNOWN_HOLD",
-        "confidence": "UNKNOWN",
-        "reason": "Authored activation-looking plane; exact demo side effect not yet source-bound."
+        "class": "hud_startup",
+        "confidence": "EXECUTABLE_AND_WORLD_VERIFIED",
+        "authority": "data/ui/legacy_hud_startup_v215.json",
+        "initial_overlap": true
       },
       {
         "trigger": "zyR05",
