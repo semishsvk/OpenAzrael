@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,14 +26,28 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T15:10:09.773134+00:00",
+  "released_at": "2026-10-05T16:19:37.171561+00:00",
   "reconciliation": {
-    "blocker": "R1_PRODUCTION_START_CAMERA_DOES_NOT_MATCH_CANONICAL_ORIGINAL_RUNTIME",
+    "status": "BLOCKED",
+    "head": "0fe3a2abf55eccb236a065ed7c047eb529eedb07",
+    "tree": "b6236b3b7161fd7b201cec7766e96a1430b5d81c",
+    "primary_blocker": "R1_PRODUCTION_PROJECTION_DOES_NOT_MATCH_CANONICAL_ORIGINAL_RUNTIME",
+    "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "git_status": [],
+    "sync_state": "12 local commits ahead of integration remote, including this verified repair; retained locally, unrelated prior commits not pushed",
     "task_processes_stopped": true,
-    "sync_state": "local candidate HEAD remains ahead of remote; no integration commits pushed",
-    "head": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc"
+    "validation": {
+      "startup_controls_pitch_checks": 10,
+      "physical_traversal_checks": 62,
+      "transition_continuity_checks": 8,
+      "all_four_portals_pass": true
+    },
+    "visual_sha256": "9700620853696b5bbe5130503b2a592c87b8a40613e8f7aa81eec63bba09f19f",
+    "comparison_sha256": "31a628a879f599053ec4ee91553cafd195ef01333403eee8c2cbcb2ce7b6de35",
+    "final_label_applied": false,
+    "final_export_performed": false,
+    "release_freeze_performed": false,
+    "v201_evidence_sha256": "c1dac9504278a36e61ced9682f80ebc78fce7fc0c35557f1d5e3886acf0d2cb6"
   },
   "acquired_at": "2026-10-05T15:17:23.161004+00:00"
 }
