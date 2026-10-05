@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,20 +26,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T18:22:40.767173+00:00",
+  "released_at": "2026-10-05T18:37:58.680910+00:00",
   "reconciliation": {
     "head": "5750cc250f1c15c1e9e886e5321fa460894e6316",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "LOCAL_COMMITS_NOT_PUSHED; no unrelated history published",
+    "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
-    "status": "BLOCKED",
-    "primary_blocker": "R1_CONTEXTUAL_CURSOR_MATCHED_STATE_ATTESTATION_PENDING",
+    "primary_blocker": "LOCAL_GAME_WINDOW_CONTROL_APPROVAL_TIMED_OUT",
     "final": false,
-    "visual_receipt_sha256": "1f5971b35bb727f1eabc1c5ffdf3f80297878469b3d44e02bf0460a0ccf0d9f0",
-    "original_session_stopped": true,
-    "capture_completed": true,
-    "validation_completed": true
+    "visual_sha256": "89f5499e44b986fe01b7860b476455c6d138a1d296fde904d40aff0b7ea62594"
   },
   "acquired_at": "2026-10-05T18:28:56.755072+00:00"
 }
