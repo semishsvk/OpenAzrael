@@ -37,6 +37,8 @@ def main()->int:
             destination=OUT_ROOT/(Path(spec["file"]).stem+".png")
             destination.parent.mkdir(parents=True,exist_ok=True)
             category=str(spec["category"])
+            if category == "hud_frame":
+                indexed.putpalette([int(value) & 252 for value in indexed.getpalette()])
             use_index0_alpha=category in {"hud_frame","save_preview","replay_animation","font_strip"}
             if use_index0_alpha:
                 rgba=indexed.convert("RGBA")
@@ -58,6 +60,7 @@ def main()->int:
                 "width":indexed.width,
                 "height":indexed.height,
                 "alpha_policy":alpha_policy,
+                "palette_policy":"SOURCE_VGA_RGB6_EXPANDED" if category == "hud_frame" else "SOURCE_PCX_RGB8",
             })
     RECEIPT.parent.mkdir(parents=True,exist_ok=True)
     receipt={"schema":"openazrael.menu_lab.restore","version":144,"status":"PASS","asset_count":len(rows),"files":rows}
