@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,17 +26,22 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T19:10:39.742263+00:00",
+  "released_at": "2026-10-05T19:24:45.689278+00:00",
   "reconciliation": {
-    "head": "9832d26787c9c796bf5ec851de880cf548bcfe17",
+    "head": "9f181fe4c334ede7861c769648009290aa15d56c",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
-    "primary_blocker": "R1_ORIGINAL_CONTEXTUAL_DOOR_MARKER_ABSENT_IN_CANDIDATE",
+    "primary_blocker": "MENU_HUD_ORIGINAL_CONTROL_INSTRUCTIONS_REPLACED_BY_ENVSCAN",
     "final": false,
-    "visual_sha256": "92eac05d7339353e6ebdeb05abc38251190151434da3c8a110e042eb2f5082fd",
-    "production_changes_this_audit": false
+    "visual_sha256": "cae6c33e507bff5bbafa29a5f06a487fb644611be392db62f1bb7bc936e81498",
+    "v201_status": "BLOCKED",
+    "feature_tests": {
+      "help_and_cursor_after_manifest": 35,
+      "orientation_and_menu_cursor_compass": 100,
+      "help_orientation_cursor_toggle_before_manifest": 75
+    }
   },
   "acquired_at": "2026-10-05T19:14:15.132361+00:00"
 }
