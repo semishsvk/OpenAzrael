@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,9 +26,9 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T20:57:49.853672+00:00",
+  "released_at": "2026-10-05T21:16:26.855438+00:00",
   "reconciliation": {
-    "head": "9c48826d1811b20260ab62aaf9885242833386fe",
+    "head": "eb133b4e67756d7906658c39620083a87f885985",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
@@ -36,11 +36,11 @@
     "primary_blocker": "ROOM3_WINDOWS_MATCHED_ORIGINAL_RUNTIME_FRAMEBUFFER_REFERENCE_MISSING",
     "final": false,
     "visual_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_runtime.json",
-    "visual_sha256": "ac9f4565eb3a571ebd923e1b7d265930ba8db0f7c1e2c2c35c81f8b7359daccc",
-    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_9c48826_v201.json",
-    "v201_sha256": "060678fbdceb5fa89ea6671cf2116a9e039c6794a3cab757505679d3e62a1919",
+    "visual_sha256": "67b9c44f71a5f0bd74a749d61db9168c724b65bd40bd8c2b589983e7c3662c23",
+    "v201_path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_eb133b4_v201.json",
+    "v201_sha256": "48e84d98b71375bcdc58f57001433341979449d49408ed4b9d2708522f0fbddd",
     "v201_status": "BLOCKED",
-    "current_head_capture_sha256": "472ba91e2dc5c26e53d3eecd15e0afca19bd54ddba2f34ee630106456e1cc632",
+    "current_head_capture_sha256": "5370903dff3641d5a65021339ed80f33b269449757195f9d763845c5c002608d",
     "hud_comparison": {
       "direct_gpu_lower_hud_samples": 95873,
       "direct_gpu_matching_original_pixels": 95873,
@@ -97,6 +97,9 @@
         }
       }
     ],
+    "gameplay_tested_head": "c77e5d68111038db4dd936b5a83e96b1e47efa68",
+    "gameplay_code_equivalence_verified": true,
+    "packaged_export_receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\candidate6_modern_export_v220.json",
     "source_health_gating_scope": "Normal gameplay only; scripted source global and blocking-menu pause semantics not fully attested."
   },
   "acquired_at": "2026-10-05T21:05:06.550533+00:00"
