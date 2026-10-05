@@ -11,16 +11,6 @@
   "note": "User explicitly requested preventing recurring lease conflicts. Scope: coordination branch lifecycle tooling/policy only; Candidate 6 remains paused awaiting Framework Phase 2. No integration source changes or build runs.",
   "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "queue": [],
-  "active_run": {
-    "run_id": "4f3a39d8-3c0f-4c0f-8e48-7c493eef583b",
-    "host": "HomePC",
-    "supervisor_pid": 36764,
-    "started_at": "2026-10-05T14:05:09.108976+00:00",
-    "cwd": "F:\\OpenRemaster\\OpenAzrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-c",
-      "print('writer_guard_live_smoke_PASS')"
-    ]
-  }
+  "active_run": null,
+  "last_seen_at": "2026-10-05T14:05:10.641438+00:00"
 }
