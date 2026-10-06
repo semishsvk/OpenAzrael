@@ -2,10 +2,12 @@ extends CharacterBody3D
 class_name EugeneControllerV193
 
 const SOURCE_SPEED := 12.0
-# Modern elapsed-time calibration: source ANI provides SPEED 12, but the
-# original executable's update cadence remains unmeasured. Do not multiply
-# it by Godot physics FPS or present this calibration as original pacing.
-const MOVEMENT_CLOCK_STATUS := "MODERN_SECONDS_CALIBRATION_ORIGINAL_CADENCE_UNATTESTED"
+# SOURCE_SPEED is a displacement per source update, not units/second.
+# Match the existing restored clip clock (15 source frames/second) while
+# keeping elapsed-time movement independent of Godot physics FPS. This is
+# a presentation calibration; original executable cadence is unmeasured.
+@export var movement_updates_per_second := 15.0
+const MOVEMENT_CLOCK_STATUS := "CLIP_CLOCK_CALIBRATION_ORIGINAL_CADENCE_UNATTESTED"
 const SOURCE_CANDIDATE_DISTANCE := 80.0
 const SOURCE_RECOVERY_UPDATES := 50
 const SOURCE_MAX_HEADING_ATTEMPTS := 20
@@ -103,7 +105,7 @@ func _physics_process(delta: float) -> void:
         return
     if source_direction.length_squared() <= 0.0:
         return
-    var motion := _horizontal_motion(source_direction, SOURCE_SPEED * delta)
+    var motion := _horizontal_motion(source_direction, SOURCE_SPEED * movement_updates_per_second * delta)
     if test_move(global_transform, motion):
         _play_source_family("REST")
         _arm_recovery()

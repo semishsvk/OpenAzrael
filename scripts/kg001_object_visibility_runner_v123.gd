@@ -54,6 +54,9 @@ func _settle(frames: int = 2) -> void:
         await process_frame
 
 func _walk(node: Node, out: Array[Node]) -> void:
+    # Room XAF census excludes independently restored character meshes.
+    if String(node.name).begins_with("SourceCharacter_"):
+        return
     out.append(node)
     for child in node.get_children():
         _walk(child, out)

@@ -32,6 +32,7 @@ func _ready() -> void:
     text_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
     content.add_child(text_label)
     footer_label = Label.new()
+    footer_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     content.add_child(footer_label)
     panel.add_child(content)
     add_child(panel)
@@ -39,14 +40,15 @@ func _ready() -> void:
     _reflow()
     room_manager.conversation_presented.connect(_on_conversation_presented)
 
-# Keep dialogue inside the source 552x282 world view, above the lower HUD.
+# Keep dialogue to the right of the character view and above the lower HUD.
+# The previous full-width panel concealed Niamh throughout her rise/REST.
 # Placement is an authored usability fix until the original dialogue frame is captured.
 func _reflow() -> void:
     var size := get_viewport().get_visible_rect().size
     var scale_factor := minf(size.x / 640.0, size.y / 480.0)
     var origin := (size - Vector2(640, 480) * scale_factor) * 0.5
-    panel.position = origin + Vector2(44, 184) * scale_factor
-    panel.size = Vector2(552, 142) * scale_factor
+    panel.position = origin + Vector2(380, 84) * scale_factor
+    panel.size = Vector2(216, 242) * scale_factor
     text_label.add_theme_font_size_override("normal_font_size", maxi(12, roundi(12 * scale_factor)))
     footer_label.add_theme_font_size_override("font_size", maxi(10, roundi(10 * scale_factor)))
 
@@ -82,12 +84,12 @@ func _on_conversation_presented(payload: Dictionary) -> void:
     CandidateDiagnostics.record_event("conversation_ui", {"status":"OPEN","character":"Niamh","family":family,"choices":choices.size(),"ir":"v209"})
 
 func _refresh_choices() -> void:
-    var body := "[b]Conversation — Niamh[/b]\n\n"
+    var body := "[b]Conversation â€” Niamh[/b]\n\n"
     for i in range(choices.size()):
         var row: Dictionary = choices[i]
         var prefix := "[b]>[/b] " if i == selected else "  "
         body += prefix + String(row.get("player_text","")) + "\n"
-    body += "\n[W/S or ↑/↓] Select    [E / Enter] Speak    [Esc] Leave"
+    body += "\n[W/S or â†‘/â†“] Select    [E / Enter] Speak    [Esc] Leave"
     text_label.text = body
     text_label.scroll_to_line(selected + 2)
 

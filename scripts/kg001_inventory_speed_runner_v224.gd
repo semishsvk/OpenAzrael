@@ -49,7 +49,7 @@ func run_test():
         npc.set_physics_process(false);npc.configure(Vector3.RIGHT,null,null)
         for tick in range(ticks):npc.call("_physics_process",1.0/float(ticks))
         distances.append(npc.global_position.x)
-        ck("NPC_seconds_speed_"+str(ticks),absf(npc.global_position.x-12.0)<0.001)
+        ck("NPC_seconds_speed_"+str(ticks),absf(npc.global_position.x-180.0)<0.001)
         npc.queue_free()
     var result={"status":"PASS" if failures.is_empty() else "FAIL","checks":checks,"failed":failures,"inventory":snap,"NPC_distance_per_second_30_60_120_ticks":distances,"source_pacing_attested":false,"pickup_test_scope":"Production E input and interaction probe; camera relocated for isolated regression, not a physical full-demo route"}
     var f=FileAccess.open(out+("headless" if DisplayServer.get_name()=="headless" else "GPU")+"_inventory_speed.json",FileAccess.WRITE);f.store_string(JSON.stringify(result,"  "))

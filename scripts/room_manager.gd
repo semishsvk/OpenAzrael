@@ -525,6 +525,16 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                     # of the well. Keep the character's XAF axes and use only
                     # the source room placement pivot.
                     character_root.position = target.position
+                    if character == "Niamh":
+                        # nibody's XAF pivot is offset from its visible body.
+                        # Preserve the source vertical animation origin, but
+                        # align X/Z to the authored proxy geometry rather than
+                        # placing the restored body behind pipes2well.
+                        var proxy_bounds := _node_global_bounds(target)
+                        var proxy_center := proxy_bounds.get_center()
+                        character_root.global_position = Vector3(
+                            proxy_center.x, target.global_position.y, proxy_center.z
+                        )
                     _prepare_source_character_materials(character_root)
                     # The R7 nibody mesh is a static placement proxy. Do not
                     # render it together with the restored source character.

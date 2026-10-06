@@ -28,6 +28,7 @@ func _run():
         for tick in range(180):await physics_frame
         check("Eugene_production_moves_without_test_arming",e.global_position.distance_to(e_before)>1.0)
     m.load_room("R7",false);await process_frame
+    scene.get_node("Player").teleport_eye_to(Vector3(17.51384,3.785862,-32.31179),Vector3(-0.773586,-0.179026,0.607878))
     m.call("_on_character_animation_requested",{"character":"Niamh","family":"NOLOOP1","target_object":"nibody","source_required":true,"next_family":"REST"})
     var n=m.current_room.find_child("SourceCharacter_Niamh",true,false)
     check("Niamh_runtime_spawn",n!=null)
@@ -45,6 +46,14 @@ func _run():
         check("Niamh_room_proxy_rotation_not_applied",n.basis.is_equal_approx(Basis.IDENTITY))
         await create_timer(0.6).timeout
         check("Niamh_enters_REST",n.get_node("SourceCharacterAnimation").current_animation=="REST")
+        var head=n.find_child("NIHEAD1__mesh",true,false) as MeshInstance3D
+        var cam=scene.get_node("Player/Camera3D") as Camera3D
+        var head_center=(head.global_transform*head.get_aabb()).get_center()
+        var query=PhysicsRayQueryParameters3D.create(cam.global_position,head_center,1)
+        check("Niamh_head_not_occluded_by_well_pipes",cam.get_world_3d().direct_space_state.intersect_ray(query).is_empty())
+        var pixel=cam.unproject_position(head_center)
+        check("Niamh_head_inside_gameplay_view",Rect2(Vector2(225,108),Vector2(828,388)).has_point(pixel))
+        check("dialogue_does_not_cover_Niamh_head",not Rect2(ui.panel.position,ui.panel.size).has_point(pixel))
     paused=false;scene.queue_free()
     print("V223_CHARACTER_PLACEMENT "+JSON.stringify({"status":"PASS" if failed.is_empty() else "FAIL","checks":checks,"failed":failed,"scope":"source keys and pose motion; no original runtime visual attestation"}))
     quit(0 if failed.is_empty() else 1)
