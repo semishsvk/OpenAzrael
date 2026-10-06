@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-flythrough-20261006-bcc1961",
   "owner": "01a10f88-050f-7cc3-9371-562150868ddd",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,13 +26,14 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-06T09:35:44.805708+00:00",
+  "released_at": "2026-10-06T10:05:41.466331+00:00",
   "reconciliation": {
-    "head": "c4a07a57cecd101779d502d9ab07d5fb1a69ea54",
+    "head": "c6504cca6b733c0538aff1ef4e2c6c5a8d16c48c",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "READ_ONLY_AUTHORITATIVE_CHECKOUT_PRESERVED",
-    "task_processes_stopped": true
+    "sync_state": "LOCAL_REPAIR_COMMIT_PRESERVED_NOT_PUSHED",
+    "task_processes_stopped": true,
+    "receipt": "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6a29189df1888191897b87a467fbd556\\work\\npc-repair\\repair_build_receipt.json"
   },
   "acquired_at": "2026-10-06T09:51:54.836636+00:00"
 }
