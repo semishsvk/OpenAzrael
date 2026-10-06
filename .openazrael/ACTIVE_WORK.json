@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "eaa99a84-d597-46f8-a2d7-65e8dc615610",
-    "host": "HomePC",
-    "supervisor_pid": 63932,
-    "started_at": "2026-10-06T08:14:28.117919+00:00",
-    "cwd": "F:\\OpenRemaster\\OpenAzrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\fix_character_placement_v223.py"
-    ]
-  },
-  "last_seen_at": "2026-10-06T08:13:46.946790+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-06T08:14:29.503312+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
