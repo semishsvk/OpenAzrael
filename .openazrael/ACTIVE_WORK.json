@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-flythrough-20261006-bcc1961",
   "owner": "01a10f88-050f-7cc3-9371-562150868ddd",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,7 +26,7 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-06T06:21:54.577118+00:00",
+  "released_at": "2026-10-06T06:23:37.335673+00:00",
   "reconciliation": {
     "head": "9f3fc70b2ff01fa5377d1ff98e9a23efb6dbd9ab",
     "git_status": "",
