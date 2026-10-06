@@ -22,6 +22,12 @@
       "lease_id": "c6-flythrough-20261006-bcc1961",
       "enqueued_at": "2026-10-06T07:13:54.511227+00:00",
       "state": "ready"
+    },
+    {
+      "thread_id": "01a10de9-105c-72c3-83b3-bec06c00020d",
+      "lease_id": "orch-openazrael-commission-20261006",
+      "enqueued_at": "2026-10-06T08:05:00.960102+00:00",
+      "state": "ready"
     }
   ],
   "active_run": null,
