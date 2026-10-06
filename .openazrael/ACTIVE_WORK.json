@@ -1,18 +1,18 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "c6-final-fidelity-20261005",
-  "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
+  "status": "active",
+  "lease_id": "c6-flythrough-20261006-bcc1961",
+  "owner": "01a10f88-050f-7cc3-9371-562150868ddd",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "Writer lifecycle v2 is active. Before mutation read .openazrael/WRITER_PROTOCOL.md on coordination/single-writer. A resumed turn with the same owner_thread_id + lease_id is the same owner. Foreign active writer => enqueue and retry later; do not ask for takeover of live work. Waiting/completion must release with reconciliation and stopped task processes. No time-based stealing. Use the installed lease.py foreground run guard. Candidate 6 target HEAD unchanged; it waits for Framework Phase 2.",
-  "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
+  "owner_thread_id": "01a10f88-050f-7cc3-9371-562150868ddd",
   "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-05T21:29:12.661598+00:00",
+  "last_seen_at": "2026-10-06T04:48:51.590629+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -66,5 +66,5 @@
       "original-runtime pacing reference"
     ]
   },
-  "acquired_at": "2026-10-05T21:19:09.555584+00:00"
+  "acquired_at": "2026-10-06T04:48:51.590629+00:00"
 }
