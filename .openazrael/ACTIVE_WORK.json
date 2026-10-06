@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "e97defe1-bc1a-40fa-8f9f-78cc2e35a12a",
-    "host": "HomePC",
-    "supervisor_pid": 71556,
-    "started_at": "2026-10-06T08:20:47.295889+00:00",
-    "cwd": "F:\\OpenRemaster\\OpenAzrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\export_current_candidate_v221.py"
-    ]
-  },
-  "last_seen_at": "2026-10-06T08:20:30.305349+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-06T08:20:57.487766+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
