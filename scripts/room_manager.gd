@@ -519,7 +519,12 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                     character_root = packed.instantiate()
                     character_root.name = "SourceCharacter_" + character
                     target.get_parent().add_child(character_root)
-                    character_root.transform = target.transform
+                    # nibody is the room's static corpse proxy, not the animated
+                    # character coordinate frame. Its basis maps source Y into
+                    # the horizontal plane and prevents the authored rise out
+                    # of the well. Keep the character's XAF axes and use only
+                    # the source room placement pivot.
+                    character_root.position = target.position
                     _prepare_source_character_materials(character_root)
                     # The R7 nibody mesh is a static placement proxy. Do not
                     # render it together with the restored source character.

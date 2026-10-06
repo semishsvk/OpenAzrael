@@ -59,9 +59,10 @@ def node_paths(text):
 def fmt(x): return f"{float(x):.9g}"
 def vec3(v): return "Vector3("+", ".join(fmt(x) for x in v)+")"
 def quat(v):
-    # XAF rotate_keys are scalar-first (w,x,y,z); Godot Quaternion is x,y,z,w.
+    # XAF row-vector rotation keys are scalar-first; transposition to Godot
+    # column-vector transforms conjugates the quaternion (x,y,z -> -x,-y,-z).
     w,x,y,z=v
-    return "Quaternion("+", ".join(fmt(q) for q in (x,y,z,w))+")"
+    return "Quaternion("+", ".join(fmt(q) for q in (-x,-y,-z,w))+")"
 
 def clipped(keys,start,end):
     rows=[r for r in keys if start<=int(r[0])<=end]
@@ -99,7 +100,7 @@ def write_clip(path,name,start,end,tracks,fps):
                   fmt(value)
                   for time, row in zip(times, rows)
                   for value in ([time, 1.0] + (
-                      list(row[2:]) + [row[1]] if typ == "rotation_3d" else list(row[1:])
+                      [-value for value in row[2:]] + [row[1]] if typ == "rotation_3d" else list(row[1:])
                   ))
               )+')'
             ]

@@ -15,16 +15,17 @@ var _source_animation_family := ""
 var source_movement_armed := false
 
 func configure(direction: Vector3, rand_service: Node, movement_helper: Node) -> void:
-    # NPC*.DAT direction is source-authored facing/state.  It is not, by
-    # itself, executable proof that autonomous movement begins at spawn.
+    # A zero random-recovery countdown does not disable ordinary movement.
+    # R.EXE file 0x848AB jumps to its normal update at 0x848CE when the
+    # countdown is zero; only the recovery/random branch is conditional.
     source_direction = direction.normalized()
     shared_rand = rand_service
     movement = movement_helper
-    source_movement_armed = false
+    source_movement_armed = true
 
 func arm_source_movement() -> void:
-    # Call only from an executable/source-backed movement action.  Spawn does
-    # not arm autonomous movement (R.EXE v191/v192 evidence).
+    # Resume ordinary movement without consuming the shared random stream.
+    # Random heading selection remains limited to collision recovery.
     source_movement_armed = true
 
 func disarm_source_movement() -> void:
