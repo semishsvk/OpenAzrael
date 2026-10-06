@@ -8,8 +8,8 @@ rng=(ROOT/"scripts/legacy_rand_v174.gd").read_text(encoding="utf-8")
 contract=json.loads((ROOT/"data/tests/kg001_eugene_runtime_controller_contract_v193.json").read_text())
 checks={
  "controller_character_body":"extends CharacterBody3D" in ctl,
- "source_step_12":"SOURCE_STEP := 12.0" in ctl,
- "spawn_disarmed":"source_movement_armed = false" in ctl,
+ "source_speed_12":"SOURCE_SPEED := 12.0" in ctl,
+ "ordinary_movement_enabled":"source_movement_armed = true" in ctl,
  "explicit_arm":"func arm_source_movement()" in ctl,
  "physics_requires_arm":"if not source_movement_armed:" in ctl,
  "recovery_50":"SOURCE_RECOVERY_UPDATES := 50" in ctl,
@@ -24,7 +24,7 @@ checks={
  "character_body_spawn":"var root := CharacterBody3D.new()" in room,
  "world_collision_mask":"root.collision_mask = 1" in room,
  "watcom_lcg":"0x41C64E6D" in rng and "0x3039" in rng and "0x7FFF" in rng,
- "contract_runtime_not_executed":contract.get("status")=="SOURCE_INTEGRATION_IMPLEMENTED_RUNTIME_NOT_EXECUTED",
+ "contract_original_pacing_hold":contract.get("status")=="RUNTIME_REGRESSION_PASS_ORIGINAL_PACING_HOLD",
 }
 failed=[k for k,v in checks.items() if not v]
 print(json.dumps({

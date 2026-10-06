@@ -39,12 +39,17 @@ const INVENTORY_FONT_CELL_SIZE := Vector2(10, 12)
 const INVENTORY_FONT_FIRST_CODEPOINT := 35
 const INVENTORY_FONT_CELL_COUNT := 138
 const INVENTORY_SPACE_ADVANCE := 3.0
-const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield"]
+const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield", "tapestry_piece_1", "tapestry_piece_3", "tapestry_piece_4", "parchment_r1"]
 const INVENTORY_ITEM_LABELS := {
     "rusty_tongs": "Rusty tongs",
     "well_key": "Key",
     "r8_lens": "Lens",
     "shield": "Shield",
+    # Canonical WORLD.DAT carried-object descriptions, not internal item IDs.
+    "tapestry_piece_1": "Tapestry Piece",
+    "tapestry_piece_3": "Tapestry Piece",
+    "tapestry_piece_4": "Tapestry Piece",
+    "parchment_r1": "Page",
 }
 # Evidence-constrained, non-overlapping label regions measured from SAVE13.PCX.
 # Exact 1996 input hitboxes remain HOLD until original runtime capture proves them.
@@ -92,6 +97,7 @@ var pending_action := ""
 var selected_slot := 0
 var volume_target := ""
 var inventory_scroll := 0
+var _last_inventory_ids: Array[String] = []
 var _scale := 1.0
 var _offset := Vector2.ZERO
 
@@ -248,15 +254,22 @@ func _inventory_draw_line(text: String, row: int) -> void:
     if atlas == null:
         return
     var x := 0.0
+    # Keep the canonical font and full object name visible in the narrow box.
+    # Only long labels compress horizontally; short source labels stay 10px.
+    var full_width := 0.0
+    for character in text:
+        full_width += INVENTORY_SPACE_ADVANCE if character == " " else INVENTORY_FONT_CELL_SIZE.x
+    var label_scale := minf(1.0, INVENTORY_RECT.size.x / maxf(full_width, 1.0))
+    var glyph_width := INVENTORY_FONT_CELL_SIZE.x * label_scale
     for character in text:
         if character == " ":
-            x += INVENTORY_SPACE_ADVANCE
+            x += INVENTORY_SPACE_ADVANCE * label_scale
             continue
         var codepoint := _inventory_glyph_codepoint(character)
         var cell := codepoint - INVENTORY_FONT_FIRST_CODEPOINT
         if cell < 0 or cell >= INVENTORY_FONT_CELL_COUNT:
             cell = 63 - INVENTORY_FONT_FIRST_CODEPOINT
-        if x + INVENTORY_FONT_CELL_SIZE.x > INVENTORY_RECT.size.x:
+        if x + glyph_width > INVENTORY_RECT.size.x + 0.01:
             break
         var region := AtlasTexture.new()
         region.atlas = atlas
@@ -265,12 +278,13 @@ func _inventory_draw_line(text: String, row: int) -> void:
         glyph.texture = region
         glyph.position = Vector2(x, float(row) * INVENTORY_FONT_CELL_SIZE.y)
         glyph.size = INVENTORY_FONT_CELL_SIZE
+        glyph.scale = Vector2(label_scale, 1.0)
         glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-        glyph.stretch_mode = TextureRect.STRETCH_KEEP
+        glyph.stretch_mode = TextureRect.STRETCH_SCALE
         glyph.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
         glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
         inventory_text_layer.add_child(glyph)
-        x += INVENTORY_FONT_CELL_SIZE.x
+        x += glyph_width
 
 func _refresh_inventory() -> void:
     if inventory_text_layer == null:
@@ -287,8 +301,13 @@ func _refresh_inventory() -> void:
         _inventory_draw_line(items[i], row)
         row += 1
     inventory_text_layer.visible = not title_open
+    _last_inventory_ids = _inventory_item_ids()
 
 func _on_inventory_changed() -> void:
+    var current_ids := _inventory_item_ids()
+    for index in range(current_ids.size()):
+        if not _last_inventory_ids.has(current_ids[index]):
+            inventory_scroll = maxi(0, index - INVENTORY_VISIBLE_ROWS + 1)
     _refresh_inventory()
     CandidateDiagnostics.record_event("legacy_inventory_changed", {
         "items": _inventory_item_ids(),

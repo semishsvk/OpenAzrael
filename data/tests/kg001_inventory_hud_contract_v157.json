@@ -60,6 +60,26 @@
       "id": "shield",
       "label": "Shield",
       "source": "ROOMS.DAT / gameplay event graph"
+    },
+    {
+      "id": "tapestry_piece_1",
+      "label": "Tapestry Piece",
+      "source": "canonical WORLD.DAT"
+    },
+    {
+      "id": "tapestry_piece_3",
+      "label": "Tapestry Piece",
+      "source": "canonical WORLD.DAT"
+    },
+    {
+      "id": "tapestry_piece_4",
+      "label": "Tapestry Piece",
+      "source": "canonical WORLD.DAT"
+    },
+    {
+      "id": "parchment_r1",
+      "label": "Page",
+      "source": "canonical WORLD.DAT"
     }
   ],
   "runtime_rules": [
@@ -70,7 +90,10 @@
     "unknown inventory ids are not rendered as invented player-facing labels",
     "arrow Up/Down scroll input is reserved for the inventory list when scrolling is possible",
     "inventory text uses source INVFONT fixed 10x12 cells; first codepoint 35",
-    "inventory scrolling must not consume cursor-key movement input"
+    "inventory scrolling must not consume cursor-key movement input",
+    "All canonical loose tapestry piece IDs are HUD-visible after production TAKE",
+    "Long names retain every source-font glyph with horizontal fit; this fit is a modern presentation choice, not original layout attestation",
+    "Newly acquired known items scroll into view"
   ],
   "pass_requires": [
     "inventory rect is [70,345,103,69]",
