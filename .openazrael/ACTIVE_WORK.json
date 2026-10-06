@@ -18,7 +18,18 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "01977a97-584a-4e96-b132-bf4cbd3f2fb7",
+    "host": "HomePC",
+    "supervisor_pid": 71340,
+    "started_at": "2026-10-06T07:13:07.803513+00:00",
+    "cwd": "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6a29189df1888191897b87a467fbd556\\work\\c6-current-3248faa",
+    "command": [
+      "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6a29189df1888191897b87a467fbd556\\work\\c6-current-3248faa\\run.py",
+      "body"
+    ]
+  },
   "last_seen_at": "2026-10-06T07:13:06.484951+00:00",
   "protocol": {
     "version": 2,
