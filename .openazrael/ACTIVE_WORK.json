@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "5a05c6e3-0c23-4000-8084-9fc429e1abb0",
+    "host": "HomePC",
+    "supervisor_pid": 56852,
+    "started_at": "2026-10-06T06:40:38.729516+00:00",
+    "cwd": "F:\\OpenRemaster\\OpenAzrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\niamh_proxy_alignment_v222.py"
+    ]
+  },
   "last_seen_at": "2026-10-06T06:40:11.275707+00:00",
   "protocol": {
     "version": 2,
