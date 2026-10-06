@@ -533,7 +533,11 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                         var proxy_bounds := _node_global_bounds(target)
                         var proxy_center := proxy_bounds.get_center()
                         character_root.global_position = Vector3(
-                            proxy_center.x, target.global_position.y, proxy_center.z
+                            # Modern emergence placement calibration uses the
+                            # NIAMH.ANI HEIGHT 33 to keep the REST torso above
+                            # the well rim. Source animation keys stay intact;
+                            # original runtime placement remains unattested.
+                            proxy_center.x, target.global_position.y + 33.0, proxy_center.z
                         )
                     _prepare_source_character_materials(character_root)
                     # The R7 nibody mesh is a static placement proxy. Do not

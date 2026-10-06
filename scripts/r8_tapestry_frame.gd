@@ -29,15 +29,20 @@ func _align_piece_to_frame() -> void:
         return
     # XAF evidence shows the completed tapestry meshes are staged ~493.7 X units
     # away from the corresponding frames with essentially the same orientation.
-    # Preserve the piece basis and translate its visual bounds onto the frame bounds.
+    # Installed pieces use the frame orientation. The staged tapestry4 has a
+    # one-degree pitch which clips its upper half behind the frame backing.
+    # Keep authored vertices/UVs; correct only the placement transform.
     var piece_mesh := _first_mesh(piece_visual)
     var frame_mesh := _first_mesh(frame_visual)
     if piece_mesh == null or frame_mesh == null:
         piece_visual.global_position = frame_visual.global_position
         return
+    piece_visual.global_basis = frame_visual.global_basis
     var pc := _mesh_world_center(piece_mesh)
     var fc := _mesh_world_center(frame_mesh)
-    piece_visual.global_position += fc - pc
+    # Separate coincident front faces; repeated sync remains idempotent.
+    var outward := frame_visual.global_basis.z.normalized()
+    piece_visual.global_position += fc - pc + outward * 0.05
 
 func _first_mesh(root: Node) -> MeshInstance3D:
     if root is MeshInstance3D:
