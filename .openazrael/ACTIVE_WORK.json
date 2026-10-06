@@ -16,6 +16,12 @@
       "lease_id": "c6-final-fidelity-20261005",
       "enqueued_at": "2026-10-06T06:52:45.223491+00:00",
       "state": "ready"
+    },
+    {
+      "thread_id": "01a10f88-050f-7cc3-9371-562150868ddd",
+      "lease_id": "c6-flythrough-20261006-bcc1961",
+      "enqueued_at": "2026-10-06T07:13:54.511227+00:00",
+      "state": "ready"
     }
   ],
   "active_run": null,
