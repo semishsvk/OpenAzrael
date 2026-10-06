@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "4a381fb3-4608-4b2a-8c50-d70b331c1bf3",
+    "host": "HomePC",
+    "supervisor_pid": 69312,
+    "started_at": "2026-10-06T06:35:01.648410+00:00",
+    "cwd": "F:\\OpenRemaster\\OpenAzrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\fix_animation_keys_v222.py"
+    ]
+  },
   "last_seen_at": "2026-10-06T06:34:34.415187+00:00",
   "protocol": {
     "version": 2,
