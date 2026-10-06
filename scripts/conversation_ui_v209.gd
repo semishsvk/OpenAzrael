@@ -117,9 +117,12 @@ func _unhandled_input(event: InputEvent) -> void:
             # source-backed exchange. This is runtime state only until the raw
             # condition/action tuples are semantically decoded.
             if family == "1A":
-                family = "1B"
+                # Retail has a 1B topic family, but canonical ATDEMO does not.
+                # Advance only when the active source IR actually provides it.
                 var next := _load_family("1B")
-                if not next.is_empty(): choices = next
+                if not next.is_empty():
+                    family = "1B"
+                    choices = next
             selected = clampi(selected,0,maxi(0,choices.size()-1))
             _refresh_choices()
         elif event.keycode == KEY_ESCAPE:

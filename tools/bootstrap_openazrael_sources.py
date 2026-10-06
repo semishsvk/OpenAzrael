@@ -101,6 +101,21 @@ def _prepare(args: argparse.Namespace) -> int:
             return proc.returncode
         prepared["demo"]["runtime_assets_restored"] = True
 
+    if "demo" in kinds:
+        demo_root = Path(prepared["demo"]["root"])
+        niamh_out = ROOT / "data/runtime_generated/niamh_conversation_ir_v209.json"
+        niamh_out.parent.mkdir(parents=True, exist_ok=True)
+        proc = subprocess.run(
+            [sys.executable, str(ROOT / "tools/extract_demo_niamh_ir_v253.py"),
+             str(demo_root / "NIAMH.DAT"), str(niamh_out)],
+            cwd=ROOT, text=True, encoding="utf-8", errors="replace",
+        )
+        if proc.returncode != 0:
+            _print({"status":"FAIL","action":"prepare","reason":"DEMO_NIAMH_IR_FAILED",
+                    "returncode":proc.returncode})
+            return proc.returncode
+        prepared["demo"]["niamh_ir_generated"] = True
+
     _print(
         {
             "status": "PASS",
