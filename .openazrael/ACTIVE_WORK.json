@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-flythrough-20261006-bcc1961",
   "owner": "01a10f88-050f-7cc3-9371-562150868ddd",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,45 +26,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-05T21:29:21.719347+00:00",
+  "released_at": "2026-10-06T04:49:03.607687+00:00",
   "reconciliation": {
     "head": "9f3fc70b2ff01fa5377d1ff98e9a23efb6dbd9ab",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
-    "task_processes_stopped": true,
-    "status": "CANDIDATE_BUILD_PASS_FINAL_BLOCKED",
-    "primary_blocker": "ROOM3_WINDOWS_MATCHED_ORIGINAL_RUNTIME_FRAMEBUFFER_REFERENCE_MISSING",
-    "evidence": [
-      {
-        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\pppv_v221_9f3fc70\\kg001_pppv_playthrough_evaluation.json",
-        "sha256": "b0829bfa66b0c1c90d1d484112f8c9a8ecf9a2092c1dc18c76b5b3586288cfe5"
-      },
-      {
-        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\pppv_v221_9f3fc70\\kg001_pppv_determinism.json",
-        "sha256": "eca289b24d5920f468c3d209caa0f30ad2d4edd7afed3d876faef084f767c682"
-      },
-      {
-        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\pppv_v221_9f3fc70\\current_head_identity.json",
-        "sha256": "ed8ed132a17fac16a00cc55291b8d3cd0b17c22961b865e963984d882a6c74d3"
-      },
-      {
-        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_visual_9f3fc70.json",
-        "sha256": "d77b4d9aefc2830ee2188ba6602ae7d9fdb914a18444543023e2fe0ed3f03fe8"
-      },
-      {
-        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\current_head_9f3fc70_v201.json",
-        "sha256": "0c65761fb5d78b2e84b898391e60bb4eb5a4155317d85d753778c92dda8b1e6a"
-      },
-      {
-        "path": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\candidate6_modern_export_v220.json",
-        "sha256": "9e9f30d4ef679704403f7df72b4d21f2b074071f480231af8e1d705a2cedbd6b"
-      }
-    ],
-    "other_unclosed_gates": [
-      "original-runtime visual checkpoints",
-      "original-runtime pacing reference"
-    ]
+    "sync_state": "READ_ONLY_AUTHORITATIVE_CHECKOUT_PRESERVED",
+    "task_processes_stopped": true
   },
   "acquired_at": "2026-10-06T04:48:51.590629+00:00"
 }
