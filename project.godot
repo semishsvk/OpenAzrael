@@ -25,6 +25,7 @@ LegacyEvents="*res://scripts/legacy_event_runner_v87.gd"
 CandidateDiagnostics="*res://scripts/candidate_diagnostics_v116.gd"
 CandidateMusic="*res://scripts/candidate_music_v135.gd"
 LocalizationManager="*res://scripts/localization_manager_v139.gd"
+PickupPreview="*res://scripts/pickup_preview_v226.gd"
 
 [input]
 move_forward={"deadzone":0.5,"events":[Object(InputEventKey,"physical_keycode":87)]}

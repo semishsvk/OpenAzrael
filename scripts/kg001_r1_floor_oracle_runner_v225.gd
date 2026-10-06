@@ -22,11 +22,15 @@ func _run()->void:
         parchment.call("interact"); await process_frame
     ck("parchment_inventory",state.has("parchment_r1"))
     ck("parchment_world_removed",rm.current_room.get_node_or_null("Interact_r1p1")==null)
+    ck("parchment_fullscreen_preview",PickupPreview.active and PickupPreview.image.texture.resource_path.ends_with("VSTPAP01.png"))
+    PickupPreview.dismiss()
     if tapestry!=null:
         ck("tapestry_take_cursor",String(tapestry.call("interaction_cursor_id"))=="TAKE")
         tapestry.call("interact"); await process_frame
     ck("tapestry_inventory",state.has("tapestry_piece_1"))
     ck("tapestry_world_removed",rm.current_room.get_node_or_null("Interact_r3t1")==null)
+    ck("tapestry_fullscreen_preview",PickupPreview.active and PickupPreview.image.texture.resource_path.ends_with("BAPTAPCE.png"))
+    PickupPreview.dismiss()
     rm.load_room("R1",false); await process_frame; await process_frame
     ck("parchment_persistent",rm.current_room.get_node_or_null("Interact_r1p1")==null)
     ck("tapestry_persistent",rm.current_room.get_node_or_null("Interact_r3t1")==null)
