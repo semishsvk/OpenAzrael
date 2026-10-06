@@ -35,9 +35,9 @@
                                            },
                           "tapestry_piece_1":  {
                                                    "semantics":  "FULLSCREEN_INSPECT",
-                                                   "texture":  "BAPTAPCE.png",
+                                                   "texture":  "R3T1_0.png",
                                                    "evidence":  [
-                                                                    "R1.textured.v44.manifest.json:r3t1",
+                                                                    "CORPUS_AUTHORITY:TEXTURES/BOOKS/R3T1_0.PCX 640x480",
                                                                     "VIDEO_REFERENCE:DrnAYByca0U"
                                                                 ]
                                                },
@@ -71,11 +71,24 @@
                                          "evidence":  [
                                                           "r8_shield_interaction.gd DoorR8 gate + demo completion"
                                                       ]
-                                     }
+                                     },
+                          "tapestry_piece_3":  {
+                                                   "semantics":  "FULLSCREEN_INSPECT",
+                                                   "texture":  "R8T3_0.png",
+                                                   "evidence":  [
+                                                                    "CORPUS_AUTHORITY:TEXTURES/BOOKS/R8T3_0.PCX 640x480"
+                                                                ]
+                                               },
+                          "tapestry_piece_4":  {
+                                                   "semantics":  "FULLSCREEN_INSPECT",
+                                                   "texture":  "R8T4_0.png",
+                                                   "evidence":  [
+                                                                    "CORPUS_AUTHORITY:TEXTURES/BOOKS/R8T4_0.PCX 640x480"
+                                                                ]
+                                               }
                       },
     "demo_pending_classification":  [
-                                        "tapestry_piece_3",
-                                        "tapestry_piece_4"
+
                                     ],
     "retail_policy":  "REVERIFY_PER_OBJECT"
 }

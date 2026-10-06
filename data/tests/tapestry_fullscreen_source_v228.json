@@ -1,0 +1,37 @@
+{
+  "schema": "openazrael.kg001.tapestry_fullscreen_source",
+  "version": 228,
+  "authority": "CORPUS_AUTHORITY",
+  "items": [
+    {
+      "source": "R3T1_0.PCX",
+      "source_sha256": "2b39a403187b724a13e89ec2b65bf9940cb6781cc33d7152eba2996caac5c161",
+      "png": "R3T1_0.png",
+      "png_sha256": "1fc218ae194125c8789df9dc43e3f68b2b6a47dcb1ac5dead1e1257b47a3aded",
+      "size": [
+        640,
+        480
+      ]
+    },
+    {
+      "source": "R8T3_0.PCX",
+      "source_sha256": "196ab58f3f31fcd71714b4008dd3a27de47baf220e2d5fde9d9025554c2c0689",
+      "png": "R8T3_0.png",
+      "png_sha256": "64b88ba5a2363267d9a20cce24b3b5334947d51443075a0b257ae60b9d4daf6e",
+      "size": [
+        640,
+        480
+      ]
+    },
+    {
+      "source": "R8T4_0.PCX",
+      "source_sha256": "8b5d3736e50b3821aa91b5984704483a5390ba90be93476f7b905082aef52043",
+      "png": "R8T4_0.png",
+      "png_sha256": "4d4afbf4dfb221e6dd1011d059d6c3d8ae467ba546c2d4609a2e714631a18ba8",
+      "size": [
+        640,
+        480
+      ]
+    }
+  ]
+}

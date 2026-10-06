@@ -10,7 +10,7 @@ func interact() -> void:
     DemoState.acquire(item_id)
     if is_instance_valid(visual_node):
         visual_node.visible = false
-    if item_id in ["parchment_r1", "tapestry_piece_1"] and PickupPreview != null:
+    if item_id in ["parchment_r1", "tapestry_piece_1", "tapestry_piece_3", "tapestry_piece_4"] and PickupPreview != null:
         PickupPreview.show_item(item_id)
     print("Picked up: ", display_name if not display_name.is_empty() else item_id)
     queue_free()
