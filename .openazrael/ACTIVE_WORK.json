@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "c6-final-fidelity-20261005",
   "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,15 +26,15 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-06T08:29:14.657170+00:00",
+  "released_at": "2026-10-06T08:38:56.534926+00:00",
   "reconciliation": {
-    "head": "218b8f7e5902e555f5f1c05edf71de7c1eadd01d",
+    "head": "c4a07a57cecd101779d502d9ab07d5fb1a69ea54",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "READ_ONLY_CHECKOUT_PRESERVED_REMOTE_DIFFERS",
+    "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
     "task_processes_stopped": true,
-    "workload_report_sha256": "53692fedbf09a21c5e90b786d216fac15a2fb2e49839f8bb3ce16bd0a0ee3e93",
-    "readiness_report_sha256": "cac17ab4964d9d0421914648112429abab27f972a31ed497f73ebe666c7a9b3f"
+    "receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\inventory_geometry_v224\\build_receipt_c4a07a5.json",
+    "receipt_sha256": "e1283cd087dff1c69e851ab44eb538ca60fb4d6633fdaf19692df87752be8b39"
   },
   "acquired_at": "2026-10-06T08:30:15.255385+00:00"
 }
