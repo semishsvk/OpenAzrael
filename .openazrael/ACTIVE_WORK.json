@@ -11,19 +11,8 @@
   "note": "Writer lifecycle v2 is active. Before mutation read .openazrael/WRITER_PROTOCOL.md on coordination/single-writer. A resumed turn with the same owner_thread_id + lease_id is the same owner. Foreign active writer => enqueue and retry later; do not ask for takeover of live work. Waiting/completion must release with reconciliation and stopped task processes. No time-based stealing. Use the installed lease.py foreground run guard. Candidate 6 target HEAD unchanged; it waits for Framework Phase 2.",
   "owner_thread_id": "01a10f88-050f-7cc3-9371-562150868ddd",
   "queue": [],
-  "active_run": {
-    "run_id": "fe74e6a7-9dbf-4724-87ea-8392f8dbf84f",
-    "host": "HomePC",
-    "supervisor_pid": 70336,
-    "started_at": "2026-10-06T09:21:56.651922+00:00",
-    "cwd": "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6a29189df1888191897b87a467fbd556\\work\\c6-current-c4a07a5",
-    "command": [
-      "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
-      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6a29189df1888191897b87a467fbd556\\work\\c6-current-c4a07a5\\run.py",
-      "body"
-    ]
-  },
-  "last_seen_at": "2026-10-06T09:21:54.942126+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-06T09:23:52.064263+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
