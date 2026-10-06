@@ -408,8 +408,8 @@ func _validate_niamh_source_fidelity(state: Node, evidence) -> Array[String]:
             if (
                 String(payload.get("family", "")) == "1A"
                 and String(payload.get("status", "")) == "SOURCE_CONVERSATION_IR_READY"
-                and int(payload.get("ir_version", 0)) == 209
-                and not String(payload.get("source_sha256", "")).is_empty()
+                and int(payload.get("ir_version", 0)) == 253
+                and String(payload.get("source_sha256", "")) == "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71"
             ):
                 conversation_ok = true
     if activated and not animation_ok:
