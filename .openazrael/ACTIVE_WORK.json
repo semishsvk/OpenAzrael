@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "orch-openazrael-commission-20261006",
   "owner": "01a10de9-105c-72c3-83b3-bec06c00020d",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -26,15 +26,15 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-06T08:21:54.796929+00:00",
+  "released_at": "2026-10-06T08:29:14.657170+00:00",
   "reconciliation": {
     "head": "218b8f7e5902e555f5f1c05edf71de7c1eadd01d",
     "git_status": "",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "LOCAL_COMMITS_PRESERVED_NOT_PUSHED",
+    "sync_state": "READ_ONLY_CHECKOUT_PRESERVED_REMOTE_DIFFERS",
     "task_processes_stopped": true,
-    "receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\geometry_v223\\build_receipt_218b8f7.json",
-    "receipt_sha256": "459a78e6dee7b7905aaad7bbcdca0c75ab37b4efedc1285624ef34b9e47b4670"
+    "workload_report_sha256": "53692fedbf09a21c5e90b786d216fac15a2fb2e49839f8bb3ce16bd0a0ee3e93",
+    "readiness_report_sha256": "cac17ab4964d9d0421914648112429abab27f972a31ed497f73ebe666c7a9b3f"
   },
   "acquired_at": "2026-10-06T08:23:37.047894+00:00"
 }
