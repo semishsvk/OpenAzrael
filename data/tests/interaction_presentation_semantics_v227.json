@@ -1,0 +1,21 @@
+{
+  "schema": "openazrael.interaction.presentation_semantics",
+  "version": 1,
+  "authority_order": ["CORPUS_AUTHORITY","ORIGINAL_RUNTIME","BROWSER_EMULATOR_RUNTIME","VIDEO_REFERENCE","DOCUMENTATION_COMMUNITY"],
+  "fail_closed": true,
+  "semantics": ["FULLSCREEN_INSPECT","TAKE_ONLY","TAKE_AND_USE","PUZZLE_TRANSITION","UNKNOWN"],
+  "rules": [
+    "Every pickup/interactable item must have an evidence-bound presentation_semantics classification.",
+    "FULLSCREEN_INSPECT is permitted only when corpus/runtime/video evidence demonstrates an inspect presentation; item category or visual similarity is insufficient.",
+    "Preview art must be source-derived and bound to the exact object/material/texture identity; no invented or AI-generated substitute.",
+    "TAKE, inventory mutation, world visibility and persistence remain independent canonical state transitions.",
+    "Retail may reuse the presentation subsystem but must re-establish semantics and asset binding per retail object; demo IDs, addresses and PASS states never promote.",
+    "UNKNOWN fails closed: do not invent a fullscreen preview or interaction presentation."
+  ],
+  "demo_verified": {
+    "parchment_r1": {"semantics":"FULLSCREEN_INSPECT","texture":"VSTPAP01.png","evidence":["R1.textured.v44.manifest.json:r1p1","VIDEO_REFERENCE:DrnAYByca0U"]},
+    "tapestry_piece_1": {"semantics":"FULLSCREEN_INSPECT","texture":"BAPTAPCE.png","evidence":["R1.textured.v44.manifest.json:r3t1","VIDEO_REFERENCE:DrnAYByca0U"]}
+  },
+  "demo_pending_classification": ["rusty_tongs","well_key","r8_lens","shield","tapestry_piece_3","tapestry_piece_4"],
+  "retail_policy": "REVERIFY_PER_OBJECT"
+}

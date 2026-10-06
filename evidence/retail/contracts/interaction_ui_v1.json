@@ -1,22 +1,26 @@
 {
-  "schema": "openazrael.retail.interaction_ui_contract",
-  "version": 1,
-  "origin": "validated demo subsystem generalized to retail",
-  "fail_closed": true,
-  "inherits": [
-    "v130",
-    "v143",
-    "v146",
-    "v147",
-    "v148",
-    "v157"
-  ],
-  "retail_rules": [
-    "same deterministic interaction probe/cursor contexts",
-    "Classic HUD/menu runtime reusable",
-    "inventory authority must be retail canonical state",
-    "retail item labels/source bindings required"
-  ],
-  "status": "CONTRACT_APPLIED_EVIDENCE_PENDING",
-  "fidelity": "NOT_VERIFIED"
+    "schema":  "openazrael.retail.interaction_ui_contract",
+    "version":  2,
+    "origin":  "validated demo subsystem generalized to retail",
+    "fail_closed":  true,
+    "inherits":  [
+                     "v130",
+                     "v143",
+                     "v146",
+                     "v147",
+                     "v148",
+                     "v157",
+                     "v227"
+                 ],
+    "retail_rules":  [
+                         "same deterministic interaction probe/cursor contexts",
+                         "Classic HUD/menu runtime reusable",
+                         "inventory authority must be retail canonical state",
+                         "retail item labels/source bindings required",
+                         "every pickup/interactable requires evidence-bound presentation_semantics",
+                         "FULLSCREEN_INSPECT only with retail corpus/runtime oracle evidence and exact source-art binding",
+                         "UNKNOWN presentation semantics fail closed; never infer from demo object category"
+                     ],
+    "status":  "CONTRACT_APPLIED_EVIDENCE_PENDING",
+    "fidelity":  "NOT_VERIFIED"
 }
