@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "83da155d-1e80-441b-8ae1-129a17e2bd4d",
+    "host": "HomePC",
+    "supervisor_pid": 69396,
+    "started_at": "2026-10-06T08:16:09.547338+00:00",
+    "cwd": "F:\\OpenRemaster\\OpenAzrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\reported_diagnostic_v223.py"
+    ]
+  },
   "last_seen_at": "2026-10-06T08:15:55.856305+00:00",
   "protocol": {
     "version": 2,
