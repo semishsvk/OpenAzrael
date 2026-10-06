@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "36bf2722-06ce-426e-9764-2076822c6bd9",
-    "host": "HomePC",
-    "supervisor_pid": 58148,
-    "started_at": "2026-10-06T06:36:30.209444+00:00",
-    "cwd": "F:\\OpenRemaster\\OpenAzrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\fix_character_materials_v222.py"
-    ]
-  },
-  "last_seen_at": "2026-10-06T06:35:12.458559+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-06T06:36:31.744336+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
