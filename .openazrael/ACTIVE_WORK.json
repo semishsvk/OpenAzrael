@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "c6-flythrough-20261006-bcc1961",
   "owner": "01a10f88-050f-7cc3-9371-562150868ddd",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,7 +12,7 @@
   "owner_thread_id": "01a10f88-050f-7cc3-9371-562150868ddd",
   "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-06T10:05:02.996623+00:00",
+  "last_seen_at": "2026-10-06T10:18:42.842497+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -35,5 +35,5 @@
     "task_processes_stopped": true,
     "receipt": "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6a29189df1888191897b87a467fbd556\\work\\npc-repair\\repair_build_receipt.json"
   },
-  "acquired_at": "2026-10-06T09:51:54.836636+00:00"
+  "acquired_at": "2026-10-06T10:18:42.842497+00:00"
 }
