@@ -18,7 +18,19 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "b5b840a7-5033-46d1-bec3-30eaf5f253f5",
+    "host": "HomePC",
+    "supervisor_pid": 57132,
+    "started_at": "2026-10-06T08:13:25.725738+00:00",
+    "cwd": "F:\\OpenRemaster\\OpenAzrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\disasm_source.py",
+      "0x84790",
+      "0x84b00"
+    ]
+  },
   "last_seen_at": "2026-10-06T08:12:49.284557+00:00",
   "protocol": {
     "version": 2,
