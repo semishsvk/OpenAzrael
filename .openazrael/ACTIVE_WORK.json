@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "c6f2cbb8-cdbd-44d4-921e-c91c56a7b81c",
+    "host": "HomePC",
+    "supervisor_pid": 72024,
+    "started_at": "2026-10-06T06:44:45.138702+00:00",
+    "cwd": "F:\\OpenRemaster\\OpenAzrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\msemj\\.codex\\.chatgpt-projects\\g-p-6ab15b9e54048191ab87f26e661f516b\\coordination\\validate_modern_package_v220.py"
+    ]
+  },
   "last_seen_at": "2026-10-06T06:44:40.432080+00:00",
   "protocol": {
     "version": 2,
