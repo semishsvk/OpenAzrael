@@ -1,25 +1,18 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "c6-final-fidelity-20261005",
-  "owner": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
+  "status": "active",
+  "lease_id": "orch-openazrael-commission-20261006",
+  "owner": "01a10de9-105c-72c3-83b3-bec06c00020d",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "Writer lifecycle v2 is active. Before mutation read .openazrael/WRITER_PROTOCOL.md on coordination/single-writer. A resumed turn with the same owner_thread_id + lease_id is the same owner. Foreign active writer => enqueue and retry later; do not ask for takeover of live work. Waiting/completion must release with reconciliation and stopped task processes. No time-based stealing. Use the installed lease.py foreground run guard. Candidate 6 target HEAD unchanged; it waits for Framework Phase 2.",
-  "owner_thread_id": "01a10c57-40a2-70e1-ab33-57554d5bb7aa",
-  "queue": [
-    {
-      "thread_id": "01a10de9-105c-72c3-83b3-bec06c00020d",
-      "lease_id": "orch-openazrael-commission-20261006",
-      "enqueued_at": "2026-10-06T08:05:00.960102+00:00",
-      "state": "ready"
-    }
-  ],
+  "owner_thread_id": "01a10de9-105c-72c3-83b3-bec06c00020d",
+  "queue": [],
   "active_run": null,
-  "last_seen_at": "2026-10-06T08:21:48.956271+00:00",
+  "last_seen_at": "2026-10-06T08:23:37.047905+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -43,5 +36,5 @@
     "receipt": "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\geometry_v223\\build_receipt_218b8f7.json",
     "receipt_sha256": "459a78e6dee7b7905aaad7bbcdca0c75ab37b4efedc1285624ef34b9e47b4670"
   },
-  "acquired_at": "2026-10-06T08:12:12.616096+00:00"
+  "acquired_at": "2026-10-06T08:23:37.047894+00:00"
 }
