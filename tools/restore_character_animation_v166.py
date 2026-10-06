@@ -95,12 +95,13 @@ def write_clip(path,name,start,end,tracks,fps):
               f'tracks/{ti}/path = NodePath("{np}")',
               f'tracks/{ti}/interp = 1',
               f'tracks/{ti}/loop_wrap = true',
-              f'tracks/{ti}/keys = {{',
-              '"times": PackedFloat32Array('+", ".join(fmt(x) for x in times)+'),',
-              '"transitions": PackedFloat32Array('+", ".join("1" for _ in times)+'),',
-              '"update": 0,',
-              '"values": ['+", ".join(vals)+']',
-              '}'
+              f'tracks/{ti}/keys = PackedFloat32Array('+", ".join(
+                  fmt(value)
+                  for time, row in zip(times, rows)
+                  for value in ([time, 1.0] + (
+                      list(row[2:]) + [row[1]] if typ == "rotation_3d" else list(row[1:])
+                  ))
+              )+')'
             ]
             ti+=1
     path.write_text("\n".join(lines)+"\n",encoding="utf-8")

@@ -43,6 +43,8 @@ func _play_source_family(family: String) -> void:
     if not source_animation_player.has_animation(StringName(family)):
         return
     source_animation_player.play(StringName(family))
+    # Apply the full source pose immediately, including zero-length REST.
+    source_animation_player.advance(0.0)
     _source_animation_family = family
 
 func _horizontal_motion(direction: Vector3, distance: float) -> Vector3:

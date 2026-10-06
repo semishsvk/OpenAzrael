@@ -452,6 +452,29 @@ func _collect_animation_players(root: Node, out: Array[AnimationPlayer]) -> void
     for child in root.get_children():
         _collect_animation_players(child, out)
 
+# Imported glTF defaults must not turn source diffuse character textures metallic.
+func _source_clip_has_transform_keys(clip: Animation) -> bool:
+    if clip == null or clip.get_track_count() == 0:
+        return false
+    for track in range(clip.get_track_count()):
+        if clip.track_is_enabled(track) and clip.track_get_key_count(track) == 0:
+            return false
+    return true
+
+func _prepare_source_character_materials(character_root: Node) -> void:
+    var nodes: Array[Node] = []
+    _walk(character_root, nodes)
+    for node in nodes:
+        if not node is MeshInstance3D or node.mesh == null:
+            continue
+        for surface in range(node.mesh.get_surface_count()):
+            var imported := node.get_active_material(surface) as BaseMaterial3D
+            if imported != null:
+                var material := imported.duplicate() as BaseMaterial3D
+                material.metallic = 0.0
+                material.roughness = 1.0
+                node.set_surface_override_material(surface, material)
+
 func _on_character_animation_requested(request: Dictionary) -> void:
     var character := String(request.get("character", ""))
     var family := String(request.get("family", ""))
@@ -497,12 +520,13 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                     character_root.name = "SourceCharacter_" + character
                     target.get_parent().add_child(character_root)
                     character_root.transform = target.transform
+                    _prepare_source_character_materials(character_root)
                     # The R7 nibody mesh is a static placement proxy. Do not
                     # render it together with the restored source character.
                     target.visible = false
             if character_root != null:
                 var clip := load(source_path) as Animation
-                if clip != null:
+                if _source_clip_has_transform_keys(clip):
                     var source_player := character_root.get_node_or_null("SourceCharacterAnimation") as AnimationPlayer
                     if source_player == null:
                         source_player = AnimationPlayer.new()
@@ -530,7 +554,10 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                                 if library.has_animation(StringName(next_family)):
                                     library.remove_animation(StringName(next_family))
                                 library.add_animation(StringName(next_family), next_clip)
+                    # Source presentation continues while the dialogue pauses movement.
+                    source_player.process_mode = Node.PROCESS_MODE_ALWAYS
                     source_player.play(StringName(family))
+                    source_player.advance(0.0)
                     if not next_family.is_empty() and library.has_animation(StringName(next_family)):
                         source_player.queue(StringName(next_family))
                     result["status"] = "PLAYING_SOURCE_CLIP"
@@ -675,6 +702,7 @@ func _setup_r1_eugene_spawns() -> void:
         var model := packed.instantiate()
         model.name = character + "_Model"
         root.add_child(model)
+        _prepare_source_character_materials(model)
         var source_player := AnimationPlayer.new()
         source_player.name = "SourceCharacterAnimation"
         # v179 clips address the XAF hierarchy from its authored top-level
@@ -693,7 +721,8 @@ func _setup_r1_eugene_spawns() -> void:
             if not ResourceLoader.exists(clip_path):
                 continue
             var clip := load(clip_path) as Animation
-            if clip == null:
+            if not _source_clip_has_transform_keys(clip):
+                push_error("OpenAzrael: source character clip has no transform keys: " + clip_path)
                 continue
             source_library.add_animation(StringName(family), clip)
             restored_families.append(family)

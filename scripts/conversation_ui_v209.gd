@@ -4,6 +4,7 @@ const IR_PATH := "res://data/runtime_generated/niamh_conversation_ir_v209.json"
 @onready var room_manager = get_node("../RoomManager")
 var panel: PanelContainer
 var text_label: RichTextLabel
+var footer_label: Label
 var active := false
 var family := "1A"
 var choices: Array[Dictionary] = []
@@ -13,23 +14,41 @@ var current_record: Dictionary = {}
 
 func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
+    layer = 60
     panel = PanelContainer.new()
     panel.name = "ConversationPanel"
-    panel.position = Vector2(170, 380)
-    panel.custom_minimum_size = Vector2(940, 300)
+    panel.custom_minimum_size = Vector2.ZERO
     panel.visible = false
     var box := StyleBoxFlat.new()
-    box.bg_color = Color(0,0,0,0.9)
+    box.bg_color = Color(0,0,0,1.0)
     box.set_corner_radius_all(6)
     panel.add_theme_stylebox_override("panel", box)
     text_label = RichTextLabel.new()
     text_label.bbcode_enabled = true
     text_label.fit_content = false
-    text_label.custom_minimum_size = Vector2(900,260)
+    text_label.custom_minimum_size = Vector2.ZERO
     text_label.add_theme_font_size_override("normal_font_size", 19)
-    panel.add_child(text_label)
+    var content := VBoxContainer.new()
+    text_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    content.add_child(text_label)
+    footer_label = Label.new()
+    content.add_child(footer_label)
+    panel.add_child(content)
     add_child(panel)
+    get_viewport().size_changed.connect(_reflow)
+    _reflow()
     room_manager.conversation_presented.connect(_on_conversation_presented)
+
+# Keep dialogue inside the source 552x282 world view, above the lower HUD.
+# Placement is an authored usability fix until the original dialogue frame is captured.
+func _reflow() -> void:
+    var size := get_viewport().get_visible_rect().size
+    var scale_factor := minf(size.x / 640.0, size.y / 480.0)
+    var origin := (size - Vector2(640, 480) * scale_factor) * 0.5
+    panel.position = origin + Vector2(44, 184) * scale_factor
+    panel.size = Vector2(552, 142) * scale_factor
+    text_label.add_theme_font_size_override("normal_font_size", maxi(12, roundi(12 * scale_factor)))
+    footer_label.add_theme_font_size_override("font_size", maxi(10, roundi(10 * scale_factor)))
 
 func _load_family(name: String) -> Array[Dictionary]:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(IR_PATH))
@@ -70,11 +89,13 @@ func _refresh_choices() -> void:
         body += prefix + String(row.get("player_text","")) + "\n"
     body += "\n[W/S or ↑/↓] Select    [E / Enter] Speak    [Esc] Leave"
     text_label.text = body
+    text_label.scroll_to_line(selected + 2)
 
 func _show_response(row: Dictionary) -> void:
     current_record = row
     response_mode = true
-    text_label.text = "[b]You:[/b] %s\n\n[b]Niamh:[/b] %s\n\n[E / Enter] Continue" % [String(row.get("player_text","")), String(row.get("niamh_text",""))]
+    footer_label.text = "[E / Enter] Continue    [Esc] Leave"
+    text_label.text = "[b]You:[/b] %s\n\n[b]Niamh:[/b] %s" % [String(row.get("player_text","")), String(row.get("niamh_text",""))]
     CandidateDiagnostics.record_event("conversation_choice", {"family":family,"id":String(row.get("id","")),"marker":String(row.get("source_marker",""))})
 
 func _close() -> void:
