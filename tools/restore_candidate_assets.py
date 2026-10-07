@@ -211,6 +211,12 @@ def main():
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_scanner_v164.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_character_animation_v166.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_eugene_animation_v179.py'), str(src)], check=True)
+    subprocess.run([
+        sys.executable,
+        str(ROOT/'tools/extract_niamh_conversation_ir_v209.py'),
+        str(src/'NIAMH.DAT'),
+        str(ROOT/'data/runtime_generated/niamh_conversation_ir_v209.json'),
+    ], check=True)
     _write_restore_receipt()
     print('KG-001 Candidate assets restored; complete restore receipt v177 written only after all source restorers and validators passed.')
 

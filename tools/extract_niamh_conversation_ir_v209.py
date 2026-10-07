@@ -1,69 +1,39 @@
 from pathlib import Path
-import json, hashlib, sys
-
-src=Path(sys.argv[1])
-out=Path(sys.argv[2])
-raw=src.read_bytes()
-text=raw.decode("latin1").replace("\r\n","\n")
-lines=text.splitlines()
-
-# NIAMH.DAT is a compact record stream. Parse conservatively by locating
-# conversation-family headers and answer labels, preserving unknown numeric
-# condition/action rows verbatim rather than inventing semantics.
-families={}
+import json,hashlib,sys
+src=Path(sys.argv[1]); out=Path(sys.argv[2])
+raw=src.read_bytes(); L=raw.decode("latin1").replace("\r\n","\n").splitlines()
+if len(raw)!=342 or hashlib.sha256(raw).hexdigest()!="e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71":
+    raise ValueError("canonical ATDEMO NIAMH.DAT fingerprint mismatch")
 i=0
-while i < len(lines):
-    s=lines[i].strip()
-    if s in ("1A","1B"):
-        fam=s; i+=1; records=[]
-        # family preamble: retain until first recognizable record id
-        pre=[]
-        while i < len(lines) and not lines[i].strip().isdigit() and lines[i].strip() not in ("A",):
-            pre.append(lines[i]); i+=1
-        # The format is irregular; use Ni<label> markers as record terminators.
-        start=i
-        while i < len(lines):
-            if i+1 < len(lines) and lines[i].strip() in ("1A","1B") and lines[i].strip()!=fam:
-                break
-            marker=None
-            for j in range(i,min(i+40,len(lines))):
-                if lines[j].strip().startswith("Ni"+fam+"_"):
-                    marker=j; break
-            if marker is None: break
-            label=lines[marker].strip().split("_",1)[1]
-            chunk=lines[i:marker+1]
-            # Source layout places player text and NPC response as the final
-            # two nonnumeric textual fields before the Ni marker.
-            textual=[]
-            for x in chunk:
-                t=x.strip()
-                if not t: continue
-                if t.startswith("Ni"): continue
-                if t.replace(",","").replace("-","").isdigit(): continue
-                textual.append(t)
-            if len(textual)>=2:
-                player=textual[-2]; response=textual[-1]
-            elif len(textual)==1:
-                player=textual[0]; response=""
-            else:
-                player=response=""
-            records.append({"id":label,"source_marker":"Ni"+fam+"_"+label,
-                            "player_text":player,"niamh_text":response,
-                            "raw_prefix":chunk[:-3] if len(chunk)>=3 else chunk})
-            i=marker+1
-            # consume trailing control numerics before next record
-            while i<len(lines) and lines[i].strip() in ("0","1","2","3","4","5","6","7"):
-                i+=1
-            if i<len(lines) and lines[i].strip() in ("1A","1B") and lines[i].strip()!=fam: break
-        families[fam]={"preamble":pre,"records":records}
-        continue
-    i+=1
-
-doc={"schema":"openazrael.conversation_ir","version":209,"status":"SOURCE_EXTRACTED",
+if L[i].strip()!="1": raise ValueError("family count")
+i+=1
+if L[i].strip()!="1A": raise ValueError("expected demo 1A")
+i+=1
+header=[int(L[i]),int(L[i+1])]; i+=2
+count=int(L[i]); i+=1
+# ATDEMO 1A has one family-level control word after the declared count.
+family_control=int(L[i]); i+=1
+rows=[]
+for _ in range(count):
+    rid=L[i].strip(); i+=1
+    pre_n=int(L[i]); i+=1
+    pre=[L[i+j].strip() for j in range(pre_n)]; i+=pre_n
+    act_n=int(L[i]); i+=1
+    actions=[L[i+j].strip() for j in range(act_n)]; i+=act_n
+    player=L[i]; i+=1
+    response_control=[int(L[i+j]) for j in range(3)]; i+=3
+    response=L[i]; i+=1
+    marker=L[i].strip(); i+=1
+    if marker!=f"Ni1A_{rid}": raise ValueError((rid,marker))
+    tail=[int(L[i+j]) for j in range(3)]; i+=3
+    rows.append({"id":rid,"source_marker":marker,"prerequisites":pre,"actions":actions,
+                 "player_text":player,"response_control":response_control,
+                 "niamh_text":response,"tail_control":tail})
+if [r["id"] for r in rows]!=["30","999","A"]: raise ValueError("unexpected demo 1A record set")
+doc={"schema":"openazrael.demo.conversation_ir","version":253,"status":"ATDEMO_SOURCE_PARSED","scope":"ATDEMO",
      "source":{"file":"NIAMH.DAT","bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest()},
-     "character":"Niamh","families":families,
-     "policy":{"raw_conditions_preserved":True,"unknown_semantics_not_invented":True,
-               "missing_answer_text_not_invented":True,"do_not_display_player_text":True}}
+     "character":"Niamh","families":{"1A":{"header":header,"declared_records":count,"records":rows}},
+     "policy":{"retail_1b_not_required":True,"do_not_display_hidden_records":True}}
 out.parent.mkdir(parents=True,exist_ok=True)
-out.write_text(json.dumps(doc,indent=2,ensure_ascii=False),encoding="utf-8")
-print(json.dumps({"status":"PASS","families":{k:len(v["records"]) for k,v in families.items()},"sha256":doc["source"]["sha256"]}))
+out.write_text(json.dumps(doc,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+print(json.dumps({"status":"PASS","version":253,"families":{"1A":len(rows)},"sha256":doc["source"]["sha256"]}))
