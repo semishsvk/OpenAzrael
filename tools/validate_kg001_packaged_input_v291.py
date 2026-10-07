@@ -5,7 +5,7 @@ menu=(R/"scripts/legacy_menu_runtime_v145.gd").read_text()
 player=(R/"scripts/player.gd").read_text()
 project=(R/"project.godot").read_text()
 checks={
- "title_pauses_world":'get_tree().paused = true' in menu,
+ "title_avoids_global_pause":'Do not pause the entire SceneTree for the startup title' in menu,
  "title_dismiss_unpauses":'_dismiss_title()' in menu and 'get_tree().paused = false' in menu,
  "enter_continue":'KEY_ENTER' in menu,
  "space_continue":'KEY_SPACE' in menu,

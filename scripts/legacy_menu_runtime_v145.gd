@@ -392,7 +392,9 @@ func _show_title() -> void:
     slot_label.visible = false
     map_indicator.visible = false
     inventory_text_layer.visible = false
-    get_tree().paused = true
+    # Do not pause the entire SceneTree for the startup title. Player input is
+    # already blocked by blocks_world_cursor(); a global pause can suppress the
+    # very keyboard event needed to enter gameplay in packaged builds.
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func _dismiss_title() -> void:
