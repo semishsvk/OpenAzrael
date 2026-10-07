@@ -542,35 +542,47 @@ func _handle_service_action(action: String) -> void:
         "SLOT":
             pass
 
+func _title_continue_event(event: InputEvent) -> bool:
+    var continue_key := (
+        event is InputEventKey
+        and event.pressed
+        and not event.echo
+        and event.keycode in [
+            KEY_ENTER, KEY_SPACE, KEY_E,
+            KEY_W, KEY_A, KEY_S, KEY_D,
+            KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
+        ]
+    )
+    var continue_click := (
+        event is InputEventMouseButton
+        and event.pressed
+        and event.button_index == MOUSE_BUTTON_LEFT
+    )
+    return continue_key or continue_click
+
+func _input(event: InputEvent) -> void:
+    # Title is a paused modal. Handle its continue input in _input so Control
+    # nodes cannot consume the event before _unhandled_input sees it.
+    if DisplayServer.get_name() == "headless" or not title_open:
+        return
+    if _title_continue_event(event):
+        var movement_key := (
+            event is InputEventKey
+            and event.keycode in [
+                KEY_W, KEY_A, KEY_S, KEY_D,
+                KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
+            ]
+        )
+        _dismiss_title()
+        if not movement_key:
+            get_viewport().set_input_as_handled()
+
 func _unhandled_input(event: InputEvent) -> void:
     if DisplayServer.get_name() == "headless":
         return
 
     if title_open:
-        var continue_key := (
-            event is InputEventKey
-            and event.pressed
-            and not event.echo
-            and event.keycode in [
-                KEY_ENTER, KEY_SPACE, KEY_E,
-                KEY_W, KEY_A, KEY_S, KEY_D,
-                KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
-            ]
-        )
-        var continue_click := (
-            event is InputEventMouseButton
-            and event.pressed
-            and event.button_index == MOUSE_BUTTON_LEFT
-        )
-        if continue_key or continue_click:
-            _dismiss_title()
-            # Do not consume movement keys. If W/A/S/D or an arrow remains held,
-            # Player._physics_process sees it on the first unpaused gameplay frame.
-            if not (event is InputEventKey and event.keycode in [
-                KEY_W, KEY_A, KEY_S, KEY_D,
-                KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
-            ]):
-                get_viewport().set_input_as_handled()
+        # Title input is handled in _input while the SceneTree is paused.
         return
 
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
