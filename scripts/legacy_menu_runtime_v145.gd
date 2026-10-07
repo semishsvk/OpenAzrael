@@ -547,9 +547,30 @@ func _unhandled_input(event: InputEvent) -> void:
         return
 
     if title_open:
-        if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ENTER):
+        var continue_key := (
+            event is InputEventKey
+            and event.pressed
+            and not event.echo
+            and event.keycode in [
+                KEY_ENTER, KEY_SPACE, KEY_E,
+                KEY_W, KEY_A, KEY_S, KEY_D,
+                KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
+            ]
+        )
+        var continue_click := (
+            event is InputEventMouseButton
+            and event.pressed
+            and event.button_index == MOUSE_BUTTON_LEFT
+        )
+        if continue_key or continue_click:
             _dismiss_title()
-            get_viewport().set_input_as_handled()
+            # Do not consume movement keys. If W/A/S/D or an arrow remains held,
+            # Player._physics_process sees it on the first unpaused gameplay frame.
+            if not (event is InputEventKey and event.keycode in [
+                KEY_W, KEY_A, KEY_S, KEY_D,
+                KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
+            ]):
+                get_viewport().set_input_as_handled()
         return
 
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
