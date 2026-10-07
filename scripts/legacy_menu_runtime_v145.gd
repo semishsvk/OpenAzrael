@@ -563,7 +563,7 @@ func _run_packaged_input_selftest() -> void:
     # Opt-in packaged diagnostic only. Exercise the same Godot Input event path
     # used by a real keyboard without changing normal runtime behavior.
     await get_tree().process_frame
-    var start := player.global_position
+    var start: Vector3 = player.global_position
     var enter := InputEventKey.new()
     enter.keycode = KEY_ENTER
     enter.physical_keycode = KEY_ENTER
@@ -582,7 +582,7 @@ func _run_packaged_input_selftest() -> void:
     w_up.physical_keycode = KEY_W
     w_up.pressed = false
     Input.parse_input_event(w_up)
-    var finish := player.global_position
+    var finish: Vector3 = player.global_position
     var moved := Vector2(finish.x - start.x, finish.z - start.z).length()
     CandidateDiagnostics.record_event("packaged_input_selftest", {
         "status": "PASS" if not title_open and moved > 0.01 else "FAIL",
@@ -593,7 +593,7 @@ func _run_packaged_input_selftest() -> void:
     })
 
 func _title_continue_event(event: InputEvent) -> bool:
-    var continue_key := (
+    var continue_key: bool = (
         event is InputEventKey
         and event.pressed
         and not event.echo
@@ -603,7 +603,7 @@ func _title_continue_event(event: InputEvent) -> bool:
             KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
         ]
     )
-    var continue_click := (
+    var continue_click: bool = (
         event is InputEventMouseButton
         and event.pressed
         and event.button_index == MOUSE_BUTTON_LEFT
@@ -616,7 +616,7 @@ func _input(event: InputEvent) -> void:
     if DisplayServer.get_name() == "headless" or not title_open:
         return
     if _title_continue_event(event):
-        var movement_key := (
+        var movement_key: bool = (
             event is InputEventKey
             and event.keycode in [
                 KEY_W, KEY_A, KEY_S, KEY_D,
