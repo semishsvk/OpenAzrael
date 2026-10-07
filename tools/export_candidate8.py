@@ -25,6 +25,10 @@ def main():
  ID.write_text(json.dumps(identity,indent=2)+"\n",encoding="utf-8")
  out=R/a.out; pck=out.with_suffix(".pck"); out.parent.mkdir(parents=True,exist_ok=True); out.unlink(missing_ok=True); pck.unlink(missing_ok=True)
  try:
+  imported=run([a.godot,"--headless","--path",str(R),"--import"])
+  import_errors=[x for x in imported.stdout.splitlines() if x.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))]
+  if imported.returncode or import_errors:
+   print(json.dumps({"status":"FAIL","reason":"IMPORT_FAILED","errors":import_errors,"tail":imported.stdout[-12000:]},indent=2)); return 1
   q=run([a.godot,"--headless","--path",str(R),"--export-release","Windows Candidate 8",str(out)])
   errors=[x for x in q.stdout.splitlines() if x.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))]
   if q.returncode or errors or not out.is_file() or not pck.is_file():
