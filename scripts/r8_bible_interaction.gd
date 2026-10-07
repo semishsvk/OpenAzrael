@@ -78,12 +78,10 @@ func interact() -> void:
         if is_instance_valid(look_lens_visual):
             look_lens_visual.visible = false
         print("Placed the lens on the stone Bible. [R8LensPlace -> lenstop]")
-        # Test-phase interaction profile: one deliberate E press on the Bible
-        # should complete the obvious use action when the player is already in
-        # the authored zxplate condition zone. The source event graph and
-        # timing remain unchanged; this only removes an artificial second E.
-        if _on_activation_zone():
-            _run_optical_sequence()
+        # R8/zxplate is a source-backed condition zone, not an autofire trigger.
+        # Lens placement and optical activation are distinct event graphs:
+        # a later deliberate Bible interaction while inside zxplate starts
+        # R8_OPTICAL_START.
         return
 
     if DemoState.puzzle_node("DoorR8"):
