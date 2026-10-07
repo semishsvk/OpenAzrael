@@ -93,3 +93,6 @@ assets/ui/legacy_menu/
 
 # Godot 4.x generated script UID sidecars (recreated by pinned editor import).
 *.gd.uid
+
+# Godot generated per-resource import metadata.
+*.import
