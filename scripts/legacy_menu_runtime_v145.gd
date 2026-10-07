@@ -112,12 +112,25 @@ func _ready() -> void:
     _reflow()
     if DisplayServer.get_name() != "headless":
         _show_title()
+        call_deferred("_auto_dismiss_startup_title")
     else:
         title_open = false
         root_control.visible = false
     get_viewport().size_changed.connect(_reflow)
     if OS.get_environment("OPENAZRAEL_INPUT_SELFTEST") == "1" or "--openazrael-input-selftest" in OS.get_cmdline_user_args():
         call_deferred("_run_packaged_input_selftest")
+
+func _auto_dismiss_startup_title() -> void:
+    # Candidate test builds must never leave the player trapped behind a modal
+    # title if platform input focus is delayed. Preserve the title briefly,
+    # then enter gameplay automatically; explicit continue input still works.
+    await get_tree().create_timer(1.5).timeout
+    if title_open:
+        _dismiss_title()
+        CandidateDiagnostics.record_event("legacy_title_auto_dismiss", {
+            "delay_seconds": 1.5,
+            "status": "CANDIDATE_INPUT_SAFETY_FALLBACK",
+        })
 
 func _load_tex(stem: String) -> Texture2D:
     var path := "res://assets/ui/legacy_menu/" + stem + ".png"

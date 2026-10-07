@@ -7,6 +7,7 @@ project=(R/"project.godot").read_text()
 checks={
  "title_avoids_global_pause":'Do not pause the entire SceneTree for the startup title' in menu,
  "title_dismiss_unpauses":'_dismiss_title()' in menu and 'get_tree().paused = false' in menu,
+ "startup_fallback":'_auto_dismiss_startup_title' in menu and 'CANDIDATE_INPUT_SAFETY_FALLBACK' in menu,
  "enter_continue":'KEY_ENTER' in menu,
  "space_continue":'KEY_SPACE' in menu,
  "interact_continue":'KEY_E' in menu,
