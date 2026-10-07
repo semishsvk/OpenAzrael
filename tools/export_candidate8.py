@@ -29,11 +29,8 @@ def main():
   errors=[x for x in q.stdout.splitlines() if x.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))]
   if q.returncode or errors or not out.is_file() or not pck.is_file():
    print(json.dumps({"status":"FAIL","reason":"EXPORT_FAILED","errors":errors,"tail":q.stdout[-12000:]},indent=2)); return 1
-  smoke=run([str(out),"--headless","--quit-after","120"])
-  serr=[x for x in smoke.stdout.splitlines() if x.lstrip().startswith(("ERROR:","SCRIPT ERROR:"))]
-  if smoke.returncode or serr:
-   print(json.dumps({"status":"FAIL","reason":"STARTUP_SMOKE_FAILED","errors":serr,"tail":smoke.stdout[-12000:]},indent=2)); return 1
   specs=[
+   ("startup","res://scripts/kg001_headless_runner_v109.gd","OPENAZRAEL_KG001_V109"),
    ("transitions","res://scripts/kg001_all_transition_runner_v141.gd","OPENAZRAEL_KG001_ALL_TRANSITIONS_V141"),
    ("cursor","res://scripts/kg001_interaction_cursor_runner_v143.gd","OPENAZRAEL_KG001_CURSOR_V143"),
    ("menu","res://scripts/kg001_legacy_menu_runner_v145.gd","OPENAZRAEL_KG001_MENU_V145"),
