@@ -1,20 +1,30 @@
 {
-  "schema":"openazrael.niamh_conversation_fidelity_status",
-  "version":280,
-  "status":"DEMO_SOURCE_VERIFIED_PRESENTATION_HOLD",
-  "authority":{"corpus":"ATDEMO","file":"NIAMH.DAT","bytes":342,"sha256":"e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71"},
-  "demo_1A":{"records":["30","999","A"],"displayable":["30","999"],"hidden":["A"],"exit_record":"999"},
-  "verified":[
-    "ATDEMO contains exactly three 1A records: 30, 999, A",
-    "A is explicitly DO NOT DISPLAY",
-    "999 response is Please look for Oisin for me and is the leave branch",
-    "retail NIAMH.DAT is not demo authority"
-  ],
-  "rejected_evidence":{
-    "data/runtime_generated/niamh_conversation_ir_v209.json":"RETAIL_CONTAMINATION: derived from 10464-byte retail NIAMH.DAT",
-    "retail_sha256":"a7c3f14d8a76c9c8255f26f77e31ca9a860263697376afaf042469d4eb0f671a",
-    "retail_only_1A_records":["28","29","31","32","33","34","35","36"]
+  "schema": "openazrael.niamh_conversation_fidelity_status",
+  "version": 280,
+  "status": "PARTIAL_VERIFIED_DEMO_ONLY",
+  "runtime_authority": "data/runtime_generated/niamh_conversation_ir_v210.json",
+  "source": {
+    "corpus": "ATDEMO",
+    "file": "NIAMH.DAT",
+    "sha256": "e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71",
+    "bytes": 342
   },
-  "hold":["exact original dialogue visual layout","original demo runtime timing/input presentation"],
-  "policy":"Never expand demo dialogue from retail records unless a separate demo source proves them."
+  "verified": [
+    "ATDEMO 1A contains exactly records 30, 999, A",
+    "30 and 999 are the only displayable ATDEMO 1A choices",
+    "A is hidden by source DO NOT DISPLAY marker",
+    "999 is the explicit leave branch and closes the conversation",
+    "NIAMH.XAF NOLOOP1 -> REST -> NOLOOP2 source animation families are preserved",
+    "retail-only 1A records 28,29,31,32,33,34,35,36 are forbidden from demo UI"
+  ],
+  "hold": [
+    "exact original dialogue visual layout",
+    "original-runtime demo timing comparison",
+    "original persistence/re-entry semantics"
+  ],
+  "evidence": {
+    "retail_comparison": "Retail NIAMH.DAT is 10464 bytes SHA256 a7c3f14d8a76c9c8255f26f77e31ca9a860263697376afaf042469d4eb0f671a and contains additional 1A branches; it is comparative evidence only, never demo authority.",
+    "policy": "ATDEMO corpus is authoritative for demo dialogue. Retail semantics may not fill missing demo records."
+  },
+  "acceptance": "Do not mark NIAMH scene SCENE_FIDELITY_VERIFIED until HOLD aspects are independently resolved."
 }
