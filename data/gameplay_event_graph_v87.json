@@ -206,6 +206,110 @@
         "no_invented_animation_fallback": true,
         "animation_runtime_requires_source_clip": true
       }
+    },
+    "R1_DOOR_OPEN_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT: corridordoor1/corridordoor2 action records @0x19A2,0x1BD7,0x1EEA,0x229B"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "995.WAV",
+          "semantic": "R1 corridor door open",
+          "confidence": "VERIFIED"
+        }
+      ]
+    },
+    "R8_TAPESTRY_ROTATE_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT: R8TapestryRotate/TapistryOnFrame2 action records @0x157B6,0x15AA9"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "S25.WAV",
+          "semantic": "R8 tapestry rotate",
+          "confidence": "VERIFIED"
+        }
+      ]
+    },
+    "R7_SWITCH_LEVER_PUSH_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT HotInsertLever push action @0xBA1D"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "982PUSH.WAV",
+          "semantic": "R7 right-most lever push",
+          "confidence": "VERIFIED"
+        }
+      ]
+    },
+    "R7_SWITCH_WHEEL_TURN_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT HotRotateWheel turn actions @0xAA42,0xAD55"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "977TURN.WAV",
+          "semantic": "R7 lower-right wheel turn",
+          "confidence": "VERIFIED"
+        }
+      ]
+    },
+    "R7_SWITCH_LEVER_PULL_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT HotInsertLever pull action @0xBE8C"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "981PULL.WAV",
+          "semantic": "R7 right-most lever pull",
+          "confidence": "VERIFIED"
+        }
+      ]
+    },
+    "R7_WATER_CONNECTED_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT R8Water Connected / R7Sound Connected action @0x1352F"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "S16.WAV",
+          "semantic": "R7/R8 water connected",
+          "confidence": "VERIFIED"
+        }
+      ]
+    },
+    "R1_PARCHMENT_PREVIEW_SOUND": {
+      "source": [
+        "ATDEMO/SPAPER.WAV; parchment inspect asset contract v255"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "SPAPER.WAV",
+          "semantic": "R1 parchment fullscreen preview",
+          "confidence": "HIGH"
+        }
+      ]
+    },
+    "R8_TAPESTRY_FRAME_TAP_SOUND": {
+      "source": [
+        "ATDEMO/PUZZLES.DAT TapistryOnFrame1/3 action family @0x19754+"
+      ],
+      "actions": [
+        {
+          "op": "play_sound",
+          "asset": "797TAP.WAV",
+          "semantic": "R8 tapestry piece installed in frame",
+          "confidence": "VERIFIED"
+        }
+      ]
     }
   },
   "hold": [

@@ -26,6 +26,7 @@ func interact() -> void:
         return
     DemoState.set_flag("R8TapestryRotate")
     DemoState.set_puzzle_node("R8TapestryBack")
+    LegacyEvents.run("R8_TAPESTRY_ROTATE_SOUND")
     if is_instance_valid(message_visual):
         message_visual.visible = true
     if is_instance_valid(tapestry_visual):

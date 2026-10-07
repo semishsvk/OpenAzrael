@@ -28,6 +28,8 @@ func interact() -> void:
         # This recovered flag name is present in WORLD.DAT.
         DemoState.set_flag("FR1DoorUnlocked")
     DemoState.set_flag(_open_flag())
+    # Canonical ATDEMO PUZZLES.DAT binds both R1 corridor doors to 995.WAV.
+    LegacyEvents.run("R1_DOOR_OPEN_SOUND")
     if not is_instance_valid(door_visual):
         return
     var target := door_visual.rotation.y + deg_to_rad(open_angle_degrees)

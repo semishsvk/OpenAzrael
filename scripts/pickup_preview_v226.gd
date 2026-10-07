@@ -26,6 +26,8 @@ func show_item(item_id:String)->bool:
     var tex=load(path)
     if not tex is Texture2D: return false
     image.texture=tex; active=true; visible=true
+    if item_id=="parchment_r1":
+        LegacyEvents.run("R1_PARCHMENT_PREVIEW_SOUND")
     get_viewport().set_input_as_handled()
     return true
 func dismiss()->void:
