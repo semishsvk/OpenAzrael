@@ -1,0 +1,20 @@
+{
+  "schema":"openazrael.niamh_conversation_fidelity_status",
+  "version":280,
+  "status":"DEMO_SOURCE_VERIFIED_PRESENTATION_HOLD",
+  "authority":{"corpus":"ATDEMO","file":"NIAMH.DAT","bytes":342,"sha256":"e3f0b14b64682f0e621f7f52fb998ccf8ddba4febd0ac0df4aa201f371939f71"},
+  "demo_1A":{"records":["30","999","A"],"displayable":["30","999"],"hidden":["A"],"exit_record":"999"},
+  "verified":[
+    "ATDEMO contains exactly three 1A records: 30, 999, A",
+    "A is explicitly DO NOT DISPLAY",
+    "999 response is Please look for Oisin for me and is the leave branch",
+    "retail NIAMH.DAT is not demo authority"
+  ],
+  "rejected_evidence":{
+    "data/runtime_generated/niamh_conversation_ir_v209.json":"RETAIL_CONTAMINATION: derived from 10464-byte retail NIAMH.DAT",
+    "retail_sha256":"a7c3f14d8a76c9c8255f26f77e31ca9a860263697376afaf042469d4eb0f671a",
+    "retail_only_1A_records":["28","29","31","32","33","34","35","36"]
+  },
+  "hold":["exact original dialogue visual layout","original demo runtime timing/input presentation"],
+  "policy":"Never expand demo dialogue from retail records unless a separate demo source proves them."
+}
