@@ -20,11 +20,21 @@ var source_animation_player: AnimationPlayer = null
 var _source_animation_family := ""
 var source_movement_armed := false
 
+func _apply_source_facing(direction: Vector3) -> void:
+    var horizontal := Vector3(direction.x, 0.0, direction.z).normalized()
+    if horizontal.length_squared() <= 0.0:
+        return
+    # v188 proves the anatomical model front is local +X. Rotate the actor
+    # root so its +X axis follows the source world-facing vector; keep the
+    # source XAF hierarchy/root transform untouched (no arbitrary yaw offset).
+    rotation.y = atan2(-horizontal.z, horizontal.x)
+
 func configure(direction: Vector3, rand_service: Node, movement_helper: Node) -> void:
     # A zero random-recovery countdown does not disable ordinary movement.
     # R.EXE file 0x848AB jumps to its normal update at 0x848CE when the
     # countdown is zero; only the recovery/random branch is conditional.
     source_direction = direction.normalized()
+    _apply_source_facing(source_direction)
     shared_rand = rand_service
     movement = movement_helper
     source_movement_armed = true
@@ -80,8 +90,15 @@ func _try_source_random_heading() -> void:
         var candidate := Vector3(cos(radians), 0.0, sin(radians)).normalized()
         if not _blocked(candidate, SOURCE_CANDIDATE_DISTANCE):
             source_direction = candidate
+            _apply_source_facing(source_direction)
             if movement != null:
                 movement.call("configure", candidate)
+            CandidateDiagnostics.record_event("eugene_heading_changed", {
+                "character": String(name),
+                "direction": [source_direction.x, source_direction.y, source_direction.z],
+                "yaw_radians": rotation.y,
+                "status": "SOURCE_V188_MODEL_FRONT_BOUND_TO_WORLD_HEADING"
+            })
             return
 
 func _source_recovery_update() -> void:
