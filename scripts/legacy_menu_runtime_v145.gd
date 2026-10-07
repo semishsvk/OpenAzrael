@@ -116,7 +116,7 @@ func _ready() -> void:
         title_open = false
         root_control.visible = false
     get_viewport().size_changed.connect(_reflow)
-    if OS.get_environment("OPENAZRAEL_INPUT_SELFTEST") == "1" or "--openazrael-input-selftest" in OS.get_cmdline_args():
+    if OS.get_environment("OPENAZRAEL_INPUT_SELFTEST") == "1" or "--openazrael-input-selftest" in OS.get_cmdline_user_args():
         call_deferred("_run_packaged_input_selftest")
 
 func _load_tex(stem: String) -> Texture2D:
