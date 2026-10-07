@@ -18,7 +18,7 @@ func _ready()->void:
     visible=false
 func show_item(item_id:String)->bool:
     var path:=""
-    if item_id=="parchment_r1": path="res://assets/textures/classic/VSTPAP01.png"
+    if item_id=="parchment_r1": path="res://assets/ui/object_inspect/PARCHMENT_R1.png"
     elif item_id=="tapestry_piece_1": path="res://assets/ui/object_inspect/R3T1_0.png"
     elif item_id=="tapestry_piece_3": path="res://assets/ui/object_inspect/R8T3_0.png"
     elif item_id=="tapestry_piece_4": path="res://assets/ui/object_inspect/R8T4_0.png"
