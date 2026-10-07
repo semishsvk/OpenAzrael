@@ -116,6 +116,8 @@ func _ready() -> void:
         title_open = false
         root_control.visible = false
     get_viewport().size_changed.connect(_reflow)
+    if OS.get_environment("OPENAZRAEL_INPUT_SELFTEST") == "1":
+        call_deferred("_run_packaged_input_selftest")
 
 func _load_tex(stem: String) -> Texture2D:
     var path := "res://assets/ui/legacy_menu/" + stem + ".png"
@@ -541,6 +543,39 @@ func _handle_service_action(action: String) -> void:
             _execute_confirm()
         "SLOT":
             pass
+
+func _run_packaged_input_selftest() -> void:
+    # Opt-in packaged diagnostic only. Exercise the same Godot Input event path
+    # used by a real keyboard without changing normal runtime behavior.
+    await get_tree().process_frame
+    var start := player.global_position
+    var enter := InputEventKey.new()
+    enter.keycode = KEY_ENTER
+    enter.physical_keycode = KEY_ENTER
+    enter.pressed = true
+    Input.parse_input_event(enter)
+    await get_tree().process_frame
+    var w_down := InputEventKey.new()
+    w_down.keycode = KEY_W
+    w_down.physical_keycode = KEY_W
+    w_down.pressed = true
+    Input.parse_input_event(w_down)
+    for _i in range(12):
+        await get_tree().physics_frame
+    var w_up := InputEventKey.new()
+    w_up.keycode = KEY_W
+    w_up.physical_keycode = KEY_W
+    w_up.pressed = false
+    Input.parse_input_event(w_up)
+    var finish := player.global_position
+    var moved := Vector2(finish.x - start.x, finish.z - start.z).length()
+    CandidateDiagnostics.record_event("packaged_input_selftest", {
+        "status": "PASS" if not title_open and moved > 0.01 else "FAIL",
+        "title_open": title_open,
+        "movement_delta": moved,
+        "start": [start.x, start.y, start.z],
+        "finish": [finish.x, finish.y, finish.z],
+    })
 
 func _title_continue_event(event: InputEvent) -> bool:
     var continue_key := (
