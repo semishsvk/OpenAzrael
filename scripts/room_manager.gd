@@ -526,19 +526,15 @@ func _on_character_animation_requested(request: Dictionary) -> void:
                     # the source room placement pivot.
                     character_root.position = target.position
                     if character == "Niamh":
-                        # nibody's XAF pivot is offset from its visible body.
-                        # Preserve the source vertical animation origin, but
-                        # align X/Z to the authored proxy geometry rather than
-                        # placing the restored body behind pipes2well.
-                        var proxy_bounds := _node_global_bounds(target)
-                        var proxy_center := proxy_bounds.get_center()
-                        character_root.global_position = Vector3(
-                            # Modern emergence placement calibration uses the
-                            # NIAMH.ANI HEIGHT 33 to keep the REST torso above
-                            # the well rim. Source animation keys stay intact;
-                            # original runtime placement remains unattested.
-                            proxy_center.x, target.global_position.y + 33.0, proxy_center.z
-                        )
+                        # R7.XAF gives nibody's authored world translation and
+                        # demo coordinate closure v67 proves identity XYZ.
+                        # NIAMH.ANI OFFSET is 0,0,0; HEIGHT/WIDTH are character
+                        # dimensions, not an extra world translation. Preserve
+                        # the character XAF axes (do not inherit nibody's mesh
+                        # basis), but anchor the animation at the exact authored
+                        # nibody translation. This places REST at the well-floor
+                        # band and frame 0/57 deep below the well naturally.
+                        character_root.global_position = target.global_position
                     _prepare_source_character_materials(character_root)
                     # The R7 nibody mesh is a static placement proxy. Do not
                     # render it together with the restored source character.
@@ -623,6 +619,41 @@ func _on_conversation_requested(request: Dictionary) -> void:
         "family": family,
         "source_required": bool(request.get("source_required", false)),
         "status": "HOLD_EXACT_TRIGGER_LINE"
+    })
+
+func request_niamh_source_exit(exit_record_id: String) -> void:
+    if current_room_id != "R7" or exit_record_id != "999":
+        return
+    var character_root := current_room.find_child("SourceCharacter_Niamh", true, false) if is_instance_valid(current_room) else null
+    if character_root == null:
+        CandidateDiagnostics.record_event("niamh_source_exit", {"status":"FAIL_SOURCE_CHARACTER_MISSING","record":exit_record_id})
+        return
+    var source_player := character_root.get_node_or_null("SourceCharacterAnimation") as AnimationPlayer
+    var exit_path := "res://assets/characters/Niamh/NOLOOP2.tres"
+    if source_player == null or not ResourceLoader.exists(exit_path):
+        CandidateDiagnostics.record_event("niamh_source_exit", {"status":"HOLD_SOURCE_CLIP_MISSING","record":exit_record_id})
+        return
+    var exit_clip := load(exit_path) as Animation
+    if not _source_clip_has_transform_keys(exit_clip):
+        CandidateDiagnostics.record_event("niamh_source_exit", {"status":"FAIL_SOURCE_CLIP_INVALID","record":exit_record_id})
+        return
+    var library := source_player.get_animation_library(&"") if source_player.has_animation_library(&"") else null
+    if library == null:
+        library = AnimationLibrary.new()
+        source_player.add_animation_library(&"", library)
+    if library.has_animation(&"NOLOOP2"):
+        library.remove_animation(&"NOLOOP2")
+    library.add_animation(&"NOLOOP2", exit_clip)
+    source_player.play(&"NOLOOP2")
+    source_player.advance(0.0)
+    _character_animation_status["Niamh"] = {
+        "room": current_room_id, "character":"Niamh", "family":"NOLOOP2",
+        "status":"PLAYING_SOURCE_CLIP", "animation_player":String(source_player.get_path()),
+        "source":exit_path, "exit_record_id":exit_record_id
+    }
+    CandidateDiagnostics.record_event("niamh_source_exit", {
+        "status":"PLAYING_SOURCE_NOLOOP2", "record":exit_record_id,
+        "source":exit_path, "policy":"SOURCE_ANIMATION_RETURNS_TO_FRAME0_POSE_NO_SYNTHETIC_DESPAWN"
     })
 
 func character_animation_status(character: String) -> Dictionary:

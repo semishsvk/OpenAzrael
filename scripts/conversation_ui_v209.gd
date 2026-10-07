@@ -100,19 +100,29 @@ func _show_response(row: Dictionary) -> void:
     text_label.text = "[b]You:[/b] %s\n\n[b]Niamh:[/b] %s" % [String(row.get("player_text","")), String(row.get("niamh_text",""))]
     CandidateDiagnostics.record_event("conversation_choice", {"family":family,"id":String(row.get("id","")),"marker":String(row.get("source_marker",""))})
 
-func _close() -> void:
+func _close(exit_record_id: String = "") -> void:
     active = false
     panel.visible = false
     get_tree().paused = false
-    CandidateDiagnostics.record_event("conversation_ui", {"status":"CLOSED","family":family})
+    CandidateDiagnostics.record_event("conversation_ui", {"status":"CLOSED","family":family,"exit_record_id":exit_record_id})
+    if exit_record_id == "999" and room_manager.has_method("request_niamh_source_exit"):
+        room_manager.call("request_niamh_source_exit", exit_record_id)
 
 func _unhandled_input(event: InputEvent) -> void:
     if not active or not event is InputEventKey or not event.pressed or event.echo:
         return
     if response_mode:
         if event.is_action_pressed("interact") or event.keycode == KEY_ENTER:
+            var completed_id := String(current_record.get("id", ""))
             response_mode = false
             current_record = {}
+            # NIAMH.DAT record 999 is the explicit leave branch. Completing its
+            # source response closes the conversation and starts the authored
+            # NOLOOP2 return motion instead of redisplaying the topic menu.
+            if completed_id == "999":
+                _close(completed_id)
+                get_viewport().set_input_as_handled()
+                return
             # First-contact family becomes the reusable topic family after a
             # source-backed exchange. This is runtime state only until the raw
             # condition/action tuples are semantically decoded.

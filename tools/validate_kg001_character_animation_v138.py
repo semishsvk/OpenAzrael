@@ -19,7 +19,7 @@ checks={
  "source_model_restored":'scene.export(glb)' in restore and 'Niamh.glb' in restore,
  "runtime_model_binding":all(x in runner for x in [
    '"res://assets/characters/%s/%s.glb"','packed.instantiate()',
-   '"SourceCharacter_" + character','character_root.transform = target.transform','target.visible = false']),
+   '"SourceCharacter_" + character','character_root.global_position = target.global_position','target.visible = false']),
  "runtime_clip_binding":all(x in runner for x in [
    '"res://assets/characters/%s/%s.tres"','source_player.play(StringName(family))',
    'source_player.queue(StringName(next_family))']),
