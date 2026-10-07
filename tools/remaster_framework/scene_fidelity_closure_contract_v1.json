@@ -1,0 +1,20 @@
+{
+  "schema": "remaster.scene_fidelity_closure_contract",
+  "version": 1,
+  "status": "ACTIVE_PHASE2_PLUS",
+  "scope": "ALL_OPENREMASTER_PROJECTS",
+  "frozen_phase1_unchanged": true,
+  "progression": ["STRUCTURAL", "RUNTIME_BOUND", "PLAYABLE", "REPLAY_VERIFIED", "SCENE_FIDELITY_VERIFIED", "FIDELITY_VERIFIED"],
+  "required_aspects": ["entry_trigger", "entities_placement", "animation", "interaction_state_machine", "dialogue_ui", "audio", "exit", "persistence_reentry", "visual_fidelity", "deterministic_replay_capture_diff"],
+  "evidence_states": ["UNKNOWN", "HYPOTHESIS", "STRUCTURAL", "VERIFIED", "FALSIFIED", "HOLD", "BLOCKED"],
+  "authority_order": ["CORPUS_AUTHORITY", "ORIGINAL_RUNTIME", "BROWSER_EMULATOR_RUNTIME", "VIDEO_REFERENCE", "DOCUMENTATION_COMMUNITY"],
+  "rules": [
+    "Every required aspect contains one or more explicit claims.",
+    "Scene promotion is fail-closed: every claim must be VERIFIED with concrete evidence.",
+    "PLAYABLE or REPLAY_VERIFIED never implies scene fidelity.",
+    "Framework contracts generalize validation mechanics, never game-specific semantics or PASS evidence.",
+    "Demo and retail scenes require independent evidence when their corpora or runtime semantics differ.",
+    "Remote desktop streams are execution aids, not fidelity authorities.",
+    "Unknown semantics remain HOLD/BLOCKED; do not synthesize behavior to satisfy a test."
+  ]
+}

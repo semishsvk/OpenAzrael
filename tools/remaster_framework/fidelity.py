@@ -105,3 +105,85 @@ def build_forensic_report(
         ],
         "transitions": transitions,
     }
+
+
+SCENE_FIDELITY_SCHEMA = "remaster.scene_fidelity_closure"
+SCENE_FIDELITY_VERSION = 1
+SCENE_FIDELITY_ASPECTS = (
+    "entry_trigger",
+    "entities_placement",
+    "animation",
+    "interaction_state_machine",
+    "dialogue_ui",
+    "audio",
+    "exit",
+    "persistence_reentry",
+    "visual_fidelity",
+    "deterministic_replay_capture_diff",
+)
+SCENE_EVIDENCE_STATES = {"UNKNOWN", "HYPOTHESIS", "STRUCTURAL", "VERIFIED", "FALSIFIED", "HOLD", "BLOCKED"}
+SCENE_AUTHORITY_CLASSES = {
+    "CORPUS_AUTHORITY",
+    "ORIGINAL_RUNTIME",
+    "BROWSER_EMULATOR_RUNTIME",
+    "VIDEO_REFERENCE",
+    "DOCUMENTATION_COMMUNITY",
+}
+
+def validate_scene_fidelity_closure(payload: dict[str, Any]) -> list[str]:
+    """Fail-closed validation for one meaningful interactive/character/puzzle scene.
+
+    The framework validates evidence structure only. Game-specific semantics,
+    identifiers and conclusions remain owned by each project's evidence.
+    """
+    errors: list[str] = []
+    if payload.get("schema") != SCENE_FIDELITY_SCHEMA:
+        errors.append("unsupported scene fidelity schema")
+    if payload.get("version") != SCENE_FIDELITY_VERSION:
+        errors.append("unsupported scene fidelity version")
+    if not str(payload.get("project_id", "")).strip():
+        errors.append("project_id must not be empty")
+    if not str(payload.get("scene_id", "")).strip():
+        errors.append("scene_id must not be empty")
+    aspects = payload.get("aspects")
+    if not isinstance(aspects, dict):
+        errors.append("aspects must be an object")
+        return errors
+    for aspect in SCENE_FIDELITY_ASPECTS:
+        record = aspects.get(aspect)
+        if not isinstance(record, dict):
+            errors.append(f"{aspect}: missing required aspect")
+            continue
+        assertions = record.get("assertions")
+        if not isinstance(assertions, list) or not assertions:
+            errors.append(f"{aspect}: assertions must be a non-empty list")
+            continue
+        for index, assertion in enumerate(assertions):
+            prefix = f"{aspect}[{index}]"
+            if not isinstance(assertion, dict):
+                errors.append(f"{prefix}: assertion must be an object")
+                continue
+            if not str(assertion.get("claim", "")).strip():
+                errors.append(f"{prefix}: claim must not be empty")
+            state = str(assertion.get("state", ""))
+            if state not in SCENE_EVIDENCE_STATES:
+                errors.append(f"{prefix}: invalid evidence state")
+            if state != "VERIFIED":
+                errors.append(f"{prefix}: scene promotion requires VERIFIED, got {state or 'MISSING'}")
+            evidence = assertion.get("evidence")
+            if not isinstance(evidence, list) or not evidence:
+                errors.append(f"{prefix}: VERIFIED assertion requires evidence")
+                continue
+            for evidence_index, item in enumerate(evidence):
+                ep = f"{prefix}.evidence[{evidence_index}]"
+                if not isinstance(item, dict):
+                    errors.append(f"{ep}: evidence must be an object")
+                    continue
+                authority = str(item.get("authority_class", ""))
+                if authority not in SCENE_AUTHORITY_CLASSES:
+                    errors.append(f"{ep}: invalid authority_class")
+                if not str(item.get("ref", "")).strip():
+                    errors.append(f"{ep}: ref must not be empty")
+    if payload.get("progression_gate") != "SCENE_FIDELITY_VERIFIED":
+        errors.append("progression_gate must be SCENE_FIDELITY_VERIFIED")
+    return errors
