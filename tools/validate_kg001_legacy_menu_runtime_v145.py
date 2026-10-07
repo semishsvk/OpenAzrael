@@ -24,7 +24,7 @@ checks={
  "map_key":"KEY_M" in menu and "legacy_map_toggle" in menu,
  "headless_safe":'DisplayServer.get_name() == "headless"' in menu,
  "main_scene_wired":"legacy_menu_runtime_v145.gd" in main and 'name="LegacyMenuV145"' in main,
- "mouse_source_mode":"MOUSE_BUTTON_RIGHT" in (ROOT/"scripts/player.gd").read_text(encoding="utf-8"),
+ "mouse_source_mode":all(token in (ROOT/"scripts/hud.gd").read_text(encoding="utf-8") for token in ("get_viewport().get_mouse_position()","Input.mouse_mode == Input.MOUSE_MODE_VISIBLE")),
  "mouse_ray_context":"project_ray_normal" in (ROOT/"scripts/interaction_probe.gd").read_text(encoding="utf-8"),
  "no_ai":"image_gen" not in menu.lower() and "generated menu" not in menu.lower(),
 }

@@ -5,7 +5,7 @@ import argparse, json, sys
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('--root', default=str(Path(__file__).resolve().parents[0]))
+    ap.add_argument('--root', default=str(Path(__file__).resolve().parents[1]))
     args=ap.parse_args()
     root=Path(args.root)
     contract=json.loads((root/'data/tests/kg001_eugene_animation_audio_contract_v173.json').read_text(encoding='utf-8'))
