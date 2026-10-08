@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
   "owner": "chatgpt-openazrael-demo-candidate8-20261008",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,14 +12,6 @@
   "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
   "queue": [
     {
-      "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
-      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
-      "enqueued_at": "2026-10-08T18:51:09.001622+00:00",
-      "state": "ready",
-      "checkpoint_head": "87d7b8f4e403008e4b1055afd0daa2a7eee6ab57",
-      "priority_reason": "USER_APPROVED_C8_COMPLETION_PRIORITY"
-    },
-    {
       "thread_id": "chatgpt-openazrael-retail-20261007",
       "lease_id": "retail-primary-20261007-a1",
       "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
@@ -27,7 +19,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-08T18:50:54.715667+00:00",
+  "last_seen_at": "2026-10-08T20:15:22.345393+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -58,5 +50,5 @@
     "next_task": "Original-runtime intro order/timing then Well Room pipe closure",
     "priority_authorization": "Existing user-approved Candidate 8 before Retail; both tickets retained"
   },
-  "acquired_at": "2026-10-08T12:39:20.821725+00:00"
+  "acquired_at": "2026-10-08T20:15:22.345383+00:00"
 }
