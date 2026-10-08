@@ -1,16 +1,24 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
   "owner": "chatgpt-openazrael-demo-candidate8-20261008",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
-  "note": "C8 intro block v311 committed and backed up; no active process. User-approved C8 priority retained ahead of Retail. Overall fidelity/Well Room remain HOLD.",
+  "note": "C8 intro block v312 committed and backed up; no active process. User-approved C8 priority retained ahead of Retail. LE mapping and original intro mechanisms pass; overall fidelity/Well Room remain HOLD.",
   "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
   "queue": [
+    {
+      "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+      "enqueued_at": "2026-10-08T21:25:53.797909+00:00",
+      "state": "ready",
+      "checkpoint_head": "64739a34aa92416c78b626767c02c2e8996adfb1",
+      "priority_reason": "USER_APPROVED_C8_COMPLETION_PRIORITY"
+    },
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
       "lease_id": "retail-primary-20261007-a1",
@@ -33,21 +41,21 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-08T18:51:09.001608+00:00",
+  "released_at": "2026-10-08T21:25:53.797893+00:00",
   "reconciliation": {
-    "schema": "openazrael.intro_writer_handoff.v311",
-    "head": "87d7b8f4e403008e4b1055afd0daa2a7eee6ab57",
+    "schema": "openazrael.intro_writer_handoff.v312",
+    "head": "64739a34aa92416c78b626767c02c2e8996adfb1",
     "git_status": "M export_presets.cfg\n M project.godot\n?? tools/apply_dual_controls_v303.py\n?? tools/audit_intro_mov_container_v309.py\n?? tools/audit_intro_mov_header_v310.py\n?? tools/audit_intro_mov_v308.py\n?? tools/fix_niamh_ui_text_v301.py\n?? tools/test_intro_mov_container_v309.py\n?? tools/test_intro_mov_header_v310.py",
     "remote_head": "2955d6314d96ec003919322a72080b8a93bf517e",
-    "sync_state": "LOCAL_INTRO_COMMIT_VERIFIED_BACKED_UP_NOT_PUSHED",
+    "sync_state": "LOCAL_ORIGINAL_ORACLE_V312_COMMIT_VERIFIED_BACKED_UP_NOT_PUSHED",
     "task_processes_stopped": true,
     "task_process_audit": "guarded REPL and descendants absent; C8 Godot processes absent",
-    "recovery_root": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-intro-v311-20261008T183420Z",
-    "bundle_sha256": "3958c41278384975a89f2e6ac8a22a661ac035ed0ed272ff842d5878d460687b",
-    "recovery_zip_sha256": "ce03834fc1d0113a00d9096ca6663f156a4a44b461da42946535cbef0aba216b",
-    "intro_status": "IMPLEMENTED_AND_RUNTIME_TESTED",
+    "recovery_root": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-original-oracle-v312-20261008T205405Z",
+    "bundle_sha256": "1bdea6631f9db2c0b8d7fae92d154c1e023ab84f0b4e1abdac0ed0ed0440f1d1",
+    "recovery_zip_sha256": "d16cc1b1b4a8147795c90f5a8635fea484ec5e4ccf62229a20c717f57db57e01",
+    "intro_status": "LE_MAPPING_AND_INTRO_IMPLEMENTATION_PASS",
     "full_candidate_status": "FIDELITY_HOLD",
-    "next_task": "Original-runtime intro order/timing then Well Room pipe closure",
+    "next_task": "Well Room pipe complete semantic and runtime chain using verified LE mapping; DOS/VGA fades and timing remain separate gates",
     "priority_authorization": "Existing user-approved Candidate 8 before Retail; both tickets retained"
   },
   "acquired_at": "2026-10-08T20:15:22.345383+00:00"
