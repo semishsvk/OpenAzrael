@@ -1,51 +1,45 @@
 {
-    "schema_version":  2,
-    "scope":  "global_mutating_work",
-    "status":  "idle",
-    "lease_id":  "demo-candidate8-lefixup-20261008-a7b500f",
-    "owner":  "chatgpt-openazrael-demo-candidate8-20261008",
-    "authoritative_branch":  "integration/kg001-candidate3-pppv-v2",
-    "base_head_at_acquire":  "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
-    "acquired_on":  "2026-10-05",
-    "expires":  null,
-    "note":  "Candidate 8 priority previously user approved; Retail retained and deferred while C8 fidelity closure proceeds.",
-    "owner_thread_id":  "chatgpt-openazrael-demo-candidate8-20261008",
-    "queue":  [
-                  {
-                      "thread_id":  "chatgpt-openazrael-demo-candidate8-20261008",
-                      "lease_id":  "demo-candidate8-lefixup-20261008-a7b500f",
-                      "enqueued_at":  "2026-10-08T12:21:15.684459+00:00",
-                      "state":  "ready"
-                  },
-                  {
-                      "thread_id":  "chatgpt-openazrael-retail-20261007",
-                      "lease_id":  "retail-primary-20261007-a1",
-                      "enqueued_at":  "2026-10-07T18:43:49.086561+00:00",
-                      "state":  "ready"
-                  }
-              ],
-    "active_run":  null,
-    "last_seen_at":  "2026-10-08T12:13:53.972105+00:00",
-    "protocol":  {
-                     "version":  2,
-                     "branch":  "coordination/single-writer",
-                     "path":  ".openazrael/WRITER_PROTOCOL.md",
-                     "tool":  ".openazrael/lease.py",
-                     "owner_identity":  [
-                                            "owner_thread_id",
-                                            "lease_id"
-                                        ],
-                     "contention":  "enqueue-and-retry-without-takeover",
-                     "waiting":  "release-and-record-dependency-ticket",
-                     "expiry":  "never-auto-steal"
-                 },
-    "released_at":  "2026-10-08T12:15:56.766829+00:00",
-    "reconciliation":  {
-                           "task_processes_stopped":  true,
-                           "remote_head":  "NO_LOCAL_REMOTE_TRACKING_REF",
-                           "git_status":  " M export_presets.cfg\n M project.godot\n?? tools/apply_dual_controls_v303.py\n?? tools/fix_niamh_ui_text_v301.py",
-                           "head":  "a7b500fa3ee95c989bf788ccd5a71d6fbbe2be84",
-                           "sync_state":  "C8_READ_ONLY_AUDIT_NO_CHANGES"
-                       },
-    "acquired_at":  "2026-10-08T12:13:53.972095+00:00"
+  "schema_version": 2,
+  "scope": "global_mutating_work",
+  "status": "active",
+  "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+  "owner": "chatgpt-openazrael-demo-candidate8-20261008",
+  "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
+  "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
+  "acquired_on": "2026-10-05",
+  "expires": null,
+  "note": "Candidate 8 priority previously user approved; Retail retained and deferred while C8 fidelity closure proceeds.",
+  "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+  "queue": [
+    {
+      "thread_id": "chatgpt-openazrael-retail-20261007",
+      "lease_id": "retail-primary-20261007-a1",
+      "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
+      "state": "ready"
+    }
+  ],
+  "active_run": null,
+  "last_seen_at": "2026-10-08T12:22:48.610432+00:00",
+  "protocol": {
+    "version": 2,
+    "branch": "coordination/single-writer",
+    "path": ".openazrael/WRITER_PROTOCOL.md",
+    "tool": ".openazrael/lease.py",
+    "owner_identity": [
+      "owner_thread_id",
+      "lease_id"
+    ],
+    "contention": "enqueue-and-retry-without-takeover",
+    "waiting": "release-and-record-dependency-ticket",
+    "expiry": "never-auto-steal"
+  },
+  "released_at": "2026-10-08T12:15:56.766829+00:00",
+  "reconciliation": {
+    "task_processes_stopped": true,
+    "remote_head": "NO_LOCAL_REMOTE_TRACKING_REF",
+    "git_status": " M export_presets.cfg\n M project.godot\n?? tools/apply_dual_controls_v303.py\n?? tools/fix_niamh_ui_text_v301.py",
+    "head": "a7b500fa3ee95c989bf788ccd5a71d6fbbe2be84",
+    "sync_state": "C8_READ_ONLY_AUDIT_NO_CHANGES"
+  },
+  "acquired_at": "2026-10-08T12:22:48.610422+00:00"
 }
