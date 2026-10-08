@@ -1,61 +1,61 @@
 {
-  "schema_version": 2,
-  "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "c6-flythrough-20261006-bcc1961",
-  "owner": "01a10f88-050f-7cc3-9371-562150868ddd",
-  "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
-  "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
-  "acquired_on": "2026-10-05",
-  "expires": null,
-  "note": "Administrative recovery of inactive C6 writer after user approval, verified backup, and process audit; C6 gameplay completion NOT asserted. Queue preserved.",
-  "owner_thread_id": "01a10f88-050f-7cc3-9371-562150868ddd",
-  "queue": [
-    {
-      "thread_id": "chatgpt-openazrael-retail-20261007",
-      "lease_id": "retail-primary-20261007-a1",
-      "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
-      "state": "ready"
-    },
-    {
-      "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
-      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
-      "enqueued_at": "2026-10-08T09:52:56.875004+00:00",
-      "state": "ready"
-    }
-  ],
-  "active_run": null,
-  "last_seen_at": "2026-10-06T10:21:06.140998+00:00",
-  "protocol": {
-    "version": 2,
-    "branch": "coordination/single-writer",
-    "path": ".openazrael/WRITER_PROTOCOL.md",
-    "tool": ".openazrael/lease.py",
-    "owner_identity": [
-      "owner_thread_id",
-      "lease_id"
-    ],
-    "contention": "enqueue-and-retry-without-takeover",
-    "waiting": "release-and-record-dependency-ticket",
-    "expiry": "never-auto-steal"
-  },
-  "released_at": "2026-10-08T12:05:59.8877932Z",
-  "reconciliation": {
-    "schema": "OpenAzrael.WriterRecovery.v1",
-    "decision": "ADMINISTRATIVE_RECOVERY_NOT_C6_COMPLETION",
-    "approved_by_user": true,
-    "head": "a296b82ffc829ca86811a59a4490811abb22d7bc",
-    "git_status": " M scripts/player.gd\n M scripts/room_manager.gd\n M tools/openazrael_adapters/r7_pppv.py\n?? data/retail_k001_portal_evidence_v1.json\n?? data/retail_k001_portal_evidence_v3.json\n?? data/retail_k001_runtime_transition_evidence_v1.json\n?? evidence/retail/k001/k001_runtime_progress_v1.json\n?? evidence/retail/k001/k001_runtime_progress_v2.json\n?? evidence/retail/k001/k001_runtime_progress_v3.json\n?? evidence/retail/k001/k001_validation_cycle_v1.json\n?? evidence/retail/k001/r36_authored_tunnel_connectivity_v1.json\n?? evidence/retail/k001/r36_blocker_driven_collision_experiment_v1.json\n?? evidence/retail/k001/r36_object02_aperture_clearance_v1.json\n?? evidence/retail/k001/r36_object02_connector_polygon_audit_v1.json\n?? evidence/retail/k001/r36_object02_cross_section_v1.json\n?? evidence/retail/k001/r36_tun05_spawn_face_probe_v1.json\n?? evidence/retail/k001/r36_tun_conn01_blocker_v1.json\n?? evidence/retail/k001/r36_tun_conn01_faces_v1.json\n?? evidence/retail/k001/retail_portal_geometry_audit_v2.json\n?? evidence/retail/k001/retail_transition_role_pairing_v1.json\n?? evidence/retail/object_matrix/\n?? r36_physical_probe.gd\n?? r36_physical_probe.tscn\n?? scripts/validation/pppv_flythrough_test_runner_acb0339.gd\n?? scripts/validation/retail_k001_floor_profile.gd\n?? scripts/validation/retail_k001_forward_probe.gd\n?? scripts/validation/retail_k001_motion_probe.gd\n?? scripts/validation/retail_k001_overlap_probe.gd\n?? scripts/validation/retail_k001_point_probe.gd\n?? scripts/validation/retail_k001_r36_physics.gd\n?? scripts/validation/retail_k001_r36_route.gd\n?? scripts/validation/retail_k001_room_smoke.gd\n?? scripts/validation/retail_k001_route_ablate_conn.gd\n?? scripts/validation/retail_k001_route_clean.gd\n?? scripts/validation/retail_k001_step_probe.gd\n?? tools/analyze_conversation_bridge_v251.py\n?? tools/analyze_conversation_widget_callbacks_v252.py\n?? tools/apply_le_jump_table_fixups_v277.py\n?? tools/build_le_flat_runtime_v279.py\n?? tools/compare_conversation_hud_2d_calls_v266.py\n?? tools/crossref_presentation_primitives_v246.py\n?? tools/crossref_shared_helpers_v234.py\n?? tools/decode_2d_presentation_primitives_v267.py\n?? tools/decode_le_fixup_map_v273.py\n?? tools/decode_presentation_dispatch_v241.py\n?? tools/decode_presentation_handlers_v274.py\n?? tools/decode_presentation_handlers_v275.py\n?? tools/decode_presentation_opcode_handlers_v269.py\n?? tools/disasm_conversation_font_bridge_v248.py\n?? tools/disasm_conversation_helpers_v233.py\n?? tools/disasm_presentation_bridge_v235.py\n?? tools/disasm_presentation_executor_v240.py\n?? tools/disasm_render_candidates_v237.py\n?? tools/find_conversation_font_bridge_v247.py\n?? tools/find_conversation_render_intersection_v236.py\n?? tools/find_presentation_buffer_consumers_v239.py\n?? tools/find_presentation_command_interpreter_v268.py\n?? tools/map_presentation_dispatch_v243.py\n?? tools/map_presentation_jump_table_v242.py\n?? tools/map_retail_save_blocks_v283.py\n?? tools/parse_le_fixup_page_v276.py\n?? tools/probe_conversation_callflow_v231.py\n?? tools/probe_conversation_internal_targets_v232.py\n?? tools/probe_conversation_layout_callers_v260.py\n?? tools/probe_conversation_layout_entry_v259.py\n?? tools/probe_conversation_text_layout_v258.py\n?? tools/probe_le_fixup_page6_v271.py\n?? tools/probe_le_fixup_tables_v270.py\n?? tools/probe_retail_save_layout_v282.py\n?? tools/resolve_presentation_jump_fixups_v272.py\n?? tools/resolve_runtime_va_v244.py\n?? tools/trace_ani_speed_semantics_v285.py\n?? tools/trace_conversation_descriptor_to_widget_v262.py\n?? tools/trace_conversation_surface_consumers_v263.py\n?? tools/trace_conversation_surface_to_framebuffer_v264.py\n?? tools/trace_conversation_text_pointer_v249.py\n?? tools/trace_conversation_widget_layer_v250.py\n?? tools/trace_presentation_buffer_v238.py\n?? tools/trace_presentation_cfg_v245.py\n?? tools/trace_presentation_render_traversal_v265.py\n?? tools/validate_le_jump_table_v278.py\n?? tools/xref_ani_literals_disasm_v287.py\n?? tools/xref_le_internal_target_v286.py",
-    "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "LOCAL_UNPUSHED_COMMITS_AND_WORKTREE_PRESERVED_IN_VERIFIED_RECOVERY_BUNDLE",
-    "task_processes_stopped": true,
-    "backup_path": "F:\\OpenRemaster\\recovery\\OpenAzrael-C6-20261008",
-    "bundle_sha256": "8E2CBB3ED0C6D14D020FCD37BBD047E5CED6AFB2249875C8D9BAA3BC26A57180",
-    "lock_blob_sha": "bca388b5cb0d24f09172f15ed893fd91049b26e7",
-    "queue_order": [
-      "chatgpt-openazrael-retail-20261007",
-      "chatgpt-openazrael-demo-candidate8-20261008"
-    ]
-  },
-  "acquired_at": "2026-10-06T10:18:42.842497+00:00"
+    "schema_version":  2,
+    "scope":  "global_mutating_work",
+    "status":  "idle",
+    "lease_id":  "c6-flythrough-20261006-bcc1961",
+    "owner":  "01a10f88-050f-7cc3-9371-562150868ddd",
+    "authoritative_branch":  "integration/kg001-candidate3-pppv-v2",
+    "base_head_at_acquire":  "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
+    "acquired_on":  "2026-10-05",
+    "expires":  null,
+    "note":  "User approved deferring Retail priority to complete Candidate 8; both tickets retained, C8 first. No gameplay changes.",
+    "owner_thread_id":  "01a10f88-050f-7cc3-9371-562150868ddd",
+    "queue":  [
+                  {
+                      "thread_id":  "chatgpt-openazrael-demo-candidate8-20261008",
+                      "lease_id":  "demo-candidate8-lefixup-20261008-a7b500f",
+                      "enqueued_at":  "2026-10-08T09:52:56.875004+00:00",
+                      "state":  "ready"
+                  },
+                  {
+                      "thread_id":  "chatgpt-openazrael-retail-20261007",
+                      "lease_id":  "retail-primary-20261007-a1",
+                      "enqueued_at":  "2026-10-07T18:43:49.086561+00:00",
+                      "state":  "ready"
+                  }
+              ],
+    "active_run":  null,
+    "last_seen_at":  "2026-10-06T10:21:06.140998+00:00",
+    "protocol":  {
+                     "version":  2,
+                     "branch":  "coordination/single-writer",
+                     "path":  ".openazrael/WRITER_PROTOCOL.md",
+                     "tool":  ".openazrael/lease.py",
+                     "owner_identity":  [
+                                            "owner_thread_id",
+                                            "lease_id"
+                                        ],
+                     "contention":  "enqueue-and-retry-without-takeover",
+                     "waiting":  "release-and-record-dependency-ticket",
+                     "expiry":  "never-auto-steal"
+                 },
+    "released_at":  "2026-10-08T12:05:59.8877932Z",
+    "reconciliation":  {
+                           "schema":  "OpenAzrael.WriterRecovery.v1",
+                           "decision":  "ADMINISTRATIVE_RECOVERY_NOT_C6_COMPLETION",
+                           "approved_by_user":  true,
+                           "head":  "a296b82ffc829ca86811a59a4490811abb22d7bc",
+                           "git_status":  " M scripts/player.gd\n M scripts/room_manager.gd\n M tools/openazrael_adapters/r7_pppv.py\n?? data/retail_k001_portal_evidence_v1.json\n?? data/retail_k001_portal_evidence_v3.json\n?? data/retail_k001_runtime_transition_evidence_v1.json\n?? evidence/retail/k001/k001_runtime_progress_v1.json\n?? evidence/retail/k001/k001_runtime_progress_v2.json\n?? evidence/retail/k001/k001_runtime_progress_v3.json\n?? evidence/retail/k001/k001_validation_cycle_v1.json\n?? evidence/retail/k001/r36_authored_tunnel_connectivity_v1.json\n?? evidence/retail/k001/r36_blocker_driven_collision_experiment_v1.json\n?? evidence/retail/k001/r36_object02_aperture_clearance_v1.json\n?? evidence/retail/k001/r36_object02_connector_polygon_audit_v1.json\n?? evidence/retail/k001/r36_object02_cross_section_v1.json\n?? evidence/retail/k001/r36_tun05_spawn_face_probe_v1.json\n?? evidence/retail/k001/r36_tun_conn01_blocker_v1.json\n?? evidence/retail/k001/r36_tun_conn01_faces_v1.json\n?? evidence/retail/k001/retail_portal_geometry_audit_v2.json\n?? evidence/retail/k001/retail_transition_role_pairing_v1.json\n?? evidence/retail/object_matrix/\n?? r36_physical_probe.gd\n?? r36_physical_probe.tscn\n?? scripts/validation/pppv_flythrough_test_runner_acb0339.gd\n?? scripts/validation/retail_k001_floor_profile.gd\n?? scripts/validation/retail_k001_forward_probe.gd\n?? scripts/validation/retail_k001_motion_probe.gd\n?? scripts/validation/retail_k001_overlap_probe.gd\n?? scripts/validation/retail_k001_point_probe.gd\n?? scripts/validation/retail_k001_r36_physics.gd\n?? scripts/validation/retail_k001_r36_route.gd\n?? scripts/validation/retail_k001_room_smoke.gd\n?? scripts/validation/retail_k001_route_ablate_conn.gd\n?? scripts/validation/retail_k001_route_clean.gd\n?? scripts/validation/retail_k001_step_probe.gd\n?? tools/analyze_conversation_bridge_v251.py\n?? tools/analyze_conversation_widget_callbacks_v252.py\n?? tools/apply_le_jump_table_fixups_v277.py\n?? tools/build_le_flat_runtime_v279.py\n?? tools/compare_conversation_hud_2d_calls_v266.py\n?? tools/crossref_presentation_primitives_v246.py\n?? tools/crossref_shared_helpers_v234.py\n?? tools/decode_2d_presentation_primitives_v267.py\n?? tools/decode_le_fixup_map_v273.py\n?? tools/decode_presentation_dispatch_v241.py\n?? tools/decode_presentation_handlers_v274.py\n?? tools/decode_presentation_handlers_v275.py\n?? tools/decode_presentation_opcode_handlers_v269.py\n?? tools/disasm_conversation_font_bridge_v248.py\n?? tools/disasm_conversation_helpers_v233.py\n?? tools/disasm_presentation_bridge_v235.py\n?? tools/disasm_presentation_executor_v240.py\n?? tools/disasm_render_candidates_v237.py\n?? tools/find_conversation_font_bridge_v247.py\n?? tools/find_conversation_render_intersection_v236.py\n?? tools/find_presentation_buffer_consumers_v239.py\n?? tools/find_presentation_command_interpreter_v268.py\n?? tools/map_presentation_dispatch_v243.py\n?? tools/map_presentation_jump_table_v242.py\n?? tools/map_retail_save_blocks_v283.py\n?? tools/parse_le_fixup_page_v276.py\n?? tools/probe_conversation_callflow_v231.py\n?? tools/probe_conversation_internal_targets_v232.py\n?? tools/probe_conversation_layout_callers_v260.py\n?? tools/probe_conversation_layout_entry_v259.py\n?? tools/probe_conversation_text_layout_v258.py\n?? tools/probe_le_fixup_page6_v271.py\n?? tools/probe_le_fixup_tables_v270.py\n?? tools/probe_retail_save_layout_v282.py\n?? tools/resolve_presentation_jump_fixups_v272.py\n?? tools/resolve_runtime_va_v244.py\n?? tools/trace_ani_speed_semantics_v285.py\n?? tools/trace_conversation_descriptor_to_widget_v262.py\n?? tools/trace_conversation_surface_consumers_v263.py\n?? tools/trace_conversation_surface_to_framebuffer_v264.py\n?? tools/trace_conversation_text_pointer_v249.py\n?? tools/trace_conversation_widget_layer_v250.py\n?? tools/trace_presentation_buffer_v238.py\n?? tools/trace_presentation_cfg_v245.py\n?? tools/trace_presentation_render_traversal_v265.py\n?? tools/validate_le_jump_table_v278.py\n?? tools/xref_ani_literals_disasm_v287.py\n?? tools/xref_le_internal_target_v286.py",
+                           "remote_head":  "55207b3b666a91970c7c5008892e00ae91ce9447",
+                           "sync_state":  "LOCAL_UNPUSHED_COMMITS_AND_WORKTREE_PRESERVED_IN_VERIFIED_RECOVERY_BUNDLE",
+                           "task_processes_stopped":  true,
+                           "backup_path":  "F:\\OpenRemaster\\recovery\\OpenAzrael-C6-20261008",
+                           "bundle_sha256":  "8E2CBB3ED0C6D14D020FCD37BBD047E5CED6AFB2249875C8D9BAA3BC26A57180",
+                           "lock_blob_sha":  "bca388b5cb0d24f09172f15ed893fd91049b26e7",
+                           "queue_order":  [
+                                               "chatgpt-openazrael-retail-20261007",
+                                               "chatgpt-openazrael-demo-candidate8-20261008"
+                                           ]
+                       },
+    "acquired_at":  "2026-10-06T10:18:42.842497+00:00"
 }
