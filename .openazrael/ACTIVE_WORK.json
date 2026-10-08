@@ -18,7 +18,21 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "85e4a206-7f66-4a8d-9db9-ea56798ec1f2",
+    "host": "HomePC",
+    "supervisor_pid": 59404,
+    "started_at": "2026-10-08T12:22:58.127785+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/audit_fixup_source_mapping_v54.py",
+      "F:\\OpenRemaster\\OpenAzrael\\.tmp\\kg001_c6_final_audit\\original_clean26\\ATDEMO\\R.EXE",
+      ".tmp/r7_fixups_v306.json",
+      "--out",
+      ".tmp/c8_fixup_v54_recheck.json"
+    ]
+  },
   "last_seen_at": "2026-10-08T12:22:48.610432+00:00",
   "protocol": {
     "version": 2,
