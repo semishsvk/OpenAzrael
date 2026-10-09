@@ -18,7 +18,19 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "b06d3150-9cb6-4f51-aeb4-01a0a9e5f03d",
+    "host": "HomePC",
+    "supervisor_pid": 65512,
+    "started_at": "2026-10-09T11:02:45.168534+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "git",
+      "commit",
+      "-m",
+      "docs(c8): checkpoint source state and R7 save progress with release holds"
+    ]
+  },
   "last_seen_at": "2026-10-09T11:00:35.530515+00:00",
   "protocol": {
     "version": 2,
