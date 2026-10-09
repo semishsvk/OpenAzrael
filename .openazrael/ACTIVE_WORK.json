@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "8af42985-e942-4a07-b4c8-810467849956",
+    "host": "HomePC",
+    "supervisor_pid": 63208,
+    "started_at": "2026-10-09T08:43:16.229566+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/build_demo_room_fidelity_manifest_v124.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T07:40:18.842970+00:00",
   "protocol": {
     "version": 2,
