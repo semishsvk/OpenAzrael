@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "953f9d35-ace9-43e2-af07-c023567cbc33",
-    "host": "HomePC",
-    "supervisor_pid": 77152,
-    "started_at": "2026-10-09T15:41:27.880626+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\run_prod_camera_debug_v410.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T15:40:51.117517+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T15:41:30.178183+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
