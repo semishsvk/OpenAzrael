@@ -18,19 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "315bc01a-6839-480e-a7d9-c9e79515ec22",
-    "host": "HomePC",
-    "supervisor_pid": 73588,
-    "started_at": "2026-10-09T16:24:18.635063+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "tools/test_niamh_visual_calibration_v415.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T16:23:57.511142+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T16:24:20.502755+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
