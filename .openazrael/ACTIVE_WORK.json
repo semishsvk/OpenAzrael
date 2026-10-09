@@ -18,7 +18,18 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "491b6e1b-9d2d-4f7b-aa50-968f720b83a6",
+    "host": "HomePC",
+    "supervisor_pid": 70020,
+    "started_at": "2026-10-09T16:30:29.832967+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "tools/test_original_player_camera_memory_v408.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:29:54.141449+00:00",
   "protocol": {
     "version": 2,
