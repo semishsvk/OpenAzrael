@@ -15,7 +15,8 @@
       "thread_id": "chatgpt-openazrael-retail-20261007",
       "lease_id": "retail-primary-20261007-a1",
       "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
-      "state": "ready"
+      "state": "waiting",
+      "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
   "active_run": null,
