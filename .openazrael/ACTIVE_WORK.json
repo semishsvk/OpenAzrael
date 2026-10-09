@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
   "owner": "chatgpt-openazrael-demo-candidate8-20261008",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -33,22 +33,25 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-08T21:25:53.797893+00:00",
+  "released_at": "2026-10-09T04:04:37.420926+00:00",
   "reconciliation": {
-    "schema": "openazrael.intro_writer_handoff.v312",
+    "schema": "openazrael.well_v313_readonly_handoff",
     "head": "64739a34aa92416c78b626767c02c2e8996adfb1",
-    "git_status": "M export_presets.cfg\n M project.godot\n?? tools/apply_dual_controls_v303.py\n?? tools/audit_intro_mov_container_v309.py\n?? tools/audit_intro_mov_header_v310.py\n?? tools/audit_intro_mov_v308.py\n?? tools/fix_niamh_ui_text_v301.py\n?? tools/test_intro_mov_container_v309.py\n?? tools/test_intro_mov_header_v310.py",
+    "scope": "Read-only R.EXE handler/callee disassembly; no tracked source edits",
+    "result": "STRUCTURAL_RE_PROGRESS_FIDELITY_HOLD",
+    "artifacts": [
+      ".tmp/well_handlers_v313_disassembly.json",
+      ".tmp/well_callees_v313.json"
+    ],
+    "next": "Bind opcode 0x17/0x18 records to Well Room objects and verify transforms/audio/state/replay",
+    "protected_configs": "UNCHANGED",
+    "git_status": " M export_presets.cfg\n M project.godot\n?? tools/apply_dual_controls_v303.py\n?? tools/audit_intro_mov_container_v309.py\n?? tools/audit_intro_mov_header_v310.py\n?? tools/audit_intro_mov_v308.py\n?? tools/fix_niamh_ui_text_v301.py\n?? tools/test_intro_mov_container_v309.py\n?? tools/test_intro_mov_header_v310.py",
     "remote_head": "2955d6314d96ec003919322a72080b8a93bf517e",
-    "sync_state": "LOCAL_ORIGINAL_ORACLE_V312_COMMIT_VERIFIED_BACKED_UP_NOT_PUSHED",
+    "sync_state": "LOCAL_ONLY_NOT_PUSHED",
     "task_processes_stopped": true,
-    "task_process_audit": "guarded REPL and descendants absent; C8 Godot processes absent",
-    "recovery_root": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-original-oracle-v312-20261008T205405Z",
-    "bundle_sha256": "1bdea6631f9db2c0b8d7fae92d154c1e023ab84f0b4e1abdac0ed0ed0440f1d1",
-    "recovery_zip_sha256": "d16cc1b1b4a8147795c90f5a8635fea484ec5e4ccf62229a20c717f57db57e01",
-    "intro_status": "LE_MAPPING_AND_INTRO_IMPLEMENTATION_PASS",
+    "task_process_audit": "Read-only guarded jobs finished; no persistent task process launched",
     "full_candidate_status": "FIDELITY_HOLD",
-    "next_task": "Well Room pipe complete semantic and runtime chain using verified LE mapping; DOS/VGA fades and timing remain separate gates",
-    "priority_authorization": "Existing user-approved Candidate 8 before Retail; both tickets retained"
+    "intro_status": "LE_MAPPING_AND_INTRO_IMPLEMENTATION_PASS"
   },
   "acquired_at": "2026-10-09T03:58:56.379186+00:00"
 }
