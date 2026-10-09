@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "c4e036ff-0b5d-4781-bf5e-29a3c5f4692a",
-    "host": "HomePC",
-    "supervisor_pid": 70640,
-    "started_at": "2026-10-09T11:58:45.140286+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\patch_title_dac_v377.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T11:55:21.916301+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T11:58:46.763846+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
