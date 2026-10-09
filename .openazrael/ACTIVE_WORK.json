@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "b2895bf0-ac33-4a38-9563-fd8ead51bafc",
-    "host": "HomePC",
-    "supervisor_pid": 68496,
-    "started_at": "2026-10-09T07:00:20.989024+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v344_frame_loop.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T06:54:28.751430+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T07:00:22.984188+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
