@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "db896a88-b945-4317-9147-eed513d727a6",
-    "host": "HomePC",
-    "supervisor_pid": 43620,
-    "started_at": "2026-10-09T16:29:09.389157+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\integrate_niamh_v415_main_regression.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T16:28:16.297873+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T16:29:11.173371+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
