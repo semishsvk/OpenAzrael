@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "beb16a81-685b-43b2-aef0-3ef139462748",
+    "host": "HomePC",
+    "supervisor_pid": 68304,
+    "started_at": "2026-10-09T05:14:55.656925+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_object_binding_v324.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T05:14:39.006839+00:00",
   "protocol": {
     "version": 2,
