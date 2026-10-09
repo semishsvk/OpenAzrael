@@ -18,7 +18,20 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "0260251c-7cc9-4348-93ab-0264ac22bfb5",
+    "host": "HomePC",
+    "supervisor_pid": 66392,
+    "started_at": "2026-10-09T15:34:40.725640+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+      "--script",
+      "res://scripts/validation/r1_native_camera_probe_v409.gd"
+    ]
+  },
   "last_seen_at": "2026-10-09T15:34:04.157654+00:00",
   "protocol": {
     "version": 2,
