@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "6a6aabce-edf7-457e-b0bd-f6eeea71da87",
-    "host": "HomePC",
-    "supervisor_pid": 70224,
-    "started_at": "2026-10-09T12:30:04.728102+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      ".tmp/r1_door_navigation_v383.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:29:51.787916+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:30:27.872886+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
