@@ -19,19 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "d6dd0921-03b3-4ac5-8329-06b7ee8fa8c2",
-    "host": "HomePC",
-    "supervisor_pid": 28128,
-    "started_at": "2026-10-09T20:54:07.132181+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "tools/validate_original_miles_v424.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T20:52:54.740492+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T20:57:30.665074+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -232,6 +221,24 @@
       "time_utc": "2026-10-09T16:20:32.025493+00:00",
       "expect": "prepare_v415_rendered.py",
       "fidelity": "HOLD"
+    },
+    {
+      "schema": "openazrael.same_writer_completed_run_reconciliation.v424",
+      "run_id": "d6dd0921-03b3-4ac5-8329-06b7ee8fa8c2",
+      "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261009-continuation",
+      "lease_id": "demo-c8-v423-fidelity-20261009",
+      "completed_process_exit": 0,
+      "supervisor_pid": 28128,
+      "supervisor_absent": true,
+      "competing_task_processes_absent": true,
+      "head": "6c26b8a4e304ecd0f3fa245dd92d42e82070b051",
+      "completed_evidence": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\original_miles_independent_v424.json",
+      "evidence_sha256": "3ebf0324fb06e7ef35ca9001385d211f514eacdd4df0512e544f8173f64b190f",
+      "test_result": "25_CHECKS_PASS_EVENT_ID_HOLD",
+      "original_ATDEMO_unchanged": true,
+      "protected_configs_unchanged": true,
+      "reason": "Completed v424 audio guard but CAS run finalizer failed after run exit",
+      "utc": "2026-10-09T20:57:30.665062+00:00"
     }
   ]
 }
