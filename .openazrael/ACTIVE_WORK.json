@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "80a2920a-26b7-4ede-90c8-c12617e5138f",
+    "host": "HomePC",
+    "supervisor_pid": 77160,
+    "started_at": "2026-10-09T10:52:24.252482+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/test_well_callback_opcode_v366.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:51:49.564337+00:00",
   "protocol": {
     "version": 2,
