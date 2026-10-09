@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "de943bf3-50ff-484b-a5c7-ce22928cb4d5",
+    "host": "HomePC",
+    "supervisor_pid": 75108,
+    "started_at": "2026-10-09T14:28:06.916712+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\fix_niamh_contract_runner_v403.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T14:27:34.601635+00:00",
   "protocol": {
     "version": 2,
