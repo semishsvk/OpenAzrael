@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "5660d63d-52c5-4a9a-bf5f-f52e7aef960e",
+    "host": "HomePC",
+    "supervisor_pid": 70720,
+    "started_at": "2026-10-09T10:23:44.494070+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\make_well_source_portable_v363.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:20:17.462564+00:00",
   "protocol": {
     "version": 2,
