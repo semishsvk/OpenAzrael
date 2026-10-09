@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "37324701-5e5d-429a-b47d-6af83432bd60",
+    "host": "HomePC",
+    "supervisor_pid": 44628,
+    "started_at": "2026-10-09T10:15:35.621574+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\tools\\build_well_condition_gates_v362.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:14:30.151181+00:00",
   "protocol": {
     "version": 2,
