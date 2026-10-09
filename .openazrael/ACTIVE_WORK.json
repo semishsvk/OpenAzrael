@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "0e81fe5a-7e63-4609-ba92-4f1eb987c199",
-    "host": "HomePC",
-    "supervisor_pid": 67364,
-    "started_at": "2026-10-09T15:19:54.400226+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\analyze_niamh_occlusion_v406.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T15:18:43.537900+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T15:19:56.195139+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
