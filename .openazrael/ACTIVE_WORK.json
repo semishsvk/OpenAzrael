@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "08ed9169-45ab-4095-90fd-2c7b059213d4",
-    "host": "HomePC",
-    "supervisor_pid": 65064,
-    "started_at": "2026-10-09T14:29:42.589539+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\finish_niamh_contract_v403.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T14:29:11.391387+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T14:30:58.416138+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -161,6 +151,23 @@
       },
       "reason": "partial Python source patch ASSERT then lease finalizer did not clear",
       "time_utc": "2026-10-09T14:29:11.391050+00:00",
+      "fidelity": "HOLD"
+    },
+    {
+      "schema": "openazrael.same_owner_dead_run_reconciliation.v1",
+      "run_id": "08ed9169-45ab-4095-90fd-2c7b059213d4",
+      "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+      "dead_pid": 65064,
+      "original_job": "finish_niamh_contract_v403.py",
+      "supervisor_dead": true,
+      "head": "b8a4cf33a570eaee428b92a0c0738ff0e46e4cdc",
+      "protected_configs": {
+        "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
+        "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
+      },
+      "reason": "partial Python source patch ASSERT then lease finalizer did not clear",
+      "time_utc": "2026-10-09T14:30:58.415906+00:00",
       "fidelity": "HOLD"
     }
   ]
