@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "a7a3ff3a-f853-4f4b-8d32-edc83c80a950",
+    "host": "HomePC",
+    "supervisor_pid": 75280,
+    "started_at": "2026-10-09T10:31:32.648834+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\fix_recovery_v363_r2.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:30:43.987264+00:00",
   "protocol": {
     "version": 2,
