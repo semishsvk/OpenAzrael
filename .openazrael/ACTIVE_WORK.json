@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "5f2fd28d-0ef0-467c-9138-a084ff27680e",
-    "host": "HomePC",
-    "supervisor_pid": 70580,
-    "started_at": "2026-10-09T10:26:30.894761+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "tools/run_c8_well_regression_v363.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T10:26:21.862479+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T10:26:41.004420+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
