@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "bd1437a4-e197-49d1-9c23-4a2217ba86b3",
-    "host": "HomePC",
-    "supervisor_pid": 63760,
-    "started_at": "2026-10-09T04:56:00.947378+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v318_node_probe.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T04:54:17.952651+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T04:56:02.604168+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
