@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "e3ee1d16-7608-4f07-96e5-5dc54189daba",
-    "host": "HomePC",
-    "supervisor_pid": 36532,
-    "started_at": "2026-10-09T09:58:54.323101+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v361_axis_handlers.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T09:46:54.661156+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T09:58:56.265578+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
