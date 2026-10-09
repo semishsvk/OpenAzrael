@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "e81044c2-e4f5-4b1b-a99d-1946d957ece9",
+    "host": "HomePC",
+    "supervisor_pid": 61464,
+    "started_at": "2026-10-09T16:13:57.183145+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\derive_height_sweep_v416.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:12:49.324634+00:00",
   "protocol": {
     "version": 2,
