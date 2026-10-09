@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "c83ee229-42e8-4598-8db2-bb82ffaa272b",
-    "host": "HomePC",
-    "supervisor_pid": 66764,
-    "started_at": "2026-10-09T12:06:17.351881+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\diagnose_framebuffer_parity_v378.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:05:55.935252+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:06:19.208649+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
