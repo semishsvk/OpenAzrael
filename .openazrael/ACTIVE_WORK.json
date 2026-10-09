@@ -18,21 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "2c5e992c-bac2-4f0c-9eb1-1ef3916049df",
-    "host": "HomePC",
-    "supervisor_pid": 62280,
-    "started_at": "2026-10-09T16:07:25.313199+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-      "--script",
-      "res://scripts/validation/niamh_orientation_probe_v413.gd"
-    ]
-  },
-  "last_seen_at": "2026-10-09T16:07:09.610171+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T16:07:28.646981+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
