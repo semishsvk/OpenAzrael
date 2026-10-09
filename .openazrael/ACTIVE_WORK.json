@@ -18,19 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "4e77615d-e83f-4a77-afc4-10383093038a",
-    "host": "HomePC",
-    "supervisor_pid": 44240,
-    "started_at": "2026-10-09T03:59:03.282315+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-c",
-      "import sys;sys.path.insert(0,tools);from le_bound_image_v312 import BoundLE;from pathlib import Path;import capstone;root=Path(F:/OpenRemaster/sources/materialized/openazrael_demo_atdemo_v1/bf0c87f731bb4e87/layer2/ATDEMO);img=BoundLE.parse((root/R.EXE).read_bytes());code=img.objects[0].data;d=capstone.Cs(capstone.CS_ARCH_X86,capstone.CS_MODE_32);[(print(===,hex(a)),[print(hex(x.address),x.mnemonic,x.op_str) for x in d.disasm(code[a:a+160],a)]) for a in (0x1b51e,0x1b6fc)]"
-    ]
-  },
-  "last_seen_at": "2026-10-09T03:58:56.379197+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T03:59:04.875253+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
