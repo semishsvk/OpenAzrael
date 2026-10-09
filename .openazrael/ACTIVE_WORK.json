@@ -18,7 +18,19 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "472b6e0c-ebf7-4371-91dc-c1b93aed5a52",
+    "host": "HomePC",
+    "supervisor_pid": 41116,
+    "started_at": "2026-10-09T11:59:00.460882+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/build_intro_assets_v311.py",
+      "F:\\OpenRemaster\\sources\\materialized\\openazrael_demo_atdemo_v1\\bf0c87f731bb4e87\\layer2\\ATDEMO",
+      "--reuse-decoded"
+    ]
+  },
   "last_seen_at": "2026-10-09T11:58:46.763846+00:00",
   "protocol": {
     "version": 2,
