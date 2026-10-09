@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "62415eb0-0059-4e5f-944f-ee9ce885ddca",
-    "host": "HomePC",
-    "supervisor_pid": 77460,
-    "started_at": "2026-10-09T13:53:02.679043+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\setsound_first_probe_v401.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T13:48:59.727895+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T13:53:11.830034+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
