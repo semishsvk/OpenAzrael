@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "392842f1-8178-4d30-a401-e625371ec83e",
+    "host": "HomePC",
+    "supervisor_pid": 67748,
+    "started_at": "2026-10-09T06:45:21.717942+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v340_full_scheduler.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T06:43:12.545029+00:00",
   "protocol": {
     "version": 2,
