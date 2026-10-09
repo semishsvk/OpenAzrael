@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "4233dcbf-b152-4148-bbe5-7e5c59d45c32",
-    "host": "HomePC",
-    "supervisor_pid": 47892,
-    "started_at": "2026-10-09T07:02:29.781733+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\tools\\test_well_source_contract_v346.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T07:01:00.237670+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T07:02:31.488806+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
