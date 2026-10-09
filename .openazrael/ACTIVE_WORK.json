@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "8e796833-bd3f-4c31-b853-e705c6cf2478",
-    "host": "HomePC",
-    "supervisor_pid": 76944,
-    "started_at": "2026-10-09T14:25:04.366135+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\patch_niamh_initial_overlap_v403.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T14:24:27.161117+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T14:25:07.199290+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
