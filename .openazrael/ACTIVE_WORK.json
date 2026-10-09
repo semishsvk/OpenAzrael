@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "f7618197-b121-4c12-a56d-6e0ac0e1c37b",
-    "host": "HomePC",
-    "supervisor_pid": 77448,
-    "started_at": "2026-10-09T11:44:25.331307+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\original_keyboard_oracle_v373.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T11:42:41.698080+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T11:45:20.287109+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
