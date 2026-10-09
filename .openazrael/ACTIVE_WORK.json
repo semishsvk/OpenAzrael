@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "d224ef63-fc2d-48ac-bcca-41ca179fe3bd",
+    "host": "HomePC",
+    "supervisor_pid": 66744,
+    "started_at": "2026-10-09T16:51:21.514435+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\calibrate_original_live_yaw_v420.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:49:34.784109+00:00",
   "protocol": {
     "version": 2,
