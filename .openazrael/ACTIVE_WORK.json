@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "77c9ed10-9469-45ff-aa17-0c7e8ef12acf",
-    "host": "HomePC",
-    "supervisor_pid": 76804,
-    "started_at": "2026-10-09T16:19:59.911650+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\prepare_v415_rendered.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T16:19:06.639822+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T16:20:32.025774+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -196,6 +186,24 @@
       },
       "time_utc": "2026-10-09T15:34:04.157366+00:00",
       "expect": "make_r1_camera_control_v409.py",
+      "fidelity": "HOLD"
+    },
+    {
+      "schema": "openazrael.same_owner_dead_run_reconciled.v2",
+      "run_id": "77c9ed10-9469-45ff-aa17-0c7e8ef12acf",
+      "owner": "chatgpt-openazrael-demo-candidate8-20261008",
+      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+      "supervisor_pid": 76804,
+      "host": "HomePC",
+      "verified_dead_supervisor": true,
+      "matching_worker_processes": [],
+      "head": "25a9107b11e5f08945ad3fca5094abeef124c627",
+      "protected_configs": {
+        "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
+        "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
+      },
+      "time_utc": "2026-10-09T16:20:32.025493+00:00",
+      "expect": "prepare_v415_rendered.py",
       "fidelity": "HOLD"
     }
   ]
