@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "0256b1d7-8412-4d5f-a939-ae9c55951f38",
-    "host": "HomePC",
-    "supervisor_pid": 61708,
-    "started_at": "2026-10-09T10:08:40.440256+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "tools/build_well_source_actions_v358.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T10:08:25.166481+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T10:08:42.046422+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
