@@ -18,7 +18,20 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "8ed1c553-6a53-4db4-be3e-9c4c83f4e821",
+    "host": "HomePC",
+    "supervisor_pid": 66356,
+    "started_at": "2026-10-09T16:04:28.970955+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+      "--script",
+      "res://scripts/validation/niamh_spatial_probe_v412.gd"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:04:16.570333+00:00",
   "protocol": {
     "version": 2,
