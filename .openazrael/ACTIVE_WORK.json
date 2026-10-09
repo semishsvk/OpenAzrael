@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "faca18f4-bbf2-4551-82d0-ce4fdf7893c7",
-    "host": "HomePC",
-    "supervisor_pid": 77252,
-    "started_at": "2026-10-09T13:18:10.016187+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\run_original_niamh_existing_v394.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T13:17:40.066061+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T13:18:20.437754+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
