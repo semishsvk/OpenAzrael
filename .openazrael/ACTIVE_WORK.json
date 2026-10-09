@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "3ac4c72f-4e9f-4e95-a056-713ae933788c",
+    "host": "HomePC",
+    "supervisor_pid": 75216,
+    "started_at": "2026-10-09T15:24:07.580624+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\original_camera_memory_probe_v408.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T15:22:27.131525+00:00",
   "protocol": {
     "version": 2,
