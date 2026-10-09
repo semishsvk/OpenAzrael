@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "08a7dd80-e01f-49d5-8ec1-8827f6529fbf",
-    "host": "HomePC",
-    "supervisor_pid": 66808,
-    "started_at": "2026-10-09T05:22:14.018427+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_hierarchy_v325.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T05:14:57.295137+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T05:22:15.674352+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
