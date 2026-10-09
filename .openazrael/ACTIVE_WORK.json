@@ -18,7 +18,19 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "5dded89b-0139-4639-8837-5021c2f185fc",
+    "host": "HomePC",
+    "supervisor_pid": 56988,
+    "started_at": "2026-10-09T13:54:36.608956+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-m",
+      "py_compile",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\miles_setup_nav_v402.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T13:53:11.830034+00:00",
   "protocol": {
     "version": 2,
