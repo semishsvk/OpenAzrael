@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "6839fae4-329d-46a1-94e1-ba2995aeebc4",
+    "host": "HomePC",
+    "supervisor_pid": 63184,
+    "started_at": "2026-10-09T15:32:31.109224+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\make_r1_camera_control_v409.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T15:31:29.060200+00:00",
   "protocol": {
     "version": 2,
