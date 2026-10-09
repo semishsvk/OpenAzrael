@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "fc61b729-5fac-4da0-9ae9-e6a5787b3522",
-    "host": "HomePC",
-    "supervisor_pid": 76384,
-    "started_at": "2026-10-09T11:09:47.910829+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\apply_well_lever_source_order_v368.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T11:04:25.777420+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T11:11:43.972249+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -69,5 +59,26 @@
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
     "source": "explicit user instruction",
     "demo_checkpoint": "64739a34aa92416c78b626767c02c2e8996adfb1"
-  }
+  },
+  "manual_active_run_reconciliations": [
+    {
+      "schema": "openazrael.owner_run_reconciliation.v1",
+      "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+      "run_id": "fc61b729-5fac-4da0-9ae9-e6a5787b3522",
+      "supervisor_pid": 76384,
+      "supervisor_alive": false,
+      "competing_task_processes": [],
+      "reason": "stale active_run after process completed and finalizer reported run ownership changed",
+      "working_head": "f2646f83fe94cde1bdfc1f65fc0022515be9b65f",
+      "protected_config_sha256": {
+        "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
+        "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
+      },
+      "partial_changes_present": true,
+      "ownership_changed": false,
+      "task_processes_stopped": true,
+      "time_utc": "2026-10-09T11:11:43.971980+00:00"
+    }
+  ]
 }
