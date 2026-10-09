@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "776a864c-1707-41e9-b100-3b8b1ccc9351",
-    "host": "HomePC",
-    "supervisor_pid": 71380,
-    "started_at": "2026-10-09T12:12:48.605726+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\extend_native_godot_v378.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:12:05.848374+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:12:50.399101+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
