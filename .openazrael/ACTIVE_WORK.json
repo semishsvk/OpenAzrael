@@ -8,19 +8,19 @@
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
-  "note": "C8 intro block v312 committed and backed up; no active process. User-approved C8 priority retained ahead of Retail. LE mapping and original intro mechanisms pass; overall fidelity/Well Room remain HOLD.",
+  "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
   "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
   "queue": [
-    {
-      "thread_id": "chatgpt-openazrael-retail-20261007",
-      "lease_id": "retail-primary-20261007-a1",
-      "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
-      "state": "ready"
-    },
     {
       "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
       "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
       "enqueued_at": "2026-10-09T04:14:43.704739+00:00",
+      "state": "ready"
+    },
+    {
+      "thread_id": "chatgpt-openazrael-retail-20261007",
+      "lease_id": "retail-primary-20261007-a1",
+      "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
       "state": "ready"
     }
   ],
@@ -59,5 +59,11 @@
     "full_candidate_status": "FIDELITY_HOLD",
     "intro_status": "LE_MAPPING_AND_INTRO_IMPLEMENTATION_PASS"
   },
-  "acquired_at": "2026-10-09T03:58:56.379186+00:00"
+  "acquired_at": "2026-10-09T03:58:56.379186+00:00",
+  "priority_authorization": {
+    "requested": "2026-10-09",
+    "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
+    "source": "explicit user instruction",
+    "demo_checkpoint": "64739a34aa92416c78b626767c02c2e8996adfb1"
+  }
 }
