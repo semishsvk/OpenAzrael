@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "babe02cc-7877-4e37-ade4-9684bdd88aa8",
+    "host": "HomePC",
+    "supervisor_pid": 69516,
+    "started_at": "2026-10-09T11:16:35.465952+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\integrate_plaque_regression_v368.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T11:16:00.524927+00:00",
   "protocol": {
     "version": 2,
