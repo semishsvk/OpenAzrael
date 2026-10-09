@@ -18,20 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "a4c414c8-2437-4305-91cc-b196d2c57a4c",
-    "host": "HomePC",
-    "supervisor_pid": 60008,
-    "started_at": "2026-10-09T10:28:33.403837+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "git",
-      "commit",
-      "-m",
-      "feat(c8): verify original R7 axis and conditional transform audio chains"
-    ]
-  },
-  "last_seen_at": "2026-10-09T10:27:41.623394+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T10:28:35.032556+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
