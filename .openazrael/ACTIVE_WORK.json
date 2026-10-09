@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "146007b8-fd7a-47c1-83e9-1113c7668dbc",
+    "host": "HomePC",
+    "supervisor_pid": 74536,
+    "started_at": "2026-10-09T10:26:20.219940+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\install_r7_regression_v363.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:24:41.664104+00:00",
   "protocol": {
     "version": 2,
