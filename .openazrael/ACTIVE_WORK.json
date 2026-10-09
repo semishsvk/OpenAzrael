@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "e3b18699-7c16-46ef-bfc6-58bce0287ad9",
+    "host": "HomePC",
+    "supervisor_pid": 69436,
+    "started_at": "2026-10-09T12:20:34.628546+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      ".tmp/make_recovery_v378.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T12:20:16.207364+00:00",
   "protocol": {
     "version": 2,
