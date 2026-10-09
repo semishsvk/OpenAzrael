@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "82bcc239-a9fa-47ac-93e5-7f13e7d9f9a1",
+    "host": "HomePC",
+    "supervisor_pid": 75208,
+    "started_at": "2026-10-09T13:12:31.715786+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\fix_nav_save_race_v392.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T13:10:27.604908+00:00",
   "protocol": {
     "version": 2,
