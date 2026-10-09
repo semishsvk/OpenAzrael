@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
   "owner": "chatgpt-openazrael-demo-candidate8-20261008",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,12 +12,6 @@
   "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
   "queue": [
     {
-      "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
-      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
-      "enqueued_at": "2026-10-09T04:14:43.704739+00:00",
-      "state": "ready"
-    },
-    {
       "thread_id": "chatgpt-openazrael-retail-20261007",
       "lease_id": "retail-primary-20261007-a1",
       "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
@@ -25,7 +19,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-09T04:04:14.914157+00:00",
+  "last_seen_at": "2026-10-09T04:30:46.997138+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -59,7 +53,7 @@
     "full_candidate_status": "FIDELITY_HOLD",
     "intro_status": "LE_MAPPING_AND_INTRO_IMPLEMENTATION_PASS"
   },
-  "acquired_at": "2026-10-09T03:58:56.379186+00:00",
+  "acquired_at": "2026-10-09T04:30:46.997122+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
