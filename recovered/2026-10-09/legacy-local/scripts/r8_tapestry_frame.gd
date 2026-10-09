@@ -1,0 +1,91 @@
+extends Area3D
+
+var required_item := ""
+var state_flag := ""
+var piece_visual: Node3D
+var frame_visual: Node3D
+var preserve_authored_transform := false
+
+const TAP_SOUND_PATH := "res://assets/audio/797TAP.WAV"
+
+func _play_one_shot_path(path: String) -> void:
+    # State-only synthetic runners set LegacyEvents.capture_only. Defer loading
+    # the source WAV until physical playback is actually required.
+    if LegacyEvents != null and bool(LegacyEvents.get("capture_only")):
+        return
+    if not ResourceLoader.exists(path):
+        push_warning("OpenAzrael: missing tapestry sound " + path)
+        return
+    var p := AudioStreamPlayer.new()
+    p.stream = load(path)
+    var host: Node = get_tree().current_scene
+    if host == null:
+        host = get_tree().root
+    host.add_child(p)
+    p.finished.connect(p.queue_free)
+    p.play()
+
+func _align_piece_to_frame() -> void:
+    # Some source-authored installed pieces are already placed at their exact final transform.
+    # In particular tapestry1 sits immediately beside tapestry2/tapframe2 in R8.XAF;
+    # moving it onto tapframe1 destroys the original two-part composition.
+    if preserve_authored_transform:
+        return
+    if not is_instance_valid(piece_visual) or not is_instance_valid(frame_visual):
+        return
+    # XAF evidence shows the completed tapestry meshes are staged ~493.7 X units
+    # away from the corresponding frames with essentially the same orientation.
+    # Preserve the piece basis and translate its visual bounds onto the frame bounds.
+    var piece_mesh := _first_mesh(piece_visual)
+    var frame_mesh := _first_mesh(frame_visual)
+    if piece_mesh == null or frame_mesh == null:
+        piece_visual.global_position = frame_visual.global_position
+        return
+    var pc := _mesh_world_center(piece_mesh)
+    var fc := _mesh_world_center(frame_mesh)
+    piece_visual.global_position += fc - pc
+
+func _first_mesh(root: Node) -> MeshInstance3D:
+    if root is MeshInstance3D:
+        return root as MeshInstance3D
+    for c in root.get_children():
+        var m := _first_mesh(c)
+        if m != null:
+            return m
+    return null
+
+func _mesh_world_center(mi: MeshInstance3D) -> Vector3:
+    var a := mi.get_aabb()
+    return mi.to_global(a.get_center())
+
+func sync_from_state() -> void:
+    if not is_instance_valid(piece_visual):
+        return
+    if DemoState.flag(state_flag):
+        _align_piece_to_frame()
+        piece_visual.visible = true
+    else:
+        piece_visual.visible = false
+
+func interact() -> void:
+    if DemoState.flag(state_flag):
+        return
+    if not DemoState.has(required_item):
+        print(LocalizationManager.tr_key("interaction.r8.tapestry_empty"))
+        return
+    DemoState.remove(required_item)
+    DemoState.set_flag(state_flag)
+    _align_piece_to_frame()
+    if is_instance_valid(piece_visual):
+        piece_visual.visible = true
+    LegacyEvents.run("R8_TAPESTRY_PLACE")
+    if DemoState.flag("R8Tap1") and DemoState.flag("R8Tap3") and DemoState.flag("R8Tap4"):
+        DemoState.set_flag("R8TapestryComplete")
+        print(LocalizationManager.tr_key("interaction.r8.tapestry_complete"))
+    else:
+        print(LocalizationManager.tr_key("interaction.r8.tapestry_placed"))
+
+func interaction_cursor_id() -> String:
+    if DemoState.flag(state_flag):
+        return "CANT"
+    return "USE" if DemoState.has(required_item) else "CANT"
