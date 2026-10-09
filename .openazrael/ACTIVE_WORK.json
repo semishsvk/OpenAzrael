@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "33cc7987-7845-4ea3-be47-23d82ff46598",
+    "host": "HomePC",
+    "supervisor_pid": 77692,
+    "started_at": "2026-10-09T13:56:15.894797+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\patch_setsound_input_v402.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T13:55:16.272821+00:00",
   "protocol": {
     "version": 2,
