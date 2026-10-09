@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "5ab4c459-220e-4602-9a01-4cce87c617dd",
-    "host": "HomePC",
-    "supervisor_pid": 68228,
-    "started_at": "2026-10-09T12:06:57.593677+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\reconcile_title_native_manifest_v378.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:06:19.208649+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:06:59.242617+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
