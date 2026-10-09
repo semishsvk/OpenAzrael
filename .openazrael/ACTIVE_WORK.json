@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "f591b7fa-9d5d-4d4c-9705-aefe54870b5f",
-    "host": "HomePC",
-    "supervisor_pid": 65064,
-    "started_at": "2026-10-09T12:04:40.777745+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "tools/validate_original_vga_visual_v377.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:04:11.297906+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:04:42.529950+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
