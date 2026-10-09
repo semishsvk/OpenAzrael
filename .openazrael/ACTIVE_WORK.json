@@ -18,7 +18,20 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "c9e807bc-e98d-4c43-962a-ae440173c6b4",
+    "host": "HomePC",
+    "supervisor_pid": 30196,
+    "started_at": "2026-10-09T16:37:35.717731+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+      "--script",
+      "res://scripts/validation/niamh_anim_temporal_probe_v417.gd"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:35:44.669601+00:00",
   "protocol": {
     "version": 2,
