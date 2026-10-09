@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "62f0d5dc-6638-44e3-bdd1-564b8d563aec",
-    "host": "HomePC",
-    "supervisor_pid": 62188,
-    "started_at": "2026-10-09T06:47:32.375276+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v341_scheduler_callers.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T06:45:23.431649+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T06:47:34.463320+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
