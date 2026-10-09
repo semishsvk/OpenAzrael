@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "c0c5bc8b-2a6c-41e4-a5f2-296b3cd0bcb2",
+    "host": "HomePC",
+    "supervisor_pid": 44492,
+    "started_at": "2026-10-09T10:56:54.829679+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\integrate_save_guard_v367.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:55:34.443162+00:00",
   "protocol": {
     "version": 2,
