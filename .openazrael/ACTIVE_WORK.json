@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-niamh-miles-v425-20261009",
   "owner": "chatgpt-openazrael-demo-candidate8-20261009-v425",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,31 +34,34 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-09T21:03:42.279265+00:00",
+  "released_at": "2026-10-09T21:44:23.569275+00:00",
   "reconciliation": {
-    "schema": "openazrael.c8.v424_writer_release_receipt",
-    "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261009-continuation",
-    "lease_id": "demo-c8-v423-fidelity-20261009",
-    "head": "c83ab14c624bef9b94fd206cd957728bbcac50e9",
+    "schema": "openazrael.C8.v427.writer_reconciliation",
+    "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261009-v425",
+    "lease_id": "demo-c8-niamh-miles-v425-20261009",
+    "head": "1e9478e7042a12a75a5fb0a40f85c2d3bd4a54b5",
     "branch": "integration/kg001-candidate8-fidelity",
     "git_status": " M export_presets.cfg\n M project.godot\n?? scripts/kg001_niamh_source_temporal_runner_v404.gd\n?? scripts/validation/niamh_anim_temporal_probe_v417.gd\n?? scripts/validation/niamh_depth_height_probe_v414.gd\n?? scripts/validation/niamh_height_sweep_v416.gd\n?? scripts/validation/niamh_occlusion_probe_v406.gd\n?? scripts/validation/niamh_orientation_probe_v413.gd\n?? scripts/validation/niamh_registered_material_v411.gd\n?? scripts/validation/niamh_render_policy_probe_v407.gd\n?? scripts/validation/niamh_spatial_probe_v412.gd\n?? scripts/validation/niamh_visual_probe_v405.gd\n?? scripts/validation/r1_native_camera_probe_v409.gd\n?? scripts/validation/r7_native_camera_probe_v408.gd\n?? tools/apply_dual_controls_v303.py\n?? tools/audit_intro_mov_container_v309.py\n?? tools/audit_intro_mov_header_v310.py\n?? tools/audit_intro_mov_v308.py\n?? tools/fix_niamh_ui_text_v301.py\n?? tools/original_emulator_navigation_v385.py\n?? tools/original_emulator_navigation_v399.py\n?? tools/test_intro_mov_container_v309.py\n?? tools/test_intro_mov_header_v310.py",
     "remote_head": "2955d6314d96ec003919322a72080b8a93bf517e",
     "sync_state": "LOCAL_ONLY_NOT_PUSHED_REMOTE_BEHIND",
     "task_processes_stopped": true,
-    "preexisting_local_modifications_preserved": true,
-    "dirty_lines": 23,
-    "protected_config_sha256": {
+    "active_run": null,
+    "uncommitted_files_preserved": true,
+    "dirty_entries": 23,
+    "protected_configs_sha256": {
       "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
       "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
     },
-    "recovery_zip": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-Miles-Native-v424-c83ab14c\\C8_v424_private_recovery.zip",
-    "recovery_zip_sha256": "7cec54daa063f4668f5d176a747735a75d8882e61fc4671b389d1b0d621c9d82",
-    "combined_postcommit_evidence": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\C8_V424_POSTCOMMIT_COMBINED.json",
-    "combined_status": "SCOPED_C8_R7_AND_FRESH_MILES_PASS_FIDELITY_HOLD",
+    "source_ATDEMO_unchanged": true,
+    "recovery_archive": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-Miles-Event-v427-1e9478e7\\C8_v427_private_recovery.zip",
+    "recovery_archive_sha256": "d765ea5b89cb83d531eeadc9c38888d8c3dbe0b0a0d6556827179ee8fae115c7",
+    "older_uncommitted_archive": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-Writer-Handoff-20261009T2002Z\\C8_UNCOMMITTED_PRESERVATION.zip",
+    "older_uncommitted_archive_sha256": "7abcd93193ad28b40a64ba9cccfeb5b3920a7d39732bcccd325af6e371143b22",
+    "postcommit_evidence": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\C8_V427_POSTCOMMIT_COMBINED.json",
+    "postcommit_status": "SCOPED_REGRESSION_PASS_EVENT_FIDELITY_HOLD",
     "candidate_status": "FIDELITY_HOLD",
     "retail_ticket": "WAITING_DEMO_FIDELITY_DEPENDENCY",
-    "original_atdemo_untouched": true,
-    "recorded_utc": "2026-10-09T21:03:33.5594097Z"
+    "utc": "2026-10-09T21:44:15.0830334Z"
   },
   "acquired_at": "2026-10-09T21:12:18.472597+00:00",
   "priority_authorization": {
