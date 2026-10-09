@@ -18,7 +18,20 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "91b4894f-b0ed-4799-b223-c5f124f4ab18",
+    "host": "HomePC",
+    "supervisor_pid": 75956,
+    "started_at": "2026-10-09T15:16:24.296511+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+      "--script",
+      "res://scripts/validation/niamh_visual_probe_v405.gd"
+    ]
+  },
   "last_seen_at": "2026-10-09T15:12:49.089482+00:00",
   "protocol": {
     "version": 2,
