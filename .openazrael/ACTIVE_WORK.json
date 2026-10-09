@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
   "owner": "chatgpt-openazrael-demo-candidate8-20261008",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -12,14 +12,6 @@
   "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
   "queue": [
     {
-      "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
-      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
-      "enqueued_at": "2026-10-08T21:25:53.797909+00:00",
-      "state": "ready",
-      "checkpoint_head": "64739a34aa92416c78b626767c02c2e8996adfb1",
-      "priority_reason": "USER_APPROVED_C8_COMPLETION_PRIORITY"
-    },
-    {
       "thread_id": "chatgpt-openazrael-retail-20261007",
       "lease_id": "retail-primary-20261007-a1",
       "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
@@ -27,7 +19,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-08T21:25:25.839669+00:00",
+  "last_seen_at": "2026-10-09T03:58:56.379197+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -58,5 +50,5 @@
     "next_task": "Well Room pipe complete semantic and runtime chain using verified LE mapping; DOS/VGA fades and timing remain separate gates",
     "priority_authorization": "Existing user-approved Candidate 8 before Retail; both tickets retained"
   },
-  "acquired_at": "2026-10-08T20:15:22.345383+00:00"
+  "acquired_at": "2026-10-09T03:58:56.379186+00:00"
 }
