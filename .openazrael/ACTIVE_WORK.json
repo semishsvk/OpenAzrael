@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "f6da9589-8612-4da6-83f8-ba7141ce9b8a",
+    "host": "HomePC",
+    "supervisor_pid": 66980,
+    "started_at": "2026-10-09T07:06:43.410076+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\tools\\run_well_source_gate_v347.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T07:02:31.488806+00:00",
   "protocol": {
     "version": 2,
