@@ -16,6 +16,12 @@
       "lease_id": "retail-primary-20261007-a1",
       "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
       "state": "ready"
+    },
+    {
+      "thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+      "enqueued_at": "2026-10-09T04:14:43.704739+00:00",
+      "state": "ready"
     }
   ],
   "active_run": null,
