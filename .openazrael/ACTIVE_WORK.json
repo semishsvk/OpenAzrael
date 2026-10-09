@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "706e2d1b-bf4a-4f8e-a04e-64ae49529423",
+    "host": "HomePC",
+    "supervisor_pid": 76780,
+    "started_at": "2026-10-09T12:14:16.056834+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/run_original_vga_oracle_v378.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T12:14:05.236074+00:00",
   "protocol": {
     "version": 2,
