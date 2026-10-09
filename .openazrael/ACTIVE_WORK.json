@@ -18,7 +18,18 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "8a2d3649-7841-4162-9aa8-fdfd96e8abc3",
+    "host": "HomePC",
+    "supervisor_pid": 74380,
+    "started_at": "2026-10-09T13:18:34.277941+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/original_emulator_navigation_v385.py",
+      ".tmp/nav_v394.json"
+    ]
+  },
   "last_seen_at": "2026-10-09T13:18:20.437754+00:00",
   "protocol": {
     "version": 2,
