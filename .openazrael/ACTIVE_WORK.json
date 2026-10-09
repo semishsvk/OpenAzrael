@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "35bf082c-5288-47c4-88ec-7e84dd616f1c",
+    "host": "HomePC",
+    "supervisor_pid": 72584,
+    "started_at": "2026-10-09T12:31:50.702203+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\prepare_original_v384_savestate.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T12:30:27.872886+00:00",
   "protocol": {
     "version": 2,
