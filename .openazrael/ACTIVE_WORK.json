@@ -18,21 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "28c19465-5198-4883-8be3-01f9fc421cd9",
-    "host": "HomePC",
-    "supervisor_pid": 70616,
-    "started_at": "2026-10-09T15:18:40.788589+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-      "--script",
-      "res://scripts/validation/niamh_occlusion_probe_v406.gd"
-    ]
-  },
-  "last_seen_at": "2026-10-09T15:16:27.272185+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T15:18:43.537900+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
