@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "da0d45ad-f8a4-44a1-8a0b-fc6431adfa8f",
-    "host": "HomePC",
-    "supervisor_pid": 41072,
-    "started_at": "2026-10-09T10:53:12.047910+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\patch_opcode01_tests_v366.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T10:52:25.893827+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T10:53:13.582170+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
