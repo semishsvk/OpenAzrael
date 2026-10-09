@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "29a03906-4e3c-433e-bf59-dff8dfb83f56",
+    "host": "HomePC",
+    "supervisor_pid": 15620,
+    "started_at": "2026-10-09T04:48:23.742216+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\tools\\audit_well_actions_v317.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T04:31:28.391687+00:00",
   "protocol": {
     "version": 2,
