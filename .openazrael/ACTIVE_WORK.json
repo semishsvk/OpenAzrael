@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "48dec789-e81a-4c75-98e3-bf2d36c500e5",
+    "host": "HomePC",
+    "supervisor_pid": 66160,
+    "started_at": "2026-10-09T16:26:23.919405+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\integrate_niamh_v415_gates.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:25:34.208113+00:00",
   "protocol": {
     "version": 2,
