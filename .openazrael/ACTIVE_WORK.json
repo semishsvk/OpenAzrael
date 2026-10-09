@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "f13e5a49-97cb-4d1b-9be4-87398309d5a1",
+    "host": "HomePC",
+    "supervisor_pid": 66864,
+    "started_at": "2026-10-09T11:34:34.785667+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\capture_dosbox_native_menu_v369.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T11:33:50.362210+00:00",
   "protocol": {
     "version": 2,
