@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "ab3a5680-5671-43d8-81e4-e99a75f7b12e",
-    "host": "HomePC",
-    "supervisor_pid": 74956,
-    "started_at": "2026-10-09T12:09:16.506440+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\tools\\test_intro_title_dac_v378.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:08:50.739899+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:09:18.300386+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
