@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "94750ff8-d9f1-4b2b-ac7b-642ba19536f3",
+    "host": "HomePC",
+    "supervisor_pid": 69620,
+    "started_at": "2026-10-09T16:08:47.130199+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\make_depth_height_v414.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:07:28.646981+00:00",
   "protocol": {
     "version": 2,
