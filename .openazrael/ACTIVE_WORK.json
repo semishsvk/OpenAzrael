@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "d72387a4-2755-4e7c-82f1-5e8475af0512",
+    "host": "HomePC",
+    "supervisor_pid": 41592,
+    "started_at": "2026-10-09T06:09:21.229994+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v333_animation_end_probe.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T05:46:26.048205+00:00",
   "protocol": {
     "version": 2,
