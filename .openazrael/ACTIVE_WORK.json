@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
   "owner": "chatgpt-openazrael-demo-candidate8-20261008",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -33,25 +33,40 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-09T04:04:37.420926+00:00",
+  "released_at": "2026-10-09T20:30:25.047767+00:00",
   "reconciliation": {
-    "schema": "openazrael.well_v313_readonly_handoff",
-    "head": "64739a34aa92416c78b626767c02c2e8996adfb1",
-    "scope": "Read-only R.EXE handler/callee disassembly; no tracked source edits",
-    "result": "STRUCTURAL_RE_PROGRESS_FIDELITY_HOLD",
-    "artifacts": [
-      ".tmp/well_handlers_v313_disassembly.json",
-      ".tmp/well_callees_v313.json"
-    ],
-    "next": "Bind opcode 0x17/0x18 records to Well Room objects and verify transforms/audio/state/replay",
-    "protected_configs": "UNCHANGED",
-    "git_status": " M export_presets.cfg\n M project.godot\n?? tools/apply_dual_controls_v303.py\n?? tools/audit_intro_mov_container_v309.py\n?? tools/audit_intro_mov_header_v310.py\n?? tools/audit_intro_mov_v308.py\n?? tools/fix_niamh_ui_text_v301.py\n?? tools/test_intro_mov_container_v309.py\n?? tools/test_intro_mov_header_v310.py",
-    "remote_head": "2955d6314d96ec003919322a72080b8a93bf517e",
-    "sync_state": "LOCAL_ONLY_NOT_PUSHED",
+    "schema": "openazrael.user_authorized_release_reconciliation.v1",
+    "approved_action": "Release old C8 writer lease, continue through CAS protocol",
+    "approved_by": "User explicit instruction 2026-10-09: Uvolni a pokracuj",
+    "released_owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+    "released_lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+    "recorded_active_run": null,
     "task_processes_stopped": true,
-    "task_process_audit": "Read-only guarded jobs finished; no persistent task process launched",
-    "full_candidate_status": "FIDELITY_HOLD",
-    "intro_status": "LE_MAPPING_AND_INTRO_IMPLEMENTATION_PASS"
+    "process_audit": "No relevant Godot/DOSBox/Python/FFmpeg/Git processes with OpenAzrael/ATDEMO/C8 command line",
+    "head": "4f4e10127bd8df0881cee5c195229319fba0caae",
+    "branch": "integration/kg001-candidate8-fidelity",
+    "git_status": " M export_presets.cfg\r\n M project.godot\r\n?? scripts/kg001_niamh_source_temporal_runner_v404.gd\r\n?? scripts/validation/niamh_anim_temporal_probe_v417.gd\r\n?? scripts/validation/niamh_depth_height_probe_v414.gd\r\n?? scripts/validation/niamh_height_sweep_v416.gd\r\n?? scripts/validation/niamh_occlusion_probe_v406.gd\r\n?? scripts/validation/niamh_orientation_probe_v413.gd\r\n?? scripts/validation/niamh_registered_material_v411.gd\r\n?? scripts/validation/niamh_render_policy_probe_v407.gd\r\n?? scripts/validation/niamh_spatial_probe_v412.gd\r\n?? scripts/validation/niamh_visual_probe_v405.gd\r\n?? scripts/validation/r1_native_camera_probe_v409.gd\r\n?? scripts/validation/r7_native_camera_probe_v408.gd\r\n?? tools/apply_dual_controls_v303.py\r\n?? tools/audit_intro_mov_container_v309.py\r\n?? tools/audit_intro_mov_header_v310.py\r\n?? tools/audit_intro_mov_v308.py\r\n?? tools/fix_niamh_ui_text_v301.py\r\n?? tools/original_emulator_navigation_v385.py\r\n?? tools/original_emulator_navigation_v399.py\r\n?? tools/test_intro_mov_container_v309.py\r\n?? tools/test_intro_mov_header_v310.py",
+    "remote_head": "2955d6314d96ec003919322a72080b8a93bf517e",
+    "sync_state": "LOCAL_ONLY_NOT_PUSHED; REMOTE_BEHIND_AND_DIVERGENCE_NOT_RESOLVED",
+    "protected_configs_sha256": {
+      "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
+      "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
+    },
+    "preservation_path": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-Writer-Handoff-20261009T2002Z",
+    "preserved_files": 48,
+    "preservation_zip_sha256": "7abcd93193ad28b40a64ba9cccfeb5b3920a7d39732bcccd325af6e371143b22",
+    "baseline_recovery": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-Niamh-Visual-v415-4f4e101",
+    "candidate_status": "FIDELITY_HOLD",
+    "source_ATDEMO_untouched": true,
+    "queue_at_preflight": [
+      {
+        "thread_id": "chatgpt-openazrael-retail-20261007",
+        "lease_id": "retail-primary-20261007-a1",
+        "enqueued_at": "2026-10-07T18:43:49.086561+00:00",
+        "state": "ready"
+      }
+    ],
+    "prepared_utc": "2026-10-09T20:02:15.8089077Z"
   },
   "acquired_at": "2026-10-09T04:30:46.997122+00:00",
   "priority_authorization": {
