@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "fb4b8647-ee9d-4572-a550-ac48d91d4a47",
-    "host": "HomePC",
-    "supervisor_pid": 71020,
-    "started_at": "2026-10-09T12:54:53.450807+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\run_opposite_nav_v385.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T12:53:31.211603+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T12:55:09.022431+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
