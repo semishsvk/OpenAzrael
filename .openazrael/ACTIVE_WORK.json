@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "355f91ce-aa5b-4061-bd75-cbc641cc4237",
+    "host": "HomePC",
+    "supervisor_pid": 65596,
+    "started_at": "2026-10-09T15:36:14.647354+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\compare_r1_original_handedness_v409.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T15:34:43.840255+00:00",
   "protocol": {
     "version": 2,
