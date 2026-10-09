@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "87b44649-7c70-402f-919e-bf1059e4f6d0",
+    "host": "HomePC",
+    "supervisor_pid": 3660,
+    "started_at": "2026-10-09T16:04:14.913434+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\derive_spatial_niamh_v412.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:03:03.455606+00:00",
   "protocol": {
     "version": 2,
