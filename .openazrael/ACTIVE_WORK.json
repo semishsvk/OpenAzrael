@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "04f1412e-0895-4d3f-9c69-8bcc077f3450",
+    "host": "HomePC",
+    "supervisor_pid": 33344,
+    "started_at": "2026-10-09T13:22:37.313217+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      ".tmp/derive_niamh_v396.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T13:21:15.787991+00:00",
   "protocol": {
     "version": 2,
