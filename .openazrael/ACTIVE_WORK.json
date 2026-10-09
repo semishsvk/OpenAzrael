@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "2baea725-8a31-481a-a535-a0f64b48bd92",
-    "host": "HomePC",
-    "supervisor_pid": 59584,
-    "started_at": "2026-10-09T11:25:19.939000+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\stage_atdemo_dosboxx_v369.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T11:23:49.360323+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T11:25:25.828851+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
