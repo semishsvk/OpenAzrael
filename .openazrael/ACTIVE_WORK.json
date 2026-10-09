@@ -18,7 +18,19 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "3263c256-c790-4a68-a1eb-978819cc4000",
+    "host": "HomePC",
+    "supervisor_pid": 67160,
+    "started_at": "2026-10-09T10:57:56.638140+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "git",
+      "commit",
+      "-m",
+      "fix(c8): reject malformed R7 saves and trace original opcode01 callback guard"
+    ]
+  },
   "last_seen_at": "2026-10-09T10:57:25.065481+00:00",
   "protocol": {
     "version": 2,
