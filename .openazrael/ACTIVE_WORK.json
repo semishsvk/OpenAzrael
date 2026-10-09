@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "946c762c-e0ec-4ebd-8e75-4fffc8593b46",
-    "host": "HomePC",
-    "supervisor_pid": 72288,
-    "started_at": "2026-10-09T13:33:23.272503+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\prepare_visible_niamh_v397.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T13:31:28.194960+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T13:35:51.102585+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -106,6 +96,27 @@
       },
       "partial_edit": "v143 cursor source validation tightened; no commit yet",
       "task_processes_stopped": true
+    },
+    {
+      "schema": "openazrael.same_owner_dead_run_reconciliation.v1",
+      "run_id": "946c762c-e0ec-4ebd-8e75-4fffc8593b46",
+      "owner_thread_id": "chatgpt-openazrael-demo-candidate8-20261008",
+      "lease_id": "demo-candidate8-lefixup-20261008-a7b500f",
+      "dead_pid": 72288,
+      "job_finished": true,
+      "original_run_command": [
+        "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+        "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\prepare_visible_niamh_v397.py"
+      ],
+      "head": "b8a4cf33a570eaee428b92a0c0738ff0e46e4cdc",
+      "protected_config_sha256": {
+        "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
+        "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
+      },
+      "partial_uncommitted_script": ".tmp/record_original_niamh_visible_v397.py",
+      "reason": "runner finished but finalizer hit compare-and-swap conflict",
+      "time_utc": "2026-10-09T13:35:51.102086+00:00",
+      "r7_fidelity": "HOLD"
     }
   ]
 }
