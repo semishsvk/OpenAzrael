@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "b050caf1-6118-4289-83a4-6424ebc22b5b",
+    "host": "HomePC",
+    "supervisor_pid": 37648,
+    "started_at": "2026-10-09T12:13:28.662600+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "tools/validate_original_vs_godot_intro_v378.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T12:13:15.475509+00:00",
   "protocol": {
     "version": 2,
