@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "d6f494e4-7f73-49b6-a576-70c2c703b28c",
+    "host": "HomePC",
+    "supervisor_pid": 74784,
+    "started_at": "2026-10-09T16:12:46.506425+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\rank_niamh_multi_frame_v414.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T16:11:20.413071+00:00",
   "protocol": {
     "version": 2,
