@@ -18,18 +18,8 @@
       "state": "ready"
     }
   ],
-  "active_run": {
-    "run_id": "e6132067-37b1-4536-a1a9-029f24418693",
-    "host": "HomePC",
-    "supervisor_pid": 3964,
-    "started_at": "2026-10-09T06:31:28.979046+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\well_v334_duration_probe.py"
-    ]
-  },
-  "last_seen_at": "2026-10-09T06:09:23.077336+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-09T06:31:30.760728+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
