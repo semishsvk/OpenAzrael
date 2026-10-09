@@ -18,7 +18,17 @@
       "state": "ready"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "5c2fc0da-6ef9-43d1-8758-c2d04a378ba1",
+    "host": "HomePC",
+    "supervisor_pid": 76100,
+    "started_at": "2026-10-09T11:33:45.983644+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      ".tmp/find_capture_menu_v369.py"
+    ]
+  },
   "last_seen_at": "2026-10-09T11:32:04.919289+00:00",
   "protocol": {
     "version": 2,
