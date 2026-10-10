@@ -19,22 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "a718f415-dcd3-4d05-83c5-025b421eeec5",
-    "host": "HomePC",
-    "supervisor_pid": 69944,
-    "started_at": "2026-10-10T06:15:04.984369+00:00",
-    "cwd": "F:\\OpenRemaster\\output\\projects\\OpenAzrael\\builds\\C8-G10-DIAGNOSTIC-v447-b58c1797",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--main-pack",
-      "F:\\OpenRemaster\\output\\projects\\OpenAzrael\\builds\\C8-G10-DIAGNOSTIC-v447-b58c1797\\OpenAzrael-C8-G10-DIAGNOSTIC-v447.pck",
-      "--script",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\inspect_c8_pck_v447.gd"
-    ]
-  },
-  "last_seen_at": "2026-10-10T06:13:59.137015+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-10T06:16:11.291366+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -291,6 +277,19 @@
       },
       "reason": "validator returned PASS; lease.run CAS finalizer failed to remove active_run",
       "utc": "2026-10-10T05:32:21.906335+00:00"
+    },
+    {
+      "schema": "openazrael.c8.G09_G10_inspection_run_CAS_reconciled.v447",
+      "status": "SAME_OWNER_RECONCILED_OUTPUT_NOT_PROMOTED",
+      "run_id": "a718f415-dcd3-4d05-83c5-025b421eeec5",
+      "supervisor_pid": 69944,
+      "supervisor_dead": true,
+      "original_G10_private_export_SHA_verified": true,
+      "G09_clean_HEAD": "b58c1797da5dabd0c259293fa1a1db4e1ae743ea",
+      "Niamh_FPS": "HOLD",
+      "G10": "PENDING",
+      "reason": "lease.run child exited but CAS finalizer retained active_run; no conflicting worker",
+      "utc": "2026-10-10T06:16:11.291353+00:00"
     }
   ]
 }
