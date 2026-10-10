@@ -19,19 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "b949a39c-5160-4898-a271-fa4e89b3de11",
-    "host": "HomePC",
-    "supervisor_pid": 38120,
-    "started_at": "2026-10-10T20:50:29.462168+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-Miles-GainBus-v638",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-u",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-Miles-GainBus-v638\\.tmp\\create_gainbus_recovery_v647.py"
-    ]
-  },
-  "last_seen_at": "2026-10-10T20:50:12.427918+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-10T20:50:32.082950+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
