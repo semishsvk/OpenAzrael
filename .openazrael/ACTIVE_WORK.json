@@ -19,27 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "eb2cb359-3ae7-42b8-aa74-b1ac4a8d2010",
-    "host": "HomePC",
-    "supervisor_pid": 17416,
-    "started_at": "2026-10-10T05:23:37.220482+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--fixed-fps",
-      "60",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-      "--script",
-      "res://scripts/validation/pppv_scenario_runner.gd",
-      "--",
-      "--pppv-scenario=F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\kg001_pppv_v2\\pppv_suite\\scenarios\\005_openazrael_r7_water_switchboard_negative_wrong_sequence.json",
-      "--pppv-output=F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\pppv_v437b_r7_wrong_order_runtime.json"
-    ]
-  },
-  "last_seen_at": "2026-10-10T05:23:15.219388+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-10T05:23:39.571601+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
