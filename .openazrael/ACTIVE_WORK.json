@@ -19,19 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "0ef0f7a8-4267-4cee-bdac-50fb4e39c08e",
-    "host": "HomePC",
-    "supervisor_pid": 64560,
-    "started_at": "2026-10-10T06:53:22.602298+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-G10-source-parity-v450",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "tools/upgrade_import_uv_clock_v454.py"
-    ]
-  },
-  "last_seen_at": "2026-10-10T06:52:35.013094+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-10T06:54:22.561769+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -301,6 +290,17 @@
       "G10": "PENDING",
       "reason": "lease.run child exited but CAS finalizer retained active_run; no conflicting worker",
       "utc": "2026-10-10T06:16:11.291353+00:00"
+    },
+    {
+      "schema": "openazrael.c8.same_owner_ended_UV_builder_v454",
+      "run_id": "0ef0f7a8-4267-4cee-bdac-50fb4e39c08e",
+      "owner": "chatgpt-openazrael-demo-c8-20261010-g09",
+      "lease_id": "demo-c8-g09-v446-20261010",
+      "supervisor_pid": 64560,
+      "supervisor_dead": true,
+      "source_v454_sha256": "ad078f1f2e08f71655b2fd4c77afdd0ed59bbc1ba3e0039ae7b2bea1234ade46",
+      "status": "COMPLETED_NO_FIDELITY_PROMOTION",
+      "utc": "2026-10-10T06:54:22.561757+00:00"
     }
   ]
 }
