@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "a6f74bed-86c8-42e0-ad96-d1ca7b09aace",
+    "host": "HomePC",
+    "supervisor_pid": 14256,
+    "started_at": "2026-10-10T14:01:33.353809+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-Audio-Lossless-v472",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-u",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-Audio-Lossless-v472\\.tmp\\run_Godot_headless_audio_probe_v522.py"
+    ]
+  },
   "last_seen_at": "2026-10-10T14:01:08.154061+00:00",
   "protocol": {
     "version": 2,
