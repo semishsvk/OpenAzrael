@@ -19,22 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "ccd43dc5-adca-4823-b0b9-b38e7837a864",
-    "host": "HomePC",
-    "supervisor_pid": 71440,
-    "started_at": "2026-10-10T20:53:00.238496+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-Miles-GainBus-v638",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--main-pack",
-      "F:\\OpenRemaster\\output\\projects\\OpenAzrael\\builds\\C8-MILES3D-GAINBUS-v640-f65db5c\\OpenAzrael_C8_Miles_GainBus_OptIn_v640.pck",
-      "--script",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-Miles-GainBus-v638\\.tmp\\R1_gainbus_natural_finish_v649.gd"
-    ]
-  },
-  "last_seen_at": "2026-10-10T20:51:58.076509+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-10T20:53:06.662676+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
