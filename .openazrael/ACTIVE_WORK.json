@@ -19,7 +19,21 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "16b01ac7-8978-415a-8b58-7371b9c13657",
+    "host": "HomePC",
+    "supervisor_pid": 76928,
+    "started_at": "2026-10-10T06:58:39.908810+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-G10-source-parity-v450",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-G10-source-parity-v450",
+      "--script",
+      "res://scripts/validation/r7_known_dynamic_source_transform_v456.gd"
+    ]
+  },
   "last_seen_at": "2026-10-10T06:57:57.853453+00:00",
   "protocol": {
     "version": 2,
