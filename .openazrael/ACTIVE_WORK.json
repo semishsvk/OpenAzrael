@@ -19,19 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "8371d1ed-1ac3-4185-b260-b1b90a2e2158",
-    "host": "HomePC",
-    "supervisor_pid": 63536,
-    "started_at": "2026-10-10T05:30:44.811705+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "tools/validate_c8_event_graph_allowlist_v440.py"
-    ]
-  },
-  "last_seen_at": "2026-10-10T05:29:57.686755+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-10T05:32:21.906349+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -261,6 +250,27 @@
       "native_995_audio_event": "UNVERIFIED",
       "test_result": "15_SOURCE_NEGATIVE_PASS",
       "time_utc": "2026-10-09T21:41:33.414006+00:00"
+    },
+    {
+      "schema": "openazrael.c8.same_writer_finished_validator_CAS.v440",
+      "run_id": "8371d1ed-1ac3-4185-b260-b1b90a2e2158",
+      "supervisor_pid": 63536,
+      "confirmed_supervisor_dead": true,
+      "task_processes_absent": true,
+      "owner": "chatgpt-openazrael-demo-c8-20261010-closure",
+      "lease_id": "demo-c8-kg001-closure-20261010",
+      "head": "cf5ea258c943abf5c7f14d2399e40a2feccea83c",
+      "completed_evidence": "F:\\OpenRemaster\\work\\OpenAzrael-demo-candidate8\\.tmp\\c8_event_graph_source_allowlist_v440.json",
+      "evidence_sha256": "a15b51ad3a90dee84828ff7174594a28464b910ef448864a20e9db580a47e34d",
+      "completed_status": "PASS",
+      "completed_checks": 14,
+      "source_ATDEMO_unchanged": true,
+      "protected_configs": {
+        "project.godot": "8b03c490e5f3813d466784170fb688b1aee90f5ab3d1dcefeeff34ec6edae891",
+        "export_presets.cfg": "3c5151e409a47f6c04217ba01320f636951095348f9bc2bc935234d159012c5b"
+      },
+      "reason": "validator returned PASS; lease.run CAS finalizer failed to remove active_run",
+      "utc": "2026-10-10T05:32:21.906335+00:00"
     }
   ]
 }
