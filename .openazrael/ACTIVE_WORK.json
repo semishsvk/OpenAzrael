@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "1518fb0e-fd39-4dd2-b433-d6749302cae2",
+    "host": "HomePC",
+    "supervisor_pid": 72116,
+    "started_at": "2026-10-11T15:46:36.515769+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-R7-GhostPolygon-v903",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-c",
+      "from pathlib import Path; b=Path(r'F:\\OpenRemaster\\sources\\materialized\\openazrael_demo_atdemo_v1\\bf0c87f731bb4e87\\layer2\\ATDEMO'); names=['R.EXE','ROOMS.DAT','PUZZLES.DAT','WORLD.DAT','TEXTURES/R7.XAF','NIAMH.DAT']; terms=[b'zxactghost',b'R7NiamhAZ',b'nibody',b'NIAMH',b'GHOST']; exec('for name in names:\\n p=b/name;data=p.read_bytes();print(name,len(data));\\n for t in terms:\\n  points=[];s=0\\n  while len(points)<15:\\n   i=data.lower().find(t.lower(),s)\\n   if i<0:break\\n   points.append(hex(i));s=i+1\\n  if points: print(\" \\,t.decode(),points)')"
+    ]
+  },
   "last_seen_at": "2026-10-11T15:45:33.687738+00:00",
   "protocol": {
     "version": 2,
