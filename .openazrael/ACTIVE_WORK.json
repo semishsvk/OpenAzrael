@@ -19,7 +19,20 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "dc613c55-d22c-4ca8-b90e-d4487352211a",
+    "host": "HomePC",
+    "supervisor_pid": 71756,
+    "started_at": "2026-10-11T04:00:39.483834+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-Niamh-GroupTint-v670",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-Niamh-GroupTint-v670",
+      "--import"
+    ]
+  },
   "last_seen_at": "2026-10-11T04:00:24.188353+00:00",
   "protocol": {
     "version": 2,
