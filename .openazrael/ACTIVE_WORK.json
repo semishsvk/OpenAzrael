@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-original-r7-niamh-fresh-evidence-v893",
-  "owner": "chatgpt-openazrael-demo-c8-20261011-v893",
+  "status": "active",
+  "lease_id": "demo-c8-niamh-evidence-continuation-v903",
+  "owner": "chatgpt-openazrael-demo-c8-20261011-v903",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-demo-c8-20261011-v893",
+  "owner_thread_id": "chatgpt-openazrael-demo-c8-20261011-v903",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-11T14:04:41.210946+00:00",
+  "last_seen_at": "2026-10-11T15:22:22.281921+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -80,7 +80,7 @@
     "sync_state": "LOCAL_ONLY_NO_GITHUB_PUSH",
     "release_attempt_v902": "BLOCKED_REQUIRED_RECEIPT_FIELD_KEYS_MISSING; PREVIOUS_RECEIPT_IMMUTABLE"
   },
-  "acquired_at": "2026-10-11T14:04:41.210944+00:00",
+  "acquired_at": "2026-10-11T15:22:22.281919+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
