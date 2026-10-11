@@ -19,22 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "3eea3082-062c-4ad6-aca5-685ecacdfb02",
-    "host": "HomePC",
-    "supervisor_pid": 7240,
-    "started_at": "2026-10-11T15:30:28.212339+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-R7-GhostPolygon-v903",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R7-GhostPolygon-v903\\analyze_niamh_polygon_v903.py",
-      "--inputs",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R7-GhostPolygon-v903\\inputs",
-      "--output",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R7-GhostPolygon-v903\\evidence\\SOURCE_R7_NIAMH_TRUE_POLYGON_V903.json"
-    ]
-  },
-  "last_seen_at": "2026-10-11T15:30:11.030432+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-11T15:30:30.074769+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
