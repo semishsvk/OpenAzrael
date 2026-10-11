@@ -19,19 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "fb5f59aa-cb7f-4d15-a26d-59e4170f00f8",
-    "host": "HomePC",
-    "supervisor_pid": 55432,
-    "started_at": "2026-10-11T21:13:58.629377+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-u",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R8-FocusRecapture-v991-test.py"
-    ]
-  },
-  "last_seen_at": "2026-10-11T21:13:03.651638+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-11T21:14:14.279253+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
