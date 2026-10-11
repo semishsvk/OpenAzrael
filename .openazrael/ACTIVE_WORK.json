@@ -19,7 +19,19 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "a40ccd0e-fd0f-44e8-ad65-9527409ba27a",
+    "host": "HomePC",
+    "supervisor_pid": 41544,
+    "started_at": "2026-10-11T04:14:51.793045+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-Niamh-GroupTint-v670",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-u",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-Niamh-GroupTint-v670\\.tmp\\capture_RESTORED_Niamh_source_GPU_v678.py",
+      "0"
+    ]
+  },
   "last_seen_at": "2026-10-11T04:14:39.164406+00:00",
   "protocol": {
     "version": 2,
