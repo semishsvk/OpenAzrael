@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "e06d091b-7576-46c4-9c66-d260190df0b7",
+    "host": "HomePC",
+    "supervisor_pid": 77136,
+    "started_at": "2026-10-11T17:18:24.781791+00:00",
+    "cwd": "F:\\OpenRemaster\\work",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-u",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-FinalTechnicalBuild-v935-gpu-census.py"
+    ]
+  },
   "last_seen_at": "2026-10-11T17:18:00.912651+00:00",
   "protocol": {
     "version": 2,
