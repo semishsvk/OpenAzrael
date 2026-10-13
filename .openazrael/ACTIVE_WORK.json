@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "a33360de-80a8-4d74-8bf2-6bf940c4bf5f",
+    "host": "HomePC",
+    "supervisor_pid": 79972,
+    "started_at": "2026-10-13T17:59:50.461660+00:00",
+    "cwd": "F:\\OpenRemaster\\work",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "openazrael-native-reach-item-trace-v1228",
+      "--cwd",
+      "F:\\OpenRemaster\\work",
+      "--output",
+      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-native-reach-item-trace-v1228",
+      "--wait-seconds",
+      "120",
+      "--timeout-seconds",
+      "180",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-ItemReachValidate-v1228.py"
+    ]
+  },
   "last_seen_at": "2026-10-13T17:59:32.858080+00:00",
   "protocol": {
     "version": 2,
