@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-runtime-release-v1194",
   "owner": "chatgpt-openazrael-runtime-release-20261013-v1194",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,24 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-13T13:57:05.915120+00:00",
+  "released_at": "2026-10-13T16:55:18.666325+00:00",
   "reconciliation": {
+    "schema": "OpenAzrael.RuntimeRelease.WriterReconciliation.v1198",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "TRACKED_CLEAN; 25 pre-existing untracked preserved",
-    "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
-    "sync_state": "LOCAL_ONLY_NO_SOURCE_PUSH_COORDINATION_LIFECYCLE_ONLY",
-    "task_processes_stopped": true
+    "git_status": "TRACKED_STAGED_CLEAN_EXACT25_PRESERVED",
+    "remote_head": "NOT_QUERIED_NO_SOURCE_PUSH",
+    "sync_state": "LOCAL_RUNTIME_RELEASE_ONLY",
+    "task_processes_stopped": true,
+    "original374_unchanged": true,
+    "foreign_runtimes_closed": 15,
+    "force_termination": false,
+    "strict_fidelity_availability": {
+      "status": "AVAILABLE",
+      "foreign_count": 0,
+      "fidelity_accepted": false
+    },
+    "fidelity": "HOLD_NO_NEW_GAMEPLAY_TEST",
+    "v1196_attempt": "Failed before mutation due wrong input record name; preserved script; v1197 corrected it."
   },
   "acquired_at": "2026-10-13T16:50:15.031778+00:00",
   "priority_authorization": {
