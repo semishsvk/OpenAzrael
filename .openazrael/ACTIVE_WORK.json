@@ -19,29 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "dae64aa4-d19f-4266-94cd-f246467c7b4a",
-    "host": "HomePC",
-    "supervisor_pid": 76180,
-    "started_at": "2026-10-13T20:07:11.100920+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeReach-v1221\\source",
-      "--resolution",
-      "640x480",
-      "--log-file",
-      "F:\\OpenRemaster\\work\\OpenAzrael-Visibility-v1235\\GEOMETRY_V1236_ENGINE.log",
-      "--script",
-      "F:\\OpenRemaster\\work\\OpenAzrael-Visibility-v1235\\visible_geometry_probe_v1236.gd",
-      "--",
-      "--output=F:\\OpenRemaster\\work\\OpenAzrael-Visibility-v1235\\GEOMETRY_V1236.json",
-      "--rays=F:\\OpenRemaster\\work\\OpenAzrael-Visibility-v1235\\NATIVE_RAYS_V1235.json"
-    ]
-  },
-  "last_seen_at": "2026-10-13T20:02:50.766666+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-13T20:07:13.810245+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
