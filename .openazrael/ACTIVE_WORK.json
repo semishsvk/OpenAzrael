@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "808e72c0-6a22-46e2-bab7-943b101f2dc5",
+    "host": "HomePC",
+    "supervisor_pid": 52980,
+    "started_at": "2026-10-13T17:46:49.161432+00:00",
+    "cwd": "F:\\OpenRemaster\\work",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "openazrael-native-reach-far-click-v1214",
+      "--cwd",
+      "F:\\OpenRemaster\\work",
+      "--output",
+      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-native-reach-far-click-v1214",
+      "--wait-seconds",
+      "120",
+      "--timeout-seconds",
+      "240",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-NativeBoundary-v1214.py"
+    ]
+  },
   "last_seen_at": "2026-10-13T17:46:28.691037+00:00",
   "protocol": {
     "version": 2,
