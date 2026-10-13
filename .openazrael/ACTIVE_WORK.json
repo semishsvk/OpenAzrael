@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-native-reach-v1186",
   "owner": "chatgpt-openazrael-native-reach-20261013-v1186",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,16 +34,19 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-13T09:05:08.107378+00:00",
+  "released_at": "2026-10-13T11:44:32.282809+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "TRACKED_STAGED_CLEAN_25_UNTRACKED",
-    "remote_head": "NOT_QUERIED_NO_SOURCE_PUSH",
-    "sync_state": "LOCAL_AUDIT_ONLY",
+    "git_status": "TRACKED_STAGED_CLEAN_EXACT25_PRESERVED",
+    "remote_head": "NOT_QUERIED_LOCAL_NO_SOURCE_PUSH",
+    "sync_state": "LOCAL_DERIVED_EVIDENCE_ONLY",
     "task_processes_stopped": true,
-    "checkpoint_SHA256": "124a6697e543737331b86f721a63df1a7ac071408d9656764479f91d61ce540b",
-    "original_fidelity": "BLOCKED_FOREIGN_RUNTIME",
-    "product_changes": false
+    "checkpoint_SHA256": "7126dccc8e8a2916d62d85169bc748b269aca328b74c4a9b1c647c87824a75aa",
+    "source2338_unchanged": true,
+    "original374_unchanged": true,
+    "product_patch": false,
+    "fidelity": "HOLD",
+    "fresh_original_runtime": "BLOCKED_FOREIGN_RUNTIME_15"
   },
   "acquired_at": "2026-10-13T11:26:25.719482+00:00",
   "priority_authorization": {
