@@ -19,22 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "6af62ebc-b1d7-4234-ae7b-e76deba6330a",
-    "host": "HomePC",
-    "supervisor_pid": 32904,
-    "started_at": "2026-10-14T13:15:46.167660+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-TapestryPuzzle-v1390",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "F:\\OpenRemaster\\work\\OpenAzrael-PuzzleDriver-v1392.py",
-      "HEADLESS_PUZZLE_V1392",
-      "tapestry_puzzle_v1392.gd",
-      "fixed60"
-    ]
-  },
-  "last_seen_at": "2026-10-14T13:14:09.450923+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T13:15:52.278633+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
