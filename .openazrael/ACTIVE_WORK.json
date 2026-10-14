@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-dialogueruntime-v1328",
   "owner": "chatgpt-openazrael-dialogueruntime-20261014-v1328",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,31 +34,25 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-14T11:01:05.037726+00:00",
+  "released_at": "2026-10-14T11:33:31.434448+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
-    "remote_head": "NOT_QUERIED_NO_SOURCE_PUSH",
-    "sync_state": "PRIVATE_DIAGNOSTIC_RECOVERY_ONLY",
     "task_processes_stopped": true,
-    "source2338_unchanged": true,
-    "original374_unchanged": true,
+    "source_parent2338_unchanged": true,
+    "canonical374_unchanged": true,
     "private374_unchanged": true,
-    "GUI_native_probes": "3_STRICT_FOCUS_EXIT0",
-    "native_captures": 28,
-    "numbered_native_states": 28,
-    "native_dialogue30_999_exit_movement": "3_BOUNDED_COMPONENTS_PASS",
-    "native_audio": "NOT_ACCEPTED_SDL_DUMMY",
-    "Godot_dialogue": "SOURCE_DIVERGENCES_RECORDED_NOT_MODIFIED",
-    "Full15": "PRIMARY_R7_AIM_FAIL_ZERO_COMPLETED",
-    "stairs": "REQUIRED_UNEXECUTED",
+    "new_source_files": 2342,
+    "new_PCK_SHA256": "0f4316f120ac1649d82169af007930f4ba7009e2bc3e8e4c6bc9d47925505678",
+    "private_export": true,
+    "complete_routes": 0,
+    "original_Miles": "HOLD",
+    "native_font_two_choices": "1726/1726_OPAQUE_PIXEL_EXACT",
     "fidelity": "HOLD",
     "KnownGood": false,
-    "availability": {
-      "status": "AVAILABLE",
-      "foreign_count": 0,
-      "fidelity_accepted": false
-    }
+    "newCandidate": false,
+    "remote_head": "NOT_QUERIED_NO_PUSH",
+    "sync_state": "PRIVATE_RECOVERY_ONLY"
   },
   "acquired_at": "2026-10-14T11:05:40.999693+00:00",
   "priority_authorization": {
