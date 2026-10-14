@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "2c655591-826f-47e0-b71c-b4470ef28806",
+    "host": "HomePC",
+    "supervisor_pid": 50372,
+    "started_at": "2026-10-14T19:01:32.598707+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR7Route-v1429",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "native-post-pipes-route-v1433",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR7Route-v1429",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR7Route-v1429\\GUI_V1433",
+      "--wait-seconds",
+      "30",
+      "--timeout-seconds",
+      "480",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR7Route-v1429\\physical_route_v1433.py"
+    ]
+  },
   "last_seen_at": "2026-10-14T18:59:57.684278+00:00",
   "protocol": {
     "version": 2,
