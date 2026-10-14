@@ -19,37 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "f88a2703-99b3-41ea-a8ee-5559faa3c440",
-    "host": "HomePC",
-    "supervisor_pid": 79124,
-    "started_at": "2026-10-14T12:09:47.384572+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "openazrael-r7-static-gui-v1356",
-      "--cwd",
-      "F:\\OpenRemaster\\work",
-      "--output",
-      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-r7-static-gui-v1356",
-      "--wait-seconds",
-      "120",
-      "--timeout-seconds",
-      "120",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-DiagnoseR7-v1355.py",
-      "GUI_V1356"
-    ]
-  },
-  "last_seen_at": "2026-10-14T12:09:16.729029+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T12:09:52.256539+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
