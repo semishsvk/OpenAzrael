@@ -19,7 +19,39 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "e2bd9e3a-1d94-454b-b8b4-41ebdda99b7e",
+    "host": "HomePC",
+    "supervisor_pid": 28720,
+    "started_at": "2026-10-14T13:17:02.611494+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-TapestryPuzzle-v1390",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "openazrael-tapestry-puzzle-gui-v1395",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-TapestryPuzzle-v1390",
+      "--output",
+      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-tapestry-puzzle-gui-v1395",
+      "--wait-seconds",
+      "45",
+      "--timeout-seconds",
+      "220",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\OpenRemaster\\work\\OpenAzrael-PuzzleDriver-v1392.py",
+      "GUI_PUZZLE_V1395",
+      "tapestry_puzzle_v1394.gd"
+    ]
+  },
   "last_seen_at": "2026-10-14T13:16:48.672572+00:00",
   "protocol": {
     "version": 2,
