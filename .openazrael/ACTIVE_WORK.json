@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-r7aim-v1352",
   "owner": "chatgpt-openazrael-r7aim-20261014-v1352",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,25 +34,23 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-14T11:33:31.434448+00:00",
+  "released_at": "2026-10-14T12:23:55.525957+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
+    "remote_head": "NOT_QUERIED_NO_PUSH",
+    "sync_state": "PRIVATE_DIAGNOSTIC_RECOVERY_ONLY",
     "task_processes_stopped": true,
-    "source_parent2338_unchanged": true,
+    "checkpoint_SHA256": "b41b8b563b2fe57588bbde499138f5cd92825b32af5d64a2470e52de35a53285",
+    "independent_SHA256": "8f8fbdaab23d65dd1fc94c92ef417ea17b485f5020376a3673bcd416618f8d39",
+    "source2342_unchanged": true,
     "canonical374_unchanged": true,
     "private374_unchanged": true,
-    "new_source_files": 2342,
-    "new_PCK_SHA256": "0f4316f120ac1649d82169af007930f4ba7009e2bc3e8e4c6bc9d47925505678",
-    "private_export": true,
+    "PCK_SHA256": "0f4316f120ac1649d82169af007930f4ba7009e2bc3e8e4c6bc9d47925505678",
     "complete_routes": 0,
-    "original_Miles": "HOLD",
-    "native_font_two_choices": "1726/1726_OPAQUE_PIXEL_EXACT",
     "fidelity": "HOLD",
     "KnownGood": false,
-    "newCandidate": false,
-    "remote_head": "NOT_QUERIED_NO_PUSH",
-    "sync_state": "PRIVATE_RECOVERY_ONLY"
+    "newCandidate": false
   },
   "acquired_at": "2026-10-14T12:06:23.692320+00:00",
   "priority_authorization": {
