@@ -19,21 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "2e29eb86-d4f8-4de3-9182-7f64931b631c",
-    "host": "HomePC",
-    "supervisor_pid": 61024,
-    "started_at": "2026-10-14T12:35:35.266683+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-StairsDriver-v1371.py",
-      "HEADLESS_STAIRS_V1381",
-      "tapestry_stairs_v1381.gd",
-      "fixed60"
-    ]
-  },
-  "last_seen_at": "2026-10-14T12:34:26.904899+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T12:35:39.262550+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
