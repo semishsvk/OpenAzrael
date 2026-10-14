@@ -19,39 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "5f950b38-3bc7-483f-89a3-bd5d03002856",
-    "host": "HomePC",
-    "supervisor_pid": 75272,
-    "started_at": "2026-10-14T12:36:17.810941+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "openazrael-tapestry-stairs-fixed60-v1382",
-      "--cwd",
-      "F:\\OpenRemaster\\work",
-      "--output",
-      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-tapestry-stairs-fixed60-v1382",
-      "--wait-seconds",
-      "120",
-      "--timeout-seconds",
-      "120",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-StairsDriver-v1371.py",
-      "GUI_STAIRS_V1382",
-      "tapestry_stairs_v1381.gd",
-      "fixed60"
-    ]
-  },
-  "last_seen_at": "2026-10-14T12:35:39.262550+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T12:36:31.708667+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
