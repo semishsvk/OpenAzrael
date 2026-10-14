@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-fullroute-v1256",
   "owner": "chatgpt-openazrael-fullroute-20261014-v1256",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,29 +34,24 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-13T20:56:09.824431+00:00",
+  "released_at": "2026-10-14T05:20:30.652722+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.Visibility.WriterReconciliation.v1255",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "TRACKED_STAGED_CLEAN_EXACT25_PRESERVED",
+    "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
     "remote_head": "NOT_QUERIED_NO_SOURCE_PUSH",
-    "sync_state": "PRIVATE_SOURCE_BUILD_RECOVERY_ONLY",
+    "sync_state": "PRIVATE_EVIDENCE_ONLY",
     "task_processes_stopped": true,
-    "checkpoint_path": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-Visibility-v1254-f65db5c\\CHECKPOINT_V1254.json",
-    "checkpoint_SHA256": "491827fae5f17d1514e6b932340297636c3c2939ff45ba5bdbcf017f137f7e07",
-    "PCK_SHA256": "9972bcb81beb781b5b0f96263a3f1e9d75e974d93aafb9928b9543b1ea5b14b0",
-    "strict_fidelity_availability": {
+    "process_census": "NO_MATCHING_OWN_RUNTIME",
+    "admission": "FAILED_RELEASED_CHILD_STOPPED",
+    "availability": {
       "status": "AVAILABLE",
       "foreign_count": 0,
       "fidelity_accepted": false
     },
-    "production_changed": false,
-    "original374_unchanged": true,
-    "Full15": "NOT_RUN_NEW_PCK",
+    "Full15": "BLOCKED_NO_COMPLETED_RUN_NEW_PCK",
+    "stairs": "REQUIRED_UNVERIFIED",
     "fidelity": "HOLD",
-    "KnownGood": false,
-    "new_candidate": false,
-    "preserved_failures": "legacy direct-quit6, CLI --quit-after4, area-center item aim; none erased"
+    "KnownGood": false
   },
   "acquired_at": "2026-10-14T05:17:56.006177+00:00",
   "priority_authorization": {
