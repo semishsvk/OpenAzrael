@@ -19,7 +19,39 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "bd346e08-2184-4514-8e5e-4a22763c062e",
+    "host": "HomePC",
+    "supervisor_pid": 71776,
+    "started_at": "2026-10-14T18:09:49.163311+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutro-v1404",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "openazrael-packaged-outro-v1406",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutro-v1404",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutro-v1404\\admission_v1406",
+      "--wait-seconds",
+      "30",
+      "--timeout-seconds",
+      "240",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutro-v1404\\component_driver_v1405.py",
+      "GUI_PACKAGED_OUTRO_V1406",
+      "PACKAGED_OUTRO",
+      "--",
+      "--skip-intro"
+    ]
+  },
   "last_seen_at": "2026-10-14T18:08:20.915383+00:00",
   "protocol": {
     "version": 2,
