@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "af5eba3e-8946-4313-b56c-11c31e8d5c79",
+    "host": "HomePC",
+    "supervisor_pid": 43836,
+    "started_at": "2026-10-14T20:51:22.138701+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-WellKeyDoor-v1456",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "native-open-door-v1458",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-WellKeyDoor-v1456",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-WellKeyDoor-v1456\\GUI_V1458",
+      "--wait-seconds",
+      "0",
+      "--timeout-seconds",
+      "660",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-WellKeyDoor-v1456\\physical_route_v1458.py"
+    ]
+  },
   "last_seen_at": "2026-10-14T20:50:53.683694+00:00",
   "protocol": {
     "version": 2,
