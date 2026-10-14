@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "a5a29b49-2b7c-47c0-8050-c28aef250bd2",
-    "host": "HomePC",
-    "supervisor_pid": 44604,
-    "started_at": "2026-10-14T05:36:37.845187+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "initial-focus-v1266",
-      "--cwd",
-      "F:\\OpenRemaster\\work",
-      "--output",
-      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-initial-focus-v1266",
-      "--wait-seconds",
-      "120",
-      "--timeout-seconds",
-      "60",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-InitialFocus-v1266.py"
-    ]
-  },
-  "last_seen_at": "2026-10-14T05:36:24.423799+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T05:36:42.585040+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
