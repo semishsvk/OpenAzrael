@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "409f48bf-405d-46f0-a11c-f36fd71b7917",
+    "host": "HomePC",
+    "supervisor_pid": 75708,
+    "started_at": "2026-10-14T05:52:51.648230+00:00",
+    "cwd": "F:\\OpenRemaster\\work",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "native-well-control-v1273",
+      "--cwd",
+      "F:\\OpenRemaster\\work",
+      "--output",
+      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-native-well-control-v1273",
+      "--wait-seconds",
+      "120",
+      "--timeout-seconds",
+      "120",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-NativeWellControl-v1273.py"
+    ]
+  },
   "last_seen_at": "2026-10-14T05:52:34.118668+00:00",
   "protocol": {
     "version": 2,
