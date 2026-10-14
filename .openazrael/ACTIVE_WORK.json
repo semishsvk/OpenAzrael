@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "59c678b8-37a4-44f0-8d81-d5562ac93397",
-    "host": "HomePC",
-    "supervisor_pid": 71776,
-    "started_at": "2026-10-14T11:28:12.606551+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "openazrael-dialogue-release-smoke-v1344",
-      "--cwd",
-      "F:\\OpenRemaster\\work",
-      "--output",
-      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-dialogue-release-smoke-v1344",
-      "--wait-seconds",
-      "120",
-      "--timeout-seconds",
-      "90",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-ReleaseSmoke-v1344.py"
-    ]
-  },
-  "last_seen_at": "2026-10-14T11:27:53.940870+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T11:28:36.542990+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
