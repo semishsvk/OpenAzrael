@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-focus-well-v1258",
   "owner": "chatgpt-openazrael-focus-well-20261014-v1258",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,24 +34,25 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-14T05:20:30.652722+00:00",
+  "released_at": "2026-10-14T05:40:51.237168+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
     "remote_head": "NOT_QUERIED_NO_SOURCE_PUSH",
-    "sync_state": "PRIVATE_EVIDENCE_ONLY",
+    "sync_state": "PRIVATE_DIAGNOSTIC_EVIDENCE_ONLY",
     "task_processes_stopped": true,
-    "process_census": "NO_MATCHING_OWN_RUNTIME",
-    "admission": "FAILED_RELEASED_CHILD_STOPPED",
+    "source2338_unchanged": true,
+    "original374_unchanged": true,
+    "focus": "CURRENT_BLOCKER_RESOLVED_GUARDED_EXE_EXIT0",
+    "Full15": "PRIMARY_R7_AIM_FAILURE_NO_COMPLETED_RUN",
+    "stairs": "REQUIRED_UNEXECUTED",
+    "fidelity": "HOLD",
+    "KnownGood": false,
     "availability": {
       "status": "AVAILABLE",
       "foreign_count": 0,
       "fidelity_accepted": false
-    },
-    "Full15": "BLOCKED_NO_COMPLETED_RUN_NEW_PCK",
-    "stairs": "REQUIRED_UNVERIFIED",
-    "fidelity": "HOLD",
-    "KnownGood": false
+    }
   },
   "acquired_at": "2026-10-14T05:27:26.818592+00:00",
   "priority_authorization": {
