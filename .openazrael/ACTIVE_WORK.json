@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-packagedoutro-v1404",
   "owner": "chatgpt-openazrael-packagedoutro-20261014-v1404",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,24 +34,28 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-14T15:20:46.717653+00:00",
+  "released_at": "2026-10-14T18:20:50.641714+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
     "remote_head": "NOT_QUERIED_NO_PUSH",
     "sync_state": "PRIVATE_DIAGNOSTIC_RECOVERY_ONLY",
     "task_processes_stopped": true,
-    "checkpoint_SHA256": "17dd49c88827acc85d05cdc80359cf5f1213dd9679b34258d8b6a643ef8a981d",
-    "independent_SHA256": "44c3ff5a5a5f8e7e5609c0a6c4db622957b6b1f5723a0fbda1c350672af024ac",
+    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-PackagedOutro-v1416-f65db5c",
+    "checkpoint_SHA256": "349eb82bd70355dd292381cfb5b50b36e922341f229badaf4496b799450c783e",
+    "verification_SHA256": "17769d9dc7d2d5260c54516505b74e125667c6af1e446b8c07da9c2c1d685872",
+    "archive_SHA256": "04ad7d1c1af28727aa91cceb39af10da17a4b25fec3eea9892b4102f2f0b415c",
+    "archive_bytes": 6743914,
+    "archive_CRC_and_entries_SHA": "PASS",
     "source2342_unchanged": true,
     "canonical374_unchanged": true,
     "private374_unchanged": true,
-    "PCK_SHA256": "0f4316f120ac1649d82169af007930f4ba7009e2bc3e8e4c6bc9d47925505678",
-    "scoped_Windows_R8_puzzle_runs": 2,
+    "frozen5_unchanged": true,
     "complete_routes": 0,
     "fidelity": "HOLD",
     "KnownGood": false,
-    "newCandidate": false
+    "newCandidate": false,
+    "Retail": "WAITING"
   },
   "acquired_at": "2026-10-14T18:07:32.499883+00:00",
   "priority_authorization": {
