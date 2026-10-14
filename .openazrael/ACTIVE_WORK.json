@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "1b81d2dd-dbe2-4aeb-83ef-54758fe9c4bb",
-    "host": "HomePC",
-    "supervisor_pid": 77944,
-    "started_at": "2026-10-14T08:45:21.742804+00:00",
-    "cwd": "F:\\OpenRemaster\\work",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "openazrael-native-physical-route-v1300",
-      "--cwd",
-      "F:\\OpenRemaster\\work",
-      "--output",
-      "F:\\Remaster Framework\\runtime-test\\results\\openazrael-native-physical-route-v1300",
-      "--wait-seconds",
-      "120",
-      "--timeout-seconds",
-      "150",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-NativePhysicalRoute-v1300.py"
-    ]
-  },
-  "last_seen_at": "2026-10-14T08:41:55.518040+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-14T08:46:05.133773+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
