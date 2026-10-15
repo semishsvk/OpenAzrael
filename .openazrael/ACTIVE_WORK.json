@@ -19,22 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "f9164ba1-7b6d-4528-a02f-a6deb71edace",
-    "host": "HomePC",
-    "supervisor_pid": 39636,
-    "started_at": "2026-10-15T15:20:02.257797+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\isolated_source",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\isolated_source",
-      "--script",
-      "res://scripts/r8_stair_sidedness_v1585.gd"
-    ]
-  },
-  "last_seen_at": "2026-10-15T15:18:10.829856+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-15T15:20:08.111138+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
