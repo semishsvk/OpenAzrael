@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-native-poly-v1630",
-  "owner": "chatgpt-openazrael-polygon-fidelity-20261015-v1630",
+  "status": "active",
+  "lease_id": "demo-c8-video-20261015",
+  "owner": "chatgpt-openazrael-video-20261015-897b393c",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-polygon-fidelity-20261015-v1630",
+  "owner_thread_id": "chatgpt-openazrael-video-20261015-897b393c",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-15T17:55:14.190035+00:00",
+  "last_seen_at": "2026-10-15T19:02:46.109240+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -74,7 +74,7 @@
     "Retail": "WAITING",
     "next": "Original 0x20E00 source machine-code exact edge/vertex tie-break; original 0x1C4A4 caller input player hull and per-face selection; native R8 stair 23 state mismatches; full T0-to-outro fidelity regression."
   },
-  "acquired_at": "2026-10-15T17:39:47.239484+00:00",
+  "acquired_at": "2026-10-15T19:02:46.109238+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
