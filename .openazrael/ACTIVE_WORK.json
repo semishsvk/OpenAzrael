@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "f79e1e80-e7a0-498d-b972-c3f141641304",
+    "host": "HomePC",
+    "supervisor_pid": 82020,
+    "started_at": "2026-10-15T04:37:41.782362+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR8Puzzle-v1461",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "native-r8-stairs-v1463",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR8Puzzle-v1461",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR8Puzzle-v1461\\GUI_V1463",
+      "--wait-seconds",
+      "0",
+      "--timeout-seconds",
+      "660",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeR8Puzzle-v1461\\physical_route_v1463.py"
+    ]
+  },
   "last_seen_at": "2026-10-15T04:36:44.129381+00:00",
   "protocol": {
     "version": 2,
