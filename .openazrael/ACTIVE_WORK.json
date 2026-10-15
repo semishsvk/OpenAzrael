@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "340da3f4-f451-4653-9bf0-0b4c5f44c76b",
-    "host": "HomePC",
-    "supervisor_pid": 79628,
-    "started_at": "2026-10-15T12:50:46.228984+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "demo-c8-native-movement-fixedreset-v1546",
-      "--cwd",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468",
-      "--output",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468\\GUI_V1546",
-      "--wait-seconds",
-      "0",
-      "--timeout-seconds",
-      "490",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468\\physical_route_v1546.py"
-    ]
-  },
-  "last_seen_at": "2026-10-15T12:50:31.785387+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-15T12:53:08.692007+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
