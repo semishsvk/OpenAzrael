@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "4c16b9ce-0945-437f-b1f4-a50ee0500d0d",
-    "host": "HomePC",
-    "supervisor_pid": 81488,
-    "started_at": "2026-10-15T19:33:43.132192+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-Video-v1340-20261015",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "video-v1340-20261015-attempt3",
-      "--cwd",
-      "F:\\OpenRemaster\\work\\OpenAzrael-Video-v1340-20261015",
-      "--output",
-      "F:\\OpenRemaster\\work\\OpenAzrael-Video-v1340-20261015\\gui_attempt3",
-      "--wait-seconds",
-      "120",
-      "--timeout-seconds",
-      "1200",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-Video-v1340-20261015\\run_capture.py",
-      "attempt3"
-    ]
-  },
-  "last_seen_at": "2026-10-15T19:33:19.706308+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-15T19:37:30.580048+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
