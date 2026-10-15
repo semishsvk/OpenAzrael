@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-well-door-v1456",
-  "owner": "chatgpt-openazrael-well-key-door-20261014-v1456",
+  "status": "active",
+  "lease_id": "demo-c8-r8-puzzle-v1461",
+  "owner": "chatgpt-openazrael-r8-puzzle-20261015-v1461",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-well-key-door-20261014-v1456",
+  "owner_thread_id": "chatgpt-openazrael-r8-puzzle-20261015-v1461",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-14T20:55:05.883671+00:00",
+  "last_seen_at": "2026-10-15T04:35:45.099654+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -61,7 +61,7 @@
     "newCandidate": false,
     "Retail": "WAITING"
   },
-  "acquired_at": "2026-10-14T20:43:42.425516+00:00",
+  "acquired_at": "2026-10-15T04:35:45.099650+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
