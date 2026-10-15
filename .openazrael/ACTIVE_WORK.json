@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "b25057f6-7520-4a09-9c25-80e8c8a47308",
+    "host": "HomePC",
+    "supervisor_pid": 22560,
+    "started_at": "2026-10-15T11:01:06.190587+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-R8Continuous-v1512",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "demo-c8-r8-phys-optical-end-v1520",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R8Continuous-v1512",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R8Continuous-v1512\\GUI_V1520",
+      "--wait-seconds",
+      "0",
+      "--timeout-seconds",
+      "180",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-R8Continuous-v1512\\run_continuous_gpu_v1520.py"
+    ]
+  },
   "last_seen_at": "2026-10-15T10:58:39.382119+00:00",
   "protocol": {
     "version": 2,
