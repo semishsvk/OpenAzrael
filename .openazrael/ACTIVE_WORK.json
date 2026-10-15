@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-video-20261015",
+  "status": "active",
+  "lease_id": "demo-c8-video-authorized-20261015",
   "owner": "chatgpt-openazrael-video-20261015-897b393c",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-15T19:02:46.109240+00:00",
+  "last_seen_at": "2026-10-15T19:11:57.179002+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -43,7 +43,7 @@
     "task_processes_stopped": true,
     "blocker": "Frozen full-route safety restriction requires explicit authorization for new isolated technical video route"
   },
-  "acquired_at": "2026-10-15T19:02:46.109238+00:00",
+  "acquired_at": "2026-10-15T19:11:57.179000+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
