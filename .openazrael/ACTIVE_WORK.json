@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-pad-fidelity-v1494",
   "owner": "chatgpt-openazrael-native-pad-20261015-v1494",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,37 +34,20 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-15T07:12:23.112888+00:00",
+  "released_at": "2026-10-15T10:06:47.047468+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.WriterReconciliation.v1493",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
     "remote_head": "NOT_QUERIED_NO_PUSH",
     "sync_state": "PRIVATE_DIAGNOSTIC_RECOVERY_ONLY",
     "task_processes_stopped": true,
-    "gui_lock": "RELEASED",
-    "active_run": null,
-    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-NativeOpticalGate-v1491-f65db5c",
-    "checkpoint_SHA256": "26c2d5fabbdd084dd181671f3a97af9305a84d69c29272ffe90ac9ba05d0313b",
-    "archive": {
-      "path": "F:\\OpenRemaster\\recovery\\OpenAzrael_C8_v1491_NativeGateEvidence.zip",
-      "sha256": "b87abdba4cecf1edc01e91db75ffb56bf0551635dd909d5b62847491db0be4fd",
-      "entries": 53,
-      "CRC": "PASS"
-    },
-    "independent_verification": "INDEPENDENT_VERIFICATION_V1492.json",
-    "native_negative_SAV_PNG_SHA": "9/9 PASS",
-    "isolated_Godot_gate_checks": "92/92 PASS",
-    "production_source_changed": false,
-    "original_corpus_changed": false,
-    "source_sandbox_prototype_only": true,
-    "native_exact_pad_predicate": "UNRESOLVED",
+    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-EndgameFidelity-v1509-f65db5c",
+    "checkpoint_SHA256": "3d6baf5ea21882bd453d9dc5b2b3ee8ad89457e39d36351843fdba072f6cf141",
+    "native_end": "SHIELD_PICKUP_SPLASH_VERIFIED",
+    "Godot_GPU": "149_SCOPED_CHECKS_PASS",
+    "full_demo_complete": false,
     "fidelity": "HOLD",
-    "known_good": false,
-    "new_candidate": false,
-    "Retail": "WAITING",
-    "complete_routes": 0,
-    "next_task": "Match original R8 pad position exactly between incorrect and correct tapestry states; verify optical gate before merging, then perform native shield/outro and uninterrupted full-demo route."
+    "retail": "WAITING"
   },
   "acquired_at": "2026-10-15T09:11:38.910850+00:00",
   "priority_authorization": {
