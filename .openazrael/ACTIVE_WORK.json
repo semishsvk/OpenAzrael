@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-final-puzzle-v1468",
   "owner": "chatgpt-openazrael-final-puzzle-20261015-v1468",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,34 +34,17 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-15T05:02:40.508346+00:00",
+  "released_at": "2026-10-15T06:08:01.220765+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
     "remote_head": "NOT_QUERIED_NO_PUSH",
     "sync_state": "PRIVATE_DIAGNOSTIC_RECOVERY_ONLY",
     "task_processes_stopped": true,
-    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-NativeR8Puzzle-v1466-f65db5c",
-    "checkpoint_SHA256": "efb248fc4408d89d329cf6a5bf658b951360bb18170e280ec27dce76e050d2f7",
-    "archive": {
-      "path": "F:\\OpenRemaster\\recovery\\OpenAzrael_C8_v1466_FullEvidence.zip",
-      "bytes": 250701173,
-      "entries": 496,
-      "sha256": "efcf7c01d5ce81a14669cafbf0baf8042b4e03b655301237362e862bb3ae1c17",
-      "CRC_and_entry_SHA": "PASS"
-    },
-    "native_R8_tapestry3_4_placed": true,
-    "native_Prism_acquired": true,
-    "piece1_missing": true,
-    "source2342_unchanged": true,
-    "canonical374_unchanged": true,
-    "private374_unchanged": true,
-    "frozen5_unchanged": true,
-    "complete_routes": 0,
+    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-NativeFinalPuzzle-v1475-f65db5c",
+    "checkpoint_SHA256": "c29f09debde76b63bde90c649b9ca619aee3316a09b4f2c67de658df11309212",
     "fidelity": "HOLD",
-    "KnownGood": false,
-    "newCandidate": false,
-    "Retail": "WAITING"
+    "full_demo_complete": false
   },
   "acquired_at": "2026-10-15T05:12:51.651553+00:00",
   "priority_authorization": {
