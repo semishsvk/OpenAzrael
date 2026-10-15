@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-native-collision-re-v1544",
-  "owner": "chatgpt-openazrael-collision-re-20261015-v1544",
+  "status": "active",
+  "lease_id": "demo-c8-contact-slip-v1556",
+  "owner": "chatgpt-openazrael-contact-slip-20261015-v1556",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-collision-re-20261015-v1544",
+  "owner_thread_id": "chatgpt-openazrael-contact-slip-20261015-v1556",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-15T13:15:52.515093+00:00",
+  "last_seen_at": "2026-10-15T13:20:37.820570+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -64,7 +64,7 @@
     "Retail": "WAITING",
     "next": "Source-bound R.EXE collision hull/solid face semantics; resolve bounded Godot forward slack and source speed at multiple original native locations; then full T0-end with all dialogs."
   },
-  "acquired_at": "2026-10-15T12:43:09.652280+00:00",
+  "acquired_at": "2026-10-15T13:20:37.820568+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
