@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-r8-continuous-v1512",
   "owner": "chatgpt-openazrael-r8-continuous-20261015-v1512",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,20 +34,34 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-15T10:06:47.047468+00:00",
+  "released_at": "2026-10-15T11:45:03.821255+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "TRACKED_STAGED_CLEAN_EXACT25",
     "remote_head": "NOT_QUERIED_NO_PUSH",
     "sync_state": "PRIVATE_DIAGNOSTIC_RECOVERY_ONLY",
     "task_processes_stopped": true,
-    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-EndgameFidelity-v1509-f65db5c",
-    "checkpoint_SHA256": "3d6baf5ea21882bd453d9dc5b2b3ee8ad89457e39d36351843fdba072f6cf141",
-    "native_end": "SHIELD_PICKUP_SPLASH_VERIFIED",
-    "Godot_GPU": "149_SCOPED_CHECKS_PASS",
+    "checkpoint": "F:\\OpenRemaster\\recovery\\OpenAzrael-C8-R8CollisionLab-v1529-f65db5c",
+    "checkpoint_SHA256": "40ebe3c07157efac480d089f25d5e17a0c64d23d32614b67330619361aec7c6f",
+    "archive": {
+      "path": "F:\\OpenRemaster\\recovery\\OpenAzrael_C8_v1529_R8CollisionLabEvidence.zip",
+      "sha256": "7828b6f4f46dd70b59d4e3460a9bbf4691cf6efa787368bd723790e304d66991",
+      "entries": 43,
+      "CRC": "PASS"
+    },
+    "independent_verification": "INDEPENDENT_VERIFICATION_V1530.json",
+    "GUI": "RELEASED",
+    "scoped_Godot_End": "PASS",
+    "native_hull": "UNRESOLVED",
+    "optical_gate": "UNRESOLVED",
+    "native_end": "CONFIRMED_PRIOR_V1509",
     "full_demo_complete": false,
+    "production_changed": false,
+    "source_corpora_unchanged": true,
     "fidelity": "HOLD",
-    "retail": "WAITING"
+    "newCandidate": false,
+    "KnownGood": false,
+    "Retail": "WAITING"
   },
   "acquired_at": "2026-10-15T10:37:39.156777+00:00",
   "priority_authorization": {
