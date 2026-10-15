@@ -19,7 +19,21 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "028a4e68-5135-43bf-a4c7-beefdabea990",
+    "host": "HomePC",
+    "supervisor_pid": 55692,
+    "started_at": "2026-10-15T14:33:43.796346+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\isolated_source",
+    "command": [
+      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\isolated_source",
+      "--script",
+      "res://scripts/r8_native23_ablation_v1568.gd"
+    ]
+  },
   "last_seen_at": "2026-10-15T14:30:33.071878+00:00",
   "protocol": {
     "version": 2,
