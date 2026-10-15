@@ -19,22 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "85ceb4df-59fa-4180-8b47-2e51c660eeb2",
-    "host": "HomePC",
-    "supervisor_pid": 79748,
-    "started_at": "2026-10-15T15:54:13.534002+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\isolated_source",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\isolated_source",
-      "--script",
-      "res://scripts/kg001_collision_per_body_guard_v1596.gd"
-    ]
-  },
-  "last_seen_at": "2026-10-15T15:52:35.970258+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-15T15:54:16.532365+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
