@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-contact-slip-v1556",
-  "owner": "chatgpt-openazrael-contact-slip-20261015-v1556",
+  "status": "active",
+  "lease_id": "demo-c8-audit-v1567",
+  "owner": "chatgpt-openazrael-r8-audit-20261015-v1567",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-contact-slip-20261015-v1556",
+  "owner_thread_id": "chatgpt-openazrael-r8-audit-20261015-v1567",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-15T13:49:59.121242+00:00",
+  "last_seen_at": "2026-10-15T13:59:59.075742+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -69,7 +69,7 @@
     "Retail": "WAITING",
     "next": "Source-bound native R.EXE collision-rule analysis; 23 unmatched R8 positions; then source-backed minimal R8 fix and uninterrupted full demo differential + audio and release."
   },
-  "acquired_at": "2026-10-15T13:20:37.820568+00:00",
+  "acquired_at": "2026-10-15T13:59:59.075740+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
