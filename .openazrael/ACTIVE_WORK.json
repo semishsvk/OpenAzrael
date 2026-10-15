@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "b59ee6a5-4900-47b5-8c05-87791f77799d",
-    "host": "HomePC",
-    "supervisor_pid": 76068,
-    "started_at": "2026-10-15T15:06:31.342191+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "demo-c8-R8-original-stair-physics-v1579",
-      "--cwd",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468",
-      "--output",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468\\GUI_V1579",
-      "--wait-seconds",
-      "0",
-      "--timeout-seconds",
-      "180",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-NativeFinalPuzzle-v1468\\physical_route_v1579.py"
-    ]
-  },
-  "last_seen_at": "2026-10-15T15:06:16.642750+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-15T15:06:37.023838+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
