@@ -19,36 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "9c5007f6-9368-4ea5-bc2e-bc0d4c8e7e33",
-    "host": "HomePC",
-    "supervisor_pid": 44212,
-    "started_at": "2026-10-15T13:37:22.878206+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "demo-c8-r8-predictive-shield-gpu-v1562",
-      "--cwd",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558",
-      "--output",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\GUI_V1562",
-      "--wait-seconds",
-      "0",
-      "--timeout-seconds",
-      "180",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PredictiveMotion-v1558\\run_continuous_predictive_v1562.py"
-    ]
-  },
-  "last_seen_at": "2026-10-15T13:36:53.319536+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-15T13:37:52.644068+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
