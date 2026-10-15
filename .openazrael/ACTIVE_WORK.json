@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-audit-v1567",
-  "owner": "chatgpt-openazrael-r8-audit-20261015-v1567",
+  "status": "active",
+  "lease_id": "demo-c8-native-code-re-v1589",
+  "owner": "chatgpt-openazrael-native-code-re-20261015-v1589",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-r8-audit-20261015-v1567",
+  "owner_thread_id": "chatgpt-openazrael-native-code-re-20261015-v1589",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-15T15:25:41.056683+00:00",
+  "last_seen_at": "2026-10-15T15:33:37.044021+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -70,7 +70,7 @@
     "Retail": "WAITING",
     "next": "Follow LE RX x86 collision and movement routines; legitimate GUI-focus original stair motion oracle; R8 23 source poses; complete full T0-to-final demo replay/audio."
   },
-  "acquired_at": "2026-10-15T13:59:59.075740+00:00",
+  "acquired_at": "2026-10-15T15:33:37.044019+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
