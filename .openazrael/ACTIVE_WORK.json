@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,17 +34,20 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-17T05:01:07.556289+00:00",
+  "released_at": "2026-10-17T05:25:05.216015+00:00",
   "reconciliation": {
-    "head": "381748306937ac255654692424253eaec5c712be",
-    "git_status": "CLEAN_TRACKED_AND_UNTRACKED_VISIBLE; test .tmp ignored",
-    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
-    "sync_state": "LOCAL_COMMIT_ONLY_NOT_PUSHED; integration base unmodified a296b82ffc829ca86811a59a4490811abb22d7bc; pre-existing base dirty files preserved",
+    "head": "25db5d4f2b2d2f960aa87c25b2f9839c5548ed2b",
+    "git_status": "CLEAN; feature/achievements-shadow-20261017",
+    "remote_head": "NO_FEATURE_BRANCH_UPSTREAM_CONFIGURED",
+    "sync_state": "LOCAL_ONLY_NOT_PUSHED; base integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc preserved; three pre-existing tracked integration modifications preserved untouched",
     "task_processes_stopped": true,
-    "receipt_type": "OpenAzrael achievements shadow pilot v1, 2026-10-17",
-    "tests": "Python 3/3 PASS; Godot headless 26/26 PASS (receipt SHA-256 54c41653b6c2617589244a692b280584b5f34338bd934c36ae3ec7eb60d4a4b9)",
-    "feature_branch": "feature/achievements-shadow-20261017",
-    "fidelity": "RETAIL_HOLD;STEAM_DISABLED"
+    "source_corpus_modified": false,
+    "active_runtime_tests_running": false,
+    "shadow_test_result": "30/30 Godot observer PASS; 37/37 Godot ledger fault PASS; 5/5 retail source PASS; 3/3 catalog PASS; 14/14 original demo event-graph PASS; evidence gate 20/20 PASS",
+    "retail_status": "FIDELITY_HOLD",
+    "steam_status": "DISABLED",
+    "local_output_receipt": "evidence/retail/achievement_shadow_v2_receipt.json",
+    "local_evidence_gate": ".tmp/achievement_shadow_gate_v2.json"
   },
   "acquired_at": "2026-10-17T05:10:01.799173+00:00",
   "priority_authorization": {
