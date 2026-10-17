@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-17T06:21:51.677296+00:00",
+  "last_seen_at": "2026-10-17T06:24:14.122021+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -47,7 +47,7 @@
     "checks": "30/30 Python source suite;30/30 headless Godot shadow;37/37 headless Godot fault;29/29 fail-closed evidence gate",
     "retail_40_rule": "40 all disabled, 10 source-name indexed, 5 action patterns, 0 authentic runtime reward predicates, Steam disabled"
   },
-  "acquired_at": "2026-10-17T06:03:23.258306+00:00",
+  "acquired_at": "2026-10-17T06:24:14.122019+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
