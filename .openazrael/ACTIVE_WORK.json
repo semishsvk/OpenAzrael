@@ -19,7 +19,30 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "5ca6cf40-2e2f-4199-9029-817c91454299",
+    "host": "HomePC",
+    "supervisor_pid": 16144,
+    "started_at": "2026-10-17T07:36:31.254667+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+    "command": [
+      "git",
+      "-C",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+      "add",
+      "--",
+      "docs/ACHIEVEMENTS_RETAIL_FLAG_MECHANISM_V5.md",
+      "evidence/retail/achievement_evidence_gate_v5.json",
+      "evidence/retail/achievement_flag_mechanism_v5.json",
+      "evidence/retail/achievement_source_suite_v5_receipt.json",
+      "evidence/retail/achievement_v5_checkpoint.json",
+      "tools/achievements/audit_retail_flag_mechanism_v5.py",
+      "tools/achievements/run_retail_achievement_source_suite_v5.py",
+      "tools/achievements/seal_retail_flag_mechanism_v5.py",
+      "tools/achievements/test_retail_flag_mechanism_v5.py",
+      "tools/achievements/verify_retail_achievement_evidence_gate_v5.py"
+    ]
+  },
   "last_seen_at": "2026-10-17T07:35:54.761590+00:00",
   "protocol": {
     "version": 2,
