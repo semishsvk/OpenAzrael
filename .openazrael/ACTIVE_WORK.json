@@ -19,7 +19,21 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "7cc3d1f5-292f-46eb-9bd2-159cf32dd6db",
+    "host": "HomePC",
+    "supervisor_pid": 85744,
+    "started_at": "2026-10-17T07:35:53.140119+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017\\tools\\achievements\\seal_retail_flag_mechanism_v5.py",
+      "--retail-root",
+      "F:\\Remaster Framework\\source\\Azrael's Tear\\GAME\\AZRAEL",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017\\evidence\\retail\\achievement_v5_checkpoint.json"
+    ]
+  },
   "last_seen_at": "2026-10-17T07:33:50.910325+00:00",
   "protocol": {
     "version": 2,
