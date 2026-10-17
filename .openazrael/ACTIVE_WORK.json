@@ -19,31 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "02f31ae6-6c45-4b46-a076-5780c37ce362",
-    "host": "HomePC",
-    "supervisor_pid": 11060,
-    "started_at": "2026-10-17T05:22:22.105775+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-    "command": [
-      "git",
-      "-C",
-      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-      "add",
-      "--",
-      "scripts/achievement_manager.gd",
-      "scripts/achievement_progress_store_v2.gd",
-      "tools/achievements/test_achievement_shadow_v1.gd",
-      "tools/achievements/test_achievement_ledger_v2.gd",
-      "tools/achievements/probe_retail_achievement_names_v2.py",
-      "tools/achievements/test_retail_census_v2.py",
-      "tools/achievements/verify_shadow_release_gate_v2.py",
-      "docs/ACHIEVEMENTS_SHADOW_V2.md",
-      "evidence/retail/achievement_identifier_census_v2.json",
-      "evidence/retail/achievement_shadow_v2_receipt.json"
-    ]
-  },
-  "last_seen_at": "2026-10-17T05:20:18.992868+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-17T05:22:23.911679+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
