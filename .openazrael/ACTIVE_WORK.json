@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,27 +34,18 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-17T06:53:29.222622+00:00",
+  "released_at": "2026-10-17T07:38:44.531640+00:00",
   "reconciliation": {
-    "head": "6847698d5d9ae3f2dd706d4ca179a68e35152c6c",
-    "git_status": "CLEAN_WORKTREE; feature/achievements-shadow-20261017",
+    "head": "87d6b00e7f8e026059ff9d4e5b876b7da9fb7026",
+    "git_status": "CLEAN_WORKTREE_ON feature/achievements-shadow-20261017",
     "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
-    "sync_state": "LOCAL_ONLY_NO_GITHUB_PUSH; original integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc and pre-existing dirty files preserved without edits",
+    "sync_state": "LOCAL_ONLY_NOT_PUSHED. Canonical integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc untouched; three pre-existing tracked modifications preserved. Original retail source immutable.",
     "task_processes_stopped": true,
-    "result": "STATIC_RETAIL_WORLD_BRIDGE_PASS_GAMEPLAY_RUNTIME_HOLD",
-    "source_suite": "43/43 PASS",
-    "godot_headless_shadow": "30/30 PASS",
-    "godot_headless_ledger": "37/37 PASS",
-    "fail_closed_evidence_gate": "37/37 PASS",
-    "reviewable_receipts": [
-      "evidence/retail/achievement_world_bridge_v4.json",
-      "evidence/retail/achievement_evidence_gate_v4.json",
-      "evidence/retail/achievement_v4_checkpoint.json"
-    ],
-    "retail_corpus_modified": false,
-    "original_runtime_executed": false,
-    "retail_achievement_rules_activated": 0,
-    "steamworks_operations": 0
+    "checkpoint": "evidence/retail/achievement_v5_checkpoint.json",
+    "test_receipts": "61/61 Python original-retail source/static tests; 30/30 Godot shadow; 37/37 Godot ledger; 48/48 evidence gate",
+    "original_game_executed": false,
+    "retail_unlock_conditions_enabled": 0,
+    "steamworks_activated": false
   },
   "acquired_at": "2026-10-17T07:10:35.158556+00:00",
   "priority_authorization": {
