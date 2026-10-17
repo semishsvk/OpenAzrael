@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,16 +34,17 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-15T19:43:13.179730+00:00",
+  "released_at": "2026-10-17T05:01:07.556289+00:00",
   "reconciliation": {
-    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "TRACKED_CLEAN;25 pre-existing untracked preserved; isolated user-authorized video driver only",
-    "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
-    "sync_state": "NO_SOURCE_CHANGES_NO_SOURCE_PUSH_COORDINATION_ONLY",
+    "head": "381748306937ac255654692424253eaec5c712be",
+    "git_status": "CLEAN_TRACKED_AND_UNTRACKED_VISIBLE; test .tmp ignored",
+    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
+    "sync_state": "LOCAL_COMMIT_ONLY_NOT_PUSHED; integration base unmodified a296b82ffc829ca86811a59a4490811abb22d7bc; pre-existing base dirty files preserved",
     "task_processes_stopped": true,
-    "result": "BLOCKED_OWNED_GUI_FOCUS_NOT_OBSERVED",
-    "foreground": "C:\\Windows\\System32\\OpenWith.exe PID23468",
-    "resume": "Prepared v1340 attempt1; original Full15 unchanged. Close foreign foreground dialog then use fresh attempt2 through same shared focus-sensitive admission."
+    "receipt_type": "OpenAzrael achievements shadow pilot v1, 2026-10-17",
+    "tests": "Python 3/3 PASS; Godot headless 26/26 PASS (receipt SHA-256 54c41653b6c2617589244a692b280584b5f34338bd934c36ae3ec7eb60d4a4b9)",
+    "feature_branch": "feature/achievements-shadow-20261017",
+    "fidelity": "RETAIL_HOLD;STEAM_DISABLED"
   },
   "acquired_at": "2026-10-17T04:49:52.914216+00:00",
   "priority_authorization": {
