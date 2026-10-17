@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-video-20261017",
   "owner": "chatgpt-openazrael-video-20261017-897b393c",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,23 +34,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-17T08:02:35.408234+00:00",
+  "released_at": "2026-10-17T17:30:08.927114+00:00",
   "reconciliation": {
-    "head": "01b642e98e49537f4015cff24064a2ab7d0944c3",
-    "git_status": "CLEAN feature/achievements-shadow-20261017",
-    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
-    "sync_state": "LOCAL_COMMIT_ONLY_NOT_PUSHED; base integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc and its pre-existing tracked changes preserved untouched",
+    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
+    "git_status": "tracked and staged clean; 25 preexisting untracked preserved",
+    "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
+    "sync_state": "NO_SOURCE_CHANGES_NO_SOURCE_PUSH_COORDINATION_ONLY",
     "task_processes_stopped": true,
-    "original_retail_corpus_immutable": true,
-    "original_runtime_executed": false,
-    "checkpoint": "evidence/retail/achievement_v6_checkpoint.json",
-    "documentation": "docs/ACHIEVEMENTS_RETAIL_ORDERED_ACTION_BRIDGE_V6.md",
-    "tests": "78/78 source-only; 30/30 Godot shadow; 37/37 Godot ledger; 60/60 evidence gate",
-    "unique_compiler_correspondence": 3,
-    "ambiguous_compiler_correspondence": 3,
-    "unmatched_source_case": 1,
-    "retail_achievements_authorized": 0,
-    "steamworks_activated": false
+    "status": "BLOCKED_GLOBAL_NATIVE_EXECUTION_ADMISSION_V2056",
+    "runtime_started": false,
+    "video_generated": false
   },
   "acquired_at": "2026-10-17T17:29:41.671125+00:00",
   "priority_authorization": {
