@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-17T05:00:29.942210+00:00",
+  "last_seen_at": "2026-10-17T05:10:01.799175+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -46,7 +46,7 @@
     "feature_branch": "feature/achievements-shadow-20261017",
     "fidelity": "RETAIL_HOLD;STEAM_DISABLED"
   },
-  "acquired_at": "2026-10-17T04:49:52.914216+00:00",
+  "acquired_at": "2026-10-17T05:10:01.799173+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
