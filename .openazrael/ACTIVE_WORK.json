@@ -19,30 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "10d15150-62df-4596-9f0b-dde6f1012740",
-    "host": "HomePC",
-    "supervisor_pid": 79804,
-    "started_at": "2026-10-17T04:59:52.864334+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-    "command": [
-      "git",
-      "-C",
-      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-      "add",
-      "--",
-      "data/achievements/retail_achievements_v1.json",
-      "data/achievements/demo_shadow_achievements_v1.json",
-      "scripts/achievement_manager.gd",
-      "scripts/achievement_steam_bridge.gd",
-      "scripts/legacy_event_runner_v87.gd",
-      "tools/achievements/test_achievement_catalog_v1.py",
-      "tools/achievements/test_achievement_shadow_v1.gd",
-      "docs/ACHIEVEMENTS_SHADOW_V1.md",
-      "evidence/retail/achievement_shadow_v1_receipt.json"
-    ]
-  },
-  "last_seen_at": "2026-10-17T04:58:40.431009+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-17T04:59:54.415247+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
