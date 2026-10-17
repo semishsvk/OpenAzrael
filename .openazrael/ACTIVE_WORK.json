@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-video-authorized-20261015",
-  "owner": "chatgpt-openazrael-video-20261015-897b393c",
+  "status": "active",
+  "lease_id": "azrael-achievements-shadow-20261017-a1",
+  "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-video-20261015-897b393c",
+  "owner_thread_id": "chatgpt-openazrael-achievements-20261017",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-15T19:41:49.234158+00:00",
+  "last_seen_at": "2026-10-17T04:49:52.914218+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -45,7 +45,7 @@
     "foreground": "C:\\Windows\\System32\\OpenWith.exe PID23468",
     "resume": "Prepared v1340 attempt1; original Full15 unchanged. Close foreign foreground dialog then use fresh attempt2 through same shared focus-sensitive admission."
   },
-  "acquired_at": "2026-10-15T19:31:42.246007+00:00",
+  "acquired_at": "2026-10-17T04:49:52.914216+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
