@@ -19,7 +19,17 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "78fe015c-4ddb-4fa6-9699-83361e7086c9",
+    "host": "HomePC",
+    "supervisor_pid": 54092,
+    "started_at": "2026-10-17T07:20:38.514252+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017\\.tmp\\world_loader_probe_v5.py"
+    ]
+  },
   "last_seen_at": "2026-10-17T07:19:57.488013+00:00",
   "protocol": {
     "version": 2,
