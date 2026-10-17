@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,18 +34,27 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-17T06:22:42.313861+00:00",
+  "released_at": "2026-10-17T06:53:29.222622+00:00",
   "reconciliation": {
-    "head": "6b3dc3c13bd06ed894d126e7ae67c89d0e888454",
-    "git_status": "CLEAN_SOURCE_WORKTREE_FEATURE_BRANCH",
-    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED_NO_REMOTE_PUSH",
-    "sync_state": "LOCAL_COMMIT_ONLY; canonical integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc unchanged; pre-existing unrelated integration working-tree changes preserved; original game corpus read-only",
+    "head": "6847698d5d9ae3f2dd706d4ca179a68e35152c6c",
+    "git_status": "CLEAN_WORKTREE; feature/achievements-shadow-20261017",
+    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
+    "sync_state": "LOCAL_ONLY_NO_GITHUB_PUSH; original integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc and pre-existing dirty files preserved without edits",
     "task_processes_stopped": true,
-    "result": "SOURCE_STRUCTURAL_PASS_RETAIL_FIDELITY_HOLD",
-    "checkpoint_file": "evidence/retail/achievement_v3_checkpoint.json",
-    "evidence_gate": "evidence/retail/achievement_evidence_gate_v3.json",
-    "checks": "30/30 Python source suite;30/30 headless Godot shadow;37/37 headless Godot fault;29/29 fail-closed evidence gate",
-    "retail_40_rule": "40 all disabled, 10 source-name indexed, 5 action patterns, 0 authentic runtime reward predicates, Steam disabled"
+    "result": "STATIC_RETAIL_WORLD_BRIDGE_PASS_GAMEPLAY_RUNTIME_HOLD",
+    "source_suite": "43/43 PASS",
+    "godot_headless_shadow": "30/30 PASS",
+    "godot_headless_ledger": "37/37 PASS",
+    "fail_closed_evidence_gate": "37/37 PASS",
+    "reviewable_receipts": [
+      "evidence/retail/achievement_world_bridge_v4.json",
+      "evidence/retail/achievement_evidence_gate_v4.json",
+      "evidence/retail/achievement_v4_checkpoint.json"
+    ],
+    "retail_corpus_modified": false,
+    "original_runtime_executed": false,
+    "retail_achievement_rules_activated": 0,
+    "steamworks_operations": 0
   },
   "acquired_at": "2026-10-17T06:24:14.122019+00:00",
   "priority_authorization": {
