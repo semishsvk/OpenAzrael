@@ -19,7 +19,35 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "4cd06d2d-9890-46ab-90e1-2a9080b4c513",
+    "host": "HomePC",
+    "supervisor_pid": 62144,
+    "started_at": "2026-10-17T06:21:05.364281+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+    "command": [
+      "git",
+      "-C",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+      "add",
+      "--",
+      "docs/ACHIEVEMENTS_RETAIL_SOURCE_V3.md",
+      "evidence/retail/achievement_action_neighbors_v3.json",
+      "evidence/retail/achievement_action_patterns_v3.json",
+      "evidence/retail/achievement_evidence_gate_v3.json",
+      "evidence/retail/achievement_source_suite_v3_receipt.json",
+      "evidence/retail/achievement_trigger_readiness_v3.json",
+      "evidence/retail/achievement_v3_checkpoint.json",
+      "tools/achievements/audit_retail_achievement_action_patterns_v3.py",
+      "tools/achievements/build_retail_action_neighbor_atlas_v3.py",
+      "tools/achievements/build_retail_trigger_readiness_v3.py",
+      "tools/achievements/run_retail_achievement_source_suite_v3.py",
+      "tools/achievements/test_retail_action_neighbors_v3.py",
+      "tools/achievements/test_retail_action_patterns_v3.py",
+      "tools/achievements/test_retail_trigger_readiness_v3.py",
+      "tools/achievements/verify_retail_achievement_evidence_gate_v3.py"
+    ]
+  },
   "last_seen_at": "2026-10-17T06:18:48.021924+00:00",
   "protocol": {
     "version": 2,
