@@ -19,31 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "86971d48-9559-48c3-8aa5-740296e2235b",
-    "host": "HomePC",
-    "supervisor_pid": 39736,
-    "started_at": "2026-10-17T06:52:04.220573+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-    "command": [
-      "git",
-      "-C",
-      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-      "add",
-      "--",
-      "docs/ACHIEVEMENTS_RETAIL_WORLD_BRIDGE_V4.md",
-      "evidence/retail/achievement_evidence_gate_v4.json",
-      "evidence/retail/achievement_source_suite_v4_receipt.json",
-      "evidence/retail/achievement_v4_checkpoint.json",
-      "evidence/retail/achievement_world_bridge_v4.json",
-      "tools/achievements/audit_retail_world_puzzles_bridge_v4.py",
-      "tools/achievements/run_retail_achievement_source_suite_v4.py",
-      "tools/achievements/seal_retail_world_bridge_v4.py",
-      "tools/achievements/test_retail_world_bridge_v4.py",
-      "tools/achievements/verify_retail_achievement_evidence_gate_v4.py"
-    ]
-  },
-  "last_seen_at": "2026-10-17T06:51:18.038276+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-17T06:52:06.553753+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
