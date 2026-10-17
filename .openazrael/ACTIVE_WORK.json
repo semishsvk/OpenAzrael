@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-achievements-shadow-20261017-a1",
   "owner": "chatgpt-openazrael-achievements-20261017",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,20 +34,18 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-17T05:25:05.216015+00:00",
+  "released_at": "2026-10-17T06:22:42.313861+00:00",
   "reconciliation": {
-    "head": "25db5d4f2b2d2f960aa87c25b2f9839c5548ed2b",
-    "git_status": "CLEAN; feature/achievements-shadow-20261017",
-    "remote_head": "NO_FEATURE_BRANCH_UPSTREAM_CONFIGURED",
-    "sync_state": "LOCAL_ONLY_NOT_PUSHED; base integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc preserved; three pre-existing tracked integration modifications preserved untouched",
+    "head": "6b3dc3c13bd06ed894d126e7ae67c89d0e888454",
+    "git_status": "CLEAN_SOURCE_WORKTREE_FEATURE_BRANCH",
+    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED_NO_REMOTE_PUSH",
+    "sync_state": "LOCAL_COMMIT_ONLY; canonical integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc unchanged; pre-existing unrelated integration working-tree changes preserved; original game corpus read-only",
     "task_processes_stopped": true,
-    "source_corpus_modified": false,
-    "active_runtime_tests_running": false,
-    "shadow_test_result": "30/30 Godot observer PASS; 37/37 Godot ledger fault PASS; 5/5 retail source PASS; 3/3 catalog PASS; 14/14 original demo event-graph PASS; evidence gate 20/20 PASS",
-    "retail_status": "FIDELITY_HOLD",
-    "steam_status": "DISABLED",
-    "local_output_receipt": "evidence/retail/achievement_shadow_v2_receipt.json",
-    "local_evidence_gate": ".tmp/achievement_shadow_gate_v2.json"
+    "result": "SOURCE_STRUCTURAL_PASS_RETAIL_FIDELITY_HOLD",
+    "checkpoint_file": "evidence/retail/achievement_v3_checkpoint.json",
+    "evidence_gate": "evidence/retail/achievement_evidence_gate_v3.json",
+    "checks": "30/30 Python source suite;30/30 headless Godot shadow;37/37 headless Godot fault;29/29 fail-closed evidence gate",
+    "retail_40_rule": "40 all disabled, 10 source-name indexed, 5 action patterns, 0 authentic runtime reward predicates, Steam disabled"
   },
   "acquired_at": "2026-10-17T06:03:23.258306+00:00",
   "priority_authorization": {
