@@ -19,7 +19,17 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "ca95a08a-c394-48b2-8baf-70b9e47dbe5f",
+    "host": "HomePC",
+    "supervisor_pid": 45224,
+    "started_at": "2026-10-17T06:32:03.886776+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017\\.tmp\\sound_bridge_probe_v4.py"
+    ]
+  },
   "last_seen_at": "2026-10-17T06:30:59.867990+00:00",
   "protocol": {
     "version": 2,
