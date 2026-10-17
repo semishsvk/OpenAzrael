@@ -19,7 +19,21 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "04e64120-2eeb-45f9-b342-5044ca2d5c83",
+    "host": "HomePC",
+    "supervisor_pid": 43744,
+    "started_at": "2026-10-17T06:43:23.420147+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017\\tools\\achievements\\audit_retail_world_puzzles_bridge_v4.py",
+      "--retail-root",
+      "F:\\Remaster Framework\\source\\Azrael's Tear\\GAME\\AZRAEL",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017\\evidence\\retail\\achievement_world_bridge_v4.json"
+    ]
+  },
   "last_seen_at": "2026-10-17T06:41:20.732113+00:00",
   "protocol": {
     "version": 2,
