@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "ba76b05e-a694-4d88-8694-d51ca60168b9",
+    "host": "HomePC",
+    "supervisor_pid": 69684,
+    "started_at": "2026-10-18T18:29:16.388862+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-TapestryRotateInvariant-20261018-v2169",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-TapestryRotateInvariant-20261018-v2169\\test_rotated_tapestry_save_guard_v2171.py"
+    ]
+  },
   "last_seen_at": "2026-10-18T18:27:23.628229+00:00",
   "protocol": {
     "version": 2,
