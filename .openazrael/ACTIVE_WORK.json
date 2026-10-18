@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-pppv-fullroute-source-20261018-v2106",
+  "status": "active",
+  "lease_id": "demo-c8-g10-tapestry-source-20261018-v2111",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-18T12:49:11.465022+00:00",
+  "last_seen_at": "2026-10-18T12:58:00.372010+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -81,7 +81,7 @@
     "retail": "PAUSED",
     "status": "SOURCE_ONLY_G10_PLUS_ACCEPTANCE_GAP_REPRODUCED_BLOCKED_NO_FIDELITY_PROMOTION"
   },
-  "acquired_at": "2026-10-18T11:09:53.137390+00:00",
+  "acquired_at": "2026-10-18T12:58:00.372009+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
