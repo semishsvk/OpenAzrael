@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-material-source-audit-20261018-v2099",
+  "status": "active",
+  "lease_id": "demo-c8-pppv-fullroute-source-20261018-v2106",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-18T11:00:47.013538+00:00",
+  "last_seen_at": "2026-10-18T11:09:53.137391+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -75,7 +75,7 @@
     "final_build_approved": false,
     "status": "SOURCE_GLTF_MATERIAL_HEADLESS_DIFFERENTIAL_VERIFIED_NATIVE_G1_G10_HOLD"
   },
-  "acquired_at": "2026-10-18T10:48:40.338473+00:00",
+  "acquired_at": "2026-10-18T11:09:53.137390+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
