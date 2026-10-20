@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-rdc-g10-driver-20261020-v2185",
+  "status": "active",
+  "lease_id": "demo-c8-rdc-g10-postsave-motion-20261020-v2186",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-20T10:36:26.690631+00:00",
+  "last_seen_at": "2026-10-20T10:40:10.475470+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -53,7 +53,7 @@
     "active_run": null,
     "status": "SOURCE_ONLY_OPTIN_G10_SAVE_DRIVER_WIRED_NATIVE_HOLD"
   },
-  "acquired_at": "2026-10-20T10:35:41.921686+00:00",
+  "acquired_at": "2026-10-20T10:40:10.475468+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
