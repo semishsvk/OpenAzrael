@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-postload-oracle-20261020-v2189",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,22 +34,24 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-20T11:07:54.026940+00:00",
+  "released_at": "2026-10-20T19:01:32.129370+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.RDCStaticRegressionRelease.v2187",
+    "schema": "OpenAzrael.C8.RDCPostLoadOracleRelease.v2189",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCStaticRegression-20261020-v2187",
-    "source_test_script": "test_rdc_g10_runner_v2187.py",
-    "source_tests_passed": 30,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCPostLoadOracle-20261020-v2189",
+    "source_runner_sha256": "bfbbde203a2e61d813026af8ce5bffbf269c2ca51f3191da509e7744e6ac486c",
+    "source_manifest_sha256": "62d6ef21b05daf4d9ece921c06832aa705f537cfd5d7a12543856a0cd92d3a0f",
+    "source_postload_oracle_staged": true,
+    "real_disk_readback_proven": false,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "SOURCE_ONLY_G10_STATIC_REGRESSION_PASS_NATIVE_HOLD"
+    "status": "SOURCE_ONLY_POSTLOAD_ORACLE_STAGED_DISK_PROOF_HOLD"
   },
   "acquired_at": "2026-10-20T19:00:10.553671+00:00",
   "priority_authorization": {
