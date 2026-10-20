@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-overlay-contract-20261020-v2184",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,23 +34,26 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-20T10:18:38.301354+00:00",
+  "released_at": "2026-10-20T10:21:04.637472+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.RDCSourceOverlayRelease.v2183",
+    "schema": "OpenAzrael.C8.RDCOverlayAuditRelease.v2184",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
-    "sync_state": "NO_CANONICAL_GAME_SOURCE_OR_FRAMEWORK_MODIFICATION_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCSourceIntegration-20261020-v2183",
-    "source_manifest_sha256": "d1500ee2e2860e02afc5363f3aadb37713eb118b0f48f02dcd33e76ad6ebe9a8",
-    "source_overlay_count": 8,
-    "canonical_modified": false,
+    "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCOverlayContract-20261020-v2184",
+    "source_audit": "RDC_OVERLAY_INTERFACE_AUDIT_V2184.json",
+    "source_audit_sha256": "90425b125434b596f436bb00c4dc86cec62a0d8ae41b2f0881a3fd56e3e286e8",
+    "files_verified": 8,
+    "preload_targets_resolved": 40,
+    "class_collisions": 0,
+    "GUI_driver_wired": false,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "SOURCE_OVERLAY_READY_NATIVE_HOLD"
+    "status": "RDC_SOURCE_STATIC_AUDIT_PASS_NATIVE_HOLD"
   },
   "acquired_at": "2026-10-20T10:20:17.179238+00:00",
   "priority_authorization": {
