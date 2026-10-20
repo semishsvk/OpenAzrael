@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-g10-postsave-motion-20261020-v2186",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,24 +34,23 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-20T10:36:43.865102+00:00",
+  "released_at": "2026-10-20T11:05:31.129005+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.RDCG10DriverSourceRelease.v2185",
+    "schema": "OpenAzrael.C8.RDCPostSaveMotionRelease.v2186",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCG10Driver-20261020-v2185",
-    "source_report_sha256": "a091a3b7cb1c16e4836e2f9382849c164935154a72e04b727f6da7e52e7cf910",
-    "private_runner_sha256": "8f50b8d8e1322d7fd0b6fcff014f555875102895a1b96c25de4784817141aa12",
-    "source_G10_save_wired": true,
-    "source_G10_load_wired": false,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCPostSaveMotion-20261020-v2186",
+    "source_runner_sha256": "67fe0f0f9d31b84cd4e62718a7528344eb361fc223d06bc7bd719ea0d618ada1",
+    "source_save_walk_load_wired": true,
+    "postload_oracle_proven": false,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "SOURCE_ONLY_OPTIN_G10_SAVE_DRIVER_WIRED_NATIVE_HOLD"
+    "status": "SOURCE_ONLY_G10_SAVE_WALK_LOAD_STAGED_POSTLOAD_HOLD"
   },
   "acquired_at": "2026-10-20T10:40:10.475468+00:00",
   "priority_authorization": {
