@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "4789e380-73d1-49c4-87a8-61154cfd7079",
+    "host": "HomePC",
+    "supervisor_pid": 61292,
+    "started_at": "2026-10-20T10:36:25.014546+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCG10Driver-20261020-v2185",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCG10Driver-20261020-v2185\\wire_g10_driver_source_v2185.py"
+    ]
+  },
   "last_seen_at": "2026-10-20T10:35:41.921688+00:00",
   "protocol": {
     "version": 2,
