@@ -19,19 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "29004e35-d43b-4ef3-8dd4-dd3f3e77a75f",
-    "host": "HomePC",
-    "supervisor_pid": 60400,
-    "started_at": "2026-10-21T05:54:59.853490+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCDiskReadback-20261021-v2191",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCDiskReadback-20261021-v2191\\build_disk_readback_gate_v2191.py"
-    ]
-  },
-  "last_seen_at": "2026-10-21T05:54:07.407084+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-21T05:55:02.073897+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
