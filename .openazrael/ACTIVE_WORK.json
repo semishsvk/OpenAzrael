@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-disk-readback-20261021-v2191",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,22 +34,25 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-21T05:14:08.367663+00:00",
+  "released_at": "2026-10-21T06:02:04.676818+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.RDCPostLoadRegressionRelease.v2190",
+    "schema": "OpenAzrael.C8.RDCDiskReadbackSourceRelease.v2191",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCPostLoadRegression-20261020-v2190",
-    "source_tests_passed": 40,
-    "source_test_file": "test_postload_oracle_v2190.py",
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCDiskReadback-20261021-v2191",
+    "source_runner_sha256": "8752ec08268d9cac91a6348562b2de59e05acf80ea46e0f24c5f725800d6bd08",
+    "source_manifest_sha256": "59a70f6befec0930a35e73314ac1ea62ec251f804047646305efa3c4981ec15b",
+    "source_disk_readback_wired": true,
+    "negative_test_suite_blocked": true,
+    "negative_test_suite_executed": false,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "SOURCE_ONLY_POSTLOAD_REGRESSION_PASS_NATIVE_HOLD"
+    "status": "SOURCE_ONLY_DISK_READBACK_STAGED_NEGATIVE_TESTS_NOT_EXECUTED_NATIVE_HOLD"
   },
   "acquired_at": "2026-10-21T05:54:07.407082+00:00",
   "priority_authorization": {
