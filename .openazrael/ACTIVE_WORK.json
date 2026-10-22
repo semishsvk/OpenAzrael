@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-consolidated-source-20261022-v2193",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,22 +34,24 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-21T06:06:25.461484+00:00",
+  "released_at": "2026-10-22T19:23:58.323415+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.RDCReadbackNegativeTestsRelease.v2192",
+    "schema": "OpenAzrael.C8.RDCConsolidatedSourceRelease.v2194",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCReadbackAudit-20261021-v2192",
-    "source_tests_passed": 30,
-    "source_test_file": "test_readback_v2192.py",
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCConsolidatedSource-20261022-v2193",
+    "consolidated_manifest_sha256": "f43f816df23edeab4e83519cf929a8151196121d05071bd4f734eeb57e06bb0e",
+    "independent_static_audit_sha256": "f48da52cedbcf6fbdda85fdcffeeb8e34dd61f84e995d8281238e7ba5ea95bfc",
+    "source_components": 8,
+    "preloads_resolved": 41,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "SOURCE_ONLY_DISK_READBACK_NEGATIVE_REGRESSION_PASS_NATIVE_HOLD"
+    "status": "EIGHT_SOURCE_COMPONENTS_CONSOLIDATED_STATIC_AUDIT_PASS_NATIVE_HOLD"
   },
   "acquired_at": "2026-10-22T19:22:26.105168+00:00",
   "priority_authorization": {
