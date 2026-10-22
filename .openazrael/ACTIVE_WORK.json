@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-final-source-contract-20261022-v2202",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,24 +34,25 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-22T21:00:49.839784+00:00",
+  "released_at": "2026-10-22T21:03:47.316069+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.Frame4PrivateSourceContractRelease.v2201",
+    "schema": "OpenAzrael.C8.RDCFinalSourceContractRelease.v2203",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCFrame4SourceAudit-20261022-v2199",
-    "source_audit_sha256": "e52b38c32239548d21d1ded6a46a7ab568b2ea445fd6635c2db77a11dabc7adb",
-    "private_frame4_json_sha256": "847c83dbbfc8030bcaf33601affe9616894548bae64dc7dd0ada5a02cb23763e",
-    "source_negative_tests_passed": 15,
-    "provider_blocked_generators_not_run": true,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCFinalSourceContract-20261022-v2202",
+    "private_frame4_contract_sha256": "847c83dbbfc8030bcaf33601affe9616894548bae64dc7dd0ada5a02cb23763e",
+    "preflight_sha256": "5d3ba8afc1001d7145b3b047485dfd8b52bd1346d2ad6b99f25eabf38bb9432a",
+    "preloads_resolved": 127,
+    "source_scenarios": 8,
+    "ready_playthrough_plan_verified": false,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "FRAME4_PRIVATE_SOURCE_CONTRACT_FIXED_TESTS_PASS_NATIVE_HOLD"
+    "status": "PRIVATE_SOURCE_G10_CONTRACT_AND_PREFLIGHT_PASS_NATIVE_HOLD"
   },
   "acquired_at": "2026-10-22T21:01:49.263177+00:00",
   "priority_authorization": {
