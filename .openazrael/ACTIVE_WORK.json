@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-authentic-import-integration-20261022-v2198",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,25 +34,24 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-22T20:40:26.157091+00:00",
+  "released_at": "2026-10-22T20:47:11.239689+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.RDCAuthenticImportDiscovery.v2197",
+    "schema": "OpenAzrael.C8.AuthenticImportSourceRelease.v2198",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCSourceReadyProject-20261022-v2195",
-    "source_found": "F:\\OpenRemaster\\work\\OpenAzrael-C8-G10-source-parity-v450\\scripts\\validation\\room_import_semantics_v454.gd",
-    "source_sha256": "0ee29e95bd8e3c59a3ebe7665ae7288fbbe6b194cc773592db094238e9989d35",
-    "source_integrated": false,
-    "source_data_manifest_verified": false,
-    "canonical_modified": false,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCAuthenticImport-20261022-v2198",
+    "import_pair_manifest_sha256": "14417a0a3065cc21969210c6207c9891ebb1161ad90e11c02fb9201379606715",
+    "authentic_files_integrated": 2,
+    "preloads_resolved": 127,
+    "preloads_missing": 0,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "AUTHENTIC_SOURCE_FOUND_INTEGRATION_PENDING"
+    "status": "PRIVATE_SOURCE_PROJECT_AUTHENTIC_IMPORT_COMPLETED_ALL_PRELOAD_TARGETS_PRESENT"
   },
   "acquired_at": "2026-10-22T20:45:57.411005+00:00",
   "priority_authorization": {
