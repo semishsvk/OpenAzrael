@@ -9,12 +9,73 @@ const ActionExecutorScript = preload("res://scripts/validation/pppv_action_execu
 const RuntimeGuardScript = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
 var failures: Array[String] = []
+var proof_enabled := false
+var proof_label: Label = null
+
+func _arg_enabled(flag: String) -> bool:
+    for arg in OS.get_cmdline_args() + OS.get_cmdline_user_args():
+        if arg == flag or arg == flag + "=1" or arg == flag + "=true":
+            return true
+    return false
+
+func _proof_overlay_create() -> void:
+    if not proof_enabled:
+        return
+    var layer := CanvasLayer.new()
+    layer.name = "PPPVProofCaptureOverlay"
+    layer.layer = 1000
+    root.add_child(layer)
+
+    var background := ColorRect.new()
+    background.name = "Background"
+    background.position = Vector2(12, 620)
+    background.size = Vector2(1256, 88)
+    background.color = Color(0.0, 0.0, 0.0, 0.72)
+    layer.add_child(background)
+
+    proof_label = Label.new()
+    proof_label.name = "Status"
+    proof_label.position = Vector2(24, 628)
+    proof_label.size = Vector2(1232, 72)
+    proof_label.add_theme_font_size_override("font_size", 18)
+    proof_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
+    proof_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+    proof_label.add_theme_constant_override("outline_size", 4)
+    layer.add_child(proof_label)
+
+func _proof_overlay_update(step: Dictionary, manager: Node, status: String) -> void:
+    if not proof_enabled or proof_label == null:
+        return
+    var sha := OS.get_environment("OPENAZRAEL_PROOF_GIT_SHA")
+    if sha.is_empty():
+        sha = "UNKNOWN"
+    var sha_short := sha.substr(0, min(12, sha.length()))
+    var freeze_sha := OS.get_environment("OPENAZRAEL_PROOF_FREEZE_SHA")
+    var freeze_short := (
+        freeze_sha.substr(0, min(12, freeze_sha.length()))
+        if not freeze_sha.is_empty()
+        else "UNKNOWN"
+    )
+    var room := (
+        String(manager.get("current_room_id"))
+        if manager != null
+        else "UNKNOWN"
+    )
+    var step_id := String(step.get("step_id", "BOOT"))
+    proof_label.text = (
+        "OpenAzrael KG-001 Candidate 4 | REAL PPPV PROOF CAPTURE\n"
+        + "SHA " + sha_short
+        + " | FREEZE " + freeze_short
+        + " | ROOM " + room
+        + " | STEP " + step_id
+        + " | " + status
+    )
 
 func _initialize() -> void:
     call_deferred("_run")
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
-    for arg in OS.get_cmdline_args():
+    for arg in OS.get_cmdline_args() + OS.get_cmdline_user_args():
         if arg.begins_with(prefix):
             return arg.substr(prefix.length())
     return default_value
@@ -48,10 +109,13 @@ func _scenario_map(bundle: Dictionary) -> Dictionary:
     return out
 
 func _known_state_keys(scenario: Dictionary) -> Dictionary:
+    var inventory_keys: Array[String] = []
+    var flag_keys: Array[String] = []
+    var puzzle_keys: Array[String] = []
     var out := {
-        "inventory": [],
-        "flags": [],
-        "puzzle": []
+        "inventory": inventory_keys,
+        "flags": flag_keys,
+        "puzzle": puzzle_keys
     }
     for row in scenario.get("state_expectations", []):
         if not row is Dictionary:
@@ -122,6 +186,53 @@ func _runtime_evidence_bundle(events: Array) -> Dictionary:
         "events": events
     }
 
+func _contextualize_scenario(step: Dictionary, scenario: Dictionary) -> Dictionary:
+    var runtime_scenario: Dictionary = scenario.duplicate(true)
+    var metadata = step.get("metadata", {})
+    if not metadata is Dictionary:
+        return runtime_scenario
+
+    var source_actions = runtime_scenario.get("actions", [])
+    if not source_actions is Array:
+        source_actions = []
+    var skip_prefixes = metadata.get("skip_action_prefixes", [])
+    if not skip_prefixes is Array:
+        skip_prefixes = []
+    var actions: Array = []
+
+    var entry_actions = metadata.get("playthrough_entry_actions", [])
+    if entry_actions is Array:
+        for raw_entry in entry_actions:
+            if raw_entry is Dictionary:
+                actions.append(raw_entry.duplicate(true))
+
+    for raw_action in source_actions:
+        if not raw_action is Dictionary:
+            actions.append(raw_action)
+            continue
+        var action_id := String(raw_action.get("action_id", ""))
+        var skip := false
+        for raw_prefix in skip_prefixes:
+            var prefix := String(raw_prefix)
+            if not prefix.is_empty() and action_id.begins_with(prefix):
+                skip = true
+                break
+        if not skip:
+            actions.append(raw_action.duplicate(true))
+
+    runtime_scenario["actions"] = actions
+    var runtime_meta = runtime_scenario.get("metadata", {})
+    if not runtime_meta is Dictionary:
+        runtime_meta = {}
+    runtime_meta = runtime_meta.duplicate(true)
+    runtime_meta["playthrough_contextualized"] = true
+    runtime_meta["playthrough_entry_action_count"] = (
+        entry_actions.size() if entry_actions is Array else 0
+    )
+    runtime_meta["playthrough_skip_action_prefixes"] = skip_prefixes.duplicate()
+    runtime_scenario["metadata"] = runtime_meta
+    return runtime_scenario
+
 func _run_scenario_step(
     step: Dictionary,
     scenario: Dictionary,
@@ -165,7 +276,7 @@ func _run_scenario_step(
         scene_specs
     )
 
-    var event_start := evidence.events().size()
+    var event_start: int = int(evidence.events().size())
     var executor = ActionExecutorScript.new(
         manager,
         driver,
@@ -271,6 +382,40 @@ func _run_checkpoint(
         "persistence_kind": "canonical_state_roundtrip"
     }
 
+func _validate_niamh_source_fidelity(state: Node, evidence) -> Array[String]:
+    var errors: Array[String] = []
+    var activated := bool(state.call("flag", "R7NiamhActivated"))
+    var animation_ok := false
+    var conversation_ok := false
+    for event in evidence.events():
+        if not event is Dictionary:
+            continue
+        var kind := String(event.get("kind", ""))
+        var payload = event.get("payload", {})
+        if not payload is Dictionary:
+            continue
+        if kind == "character_animation_request" and String(payload.get("character", "")) == "Niamh":
+            var family := String(payload.get("family", ""))
+            if family == "Conv":
+                errors.append("niamh_invented_conv_animation")
+            if (
+                family == "NOLOOP1"
+                and String(payload.get("next_family", "")) == "REST"
+                and String(payload.get("status", "")) == "PLAYING_SOURCE_CLIP"
+            ):
+                animation_ok = true
+        elif kind == "conversation_request" and String(payload.get("character", "")) == "Niamh":
+            if (
+                String(payload.get("family", "")) == "1A"
+                and String(payload.get("status", "")) == "SOURCE_TEXT_READY"
+            ):
+                conversation_ok = true
+    if activated and not animation_ok:
+        errors.append("niamh_activation_missing_source_noloop1_rest")
+    if activated and not conversation_ok:
+        errors.append("niamh_activation_missing_source_conversation_1a")
+    return errors
+
 func _finish(
     output_path: String,
     plan: Dictionary,
@@ -285,6 +430,9 @@ func _finish(
         for failure in runtime_guard.failure_list():
             if not failures.has(String(failure)):
                 failures.append(String(failure))
+    for failure in _validate_niamh_source_fidelity(state, evidence):
+        if not failures.has(String(failure)):
+            failures.append(String(failure))
     var final_hash := String(state.call("canonical_state_hash"))
     var expected_hash := String(plan.get("success_state_sha256", ""))
     if not expected_hash.is_empty() and final_hash != expected_hash:
@@ -348,6 +496,7 @@ func _finish(
     quit(0 if failures.is_empty() and wrote else 1)
 
 func _run() -> void:
+    proof_enabled = _arg_enabled("--pppv-proof-overlay")
     var plan_path := _arg_value("--pppv-plan=")
     var scenarios_path := _arg_value("--pppv-scenarios=")
     var output_path := _arg_value(
@@ -388,6 +537,7 @@ func _run() -> void:
         return
     var scene = packed.instantiate()
     root.add_child(scene)
+    current_scene = scene
     await _settle(3)
 
     var manager = scene.get_node_or_null("RoomManager")
@@ -402,6 +552,9 @@ func _run() -> void:
         scene.queue_free()
         quit(2)
         return
+
+    _proof_overlay_create()
+    _proof_overlay_update({"step_id": "BOOT"}, manager, "READY")
 
     var evidence = EvidenceBusScript.new()
     var observer = ObserverScript.new(
@@ -436,10 +589,15 @@ func _run() -> void:
             failures.append("invalid_plan_step")
             break
 
+        _proof_overlay_update(raw_step, manager, "RUNNING")
         var kind := String(raw_step.get("kind", ""))
         if kind == "checkpoint":
-            step_results.append(
-                _run_checkpoint(raw_step, state, evidence)
+            var checkpoint_result := _run_checkpoint(raw_step, state, evidence)
+            step_results.append(checkpoint_result)
+            _proof_overlay_update(
+                raw_step,
+                manager,
+                String(checkpoint_result.get("status", "UNKNOWN"))
             )
             continue
 
@@ -450,9 +608,13 @@ func _run() -> void:
             )
             break
 
+        var runtime_scenario := _contextualize_scenario(
+            raw_step,
+            scenarios[scenario_id]
+        )
         var result: Dictionary = await _run_scenario_step(
             raw_step,
-            scenarios[scenario_id],
+            runtime_scenario,
             manager,
             state,
             evidence,
@@ -462,9 +624,19 @@ func _run() -> void:
             runtime_guard
         )
         step_results.append(result)
+        _proof_overlay_update(
+            raw_step,
+            manager,
+            String(result.get("status", "UNKNOWN"))
+        )
         if String(result.get("status", "")) != "EXECUTION_PASS":
             break
 
+    _proof_overlay_update(
+        {"step_id": "FINAL_STATE"},
+        manager,
+        "VERIFYING EVIDENCE"
+    )
     _finish(
         output_path,
         plan,

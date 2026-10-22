@@ -1,0 +1,58 @@
+{
+  "schema": "openazrael.kg001.eugene_random_movement_re_contract",
+  "version": 185,
+  "status": "EXECUTABLE_CODE_VERIFIED",
+  "source": {
+    "file": "R.EXE",
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "rand": {
+    "function_file_offset": 622469,
+    "function_hex": "0x97F85",
+    "multiplier": "0x41C64E6D",
+    "increment": "0x3039",
+    "shift": 16,
+    "mask": "0x7FFF",
+    "direct_call_sites": [
+      "0x6FF2E",
+      "0x7A332",
+      "0x86806",
+      "0x86852",
+      "0x869C6",
+      "0xA25E6",
+      "0xA2601",
+      "0xA261D"
+    ]
+  },
+  "random_movement": {
+    "function_file_offset": 550784,
+    "function_hex": "0x86780",
+    "direct_call_sites": [
+      "0x848BD",
+      "0x861D6"
+    ],
+    "candidate_distance_immediate": 80,
+    "heading_rand_call": "0x86852",
+    "heading_modulus": 360,
+    "secondary_heading_rand_call": "0x869C6",
+    "secondary_heading_modulus": 360,
+    "conditional_rand_call": "0x86806",
+    "conditional_modulus": 400,
+    "conditional_remainder_test": 9
+  },
+  "proof": [
+    "0x86780 initializes ECX with immediate 0x50 (80).",
+    "0x86852 calls canonical rand then signed-divides by 0x168 (360), using the remainder in the movement calculation.",
+    "0x869C6 independently calls canonical rand and signed-divides by 0x168 (360).",
+    "0x86806 calls canonical rand and signed-divides by 0x190 (400), then compares remainder with 9.",
+    "Canonical rand implementation at 0x97F85 contains the exact Watcom LCG constants and 15-bit return transform."
+  ],
+  "holds": [
+    "GLOBAL_RAND_CALL_INDEX_AT_EUGENE_ENTRY",
+    "RANDOMMOVEMENT_BRANCH_STATE_AT_EUGENE_ENTRY",
+    "MODEL_FRONT_SOURCE_PROOF",
+    "ANIMATION_CLOCK_SOURCE_PROOF",
+    "EUGROAR_TRIGGER_PARAMETER_200_SEMANTICS"
+  ],
+  "implication": "OpenAzrael candidate_distance=80 and rand()%360 heading semantics are now executable-code verified. Do not infer the first Eugene heading until global PRNG state and branch state are reproduced."
+}

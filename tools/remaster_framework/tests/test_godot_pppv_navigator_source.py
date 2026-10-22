@@ -31,6 +31,23 @@ class GodotPPPVNavigatorSourceTests(unittest.TestCase):
         self.assertIn("func aim_at_interactable", self.source)
         self.assertIn("_probe_target_name() == target_name", self.source)
 
+    def test_navigation_emits_tongs_grade_diagnostics(self) -> None:
+        for token in (
+            '"player_position"',
+            '"player_velocity"',
+            '"heading_yaw"',
+            '"pitch"',
+            '"navigation_target"',
+            '"distance_to_target"',
+            '"interaction_probe_target"',
+            '"support"',
+            '"direction_corrections"',
+            '"yaw_sign_flips"',
+            '"watchdog_progress_metric_frames_since_progress"',
+            '"last_successful_route_waypoint"',
+        ):
+            self.assertIn(token, self.source)
+
     def test_navigation_fails_when_target_missing_or_stuck(self) -> None:
         self.assertIn('"target_not_found"', self.source)
         self.assertIn('"stuck"', self.source)

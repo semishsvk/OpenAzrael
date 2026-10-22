@@ -1,0 +1,77 @@
+{
+  "schema": "openazrael.kg001.eugene_npc_snapshot_contract",
+  "version": 187,
+  "status": "SOURCE_DATA_VERIFIED",
+  "source": {
+    "canonical_demo_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
+    "files": [
+      "NPC0.DAT",
+      "NPC1.DAT",
+      "NPC2.DAT",
+      "NPC3.DAT",
+      "NPC4.DAT",
+      "NPC6.DAT"
+    ]
+  },
+  "observations": {
+    "states_present": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "npc6_equals_npc0_for_eugene_and_eugenb": true,
+    "common_record_fields": {
+      "action_or_state": 5,
+      "tuple": [
+        0,
+        0,
+        2,
+        0,
+        30
+      ],
+      "secondary": [
+        0,
+        0
+      ]
+    },
+    "final_state_field_by_snapshot": {
+      "NPC0": 6,
+      "NPC1": 5,
+      "NPC2": 6,
+      "NPC3": 4,
+      "NPC4": 4,
+      "NPC6": 6
+    },
+    "directions_are_unit_vectors": true,
+    "direction_examples": {
+      "Eugene_NPC2": [
+        0.978147,
+        0,
+        0.207913
+      ],
+      "Eugene_NPC3": [
+        -0.913546,
+        0,
+        0.406735
+      ],
+      "Eugene_NPC4": [
+        -0.999848,
+        0,
+        0.017453
+      ]
+    }
+  },
+  "interpretation": [
+    "NPC*.DAT contains source-authored/saved character position and direction state across multiple snapshots.",
+    "The snapshots must not be treated as patrol waypoints: displacement between successive NPC files is not consistently aligned with stored direction.",
+    "Stored direction vectors can constrain world-facing semantics, but they do not by themselves prove the XAF model-front axis."
+  ],
+  "holds": [
+    "MODEL_FRONT_XAF_AXIS_MAPPING",
+    "SNAPSHOT_SEMANTIC_LABELS",
+    "EUGENE_INITIAL_RUNTIME_CHARACTER_FIELDS"
+  ]
+}

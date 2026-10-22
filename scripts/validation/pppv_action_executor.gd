@@ -128,7 +128,7 @@ func _execute_impl(action: Dictionary) -> bool:
                 if runtime_guard != null and bool(
                     params.get("verify_destination_spawn", true)
                 ):
-                    var spawn_ok := bool(runtime_guard.verify_transition_spawn(
+                    var spawn_ok := bool(await runtime_guard.verify_transition_spawn(
                         action_id,
                         source_room,
                         goal_trigger,
@@ -147,6 +147,26 @@ func _execute_impl(action: Dictionary) -> bool:
                             action_id + ":transition_spawn_validation_failed"
                         )
                         return false
+                return true
+
+            var raw_world_point = params.get("goal_world_point", null)
+            if raw_world_point is Array and raw_world_point.size() >= 3:
+                var world_point := Vector3(
+                    float(raw_world_point[0]),
+                    float(raw_world_point[1]),
+                    float(raw_world_point[2])
+                )
+                var world_result: Dictionary = await navigator.approach_world_point(
+                    action_id,
+                    world_point,
+                    Callable(),
+                    int(params.get("max_frames", 900)),
+                    int(params.get("stuck_frames", 150)),
+                    float(params.get("reach_distance", 18.0))
+                )
+                if not bool(world_result.get("reached", false)):
+                    _append_failure(action_id + ":world_point_not_reached")
+                    return false
                 return true
 
             var goal_target := String(params.get("goal_target", ""))

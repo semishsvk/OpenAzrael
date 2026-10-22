@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate4_preflight_receipt.json"
 EXPORT_RECEIPT = TMP / "candidate4_export_receipt.json"
+FROZEN_RECEIPT = TMP / "candidate4_frozen_release_receipt.json"
 DEFAULT_OUT = ROOT / "exports/OpenAzrael-KG001-Candidate4.exe"
 RUNTIME_BUILD_IDENTITY = ROOT / "data/runtime_build_identity.json"
 RUNTIME_ASSET_ROOTS = (
@@ -73,6 +74,14 @@ def git_head() -> str:
     p = run(["git", "rev-parse", "HEAD"])
     return p.stdout.strip() if p.returncode == 0 else ""
 
+def git_tree() -> str:
+    p = run(["git", "rev-parse", "HEAD^{tree}"])
+    return p.stdout.strip() if p.returncode == 0 else ""
+
+def identity_digest(identity: dict) -> str:
+    canonical = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
+
 def git_clean() -> bool:
     p = run(["git", "status", "--porcelain", "--untracked-files=normal"])
     return p.returncode == 0 and p.stdout.strip() == ""
@@ -118,16 +127,41 @@ def main() -> int:
     RUNTIME_BUILD_IDENTITY.unlink(missing_ok=True)
     if not RECEIPT.is_file():
         return fail("PREFLIGHT_RECEIPT_MISSING")
+    if not FROZEN_RECEIPT.is_file():
+        return fail("FROZEN_RELEASE_RECEIPT_MISSING", {
+            "hint": "Run python tools/freeze_candidate4_release.py after a PASS Candidate 4 preflight."
+        })
 
     receipt = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    frozen = json.loads(FROZEN_RECEIPT.read_text(encoding="utf-8"))
     if receipt.get("status") != "PASS" or receipt.get("export_allowed") is not True:
         return fail("PREFLIGHT_NOT_PASS")
 
     head = git_head()
     if head != receipt.get("commit_sha"):
         return fail("HEAD_CHANGED_SINCE_PREFLIGHT", {"receipt": receipt.get("commit_sha"), "current": head})
+    if frozen.get("status") != "PASS" or frozen.get("commit_sha") != head:
+        return fail("FROZEN_RELEASE_NOT_CURRENT", {"frozen_commit": frozen.get("commit_sha"), "current": head})
+    if frozen.get("source_tree_sha") != git_tree():
+        return fail("SOURCE_TREE_CHANGED_SINCE_FREEZE", {
+            "frozen": frozen.get("source_tree_sha"), "current": git_tree()
+        })
+    if frozen.get("preflight_receipt", {}).get("sha256") != sha256(RECEIPT):
+        return fail("PREFLIGHT_RECEIPT_CHANGED_SINCE_FREEZE")
     if not git_clean():
         return fail("DIRTY_GIT_AFTER_PREFLIGHT")
+
+    semantic_gate = run([
+        sys.executable,
+        "tools/validate_release_runtime_evidence_v176.py",
+        str(RECEIPT),
+        head,
+    ])
+    if semantic_gate.returncode != 0:
+        return fail(
+            "RELEASE_RUNTIME_EVIDENCE_NOT_CURRENT_PASS",
+            {"output_tail": semantic_gate.stdout[-16000:]},
+        )
 
     for key in ("candidate_result", "fresh_checkout"):
         rel = receipt.get("evidence", {}).get(key)
@@ -207,10 +241,15 @@ def main() -> int:
             },
         )
 
+    observed_asset_identity = {}
     for rel, meta in receipt_assets.items():
         p = ROOT / rel
         if not p.is_file() or p.stat().st_size != int(meta.get("bytes", -1)) or sha256(p) != meta.get("sha256"):
             return fail("RUNTIME_ASSET_CHANGED_SINCE_PREFLIGHT", {"asset": rel})
+        observed_asset_identity[rel] = {"bytes": p.stat().st_size, "sha256": sha256(p)}
+    frozen_asset_digest = frozen.get("runtime_asset_identity", {}).get("canonical_sha256")
+    if not frozen_asset_digest or identity_digest(observed_asset_identity) != frozen_asset_digest:
+        return fail("RUNTIME_ASSET_IDENTITY_CHANGED_SINCE_FREEZE")
 
     godot = find_godot(args.godot)
     if not godot:
@@ -241,6 +280,7 @@ def main() -> int:
         "godot_version": godot_version,
         "preset": args.preset,
         "preflight_receipt_sha256": sha256(RECEIPT),
+        "frozen_release_receipt_sha256": sha256(FROZEN_RECEIPT),
         "pppv_v2_evidence": receipt.get("evidence", {}).get("pppv_v2", {}),
     }
     RUNTIME_BUILD_IDENTITY.write_text(
@@ -279,6 +319,31 @@ def main() -> int:
                 "expected_pck": str(pck.relative_to(ROOT)),
             },
         )
+
+    packaged_origin_run = run([
+        str(out),
+        "--headless",
+        "--script",
+        "res://scripts/kg001_packaged_origin_runner_v178.gd",
+    ])
+    packaged_origin_errors = engine_errors(packaged_origin_run.stdout)
+    packaged_origin = parse_marker(
+        packaged_origin_run.stdout,
+        "OPENAZRAEL_KG001_PACKAGED_ORIGIN_V178",
+    )
+    if (
+        packaged_origin_run.returncode != 0
+        or packaged_origin_errors
+        or packaged_origin.get("status") != "PASS"
+        or packaged_origin.get("identity", {}).get("commit_sha") != head
+        or packaged_origin.get("identity", {}).get("preset") != args.preset
+    ):
+        return fail("PACKAGED_EXECUTION_BOUNDARY_NOT_PROVEN", {
+            "returncode": packaged_origin_run.returncode,
+            "result": packaged_origin,
+            "engine_errors": packaged_origin_errors,
+            "output_tail": packaged_origin_run.stdout[-12000:],
+        })
 
     smoke = run([
         str(out),
@@ -349,6 +414,36 @@ def main() -> int:
             },
         )
 
+    packaged_critical_specs = [
+        ("all_transitions_v141", "res://scripts/kg001_all_transition_runner_v141.gd", "OPENAZRAEL_KG001_ALL_TRANSITIONS_V141"),
+        ("cursor_v143", "res://scripts/kg001_interaction_cursor_runner_v143.gd", "OPENAZRAEL_KG001_CURSOR_V143"),
+        ("menu_v145", "res://scripts/kg001_legacy_menu_runner_v145.gd", "OPENAZRAEL_KG001_MENU_V145"),
+        ("menu_cursor_v146", "res://scripts/kg001_menu_cursor_context_runner_v146.gd", "OPENAZRAEL_KG001_MENU_CURSOR_V146"),
+        ("menu_toggle_v149", "res://scripts/kg001_legacy_menu_toggle_runner_v149.gd", "OPENAZRAEL_KG001_MENU_TOGGLE_V149"),
+        ("inventory_hud_v157", "res://scripts/kg001_inventory_hud_runner_v157.gd", "OPENAZRAEL_KG001_INVENTORY_HUD_V157"),
+    ]
+    packaged_critical = {}
+    for name, script, marker in packaged_critical_specs:
+        critical_run = run([str(out), "--headless", "--script", script])
+        critical_errors = engine_errors(critical_run.stdout)
+        critical_result = parse_marker(critical_run.stdout, marker)
+        packaged_critical[name] = critical_result
+        if (
+            critical_run.returncode != 0
+            or critical_errors
+            or critical_result.get("status") != "PASS"
+        ):
+            return fail(
+                "PACKAGED_CRITICAL_GAMEPLAY_FAILED",
+                {
+                    "test": name,
+                    "returncode": critical_run.returncode,
+                    "status": critical_result.get("status"),
+                    "engine_errors": critical_errors,
+                    "output_tail": critical_run.stdout[-20000:],
+                },
+            )
+
     packaged_evidence = TMP / "kg001_packaged_v128_runtime.json"
     packaged_evidence.write_text(
         json.dumps(packaged_result, indent=2) + "\n",
@@ -393,6 +488,7 @@ def main() -> int:
         "preflight_receipt_sha256": sha256(RECEIPT),
         "runtime_build_identity_embedded": true,
         "runtime_build_identity": runtime_identity,
+        "packaged_execution_origin_v178": packaged_origin,
         "preset": args.preset,
         "artifacts": artifacts,
         "export_smoke": {
@@ -404,6 +500,7 @@ def main() -> int:
         },
         "packaged_parity_v128": packaged_result,
         "packaged_music_v136": packaged_music_result,
+        "packaged_critical_gameplay": packaged_critical,
         "room_forensic_v131": {
             "path": str(forensic_package.relative_to(ROOT)),
             "sha256": sha256(forensic_package),

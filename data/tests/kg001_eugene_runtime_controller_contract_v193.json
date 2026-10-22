@@ -1,0 +1,58 @@
+{
+  "schema": "openazrael.kg001.eugene_runtime_controller_contract",
+  "version": 193,
+  "status": "SOURCE_INTEGRATION_IMPLEMENTED_RUNTIME_NOT_EXECUTED",
+  "controller": {
+    "script": "res://scripts/eugene_controller_v193.gd",
+    "body": "CharacterBody3D",
+    "source_step_units_per_update": 12.0,
+    "collision_oracle": "Godot CharacterBody3D.test_move against production world collision",
+    "collision_layer": 8,
+    "collision_mask": 1,
+    "spawn_direction_semantics": "FACING_STATE_ONLY_NOT_AUTONOMOUS_MOVEMENT_PROOF",
+    "movement_activation": "EXPLICIT_SOURCE_BACKED_ARM_REQUIRED"
+  },
+  "startup": {
+    "random_movement_countdown_initial": 0,
+    "spawn_arms_movement": false,
+    "spawn_consumes_rand": false,
+    "spawn_expected_animation": "REST",
+    "evidence": ["kg001_eugene_startup_behavior_contract_v191", "kg001_eugene_random_movement_activation_contract_v192"]
+  },
+  "recovery": {
+    "activation": "blocked explicitly armed source movement step",
+    "updates": 50,
+    "candidate_distance": 80.0,
+    "max_heading_attempts": 20,
+    "heading_source": "shared Watcom rand() modulo 360"
+  },
+  "prng": {
+    "service_owner": "RoomManager",
+    "node_name": "LegacyGlobalRand",
+    "implementation": "res://scripts/legacy_rand_v174.gd",
+    "one_stream_across_R1_Eugene_and_EugenB": true,
+    "spawn_consumes_rand": false,
+    "reset_per_npc": false,
+    "reset_per_room_load": false,
+    "remaining_scope": "other executable-backed non-character rand consumers must join the same service as they are reconstructed"
+  },
+  "timing": {
+    "movement_domain": "source update",
+    "wall_clock_mapping": "HOLD",
+    "animation_wall_clock_adapter_15fps": "PROVISIONAL_NOT_SOURCE_PROVEN"
+  },
+  "holds": [
+    "PRODUCTION_SOURCE_MOVEMENT_ACTION_WIRING",
+    "FULL_RUNTIME_GLOBAL_PRNG_CONSUMER_ORDER",
+    "ANIMATION_CLOCK_SOURCE_PROOF"
+  ],
+  "acceptance": [
+    "R1 Eugene and EugenB are CharacterBody3D instances using EugeneControllerV193",
+    "both receive the same RoomManager LegacyGlobalRand instance",
+    "spawn direction alone does not move or arm either NPC",
+    "movement begins only after explicit source-backed activation",
+    "blocked armed movement arms exactly 50 recovery updates",
+    "recovery headings consume shared rand modulo 360 and never reseed locally",
+    "runtime E2E remains NOT_EXECUTED until a real Godot run is captured"
+  ]
+}

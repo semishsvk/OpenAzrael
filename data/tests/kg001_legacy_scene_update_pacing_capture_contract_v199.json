@@ -1,0 +1,36 @@
+{
+  "schema": "openazrael.kg001.legacy_scene_update_pacing_capture_contract",
+  "version": 199,
+  "status": "CAPTURE_PROTOCOL_READY_MEASUREMENT_PENDING",
+  "authority": "REPRODUCIBILITY_REFERENCE_NOT_SOURCE_AUTHORITY",
+  "source_contract": "data/tests/kg001_legacy_scene_update_reference_profile_v198.json",
+  "required_profile": {
+    "name": "AZRAEL_DOSBOX_0_74_3_REFERENCE",
+    "machine": "svga_s3",
+    "frameskip": 0,
+    "core": "dynamic",
+    "cputype": "auto",
+    "cycles": "max limit 280000"
+  },
+  "required_capture_fields": [
+    "r_exe_sha256",
+    "dosbox_version",
+    "host",
+    "resolution_mode",
+    "profile",
+    "interval_seconds",
+    "eligible_scene_update_passes"
+  ],
+  "derived_fields": [
+    "eligible_passes_per_second"
+  ],
+  "evidence_rules": [
+    "Measure original R.EXE only.",
+    "Do not patch R.EXE to alter update cadence.",
+    "Bind the capture to the exact R.EXE SHA-256.",
+    "Record resolution mode because original documentation reports resolution-dependent gameplay speed.",
+    "Reference pacing is reproducibility evidence, not source authority.",
+    "Do not infer a fixed source Hz from one capture."
+  ],
+  "production_gate": "HOLD_UNTIL_VALIDATED_CAPTURE"
+}

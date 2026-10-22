@@ -1,0 +1,58 @@
+{
+  "schema": "openazrael.kg001.candidate5_release_contract",
+  "version": 202,
+  "status": "ACCEPTED_TARGET_BUILD_BLOCKED_PENDING_RUNTIME_EVIDENCE",
+  "candidate": "KG-001 Candidate 5",
+  "base_candidate": "KG-001 Candidate 4",
+  "purpose": "First post-Candidate-4 regression-closure build with source-frame character animation architecture and exact-current-HEAD runtime evidence.",
+  "release_policy": {
+    "zero_known_critical_bugs": true,
+    "zero_reproducible_softlocks": true,
+    "zero_failed_required_gates": true,
+    "exact_head_evidence_binding": true,
+    "fresh_checkout_required": true,
+    "asset_backed_runtime_required": true,
+    "manual_end_to_end_required": true,
+    "export_fail_closed": true,
+    "candidate4_historical_receipts_forbidden": true
+  },
+  "inherits": {
+    "candidate4_contract": "data/tests/kg001_candidate4_release_contract_v132.json",
+    "all_candidate4_required_preflight": true,
+    "all_candidate4_packaged_critical_gameplay": true
+  },
+  "additional_source_gates": [
+    "tools/validate_kg001_source_frame_animation_v195.py",
+    "tools/validate_kg001_legacy_scene_update_reference_profile_v198.py",
+    "tools/validate_kg001_c4_regression_closure_v200.py"
+  ],
+  "required_runtime_evidence": [
+    "SOURCE_FRAME_HEADLESS_V195",
+    "LEGACY_SCENE_UPDATE_CLOCK_HEADLESS_V198",
+    "ORIGINAL_RUNTIME_PACING_V199",
+    "C4_REGRESSION_CURRENT_HEAD_VISUAL",
+    "PPPV_CURRENT_HEAD_RUNTIME",
+    "PPPV_DETERMINISM_CURRENT_HEAD",
+    "C4_RUNTIME_EVIDENCE_V201"
+  ],
+  "animation_policy": {
+    "integer_source_frame_authority": true,
+    "one_update_per_equivalent_legacy_scene_pass": true,
+    "fixed_source_hz_authority": false,
+    "godot_process_clock_source_exact": false,
+    "godot_physics_clock_source_exact": false,
+    "production_clock_binding_requires_v199_pass": true
+  },
+  "candidate5_build_allowed_when": "ALL_INHERITED_AND_ADDITIONAL_SOURCE_GATES_PASS_AND_ALL_REQUIRED_RUNTIME_EVIDENCE_PASS",
+  "candidate_gate": "BLOCKED",
+  "asset_backed_re_gates": [
+    {
+      "tool": "tools/validate_kg001_source_update_cadence_v196.py",
+      "requires": "ORIGINAL_R_EXE"
+    },
+    {
+      "tool": "tools/validate_kg001_source_update_dispatch_v197.py",
+      "requires": "ORIGINAL_R_EXE"
+    }
+  ]
+}

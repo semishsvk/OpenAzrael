@@ -1,0 +1,58 @@
+{
+  "schema": "openazrael.kg001.source_update_dispatch_re_contract",
+  "version": 197,
+  "status": "EXECUTABLE_CODE_VERIFIED_PACING_PROFILE_PENDING",
+  "source": {
+    "r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "readme_sha256": "2976197be180e90d9370c580d5f07491c84d459d9f1e26ada58e993a1230adc2"
+  },
+  "address_model": {
+    "le_object1_base": "0x10000",
+    "late_fixup_bias": "0x2AA8",
+    "note": "For the audited late/code fixups, reconstructed object1 offset = encoded fixup source/target offset - 0x2AA8. The mapping is cross-calibrated against the V115 WORLD opcode 0x28 sound handler."
+  },
+  "frame_callback_registration": {
+    "registration_function": "object1:0x106E4",
+    "callback_immediate_operand": "object1:0x106FD",
+    "encoded_target": "0x12E7C",
+    "decoded_target": "object1:0x103D4",
+    "decoded_target_semantics": "V190 integer source-frame evaluate/trigger/increment routine",
+    "registry_function": "object1:0x30A68",
+    "registry_type": "0x770C",
+    "registry_layout": {
+      "count": "+0x280",
+      "array": "+0x284",
+      "entry_size": 8,
+      "entry": ["callback", "user_data"]
+    }
+  },
+  "runtime_dispatch": {
+    "callback_invoker": "object1:0x3E5C4",
+    "lookup_wrapper": "object1:0x44B58",
+    "scene_update_enumerator": "object1:0x2ABA8",
+    "normal_gameplay_call_site": "object1:0x15EE",
+    "normal_gameplay_gates": [
+      "global word 0x11D9A == 0",
+      "global word 0x11D24 == 0"
+    ],
+    "outer_loop_backedge": "object1:0x346F -> 0x0FBB when global word 0x119B6 == 0",
+    "source_update_event": "REGISTERED_SCENE_CALLBACK_DISPATCH_ON_ELIGIBLE_GAMEPLAY_UPDATE_PASS"
+  },
+  "pacing": {
+    "fixed_source_hz": null,
+    "wall_clock_status": "NOT_INTRINSIC_TO_FRAME_CALLBACK_PATH",
+    "direct_ail_delay_in_outer_gameplay_loop": false,
+    "world_script_timer_is_animation_clock": false,
+    "engine_ail_timers_audited_so_far_are_animation_clock": false,
+    "readme_runtime_observation": "The original demo documentation states that the high-resolution mode moves slowest and the low-resolution mode moves fastest, consistent with gameplay speed being coupled to rendering/update throughput rather than a single fixed gameplay Hz.",
+    "production_policy": "Preserve one integer source-frame advance per equivalent legacy scene-update pass. Do not label any chosen modern wall-clock pacing value as source-exact without a reference pacing profile or original-runtime measurement."
+  },
+  "supersedes": {
+    "v196_limitation": "V196 correctly held fixed Hz but its exact-target relocation search did not account for the audited 0x2AA8 late fixup bias. V197 proves the missing registered callback edge while retaining the wall-clock pacing HOLD."
+  },
+  "next": [
+    "DEFINE_REFERENCE_LEGACY_UPDATE_PACING_PROFILE",
+    "OR_CAPTURE_ORIGINAL_DEMO_UPDATE_THROUGHPUT_AT_REFERENCE_MACHINE_AND_RESOLUTION",
+    "THEN_BIND_V195_SOURCE_FRAME_DRIVER_TO_SHARED_LEGACY_SCENE_UPDATE_CLOCK"
+  ]
+}

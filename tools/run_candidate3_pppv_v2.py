@@ -139,6 +139,7 @@ def run_well_pppv(godot):
         proc=run([
             godot,
             "--headless",
+            "--fixed-fps","60",
             "--path",str(ROOT),
             "--script","res://scripts/validation/pppv_scenario_runner.gd",
             "--",
@@ -336,6 +337,7 @@ def run_pppv_scenario_suite(godot):
         proc=run([
             godot,
             "--headless",
+            "--fixed-fps","60",
             "--path",str(ROOT),
             "--script","res://scripts/validation/pppv_scenario_runner.gd",
             "--",
@@ -433,6 +435,7 @@ def _run_full_pppv_once(godot, runtime_path, evaluation_path):
     proc=run([
         godot,
         "--headless",
+        "--fixed-fps","60",
         "--path",str(ROOT),
         "--script","res://scripts/validation/pppv_playthrough_runner.gd",
         "--",
@@ -915,6 +918,19 @@ def main():
         pppv_scenario_suite.get("status")=="PASS"
     )
     pppv_playthrough_pass=pppv_playthrough.get("status")=="PASS"
+    identity_path=TMP/"c4_current_head_pppv_identity.json"
+    identity_path.unlink(missing_ok=True)
+    eval_path=TMP/"kg001_pppv_playthrough_evaluation.json"
+    det_path=TMP/"kg001_pppv_determinism.json"
+    if pppv_playthrough_pass and pppv_playthrough.get("determinism_status")=="PASS" and eval_path.is_file() and det_path.is_file():
+        write_json(identity_path,{
+            "schema":"openazrael.kg001.current_head_pppv_identity","version":201,"status":"PASS",
+            "commit_sha":head,"godot_version":godot_version,
+            "pppv_evaluation_sha256":sha256_file(eval_path),
+            "pppv_determinism_sha256":sha256_file(det_path),
+            "transition_scenario_count":pppv_scenario_suite.get("transition_scenario_count"),
+            "fresh_checkout_requested":bool(args.fresh_checkout),
+        })
     pppv_failure_reproducer=write_pppv_failure_reproducer(
         pppv_scenario_suite,
         pppv_playthrough,

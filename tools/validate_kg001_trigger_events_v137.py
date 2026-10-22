@@ -74,7 +74,8 @@ def main():
         and ghost.get("event_graph") == "R7_NIAMH_ACTIVATE"
         and ghost.get("one_shot_flag") == "R7NiamhActivated"
         and ghost.get("animation_requirement", {}).get("character") == "Niamh"
-        and ghost.get("animation_requirement", {}).get("family") == "Conv"
+        and ghost.get("animation_requirement", {}).get("family") == "NOLOOP1"
+        and ghost.get("animation_requirement", {}).get("next_family") == "REST"
         and ghost.get("animation_requirement", {}).get("target_object") == "nibody"
         and ghost.get("animation_requirement", {}).get("fallback") == "NONE"
     )
@@ -87,7 +88,8 @@ def main():
     checks["ghost_graph"] = (
         {"set_flag", "set_puzzle_node", "request_character_animation", "request_conversation"}.issubset(set(ops))
         and anim.get("character") == "Niamh"
-        and anim.get("family") == "Conv"
+        and anim.get("family") == "NOLOOP1"
+        and anim.get("next_family") == "REST"
         and anim.get("target_object") == "nibody"
         and anim.get("source_required") is True
         and convo.get("character") == "Niamh"

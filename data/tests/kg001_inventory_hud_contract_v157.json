@@ -1,0 +1,85 @@
+{
+  "schema": "openazrael.kg001.inventory_hud_contract",
+  "version": 157,
+  "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
+  "scope": "Classic HUD carried-object list bound directly to canonical DemoState.inventory",
+  "source_evidence": {
+    "README.TXT": "left HUD box lists carried objects with arrow-key scrolling",
+    "HUD3.PCX": {
+      "size": [
+        640,
+        480
+      ],
+      "sha256": "f95e9647b943e68edccf96a11365eb923139dbef9c2832883e57571a0c1c2ec6"
+    },
+    "INVBACK2.PCX": {
+      "size": [
+        103,
+        69
+      ],
+      "sha256": "4925ffe3b0fdc67c88944b0cc528905d4e48cfc1b9b433bcb63a46eec4f3bfec",
+      "pixel_exact_occurrence_in_HUD3": [
+        70,
+        345
+      ]
+    },
+    "INVFONT.PCX": {
+      "size": [
+        1380,
+        12
+      ],
+      "sha256": "0f675420b3ed712fc83507bad0e27c929c34b439ea8dbe9db82dfd11f2c5f9d4",
+      "layout": {
+        "cell_size": [
+          10,
+          12
+        ],
+        "cell_count": 138,
+        "first_codepoint": 35
+      },
+      "status": "SOURCE_FIXED_CELL_MAP"
+    }
+  },
+  "demo_items": [
+    {
+      "id": "rusty_tongs",
+      "label": "Rusty tongs",
+      "source": "ROOMS.DAT"
+    },
+    {
+      "id": "well_key",
+      "label": "Key",
+      "source": "WORLD.DAT"
+    },
+    {
+      "id": "r8_lens",
+      "label": "Lens",
+      "source": "WORLD.DAT"
+    },
+    {
+      "id": "shield",
+      "label": "Shield",
+      "source": "ROOMS.DAT / gameplay event graph"
+    }
+  ],
+  "runtime_rules": [
+    "DemoState.inventory is the only inventory source of truth",
+    "inventory_changed refreshes the HUD immediately",
+    "remove_inventory removes the item from the HUD immediately",
+    "save/load roundtrip restores the same HUD-visible inventory",
+    "unknown inventory ids are not rendered as invented player-facing labels",
+    "arrow Up/Down scroll input is reserved for the inventory list when scrolling is possible",
+    "inventory text uses source INVFONT fixed 10x12 cells; first codepoint 35",
+    "inventory scrolling must not consume cursor-key movement input"
+  ],
+  "pass_requires": [
+    "inventory rect is [70,345,103,69]",
+    "initial inventory list is empty",
+    "rusty_tongs appears after acquire and disappears after remove",
+    "well_key appears after acquisition",
+    "r8_lens appears after acquisition and disappears after R8_LENS_PLACE",
+    "shield appears after R8_TAKE_SHIELD",
+    "save/reset/load restores the same visible inventory labels",
+    "DemoState canonical payload remains the save/load source"
+  ]
+}

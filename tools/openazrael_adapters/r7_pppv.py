@@ -27,6 +27,32 @@ def _approach(target: str, action_id: str) -> PlayerAction:
     )
 
 
+def _look(target: str, action_id: str) -> PlayerAction:
+    return PlayerAction(
+        action_id=action_id,
+        kind=ActionKind.LOOK,
+        execution_mode=ExecutionMode.INPUT,
+        input_action="mouse_motion",
+        parameters={"goal_target": target, "max_frames": 220},
+    )
+
+
+def _world_waypoint(point: tuple[float, float, float], action_id: str) -> PlayerAction:
+    return PlayerAction(
+        action_id=action_id,
+        kind=ActionKind.MOVE,
+        execution_mode=ExecutionMode.INPUT,
+        input_action="move_forward",
+        parameters={
+            "goal_world_point": list(point),
+            "driver_policy": "r7_switch_target_disambiguation",
+            "max_frames": 900,
+            "stuck_frames": 150,
+            "reach_distance": 6.0,
+        },
+    )
+
+
 def _interact(target: str, action_id: str) -> PlayerAction:
     return PlayerAction(
         action_id=action_id,
@@ -51,10 +77,17 @@ def build_r7_switchboard_scenarios() -> tuple[ValidationScenario, ...]:
         setup=setup,
         actions=(
             _approach(lever, "approach_switch_1"),
+            _look(lever, "aim_switch_1"),
             _interact(lever, "switch_1"),
             _approach(wheel, "approach_switch_2"),
+            _look(wheel, "aim_switch_2"),
             _interact(wheel, "switch_2"),
+            # The source controls have overlapping 16-unit interaction spheres.
+            # A short physical sidestep puts the lever surface in front of the
+            # wheel for the authored final lever pull; no target/camera snap.
+            _world_waypoint((65.0, -41.45, 85.0), "separate_switch_targets"),
             _approach(lever, "approach_switch_3"),
+            _look(lever, "aim_switch_3"),
             _interact(lever, "switch_3"),
         ),
         requirements=(

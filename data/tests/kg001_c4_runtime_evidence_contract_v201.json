@@ -1,0 +1,34 @@
+{
+  "schema": "openazrael.kg001.c4_runtime_evidence_bundle",
+  "version": 201,
+  "status": "EVALUATOR_READY_EVIDENCE_PENDING",
+  "closure_contract": "data/tests/kg001_c4_regression_closure_contract_v200.json",
+  "required_receipts": {
+    "pppv": ".tmp/kg001_pppv_v2/kg001_pppv_playthrough_evaluation.json",
+    "pppv_determinism": ".tmp/kg001_pppv_v2/kg001_pppv_determinism.json",
+    "visual": ".tmp/kg001_c4_closure/current_head_visual_runtime.json",
+    "pacing": ".tmp/kg001_c4_closure/original_runtime_pacing_validation_v199.json",
+    "pppv_identity": ".tmp/kg001_pppv_v2/c4_current_head_pppv_identity.json"
+  },
+  "identity_policy": {
+    "pppv_commit_must_equal_head": true,
+    "visual_commit_must_equal_head": true,
+    "historical_candidate4_receipts_forbidden": true,
+    "pacing_authority": "REPRODUCIBILITY_REFERENCE_NOT_SOURCE_AUTHORITY",
+    "pppv_identity_receipt_required": true
+  },
+  "visual_required_checks": [
+    "menu_hud_visible",
+    "cursor_visible_and_contextual",
+    "inventory_items_visible",
+    "keyhole_orientation_matches_reference",
+    "room3_windows_orientation_matches_reference",
+    "stairs_traversal_observed"
+  ],
+  "pppv_required": {
+    "status": "PASS",
+    "determinism": "PASS",
+    "transition_scenario_count": 4
+  },
+  "candidate_gate": "FAIL_CLOSED"
+}

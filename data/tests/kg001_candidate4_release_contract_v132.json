@@ -60,7 +60,19 @@
     "ambient_and_triggered_audio_runtime_tests_required": true,
     "manual_audibility_required": true,
     "music_policy": "REQUIRE_RUNTIME_OR_PROVEN_NOT_USED_ON_ACCEPTED_DEMO_ROUTE",
-    "music_route_evidence": "data/audio/candidate4_music_route_evidence.json"
+    "music_route_evidence": "data/audio/candidate4_music_route_evidence.json",
+    "music_reproducibility": {
+      "renderer_identity_required": true,
+      "fluidsynth_version_required": true,
+      "native_library_sha256": "RECORD_WHEN_STABLE_RESOLVED_FILE_IS_AVAILABLE",
+      "libsndfile_version_required": true,
+      "event_schedule_sha256_required": true,
+      "pcm_f32le_sha256_required": true,
+      "ogg_output_sha256_required": true,
+      "cross_platform_pcm_bit_identity_guaranteed": false,
+      "cross_platform_ogg_bit_identity_guaranteed": false,
+      "evidence_boundary": "Event/timing identity and produced PCM are hashed independently of the OGG container. OGG SHA-256 is exact-artifact evidence for one invocation, not a cross-platform canonical byte identity."
+    }
   },
   "gameplay": {
     "all_required_puzzles_use_production_interactions": true,
@@ -92,10 +104,13 @@
     "all_transitions_v141",
     "cursor_v143",
     "menu_v145",
+    "legacy_scanner_v164",
     "menu_cursor_v146",
     "classic_v147",
     "interaction_probe_v148",
     "menu_toggle_v149",
+    "save_compat_v150",
+    "inventory_hud_v157",
     "visual_v126",
     "room_forensic_v131",
     "pppv_v2:scenario_suite",
@@ -149,10 +164,13 @@
       "all_transitions_v141",
       "cursor_v143",
       "menu_v145",
+      "legacy_scanner_v164",
       "menu_cursor_v146",
       "classic_v147",
       "interaction_probe_v148",
-      "menu_toggle_v149"
+      "menu_toggle_v149",
+      "save_compat_v150",
+      "inventory_hud_v157"
     ],
     "required_additional_runtime_evidence_pass": [
       "visual_v126",
@@ -166,5 +184,17 @@
       "determinism_integrity"
     ],
     "contract_runner_consistency": "EXACT_ORDERED_MATCH_REQUIRED"
+  },
+  "frozen_release": {
+    "required": true,
+    "command": "python tools/freeze_candidate4_release.py",
+    "receipt": ".tmp/kg001/candidate4_frozen_release_receipt.json",
+    "source_tree_sha_required": true,
+    "preflight_receipt_sha256_required": true,
+    "complete_runtime_asset_identity_digest_required": true,
+    "commercial_payload_bytes_embedded": false,
+    "export_requires_matching_freeze_receipt": true,
+    "mutation_policy": "FAIL_CLOSED",
+    "cloud_source_snapshot": ".github/workflows/candidate4-source-snapshot.yml"
   }
 }

@@ -1,0 +1,26 @@
+{
+  "schema":"openazrael.retail_k001.xaf_structural_probe.v2",
+  "evidence_state":"STRUCTURAL",
+  "source_role":"derived CD extraction backed by canonical retail corpus",
+  "method":"direct XAF object/material/mesh/vertex/face census compatible with pinned exporter semantics; no invented geometry",
+  "sample_count":14,
+  "totals":{"mesh_objects":924,"vertices_total":18619,"triangles_total":16067},
+  "hierarchy_findings":{"JACK.XAF":{"objects":22,"nested_objects":21},"MAL_LAB1.XAF":{"objects":110,"nested_objects":45},"interpretation":"nested hierarchy is material in retail XAF; exporter v8 hierarchy preservation is required"},
+  "samples":[
+{"file":"CHAMBL6.XAF","sha256":"982ed141f195cdf500e270a9bc94e7760ece60021eaf9f3dcfe825ccd75eeb38","mesh_objects":62,"vertices_total":1424,"triangles_total":1373},
+{"file":"CHAPEL.XAF","sha256":"b70b0bf83181191dada827839f3934731ecb014ccea7da39a20911a061e120de","mesh_objects":101,"vertices_total":1631,"triangles_total":1338},
+{"file":"CHIMNEY.XAF","sha256":"d235c7ee2a5ae53377fd6d16d445b5501307594c6eac4a8013a9bf7ca42e38d9","mesh_objects":7,"vertices_total":902,"triangles_total":477},
+{"file":"EXEC_R.XAF","sha256":"a6df97e3857880e616a293f9c212fc778f484870cece3e1ac8be995f343c399a","mesh_objects":63,"vertices_total":1786,"triangles_total":1337},
+{"file":"JACK.XAF","sha256":"b6cd61af9ecd94a163475ab125d3bb1ddab4ee4ab78c3d14b68460717ba9ac1f","mesh_objects":22,"vertices_total":316,"triangles_total":402},
+{"file":"LAB.XAF","sha256":"418a37f7a84d796a062e8d9a19aae63b8ea92617430f4fed2d429c13ef61abd5","mesh_objects":69,"vertices_total":958,"triangles_total":898},
+{"file":"LIGHT.XAF","sha256":"39afd28b1029d19344cca64479785b0d9303b6c194c4e2849065a56b5c554bf4","mesh_objects":85,"vertices_total":945,"triangles_total":760},
+{"file":"MAL_LAB1.XAF","sha256":"afef763b9f2bd649bd476b96d50a7afa781c787b14af38514bcd08f03c843613","mesh_objects":110,"vertices_total":1070,"triangles_total":979},
+{"file":"MINEMAZE.XAF","sha256":"890fc2e4aa180a5c4ec3dc1c5ac59dc17260488dade51cfefd8c5a985126a1dc","mesh_objects":78,"vertices_total":848,"triangles_total":729},
+{"file":"MODROOM1.XAF","sha256":"a439396391976e3a5d296902a144b96c6b94d168eb6332a524180124eac10253","mesh_objects":80,"vertices_total":2717,"triangles_total":1997},
+{"file":"R35_2.XAF","sha256":"d92a67ad88151e66a5043be86078b6a985237995e5b0ed7e3c11dd269bae9877","mesh_objects":52,"vertices_total":2505,"triangles_total":1848},
+{"file":"R36.XAF","sha256":"b542835adda16da2f6f9a945a255cee2cf52ccf5017450e978b6874bcae91c5e","mesh_objects":52,"vertices_total":1084,"triangles_total":1452},
+{"file":"R43-2.XAF","sha256":"4d18cac02e245f130299972d8557fa7a5d394e1a44d5ae8b0c12797827d93151","mesh_objects":42,"vertices_total":721,"triangles_total":724},
+{"file":"ZIGURRAT.XAF","sha256":"791f6214beeaeb84b7c82233e4ebe6d0d4febf3ca8bc8c359f38927e7af3d442","mesh_objects":101,"vertices_total":1712,"triangles_total":1753}
+  ],
+  "limitations":["This is a complete census of the 14 XAF visible in the current provider page, not proof that the full retail XAF corpus contains only 14 files.","K002 room identity still requires canonical MAPS.DAT exact asset-stem binding."]
+}

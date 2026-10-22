@@ -1,0 +1,140 @@
+{
+  "schema": "openazrael.kg001.eugene_executable_re_contract",
+  "version": 182,
+  "status": "CANONICAL_EXECUTABLE_STRUCTURAL_EVIDENCE",
+  "source": {
+    "file": "R.EXE",
+    "bytes": 1703907,
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "observations": {
+    "direct_ascii_absent": [
+      "EUGENE",
+      "EUGROAR"
+    ],
+    "action_api_cluster": [
+      {
+        "offset": 1641506,
+        "string": "PlayCharacterAnimation"
+      },
+      {
+        "offset": 1641550,
+        "string": "NPCOpenDoor"
+      },
+      {
+        "offset": 1641599,
+        "string": "AttackPlayer"
+      },
+      {
+        "offset": 1641644,
+        "string": "MoveCharacters"
+      },
+      {
+        "offset": 1641696,
+        "string": "RemoveCharacter"
+      },
+      {
+        "offset": 1641760,
+        "string": "AttackPlayer"
+      },
+      {
+        "offset": 1641814,
+        "string": "RandomMovement"
+      }
+    ],
+    "animation_token_table": [
+      [
+        1659528,
+        "REST"
+      ],
+      [
+        1659541,
+        "WALK"
+      ],
+      [
+        1659554,
+        "SLEEP"
+      ],
+      [
+        1659567,
+        "START_RUN"
+      ],
+      [
+        1659593,
+        "END_RUN"
+      ],
+      [
+        1659606,
+        "PICKUP"
+      ],
+      [
+        1659619,
+        "DROP"
+      ],
+      [
+        1659632,
+        "ROAR"
+      ],
+      [
+        1659645,
+        "SNIFF"
+      ],
+      [
+        1659658,
+        "AWAKE"
+      ],
+      [
+        1659671,
+        "SHOT"
+      ],
+      [
+        1659684,
+        "ATTACK"
+      ],
+      [
+        1659697,
+        "DEATH_TWITCH"
+      ],
+      [
+        1659710,
+        "DEAD"
+      ],
+      [
+        1659723,
+        "NOLOOP1"
+      ],
+      [
+        1659736,
+        "NOLOOP2"
+      ],
+      [
+        1659749,
+        "NOLOOP3"
+      ],
+      [
+        1659762,
+        "FLOAT"
+      ],
+      [
+        1659775,
+        "FACE_YOU"
+      ],
+      [
+        1659788,
+        "SHOT_RECOVER"
+      ]
+    ]
+  },
+  "implications": [
+    "Eugene behaviour is not discoverable by direct Eugene/EUGROAR ASCII xref in canonical R.EXE.",
+    "RandomMovement belongs to the generic character/action command vocabulary and must be traced through executable-level references/call flow.",
+    "Animation family names are represented in a generic executable token table; ANI ranges remain the character-specific source of Eugene frame intervals."
+  ],
+  "unresolved": [
+    "GLOBAL_RAND_CALL_INDEX_AT_EUGENE_ENTRY",
+    "MODEL_FRONT_SOURCE_PROOF",
+    "ANIMATION_CLOCK_SOURCE_PROOF",
+    "EUGROAR_TRIGGER_PARAMETER_200_SEMANTICS"
+  ],
+  "policy": "STRUCTURAL evidence only. Do not promote an unresolved executable semantic to VERIFIED without reproducible code/data-flow proof."
+}

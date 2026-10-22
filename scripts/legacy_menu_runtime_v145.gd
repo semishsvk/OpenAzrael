@@ -4,6 +4,7 @@ class_name LegacyMenuRuntimeV145
 const LOGICAL_SIZE := Vector2(640, 480)
 const SERVICE_ORIGIN := Vector2(235, 260)
 const SaveSystem := preload("res://scripts/legacy_save_system_v145.gd")
+const LegacyScannerRuntimeV164 := preload("res://scripts/legacy_scanner_runtime_v164.gd")
 
 # Source-derived service-menu frame semantics.
 # SAVE00..SAVE06 are the closed->open construction sequence.
@@ -27,6 +28,23 @@ const HUD_BUTTONS := {
     "SCAN": Rect2(235, 343, 83, 36),
     "MAP": Rect2(213, 381, 77, 42),
     "SERVICE": Rect2(363, 386, 90, 43),
+}
+
+# Pixel-exact occurrence of INVBACK2.PCX inside HUD3.PCX from the official demo.
+# The background is already baked into HUD3, so runtime renders only the item text.
+const INVENTORY_RECT := Rect2(70, 345, 103, 69)
+const INVENTORY_TEXT_ORIGIN := Vector2(70, 349)
+const INVENTORY_VISIBLE_ROWS := 5
+const INVENTORY_FONT_CELL_SIZE := Vector2(10, 12)
+const INVENTORY_FONT_FIRST_CODEPOINT := 35
+const INVENTORY_FONT_CELL_COUNT := 138
+const INVENTORY_SPACE_ADVANCE := 3.0
+const INVENTORY_ITEM_ORDER := ["rusty_tongs", "well_key", "r8_lens", "shield"]
+const INVENTORY_ITEM_LABELS := {
+    "rusty_tongs": "Rusty tongs",
+    "well_key": "Key",
+    "r8_lens": "Lens",
+    "shield": "Shield",
 }
 # Evidence-constrained, non-overlapping label regions measured from SAVE13.PCX.
 # Exact 1996 input hitboxes remain HOLD until original runtime capture proves them.
@@ -63,6 +81,8 @@ var service_texture: TextureRect
 var map_indicator: TextureRect
 var status_label: Label
 var slot_label: Label
+var inventory_text_layer: Control
+var scanner_runtime: LegacyScannerRuntimeV164
 
 var title_open := false
 var service_open := false
@@ -70,6 +90,7 @@ var map_mode := false
 var pending_action := ""
 var selected_slot := 0
 var volume_target := ""
+var inventory_scroll := 0
 var _scale := 1.0
 var _offset := Vector2.ZERO
 
@@ -77,6 +98,10 @@ func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
     layer = 50
     _build()
+    var inventory_callback := Callable(self, "_on_inventory_changed")
+    if not DemoState.is_connected("inventory_changed", inventory_callback):
+        DemoState.connect("inventory_changed", inventory_callback)
+    _refresh_inventory()
     _reflow()
     if DisplayServer.get_name() != "headless":
         _show_title()
@@ -152,9 +177,140 @@ func _build() -> void:
     slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
     classic_canvas.add_child(slot_label)
 
+    inventory_text_layer = Control.new()
+    inventory_text_layer.name = "LegacyInventoryItemsV157"
+    inventory_text_layer.position = INVENTORY_TEXT_ORIGIN
+    inventory_text_layer.size = Vector2(INVENTORY_RECT.size.x, INVENTORY_FONT_CELL_SIZE.y * INVENTORY_VISIBLE_ROWS)
+    inventory_text_layer.clip_contents = true
+    inventory_text_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    classic_canvas.add_child(inventory_text_layer)
+
+    scanner_runtime = LegacyScannerRuntimeV164.new()
+    classic_canvas.add_child(scanner_runtime)
+    scanner_runtime.initialize(room_manager)
+
     service_texture.visible = false
     slot_label.visible = false
     map_indicator.visible = false
+
+func _inventory_item_ids() -> Array[String]:
+    var out: Array[String] = []
+    for item_id in INVENTORY_ITEM_ORDER:
+        if DemoState.has(String(item_id)):
+            out.append(String(item_id))
+    return out
+
+func _inventory_unknown_ids() -> Array[String]:
+    var out: Array[String] = []
+    for raw_id in DemoState.inventory.keys():
+        var item_id := String(raw_id)
+        if bool(DemoState.inventory.get(raw_id, false)) and not INVENTORY_ITEM_LABELS.has(item_id):
+            out.append(item_id)
+    out.sort()
+    return out
+
+func _inventory_labels() -> Array[String]:
+    var out: Array[String] = []
+    for item_id in _inventory_item_ids():
+        out.append(String(INVENTORY_ITEM_LABELS[item_id]))
+    return out
+
+func _inventory_font_texture() -> Texture2D:
+    return _load_tex("INVFONT")
+
+func _inventory_glyph_codepoint(character: String) -> int:
+    if character.is_empty():
+        return -1
+    return character.unicode_at(0)
+
+func _inventory_draw_line(text: String, row: int) -> void:
+    var atlas := _inventory_font_texture()
+    if atlas == null:
+        return
+    var x := 0.0
+    for character in text:
+        if character == " ":
+            x += INVENTORY_SPACE_ADVANCE
+            continue
+        var codepoint := _inventory_glyph_codepoint(character)
+        var cell := codepoint - INVENTORY_FONT_FIRST_CODEPOINT
+        if cell < 0 or cell >= INVENTORY_FONT_CELL_COUNT:
+            cell = 63 - INVENTORY_FONT_FIRST_CODEPOINT
+        if x + INVENTORY_FONT_CELL_SIZE.x > INVENTORY_RECT.size.x:
+            break
+        var region := AtlasTexture.new()
+        region.atlas = atlas
+        region.region = Rect2(float(cell) * INVENTORY_FONT_CELL_SIZE.x, 0.0, INVENTORY_FONT_CELL_SIZE.x, INVENTORY_FONT_CELL_SIZE.y)
+        var glyph := TextureRect.new()
+        glyph.texture = region
+        glyph.position = Vector2(x, float(row) * INVENTORY_FONT_CELL_SIZE.y)
+        glyph.size = INVENTORY_FONT_CELL_SIZE
+        glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        glyph.stretch_mode = TextureRect.STRETCH_KEEP
+        glyph.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+        glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        inventory_text_layer.add_child(glyph)
+        x += INVENTORY_FONT_CELL_SIZE.x
+
+func _refresh_inventory() -> void:
+    if inventory_text_layer == null:
+        return
+    for child in inventory_text_layer.get_children():
+        inventory_text_layer.remove_child(child)
+        child.queue_free()
+    var items := _inventory_labels()
+    var max_scroll := maxi(items.size() - INVENTORY_VISIBLE_ROWS, 0)
+    inventory_scroll = clampi(inventory_scroll, 0, max_scroll)
+    var end := mini(inventory_scroll + INVENTORY_VISIBLE_ROWS, items.size())
+    var row := 0
+    for i in range(inventory_scroll, end):
+        _inventory_draw_line(items[i], row)
+        row += 1
+    inventory_text_layer.visible = not title_open
+
+func _on_inventory_changed() -> void:
+    _refresh_inventory()
+    CandidateDiagnostics.record_event("legacy_inventory_changed", {
+        "items": _inventory_item_ids(),
+        "scroll": inventory_scroll,
+        "unknown_ids": _inventory_unknown_ids(),
+    })
+
+func _scroll_inventory(delta_rows: int) -> bool:
+    var items := _inventory_labels()
+    var max_scroll := maxi(items.size() - INVENTORY_VISIBLE_ROWS, 0)
+    var before := inventory_scroll
+    inventory_scroll = clampi(inventory_scroll + delta_rows, 0, max_scroll)
+    _refresh_inventory()
+    if inventory_scroll != before:
+        CandidateDiagnostics.record_event("legacy_inventory_scroll", {
+            "scroll": inventory_scroll,
+            "max_scroll": max_scroll,
+        })
+        return true
+    return false
+
+func debug_inventory_snapshot() -> Dictionary:
+    var labels := _inventory_labels()
+    var visible: Array[String] = []
+    var end := mini(inventory_scroll + INVENTORY_VISIBLE_ROWS, labels.size())
+    for i in range(inventory_scroll, end):
+        visible.append(labels[i])
+    return {
+        "rect": [INVENTORY_RECT.position.x, INVENTORY_RECT.position.y, INVENTORY_RECT.size.x, INVENTORY_RECT.size.y],
+        "text_origin": [INVENTORY_TEXT_ORIGIN.x, INVENTORY_TEXT_ORIGIN.y],
+        "font_cell": [INVENTORY_FONT_CELL_SIZE.x, INVENTORY_FONT_CELL_SIZE.y],
+        "font_first_codepoint": INVENTORY_FONT_FIRST_CODEPOINT,
+        "font_cell_count": INVENTORY_FONT_CELL_COUNT,
+        "visible_rows": INVENTORY_VISIBLE_ROWS,
+        "item_ids": _inventory_item_ids(),
+        "labels": labels,
+        "visible_labels": visible,
+        "scroll": inventory_scroll,
+        "unknown_ids": _inventory_unknown_ids(),
+        "glyph_node_count": inventory_text_layer.get_child_count() if inventory_text_layer != null else 0,
+        "font_fidelity": "SOURCE_INVFONT_FIXED_CELL_MAP",
+    }
 
 func _reflow() -> void:
     if classic_canvas == null:
@@ -181,6 +337,9 @@ func classic_frame_rect() -> Rect2:
 func blocks_world_cursor() -> bool:
     return title_open or service_open
 
+func debug_scanner_snapshot() -> Dictionary:
+    return scanner_runtime.debug_snapshot() if scanner_runtime != null else {}
+
 func _screen_to_classic(screen_pos: Vector2) -> Vector2:
     return (screen_pos - _offset) / maxf(_scale, 0.0001)
 
@@ -191,6 +350,7 @@ func _show_title() -> void:
     service_texture.visible = false
     slot_label.visible = false
     map_indicator.visible = false
+    inventory_text_layer.visible = false
     get_tree().paused = true
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -198,8 +358,12 @@ func _dismiss_title() -> void:
     title_open = false
     title_texture.visible = false
     hud_texture.visible = true
+    inventory_text_layer.visible = true
+    _refresh_inventory()
     get_tree().paused = false
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+    if scanner_runtime != null:
+        scanner_runtime.start_boot_sequence()
     CandidateDiagnostics.record_event("legacy_title_dismiss", {"compatibility_input": true})
 
 func _set_service_frame(stem: String) -> void:
@@ -348,6 +512,11 @@ func _unhandled_input(event: InputEvent) -> void:
             _dismiss_title()
             get_viewport().set_input_as_handled()
         return
+
+    if not service_open and event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_UP, KEY_DOWN]:
+        # README assigns cursor keys to movement and inventory scrolling.
+        # Scroll without consuming the event so movement semantics are preserved.
+        _scroll_inventory(-1 if event.keycode == KEY_UP else 1)
 
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_M:
         _toggle_map()

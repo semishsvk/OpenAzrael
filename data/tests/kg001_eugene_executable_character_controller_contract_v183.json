@@ -1,0 +1,137 @@
+{
+  "schema": "openazrael.kg001.eugene_executable_character_controller_contract",
+  "version": 183,
+  "status": "CANONICAL_EXECUTABLE_STRUCTURAL_EVIDENCE",
+  "source": {
+    "file": "R.EXE",
+    "bytes": 1703907,
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "ani_parser_tokens": [
+    [
+      1639196,
+      "NUM_FILES"
+    ],
+    [
+      1639263,
+      "FILE"
+    ],
+    [
+      1639398,
+      "OFFSET"
+    ],
+    [
+      1639473,
+      "HEALTH"
+    ],
+    [
+      1639480,
+      "LENGTH"
+    ],
+    [
+      1639487,
+      "TURN_RATE"
+    ],
+    [
+      1639497,
+      "SPEED"
+    ],
+    [
+      1639503,
+      "RANGED"
+    ],
+    [
+      1639510,
+      "NO_MOVE"
+    ],
+    [
+      1639518,
+      "NO_COLLISION"
+    ],
+    [
+      1639531,
+      "NUM_TRIGGERS"
+    ],
+    [
+      1639544,
+      "TRIGGER"
+    ],
+    [
+      1639611,
+      "ATTITUDE"
+    ],
+    [
+      1639620,
+      "WANDER"
+    ],
+    [
+      1639627,
+      "HEIGHT"
+    ],
+    [
+      1639634,
+      "WIDTH"
+    ],
+    [
+      1639640,
+      "BLOCK_VALUE"
+    ]
+  ],
+  "diagnostics": [
+    [
+      1639901,
+      "Health=%d"
+    ],
+    [
+      1639911,
+      "Speed=%d"
+    ]
+  ],
+  "timer_evidence": [
+    [
+      1643644,
+      "TOO MANY TIMERS IN OPERATION....."
+    ],
+    [
+      1643679,
+      "AddNewTimer"
+    ],
+    [
+      1643691,
+      "TIMER %f NOT FOUND..."
+    ],
+    [
+      1643714,
+      "RemoveTimer"
+    ],
+    [
+      1644584,
+      "Timer.cpp : Failed to allocate timer."
+    ],
+    [
+      1644774,
+      "RegisterTimer"
+    ]
+  ],
+  "implications": [
+    "Canonical R.EXE parses SPEED and movement/behaviour attributes directly from character ANI data.",
+    "Canonical R.EXE has an explicit timer subsystem; ANI frame timing cannot be promoted from OpenAzrael's provisional 15 fps without code/data-flow proof.",
+    "TRIGGER is part of the same character ANI parser, supporting source ownership of Eugene frame-60 trigger metadata while leaving parameter-200 semantics unresolved."
+  ],
+  "unresolved": [
+    "GLOBAL_RAND_CALL_INDEX_AT_EUGENE_ENTRY",
+    "MODEL_FRONT_SOURCE_PROOF",
+    "ANIMATION_CLOCK_SOURCE_PROOF",
+    "EUGROAR_TRIGGER_PARAMETER_200_SEMANTICS"
+  ],
+  "policy": "STRUCTURAL evidence only; parser token proximity does not establish runtime units, clock rate, coordinate transform, trigger parameter semantics, or code xrefs. Parse DOS/4G LE mapping before executable control-flow claims.",
+  "executable_format": {
+    "status": "SOURCE_TOOLCHAIN_DOCUMENTED",
+    "observed": [
+      "DOS/4G loader strings in canonical R.EXE",
+      "WATCOM loader/runtime strings in canonical R.EXE"
+    ],
+    "documented_format": "32-bit DOS/4G uses OS/2 Linear Executable (LE) format with flat 386 protected-mode address space",
+    "implication": "Future Eugene code xrefs must parse the DOS/4G LE image/object/fixup tables; raw file offsets are not equivalent to runtime linear addresses."
+  }
+}

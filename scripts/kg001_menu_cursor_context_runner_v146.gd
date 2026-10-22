@@ -49,14 +49,20 @@ func _run() -> void:
 
     # Force title modal in headless runner and verify world cursor is suppressed.
     menu.call("_show_title")
-    hud.call("_update_interaction_cursor")
+    _check("title_cursor_processes_while_paused", hud.can_process())
+    cursor.position = Vector2(-9999, -9999)
+    await _settle()
+    _check("title_cursor_updates_naturally", cursor.position.x > -9999)
     _check("title_blocks_world", bool(menu.call("blocks_world_cursor")))
     _check("title_pointer", String(hud.get("interaction_cursor_id")) == "POINTER")
     menu.call("_dismiss_title")
 
     # Service panel must likewise force a neutral source pointer.
     menu.call("_set_service", true)
-    hud.call("_update_interaction_cursor")
+    _check("service_cursor_processes_while_paused", hud.can_process())
+    cursor.position = Vector2(-9999, -9999)
+    await _settle()
+    _check("service_cursor_updates_naturally", cursor.position.x > -9999)
     _check("service_blocks_world", bool(menu.call("blocks_world_cursor")))
     _check("service_pointer", String(hud.get("interaction_cursor_id")) == "POINTER")
 

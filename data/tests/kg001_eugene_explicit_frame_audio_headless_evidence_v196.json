@@ -1,0 +1,50 @@
+{
+  "schema": "openazrael.kg001.eugene_explicit_frame_audio_headless_evidence",
+  "version": 196,
+  "status": "PASS",
+  "source_commit": "76c826395b3587f3c78ce23831ee2704b327b5b7",
+  "source_parent": "af577dd45023a159468c4ee42da3f9ab01f2a688",
+  "implementation": {
+    "helper": "scripts/eugene_animation_audio_v173.gd",
+    "helper_blob": "74ccca576caaa19d9a45636852a19347e1f353e5",
+    "room_manager_blob": "803cb00a04b84abc3ae236b6f9f78324952092c0",
+    "clock_authority": "EXPLICIT_SOURCE_FRAME_ONLY",
+    "forbidden_wall_clock_paths_absent": true,
+    "production_source_update_cadence": "HOLD_NOT_PROVEN"
+  },
+  "runtime": {
+    "engine": "Godot",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "archive_sha256": "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4",
+    "mode": "headless_project_bootstrap",
+    "result": {
+      "clock": "EXPLICIT_SOURCE_FRAME_ONLY",
+      "effects": [
+        [200, "EUGROAR_FRAME_60"],
+        [200, "EUGROAR_FRAME_60"]
+      ],
+      "attack_cycles": 2,
+      "frame60_effect_exactly_once_per_cycle": true,
+      "status": "PASS"
+    },
+    "audio_asset_playback": "NOT_ASSERTED_IN_ISOLATED_HARNESS"
+  },
+  "cadence_re": {
+    "contract": "data/tests/kg001_source_update_cadence_re_contract_v196.json",
+    "validation": "data/tests/kg001_source_update_cadence_validation_v196.json",
+    "status": "PASS",
+    "fixup_records_parsed": 28547,
+    "direct_control_flow_xrefs_to_frame_updates": 0,
+    "internal_le_fixup_targets_to_frame_updates": 0,
+    "fixed_source_hz": null,
+    "source_update_cadence": "HOLD_NOT_PROVEN",
+    "world_timer_classification": "WORLD_SCRIPT_TIMER_SCHEDULER",
+    "movecharacters_classification": "SCRIPT_ACTION_INTERPRETER_COMMAND_NOT_MAIN_LOOP_CLOCK"
+  },
+  "regression_boundary": {
+    "v195_source_frame_driver_changed": false,
+    "v194_eugene_movement_rng_changed": false,
+    "production_autotick_added": false
+  },
+  "scope": "EUGENE_EXPLICIT_SOURCE_FRAME_AUDIO_HARNESS_AND_EXECUTABLE_CADENCE_RE_NOT_R1_E2E"
+}

@@ -4,7 +4,10 @@
   "status": "SOURCE_CONTRACT_READY_RUNTIME_PENDING",
   "input_policy": {
     "local_official_demo_only": true,
-    "required_files": ["MUSIC.DAT", "R.EXE"],
+    "required_files": [
+      "MUSIC.DAT",
+      "R.EXE"
+    ],
     "bound_demo_rexe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
     "canonical_xmi_count": 24
   },
@@ -20,15 +23,48 @@
       "canonical XMI identities",
       "explicit room identities",
       "integer metadata",
-      "structural counts"
+      "structural counts",
+      "bound executable code-offset signature status",
+      "verified numeric route bindings",
+      "music selector indices"
     ]
   },
   "semantic_policy": {
-    "accepted_demo_rooms": ["R1", "R7", "R8"],
+    "accepted_demo_rooms": [
+      "R1",
+      "R7",
+      "R8"
+    ],
     "bare_numeric_room_inference_allowed": false,
     "ambiguous_mapping_policy": "HOLD",
-    "explicit_room_plus_single_xmi_required_for_binding": true,
-    "music_required_resolution": "REQUIRES_RUNTIME_MUSIC"
+    "music_required_resolution": "REQUIRES_RUNTIME_MUSIC",
+    "numeric_binding_requires_bound_rexe_loader_and_slot_signatures": true,
+    "accepted_room_numeric_identity": {
+      "R1": 1,
+      "R7": 7,
+      "R8": 8
+    },
+    "candidate4_synth_profile": "GENERAL_MIDI_XMI",
+    "numeric_binding_policy": "ALLOW_ONLY_AFTER_EXACT_BOUND_REXE_PAIR_AND_SLOT_PROOF",
+    "binding_paths": [
+      "EXPLICIT_TEXT",
+      "BOUND_REXE_NUMERIC_TABLE"
+    ],
+    "gm_selector_slots": {
+      "0": "AWEMYST.XMI",
+      "1": "CATHEDRL.XMI",
+      "2": "EGYPTIAN.XMI",
+      "3": "FIGHT2.XMI",
+      "4": "GHOSTS.XMI",
+      "5": "GRAIL.XMI",
+      "6": "INGAME.XMI",
+      "7": "INGAME2.XMI",
+      "8": "KREEPY2.XMI",
+      "9": "KREEPY3.XMI",
+      "10": "PEACEFUL.XMI",
+      "11": "DEATH.XMI",
+      "12": "BLANK.XMI"
+    }
   },
   "output": ".tmp/kg001/candidate4_music_route_v133.json"
 }

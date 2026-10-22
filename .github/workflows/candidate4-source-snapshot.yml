@@ -4,37 +4,54 @@ on:
   push:
     branches:
       - integration/kg001-candidate3-pppv-v2
+  pull_request:
   workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Exact source SHA to snapshot after local frozen preflight handoff
+        required: true
+        type: string
 
 permissions:
   contents: read
 
-# Source-only handoff artifact; commercial/runtime assets stay excluded.
+# Source-only handoff artifact. Commercial/runtime assets are intentionally
+# absent because only tracked Git source is archived.
 
 jobs:
   source-snapshot:
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout exact branch head
+      - name: Checkout exact source
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_sha || (github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha) }}
+
+      - name: Verify requested identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "${{ github.event_name == 'workflow_dispatch' && inputs.expected_sha || (github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha) }}"
+          git rev-parse 'HEAD^{tree}' > candidate4-source.tree-sha.txt
+          printf '%s\n' "$actual" > candidate4-source.commit-sha.txt
 
       - name: Archive tracked source only
         shell: bash
         run: |
           set -euo pipefail
-          git ls-files -z | tar --null -T - -czf candidate4-source.tar.gz
-          printf '%s\n' "$GITHUB_SHA" > candidate4-source.sha256-input.txt
+          git archive --format=tar HEAD | gzip -n > candidate4-source.tar.gz
           sha256sum candidate4-source.tar.gz > candidate4-source.tar.gz.sha256
 
       - name: Upload source snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: candidate4-source-${{ github.sha }}
+          name: candidate4-source-${{ github.event_name == 'workflow_dispatch' && inputs.expected_sha || (github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha) }}
           path: |
             candidate4-source.tar.gz
             candidate4-source.tar.gz.sha256
-            candidate4-source.sha256-input.txt
+            candidate4-source.commit-sha.txt
+            candidate4-source.tree-sha.txt
           if-no-files-found: error
           retention-days: 7

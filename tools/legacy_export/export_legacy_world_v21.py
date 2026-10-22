@@ -95,7 +95,7 @@ def main():
     for p in sorted(src.glob('NPC*.DAT')):
         state=re.search(r'NPC(\d+)\.DAT$',p.name,re.I)
         for n in parse_npc(p): n["state_file_index"]=int(state.group(1)) if state else None; npcs.append(n)
-    music=[{"filename":p.name,"sha256":sha256(p),"provenance":"ORIGINAL_DEMO"} for p in sorted(src.glob('*.XMI'))]
+    music=[{"filename":p.name,"sha256":sha256(p),"provenance":"ORIGINAL_DEMO"} for p in sorted(src.glob('*.XMI'),key=lambda p:p.name.casefold())]
     ir={
       "schema":"openazrael.legacy_world_ir","version":1,
       "exporter":"export_legacy_world_v21.py",

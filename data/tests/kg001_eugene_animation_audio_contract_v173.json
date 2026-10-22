@@ -1,0 +1,69 @@
+{
+  "schema": "openazrael.kg001.eugene_animation_audio_contract",
+  "version": 173,
+  "status": "SOURCE_CONTRACT_READY",
+  "families": {
+    "REST": [
+      0,
+      0
+    ],
+    "RUN": [
+      2,
+      7
+    ],
+    "ATTACK": [
+      53,
+      70
+    ],
+    "SHOT": [
+      130,
+      163
+    ],
+    "DEATH_TWITCH": [
+      160,
+      163
+    ],
+    "DEAD": [
+      163,
+      163
+    ]
+  },
+  "trigger": {
+    "frame": 60,
+    "sound": "EUGROAR.WAV",
+    "parameter": 200,
+    "semantics": "ANIMATION_FRAME_TRIGGER",
+    "parameter_semantics": "PLAYER_STATE_EFFECT_SUBTRACT_200_EXECUTABLE_VERIFIED_V190",
+    "effect_apply_order": "PLAY_SOUND_THEN_APPLY_EFFECT"
+  },
+  "audio": {
+    "source_path": "EUGROAR.WAV",
+    "sha256": "031b0282fba55d9a5446c6ea51e2328e8586ffa3b14042105ef663e56a443cb1",
+    "sample_rate": 22222,
+    "sample_width_bits": 8,
+    "channels": 1,
+    "frames": 20736
+  },
+  "eugbld_xaf_census": {
+    "animated_nodes": 30,
+    "frame_min": 0,
+    "frame_max": 163,
+    "rotation_keys": 849,
+    "scale_keys": 199,
+    "position_keys": 275
+  },
+  "runtime_policy": {
+    "synthetic_animation": "FORBIDDEN",
+    "synthetic_roar_trigger": "FORBIDDEN",
+    "missing_clip": "HOLD_SOURCE_ASSET",
+    "missing_audio": "HOLD_SOURCE_ASSET"
+  },
+  "timing": {
+    "domain": "INTEGER_SOURCE_FRAME",
+    "advance": "PLUS_ONE_PER_MOVECHARACTERS_UPDATE",
+    "xaf_mapping": "DIRECT_FRAME_TO_FLOAT_XAF_TIME",
+    "wall_clock_fps": null,
+    "status": "EXECUTABLE_FRAME_DOMAIN_VERIFIED_V190",
+    "policy": "DO_NOT_INVENT_WALL_CLOCK_FPS"
+  }
+}

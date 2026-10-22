@@ -58,6 +58,17 @@ def adapt_well_tongs_contract(
             },
         ),
         PlayerAction(
+            action_id="aim_well",
+            kind=ActionKind.LOOK,
+            execution_mode=ExecutionMode.INPUT,
+            input_action="mouse_motion",
+            parameters={
+                "goal_target": target,
+                "max_frames": 180,
+                "driver_policy": "aim_via_production_mouse_input",
+            },
+        ),
+        PlayerAction(
             action_id="interact_well",
             kind=ActionKind.INTERACT,
             execution_mode=ExecutionMode.INTERACTION_PROBE,
@@ -93,7 +104,7 @@ def adapt_well_tongs_contract(
             EvidenceRequirement(
                 requirement_id="well_target_reachable",
                 kind="interaction_probe",
-                action_id="approach_well",
+                action_id="aim_well",
                 match={"target": target, "reachable": True},
             ),
             EvidenceRequirement(
@@ -150,7 +161,7 @@ def adapt_well_tongs_contract(
             EvidenceRequirement(
                 requirement_id="well_target_reachable",
                 kind="interaction_probe",
-                action_id="approach_well",
+                action_id="aim_well",
                 match={"target": target, "reachable": True},
             ),
             EvidenceRequirement(

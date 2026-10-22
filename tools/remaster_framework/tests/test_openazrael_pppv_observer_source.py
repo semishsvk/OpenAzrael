@@ -28,6 +28,8 @@ class OpenAzraelPPPVObserverSourceTests(unittest.TestCase):
         self.assertIn('evidence.record("state_change"', self.source)
         self.assertIn("evidence.record_audio(filename)", self.source)
         self.assertIn("evidence.record_demo_action_step(step)", self.source)
+        self.assertIn('"character_animation_request"', self.source)
+        self.assertIn('"conversation_request"', self.source)
 
     def test_observer_reads_dynamic_state_without_mutating_it(self) -> None:
         self.assertIn('state.get(property_name)', self.source)

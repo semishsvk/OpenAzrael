@@ -1,0 +1,59 @@
+name: OpenAzrael single-writer guard
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openazrael-single-writer-guard
+  cancel-in-progress: false
+
+jobs:
+  verify-writer-lease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out event revision
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Verify active global writer lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/.openazrael/ACTIVE_WORK.json?ref=coordination%2Fsingle-writer"
+          curl -fsSL             -H "Authorization: Bearer ${GH_TOKEN}"             -H "Accept: application/vnd.github+json"             "${api}"             | jq -r '.content'             | tr -d '\n'             | base64 -d > /tmp/openazrael-active-work.json
+
+          status="$(jq -r '.status' /tmp/openazrael-active-work.json)"
+          lease="$(jq -r '.lease_id' /tmp/openazrael-active-work.json)"
+          owner="$(jq -r '.owner' /tmp/openazrael-active-work.json)"
+
+          if [[ "${status}" != "active" || -z "${lease}" || "${lease}" == "null" ]]; then
+            echo "::error::No active OpenAzrael writer lease."
+            exit 1
+          fi
+
+          target_sha="${GITHUB_SHA}"
+          if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+            target_sha="${PR_HEAD_SHA}"
+            git fetch --no-tags --depth=1 origin "${target_sha}"
+          fi
+
+          message="$(git log -1 --format=%B "${target_sha}")"
+          trailer="OpenAzrael-Writer-Lease: ${lease}"
+
+          if ! grep -Fqx "${trailer}" <<< "${message}"; then
+            echo "::error::Unauthorized OpenAzrael writer. Active lease: ${lease}; owner: ${owner}. Expected commit trailer: ${trailer}"
+            exit 1
+          fi
+
+          echo "Authorized writer lease: ${lease}"
+          echo "Owner: ${owner}"

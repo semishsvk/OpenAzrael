@@ -1,0 +1,67 @@
+{
+  "schema": "openazrael.kg001.eugene_random_movement_callflow_contract",
+  "version": 186,
+  "status": "EXECUTABLE_CODE_VERIFIED",
+  "source": {
+    "file": "R.EXE",
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "random_movement": {
+    "function": "0x86780"
+  },
+  "callers": {
+    "ai_update": {
+      "call_site": "0x848BD",
+      "caller_function": "0x84860",
+      "condition": "character+0x25A != 0",
+      "post_call": "decrement word character+0x25A",
+      "classification": "AUTONOMOUS_CHARACTER_UPDATE"
+    },
+    "action_interpreter": {
+      "call_site": "0x861D6",
+      "condition": "action_type in {2,5,20,13} AND character+0x262 == 0 AND signed high16(character+0x06) >= 0",
+      "alternate_negative_path": "0x86628",
+      "classification": "SCRIPT_ACTION_PATH"
+    }
+  },
+  "internal_branch": {
+    "optional_pre_heading_rand": {
+      "call_site": "0x86806",
+      "modulus": 400,
+      "required_conditions": [
+        "collision/support predicate at 0x83B74 returns zero",
+        "candidate vector magnitude bits != zero",
+        "character+0x258 == 0"
+      ],
+      "branch_to_heading_when_remainder": 9,
+      "otherwise": "jump 0x869A4; skip primary heading generation"
+    },
+    "primary_heading": {
+      "call_site": "0x86852",
+      "modulus": 360,
+      "attempt_limit": 20
+    },
+    "secondary_heading": {
+      "call_site": "0x869C6",
+      "modulus": 360,
+      "conditions": [
+        "character+0x16 != 0",
+        "character+0x25A != 0"
+      ],
+      "consumer": "0x84E70"
+    }
+  },
+  "implications": [
+    "The 0x25A character field is a RandomMovement-relevant state/counter: the autonomous caller requires it nonzero and decrements it after RandomMovement.",
+    "The optional rand()%400 occurs before the primary rand()%360 only under three executable conditions; PRNG consumption is therefore branch-state dependent.",
+    "The action-interpreter RandomMovement call is distinct from the autonomous update call and must not be conflated when reconstructing Eugene's first roaming heading."
+  ],
+  "holds": [
+    "EUGENE_INITIAL_CHARACTER_FIELD_0x25A",
+    "EUGENE_INITIAL_FIELDS_0x258_0x262_0x16",
+    "GLOBAL_RAND_STATE_AT_FIRST_AUTONOMOUS_RANDOMMOVEMENT",
+    "MODEL_FRONT_SOURCE_PROOF",
+    "ANIMATION_CLOCK_SOURCE_PROOF",
+    "EUGROAR_TRIGGER_PARAMETER_200_SEMANTICS"
+  ]
+}

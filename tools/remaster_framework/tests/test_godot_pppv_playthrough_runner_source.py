@@ -30,6 +30,27 @@ class GodotPPPVPlaythroughRunnerSourceTests(unittest.TestCase):
         self.assertNotIn('state.call("set_puzzle_node"', check_section)
         self.assertIn("_precondition_value", check_section)
 
+    def test_chained_context_may_add_physical_entry_actions_or_skip_redundant_route_prefixes(self) -> None:
+        self.assertIn("func _contextualize_scenario", self.source)
+        self.assertIn('"playthrough_entry_actions"', self.source)
+        self.assertIn('"skip_action_prefixes"', self.source)
+        self.assertIn('action_id.begins_with(prefix)', self.source)
+        self.assertIn('runtime_scenario["actions"] = actions', self.source)
+        self.assertNotIn("player.global_position =", self.source)
+
+    def test_niamh_source_fidelity_is_fail_closed(self) -> None:
+        self.assertIn("func _validate_niamh_source_fidelity", self.source)
+        self.assertIn('"R7NiamhActivated"', self.source)
+        self.assertIn('"NOLOOP1"', self.source)
+        self.assertIn('"REST"', self.source)
+        self.assertIn('"PLAYING_SOURCE_CLIP"', self.source)
+        self.assertIn('"SOURCE_TEXT_READY"', self.source)
+        self.assertIn('"niamh_invented_conv_animation"', self.source)
+        self.assertIn(
+            "for failure in _validate_niamh_source_fidelity(state, evidence)",
+            self.source,
+        )
+
     def test_only_explicit_checkpoint_resets_state(self) -> None:
         occurrences = self.source.count('state.call("reset_all")')
         self.assertEqual(occurrences, 2)

@@ -5,6 +5,20 @@ const Navigator = preload("res://scripts/validation/pppv_navigator.gd")
 const PlayerDriver = preload("res://scripts/validation/pppv_player_driver.gd")
 const RuntimeGuard = preload("res://scripts/validation/pppv_runtime_guard.gd")
 
+const R7_WELL_TO_EXIT_ROUTE := [
+    Vector3(-21.4, -47.57, 51.4),
+    Vector3(-24.0, -47.57, 78.0),
+    Vector3(-8.0, -41.45, 78.0),
+    Vector3(25.0, -41.45, 70.0),
+    Vector3(45.0, -41.45, 80.0),
+    Vector3(45.0, -41.45, 60.0),
+    Vector3(38.0, -41.45, 30.0),
+    Vector3(30.0, -41.45, 0.0),
+    Vector3(30.0, -41.45, -35.0),
+    Vector3(50.0, -41.56, -55.0),
+    Vector3(65.0, -41.56, -85.0),
+]
+
 const R1_ROUTE := [
     Vector3(-203.801173, -84.921990, 300.265764),
     Vector3(-168.693718, -91.949649, 281.939643),
@@ -238,8 +252,10 @@ func _run() -> void:
     var driver = PlayerDriver.new(player, probe, evidence, guard)
 
     manager.transition_cooldown = 999.0
-    manager.load_room("R1", false)
-    manager.call("_spawn_at_portal", "R1", "spaview")
+    _check(
+        "initial_R1_portal_entry",
+        bool(manager.call("load_room_at_portal", "R1", "spaview", false))
+    )
     manager.transition_cooldown = 0.0
     await _settle(12)
     room_sequence.append("R1")
@@ -282,7 +298,7 @@ func _run() -> void:
     ):
         _finish(scene, guard)
         return
-    await _settle(70)
+    await _settle(30)
 
     if not await _approach_and_interact(
         "take_well_key", "Interact_WellKey", manager, nav, driver, guard
@@ -292,13 +308,17 @@ func _run() -> void:
     _check("well_key_in_inventory", state.has("well_key"))
     _check("tongs_consumed", not state.has("rusty_tongs"))
 
+    if not await _walk_waypoints("R7_well_to_exit", R7_WELL_TO_EXIT_ROUTE, nav, guard):
+        _finish(scene, guard)
+        return
+
     if not await _cross_transition(
         "transition_R7_R1", "R7", "zxwell2R6", "R1",
         manager, nav, guard, scene, player
     ):
         _finish(scene, guard)
         return
-    await _settle(70)
+    await _settle(30)
 
     if not await _walk_waypoints("R1_to_door2", r1_pre_door2, nav, guard):
         _finish(scene, guard)
@@ -324,7 +344,7 @@ func _run() -> void:
     ):
         _finish(scene, guard)
         return
-    await _settle(70)
+    await _settle(30)
 
     if not await _cross_transition(
         "transition_R8_R1", "R8", "zxorrery", "R1",

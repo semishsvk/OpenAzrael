@@ -22,12 +22,21 @@
         "name": "atdemo.zip",
         "bytes": 5243364,
         "sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652",
-        "evidence": "data/tests/kg001_colorkey_corpus_audit_v116.json"
+        "evidence": "data/tests/kg001_colorkey_corpus_audit_v116.json",
+        "drive": {
+          "folder_id": "11PRDpeM1EF35_FC6I6VD_Jr8Un6Mmh4c",
+          "file_id": "1RXolvfUHTf-GXsRbn37LLxFgp4K0an2e",
+          "fetch_policy": "pinned ID only; never rediscover canonical demo by filename"
+        }
       },
       "extracted_shape": {
         "required_exact": [
           "PUZZLES.DAT",
-          "OBJECTS.DAT"
+          "ROOMS.DAT",
+          "WORLD.DAT",
+          "MUSIC.DAT",
+          "R.EXE",
+          "CHARACTE.DAT"
         ],
         "required_patterns": [
           {
@@ -56,7 +65,8 @@
       },
       "runtime_restore": {
         "tool": "tools/restore_candidate_assets.py",
-        "expected_trimesh": "5.1.0"
+        "expected_trimesh": "5.1.0",
+        "nested_archive_materialization": "Fail-closed single-candidate ZIP chain, max depth 3, required for canonical atdemo.zip -> atdemo.exe -> RESOURCE.000 -> ATDEMO."
       }
     },
     "retail": {

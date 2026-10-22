@@ -90,3 +90,6 @@ assets/ui/mice/
 
 # Original 1996 menu/HUD artwork restored locally from ATDEMO.
 assets/ui/legacy_menu/
+
+# Godot 4.x generated script UID sidecars (recreated by pinned editor import).
+*.gd.uid

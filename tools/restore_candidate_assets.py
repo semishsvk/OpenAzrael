@@ -11,10 +11,32 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'tools/texture_pipeline'))
 from tools.remaster_framework.source_registry import resolve_source
 from azf_decode_v14 import save_png
+
+RESTORE_RECEIPT = ROOT / '.tmp/kg001/candidate_asset_restore_v177.json'
+RUNTIME_ASSET_ROOTS = (
+    ROOT/'assets/rooms', ROOT/'assets/audio', ROOT/'assets/textures/classic',
+    ROOT/'assets/ui/mice', ROOT/'assets/ui/legacy_menu', ROOT/'assets/characters',
+)
+
+def _runtime_files():
+    files=[]
+    for root in RUNTIME_ASSET_ROOTS:
+        if root.is_dir(): files.extend(p for p in root.rglob('*') if p.is_file())
+    return sorted(set(files), key=lambda p:str(p.relative_to(ROOT)).lower())
+
+def _asset_identity():
+    return {str(p.relative_to(ROOT)).replace('\\\\','/'):{
+        'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()
+    } for p in _runtime_files()}
+
+def _identity_digest(identity):
+    return hashlib.sha256(json.dumps(identity,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 from export_xaf_glb_v8 import parse
 from prepare_candidate_audio import prepare
 
 def main():
+    RESTORE_RECEIPT.parent.mkdir(parents=True, exist_ok=True)
+    RESTORE_RECEIPT.unlink(missing_ok=True)
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
         'demo_dir',
@@ -164,6 +186,18 @@ def main():
     subprocess.run([sys.executable, '-m', 'tools.audit_demo_texture_orientation_v133'], cwd=ROOT, check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_cursors_v143.py'), str(src)], check=True)
     subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_menu_v144.py'), str(src)], check=True)
-    print('KG-001 Candidate assets restored; source-exact textures, legacy cursor art and audio validated; all raw/commercial binaries remain Git-ignored.')
+    subprocess.run([sys.executable, str(ROOT/'tools/restore_legacy_scanner_v164.py'), str(src)], check=True)
+    subprocess.run([sys.executable, str(ROOT/'tools/restore_character_animation_v166.py'), str(src)], check=True)
+    subprocess.run([sys.executable, str(ROOT/'tools/restore_eugene_animation_v179.py'), str(src)], check=True)
+    identity=_asset_identity()
+    RESTORE_RECEIPT.write_text(json.dumps({
+        'schema':'openazrael.kg001.candidate_asset_restore',
+        'version':177,
+        'status':'PASS',
+        'asset_file_count':len(identity),
+        'asset_identity_sha256':_identity_digest(identity),
+        'assets':identity,
+    },indent=2)+'\\n',encoding='utf-8')
+    print('KG-001 Candidate assets restored; complete restore receipt v177 written only after all source restorers and validators passed.')
 
 if __name__ == '__main__': main()

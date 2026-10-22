@@ -31,9 +31,11 @@
       ],
       "animation": {
         "character": "Niamh",
-        "family": "Conv",
+        "family": "NOLOOP1",
         "target_object": "nibody",
-        "source_required": true
+        "source_required": true,
+        "next_family": "REST",
+        "conversation": "1A"
       },
       "no_synthetic_fallback": true,
       "visibility_policy": "PRESERVE_AUTHORED_XAF_VISIBILITY_NO_TRIGGER_VISIBILITY_OPCODE"
@@ -46,8 +48,8 @@
     "Every authored XAF trigger/helper record has exactly one explicit IR classification.",
     "Entering R7/zxactghost after an outside state dispatches R7_NIAMH_ACTIVATE exactly once.",
     "The Niamh body preserves authored XAF visibility; activation changes animation/conversation state only because the recovered event graph contains no visibility opcode.",
-    "A source-provided AnimationPlayer clip named Conv is played when present.",
-    "If the original Conv clip is unavailable, runtime reports HOLD_SOURCE_CLIP_MISSING and never synthesizes substitute motion.",
+    "The source-derived NIAMH.XAF hierarchy is instantiated at nibody and plays NOLOOP1, then queues looping REST.",
+    "If source-derived Niamh model/clips are unavailable, runtime reports HOLD_SOURCE_CLIP_MISSING and never synthesizes substitute motion.",
     "Re-entering zxactghost after R7NiamhActivated does not replay the one-shot event.",
     "UNKNOWN_HOLD/hazard_HOLD records produce diagnostics but no guessed gameplay side effect."
   ]

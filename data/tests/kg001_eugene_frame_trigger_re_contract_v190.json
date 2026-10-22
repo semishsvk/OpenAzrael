@@ -1,0 +1,47 @@
+{
+  "schema": "openazrael.kg001.eugene_frame_trigger_re_contract",
+  "version": 190,
+  "status": "EXECUTABLE_CODE_VERIFIED",
+  "source": {
+    "r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636"
+  },
+  "frame_domain": {
+    "character_update_function_file_offset": "0x82520",
+    "current_frame_field": "character+0x284",
+    "end_frame_field": "character+0x286",
+    "evaluator_call_file_offset": "0x82547",
+    "evaluator_function_file_offset": "0xA2B60",
+    "rule": "CURRENT_FRAME_INT16_CONVERTED_DIRECTLY_TO_FLOAT_XAF_TIME",
+    "increment_file_offset": "0x82771",
+    "increment_rule": "CURRENT_FRAME_PLUS_ONE_PER_CHARACTER_UPDATE",
+    "wall_clock_fps": "NOT_PROVEN_NOT_REQUIRED_FOR_FRAME_DOMAIN_SEMANTICS"
+  },
+  "trigger": {
+    "frame_table_field": "character+0x2A8",
+    "sound_table_field": "character+0x2AC",
+    "effect_value_table_field": "character+0x266",
+    "aux_pair_table_field": "character+0x2B0",
+    "compare_file_offset": "0x826B8",
+    "audio_dispatch_file_offset": "0x826F4",
+    "effect_apply_file_offset": "0x82713",
+    "frame": 60,
+    "sound": "EUGROAR.WAV",
+    "effect_value": 200,
+    "semantics": "PLAY_EUGROAR_THEN_SUBTRACT_200_FROM_PLAYER_HEALTH",
+    "audio_parameter": false
+  },
+  "runtime_policy": {
+    "trigger_order": "EVALUATE_FRAME_THEN_TRIGGER_THEN_INCREMENT",
+    "map_200_to_audio_volume": false,
+    "map_200_to_audio_radius": false,
+    "arbitrary_fps_as_source_exact": false
+  },
+  "player_health": {
+    "field": "global_player_state+0x18",
+    "initial_value": 500,
+    "initialization_file_offset": "0x74688",
+    "trigger_effect": "SUBTRACT_INT16_EFFECT_VALUE",
+    "zero_floor": "EXECUTABLE_DEATH_PATH"
+  }
+}

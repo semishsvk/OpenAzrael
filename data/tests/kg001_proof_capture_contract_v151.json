@@ -1,0 +1,104 @@
+{
+  "schema": "openazrael.kg001.proof_capture_contract",
+  "version": 151,
+  "status": "ACCEPTED",
+  "purpose": "Produce a short, shareable, hash-bound visual proof that the frozen Candidate 4 source/runtime identity can execute the accepted chained real-player PPPV demo route.",
+  "supplemental_evidence": true,
+  "required_for_candidate4_export": false,
+  "required_for_known_good": false,
+  "replaces_manual_g10": false,
+  "prerequisites": [
+    "clean tracked Git tree",
+    "Candidate 4 asset-backed preflight PASS on exact current commit SHA",
+    "Candidate 4 frozen-release receipt PASS on same source tree and runtime asset identity",
+    "PPPV chained playthrough baseline PASS",
+    "PPPV determinism PASS with at least two identical runs",
+    "graphical Godot Movie Maker support",
+    "ffmpeg available for MP4 transcode",
+    "ffprobe available for mandatory audio-stream verification",
+    "Godot Movie Maker raw AVI contains a decodable non-silent runtime audio stream"
+  ],
+  "execution": {
+    "route": [
+      "R1",
+      "R7",
+      "R1",
+      "R8"
+    ],
+    "camera": "production player Camera3D",
+    "movement": "production CharacterBody3D/Input-driven PPPV",
+    "interactions": "production InteractionProbe/runtime interactions",
+    "direct_gameplay_state_injection": false,
+    "noclip_or_fly_camera": false,
+    "captured_run_must_evaluate_pass": true,
+    "captured_semantic_replay_must_match_deterministic_baseline": true,
+    "captured_final_state_must_match_deterministic_baseline": true
+  },
+  "visual_evidence": {
+    "viewport": [
+      1280,
+      720
+    ],
+    "default_fps": 30,
+    "overlay": [
+      "Git SHA",
+      "frozen receipt SHA",
+      "current room",
+      "PPPV step",
+      "step status"
+    ],
+    "forbid_ai_generated_visuals": true,
+    "forbid_noclip_camera": true,
+    "original_runtime_render_only": true,
+    "audio": {
+      "required": true,
+      "source": "Godot Movie Maker runtime mix",
+      "includes": [
+        "ambient audio",
+        "triggered gameplay audio",
+        "Candidate 4 music when routed by runtime"
+      ],
+      "raw_capture_audio_stream_required": true,
+      "digital_silence_forbidden": true,
+      "final_mp4_audio_codec": "AAC",
+      "final_mp4_audio_stream_required": true
+    }
+  },
+  "outputs": [
+    ".tmp/kg001_proof_capture/OpenAzrael_KG001_Candidate4_Proof_raw.avi",
+    ".tmp/kg001_proof_capture/OpenAzrael_KG001_Candidate4_Proof.mp4",
+    ".tmp/kg001_proof_capture/kg001_pppv_proof_runtime.json",
+    ".tmp/kg001_proof_capture/kg001_pppv_proof_evaluation.json",
+    ".tmp/kg001_proof_capture/kg001_proof_capture_receipt_v151.json"
+  ],
+  "receipt_binds": [
+    "commit SHA",
+    "source tree SHA",
+    "Candidate 4 preflight receipt SHA-256",
+    "Candidate 4 frozen-release receipt SHA-256",
+    "PPPV plan/scenario/determinism SHA-256",
+    "captured runtime/evaluation SHA-256",
+    "semantic replay SHA-256",
+    "final state SHA-256",
+    "raw AVI SHA-256",
+    "raw AVI decoded PCM SHA-256 and non-silence metrics",
+    "final MP4 decoded PCM SHA-256 and non-silence metrics",
+    "final MP4 SHA-256",
+    "raw runtime audio stream metadata + max-volume verification",
+    "final MP4 audio stream metadata",
+    "Godot version",
+    "ffmpeg version"
+  ],
+  "evidence_boundary": "The MP4 is supplemental exact-source graphical runtime evidence. It does not prove packaged EXE/PCK parity and does not replace manual G10. Audio is captured from the same real runtime run and is mandatory; a missing or digitally silent track fails closed.",
+  "audio_evidence": {
+    "source": "Godot Movie Maker runtime audio captured from the same PPPV run",
+    "runtime_audio_only": true,
+    "added_postproduction_music": false,
+    "raw_movie_audio_stream_required": true,
+    "raw_movie_non_silent_signal_required": true,
+    "silence_threshold_db": -96,
+    "final_mp4_audio_stream_required": true,
+    "final_audio_codec": "AAC",
+    "ffprobe_metadata_bound_in_receipt": true
+  }
+}

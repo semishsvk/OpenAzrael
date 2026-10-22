@@ -1,0 +1,37 @@
+{
+  "schema": "openazrael.kg001.source_frame_animation_headless_evidence",
+  "version": 195,
+  "status": "PASS",
+  "source_commit": "aa3fdcecf941799a196ef4404e94d1ee6a2d0871",
+  "source_parent": "65d57ab90696eb8681d74c170b54898882aa61ad",
+  "runtime": {
+    "engine": "Godot",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "archive_sha256": "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4",
+    "harness": "tools/validate_kg001_source_frame_animation_v195.gd",
+    "mode": "headless"
+  },
+  "result": {
+    "attack_sequence": [
+      "ATTACK:53", "ATTACK:54", "ATTACK:55", "ATTACK:56", "ATTACK:57",
+      "ATTACK:58", "ATTACK:59", "ATTACK:60", "ATTACK:61"
+    ],
+    "attack_frame60_count": 1,
+    "niamh_transition": "NOLOOP1>REST",
+    "rest_first_frame": 15,
+    "source_clock": "EXPLICIT_SOURCE_UPDATE_ONLY"
+  },
+  "attack_activation_evidence": {
+    "contract": "data/tests/kg001_eugene_attack_activation_re_contract_v195.json",
+    "validation": "data/tests/kg001_eugene_attack_activation_validation_v195.json",
+    "status": "PASS",
+    "attack_helper_object1": "0x144DC",
+    "attack_animation_code": "0x0D",
+    "canonical_r_exe_sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00",
+    "canonical_eugene_ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636"
+  },
+  "scope": "SOURCE_FRAME_CORE_HARNESS_NOT_R1_E2E",
+  "production_source_update_cadence": "HOLD_NOT_PROVEN",
+  "v194_movement_rng": "UNTOUCHED_BY_V195_CORE",
+  "render_encoding_note": "The harness uses 1/15 seconds per frame only to address the existing seconds-encoded test Animation resource. It is not asserted as the original gameplay or source-update clock."
+}

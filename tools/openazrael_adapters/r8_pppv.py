@@ -10,7 +10,66 @@ from tools.remaster_framework.validation import (
 )
 
 
-def _actions(target: str, prefix: str) -> tuple[PlayerAction, PlayerAction]:
+# Source-derived R8 ingress to the drained-bath/lens side of the Baptistery.
+# Object14 enters on Object01, step011 raises the player to the main floor,
+# and the authored right-hand broken mirror is the passage through the
+# BAPFRONT wall. These are physical navigation goals, never teleport targets.
+R8_LENS_INGRESS_ROUTE = (
+    (-278.067350, -87.124025, 394.941924),
+    # step011 source-derived horizontal tread centers. Traversing each tread
+    # individually keeps the production CharacterBody on the authored stairs
+    # instead of asking the navigator to cut across multiple vertical risers.
+    (-254.067350, -79.249800, 394.941936),
+    (-243.696350, -74.195030, 394.941940),
+    (-233.238082, -69.118450, 394.941948),
+    (-222.866992, -64.063640, 394.941952),
+    (-208.866992, -63.785391, 394.941959),
+    (-101.798000, -63.785391, 160.000000),
+    (-101.798000, -63.572091, 136.000000),
+    (-67.000000, -63.572091, 93.000000),
+    (-55.000000, -63.572091, 92.000000),
+    (8.000000, -63.572091, 93.000000),
+)
+
+
+def _world_waypoint(
+    point: tuple[float, float, float],
+    action_id: str,
+    *,
+    reach_distance: float = 12.0,
+) -> PlayerAction:
+    return PlayerAction(
+        action_id=action_id,
+        kind=ActionKind.MOVE,
+        execution_mode=ExecutionMode.INPUT,
+        input_action="move_forward",
+        parameters={
+            "goal_world_point": list(point),
+            "driver_policy": "source_derived_r8_world_waypoint",
+            "max_frames": 900,
+            "stuck_frames": 150,
+            "reach_distance": reach_distance,
+        },
+    )
+
+
+def _r8_ingress_actions(prefix: str) -> tuple[PlayerAction, ...]:
+    rows: list[PlayerAction] = []
+    for index, point in enumerate(R8_LENS_INGRESS_ROUTE):
+        reach = 3.0 if index in {1, 2, 3, 4} else (1.0 if index in {6, 7} else 12.0)
+        rows.append(
+            _world_waypoint(
+                point,
+                f"{prefix}_{index:02d}",
+                reach_distance=reach,
+            )
+        )
+    return tuple(rows)
+
+
+def _actions(
+    target: str, prefix: str
+) -> tuple[PlayerAction, PlayerAction, PlayerAction]:
     return (
         PlayerAction(
             action_id=f"approach_{prefix}",
@@ -24,6 +83,13 @@ def _actions(target: str, prefix: str) -> tuple[PlayerAction, PlayerAction]:
                 "max_frames": 1200,
                 "stuck_frames": 180,
             },
+        ),
+        PlayerAction(
+            action_id=f"aim_{prefix}",
+            kind=ActionKind.LOOK,
+            execution_mode=ExecutionMode.INPUT,
+            input_action="mouse_motion",
+            parameters={"goal_target": target, "max_frames": 240},
         ),
         PlayerAction(
             action_id=f"interact_{prefix}",
@@ -49,7 +115,10 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             "flags": {"R8BathDrain": True},
             "inventory": {"r8_lens": False},
         },
-        actions=_actions("Interact_R8Lens", "lens"),
+        actions=(
+            *_r8_ingress_actions("route_to_lens"),
+            *_actions("Interact_R8Lens", "lens"),
+        ),
         requirements=(
             EvidenceRequirement(
                 requirement_id="lens_reachable",
@@ -112,7 +181,10 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             "flags": {"R8BathDrain": False},
             "inventory": {"r8_lens": False},
         },
-        actions=_actions("Interact_R8Lens", "submerged_lens"),
+        actions=(
+            *_r8_ingress_actions("route_to_submerged_lens"),
+            *_actions("Interact_R8Lens", "submerged_lens"),
+        ),
         requirements=(
             EvidenceRequirement(
                 requirement_id="submerged_lens_dispatch",
@@ -159,7 +231,10 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             "flags": {"R8Lens": True, "R8BathDrain": True},
             "puzzle": {"R8LensPlace": False},
         },
-        actions=_actions("Interact_R8Bible", "bible_place_lens"),
+        actions=(
+            *_r8_ingress_actions("route_to_bible_place_lens"),
+            *_actions("Interact_R8Bible", "bible_place_lens"),
+        ),
         requirements=(
             EvidenceRequirement(
                 requirement_id="bible_lens_dispatch",
@@ -230,6 +305,7 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             },
         },
         actions=(
+            *_r8_ingress_actions("route_to_optical"),
             PlayerAction(
                 action_id="enter_zxplate",
                 kind=ActionKind.MOVE,
@@ -431,7 +507,10 @@ def build_r8_interaction_scenarios() -> tuple[ValidationScenario, ...]:
             "inventory": {"shield": False},
             "flags": {"demo_complete": False},
         },
-        actions=_actions("Interact_ShieldR8", "shield"),
+        actions=(
+            *_r8_ingress_actions("route_to_shield"),
+            *_actions("Interact_ShieldR8", "shield"),
+        ),
         requirements=(
             EvidenceRequirement(
                 requirement_id="shield_dispatch",

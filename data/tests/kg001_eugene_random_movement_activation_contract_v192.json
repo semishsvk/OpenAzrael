@@ -1,0 +1,42 @@
+{
+  "schema": "openazrael.kg001.eugene_random_movement_activation_contract",
+  "version": 192,
+  "status": "EXECUTABLE_CODE_VERIFIED",
+  "character_defaults": {
+    "random_movement_countdown_field": "character+0x25A",
+    "random_movement_countdown_initial": 0,
+    "recovery_count_source_field": "character+0x38",
+    "recovery_count_default": 50,
+    "default_init_file_offsets": ["0x80EBA", "0x82DA0"]
+  },
+  "activation": {
+    "event": "movement obstruction/collision recovery",
+    "action": "copy character+0x38 to character+0x25A and enter recovery state",
+    "random_movement_caller": "0x848BD",
+    "per_update_behavior": "if character+0x25A != 0 call RandomMovement then decrement character+0x25A",
+    "default_recovery_updates": 50
+  },
+  "global_prng": {
+    "rand_function": "0x97F85",
+    "state_accessor": "0x97F7F",
+    "srand_compatible_setter": "0x97FA9",
+    "algorithm": "state = state * 0x41C64E6D + 0x3039; return (state >> 16) & 0x7FFF",
+    "shared_stream": true,
+    "reset_per_character": false,
+    "direct_rand_call_sites": ["0x6FF2E","0x7A332","0x86806","0x86852","0x869C6","0xA25E6","0xA2601","0xA261D"],
+    "eugene_random_movement_sites": {
+      "optional_mod_400_gate": "0x86806",
+      "heading_mod_360": "0x86852",
+      "conditional_followup_mod_360": "0x869C6"
+    },
+    "non_character_consumers_exist": true,
+    "implication": "Do not predict or reset a Eugene-local rand index. Fidelity requires one process-global Watcom-compatible stream consumed by all source-backed callers in runtime order."
+  },
+  "remaining_hold": "FULL_RUNTIME_GLOBAL_PRNG_CONSUMER_ORDER_BEFORE_EACH_EUGENE_RANDOMMOVEMENT_EVENT",
+  "runtime_acceptance": [
+    "Eugene spawn consumes no rand solely because of spawn",
+    "collision recovery arms 50 update countdown by default",
+    "RandomMovement consumes the shared global stream only on executable-backed branches",
+    "no per-NPC or per-room RNG reset"
+  ]
+}

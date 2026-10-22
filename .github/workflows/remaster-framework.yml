@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - integration/kg001-candidate3-pppv-v2
       - "tooling/**"
       - "test/**"
   pull_request:
+  workflow_dispatch:
 
 jobs:
   registry:
@@ -122,4 +124,4 @@ jobs:
             Godot_v4.7.2-stable_linux.x86_64.zip
             Godot_v4.7.2-stable_linux.x86_64.zip.sha256
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 90

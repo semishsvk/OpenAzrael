@@ -97,7 +97,9 @@ func _run() -> void:
     var niamh_body = manager.call("_find_node", "nibody")
     _check("R7_niamh_body_exists", niamh_body != null)
     if niamh_body != null:
-        _check("R7_niamh_hidden_before_activation", not niamh_body.visible)
+        # R7_NIAMH_ACTIVATE has no hide/show opcode. The production source
+        # contract preserves the authored visible body before animation.
+        _check("R7_niamh_source_visible_before_activation", niamh_body.visible)
 
     if not ghost.is_empty():
         var mn := _v3(ghost["bounds"][0])
@@ -117,6 +119,27 @@ func _run() -> void:
     var first_status: Dictionary = manager.character_animation_status("Niamh")
     var animation_status := String(first_status.get("status", ""))
     _check("R7_niamh_animation_request_observed", animation_status in ["PLAYING_SOURCE_CLIP", "HOLD_SOURCE_CLIP_MISSING"])
+    if animation_status == "PLAYING_SOURCE_CLIP":
+        _check("R7_niamh_source_model_bound", String(first_status.get("model", "")) == "res://assets/characters/Niamh/Niamh.glb")
+        _check("R7_niamh_source_clip_bound", String(first_status.get("source", "")) == "res://assets/characters/Niamh/NOLOOP1.tres")
+        _check("R7_niamh_rest_queued", String(first_status.get("next_family", "")) == "REST")
+        var source_player = manager.get_node_or_null(String(first_status.get("animation_player", ""))) as AnimationPlayer
+        var source_root = source_player.get_parent() if source_player != null else null
+        _check("R7_niamh_source_hierarchy_instantiated", source_root != null)
+        _check("R7_niamh_source_player_exists", source_player != null)
+        if source_player != null:
+            _check("R7_niamh_noloop1_loaded", source_player.has_animation(&"NOLOOP1"))
+            _check("R7_niamh_rest_loaded", source_player.has_animation(&"REST"))
+            var source_clip := source_player.get_animation(&"NOLOOP1")
+            _check("R7_niamh_noloop1_has_tracks", source_clip != null and source_clip.get_track_count() > 0)
+            if source_clip != null:
+                var bad_paths: Array[String] = []
+                for track_index in source_clip.get_track_count():
+                    var node_path := source_clip.track_get_path(track_index)
+                    var animation_root = source_player.get_node_or_null(source_player.root_node)
+                    if animation_root == null or animation_root.get_node_or_null(node_path.get_concatenated_names()) == null:
+                        bad_paths.append(String(node_path))
+                _check("R7_niamh_track_paths_resolve", bad_paths.is_empty())
 
     # One-shot rule: exit and re-enter must not generate a second event graph.
     var flags_before: Dictionary = state.flags.duplicate(true)
@@ -143,7 +166,7 @@ func _run() -> void:
         "trigger_count":total_evidence,
         "niamh_animation":first_status,
         "failures":failures,
-        "policy":"PASS requires a real source-provided Conv animation clip; HOLD never substitutes a synthetic tween."
+        "policy":"PASS requires the source-derived NIAMH.XAF hierarchy with NOLOOP1 then REST; HOLD never substitutes synthetic motion."
     }))
     events.set_capture_only(false)
     quit(exit_code)

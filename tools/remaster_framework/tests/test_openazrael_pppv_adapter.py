@@ -41,8 +41,16 @@ class OpenAzraelPPPVAdapterTests(unittest.TestCase):
         self.assertEqual(positive.validate(), [])
         self.assertEqual(negative.validate(), [])
         self.assertEqual(
+            [action.action_id for action in positive.actions],
+            ["approach_well", "aim_well", "interact_well"],
+        )
+        self.assertEqual(
             [action.execution_mode for action in positive.actions],
-            [ExecutionMode.INPUT, ExecutionMode.INTERACTION_PROBE],
+            [
+                ExecutionMode.INPUT,
+                ExecutionMode.INPUT,
+                ExecutionMode.INTERACTION_PROBE,
+            ],
         )
         self.assertFalse(positive.metadata["direct_interact_call_allowed"])
         self.assertEqual(

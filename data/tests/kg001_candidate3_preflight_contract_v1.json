@@ -41,10 +41,13 @@
       "all_transitions_v141",
       "cursor_v143",
       "menu_v145",
+      "legacy_scanner_v164",
       "menu_cursor_v146",
       "classic_v147",
       "interaction_probe_v148",
-      "menu_toggle_v149"
+      "menu_toggle_v149",
+      "save_compat_v150",
+      "inventory_hud_v157"
     ],
     "bind_receipt_to": [
       "exact Git HEAD",

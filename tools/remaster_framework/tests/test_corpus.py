@@ -9,8 +9,15 @@ from tools.remaster_framework.corpus import discover_corpus
 
 class CorpusDiscoveryTests(unittest.TestCase):
     def _make_demo_shape(self, root: Path, wav_count: int = 30) -> None:
-        (root / "PUZZLES.DAT").write_bytes(b"puzzles")
-        (root / "OBJECTS.DAT").write_bytes(b"objects")
+        for name in (
+            "PUZZLES.DAT",
+            "ROOMS.DAT",
+            "WORLD.DAT",
+            "MUSIC.DAT",
+            "R.EXE",
+            "CHARACTE.DAT",
+        ):
+            (root / name).write_bytes(name.encode("ascii"))
         (root / "AMB0.SND").write_text("SAMPLE 0,0,0 S001.WAV\n", encoding="ascii")
         (root / "NPC0.DAT").write_text("0\n", encoding="ascii")
         for index in range(wav_count):

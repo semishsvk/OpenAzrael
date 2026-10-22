@@ -1,0 +1,55 @@
+{
+  "schema": "openazrael.kg001.eugene_animation_state_re_contract",
+  "version": 189,
+  "status": "EXECUTABLE_STRUCTURE_VERIFIED",
+  "source": {
+    "file": "R.EXE",
+    "sha256": "381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00"
+  },
+  "character_state": {
+    "initializer_offsets": [
+      "0x80E19..0x80ED0",
+      "0x82CF9..0x82DB6"
+    ],
+    "parsed_word_fields": [
+      "0x0C",
+      "0x10",
+      "0x12",
+      "0x14",
+      "0x16",
+      "0x18",
+      "0x38"
+    ],
+    "movement_counter": "0x25A",
+    "animation_runtime_pointer": "0x25C",
+    "animation_selector": "0x260"
+  },
+  "animation_table": {
+    "record_size_bytes": 19,
+    "selector_function": "0x8393C",
+    "start_frame_field_in_record": "0x01",
+    "end_frame_field_in_record": "0x03",
+    "runtime_pointer_record_field": "0x0F",
+    "selected_record_index_field": "0x288"
+  },
+  "runtime_transform": {
+    "apply_animation_pose_function": "0x839C4",
+    "animation_runtime_pointer_field": "0x25C"
+  },
+  "negative_proof": [
+    "ANI SPEED is parsed into character state independently from animation-record selection/playback.",
+    "No executable proof currently equates ANI SPEED 12 with animation frames per second.",
+    "Do not derive animation clock from movement SPEED."
+  ],
+  "clock": {
+    "status": "HOLD_SOURCE_CLOCK_PROOF",
+    "current_runtime_calibration_fps": 15,
+    "policy": "PROVISIONAL_CALIBRATION_NOT_SOURCE_PROVEN"
+  },
+  "next": [
+    "TRACE_0x25C_ANIMATION_RUNTIME_CREATION",
+    "TRACE_FRAME_ADVANCE_BELOW_ANIMATION_RUNTIME_API",
+    "TRACE_TIMER_INPUT_TO_FRAME_ADVANCE",
+    "TRACE_TRIGGER_RECORD_DISPATCH"
+  ]
+}

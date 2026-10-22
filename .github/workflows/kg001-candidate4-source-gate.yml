@@ -5,6 +5,7 @@ on:
     branches:
       - integration/kg001-candidate3-pppv-v2
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,8 +27,64 @@ jobs:
         run: python -m pip install --upgrade pip numpy pillow trimesh
       - name: Run inherited source-only KG-001 gate
         run: python tools/run_kg001_candidate_v112.py --source-only
+      - name: Validate recovered Niamh animation source contract
+        run: |
+          python tools/validate_kg001_character_animation_v138.py
+          python tools/validate_kg001_niamh_conversation_v180.py
+          python -m py_compile tools/restore_character_animation_v166.py
+      - name: Validate R1 Eugene source character chain
+        run: |
+          python tools/validate_kg001_eugene_spawn_v171.py
+          python tools/validate_kg001_eugene_movement_v172.py
+          python tools/validate_kg001_eugene_animation_audio_v173.py
+          python tools/validate_kg001_eugene_restore_v179.py
+          python tools/validate_kg001_eugene_fidelity_v181.py
+          python tools/validate_kg001_eugene_random_movement_re_v185.py
+          python tools/validate_kg001_eugene_animation_state_re_v189.py
+          python tools/validate_kg001_eugene_frame_trigger_re_v190.py
+          python tools/validate_kg001_eugene_startup_behavior_v191.py
+          python tools/validate_kg001_eugene_runtime_controller_v193.py
+          python tools/validate_kg001_eugene_headless_v194.py
+          python tools/validate_kg001_eugene_model_front_v188.py
+          python tools/validate_kg001_eugene_random_movement_callflow_v186.py
+          python tools/validate_kg001_eugene_executable_re_v182.py
+          python tools/validate_kg001_eugene_executable_character_controller_v183.py
+          python tools/validate_kg001_eugene_prng_v174.py
+          python tools/validate_kg001_r1_r7_character_integration_v175.py
+          python -m py_compile \
+            tools/validate_kg001_eugene_spawn_v171.py \
+            tools/validate_kg001_eugene_movement_v172.py \
+            tools/validate_kg001_eugene_animation_audio_v173.py \
+            tools/validate_kg001_eugene_prng_v174.py \
+            tools/validate_kg001_r1_r7_character_integration_v175.py \
+            tools/restore_eugene_animation_v179.py \
+            tools/validate_kg001_eugene_restore_v179.py \
+            tools/validate_kg001_eugene_fidelity_v181.py \
+            tools/validate_kg001_eugene_random_movement_re_v185.py \
+            tools/validate_kg001_eugene_animation_state_re_v189.py \
+            tools/validate_kg001_eugene_frame_trigger_re_v190.py \
+            tools/validate_kg001_eugene_startup_behavior_v191.py \
+            tools/validate_kg001_eugene_runtime_controller_v193.py \
+            tools/validate_kg001_eugene_headless_v194.py \
+            tools/validate_kg001_eugene_model_front_v188.py \
+            tools/validate_kg001_eugene_random_movement_callflow_v186.py \
+            tools/validate_kg001_eugene_executable_re_v182.py \
+            tools/validate_kg001_eugene_executable_character_controller_v183.py \
+            tools/validate_kg001_niamh_conversation_v180.py
+
       - name: Validate Candidate 4 hard release contract
-        run: python tools/validate_candidate4_release_contract_v132.py
+        run: |
+          python tools/validate_candidate4_release_contract_v132.py
+          python -m py_compile tools/validate_release_runtime_evidence_v176.py tools/restore_candidate_assets.py tools/run_candidate3_preflight.py
+          grep -q "validate_release_runtime_evidence_v176.py" tools/export_candidate4.py
+          grep -q "PACKAGED_CRITICAL_GAMEPLAY_FAILED" tools/export_candidate4.py
+          grep -q "PACKAGED_EXECUTION_BOUNDARY_NOT_PROVEN" tools/export_candidate4.py
+          grep -q "kg001_packaged_origin_runner_v178.gd" tools/export_candidate4.py
+          grep -q "kg001_all_transition_runner_v141.gd" tools/export_candidate4.py
+          grep -q "kg001_inventory_hud_runner_v157.gd" tools/export_candidate4.py
+          grep -q "candidate_asset_restore_v177.json" tools/restore_candidate_assets.py
+          grep -q "RUNTIME_ASSETS_CHANGED_OR_MIXED_SINCE_RESTORE" tools/run_candidate3_preflight.py
+          grep -q "RUNTIME_ASSETS_CHANGED_DURING_PREFLIGHT" tools/run_candidate3_preflight.py
       - name: Validate Candidate 4 MUSIC.DAT route contract
         run: python tools/validate_candidate4_music_route_v133.py
       - name: Validate XMIDI converter and music renderer contracts
@@ -41,6 +98,51 @@ jobs:
             tools/validate_candidate4_audio_corpus_v132.py \
             tools/run_candidate4_preflight.py \
             tools/export_candidate4.py
+      - name: Validate Candidate 4 proof capture contract
+        run: |
+          python tools/validate_kg001_proof_capture_v151.py
+          python tools/validate_kg001_proof_capture_v152.py
+          python -m unittest tools.remaster_framework.tests.test_capture_safety
+          python tools/capture_candidate4_proof_video.py --help >/dev/null
+          python -m py_compile \
+            tools/capture_candidate4_proof_video.py \
+            tools/remaster_framework/capture_safety.py \
+            tools/validate_kg001_proof_capture_v152.py
       - name: Verify tracked checkout stayed clean
         shell: bash
         run: test -z "$(git status --porcelain --untracked-files=normal)"
+
+  source-snapshot:
+    name: Exact HEAD source snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact workflow SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+      - name: Verify checkout identity and build deterministic archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -z "$(git status --porcelain --untracked-files=normal)"
+          mkdir -p .tmp/kg001-source-snapshot
+          git archive --format=tar --prefix=OpenAzrael/ "${GITHUB_SHA}" > .tmp/kg001-source-snapshot/openazrael-source.tar
+          sha256sum .tmp/kg001-source-snapshot/openazrael-source.tar > .tmp/kg001-source-snapshot/openazrael-source.tar.sha256
+          {
+            printf 'git_sha=%s\n' "${GITHUB_SHA}"
+            printf 'git_tree=%s\n' "$(git rev-parse "${GITHUB_SHA}^{tree}")"
+            printf 'tracked_files=%s\n' "$(git ls-tree -r --name-only "${GITHUB_SHA}" | wc -l | tr -d ' ')"
+          } > .tmp/kg001-source-snapshot/source-identity.txt
+      - name: Upload immutable source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: kg001-source-${{ github.sha }}
+          path: |
+            .tmp/kg001-source-snapshot/openazrael-source.tar
+            .tmp/kg001-source-snapshot/openazrael-source.tar.sha256
+            .tmp/kg001-source-snapshot/source-identity.txt
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0

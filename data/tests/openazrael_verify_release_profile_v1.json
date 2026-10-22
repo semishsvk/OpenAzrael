@@ -1,0 +1,429 @@
+{
+  "schema": "openazrael.verify_release_profile",
+  "version": 1,
+  "status": "SOURCE_SAFE",
+  "project": "OpenAzrael",
+  "fallback_gate_id": "kg001_source_suite",
+  "critical_patterns": [
+    "scripts/**",
+    "tools/**",
+    "data/**",
+    "*.godot",
+    "*.tscn",
+    "*.tres",
+    ".github/workflows/**"
+  ],
+  "policy": {
+    "fast": "Run always-fast safety plus diff-matched gates. Any unmatched critical change escalates to kg001_source_suite.",
+    "verify": "Run the complete source-safe release gate set. No Godot asset-backed preflight or Candidate export is invoked.",
+    "cache": "Reuse PASS only when command, profile, execution environment and complete declared input identity produce the same gate fingerprint.",
+    "candidate_build_created": false,
+    "commercial_assets_required": false
+  },
+  "gates": [
+    {
+      "id": "public_release_safety",
+      "command": [
+        "<python>",
+        "tools/validate_public_release_safety.py"
+      ],
+      "triggers": [],
+      "inputs": [
+        "**"
+      ],
+      "always_fast": true,
+      "verify": false,
+      "cacheable": true
+    },
+    {
+      "id": "kg001_source_suite",
+      "command": [
+        "<python>",
+        "tools/run_kg001_candidate_v112.py",
+        "--source-only"
+      ],
+      "triggers": [],
+      "inputs": [
+        "**"
+      ],
+      "verify": true,
+      "cacheable": true
+    },
+    {
+      "id": "release_docs",
+      "command": [
+        "<python>",
+        "tools/validate_release_docs.py"
+      ],
+      "triggers": [
+        "docs/**",
+        "data/tests/kg001_candidate3_preflight_contract_v1.json",
+        "data/tests/kg001_candidate4_release_contract_v132.json",
+        "tools/kg001_gate_manifest.py"
+      ],
+      "inputs": [
+        "docs/**",
+        "data/tests/kg001_candidate3_preflight_contract_v1.json",
+        "data/tests/kg001_candidate4_release_contract_v132.json",
+        "tools/validate_release_docs.py",
+        "tools/kg001_gate_manifest.py"
+      ],
+      "verify": false
+    },
+    {
+      "id": "framework_registry",
+      "command": [
+        "<python>",
+        "-m",
+        "tools.remaster_framework.cli",
+        "validate"
+      ],
+      "triggers": [
+        "tools/remaster_framework/**"
+      ],
+      "inputs": [
+        "tools/remaster_framework/**"
+      ],
+      "verify": false
+    },
+    {
+      "id": "framework_tests",
+      "command": [
+        "<python>",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/remaster_framework/tests",
+        "-v"
+      ],
+      "triggers": [
+        "tools/remaster_framework/**",
+        "tools/openazrael_adapters/**",
+        "data/source_corpora_contract_v1.json"
+      ],
+      "inputs": [
+        "tools/remaster_framework/**",
+        "tools/openazrael_adapters/**",
+        "data/source_corpora_contract_v1.json"
+      ],
+      "verify": false
+    },
+    {
+      "id": "verify_release_contract",
+      "command": [
+        "<python>",
+        "tools/validate_verify_release_orchestrator.py"
+      ],
+      "triggers": [
+        "tools/remaster_framework/verify_orchestrator.py",
+        "tools/remaster_framework/tests/test_verify_orchestrator.py",
+        "tools/run_verify_release_orchestrator.py",
+        "tools/validate_verify_release_orchestrator.py",
+        "data/tests/openazrael_verify_release_profile_v1.json",
+        ".github/workflows/openazrael-verify-release.yml",
+        "docs/VERIFY_RELEASE_ORCHESTRATOR.md",
+        "tools/remaster_framework/tool_manifest.json",
+        "tools/kg001_gate_manifest.py"
+      ],
+      "inputs": [
+        "tools/remaster_framework/verify_orchestrator.py",
+        "tools/remaster_framework/tests/test_verify_orchestrator.py",
+        "tools/run_verify_release_orchestrator.py",
+        "tools/validate_verify_release_orchestrator.py",
+        "data/tests/openazrael_verify_release_profile_v1.json",
+        ".github/workflows/openazrael-verify-release.yml",
+        "docs/VERIFY_RELEASE_ORCHESTRATOR.md",
+        "tools/remaster_framework/tool_manifest.json",
+        "tools/kg001_gate_manifest.py"
+      ],
+      "verify": false
+    },
+    {
+      "id": "candidate_runner_contract",
+      "command": [
+        "<python>",
+        "tools/validate_kg001_candidate_v112.py"
+      ],
+      "triggers": [
+        "tools/run_kg001_candidate_v112.py",
+        "tools/kg001_gate_manifest.py",
+        "tools/validate_kg001_candidate_v112.py"
+      ],
+      "inputs": [
+        "tools/run_kg001_candidate_v112.py",
+        "tools/kg001_gate_manifest.py",
+        "tools/validate_kg001_candidate_v112.py"
+      ],
+      "verify": false
+    },
+    {
+      "id": "candidate3_contract",
+      "command": [
+        "<python>",
+        "tools/validate_candidate3_preflight.py"
+      ],
+      "triggers": [
+        "tools/run_candidate3_preflight.py",
+        "tools/export_candidate3.py",
+        "tools/kg001_gate_manifest.py",
+        "data/tests/kg001_candidate3_preflight_contract_v1.json",
+        ".github/workflows/kg001-candidate3-source-gate.yml"
+      ],
+      "inputs": [
+        "tools/run_candidate3_preflight.py",
+        "tools/export_candidate3.py",
+        "tools/validate_candidate3_preflight.py",
+        "tools/kg001_gate_manifest.py",
+        "data/tests/kg001_candidate3_preflight_contract_v1.json",
+        ".github/workflows/kg001-candidate3-source-gate.yml",
+        "export_presets.cfg",
+        "project.godot"
+      ],
+      "verify": false
+    },
+    {
+      "id": "candidate4_release_contract",
+      "command": [
+        "<python>",
+        "tools/validate_candidate4_release_contract_v132.py"
+      ],
+      "triggers": [
+        "tools/run_candidate4_preflight.py",
+        "tools/export_candidate4.py",
+        "tools/freeze_candidate4_release.py",
+        "tools/kg001_gate_manifest.py",
+        "data/tests/kg001_candidate4_release_contract_v132.json",
+        ".github/workflows/kg001-candidate4-source-gate.yml",
+        ".github/workflows/candidate4-source-snapshot.yml"
+      ],
+      "inputs": [
+        "tools/run_candidate4_preflight.py",
+        "tools/export_candidate4.py",
+        "tools/freeze_candidate4_release.py",
+        "tools/validate_candidate4_release_contract_v132.py",
+        "tools/kg001_gate_manifest.py",
+        "data/tests/kg001_candidate4_release_contract_v132.json",
+        ".github/workflows/kg001-candidate4-source-gate.yml",
+        ".github/workflows/candidate4-source-snapshot.yml"
+      ],
+      "verify": true
+    },
+    {
+      "id": "trigger_contract",
+      "command": [
+        "<python>",
+        "tools/validate_kg001_trigger_events_v137.py"
+      ],
+      "triggers": [
+        "scripts/**trigger**",
+        "data/**trigger**",
+        "tools/**trigger**"
+      ],
+      "inputs": [
+        "scripts/**trigger**",
+        "data/**trigger**",
+        "tools/**trigger**",
+        "data/gameplay_event_graph_v87.json"
+      ],
+      "verify": false
+    },
+    {
+      "id": "localization_contract",
+      "command": [
+        "<python>",
+        "tools/validate_localization_v139.py"
+      ],
+      "triggers": [
+        "tools/**localization**",
+        "scripts/**localization**",
+        "data/**localization**",
+        "localization/**"
+      ],
+      "inputs": [
+        "tools/**localization**",
+        "scripts/**localization**",
+        "data/**localization**",
+        "localization/**"
+      ],
+      "verify": false
+    },
+    {
+      "id": "interaction_probe_v148",
+      "command": [
+        "<python>",
+        "tools/validate_interaction_probe_determinism_v148.py"
+      ],
+      "triggers": [
+        "scripts/interaction_probe.gd",
+        "scripts/kg001_interaction_probe_determinism_runner_v148.gd",
+        "tools/validate_interaction_probe_determinism_v148.py",
+        "data/tests/kg001_interaction_probe_determinism_contract_v148.json"
+      ],
+      "inputs": [
+        "scripts/interaction_probe.gd",
+        "scripts/kg001_interaction_probe_determinism_runner_v148.gd",
+        "tools/validate_interaction_probe_determinism_v148.py",
+        "data/tests/kg001_interaction_probe_determinism_contract_v148.json"
+      ],
+      "verify": false
+    },
+    {
+      "id": "save_compat_v150",
+      "command": [
+        "<python>",
+        "tools/validate_kg001_save_compat_v150.py"
+      ],
+      "triggers": [
+        "scripts/legacy_save_system_v145.gd",
+        "scripts/kg001_save_compat_runner_v150.gd",
+        "tools/validate_kg001_save_compat_v150.py",
+        "data/tests/kg001_save_compat_contract_v150.json"
+      ],
+      "inputs": [
+        "scripts/legacy_save_system_v145.gd",
+        "scripts/kg001_save_compat_runner_v150.gd",
+        "tools/validate_kg001_save_compat_v150.py",
+        "data/tests/kg001_save_compat_contract_v150.json",
+        "scripts/demo_state.gd"
+      ],
+      "verify": false
+    },
+    {
+      "id": "inventory_hud_v157",
+      "command": [
+        "<python>",
+        "tools/validate_kg001_inventory_hud_v157.py"
+      ],
+      "triggers": [
+        "scripts/legacy_menu_runtime_v145.gd",
+        "scripts/kg001_inventory_hud_runner_v157.gd",
+        "tools/validate_kg001_inventory_hud_v157.py",
+        "data/tests/kg001_inventory_hud_contract_v157.json",
+        "scripts/demo_state.gd",
+        "data/gameplay_event_graph_v87.json",
+        "docs/INVENTORY_HUD_V157.md"
+      ],
+      "inputs": [
+        "scripts/legacy_menu_runtime_v145.gd",
+        "scripts/kg001_inventory_hud_runner_v157.gd",
+        "tools/validate_kg001_inventory_hud_v157.py",
+        "data/tests/kg001_inventory_hud_contract_v157.json",
+        "scripts/demo_state.gd",
+        "data/gameplay_event_graph_v87.json",
+        "docs/INVENTORY_HUD_V157.md"
+      ],
+      "verify": true,
+      "cacheable": true
+    },
+    {
+      "id": "candidate4_music_route",
+      "command": [
+        "<python>",
+        "tools/validate_candidate4_music_route_v133.py"
+      ],
+      "triggers": [
+        "tools/analyze_candidate4_music_route_v133.py",
+        "tools/validate_candidate4_music_route_v133.py",
+        "data/tests/kg001_candidate4_music_route_contract_v133.json",
+        "data/audio/**"
+      ],
+      "inputs": [
+        "tools/analyze_candidate4_music_route_v133.py",
+        "tools/validate_candidate4_music_route_v133.py",
+        "data/tests/kg001_candidate4_music_route_contract_v133.json",
+        "data/audio/**"
+      ],
+      "verify": true
+    },
+    {
+      "id": "xmi_converter",
+      "command": [
+        "<python>",
+        "tools/validate_xmi_to_midi_v134.py"
+      ],
+      "triggers": [
+        "tools/xmi_to_midi_v134.py",
+        "tools/validate_xmi_to_midi_v134.py"
+      ],
+      "inputs": [
+        "tools/xmi_to_midi_v134.py",
+        "tools/validate_xmi_to_midi_v134.py"
+      ],
+      "verify": true
+    },
+    {
+      "id": "candidate4_music_renderer",
+      "command": [
+        "<python>",
+        "tools/validate_candidate4_music_renderer_v135.py"
+      ],
+      "triggers": [
+        "tools/render_candidate4_music_v135.py",
+        "tools/validate_candidate4_music_renderer_v135.py"
+      ],
+      "inputs": [
+        "tools/render_candidate4_music_v135.py",
+        "tools/validate_candidate4_music_renderer_v135.py",
+        "tools/xmi_to_midi_v134.py"
+      ],
+      "verify": true
+    },
+    {
+      "id": "proof_capture_v151",
+      "command": [
+        "<python>",
+        "tools/validate_kg001_proof_capture_v151.py"
+      ],
+      "triggers": [
+        "tools/capture_candidate4_proof_video.py",
+        "tools/validate_kg001_proof_capture_v151.py",
+        "scripts/validation/pppv_playthrough_runner.gd",
+        "data/tests/kg001_proof_capture_contract_v151.json",
+        ".github/workflows/kg001-candidate4-source-gate.yml",
+        "docs/KG001_PROOF_CAPTURE_V151.md"
+      ],
+      "inputs": [
+        "tools/capture_candidate4_proof_video.py",
+        "tools/validate_kg001_proof_capture_v151.py",
+        "scripts/validation/pppv_playthrough_runner.gd",
+        "data/tests/kg001_proof_capture_contract_v151.json",
+        ".github/workflows/kg001-candidate4-source-gate.yml",
+        "docs/KG001_PROOF_CAPTURE_V151.md"
+      ],
+      "verify": true
+    },
+    {
+      "id": "release_py_compile",
+      "command": [
+        "<python>",
+        "-m",
+        "py_compile",
+        "tools/run_candidate3_preflight.py",
+        "tools/run_candidate4_preflight.py",
+        "tools/freeze_candidate4_release.py",
+        "tools/export_candidate4.py",
+        "tools/capture_candidate4_proof_video.py",
+        "tools/run_verify_release_orchestrator.py"
+      ],
+      "triggers": [
+        "tools/run_candidate3_preflight.py",
+        "tools/run_candidate4_preflight.py",
+        "tools/freeze_candidate4_release.py",
+        "tools/export_candidate4.py",
+        "tools/capture_candidate4_proof_video.py",
+        "tools/run_verify_release_orchestrator.py"
+      ],
+      "inputs": [
+        "tools/run_candidate3_preflight.py",
+        "tools/run_candidate4_preflight.py",
+        "tools/freeze_candidate4_release.py",
+        "tools/export_candidate4.py",
+        "tools/capture_candidate4_proof_video.py",
+        "tools/run_verify_release_orchestrator.py"
+      ],
+      "verify": true,
+      "cacheable": true
+    }
+  ]
+}

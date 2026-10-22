@@ -1,0 +1,124 @@
+{
+  "schema": "openazrael.kg001.eugene_fidelity_contract",
+  "version": 181,
+  "status": "SOURCE_BOUNDED",
+  "canonical_demo": {
+    "archive_sha256": "bf0c87f731bb4e8767d86adcdbd4e6539b1cb9300131b34ac68dac5e587e7652"
+  },
+  "characters": {
+    "Eugene": {
+      "xaf": "TEXTURES/EUGENE.XAF",
+      "xaf_sha256": "1533e24af2729f6a9ccbc4e791fec92617b44f709a3f1dc31ce7a71763be51af",
+      "ani": "EUGENE.ANI",
+      "ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636",
+      "spawn": [
+        387.180725,
+        -93.206253,
+        -472.210327
+      ],
+      "direction": [
+        0.77322,
+        0,
+        -0.634137
+      ]
+    },
+    "EugenB": {
+      "xaf": "TEXTURES/EUGBLD.XAF",
+      "xaf_sha256": "0004eaac87202d2487c72f43008cf5c6cec15241d07a95dc550737889d5bb62f",
+      "ani": "EUGENB.ANI",
+      "ani_sha256": "4125d9693137f74020209fc2f7f834cb64ce232cbabd4e7a8fe0199d9933b636",
+      "spawn": [
+        362.298431,
+        -90.386177,
+        -533.626587
+      ],
+      "direction": [
+        0.573576,
+        0,
+        -0.819152
+      ]
+    }
+  },
+  "collision": {
+    "height": 15,
+    "width": 12
+  },
+  "movement": {
+    "speed": 12,
+    "candidate_distance": 80,
+    "run_steps": [
+      2,
+      7
+    ],
+    "executable_verification": {
+      "status": "VERIFIED_R_EXE_V185",
+      "random_movement_function_file_offset": "0x86780",
+      "rand_function_file_offset": "0x97F85",
+      "candidate_distance": 80,
+      "heading_modulus": 360
+    }
+  },
+  "animation": {
+    "ranges": {
+      "REST": [
+        0,
+        0
+      ],
+      "RUN": [
+        2,
+        7
+      ],
+      "ATTACK": [
+        53,
+        70
+      ],
+      "SHOT": [
+        130,
+        163
+      ],
+      "DEATH_TWITCH": [
+        160,
+        163
+      ],
+      "DEAD": [
+        163,
+        163
+      ]
+    },
+    "clock_fps": null,
+    "clock_status": "EXECUTABLE_FRAME_DOMAIN_VERIFIED_V190",
+    "frame_advance": "PLUS_ONE_PER_MOVECHARACTERS_UPDATE",
+    "xaf_time_mapping": "CURRENT_FRAME_INT16_TO_FLOAT_DIRECT"
+  },
+  "audio": {
+    "file": "EUGROAR.WAV",
+    "sha256": "031b0282fba55d9a5446c6ea51e2328e8586ffa3b14042105ef663e56a443cb1",
+    "trigger_frame": 60,
+    "trigger_parameter": 200,
+    "parameter_semantics": "PLAYER_HEALTH_DAMAGE_200_EXECUTABLE_VERIFIED_V190",
+    "effect_order": "PLAY_EUGROAR_THEN_SUBTRACT_200_FROM_PLAYER_STATE_PLUS_0x18",
+    "player_health_initial": 500
+  },
+  "holds": {
+    "model_front": "RESOLVED_SOURCE_XAF_V188_LOCAL_PLUS_X",
+    "global_rand_call_index": "ENTRY_RESOLVED_NO_RAND_V191_LATER_RANDOMMOVEMENT_MUST_USE_SHARED_GLOBAL_STATE",
+    "animation_clock": "RESOLVED_FRAME_DOMAIN_V190_WALL_CLOCK_CADENCE_NOT_REQUIRED_FOR_SOURCE_FRAME_ORDER",
+    "trigger_parameter_200": "RESOLVED_PLAYER_STATE_EFFECT_V190"
+  },
+  "forbidden": [
+    "INVENT_MODEL_FRONT_ROTATION",
+    "RESET_PRNG_PER_NPC",
+    "GODOT_RANDOM_FALLBACK",
+    "SYNTHETIC_EUGENE_ASSET",
+    "MAP_TRIGGER_PARAMETER_200_TO_AUDIO",
+    "INVENT_FIXED_WALL_CLOCK_FPS"
+  ],
+  "model_front": {
+    "status": "SOURCE_GEOMETRY_VERIFIED",
+    "contract": "data/tests/kg001_eugene_model_front_contract_v188.json",
+    "local_axis": "+X",
+    "policy": "SOURCE_ROOT_TRANSFORM_NO_ARBITRARY_YAW"
+  },
+  "frame_trigger_contract": "data/tests/kg001_eugene_frame_trigger_re_contract_v190.json",
+  "startup_behavior_contract": "data/tests/kg001_eugene_startup_behavior_contract_v191.json"
+}

@@ -50,10 +50,15 @@ SOURCE_COMMANDS = [
     [sys.executable, "tools/validate_kg001_interaction_cursors_v143.py"],
     [sys.executable, "tools/validate_menu_lab_v144.py"],
     [sys.executable, "tools/validate_kg001_legacy_menu_runtime_v145.py"],
+    [sys.executable, "tools/validate_kg001_legacy_scanner_v164.py"],
     [sys.executable, "tools/validate_kg001_menu_cursor_context_v146.py"],
     [sys.executable, "tools/validate_kg001_classic_presentation_v147.py"],
     [sys.executable, "tools/validate_interaction_probe_determinism_v148.py"],
     [sys.executable, "tools/validate_kg001_legacy_menu_toggle_v149.py"],
+    [sys.executable, "tools/validate_kg001_save_compat_v150.py"],
+    [sys.executable, "tools/validate_kg001_inventory_hud_v157.py"],
+    [sys.executable, "tools/validate_release_docs.py"],
+    [sys.executable, "tools/validate_verify_release_orchestrator.py"],
     [sys.executable, "tools/validate_candidate3_preflight.py"],
     [sys.executable, "tools/validate_candidate3_pppv_integration.py"],
 ]
@@ -80,10 +85,13 @@ RUNTIMES = [
     ("all_transitions_v141", "scripts/kg001_all_transition_runner_v141.gd", "OPENAZRAEL_KG001_ALL_TRANSITIONS_V141"),
     ("cursor_v143", "scripts/kg001_interaction_cursor_runner_v143.gd", "OPENAZRAEL_KG001_CURSOR_V143"),
     ("menu_v145", "scripts/kg001_legacy_menu_runner_v145.gd", "OPENAZRAEL_KG001_MENU_V145"),
+    ("legacy_scanner_v164", "scripts/kg001_legacy_scanner_runner_v164.gd", "OPENAZRAEL_KG001_LEGACY_SCANNER_V164"),
     ("menu_cursor_v146", "scripts/kg001_menu_cursor_context_runner_v146.gd", "OPENAZRAEL_KG001_MENU_CURSOR_V146"),
     ("classic_v147", "scripts/kg001_classic_presentation_runner_v147.gd", "OPENAZRAEL_KG001_CLASSIC_PRESENTATION_V147"),
     ("interaction_probe_v148", "scripts/kg001_interaction_probe_determinism_runner_v148.gd", "OPENAZRAEL_KG001_INTERACTION_PROBE_DETERMINISM_V148"),
     ("menu_toggle_v149", "scripts/kg001_legacy_menu_toggle_runner_v149.gd", "OPENAZRAEL_KG001_MENU_TOGGLE_V149"),
+    ("save_compat_v150", "scripts/kg001_save_compat_runner_v150.gd", "OPENAZRAEL_KG001_SAVE_COMPAT_V150"),
+    ("inventory_hud_v157", "scripts/kg001_inventory_hud_runner_v157.gd", "OPENAZRAEL_KG001_INVENTORY_HUD_V157"),
 ]
 
 CANDIDATE3_REQUIRED_RUNTIME = tuple(name for name, _script, _marker in RUNTIMES)
@@ -99,6 +107,7 @@ PPPV_EVIDENCE_FILES = {
 PPPV_REQUIRED_EVIDENCE = tuple(PPPV_EVIDENCE_FILES)
 
 CANDIDATE4_SOURCE_VALIDATORS = (
+    "tools/test_rejection_export_v165.py",
     "tools/validate_kg001_trigger_events_v137.py",
     "tools/validate_candidate4_release_contract_v132.py",
     "tools/validate_candidate4_music_route_v133.py",

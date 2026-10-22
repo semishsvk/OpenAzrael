@@ -20,6 +20,30 @@ extends CharacterBody3D
 @onready var camera: Camera3D = $Camera3D
 var pitch := 0.0
 
+# R.EXE v190: global player-state +0x18 is initialized to 500 at 0x74688.
+var legacy_health := 500
+
+func apply_legacy_damage(amount: int, source: String = "") -> int:
+    if amount <= 0:
+        return legacy_health
+    legacy_health = maxi(0, legacy_health - amount)
+    CandidateDiagnostics.record_event("player_legacy_damage", {
+        "source": source,
+        "amount": amount,
+        "health": legacy_health,
+        "status": "SOURCE_HEALTH_EFFECT_APPLIED"
+    })
+    if legacy_health <= 0:
+        CandidateDiagnostics.record_event("player_legacy_health", {
+            "source": source,
+            "health": 0,
+            "status": "SOURCE_DEATH_THRESHOLD_REACHED"
+        })
+    return legacy_health
+
+func legacy_health_value() -> int:
+    return legacy_health
+
 const STEP_DEBUG_LIMIT := 96
 var step_debug_events: Array[Dictionary] = []
 

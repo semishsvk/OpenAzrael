@@ -27,6 +27,7 @@ from tools.kg001_gate_manifest import (
 )
 TMP = ROOT / ".tmp/kg001"
 RECEIPT = TMP / "candidate3_preflight_receipt.json"
+RESTORE_RECEIPT = TMP / "candidate_asset_restore_v177.json"
 CANDIDATE_RESULT = TMP / "kg001_candidate_v112.json"
 FRESH_RESULT = TMP / "kg001_fresh_checkout.json"
 VISUAL_RESULT = TMP / "kg001_visual_v126_runtime.json"
@@ -200,6 +201,21 @@ def main() -> int:
     if missing:
         return fail("REQUIRED_RUNTIME_ASSETS_MISSING", {"missing": missing})
 
+    if not RESTORE_RECEIPT.is_file():
+        return fail("COMPLETE_ASSET_RESTORE_RECEIPT_MISSING", {
+            "hint": "Run tools/restore_candidate_assets.py against the canonical demo corpus."
+        })
+    try:
+        restore_receipt = json.loads(RESTORE_RECEIPT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return fail("COMPLETE_ASSET_RESTORE_RECEIPT_INVALID", {"error": str(exc)})
+    if (
+        restore_receipt.get("schema") != "openazrael.kg001.candidate_asset_restore"
+        or restore_receipt.get("version") != 177
+        or restore_receipt.get("status") != "PASS"
+    ):
+        return fail("COMPLETE_ASSET_RESTORE_NOT_PASS")
+
     asset_files = runtime_asset_files()
     classic_pngs = [
         p for p in asset_files
@@ -221,6 +237,22 @@ def main() -> int:
         p for p in asset_files
         if p.parent == ROOT / "assets/ui/legacy_menu" and p.suffix.lower() == ".png"
     ]
+    observed_restore_assets = {
+        str(p.relative_to(ROOT)).replace("\\\\","/"): {
+            "bytes": p.stat().st_size,
+            "sha256": sha256(p),
+        } for p in asset_files
+    }
+    observed_restore_digest = hashlib.sha256(
+        json.dumps(observed_restore_assets, sort_keys=True, separators=(",",":")).encode("utf-8")
+    ).hexdigest()
+    if (
+        restore_receipt.get("asset_file_count") != len(observed_restore_assets)
+        or restore_receipt.get("asset_identity_sha256") != observed_restore_digest
+        or restore_receipt.get("assets") != observed_restore_assets
+    ):
+        return fail("RUNTIME_ASSETS_CHANGED_OR_MIXED_SINCE_RESTORE")
+
     if len(classic_pngs) != 86 or len(room_glbs) < 3 or not audio_files or len(cursor_pngs) != 35 or len(menu_pngs) != 42:
         return fail(
             "RUNTIME_ASSET_CORPUS_INCOMPLETE",
@@ -382,6 +414,33 @@ def main() -> int:
             },
         )
 
+    asset_files_after = runtime_asset_files()
+    observed_assets_after = {
+        str(p.relative_to(ROOT)).replace("\\\\","/"): {
+            "bytes": p.stat().st_size,
+            "sha256": sha256(p),
+        } for p in asset_files_after
+    }
+    observed_digest_after = hashlib.sha256(
+        json.dumps(observed_assets_after, sort_keys=True, separators=(",",":")).encode("utf-8")
+    ).hexdigest()
+    if (
+        observed_assets_after != observed_restore_assets
+        or observed_digest_after != observed_restore_digest
+    ):
+        return fail("RUNTIME_ASSETS_CHANGED_DURING_PREFLIGHT", {
+            "before_file_count": len(observed_restore_assets),
+            "after_file_count": len(observed_assets_after),
+            "before_sha256": observed_restore_digest,
+            "after_sha256": observed_digest_after,
+            "added": sorted(set(observed_assets_after)-set(observed_restore_assets)),
+            "removed": sorted(set(observed_restore_assets)-set(observed_assets_after)),
+            "changed": sorted(
+                key for key in set(observed_assets_after)&set(observed_restore_assets)
+                if observed_assets_after[key] != observed_restore_assets[key]
+            ),
+        })
+
     ver = run([godot, "--version"])
     godot_version = ver.stdout.strip()
     if ver.returncode != 0 or not godot_version:
@@ -433,8 +492,9 @@ def main() -> int:
                 for name, path in PPPV_REQUIRED_EVIDENCE.items()
             },
         },
+        "runtime_asset_identity_sha256": observed_digest_after,
         "runtime_asset_summary": {
-            "total_files": len(asset_files),
+            "total_files": len(asset_files_after),
             "classic_png_count": len(classic_pngs),
             "room_glb_count": len(room_glbs),
             "audio_file_count": len(audio_files),
@@ -446,7 +506,7 @@ def main() -> int:
                 "bytes": p.stat().st_size,
                 "sha256": sha256(p),
             }
-            for p in asset_files
+            for p in asset_files_after
         },
         "build_rule": (
             "Export is permitted only while Git HEAD, clean worktree, Godot version, "

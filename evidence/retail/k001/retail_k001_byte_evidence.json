@@ -1,0 +1,15 @@
+{
+  "schema": "openazrael.retail_k001.byte_evidence.v1",
+  "evidence_state": "VERIFIED",
+  "authority": "original retail GAME/AZRAEL files materialized from canonical Drive corpus",
+  "files": {
+    "ROOMS.DAT": {"bytes": 90788, "sha256": "1d8ccbcbcd9727a54cf208e8c75f558f7da30aa1b6c850975bcbc7a7303c604b"},
+    "WORLD.DAT": {"bytes": 347855, "sha256": "db4de4c7165f6d35389798d8a8af0d08398f7adc260c6fca74dff1a4f9026724"}
+  },
+  "claims": [
+    {"claim": "ROOMS.DAT contains R8FromR6", "count": 2, "offsets_hex": ["0x2c76", "0x15b9a"]},
+    {"claim": "ROOMS.DAT contains R6FromR8", "count": 1, "offsets_hex": ["0x36cc"]},
+    {"claim": "ROOMS.DAT contains R33Ziggurat token", "count": 1, "offsets_hex": ["0xe02e"]}
+  ],
+  "negative_evidence_rule": "String absence is NOT evidence that a room/state is absent; binary structures may encode identifiers non-textually."
+}

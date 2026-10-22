@@ -13,7 +13,43 @@ from tools.remaster_framework.playthrough import (
 )
 
 
-COMPLETE_HASH = "69cdb8287e548f7a31884e26c23b739ead10ed8f998318cd5690c0a3b03e7db8"
+COMPLETE_HASH = "b695fb49c389376c8815af54d743aba20e2f9753852342c8619187b2f4ab6b9d"
+
+# Runtime-derived, source-geometry-backed physical routes needed only when
+# scenarios are chained continuously instead of starting at canonical portals.
+R7_WELL_TO_SWITCHBOARD_ROUTE = (
+    (-21.4, -47.57, 51.4),
+    (-24.0, -47.57, 78.0),
+    (-8.0, -41.45, 78.0),
+    (25.0, -41.45, 70.0),
+    (45.0, -41.45, 80.0),
+)
+R7_SWITCHBOARD_TO_EXIT_ROUTE = (
+    (45.0, -41.45, 60.0),
+    (38.0, -41.45, 30.0),
+    (30.0, -41.45, 0.0),
+    (30.0, -41.45, -35.0),
+    (50.0, -41.56, -55.0),
+    (65.0, -41.56, -85.0),
+)
+
+def _entry_route(points, prefix: str, policy: str) -> list[dict[str, Any]]:
+    return [
+        {
+            "action_id": f"{prefix}_{index:02d}",
+            "kind": "move",
+            "execution_mode": "input",
+            "input_action": "move_forward",
+            "parameters": {
+                "goal_world_point": list(point),
+                "driver_policy": policy,
+                "max_frames": 900,
+                "stuck_frames": 150,
+                "reach_distance": 8.0,
+            },
+        }
+        for index, point in enumerate(points)
+    ]
 
 
 def _scenario_ids(bundle: dict[str, Any]) -> set[str]:
@@ -35,6 +71,8 @@ def _scenario_step(
     *,
     required_state_paths: tuple[str, ...] = (),
     purpose: str,
+    playthrough_entry_actions: list[dict[str, Any]] | None = None,
+    skip_action_prefixes: tuple[str, ...] = (),
 ) -> PlaythroughStep:
     ready = desired_scenario_id in available
     return PlaythroughStep(
@@ -47,6 +85,16 @@ def _scenario_step(
         metadata={
             "desired_scenario_id": desired_scenario_id,
             "purpose": purpose,
+            **(
+                {"playthrough_entry_actions": playthrough_entry_actions}
+                if playthrough_entry_actions
+                else {}
+            ),
+            **(
+                {"skip_action_prefixes": list(skip_action_prefixes)}
+                if skip_action_prefixes
+                else {}
+            ),
         },
     )
 
@@ -60,6 +108,7 @@ def _transition_step(
     available: set[str],
     *,
     purpose: str,
+    playthrough_entry_actions: list[dict[str, Any]] | None = None,
 ) -> PlaythroughStep:
     ready = desired_scenario_id in available
     return PlaythroughStep(
@@ -74,6 +123,11 @@ def _transition_step(
             "desired_scenario_id": desired_scenario_id,
             "purpose": purpose,
             "forbid_trigger_centroid_teleport": True,
+            **(
+                {"playthrough_entry_actions": playthrough_entry_actions}
+                if playthrough_entry_actions
+                else {}
+            ),
         },
     )
 
@@ -83,20 +137,29 @@ def build_openazrael_demo_playthrough_plan(
     available = _scenario_ids(scenario_bundle)
     steps: list[PlaythroughStep] = [
         _scenario_step(
-            "S01_PICKUP_TONGS",
-            "R1",
-            "openazrael.r1.pickup_tongs",
-            available,
-            required_state_paths=("inventory.rusty_tongs",),
-            purpose="Acquire TONG6 through production pickup interaction.",
-        ),
-        _scenario_step(
-            "S02_OPEN_DOOR1",
+            "S01_OPEN_DOOR1",
             "R1",
             "openazrael.r1.open_door1",
             available,
             required_state_paths=("flags.R1Door1Open",),
-            purpose="Open the R1 door that gates the R7 transition.",
+            purpose=(
+                "Open the physical R1 corridor before attempting the TONG6 "
+                "route, matching the audited v119/v141 traversal."
+            ),
+        ),
+        _scenario_step(
+            "S02_PICKUP_TONGS",
+            "R1",
+            "openazrael.r1.pickup_tongs",
+            available,
+            required_state_paths=(
+                "flags.R1Door1Open",
+                "inventory.rusty_tongs",
+            ),
+            purpose=(
+                "Traverse the audited R1 corridor, acquire TONG6 through "
+                "production pickup interaction, and return toward R7."
+            ),
         ),
         _transition_step(
             "T03_R1_TO_R7",
@@ -127,6 +190,11 @@ def build_openazrael_demo_playthrough_plan(
             available,
             required_state_paths=("flags.R8BathDrain",),
             purpose="Solve the R7 water switchboard through physical interactions.",
+            playthrough_entry_actions=_entry_route(
+                R7_WELL_TO_SWITCHBOARD_ROUTE,
+                "route_from_well",
+                "source_derived_r7_well_to_switchboard",
+            ),
         ),
         PlaythroughStep(
             step_id="C06_POST_R7_SAVELOAD",
@@ -151,6 +219,11 @@ def build_openazrael_demo_playthrough_plan(
             "openazrael.transition.r7_to_r1",
             available,
             purpose="Return to R1 by physically crossing the authored trigger.",
+            playthrough_entry_actions=_entry_route(
+                R7_SWITCHBOARD_TO_EXIT_ROUTE,
+                "route_r7_exit",
+                "source_derived_r7_exit_route",
+            ),
         ),
         _scenario_step(
             "S08_OPEN_DOOR2",
@@ -212,6 +285,7 @@ def build_openazrael_demo_playthrough_plan(
             available,
             required_state_paths=("inventory.shield", "flags.demo_complete"),
             purpose="Take the shield and reach demo completion.",
+            skip_action_prefixes=("route_to_shield_",),
         ),
         PlaythroughStep(
             step_id="C14_FINAL_STATE",

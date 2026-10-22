@@ -1,0 +1,24 @@
+{
+  "schema": "openazrael.kg001.eugene_headless_runtime_evidence",
+  "version": 194,
+  "source_head_before_evidence": "156b57706b9a47df757a711d13ecbd3277d9289e",
+  "godot": {
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "drive_file_id": "1w6de416siM_c6xVgsA3gY2BmlnW0ruSo",
+    "zip_sha256": "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+  },
+  "runtime": {
+    "status": "PASS",
+    "display_server": "headless",
+    "spawn_rng_call_index": 0,
+    "recovery_after_49": 1,
+    "recovery_after_50": 0,
+    "rng_call_index_after_recovery": 88
+  },
+  "scope": "CONTROLLER_PHYSICS_HARNESS_NOT_R1_E2E",
+  "notes": [
+    "Godot binary was downloaded from the canonical Drive toolchain and --version verified.",
+    "Runner executed twice; second execution included explicit 49/50 off-by-one assertion.",
+    "This evidence validates Godot physics/controller/shared-RNG integration only; it is not full Room R1 gameplay evidence."
+  ]
+}
