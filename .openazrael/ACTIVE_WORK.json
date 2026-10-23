@@ -19,26 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "75c7502c-cf29-4554-a962-5b88353c9332",
-    "host": "HomePC",
-    "supervisor_pid": 75660,
-    "started_at": "2026-10-23T07:17:23.799867+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--path",
-      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-      "--log-file",
-      "res://.tmp/achievement_c1_headless.log",
-      "--script",
-      "res://tools/achievements/test_achievement_integration_c1.gd",
-      "--quit-after",
-      "130"
-    ]
-  },
-  "last_seen_at": "2026-10-23T07:16:28.727685+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-23T07:17:25.748690+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
