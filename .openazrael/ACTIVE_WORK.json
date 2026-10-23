@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "azrael-achievement-integration-c1-20261023-a1",
-  "owner": "chatgpt-openazrael-achievement-c1-20261023",
+  "status": "active",
+  "lease_id": "demo-c8-rdc-native-manifest-20261023-v2209",
+  "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "chatgpt-openazrael-achievement-c1-20261023",
+  "owner_thread_id": "chatgpt-openazrael-finaldemo-20261018-1110",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-23T07:39:53.334161+00:00",
+  "last_seen_at": "2026-10-23T07:45:41.257910+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -60,7 +60,7 @@
     "ui_mode": "VIEWER_HOST_EXPERIMENTAL_PREVIEW",
     "original_corpus_modified": false
   },
-  "acquired_at": "2026-10-23T07:05:43.630119+00:00",
+  "acquired_at": "2026-10-23T07:45:41.257908+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
