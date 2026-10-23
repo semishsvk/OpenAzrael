@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-native-manifest-20261023-v2209",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,31 +34,22 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-23T07:40:52.581710+00:00",
+  "released_at": "2026-10-23T07:46:40.253268+00:00",
   "reconciliation": {
-    "schema": "openazrael.achievement_integration_c1_writer_release.v1",
-    "head": "99be7ca0f148042363640d6ed0b23c6fe0c709b7",
-    "git_status": "CLEAN_WORKTREE_LOCAL_COMMIT",
-    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
-    "sync_state": "LOCAL_COMMIT_ONLY; NO_REMOTE_PUSH; canonical integration HEAD a296b82ffc829ca86811a59a4490811abb22d7bc and 3 prior dirty tracked source files preserved without edits",
+    "schema": "OpenAzrael.C8.NativeV2RequestSourceRelease.v2209",
+    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
+    "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
+    "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
+    "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCNativeManifest-20261023-v2209",
+    "request_manifest_sha256": "a9c20c0c2ea5acdcc320e112451f1c2d51c43bbd6c3627940486121f83c143b5",
+    "pinned_files": 11,
+    "native_admission": "BLOCKED",
+    "Godot_executed": false,
+    "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "release_classification": "ACHIEVEMENT_C1_VIEWER_ONLY_NOT_RETAIL_OR_DEMO",
-    "packaging": "F:\\Remaster Framework\\output\\projects\\OpenAzrael\\local-builds\\20261023-AchievementIntegrationC1\\OpenAzrael-Achievements-C1-20261023.zip",
-    "packaging_sha256": "07c7a6298b6d3baba3ccdc0c4d86870a3609ba59bc7ea493318c331e4dea0827",
-    "source_evidence": "evidence/retail/achievement_integration_c1_receipt.json",
-    "tests": {
-      "c1_godot": 47,
-      "legacy_shadow": 30,
-      "legacy_ledger": 37,
-      "source_contract": 13,
-      "packed_run_exit": 0
-    },
-    "retail_achievement_unlocks": 0,
-    "steamworks_calls": 0,
-    "authoritative_gameplay_modified": false,
-    "ui_mode": "VIEWER_HOST_EXPERIMENTAL_PREVIEW",
-    "original_corpus_modified": false
+    "status": "NATIVE_EXECUTION_REQUEST_READY_NOT_ADMITTED"
   },
   "acquired_at": "2026-10-23T07:45:41.257908+00:00",
   "priority_authorization": {
