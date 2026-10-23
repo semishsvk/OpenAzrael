@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-rdc-ready-plan-audit-20261022-v2204",
+  "status": "active",
+  "lease_id": "demo-c8-rdc-final-regression-20261023-v2208",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-22T21:09:38.250228+00:00",
+  "last_seen_at": "2026-10-23T05:19:56.275014+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -56,7 +56,7 @@
     "active_run": null,
     "status": "PRIVATE_READY_PLAN_AND_28_G10_SCENARIOS_STAGED_SOURCE_ONLY"
   },
-  "acquired_at": "2026-10-22T21:06:11.009802+00:00",
+  "acquired_at": "2026-10-23T05:19:56.275012+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
