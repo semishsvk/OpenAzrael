@@ -19,34 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "77e38a40-68b3-4ee6-ade7-6b3c32e06a01",
-    "host": "HomePC",
-    "supervisor_pid": 81916,
-    "started_at": "2026-10-23T07:38:58.032547+00:00",
-    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-    "command": [
-      "git",
-      "-C",
-      "F:\\OpenRemaster\\work\\OpenAzrael-achievements-shadow-20261017",
-      "add",
-      "--",
-      "project.godot",
-      "export_presets.cfg",
-      "scripts/achievement_manager.gd",
-      "scripts/achievement_integration_c1.gd",
-      "scripts/achievement_browser_c1.gd",
-      "scripts/achievement_c1_host.gd",
-      "scenes/achievement_c1_host.tscn",
-      "tools/achievements/test_achievement_integration_c1.gd",
-      "tools/achievements/test_achievement_integration_c1_contract.py",
-      "tools/achievements/package_achievement_c1.py",
-      "tools/achievements/seal_achievement_integration_c1.py",
-      "docs/ACHIEVEMENT_INTEGRATION_C1_20261023.md",
-      "evidence/retail/achievement_integration_c1_receipt.json"
-    ]
-  },
-  "last_seen_at": "2026-10-23T07:38:09.724091+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-23T07:39:00.152787+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
