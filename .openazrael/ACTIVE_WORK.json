@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-rdc-contract-audit-20261024-v2210",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,22 +34,22 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-23T07:46:40.253268+00:00",
+  "released_at": "2026-10-24T05:26:52.854820+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.NativeV2RequestSourceRelease.v2209",
+    "schema": "OpenAzrael.C8.RDCContractAuditRelease.v2210",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
+    "git_status": "tracked/staged clean; 25 preexisting untracked preserved (last verified; not refreshed)",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCNativeManifest-20261023-v2209",
-    "request_manifest_sha256": "a9c20c0c2ea5acdcc320e112451f1c2d51c43bbd6c3627940486121f83c143b5",
-    "pinned_files": 11,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-RDCContractAudit-20261024-v2210",
+    "audit_executed": false,
+    "audit_script_write_blocked": true,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "NATIVE_EXECUTION_REQUEST_READY_NOT_ADMITTED"
+    "status": "NO_AUDIT_EXECUTED_RELEASE_ONLY"
   },
   "acquired_at": "2026-10-24T05:24:48.851852+00:00",
   "priority_authorization": {
