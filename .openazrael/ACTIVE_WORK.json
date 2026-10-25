@@ -19,7 +19,24 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "a1c229f2-f8c3-49ec-ae3c-68e3f8dac332",
+    "host": "HomePC",
+    "supervisor_pid": 7144,
+    "started_at": "2026-10-25T16:05:32.291750+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025\\tools\\achievements\\source_pixel_foreground_trials_c3.py",
+      "--original-retail",
+      "F:\\Remaster Framework\\source\\Azrael's Tear\\GAME\\AZRAEL",
+      "--preview-dir",
+      "F:\\Remaster Framework\\output\\projects\\OpenAzrael\\asset-labs\\20261025-AchievementAuthenticSource-C3",
+      "--report",
+      "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025\\evidence\\retail\\achievement_original_pcx_trials_c3.json"
+    ]
+  },
   "last_seen_at": "2026-10-25T16:03:47.292600+00:00",
   "protocol": {
     "version": 2,
