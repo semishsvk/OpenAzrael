@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-dev-one-shot-request-20261025-v2214",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,23 +34,22 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-24T20:13:14.496155+00:00",
+  "released_at": "2026-10-25T07:53:43.717999+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.DevExportProfileRelease.v2213",
+    "schema": "OpenAzrael.C8.OneShotDevRequestRelease.v2214",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-DevExportProfile-20261024-v2213",
-    "manifest_sha256": "32e51a420563ce979c5df5f77b9953d70f2f5897bf6e8d406f35a5ca8417fc69",
-    "preset_name": "Windows 0.1.0-dev",
-    "preset_index": 7,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-DevOneShotRequest-20261025-v2214",
+    "request_manifest_sha256": "b0d790f37b38d950004ea7abdd6591ae85463292fe8a09a9d190834fdfc473e0",
+    "pinned_files": 5,
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "PRIVATE_DEV_EXPORT_PRESET_STAGED_NATIVE_HOLD"
+    "status": "ONE_SHOT_DEV_BUILD_REQUEST_PREPARED_NOT_ADMITTED"
   },
   "acquired_at": "2026-10-25T07:52:57.626265+00:00",
   "priority_authorization": {
