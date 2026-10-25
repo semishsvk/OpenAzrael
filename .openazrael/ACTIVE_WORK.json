@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-dev-v5-verifier-20261025-v2217",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,22 +34,21 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-25T12:59:17.802920+00:00",
+  "released_at": "2026-10-25T13:47:25.269090+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.DevWorkerV5ContractRelease.v2216",
+    "schema": "OpenAzrael.C8.DevWorkerV5VerifierRelease.v2217",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
     "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
     "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-DevWorkerV5-20261025-v2216",
-    "contract_sha256": "605ea8259b3ff0e91572c2d4be411f3a875094b7e36f3a90a8b2f9adb8394b13",
-    "negative_tests_passed": 9,
+    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-DevWorkerV5Verifier-20261025-v2217",
+    "verdict_sha256": "12b278bab69d270edbe02ba16ef2885eae09996ee358e986e31ce72d78b03060",
     "native_admission": "BLOCKED",
     "Godot_executed": false,
     "FinalBuild": false,
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "DEV_WORKER_V5_DESIGN_CONTRACT_PREPARED_NO_DISPATCH"
+    "status": "DEV_WORKER_V5_INDEPENDENT_DENY_EXPECTED"
   },
   "acquired_at": "2026-10-25T13:46:25.201954+00:00",
   "priority_authorization": {
