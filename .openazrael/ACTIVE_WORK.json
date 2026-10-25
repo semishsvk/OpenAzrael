@@ -19,7 +19,28 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "57ff50c1-fa03-402d-abe9-6c85d9d32a4b",
+    "host": "HomePC",
+    "supervisor_pid": 85788,
+    "started_at": "2026-10-25T16:14:16.333091+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025",
+    "command": [
+      "git",
+      "-C",
+      "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025",
+      "add",
+      "--",
+      "docs/ACHIEVEMENTS_AUTHENTIC_VISUAL_SOURCE_C3.md",
+      "evidence/retail/achievement_authentic_visual_c3_receipt.json",
+      "evidence/retail/achievement_original_pcx_trials_c3.json",
+      "evidence/retail/achievement_visual_source_census_c3.json",
+      "tools/achievements/audit_original_retail_icon_sources_c3.py",
+      "tools/achievements/seal_authentic_retail_visual_source_c3.py",
+      "tools/achievements/source_pixel_foreground_trials_c3.py",
+      "tools/achievements/test_authentic_retail_icon_source_c3.py"
+    ]
+  },
   "last_seen_at": "2026-10-25T16:13:10.777774+00:00",
   "protocol": {
     "version": 2,
