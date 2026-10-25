@@ -19,7 +19,23 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "782dd2d0-1c28-4569-bd1a-8cfd69487ba6",
+    "host": "HomePC",
+    "supervisor_pid": 41356,
+    "started_at": "2026-10-25T15:46:03.300854+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-SteamReadability-C2-20261025",
+    "command": [
+      "git",
+      "-C",
+      "F:\\OpenRemaster\\work\\OpenAzrael-SteamReadability-C2-20261025",
+      "commit",
+      "-m",
+      "design(achievements): harden C2 Steam readability and icon contrast review",
+      "-m",
+      "OpenAzrael-Writer-Lease: azrael-steam-readability-c2-20261025-b1"
+    ]
+  },
   "last_seen_at": "2026-10-25T15:45:45.827343+00:00",
   "protocol": {
     "version": 2,
