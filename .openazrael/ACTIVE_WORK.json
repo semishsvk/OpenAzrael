@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "azrael-steam-readability-c2-20261025-a1",
+  "status": "active",
+  "lease_id": "azrael-steam-readability-c2-20261025-b1",
   "owner": "chatgpt-openazrael-steam-readability-c2-20261025",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-25T15:36:47.314330+00:00",
+  "last_seen_at": "2026-10-25T15:40:58.674729+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -59,7 +59,7 @@
     "steam_achievements_activated": 0,
     "release_hold": "UNKNOWN_POSTCOMMIT_WORKTREE_MODIFICATIONS_PRESERVED_NO_OVERWRITE"
   },
-  "acquired_at": "2026-10-25T15:22:08.372863+00:00",
+  "acquired_at": "2026-10-25T15:40:58.674727+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
