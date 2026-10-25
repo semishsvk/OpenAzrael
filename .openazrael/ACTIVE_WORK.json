@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "demo-c8-dev-v5-contract-20261025-v2216",
+  "status": "active",
+  "lease_id": "demo-c8-dev-v5-verifier-20261025-v2217",
   "owner": "chatgpt-openazrael-finaldemo-20261018-1110",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-25T12:58:57.824283+00:00",
+  "last_seen_at": "2026-10-25T13:46:25.201956+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -51,7 +51,7 @@
     "active_run": null,
     "status": "DEV_WORKER_V5_DESIGN_CONTRACT_PREPARED_NO_DISPATCH"
   },
-  "acquired_at": "2026-10-25T12:58:18.218878+00:00",
+  "acquired_at": "2026-10-25T13:46:25.201954+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
