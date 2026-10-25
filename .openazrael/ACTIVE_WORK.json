@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-steam-readability-c2-20261025-a1",
   "owner": "chatgpt-openazrael-steam-readability-c2-20261025",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,21 +34,30 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-25T13:47:25.269090+00:00",
+  "released_at": "2026-10-25T15:37:58.839927+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.DevWorkerV5VerifierRelease.v2217",
-    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
-    "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
-    "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-DevWorkerV5Verifier-20261025-v2217",
-    "verdict_sha256": "12b278bab69d270edbe02ba16ef2885eae09996ee358e986e31ce72d78b03060",
-    "native_admission": "BLOCKED",
-    "Godot_executed": false,
-    "FinalBuild": false,
+    "schema": "OpenAzrael.C2.SteamReadabilityReleaseReconcile.v1",
+    "owner_thread_id": "chatgpt-openazrael-steam-readability-c2-20261025",
+    "lease_id": "azrael-steam-readability-c2-20261025-a1",
+    "head": "8bbf807c57b41ea62415d17493d06c7051af9e51",
+    "git_status": "COMMIT_SAVED_WITH_POSTCOMMIT_UNATTRIBUTED_DIRTY_TWO_FILES_QUARANTINED",
+    "remote_head": "NO_FEATURE_UPSTREAM_CONFIGURED",
+    "sync_state": "LOCAL_ONLY; no push or merge; source canonical unchanged",
+    "postcommit_dirty_preserved": [
+      {
+        "path": "tools/achievements/prepare_steam_metadata_c2.py",
+        "sha256": "40a76a294bb77f00ce3b2d680eab578eec7f28e5986eb9260d01cd00325367bd"
+      },
+      {
+        "path": "data/achievements/steam_readability_candidate_c2.json",
+        "sha256": "70606cbe23a943aafba59969e2dbafe6a5f739bbaaaf197c164239476dd57a85"
+      }
+    ],
+    "tested_commit_source_contract": "14/14 PASS",
     "task_processes_stopped": true,
-    "active_run": null,
-    "status": "DEV_WORKER_V5_INDEPENDENT_DENY_EXPECTED"
+    "original_gameplay_modified": false,
+    "steam_achievements_activated": 0,
+    "release_hold": "UNKNOWN_POSTCOMMIT_WORKTREE_MODIFICATIONS_PRESERVED_NO_OVERWRITE"
   },
   "acquired_at": "2026-10-25T15:22:08.372863+00:00",
   "priority_authorization": {
