@@ -19,7 +19,23 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "762cf975-806b-40a1-aa07-2856978a21d0",
+    "host": "HomePC",
+    "supervisor_pid": 90740,
+    "started_at": "2026-10-25T16:17:02.414530+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025",
+    "command": [
+      "git",
+      "-C",
+      "F:\\OpenRemaster\\work\\OpenAzrael-AuthenticAchievementIcons-C3-20261025",
+      "commit",
+      "-m",
+      "research(achievements): census authentic retail PCX visual sources C3",
+      "-m",
+      "OpenAzrael-Writer-Lease: azrael-source-icon-c3-20261025-a1"
+    ]
+  },
   "last_seen_at": "2026-10-25T16:16:28.322786+00:00",
   "protocol": {
     "version": 2,
