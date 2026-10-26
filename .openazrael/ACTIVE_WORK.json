@@ -19,7 +19,20 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "b9d31e5c-ae4e-4c11-8c39-38efead8df4a",
+    "host": "HomePC",
+    "supervisor_pid": 19228,
+    "started_at": "2026-10-26T16:47:24.971512+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-25\\openremaster-master-development-consolidation-dual-trust\\working-godot-dev",
+    "command": [
+      "C:\\Users\\msemj\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-25\\openremaster-master-development-consolidation-dual-trust\\working-godot-dev\\qualify_c8_recipe.py",
+      "--cycle",
+      "fixture-ids"
+    ]
+  },
   "last_seen_at": "2026-10-26T16:46:10.282941+00:00",
   "protocol": {
     "version": 2,
