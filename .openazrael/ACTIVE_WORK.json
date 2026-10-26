@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "master-openazrael-godot-dev-20261026",
   "owner": "01a1734c-aca7-7d03-8a77-1168008db312",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,22 +34,24 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-26T15:59:00.739669+00:00",
+  "released_at": "2026-10-26T16:24:39.967351+00:00",
   "reconciliation": {
-    "schema": "OpenRemaster.OpenAzraelGodotDevReviewRelease.v1",
+    "schema": "OpenRemaster.C8GodotV2GuardedReviewRelease.v1",
     "head": "NOT_RECHECKED_LOCAL_GIT_DENIED",
-    "recorded_local_head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "No OpenAzrael repository or canonical project files modified by this task; current local Git status unavailable after earlier sandbox denial.",
+    "recorded_c8_head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
+    "git_status": "No canonical OpenAzrael source/worktree files modified; current local Git status remains unverified after prior sandbox denial.",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; recorded local-only revision and remote integration head are not silently synchronized.",
+    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; local-only C8 revision and remote integration ref preserved separately.",
     "task_processes_stopped": true,
     "active_run": null,
+    "status": "GUARDED_C8_GODOT_V2_UNIT_PASS_NATIVE_ADMISSION_HOLD",
+    "tests_passed": 82,
+    "initial_c8_binding_tests_passed": 17,
     "Godot_executed": false,
-    "project_tests_executed": false,
-    "guarded_test_exit": 75,
     "native_admission": "BLOCKED",
-    "production_go": false,
-    "status": "SOURCE_COMPATIBILITY_PREPARED_GUARDED_TEST_BACKEND_BLOCKED"
+    "writer_guard_transport": "EXISTING_PROTOCOL_CONNECTED_GITHUB_STORE",
+    "credential_material_exported": false,
+    "production_go": false
   },
   "acquired_at": "2026-10-26T16:09:51.001217+00:00",
   "priority_authorization": {
