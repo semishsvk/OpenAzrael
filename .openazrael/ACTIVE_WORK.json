@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "master-openazrael-godot-dev-20261026",
   "owner": "01a1734c-aca7-7d03-8a77-1168008db312",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,16 +34,20 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-26T17:19:10.275062+00:00",
+  "released_at": "2026-10-26T17:28:53.203536+00:00",
   "reconciliation": {
-    "schema": "OpenRemaster.CompletionAdmissionRelease.v1",
+    "schema": "OpenRemaster.ByteExactPatchReviewRelease.v1",
     "head": "NOT_RECHECKED_LOCAL_GIT_DENIED",
-    "git_status": "Canonical and active-worker files unchanged; isolated Godot adapter/test candidate only. Local Git remains unverified after prior sandbox denial.",
+    "git_status": "Canonical and active-worker files unchanged; isolated patch/evidence generation and disposable reconstruction only. Local Git unverified after prior sandbox denial.",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
     "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; remote revision attributed prior read, not rechecked this cycle.",
     "task_processes_stopped": true,
     "active_run": null,
-    "tests_passed": 141,
+    "patch_files_reconstructed": 7,
+    "python_ast_checks": 4,
+    "prior_unit_tests_passed": 141,
+    "new_unit_tests": 0,
+    "initial_attempts_preserved": 2,
     "Godot_executed": false,
     "native_admission": "HOLD",
     "production_go": false
