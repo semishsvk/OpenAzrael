@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "master-openazrael-godot-dev-20261026",
   "owner": "01a1734c-aca7-7d03-8a77-1168008db312",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,21 +34,22 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-26T09:54:52.971139+00:00",
+  "released_at": "2026-10-26T15:59:00.739669+00:00",
   "reconciliation": {
-    "schema": "OpenAzrael.C8.DevWorkerV5NegativeGateRelease.v2219",
-    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "tracked/staged clean; 25 preexisting untracked preserved",
-    "remote_head": "LOCAL_ONLY_NO_UPSTREAM",
-    "sync_state": "NO_CANONICAL_ORIGINAL_OR_FRAMEWORK_CHANGES_NO_PUSH",
-    "workspace": "F:\\OpenRemaster\\work\\OpenAzrael-C8-DevWorkerV5NegativeGate-20261026-v2219",
-    "negative_tests_passed": 12,
-    "native_admission": "BLOCKED",
-    "Godot_executed": false,
-    "FinalBuild": false,
+    "schema": "OpenRemaster.OpenAzraelGodotDevReviewRelease.v1",
+    "head": "NOT_RECHECKED_LOCAL_GIT_DENIED",
+    "recorded_local_head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
+    "git_status": "No OpenAzrael repository or canonical project files modified by this task; current local Git status unavailable after earlier sandbox denial.",
+    "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
+    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; recorded local-only revision and remote integration head are not silently synchronized.",
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "V5_SOURCE_GATE_NEGATIVE_TESTS_PASS_NO_EXECUTOR"
+    "Godot_executed": false,
+    "project_tests_executed": false,
+    "guarded_test_exit": 75,
+    "native_admission": "BLOCKED",
+    "production_go": false,
+    "status": "SOURCE_COMPATIBILITY_PREPARED_GUARDED_TEST_BACKEND_BLOCKED"
   },
   "acquired_at": "2026-10-26T15:46:10.092540+00:00",
   "priority_authorization": {
