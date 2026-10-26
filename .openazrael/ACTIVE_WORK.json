@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "master-openazrael-godot-dev-20261026",
   "owner": "01a1734c-aca7-7d03-8a77-1168008db312",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,26 +34,18 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-26T16:50:38.338106+00:00",
+  "released_at": "2026-10-26T17:08:27.214704+00:00",
   "reconciliation": {
-    "schema": "OpenRemaster.C8ExactRecipeReviewRelease.v1",
+    "schema": "OpenRemaster.GodotAuditBindingRelease.v1",
     "head": "NOT_RECHECKED_LOCAL_GIT_DENIED",
-    "recorded_c8_head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "No canonical source/config or active worker files changed; current local Git status remains unverified after prior sandbox denial.",
+    "git_status": "Canonical and active-worker files unchanged; isolated candidate source only. Current local Git status remains unverified after earlier sandbox denial.",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; local-only C8 head and remote integration revision separately attributed.",
+    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; remote head attributed prior read, not rechecked this audit cycle.",
     "task_processes_stopped": true,
     "active_run": null,
-    "status": "EXACT_RECIPE_BINDING_QUALIFIED_NATIVE_ADMISSION_HOLD",
-    "tests_passed": 109,
-    "initial_run": {
-      "passed": 108,
-      "errors": 2,
-      "reason": "One oversized-input test ID exceeded Windows environment-variable length during setup/teardown; fixed labels only, original evidence preserved."
-    },
-    "project_files_rechecked": 928,
-    "authority_references_missing": 6,
+    "tests_passed": 116,
     "Godot_executed": false,
+    "native_admission": "HOLD",
     "production_go": false
   },
   "acquired_at": "2026-10-26T17:05:40.008053+00:00",
