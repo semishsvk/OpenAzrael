@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "master-openazrael-godot-dev-20261026",
   "owner": "01a1734c-aca7-7d03-8a77-1168008db312",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,16 +34,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-26T17:14:10.170272+00:00",
+  "released_at": "2026-10-26T17:19:10.275062+00:00",
   "reconciliation": {
-    "schema": "OpenRemaster.SavedOperationBindingRelease.v1",
+    "schema": "OpenRemaster.CompletionAdmissionRelease.v1",
     "head": "NOT_RECHECKED_LOCAL_GIT_DENIED",
-    "git_status": "Canonical and active-worker source unchanged; isolated broker/host candidate only. Current local Git remains unverified after prior sandbox denial.",
+    "git_status": "Canonical and active-worker files unchanged; isolated Godot adapter/test candidate only. Local Git remains unverified after prior sandbox denial.",
     "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; remote head attributed prior read, not rechecked this cycle.",
+    "sync_state": "COORDINATION_ONLY_NO_SOURCE_PUSH; remote revision attributed prior read, not rechecked this cycle.",
     "task_processes_stopped": true,
     "active_run": null,
-    "tests_passed": 129,
+    "tests_passed": 141,
     "Godot_executed": false,
     "native_admission": "HOLD",
     "production_go": false
