@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "master-openazrael-godot-dev-20261026",
   "owner": "01a1734c-aca7-7d03-8a77-1168008db312",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-26T16:47:45.610441+00:00",
+  "last_seen_at": "2026-10-26T17:05:40.008053+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -56,7 +56,7 @@
     "Godot_executed": false,
     "production_go": false
   },
-  "acquired_at": "2026-10-26T16:43:49.505682+00:00",
+  "acquired_at": "2026-10-26T17:05:40.008053+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
