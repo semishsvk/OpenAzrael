@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r153-multiphase-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,17 +34,17 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T16:15:55.596610+00:00",
+  "released_at": "2026-10-30T16:27:45.861118+00:00",
   "reconciliation": {
-    "schema": "openazrael.r152.release.v1",
+    "schema": "openazrael.r153.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; 25 pre-existing untracked files. Isolated R150 GDScript and R152 runner/logs created.",
+    "git_status": "Canonical C8 untouched; isolated R153 script, runner and logs added; no commit.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "Isolated Godot R150 snapshot regression PASS exit 0; action equality, transform equality, count, queue empty. No commit/push or production promotion.",
+    "sync_state": "R153 Godot isolated three-phase snapshot replay PASS six cuts, exit 0; source-only no original fidelity claim; no push.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD",
-    "test_script_sha256": "28CD1AC69C6C625CBB81E80749B97B7689F92C5E79CC71238E61233129882918"
+    "test_script_sha256": "35D509CCB1566A46B68E103C0FD4195731C6744FCDD1D0580D3ACC9A462E3BCD"
   },
   "acquired_at": "2026-10-30T16:26:31.587662+00:00",
   "priority_authorization": {
