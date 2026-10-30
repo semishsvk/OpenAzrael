@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r161-niamh-v395-v396-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:11:08.583338+00:00",
+  "released_at": "2026-10-30T17:13:50.544306+00:00",
   "reconciliation": {
-    "schema": "openazrael.r160.release.v1",
+    "schema": "openazrael.r161.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated Niamh Oracle catalog created.",
+    "git_status": "Canonical C8 untouched; isolated full AVI region sweep V395/V396 added.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "Eight original Oracle JSON reports indexed; three event-label dialogue candidates, not framebuffer proof; V397 already excluded by full 608 frame audit.",
+    "sync_state": "Original V395 1104 frames 15 region hashes; V396 1300 frames 2 hashes; visual text classification pending. No native dispatch.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD"
