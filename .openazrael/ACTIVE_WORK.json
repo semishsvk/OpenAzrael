@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "azrael-r153-multiphase-20261030",
+  "status": "active",
+  "lease_id": "azrael-r154-coverage-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-30T16:27:22.916523+00:00",
+  "last_seen_at": "2026-10-30T16:33:46.064572+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -46,7 +46,7 @@
     "fidelity": "HOLD",
     "test_script_sha256": "35D509CCB1566A46B68E103C0FD4195731C6744FCDD1D0580D3ACC9A462E3BCD"
   },
-  "acquired_at": "2026-10-30T16:26:31.587662+00:00",
+  "acquired_at": "2026-10-30T16:33:46.064571+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
