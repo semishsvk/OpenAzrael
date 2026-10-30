@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r155-source-evidence-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,17 +34,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T16:34:25.969341+00:00",
+  "released_at": "2026-10-30T16:43:58.719687+00:00",
   "reconciliation": {
-    "schema": "openazrael.r154.release.v1",
+    "schema": "openazrael.r155.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 untouched; isolated R154 test/runner/logs created, no commit.",
+    "git_status": "Canonical C8 unchanged. Isolated R155 evidence-gap report created, no commit.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "R154 41/41 Godot source-only checkpoint equivalence PASS, exit 0; original runtime parity HOLD.",
+    "sync_state": "41/41 R154 retained; R155 identifies missing original R7 Well transform oracle and production HOLD. No native dispatch.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
-    "fidelity": "HOLD",
-    "test_script_sha256": "F0DAA12F2778E5D074543B16AAFFC112E65A54190D468CC76570E3B6C57466A3"
+    "fidelity": "HOLD"
   },
   "acquired_at": "2026-10-30T16:43:34.738192+00:00",
   "priority_authorization": {
