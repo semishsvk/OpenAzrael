@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r167-font-qa-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:46:21.627324+00:00",
+  "released_at": "2026-10-30T17:48:20.962750+00:00",
   "reconciliation": {
-    "schema": "openazrael.r166.release.v1",
+    "schema": "openazrael.r167.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated R166 Niamh state capture script, runner, three PNGs, logs and manifest created; no commit.",
+    "git_status": "Canonical C8 unchanged; isolated font coverage auditor and report created.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "R166 isolated Godot dialogue menu/selection/response bitmap captures PASS exit 0; all 3 PNGs distinct; original dialogue framebuffer unavailable, native parity HOLD.",
+    "sync_state": "R167 Niamh IR font coverage PASS six text fields zero missing glyphs one explicit substitution; native font layout parity HOLD.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD"
