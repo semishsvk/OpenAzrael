@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r164-niamh-capture-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:21:17.229111+00:00",
+  "released_at": "2026-10-30T17:41:33.094638+00:00",
   "reconciliation": {
-    "schema": "openazrael.r163.release.v1",
+    "schema": "openazrael.r164.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated Niamh original frame classification added.",
+    "git_status": "Canonical C8 unchanged; isolated R164 Niamh capture test and runner created.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "V395/V397/V398a classified; original open-dialogue framebuffer still missing; no native execution, no production promotion.",
+    "sync_state": "R164 headless Godot screenshot attempt TIMEOUT 80s; no PNG, no PASS. Child Godot process absent after timeout; active_run cleared. Requires revised bounded capture.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD"
