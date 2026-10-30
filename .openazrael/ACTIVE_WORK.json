@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r157-provenance-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,17 +34,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T16:49:38.194711+00:00",
+  "released_at": "2026-10-30T16:53:03.798410+00:00",
   "reconciliation": {
-    "schema": "openazrael.r156.release.v1",
+    "schema": "openazrael.r157.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated R156 comparator and tests created, no commit.",
+    "git_status": "Canonical C8 unchanged; isolated R157 provenance checker and integrity report created, no commit.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "R156 source model self-test PASS; four unit tests PASS. No original R7 transform oracle available. Comparator authority string is structural check only, not cryptographic verification; original fidelity HOLD.",
+    "sync_state": "Original Niamh V397 media manifest 11/11 SHA and size PASS; no visual A/B or original runtime dispatch.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
-    "fidelity": "HOLD",
-    "comparator_sha256": "C0FC11D50FB663BB516A1346932E03C10C22EB9B20A486B9BE8304131943935C"
+    "fidelity": "HOLD"
   },
   "acquired_at": "2026-10-30T16:52:30.583114+00:00",
   "priority_authorization": {
