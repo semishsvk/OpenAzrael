@@ -19,7 +19,17 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "2adfb791-840e-4791-90f1-d315b7fe7e01",
+    "host": "HomePC",
+    "supervisor_pid": 63276,
+    "started_at": "2026-10-30T16:34:04.107788+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-DualLaneFidelity-20261029-r1",
+    "command": [
+      "python",
+      "run_r154.py"
+    ]
+  },
   "last_seen_at": "2026-10-30T16:33:46.064572+00:00",
   "protocol": {
     "version": 2,
