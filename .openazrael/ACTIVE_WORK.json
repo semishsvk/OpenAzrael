@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r158-niamh-frame-audit-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T16:53:03.798410+00:00",
+  "released_at": "2026-10-30T17:03:50.623945+00:00",
   "reconciliation": {
-    "schema": "openazrael.r157.release.v1",
+    "schema": "openazrael.r158.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated R157 provenance checker and integrity report created, no commit.",
+    "git_status": "Canonical C8 untouched; isolated V397 reference image analysis and 1fps AVI sampling created.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "Original Niamh V397 media manifest 11/11 SHA and size PASS; no visual A/B or original runtime dispatch.",
+    "sync_state": "10 PNG original frames same 170x206 dialogue-region hash; nine sampled AVI frames same region hash; V397 does not establish R149 text parity. No native execution.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD"
