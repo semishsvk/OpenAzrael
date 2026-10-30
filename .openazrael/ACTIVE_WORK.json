@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r160-oracle-catalog-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:09:26.234360+00:00",
+  "released_at": "2026-10-30T17:11:08.583338+00:00",
   "reconciliation": {
-    "schema": "openazrael.r159.release.v1",
+    "schema": "openazrael.r160.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 untouched; isolated R159 full AVI region analyzer and report created.",
+    "git_status": "Canonical C8 unchanged; isolated Niamh Oracle catalog created.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "608/608 V397 native AVI frames show exactly one RGB hash in candidate dialogue region 425,84,170,206; no native run or font parity.",
+    "sync_state": "Eight original Oracle JSON reports indexed; three event-label dialogue candidates, not framebuffer proof; V397 already excluded by full 608 frame audit.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD"
