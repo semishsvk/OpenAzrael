@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r166-dialogue-states-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,17 +34,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:43:03.135454+00:00",
+  "released_at": "2026-10-30T17:46:21.627324+00:00",
   "reconciliation": {
-    "schema": "openazrael.r165.release.v1",
+    "schema": "openazrael.r166.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated R165 bitmap-only capture test, runner, logs and PNG created.",
+    "git_status": "Canonical C8 unchanged; isolated R166 Niamh state capture script, runner, three PNGs, logs and manifest created; no commit.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "R165 Godot R149 dialogue active and 170x206 bitmap PNG export PASS exit 0; full-screen/native text parity HOLD.",
+    "sync_state": "R166 isolated Godot dialogue menu/selection/response bitmap captures PASS exit 0; all 3 PNGs distinct; original dialogue framebuffer unavailable, native parity HOLD.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
-    "fidelity": "HOLD",
-    "png_sha256": "5B6863C034CA2548E7DEFBE2D31614C08D5909A1B951667289C65D6D09C30131"
+    "fidelity": "HOLD"
   },
   "acquired_at": "2026-10-30T17:45:36.017562+00:00",
   "priority_authorization": {
