@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "azrael-r160-oracle-catalog-20261030",
+  "status": "active",
+  "lease_id": "azrael-r161-niamh-v395-v396-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-30T17:10:53.806489+00:00",
+  "last_seen_at": "2026-10-30T17:13:18.078884+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -45,7 +45,7 @@
     "native_admission": "HOLD",
     "fidelity": "HOLD"
   },
-  "acquired_at": "2026-10-30T17:10:38.314273+00:00",
+  "acquired_at": "2026-10-30T17:13:18.078883+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
