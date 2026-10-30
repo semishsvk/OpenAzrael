@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r165-niamh-bounded-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,16 +34,17 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:41:33.094638+00:00",
+  "released_at": "2026-10-30T17:43:03.135454+00:00",
   "reconciliation": {
-    "schema": "openazrael.r164.release.v1",
+    "schema": "openazrael.r165.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged; isolated R164 Niamh capture test and runner created.",
+    "git_status": "Canonical C8 unchanged; isolated R165 bitmap-only capture test, runner, logs and PNG created.",
     "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "R164 headless Godot screenshot attempt TIMEOUT 80s; no PNG, no PASS. Child Godot process absent after timeout; active_run cleared. Requires revised bounded capture.",
+    "sync_state": "R165 Godot R149 dialogue active and 170x206 bitmap PNG export PASS exit 0; full-screen/native text parity HOLD.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
-    "fidelity": "HOLD"
+    "fidelity": "HOLD",
+    "png_sha256": "5B6863C034CA2548E7DEFBE2D31614C08D5909A1B951667289C65D6D09C30131"
   },
   "acquired_at": "2026-10-30T17:42:05.570022+00:00",
   "priority_authorization": {
