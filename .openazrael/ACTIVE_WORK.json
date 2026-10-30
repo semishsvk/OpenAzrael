@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r150-source-integration-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,23 +34,16 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-26T18:32:23.043367+00:00",
+  "released_at": "2026-10-30T16:06:30.234083+00:00",
   "reconciliation": {
-    "schema": "OpenRemaster.GenericGitHubSourceReviewRelease.v1",
-    "head": "NOT_RECHECKED_LOCAL_C8_GIT_DENIED",
-    "git_status": "Canonical and active-worker source unchanged; 16 generic source files copied and tested locally, then 19 source/metadata files committed in a new Framework candidate branch.",
-    "remote_head": "55207b3b666a91970c7c5008892e00ae91ce9447",
-    "sync_state": "C8 source unchanged; prior C8 remote observation attributed only. Framework candidate commit ac52c990e0204020ba0164d3b1ffaf9eaeb9a8b4 created; main and consolidation branch unchanged.",
+    "schema": "openazrael.r150.source_only_release.v1",
+    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
+    "git_status": "Canonical C8 has 25 pre-existing untracked files; unchanged by this R150 operation. Isolated DualLane R150 policy and snapshot test created; no commit.",
+    "remote_head": "NOT_AVAILABLE_LOCAL_ORIGIN_NO_OUTPUT",
+    "sync_state": "Local isolated source-only files preserved, no push, no production/native promotion. Guarded Godot attempts returned error; R150 runtime NOT PASS.",
     "task_processes_stopped": true,
-    "active_run": null,
-    "generic_tests_passed": 116,
-    "framework_source_commit": "ac52c990e0204020ba0164d3b1ffaf9eaeb9a8b4",
-    "framework_pr_created": false,
-    "framework_pr_action": "AUTO_REVIEW_REJECTED_PENDING_EXPLICIT_PAYLOAD_AND_DESTINATION_APPROVAL",
-    "ci_runs_observed": 0,
-    "Godot_executed": false,
     "native_admission": "HOLD",
-    "production_go": false
+    "fidelity": "HOLD"
   },
   "acquired_at": "2026-10-30T16:04:58.118703+00:00",
   "priority_authorization": {
