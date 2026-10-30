@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "azrael-r151-diagnostic-20261030",
   "owner": "chatgpt-openazrael-fidelity-20261030",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T16:06:30.234083+00:00",
+  "released_at": "2026-10-30T16:11:04.040124+00:00",
   "reconciliation": {
-    "schema": "openazrael.r150.source_only_release.v1",
+    "schema": "openazrael.r151.release.v1",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 has 25 pre-existing untracked files; unchanged by this R150 operation. Isolated DualLane R150 policy and snapshot test created; no commit.",
-    "remote_head": "NOT_AVAILABLE_LOCAL_ORIGIN_NO_OUTPUT",
-    "sync_state": "Local isolated source-only files preserved, no push, no production/native promotion. Guarded Godot attempts returned error; R150 runtime NOT PASS.",
+    "git_status": "Canonical C8 untouched; preexisting 25 untracked files; isolated R150 and R151 diagnostic files retained.",
+    "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
+    "sync_state": "Source-only isolated diagnostic. Guarded Godot --version exit 0; --script exit 1 without captured stderr. No promotion or push.",
     "task_processes_stopped": true,
     "native_admission": "HOLD",
     "fidelity": "HOLD"
