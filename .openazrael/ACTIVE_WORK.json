@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-r443-recovery-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,16 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-30T17:54:16.855737+00:00",
+  "released_at": "2026-10-31T10:29:02.240252+00:00",
   "reconciliation": {
-    "schema": "openazrael.r168.release.v1",
+    "remote_head": "Named integration ref not advertised by successful ls-remote query; remote equality NOT VERIFIED",
+    "sync_state": "Isolated tooling and evidence saved in Codex outputs; no source commit, push, merge, build or native replay; FIDELITY_HOLD. Strict GUI admission blocked foreign runtimes.",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 untouched; isolated R168 dialogue test, runner, four PNG, logs, results created.",
-    "remote_head": "NOT_OBSERVED_LOCAL_BUNDLE",
-    "sync_state": "R168 both Niamh demo branches ID30 and ID999 menu/response pairing PASS in isolated Godot; R166 prior selection-response mismatch was test bug. Original dialogue framebuffer HOLD.",
     "task_processes_stopped": true,
-    "native_admission": "HOLD",
-    "fidelity": "HOLD"
+    "git_status": "25 pre-existing untracked files; no tracked modifications observed; no project source edits performed"
   },
   "acquired_at": "2026-10-31T10:25:18.553929+00:00",
   "priority_authorization": {
