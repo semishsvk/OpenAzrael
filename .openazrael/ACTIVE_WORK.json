@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "90b58ff4-bad1-48e2-9a12-7cbdb1d69ab7",
+    "host": "HomePC",
+    "supervisor_pid": 72100,
+    "started_at": "2026-10-31T22:28:20.765337+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\add_packaged_audio_probes_v42.py"
+    ]
+  },
   "last_seen_at": "2026-10-31T22:25:40.023549+00:00",
   "protocol": {
     "version": 2,
