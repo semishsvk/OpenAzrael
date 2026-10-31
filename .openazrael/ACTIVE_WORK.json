@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-r7-payload-rebuild-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,14 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T13:37:53.254346+00:00",
+  "released_at": "2026-10-31T14:33:48.606762+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 has zero tracked changes and the same 25 pre-existing untracked files; no canonical integration or commits.",
-    "remote_head": "NOT_RECHECKED; no Git source writes or pushes",
-    "sync_state": "Isolated local Windows diagnostic exported: 258 checks PASS, 307 authority assets loaded/hash verified, tampered PCK rejected; output copy verified; FIDELITY_HOLD",
-    "task_processes_stopped": true
+    "git_status": "Canonical C8 unchanged: zero tracked changes; same 25 pre-existing untracked files; verified 2026-10-31T14:27:25Z",
+    "remote_head": "NOT_RECHECKED; no source commits or pushes performed",
+    "sync_state": "Frozen imported payload rebuild byte-identical; 1737 exact file hashes; 258 runtime checks; 11 kit guards; 9 local published artifacts SHA verified; original fidelity and clean-source import HOLD. Two isolated Windows guests installed; further verification requires UAC.",
+    "task_processes_stopped": true,
+    "remaining_owned_infrastructure": "ORM-DOSBox-A intentionally left at first boot; B installed OFF; neither runtime worker commissioned"
   },
   "acquired_at": "2026-10-31T13:45:09.790867+00:00",
   "priority_authorization": {
