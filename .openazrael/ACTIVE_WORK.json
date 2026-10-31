@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-vm-console-focuspath-v4-20261031",
+  "status": "active",
+  "lease_id": "codex-vm-desktop-diagnostics-v6-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T18:23:46.815294+00:00",
+  "last_seen_at": "2026-10-31T18:37:14.503918+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Four synthetic GUI attempts preserved; v5 blocked in both guests by unchanged foreground gate. Both consoles unlocked. Audio devices 0. Unexpected thumbnail format preserved raw. Evidence archived; FIDELITY_HOLD; no workers commissioned",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T18:00:13.675731+00:00",
+  "acquired_at": "2026-10-31T18:37:14.503916+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
