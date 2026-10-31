@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-r7-payload-rebuild-20261031",
+  "status": "active",
+  "lease_id": "codex-vm-runtime-provision-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T14:18:20.491404+00:00",
+  "last_seen_at": "2026-10-31T15:21:10.183772+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -43,7 +43,7 @@
     "task_processes_stopped": true,
     "remaining_owned_infrastructure": "ORM-DOSBox-A intentionally left at first boot; B installed OFF; neither runtime worker commissioned"
   },
-  "acquired_at": "2026-10-31T13:45:09.790867+00:00",
+  "acquired_at": "2026-10-31T15:21:10.183770+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
