@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-vm-qualification-b1023050a88643df800169208e6f7bb0",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,15 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T16:04:04.963087+00:00",
+  "released_at": "2026-10-31T16:17:19.541628+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 verified unchanged: zero tracked changes and same 25 pre-existing untracked files",
-    "remote_head": "NOT_RECHECKED; no source commits or pushes",
-    "sync_state": "Both guest offline runtime bundles staged and all 1156 package files verified. Each guest passed 40 isolation unit tests plus 24 runtime/guard checks; corrupt transport rejected; 377 original files privately copied and source reverified unchanged. Synthetic parallel GUI qualifier prepared but not executed because Windows UAC wait expired. All fidelity gates remain HOLD.",
-    "task_processes_stopped": true,
-    "persistent_execution_worker_accepted": false,
-    "owned_vms": "A and B intentionally remain running, uncommissioned; pilot queue untouched"
+    "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
+    "remote_head": "NOT_RECHECKED; no Git source writes or pushes",
+    "sync_state": "Synthetic qualification only; inspect RESULT.json; no game or fidelity qualification. FIDELITY_HOLD",
+    "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T16:16:27.088853+00:00",
   "priority_authorization": {
