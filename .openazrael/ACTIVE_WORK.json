@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-r7-cleanup-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T10:45:49.642219+00:00",
+  "released_at": "2026-10-31T10:56:29.567674+00:00",
   "reconciliation": {
-    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical/R149 source unchanged by all 2455 before/after hashes. Four source changes and one new test in isolated full project only.",
-    "remote_head": "NOT_RECHECKED; no integration source commit or push",
-    "sync_state": "Full project source candidate ZIP, combined patch, test logs, manifests and restart checkpoint saved locally; scoped R7 persistence PASS, supplemental renderer PARTIAL, FIDELITY_HOLD.",
-    "task_processes_stopped": true
+    "git_status": "Canonical and preceding candidate preserved; fresh cleanup copy has test harness-only changes",
+    "task_processes_stopped": true,
+    "remote_head": "NOT_RECHECKED: no source pushes",
+    "sync_state": "Cleanup/isolation checkpoint saved; audio drain scoped PASS, material PARTIAL, FIDELITY_HOLD",
+    "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed"
   },
   "acquired_at": "2026-10-31T10:47:56.728445+00:00",
   "priority_authorization": {
