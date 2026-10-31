@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-r7-portable-build-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,15 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T12:52:29.489406+00:00",
+  "released_at": "2026-10-31T13:37:53.254346+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 has no tracked changes; the same 25 pre-existing untracked files remain. 2463 isolated input file hashes reverified unchanged.",
-    "remote_head": "NOT_RECHECKED; no integration source writes or pushes",
-    "sync_state": "Isolated candidate only; seven headless runs, 241 checks PASS, zero engine errors or reported ObjectDB leaks; FIDELITY_HOLD",
-    "task_processes_stopped": true,
-    "scope": "R7 material diagnosis and validation processes only; none remain",
-    "outside_lease_infrastructure_helpers": "Hyper-V provision helpers 26756/40984/37012 still waiting on existing VMMS job; no Azrael runtime launched"
+    "git_status": "Canonical C8 has zero tracked changes and the same 25 pre-existing untracked files; no canonical integration or commits.",
+    "remote_head": "NOT_RECHECKED; no Git source writes or pushes",
+    "sync_state": "Isolated local Windows diagnostic exported: 258 checks PASS, 307 authority assets loaded/hash verified, tampered PCK rejected; output copy verified; FIDELITY_HOLD",
+    "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T13:05:24.367965+00:00",
   "priority_authorization": {
