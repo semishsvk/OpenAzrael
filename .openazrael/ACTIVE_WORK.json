@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "codex-host-audio-v24-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T21:02:31.664384+00:00",
+  "last_seen_at": "2026-10-31T21:03:46.849315+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Native first door v23 retained. New native stereo source995 L/R=0.890924; interleaved AVI/WAV identical common PCM; observed door ROI motion 134.9ms after source template alignment. Godot nonspatial 0dB event player confirmed in isolated full project: 20 checks, no engine errors. Boot-readiness candidate v25: 10 headless cases, safety functions unchanged; new GUI attempt UAC cancelled before launch; live loop not qualified. 377 original hashes unchanged. Canonical source unchanged. Bundle 0c674a64ee6d088ef0dcc1c7632acf93b6f038ec258eadb63fcc239277cc87ab. Remaining full route, R7, movie frame99, natural completion, and Godot/audio comparison gates HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T20:55:46.983307+00:00",
+  "acquired_at": "2026-10-31T21:03:46.849314+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
