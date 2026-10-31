@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-vm-runtime-provision-20261031",
+  "status": "active",
+  "lease_id": "codex-vm-qualification-b1023050a88643df800169208e6f7bb0",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T16:01:04.848365+00:00",
+  "last_seen_at": "2026-10-31T16:16:27.088855+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -44,7 +44,7 @@
     "persistent_execution_worker_accepted": false,
     "owned_vms": "A and B intentionally remain running, uncommissioned; pilot queue untouched"
   },
-  "acquired_at": "2026-10-31T15:21:10.183770+00:00",
+  "acquired_at": "2026-10-31T16:16:27.088853+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
