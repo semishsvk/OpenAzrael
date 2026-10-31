@@ -19,7 +19,20 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "285c9a0d-adab-4899-907e-ac1f95398a8a",
+    "host": "HomePC",
+    "supervisor_pid": 47668,
+    "started_at": "2026-10-31T18:40:07.165754+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\work\\vm-runtime-provision\\bundle-v1\\runtime\\python.exe",
+      "-I",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\vm-runtime-provision\\guest-desktop-diagnostics-v6.py",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\vm-runtime-provision\\HOST_ONLY_API_SMOKE_V6.json"
+    ]
+  },
   "last_seen_at": "2026-10-31T18:39:29.001323+00:00",
   "protocol": {
     "version": 2,
