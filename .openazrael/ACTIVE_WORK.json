@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-clean-import-v46-20261101",
+  "status": "active",
+  "lease_id": "codex-gameplay-v51-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T22:43:43.014726+00:00",
+  "last_seen_at": "2026-10-31T22:45:18.043877+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Pinned clean-source Windows pipeline v50 qualified for exact source/engine/templates with explicit scene ID stabilization. Four independent empty-cache projects, including relocated delivered kit, produced byte-identical PCK08ce05f19b0f19098453381b069f4dc08e0b9ca34fd5e350e518cdea60a69372; all1745 resource hashes agree. All11 scenes retained every serialized value except explicit ID metadata.25 runtime phases passed on clean rebuild and delivered ZIP with fresh userdata: R7 save12/read70, lifecycle/regressions,344 audio controls,208 room checks,11 numeric boundaries,20 event-player checks,all30 PCM payloads;307 authority assets verified.7 builder input guards plus inheritance refusal and2 semantic comparator negative controls passed. Standard unmodified Godot export remains nondeterministic. Canonical HEAD/status and377 original hashes unchanged; no GUI/UAC attempted because operator unavailable. Production renderer false/defaultmaster99 unchanged. Native audible mixer parity, active door transition, full T0/R7/Niamh, frame99 and natural completion remain HOLD. Build e26e223cb1739529fe8616987588eb5507c579972772090b175e473451bc4c4a. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T22:36:12.765713+00:00",
+  "acquired_at": "2026-10-31T22:45:18.043875+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
