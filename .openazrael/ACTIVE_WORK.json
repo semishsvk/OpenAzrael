@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-clean-import-v46-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,12 +34,12 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T22:34:32.799619+00:00",
+  "released_at": "2026-10-31T22:44:02.611750+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
     "remote_head": "NOT_RECHECKED; no source commits, pushes or merges",
-    "sync_state": "Isolated combined Audio/R7 Windows diagnostic v44: pinned engine/export templates; 344 x86 arithmetic controls, 208 room integration checks, 11 numeric boundary cases, R7 save12/read70, lifecycle/regression checks, 307 authority assets, 20 event-player checks and all30 imported PCM payloads PASS. Same-cache exports byte-identical. Independent frozen1745-resource payload rebuilds byte-identical; standalone kit and delivered ZIP revalidated headless with fresh userdata. Tampering rejected. Canonical HEAD/status unchanged;3559 input project files and377 original media hashes unchanged. Production experimental renderer remains false and master default99 unchanged. No GUI/UAC attempt because operator unavailable. Native PCM mixer, active door transition, full T0/R7/Niamh, frame99, natural completion and clean-import determinism remain HOLD. Build 3c87a06e1174a463890df309855ee5ceb23795f20d187f3ee8b862f53b7ca25a. FIDELITY_HOLD.",
+    "sync_state": "Pinned clean-source Windows pipeline v50 qualified for exact source/engine/templates with explicit scene ID stabilization. Four independent empty-cache projects, including relocated delivered kit, produced byte-identical PCK08ce05f19b0f19098453381b069f4dc08e0b9ca34fd5e350e518cdea60a69372; all1745 resource hashes agree. All11 scenes retained every serialized value except explicit ID metadata.25 runtime phases passed on clean rebuild and delivered ZIP with fresh userdata: R7 save12/read70, lifecycle/regressions,344 audio controls,208 room checks,11 numeric boundaries,20 event-player checks,all30 PCM payloads;307 authority assets verified.7 builder input guards plus inheritance refusal and2 semantic comparator negative controls passed. Standard unmodified Godot export remains nondeterministic. Canonical HEAD/status and377 original hashes unchanged; no GUI/UAC attempted because operator unavailable. Production renderer false/defaultmaster99 unchanged. Native audible mixer parity, active door transition, full T0/R7/Niamh, frame99 and natural completion remain HOLD. Build e26e223cb1739529fe8616987588eb5507c579972772090b175e473451bc4c4a. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T22:36:12.765713+00:00",
