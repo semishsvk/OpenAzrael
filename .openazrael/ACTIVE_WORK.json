@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
+  "status": "active",
   "lease_id": "codex-vm-desktop-diagnostics-v6-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T18:47:35.790167+00:00",
+  "last_seen_at": "2026-10-31T19:19:09.688510+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Read-only guest desktop diagnostics completed both guests, 20 checks verified. GUI foreground, thumbnail and audio remain HOLD. Enhanced Session repair prepared but NOT executed: auto-review requires explicit authorization for guest RDP and group membership. Evidence saved to isolated runtime output. No workers commissioned",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T18:43:58.805228+00:00",
+  "acquired_at": "2026-10-31T19:19:09.688509+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
