@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-host-dosbox-oracle-v8-20261031",
+  "status": "active",
+  "lease_id": "codex-host-door-camera-v17-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T20:01:43.511004+00:00",
+  "last_seen_at": "2026-10-31T20:07:58.168347+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Host native DOSBox qualification under unchanged strict GUI gate. Frame98 observed; 99/100 source frames in native AVI; frame99 unresolved. Fresh T0 movement 21 checks PASS. Fresh SB16 PCM 48k stereo nonzero, ambient correlation0.521; first-door995 and four camera-copy gates HOLD. 25 seed game components unchanged during two host-mount-field relocation. 377 original hashes unchanged. Evidence d61b75ced37cb89bc534be3df4bb97f9e35768c2546562e9b6db8300ee80f5a9 saved. No production promotion; FIDELITY_HOLD",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T19:22:19.874500+00:00",
+  "acquired_at": "2026-10-31T20:07:58.168345+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
