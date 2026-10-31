@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-host-audio-v24-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,12 +34,12 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T21:03:05.107175+00:00",
+  "released_at": "2026-10-31T21:20:13.515856+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
     "remote_head": "NOT_RECHECKED; no source commits, pushes or merges",
-    "sync_state": "Native first door v23 retained. New native stereo source995 L/R=0.890924; interleaved AVI/WAV identical common PCM; observed door ROI motion 134.9ms after source template alignment. Godot nonspatial 0dB event player confirmed in isolated full project: 20 checks, no engine errors. Boot-readiness candidate v25: 10 headless cases, safety functions unchanged; new GUI attempt UAC cancelled before launch; live loop not qualified. 377 original hashes unchanged. Canonical source unchanged. Bundle 0c674a64ee6d088ef0dcc1c7632acf93b6f038ec258eadb63fcc239277cc87ab. Remaining full route, R7, movie frame99, natural completion, and Godot/audio comparison gates HOLD.",
+    "sync_state": "Isolated full-project ordered ambient audio reference patch: 46 direct controls and 66 real-node integration checks PASS against 8 original saved states; 12 R7 save plus 70 fresh-process restore checks PASS; 19 reader cases (18 rejection), 6 source loop proofs. 219 scoped checks total. 3508 input project files and 377 original source hashes unchanged. Corrected historic code address and independent code/data load mapping; exact cached 995 WAV bytes bound to native pan70 volume100. Renderer gate remains false; master default unchanged; active door join and PCM mixer parity HOLD. UAC cancelled before DOSBox launch; operator unavailable, no reprompt. Bundle a747e6441880e4611c580045ef5a611a07ef51b3fe8f9449f657d44a51f91fc2. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T21:03:46.849314+00:00",
