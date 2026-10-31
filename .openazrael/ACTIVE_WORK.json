@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-r7-fullproject-20261031",
+  "status": "active",
+  "lease_id": "codex-r7-cleanup-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T10:45:21.236604+00:00",
+  "last_seen_at": "2026-10-31T10:47:56.728447+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Full project source candidate ZIP, combined patch, test logs, manifests and restart checkpoint saved locally; scoped R7 persistence PASS, supplemental renderer PARTIAL, FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T10:38:17.806262+00:00",
+  "acquired_at": "2026-10-31T10:47:56.728445+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
