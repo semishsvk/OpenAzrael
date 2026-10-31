@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-vm-desktop-diagnostics-v6-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,12 +34,12 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T18:25:41.543352+00:00",
+  "released_at": "2026-10-31T18:41:55.289487+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "0 tracked changes; 25 pre-existing untracked files; canonical source untouched",
-    "remote_head": "NOT_RECHECKED; no source commit, push or merge",
-    "sync_state": "Four synthetic GUI attempts preserved; v5 blocked in both guests by unchanged foreground gate. Both consoles unlocked. Audio devices 0. Unexpected thumbnail format preserved raw. Evidence archived; FIDELITY_HOLD; no workers commissioned",
+    "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
+    "remote_head": "NOT_RECHECKED; no project source commits or pushes",
+    "sync_state": "Validator fail-closed hardening tested 6/6. Read-only guest desktop diagnostics prepared; UAC timed out with no elevated child. Host API smoke explicitly host-only. Evidence saved; FIDELITY_HOLD; no worker commissioned",
     "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T18:37:14.503916+00:00",
