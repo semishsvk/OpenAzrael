@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-host-audio-v24-20261031",
+  "status": "active",
+  "lease_id": "codex-host-audio-v29-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T21:19:35.255946+00:00",
+  "last_seen_at": "2026-10-31T21:26:03.874547+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Isolated full-project ordered ambient audio reference patch: 46 direct controls and 66 real-node integration checks PASS against 8 original saved states; 12 R7 save plus 70 fresh-process restore checks PASS; 19 reader cases (18 rejection), 6 source loop proofs. 219 scoped checks total. 3508 input project files and 377 original source hashes unchanged. Corrected historic code address and independent code/data load mapping; exact cached 995 WAV bytes bound to native pan70 volume100. Renderer gate remains false; master default unchanged; active door join and PCM mixer parity HOLD. UAC cancelled before DOSBox launch; operator unavailable, no reprompt. Bundle a747e6441880e4611c580045ef5a611a07ef51b3fe8f9449f657d44a51f91fc2. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T21:03:46.849314+00:00",
+  "acquired_at": "2026-10-31T21:26:03.874545+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
