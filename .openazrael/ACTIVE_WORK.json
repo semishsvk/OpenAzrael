@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-vm-console-focuspath-v4-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,15 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T17:03:27.387365+00:00",
+  "released_at": "2026-10-31T18:25:41.543352+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged: zero tracked changes, same 25 pre-existing untracked files",
-    "remote_head": "NOT_RECHECKED; no source commits or pushes",
-    "sync_state": "Two concurrent synthetic guest GUI trials executed and preserved. 24 positive raw image/owned-message observations; overall qualification HOLD because foreground gate rejected both trials, WinMM output count zero, and legacy capture filename contract was inconsistent. v3 has lock preflight and canonical filenames; 8 activation plus 6 v3 guard checks PASS, v3 not guest-executed. Read-only WTS guest inspection awaits operator UAC; guest lock state unverified. Evidence SHA b94085869d0f9d09a830aff93f744b2d3557a61d5ca5dd4964c04643e50478ef. FIDELITY_HOLD.",
-    "task_processes_stopped": true,
-    "foreign_processes_modified": false,
-    "owned_vms": "Both intentionally remain running, uncommissioned; all newly scheduled qualification tasks stopped and unregistered"
+    "git_status": "0 tracked changes; 25 pre-existing untracked files; canonical source untouched",
+    "remote_head": "NOT_RECHECKED; no source commit, push or merge",
+    "sync_state": "Four synthetic GUI attempts preserved; v5 blocked in both guests by unchanged foreground gate. Both consoles unlocked. Audio devices 0. Unexpected thumbnail format preserved raw. Evidence archived; FIDELITY_HOLD; no workers commissioned",
+    "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T18:00:13.675731+00:00",
   "priority_authorization": {
