@@ -19,38 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "0d66b8ec-95d6-4edf-9432-c2d79bfd692f",
-    "host": "HomePC",
-    "supervisor_pid": 32476,
-    "started_at": "2026-10-31T10:27:56.766993+00:00",
-    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "codex-r443-native-admission-20261031",
-      "--cwd",
-      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
-      "--output",
-      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\work\\recovery-20261031\\gui-admission-probe",
-      "--wait-seconds",
-      "0",
-      "--timeout-seconds",
-      "30",
-      "--strict-isolation",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "-c",
-      "print(123)"
-    ]
-  },
-  "last_seen_at": "2026-10-31T10:26:53.422966+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-31T10:28:00.134349+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
