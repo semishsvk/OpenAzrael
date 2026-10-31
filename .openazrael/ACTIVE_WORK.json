@@ -19,7 +19,19 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "5a158a8c-ae2f-4158-9e36-7484770afa58",
+    "host": "HomePC",
+    "supervisor_pid": 4656,
+    "started_at": "2026-10-31T15:51:14.225675+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-I",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\vm-runtime-provision\\test-corrupt-transport.py"
+    ]
+  },
   "last_seen_at": "2026-10-31T15:47:59.523261+00:00",
   "protocol": {
     "version": 2,
