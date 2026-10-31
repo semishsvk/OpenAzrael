@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-host-build-v36-20261031",
+  "status": "active",
+  "lease_id": "codex-clean-import-v46-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T22:34:15.863615+00:00",
+  "last_seen_at": "2026-10-31T22:36:12.765715+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Isolated combined Audio/R7 Windows diagnostic v44: pinned engine/export templates; 344 x86 arithmetic controls, 208 room integration checks, 11 numeric boundary cases, R7 save12/read70, lifecycle/regression checks, 307 authority assets, 20 event-player checks and all30 imported PCM payloads PASS. Same-cache exports byte-identical. Independent frozen1745-resource payload rebuilds byte-identical; standalone kit and delivered ZIP revalidated headless with fresh userdata. Tampering rejected. Canonical HEAD/status unchanged;3559 input project files and377 original media hashes unchanged. Production experimental renderer remains false and master default99 unchanged. No GUI/UAC attempt because operator unavailable. Native PCM mixer, active door transition, full T0/R7/Niamh, frame99, natural completion and clean-import determinism remain HOLD. Build 3c87a06e1174a463890df309855ee5ceb23795f20d187f3ee8b862f53b7ca25a. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T22:04:49.076285+00:00",
+  "acquired_at": "2026-10-31T22:36:12.765713+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
