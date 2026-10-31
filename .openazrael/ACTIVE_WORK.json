@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-r7-material-diagnose-20261031",
+  "status": "active",
+  "lease_id": "codex-r7-portable-build-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T12:51:26.382699+00:00",
+  "last_seen_at": "2026-10-31T13:05:24.367967+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -44,7 +44,7 @@
     "scope": "R7 material diagnosis and validation processes only; none remain",
     "outside_lease_infrastructure_helpers": "Hyper-V provision helpers 26756/40984/37012 still waiting on existing VMMS job; no Azrael runtime launched"
   },
-  "acquired_at": "2026-10-31T12:44:45.986341+00:00",
+  "acquired_at": "2026-10-31T13:05:24.367965+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
