@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-vm-runtime-provision-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,14 +34,15 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T14:33:48.606762+00:00",
+  "released_at": "2026-10-31T16:04:04.963087+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "git_status": "Canonical C8 unchanged: zero tracked changes; same 25 pre-existing untracked files; verified 2026-10-31T14:27:25Z",
-    "remote_head": "NOT_RECHECKED; no source commits or pushes performed",
-    "sync_state": "Frozen imported payload rebuild byte-identical; 1737 exact file hashes; 258 runtime checks; 11 kit guards; 9 local published artifacts SHA verified; original fidelity and clean-source import HOLD. Two isolated Windows guests installed; further verification requires UAC.",
+    "git_status": "Canonical C8 verified unchanged: zero tracked changes and same 25 pre-existing untracked files",
+    "remote_head": "NOT_RECHECKED; no source commits or pushes",
+    "sync_state": "Both guest offline runtime bundles staged and all 1156 package files verified. Each guest passed 40 isolation unit tests plus 24 runtime/guard checks; corrupt transport rejected; 377 original files privately copied and source reverified unchanged. Synthetic parallel GUI qualifier prepared but not executed because Windows UAC wait expired. All fidelity gates remain HOLD.",
     "task_processes_stopped": true,
-    "remaining_owned_infrastructure": "ORM-DOSBox-A intentionally left at first boot; B installed OFF; neither runtime worker commissioned"
+    "persistent_execution_worker_accepted": false,
+    "owned_vms": "A and B intentionally remain running, uncommissioned; pilot queue untouched"
   },
   "acquired_at": "2026-10-31T15:21:10.183770+00:00",
   "priority_authorization": {
