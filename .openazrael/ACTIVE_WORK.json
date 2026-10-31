@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-vm-desktop-diagnostics-v6-20261031",
+  "status": "active",
+  "lease_id": "codex-host-dosbox-oracle-v8-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T19:20:31.639314+00:00",
+  "last_seen_at": "2026-10-31T19:22:19.874502+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Explicitly authorized Enhanced Session prerequisites configured only in ORM-DOSBox-A/B. 28 checks pass: guest RDP, standard-user group, NLA, redirection restrictions, unchanged firewall, disconnected NICs. No sessions restarted, no host settings changed. Authenticated connection and audio remain UNTESTED; FIDELITY_HOLD; no commissioning. Evidence saved",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T19:19:09.688509+00:00",
+  "acquired_at": "2026-10-31T19:22:19.874500+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
