@@ -19,7 +19,39 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "44cdbef8-612b-4558-a255-74dc6cbf7c6a",
+    "host": "HomePC",
+    "supervisor_pid": 60292,
+    "started_at": "2026-10-31T19:31:01.125939+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "host-r8-ending-v11a",
+      "--cwd",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+      "--output",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\host-dosbox-v8\\gui-v11a",
+      "--wait-seconds",
+      "0",
+      "--timeout-seconds",
+      "300",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\host_dosbox_r8_v11.py",
+      "--run-id",
+      "host-r8-ending-v11a"
+    ]
+  },
   "last_seen_at": "2026-10-31T19:29:37.851556+00:00",
   "protocol": {
     "version": 2,
