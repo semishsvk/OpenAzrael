@@ -19,28 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "73aa1b81-1bb0-4b1a-9fa5-7f22f49c789f",
-    "host": "HomePC",
-    "supervisor_pid": 64580,
-    "started_at": "2026-10-31T10:35:02.802404+00:00",
-    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\r7-headless-candidate",
-    "command": [
-      "F:\\Remaster Framework\\source\\Godot\\Godot_v4.7.2-stable_win64.exe",
-      "--headless",
-      "--path",
-      ".",
-      "--script",
-      "res://scripts/snapshot_regression.gd",
-      "--quit-after",
-      "120",
-      "--log-file",
-      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\work\\headless-r7\\real-room.log",
-      "--",
-      "--real-room"
-    ]
-  },
-  "last_seen_at": "2026-10-31T10:34:30.721124+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-10-31T10:35:04.519882+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
