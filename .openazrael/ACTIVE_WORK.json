@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-r7-headless-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,13 +34,13 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-10-31T10:29:02.240252+00:00",
+  "released_at": "2026-10-31T10:37:20.943999+00:00",
   "reconciliation": {
-    "remote_head": "Named integration ref not advertised by successful ls-remote query; remote equality NOT VERIFIED",
-    "sync_state": "Isolated tooling and evidence saved in Codex outputs; no source commit, push, merge, build or native replay; FIDELITY_HOLD. Strict GUI admission blocked foreign runtimes.",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "task_processes_stopped": true,
-    "git_status": "25 pre-existing untracked files; no tracked modifications observed; no project source edits performed"
+    "git_status": "No canonical source modifications; two patched source components in isolated Codex candidate; original source pins unchanged.",
+    "remote_head": "NOT_RECHECKED: no integration source commits or pushes in this work package",
+    "sync_state": "R7 isolated headless fix, patch, provenance and test logs saved locally; production integration and fidelity HOLD.",
+    "task_processes_stopped": true
   },
   "acquired_at": "2026-10-31T10:30:22.899556+00:00",
   "priority_authorization": {
