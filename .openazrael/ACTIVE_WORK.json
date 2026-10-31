@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-host-audio-v29-20261031",
+  "status": "active",
+  "lease_id": "codex-host-build-v36-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T21:50:11.511859+00:00",
+  "last_seen_at": "2026-10-31T22:04:49.076287+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Source-numeric audio reference patch in isolated complete project. Original x86 arithmetic calibrated against 8 native R1 states; executed code blocks source-verified, two unclassified runtime bytes never read/executed. Baseline 78/88, candidate 88/88 targeted plus 256/256 seeded random cases; 208 actual R1/R7/R8 ambient-node integration checks; 5 invalid-input rejections; 7 source numeric proofs and 7 CPU guard checks. Clean R7 save12 plus fresh-process restore70 after test-only mixer drain; initial leak warning preserved. Historical R7/R8 audio snapshots rejected, not qualified. 3508 input project files and all377 original source hashes unchanged. Canonical source unchanged; renderer gate false, default master unchanged. No GUI/UAC attempted because operator unavailable. Native PCM mixer, active door join, full T0/R7/Niamh, frame99 and natural completion remain HOLD. Bundle 4013798ac169e87a3e1f411629edf3247cba6cac920643afee6cd113b047f1ec. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T21:26:03.874545+00:00",
+  "acquired_at": "2026-10-31T22:04:49.076285+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
