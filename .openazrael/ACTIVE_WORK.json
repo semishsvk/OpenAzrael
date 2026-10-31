@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-r443-recovery-20261031",
+  "status": "active",
+  "lease_id": "codex-r7-headless-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T10:28:00.134349+00:00",
+  "last_seen_at": "2026-10-31T10:30:22.899558+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "task_processes_stopped": true,
     "git_status": "25 pre-existing untracked files; no tracked modifications observed; no project source edits performed"
   },
-  "acquired_at": "2026-10-31T10:25:18.553929+00:00",
+  "acquired_at": "2026-10-31T10:30:22.899556+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
