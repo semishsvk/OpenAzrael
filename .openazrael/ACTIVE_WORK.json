@@ -19,7 +19,19 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "c07c677f-3d1d-4578-90df-e50974216643",
+    "host": "HomePC",
+    "supervisor_pid": 10144,
+    "started_at": "2026-10-31T10:26:45.867246+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "powershell.exe",
+      "-NoProfile",
+      "-File",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\work\\recovery-20261031\\qualify.ps1"
+    ]
+  },
   "last_seen_at": "2026-10-31T10:26:22.644470+00:00",
   "protocol": {
     "version": 2,
