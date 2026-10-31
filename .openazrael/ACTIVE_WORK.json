@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-host-door-camera-v17-20261031",
+  "status": "active",
+  "lease_id": "codex-host-audio-v24-20261031",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T20:54:21.571152+00:00",
+  "last_seen_at": "2026-10-31T20:55:46.983309+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Native fresh SB16 first door opened and physically traversed; 37/37 checks; source 995 correlation 0.992966. 377 original hashes unchanged. Canonical source unchanged. Bundle 183701d24e03e39b4b98e3aae187fec64439f3604cd956e6b1cb81ae4cb11e00. Remaining full route, R7, movie frame99, natural completion, and Godot/audio comparison gates HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T20:47:51.450256+00:00",
+  "acquired_at": "2026-10-31T20:55:46.983307+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
