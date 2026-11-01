@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-gui-acl-v67-20261101",
+  "status": "active",
+  "lease_id": "codex-gui-acl-v68-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T06:41:34.612892+00:00",
+  "last_seen_at": "2026-11-01T07:29:11.716504+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "GUI permissions migration v67 prepared, not activated.48 candidate checks PASS with standard token/session1;4 installer checks PASS including PS5 syntax, exact in-memory ACL and non-admin refusal75 without UAC. Private state only; real global mutex serializes3 processes, headless Godot works while held, simulated focus cancellation and owned JobObject cleanup PASS. Live script, ACL, authority, legacy owner and canonical source unchanged. One administrator activation and live standard-token check pending; operator away, UAC suspended. No foreign processes terminated. Previous R7 v66 evidence unchanged. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-11-01T06:32:20.981145+00:00",
+  "acquired_at": "2026-11-01T07:29:11.716503+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
