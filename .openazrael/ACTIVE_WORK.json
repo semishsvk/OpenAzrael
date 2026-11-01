@@ -19,7 +19,18 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "1d855918-40ec-4b76-b4c9-facfa323decd",
+    "host": "HomePC",
+    "supervisor_pid": 63700,
+    "started_at": "2026-11-01T07:31:39.498145+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\package_acl_v68.py"
+    ]
+  },
   "last_seen_at": "2026-11-01T07:30:54.786380+00:00",
   "protocol": {
     "version": 2,
