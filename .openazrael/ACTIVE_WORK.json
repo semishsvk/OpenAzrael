@@ -19,39 +19,8 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": {
-    "run_id": "34956e69-03a8-457e-a0db-439fb86d942a",
-    "host": "HomePC",
-    "supervisor_pid": 78404,
-    "started_at": "2026-11-01T09:32:00.281870+00:00",
-    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
-    "command": [
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
-      "run",
-      "--project",
-      "OpenAzrael",
-      "--job-id",
-      "intro-route-trace-v72",
-      "--cwd",
-      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael",
-      "--output",
-      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\intro-trace-v72\\gui-rendered-route",
-      "--wait-seconds",
-      "0",
-      "--timeout-seconds",
-      "390",
-      "--strict-isolation",
-      "--focus-sensitive",
-      "--",
-      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
-      "-B",
-      "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\run_intro_trace_v72.py",
-      "rendered-route"
-    ]
-  },
-  "last_seen_at": "2026-11-01T09:31:12.005084+00:00",
+  "active_run": null,
+  "last_seen_at": "2026-11-01T09:34:47.082465+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
