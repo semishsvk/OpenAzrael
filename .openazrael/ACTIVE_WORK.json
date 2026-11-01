@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-native-ending-v75-20261101",
+  "status": "active",
+  "lease_id": "codex-native-timer-v77-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T12:17:22.904671+00:00",
+  "last_seen_at": "2026-11-01T12:59:44.524246+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "sync_state": "v75/v76 isolated DOSBox-X native-ending continuations. Verified pinned loader restores canonical host drive from SAV; implemented version/layout-specific create-only relocation of exactly two Dos256-byte drive metadata buffers65570/66647 to same-length73-char private DIOS paths. Every other ZIP member, including guest Memory/CPU/Vga, is byte-identical at restore. Seven preservation/refusal checks PASS. New emulator saves confirm2 private mount infos and zero original mount infos. A restores authenticated frame97 STATE03 and remains97; B restores authenticated pre-movie STATE02 and video comparison observes 98 source frames, details in publication. Both owned drivers hit bounded480/240s timeouts; never counted as natural movie/program completion. Recording/save/screenshot controls only during evidence windows; later own-window close attempts in A are recorded separately, a quit warning was not accepted, and the driver bounded cleanup owns termination. No third-party/foreign processes terminated, no UAC. Exact source player disassembly recorded, no guest timers/mode/memory altered to force acceptance. Canonical HEAD/status,377 original corpus and original archive seeds, all v74 Godot artifacts preserved. Older v12 native98 evidence retained rather than overwritten by current failures. Next completion probe must use distinct authenticated timer-progress/fresh physical execution, not repeat frozen SAVs. Native ending/AV/T0/release gates remain FIDELITY_HOLD."
   },
-  "acquired_at": "2026-11-01T11:47:22.207138+00:00",
+  "acquired_at": "2026-11-01T12:59:44.524244+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
