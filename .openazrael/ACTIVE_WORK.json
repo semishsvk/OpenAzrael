@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "codex-gui-acl-v67-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,12 +34,12 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-11-01T06:22:33.815284+00:00",
+  "released_at": "2026-11-01T06:42:22.497849+00:00",
   "reconciliation": {
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
     "remote_head": "NOT_RECHECKED; no source commits, pushes or merges",
-    "sync_state": "Isolated R7 disk-state codec fix v66: actual physical-route old-build R7 save changed canonical hash because JSON turned integer R7SwitchStep3 into float3.0. Only production DemoState restore now validates and normalizes that known0..3 field before atomic commit; schema remains1/145, unrelated floats unchanged.38 focused checks PASS versus30 baseline failures.29 packaged regression phases, full15-step physical route and307 authority assets PASS. Actual old save fdc17a6605d073e80e0fe0e88dd7c14a950f40b275f837cc6ba31b800f931794 restored in a fresh process:25 checks, exact canonical hash/camera/position/10 bridge transforms,9 remaining physical steps and100 naturally completed Godot movie controller frames. Two fresh source rebuilds, including relocated delivered kit, match exact PCK; extracted Windows ZIP checks PASS. All original377 files and input project unchanged; canonical HEAD/status unchanged. Native GUIv60 blocked by strict external-focus guard;v61 UAC reported cancelled, driver never started. Operator explicitly away, further UAC suspended. No foreign processes terminated. Native/rendered/audio comparison, native frame99/natural exit and endpoint adapter fidelity remain HOLD. Build c2308fb1c3d3fd7d42da7a2bf011119c44f661e3ae467cb69901e8ae0b326ae7. FIDELITY_HOLD.",
+    "sync_state": "GUI permissions migration v67 prepared, not activated.48 candidate checks PASS with standard token/session1;4 installer checks PASS including PS5 syntax, exact in-memory ACL and non-admin refusal75 without UAC. Private state only; real global mutex serializes3 processes, headless Godot works while held, simulated focus cancellation and owned JobObject cleanup PASS. Live script, ACL, authority, legacy owner and canonical source unchanged. One administrator activation and live standard-token check pending; operator away, UAC suspended. No foreign processes terminated. Previous R7 v66 evidence unchanged. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
   "acquired_at": "2026-11-01T06:32:20.981145+00:00",
