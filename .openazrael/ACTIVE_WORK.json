@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-gameplay-v51-20261101",
+  "status": "active",
+  "lease_id": "codex-route-resume-v60-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-10-31T23:08:16.497404+00:00",
+  "last_seen_at": "2026-11-01T05:45:14.040624+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "sync_state": "Gameplay diagnostic v59: headless source and packaged production-input15-step R1/R7/R1/R8 route reaches Shield I/demo_complete;149 actions,3 canonical-state snapshot roundtrips, no runtime guard failures. Additional read-only observer on pinned editor engine plus exact PCK extends the same route through all100 sequential Godot movie controller frames0..99 and natural completed signal in10 seconds, with no skips, manual clock or flag injection; Master mute restored. Final canonical checkpoint deferred until after the movie and passes unchanged criteria; v58 state_replaced cancellation attempt retained. Rendered pixels, private endpoint adapter and native completion remain unverified.28 packaged regression phases pass: separate R7 disk save12/fresh-process read70,62 physics checks including both R8 staircases,31 real engine keyboard-dispatch Niamh checks,156 source-animation pace checks,307 authority assets,344 audio controls,208 room checks,11 numeric boundaries,20 event-player checks and30 PCM payloads. Test-only teardown drains remove exit-time audio resources; failed/interrupted attempts preserved. Two new empty-cache source rebuilds, one from relocated delivered kit, match exact PCK. Extracted Windows ZIP selected tests pass in fresh userdata. Canonical HEAD/status and all377 original hashes unchanged; gameplay logic unchanged. No GUI/UAC attempt because operator last away; no foreign processes terminated. Native PCM mixer, active first-door transition comparison, native/rendered full T0/R7/Niamh, frame99 and natural completion remain HOLD. Build b31855951f3b6c0c41ecd9522a2fca7c04178f15667229dec7b27c0448e01709. FIDELITY_HOLD.",
     "task_processes_stopped": true
   },
-  "acquired_at": "2026-10-31T22:45:18.043875+00:00",
+  "acquired_at": "2026-11-01T05:45:14.040623+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
