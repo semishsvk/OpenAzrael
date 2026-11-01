@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-r8-navigation-v71-20261101",
+  "status": "active",
+  "lease_id": "codex-intro-trace-v72-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T09:08:59.229491+00:00",
+  "last_seen_at": "2026-11-01T09:26:56.107097+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "task_processes_stopped": true,
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed"
   },
-  "acquired_at": "2026-11-01T08:38:50.168244+00:00",
+  "acquired_at": "2026-11-01T09:26:56.107095+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
