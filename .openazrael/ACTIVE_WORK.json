@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-native-timer-v77-20261101",
+  "status": "active",
+  "lease_id": "codex-native-key-v78-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T13:24:14.160415+00:00",
+  "last_seen_at": "2026-11-01T14:22:13.911441+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "sync_state": "v77 original ending source investigation on exact R.EXE381e4f5c61e4bb8c27f06b1944e6673bbebc39ca219cc08fb9f948da2ca37c00. Pinned original x86 movie loop and post-movie wait executed in isolated Unicorn2.1.4 branch harness:8 final cases PASS with explicitly modeled external IO, not physical native acceptance.100 type3 events display100 frames; two nonframe type1/4 events consume counter budget and yield98 displays. This is a possible mechanism, not a proved v76 event trace. Original mode102 code0x607f..0x609d waits on word42654 after movie return; no-input modeled wait does not return, modeled input returns. Input setter identified in source IRQ with port60 handling. Saved globals and unaligned return-address byte hits do not prove live execution stage. Existing Godot private endpoint returns to title immediately; preserved unchanged pending actual native oracle/user-policy reconciliation. Native one-key verification not executed: two strict/focus-sensitive GUI jobs lost foreground to existing Windows Terminal5672 and cancelled only own trees; hidden retry did not provide isolation admission, no focus retake. GUI BLOCKED never counted as game PASS/FAIL. Initial dependency wheel-name selector and low-address harness map errors corrected and preserved as unqualified attempts. Analysis wheel extracted only into private workspace with PyPI digest; no system/shared-venv changes. Canonical HEAD/status,377 original files, v74 builds and v76 evidence unchanged. No foreign process termination or UAC. Physical key exit, native movie completion/event cause/frames98-99/T0/AV/release gates remain FIDELITY_HOLD."
   },
-  "acquired_at": "2026-11-01T12:59:44.524244+00:00",
+  "acquired_at": "2026-11-01T14:22:13.911439+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
