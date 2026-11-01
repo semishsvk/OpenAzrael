@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-gui-acl-v68-20261101",
+  "status": "active",
+  "lease_id": "codex-host-gui-v69-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T07:31:41.697666+00:00",
+  "last_seen_at": "2026-11-01T07:33:06.193166+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "sync_state": "v68 installer repair staged. PS5 null-backup File.Replace failure reproduced. Real named backup forward/reverse replacement, ACL/content preservation and read-only validation of exact failed v67 attempt PASS:12 checks. Plan and nonadmin refusal PASS. Coordinator candidate unchanged from v67/48checks. Live coordinator, authority and legacy hashes/ACL unchanged; failed inactive v67 state retained with restored ACL. No UAC invoked, no foreign processes terminated. Admin apply and standard-token live proof pending. FIDELITY_HOLD."
   },
-  "acquired_at": "2026-11-01T07:29:11.716503+00:00",
+  "acquired_at": "2026-11-01T07:33:06.193165+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
