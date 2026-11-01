@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-clean-rebuild-v74-20261101",
+  "status": "active",
+  "lease_id": "codex-native-ending-v75-20261101",
   "owner": "codex-openazrael-r443-fidelity-20261031",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T10:10:24.333137+00:00",
+  "last_seen_at": "2026-11-01T11:47:22.207140+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -42,7 +42,7 @@
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
     "sync_state": "Unchanged pinned v73 source archive clean rebuild qualification v74. Three fresh empty Godot import caches (one baseline enrollment and two pinned verification builds including relocated delivered kit) yield identical EXE/PCK and1749 resource payloads; PCK matches delivered v73 e445feec9382673c801c382e845766b4ba4323504574d06812fd9e6586c6bae1. Existing canonicalizer preserves all non-ID serialized values in11 scenes each. Seven builder input guards PASS. Newly delivered Windows ZIP extracted alone to a separate directory passes27 runtime phases,307 source-asset checks and full15-step149-action routes headless and GPU. Both routes preserve exact final state and naturally complete100 outro frames in source duration after deferring only the final validation checkpoint until after movie completion. Rendered startup146 assignments/after-draw observations; natural rendered outro100 sequential assignments/after-draw observations; five viewport frames0/50/97/98/99 at640x480 match decoded source PNG RGB hashes exactly. No production source changes. Initial PKS text decoding errors stopped before any engine execution; corrected using BOM-aware JSON byte decoding. First GPU attempt retained as unqualified resolution-precondition failure and only its selected owned window closed; next GPU attempt verified actual viewport before route. Prior v73 source archive/material files and canonical HEAD/status plus377 original corpus hashes unchanged. No foreign process termination, no UAC. Scope is exact pinned toolchain on shared Windows host, not independent-machine/original DOS wall-clock/audio/exit fidelity. Clean pipeline gate qualified; native original ending/AV and final release gates remain FIDELITY_HOLD."
   },
-  "acquired_at": "2026-11-01T09:55:11.202802+00:00",
+  "acquired_at": "2026-11-01T11:47:22.207138+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
