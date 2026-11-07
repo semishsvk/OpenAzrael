@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "codex-native-key-v78-20261101",
-  "owner": "codex-openazrael-r443-fidelity-20261031",
+  "status": "active",
+  "lease_id": "demo-c8-packaged-outro-headless-20261107-a1",
+  "owner": "chatgpt-openazrael-packaged-outro-headless-20261107",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
   "acquired_on": "2026-10-05",
   "expires": null,
   "note": "USER_APPROVED_REOPEN: Demo Candidate 8 completion priority first; Retail retained second. Fidelity HOLD; no promotion.",
-  "owner_thread_id": "codex-openazrael-r443-fidelity-20261031",
+  "owner_thread_id": "chatgpt-openazrael-packaged-outro-headless-20261107",
   "queue": [
     {
       "thread_id": "chatgpt-openazrael-retail-20261007",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-01T14:23:10.623729+00:00",
+  "last_seen_at": "2026-11-07T19:15:19.085119+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -43,7 +43,7 @@
     "report_path": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\native-key-v78\\RESULT_V78.json",
     "remote_head": "NOT_RECHECKED; no source commit/push/merge"
   },
-  "acquired_at": "2026-11-01T14:22:13.911439+00:00",
+  "acquired_at": "2026-11-07T19:15:19.085118+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
