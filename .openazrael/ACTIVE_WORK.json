@@ -19,7 +19,39 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "79bcf958-e5fd-4943-9d20-a586390870b7",
+    "host": "HomePC",
+    "supervisor_pid": 4652,
+    "started_at": "2026-11-07T19:22:47.935964+00:00",
+    "cwd": "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutroHeadless-v1404",
+    "command": [
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "openazrael-packaged-outro-v1405-default",
+      "--cwd",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutroHeadless-v1404",
+      "--output",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutroHeadless-v1404\\GUI_ADMISSION_DEFAULT_V1405",
+      "--wait-seconds",
+      "0",
+      "--timeout-seconds",
+      "120",
+      "--strict-isolation",
+      "--focus-sensitive",
+      "--",
+      "F:\\OpenRemaster\\OpenAzrael\\.venv\\Scripts\\python.exe",
+      "-B",
+      "F:\\OpenRemaster\\work\\OpenAzrael-C8-PackagedOutroHeadless-v1404\\run_packaged_outro_gui_v1405.py",
+      "--mode",
+      "default"
+    ]
+  },
   "last_seen_at": "2026-11-07T19:19:51.636794+00:00",
   "protocol": {
     "version": 2,
