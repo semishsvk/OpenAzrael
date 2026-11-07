@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "demo-c8-packaged-outro-headless-20261107-a1",
   "owner": "chatgpt-openazrael-packaged-outro-headless-20261107",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,14 +34,28 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-11-01T14:24:38.099899+00:00",
+  "released_at": "2026-11-07T19:39:08.214761+00:00",
   "reconciliation": {
-    "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
-    "sync_state": "v78 strict isolated native one-key attempt not admitted: OWNED_GUI_FOCUS_NOT_OBSERVED. No restore/game key/focus retake, no game PASS/FAIL, no natural completion acceptance. All377 original hashes and canonical HEAD/status unchanged. Own GUI job FAILED_RELEASED with child_stopped true; no own runtime remains. No foreign termination or UAC. FIDELITY_HOLD.",
-    "task_processes_stopped": true,
+    "schema": "OpenAzrael.WriterReconciliation.v1407",
+    "capturedUtc": "2026-11-07T19:38:54+00:00",
+    "owner_thread_id": "chatgpt-openazrael-packaged-outro-headless-20261107",
+    "lease_id": "demo-c8-packaged-outro-headless-20261107-a1",
+    "priorBlobSha": "526a303313161cdf419d1e27a5ce550202c7d6ec",
     "head": "f65db5c647690e38dd7f9fbbc0a54953a8f50aed",
-    "report_path": "C:\\Users\\msemj\\Documents\\Codex\\2026-10-31\\files-pasted-by-the-user-openazrael\\outputs\\native-key-v78\\RESULT_V78.json",
-    "remote_head": "NOT_RECHECKED; no source commit/push/merge"
+    "git_status": "?? scripts/validation/audio_import_pcm_digest_v475.gd\n?? scripts/validation/audio_import_pcm_pck_manifest_v479.gd\n?? scripts/validation/pppv_scanner_settled_v487.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v484.gd\n?? scripts/validation/pppv_solo_sfx_diagnostic_v485.gd\n?? scripts/validation/solo_995_playback_v483.gd\n?? scripts/validation/wav_pcm_lossless_import_v474.gd\n?? tools/apply_pcm_import_experiment_v472.py\n?? tools/compare_R1_door_pcm_AB_v481.py\n?? tools/compare_ambient_mute_native_v486.py\n?? tools/compare_scanner_boot_audio_v489.py\n?? tools/compare_scanner_settled_995_v489.py\n?? tools/export_pcm_pck_experiment_v477.py\n?? tools/inspect_pcm_import_engine_v474.py\n?? tools/measure_door_audio_mixer_v482.py\n?? tools/reconcile_wav_pcm_import_v473.py\n?? tools/record_firstdoor_scanner_settled_v488.py\n?? tools/record_pcm_firstdoor_ambient_muted_v484.py\n?? tools/record_pcm_firstdoor_ambient_muted_v485.py\n?? tools/record_pcm_firstdoor_native_v480.py\n?? tools/solo_995_PCM_MovieWriter_AB_v483.py\n?? tools/verify_AB_pcm_resources_in_pck_v479.py\n?? tools/verify_lossless_pcm_pck_v478.py\n?? tools/verify_original_pcm_import_v475.py\n?? tools/verify_original_pcm_import_v476.py",
+    "remote_head": "NOT_RECHECKED; no commit/push/merge performed by this task",
+    "sync_state": "2026-11-07 v1407 source-only handoff: froze private v1340 EXE/PCK unchanged; v1404 actual packaged headless 144/144 default + 144/144 fixed60; v1405 strict Windows GUI BLOCKED OWNED_GUI_FOCUS_NOT_OBSERVED and internal 41/149; v1406 A/B same EXE forced intro 36/144 vs forced+skipped 144/144; corrected GUI v1407 staged NOT EXECUTED. Independent validation SHA f6027f81f703caddec5633cf1b4c3d354744147433c557ab998e67214370b201; report F:\\Remaster Framework\\output\\projects\\OpenAzrael\\reports\\20261107-V1407-PackagedOutroAB\\CHECKPOINT_V1407.json. Canonical tracked source unchanged, exact 25 untracked prior research files preserved, no original media changed, no game release or fidelity acceptance. All own processes have stopped; GUI FAILED_RELEASED with child stopped. Remote branch HEAD NOT_RECHECKED by this checkpoint; no push/merge/commit.",
+    "task_processes_stopped": true,
+    "active_run_is_null": true,
+    "branch": "integration/kg001-candidate8-lossless-pcm-v472",
+    "validationSha256": "f6027f81f703caddec5633cf1b4c3d354744147433c557ab998e67214370b201",
+    "checkpointSha256": "f5da4ed87817350732cb1de97dcebed62c3998a5e0d7b14408414a53a2850ffd",
+    "protectedNativeWorkerChanged": false,
+    "producerSourceModified": false,
+    "originalGameExecuted": false,
+    "privateResearchReadmeHold": true,
+    "fidelityAccepted": false,
+    "releaseAuthorized": false
   },
   "acquired_at": "2026-11-07T19:15:19.085118+00:00",
   "priority_authorization": {
