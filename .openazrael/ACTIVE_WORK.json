@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "active",
+  "status": "idle",
   "lease_id": "atdemo-shield-ending-20261122-03",
   "owner": "01a202c9-3870-7e42-b334-4561112cd7e4",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
@@ -34,10 +34,10 @@
     "waiting": "release-and-record-dependency-ticket",
     "expiry": "never-auto-steal"
   },
-  "released_at": "2026-11-22T11:01:50.065856+00:00",
+  "released_at": "2026-11-22T18:15:15.129119+00:00",
   "reconciliation": {
     "schema": "OpenAzrael.VideoCaptureReconciliation.v1",
-    "observed_utc": "2026-11-22T11:01:48.923973+00:00",
+    "observed_utc": "2026-11-22T18:15:13.163761+00:00",
     "head": "a296b82ffc829ca86811a59a4490811abb22d7bc",
     "git_status": {
       "porcelain_sha256": "68f9deb778d0d0bef4909384f4c1419f32fe9bc6705c81440f9175b1389ea988",
@@ -50,8 +50,8 @@
     "coordinator": {
       "status": "EXITED",
       "exit_code": 0,
-      "seconds": 188.68,
-      "stdout_SHA256": "74dc209e119a3c9c8ac96ebd40a5bf03251e97fd310ab9513cc87217d8d594e7",
+      "seconds": 199.902,
+      "stdout_SHA256": "0a382454b5b40fff2c8dfb13522cc2d4e6eb101a5a16f4b8aec582ee2c940093",
       "stderr_SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "fidelity_accepted": false
     },
