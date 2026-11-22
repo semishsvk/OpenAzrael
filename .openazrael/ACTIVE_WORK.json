@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "scope": "global_mutating_work",
-  "status": "idle",
-  "lease_id": "atdemo-camera-puzzles-20261122-02",
+  "status": "active",
+  "lease_id": "atdemo-shield-ending-20261122-03",
   "owner": "01a202c9-3870-7e42-b334-4561112cd7e4",
   "authoritative_branch": "integration/kg001-candidate3-pppv-v2",
   "base_head_at_acquire": "bcc196103ddf137d05cc6f2d6724d9fe5bd0b8bc",
@@ -20,7 +20,7 @@
     }
   ],
   "active_run": null,
-  "last_seen_at": "2026-11-22T10:59:17.043389+00:00",
+  "last_seen_at": "2026-11-22T18:09:04.677354+00:00",
   "protocol": {
     "version": 2,
     "branch": "coordination/single-writer",
@@ -59,7 +59,7 @@
     "source_corpus_modified": false,
     "project_input_selection_modified": false
   },
-  "acquired_at": "2026-11-22T10:46:26.396824+00:00",
+  "acquired_at": "2026-11-22T18:09:04.677354+00:00",
   "priority_authorization": {
     "requested": "2026-10-09",
     "intent": "REOPEN_DEMO_C8_PRIORITY_BEFORE_RETAIL",
