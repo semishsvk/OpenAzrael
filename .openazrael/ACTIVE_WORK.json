@@ -19,7 +19,36 @@
       "dependency": "USER_APPROVED_PRIORITY_DEMO_C8_FIRST_RETAIL_SECOND: wait until C8 Niamh/Miles fidelity closure or explicit Demo checkpoint handoff; preserve Retail ticket"
     }
   ],
-  "active_run": null,
+  "active_run": {
+    "run_id": "99edf6cb-bff5-43cb-8388-687ec3efc719",
+    "host": "HomePC",
+    "supervisor_pid": 3196,
+    "started_at": "2026-11-22T10:26:07.092557+00:00",
+    "cwd": "C:\\Users\\msemj\\Documents\\Codex\\2026-11-22\\files-pasted-by-the-user-openazrael",
+    "command": [
+      "C:\\Users\\msemj\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-B",
+      "F:\\Remaster Framework\\orchestrator\\control-plane\\shared_gui_runtime_v12.py",
+      "run",
+      "--project",
+      "OpenAzrael",
+      "--job-id",
+      "ATDEMO-Showcase-Probe02",
+      "--cwd",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-11-22\\files-pasted-by-the-user-openazrael",
+      "--output",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-11-22\\files-pasted-by-the-user-openazrael\\work\\probe-admission02",
+      "--wait-seconds",
+      "0",
+      "--timeout-seconds",
+      "280",
+      "--focus-sensitive",
+      "--",
+      "C:\\Users\\msemj\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-B",
+      "C:\\Users\\msemj\\Documents\\Codex\\2026-11-22\\files-pasted-by-the-user-openazrael\\work\\capture_probe.py"
+    ]
+  },
   "last_seen_at": "2026-11-22T10:25:12.627420+00:00",
   "protocol": {
     "version": 2,
